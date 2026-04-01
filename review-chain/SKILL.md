@@ -116,6 +116,7 @@ VERDICT: PASS | ISSUES_FOUND | CRITICAL
 ISSUES (if any):
 For each issue:
 - SEVERITY: critical | major | minor | nit
+- CONFIDENCE: [1-10] (how certain you are this is a real problem — 10 = proven, 7 = likely, 4 = possible, 1 = speculative)
 - LOCATION: {file:line or section}
 - PROBLEM: {what's wrong}
 - FIX: {concrete fix — show the corrected code, not just "fix this"}
@@ -124,6 +125,13 @@ SIMPLIFICATIONS (if any):
 - {what can be removed or simplified, with the simpler version}
 
 SUMMARY: {one paragraph — overall assessment}
+
+**Confidence rules:**
+- Suppress findings below 5/10 — don't include them at all.
+- Caveat findings 5-7/10 — include them but mark as "UNCERTAIN — may be a false positive."
+- Full-weight findings 8+/10 — these are real issues.
+- If you can cite a specific line, test, or proof, confidence should be 8+.
+- If you're pattern-matching without verification, confidence should be 5-7.
 
 Be ruthless. Better to flag a false positive than miss a real bug.
 But don't invent problems that don't exist — if the code is clean, say PASS.
@@ -141,7 +149,9 @@ The reviewer found nothing wrong. You're done. Report to the user:
 - Include the reviewer's summary as confirmation.
 
 **Path B: ISSUES_FOUND (non-critical)**
-The reviewer found real issues but nothing catastrophic. Proceed to the Resolve step.
+The reviewer found real issues but nothing catastrophic. Before proceeding to the Resolve step, classify each finding:
+- **AUTO_FIX**: confidence 9+ AND severity minor/nit → resolver applies without asking
+- **ASK**: everything else → resolver presents these to the user for judgment after fixing
 
 **Path C: CRITICAL**
 The reviewer found a critical bug (security vulnerability, data loss, completely wrong logic). Flag immediately to the user before resolving — they may want to change approach entirely.
@@ -171,6 +181,8 @@ Your job:
 - Fix "minor" issues unless the fix would add complexity disproportionate to the benefit
 - Apply simplifications where the reviewer's suggestion is genuinely simpler
 - Ignore "nit" level feedback unless trivial to address
+- Issues marked AUTO_FIX (confidence 9+, severity minor/nit) should be fixed without discussion
+- Issues marked ASK should be fixed but flagged clearly so the orchestrator can present them to the user
 - Do NOT introduce new features or refactor beyond what the review requested
 
 For each issue, either:
@@ -192,7 +204,12 @@ Before applying, sanity-check:
 - Did the resolver break anything the original got right?
 - Are any "DECLINED" decisions reasonable?
 
-If the resolver's output looks good, apply it.
+**Self-regulation gate:** Track cumulative changes. If any of these trigger, STOP and flag to the user instead of applying:
+- The resolver modified >30% of the original artifact — "This artifact may need a redesign rather than incremental fixes."
+- The resolver addressed >10 findings in a single pass — too many changes at once increases regression risk.
+- The resolver's output introduces new issues that the reviewer didn't find in the original (regression) — "The resolver is making things worse. Stopping."
+
+If the resolver's output looks good and passes the self-regulation gate, apply it.
 
 ### 6. Optional: Loop (for critical or complex code)
 
@@ -227,11 +244,11 @@ status: final
 ## Verdict: {PASS | FIXED | CRITICAL}
 
 ## Issues Found
-| # | Severity | Location | Problem | Status |
-|---|----------|----------|---------|--------|
-| 1 | major | file.ts:42 | Off-by-one in loop | Fixed |
-| 2 | minor | file.ts:15 | Unused import | Fixed |
-| 3 | nit | file.ts:8 | Naming convention | Declined |
+| # | Severity | Confidence | Location | Problem | Status |
+|---|----------|------------|----------|---------|--------|
+| 1 | major | 9/10 | file.ts:42 | Off-by-one in loop | Fixed |
+| 2 | minor | 8/10 | file.ts:15 | Unused import | Fixed |
+| 3 | nit | 6/10 | file.ts:8 | Naming convention | Declined (uncertain) |
 
 ## Simplifications Applied
 {What was simplified and why}
@@ -267,6 +284,51 @@ Do NOT auto-trigger for:
 - Code the user explicitly said "just do it quick"
 - Read-only operations
 
+## Specialist Dispatch Mode (--thorough)
+
+When invoked with `--thorough`, or when the code touches security/auth/payments/data-mutations, replace the single generalist reviewer with 3 specialist reviewers running in parallel:
+
+**Specialist roles:**
+
+| Specialist | Focus | What it catches that generalists miss |
+|------------|-------|--------------------------------------|
+| **Security reviewer** | Auth bypasses, injection, secrets, access control, input validation | Deep knowledge of attack patterns — doesn't just check "is there auth?" but "can the auth be bypassed?" |
+| **Performance reviewer** | N+1 queries, unbounded loops, missing pagination, memory leaks, caching | Traces data flow through the call stack looking for scale problems |
+| **Correctness reviewer** | Logic errors, edge cases, race conditions, error handling, type safety | Reads the code as a state machine — "what happens if X is null AND Y fails?" |
+
+**How it works:**
+1. Spawn all 3 specialists in parallel with the same code and requirements. Each specialist uses the same prompt structure as the generalist reviewer (Section 2), but replace the "Review for:" instructions with the specialist's focus area. For example, the security reviewer gets: "Review ONLY for: auth bypasses, injection, secrets exposure, access control, input validation. Ignore style, naming, and performance."
+2. Each returns findings in the standard format (SEVERITY + CONFIDENCE + LOCATION + PROBLEM + FIX)
+3. Merge all findings, deduplicate (same location + same problem = one finding, keep higher confidence)
+4. Proceed to resolver with the merged findings
+
+**When to auto-escalate to specialist mode** (without user asking):
+- Code modifies auth, sessions, or access control
+- Code handles payments or financial data
+- Code performs database migrations or bulk data mutations
+- Code processes PII or sensitive user data
+- Diff exceeds 500 lines
+
+**Cost:** ~$0.30-0.60 with sonnet (3x single reviewer). Still cheap relative to catching a production bug.
+
+## Scope Drift Detection
+
+When `.agents/tasks.md` or `.agents/spec.md` exists, the reviewer adds a scope check:
+
+After reviewing code quality, compare the implementation against the stated requirements:
+- Read `.agents/tasks.md` — are all tasks addressed? Are there changes that don't map to any task?
+- Read `.agents/spec.md` — does the implementation match the spec? Are there requirements that were missed or scope additions that weren't planned?
+
+Report scope drift findings separately:
+
+```
+SCOPE DRIFT:
+- MISSING: [requirement from spec/tasks not found in the code]
+- UNPLANNED: [code change that doesn't map to any requirement — may be scope creep]
+```
+
+Scope drift findings are informational (not blocking) — the user decides if they're intentional.
+
 ## Configuration
 
 | Parameter | Default | Description |
@@ -275,8 +337,9 @@ Do NOT auto-trigger for:
 | max_loops | 1 | Review cycles (set to 2 for critical code) |
 | severity_threshold | minor | Minimum severity to fix (minor, major, critical) |
 | auto_apply | true | Apply fixes automatically or show diff first |
+| thorough | false | Use specialist dispatch (3 parallel reviewers) instead of generalist |
 
-User can override: "review this with opus" or "do 2 rounds of verification".
+User can override: "review this with opus", "do 2 rounds of verification", or "review this thoroughly".
 
 ## Cost Considerations
 
