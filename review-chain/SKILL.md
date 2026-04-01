@@ -307,9 +307,9 @@ When invoked with `--thorough`, or when the code touches security/auth/payments/
 - Code handles payments or financial data
 - Code performs database migrations or bulk data mutations
 - Code processes PII or sensitive user data
-- Diff exceeds 500 lines
+- Total diff exceeds 500 lines (sum of all files changed, not per-file)
 
-**Cost:** ~$0.30-0.60 with sonnet (3x single reviewer). Still cheap relative to catching a production bug.
+**Cost:** 3x single reviewer cost. Still cheap relative to catching a production bug.
 
 ## Scope Drift Detection
 
