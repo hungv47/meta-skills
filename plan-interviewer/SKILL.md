@@ -61,7 +61,7 @@ Previous: none | Next: `task-breakdown` or `system-architecture`
 ### Skill Deference
 - **Have a FEATURE or PRODUCT to specify?** → Use this skill (Route A/B).
 - **Have a clear task but need to lock scope before building?** → Use Route C (Quick Scope) — 5 questions + contract, no full interview.
-- **Have a declining METRIC to diagnose** (X is at Y, should be Z)? → Use `problem-analysis` (from strategy-skills) instead.
+- **Have a declining METRIC to diagnose** (X is at Y, should be Z)? → Use `problem-analysis` (from research-skills) instead.
 
 **Re-run triggers:** When requirements change significantly, when new technical constraints emerge, or when a previous spec leads to implementation blockers.
 
@@ -356,8 +356,8 @@ Check for `.agents/product-context.md`. If available, read for product and audie
 ### Optional Artifacts
 | Artifact | Source | Benefit |
 |----------|--------|---------|
-| `.agents/product-context.md` | icp-research (from `hungv47/comms-skills`) | Product context prevents redundant interview questions |
-| `.agents/problem-analysis.md` | problem-analysis (from `hungv47/strategy-skills`) | Root cause context when feature solves a diagnosed problem |
+| `.agents/product-context.md` | icp-research (from `hungv47/marketing-skills`) | Product context prevents redundant interview questions |
+| `.agents/problem-analysis.md` | problem-analysis (from `hungv47/research-skills`) | Root cause context when feature solves a diagnosed problem |
 
 ---
 

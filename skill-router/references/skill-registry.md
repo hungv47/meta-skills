@@ -232,46 +232,48 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 
 ## Skill Inventory by Stack
 
-### Strategy (5 skills)
+### Research (6 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
+| icp-research | foundation | heavy | no | product-context.md, mkt/icp-research.md |
 | market-research | pipeline | heavy | no | market-research.md |
 | problem-analysis | pipeline | heavy | no | problem-analysis.md |
 | solution-design | pipeline | heavy | no | solution-design.md |
 | funnel-planner | pipeline | medium | no | targets.md |
 | experiment | pipeline | medium | no | experiment-[name].md |
 
-### Comms (8 skills)
-| Skill | Position | Complexity | Interactive | Produces |
-|-------|----------|------------|-------------|----------|
-| icp-research | foundation | heavy | no | product-context.md, mkt/icp-research.md |
-| imc-plan | pipeline | heavy | no | mkt/imc-plan.md |
-| content-create | pipeline | heavy | no | mkt/content/[slug].md |
-| copywriting | horizontal | heavy | no | mkt/content/[slug].copy.md |
-| attribution | pipeline | medium | no | mkt/attribution.md |
-| lp-optimization | horizontal | medium | no | mkt/lp-optimization.md |
-| seo | horizontal | heavy | no | mkt/seo-[mode].md |
-| humanize | horizontal | medium | no | mkt/content/[slug].humanized.md |
-
-### Design (2 skills)
+### Marketing (8 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
 | brand-system | pipeline | heavy | no | design/brand-system.md |
-| user-flow | pipeline | medium | no | design/user-flow.md |
+| imc-plan | pipeline | heavy | no | mkt/imc-plan.md |
+| content-create | pipeline | heavy | no | mkt/content/[slug].md |
+| copywriting | horizontal | heavy | no | mkt/content/[slug].copy.md |
+| lp-optimization | horizontal | medium | no | mkt/lp-optimization.md |
+| seo | horizontal | heavy | no | mkt/seo-[mode].md |
+| attribution | pipeline | medium | no | mkt/attribution.md |
+| humanize | horizontal | medium | no | mkt/content/[slug].humanized.md |
 
-### Prod (8 skills)
+### Product (4 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
-| plan-interviewer | pipeline | medium | **yes** | spec.md |
+| user-flow | pipeline | medium | no | design/user-flow.md |
 | system-architecture | pipeline | heavy | no | system-architecture.md |
-| task-breakdown | pipeline | medium | no | tasks.md |
 | code-cleanup | horizontal | heavy | no | cleanup-report.md |
 | technical-writer | horizontal | medium | no | (writes to project) |
-| skill-router | utility | medium | no | workflow-plan.md (+ artifact scanning via `status` mode) |
+
+### Meta (7 skills)
+| Skill | Position | Complexity | Interactive | Produces |
+|-------|----------|------------|-------------|----------|
+| preflight | horizontal | light | **yes** | (inline output) |
+| plan-interviewer | pipeline | medium | **yes** | spec.md |
+| task-breakdown | pipeline | medium | no | tasks.md |
 | multi-lens | horizontal | heavy | no | meta/multi-lens-report.md |
 | review-chain | horizontal | medium | no | meta/review-chain-report.md |
+| artifact-status | utility | light | no | (console output) |
+| skill-router | utility | medium | no | workflow-plan.md |
 
-multi-lens and review-chain are domain-agnostic process wrappers — they compose with any skill in any stack.
+Meta-skills are domain-agnostic process wrappers — they compose with any skill in any stack.
 
 ---
 
