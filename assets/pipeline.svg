@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-auto"><path d="M 0 0 L 10 3.5 L 0 7 z" fill="#FCD34D"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="760" height="220" rx="12" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+
+  <!-- Before track -->
+  <text x="240" y="24" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">BEFORE — improve input quality</text>
+
+  <rect x="20" y="36" width="120" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="80" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#78350F">preflight</text>
+  <text x="80" y="70" text-anchor="middle" font-size="8" fill="#B45309">scope + contract</text>
+
+  <path d="M 140 58 L 170 58" stroke="#FCD34D" stroke-width="1.2" fill="none" marker-end="url(#arr)"/>
+
+  <rect x="170" y="36" width="140" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="240" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#78350F">plan-interviewer</text>
+  <text x="240" y="70" text-anchor="middle" font-size="8" fill="#B45309">interview → spec</text>
+
+  <path d="M 310 58 L 340 58" stroke="#FCD34D" stroke-width="1.2" fill="none" marker-end="url(#arr)"/>
+
+  <rect x="340" y="36" width="140" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="410" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#78350F">task-breakdown</text>
+  <text x="410" y="70" text-anchor="middle" font-size="8" fill="#B45309">spec → buildable tasks</text>
+
+  <!-- Execute placeholder -->
+  <rect x="510" y="40" width="80" height="36" rx="6" fill="#FEF9C3" stroke="#FBBF24" stroke-width="1" stroke-dasharray="4 2"/>
+  <text x="550" y="62" text-anchor="middle" font-size="10" fill="#A16207" font-style="italic">execute</text>
+  <path d="M 480 58 L 510 58" stroke="#FCD34D" stroke-width="1.2" fill="none" marker-end="url(#arr)"/>
+
+  <!-- After track -->
+  <text x="670" y="24" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">AFTER — verify output</text>
+  <rect x="620" y="36" width="120" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1.5"/>
+  <text x="680" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#78350F">review-chain</text>
+  <text x="680" y="70" text-anchor="middle" font-size="8" fill="#B45309">fresh-eyes verify</text>
+  <path d="M 590 58 L 620 58" stroke="#FCD34D" stroke-width="1.2" fill="none" marker-end="url(#arr)"/>
+
+  <!-- Decision track -->
+  <text x="120" y="110" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">INSTEAD — replace a decision step</text>
+  <rect x="20" y="122" width="200" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="120" y="142" text-anchor="middle" font-size="11" fill="#78350F">multi-lens</text>
+  <text x="120" y="156" text-anchor="middle" font-size="8" fill="#B45309">debate or consensus polling</text>
+
+  <!-- Navigation track -->
+  <text x="520" y="110" text-anchor="middle" font-size="9" font-weight="600" fill="#92400E">NAVIGATE — orient anytime</text>
+  <rect x="360" y="122" width="140" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="430" y="142" text-anchor="middle" font-size="11" fill="#78350F">artifact-status</text>
+  <text x="430" y="156" text-anchor="middle" font-size="8" fill="#B45309">scan what exists</text>
+
+  <rect x="520" y="122" width="140" height="44" rx="6" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+  <text x="590" y="142" text-anchor="middle" font-size="11" fill="#78350F">skill-router</text>
+  <text x="590" y="156" text-anchor="middle" font-size="8" fill="#B45309">suggest skill team</text>
+
+  <!-- Composition note -->
+  <text x="380" y="195" text-anchor="middle" font-size="9" fill="#92400E" font-style="italic">Meta-skills are domain-agnostic — they attach to any skill in any stack</text>
+</svg>
