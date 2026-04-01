@@ -1,6 +1,6 @@
 ---
 name: preflight
-description: "Surface assumptions and define success criteria before building. Phase 1: ask 5 clarifying questions ranked by impact. Phase 2: write a 4-part contract (GOAL/CONSTRAINTS/FORMAT/FAILURE). Not for vague ideas needing discovery (use plan-interviewer). Not for trivial tasks."
+description: "Surface assumptions and define success criteria before building. Phase 0: scope mode (EXPAND/HOLD/REDUCE). Phase 1: ask 5 clarifying questions ranked by impact. Phase 2: write a contract (GOAL/CONSTRAINTS/FORMAT/FAILURE/NOT IN SCOPE/EXISTING). Not for vague ideas needing discovery (use plan-interviewer). Not for trivial tasks."
 argument-hint: "[task or feature to scope]"
 user-invocable: true
 license: MIT
@@ -48,8 +48,9 @@ The FAILURE clause front-loads reasoning about what "done" means. Without it, ag
 - A task or feature description from the user
 
 ## Output
+- Phase 0: Scope mode selection (EXPAND/HOLD/REDUCE) (inline)
 - Phase 1: 5 clarifying questions with answers (inline)
-- Phase 2: A validated 4-part contract (GOAL/CONSTRAINTS/FORMAT/FAILURE) (inline)
+- Phase 2: A validated contract (GOAL/CONSTRAINTS/FORMAT/FAILURE/NOT IN SCOPE/EXISTING) (inline)
 - Phase 3: Hand-off with verification template for the implementing agent (inline)
 - Optional: Experience doc append at `.agents/experience/{domain}.md` (see Phase 1, Step 5)
 
@@ -64,6 +65,22 @@ Re-run triggers: scope change, contradictory requirements discovered during buil
 ## Skill Deference
 - **plan-interviewer:** User doesn't know WHAT to build → plan-interviewer (multi-round discovery). User knows WHAT but needs to scope HOW → preflight.
 - **Together:** plan-interviewer first (produce spec.md), then preflight on individual features within the spec.
+
+---
+
+## Phase 0: Scope Mode Selection
+
+Before asking questions, establish the ambition level for this task. Ask the user:
+
+> "What's the ambition level for this task?"
+> - **EXPAND** — Dream big. Explore what this could become. Questions will probe "what else could this do?"
+> - **HOLD** — Execute the stated scope with maximum rigor. Questions will probe "is this exactly right?"
+> - **REDUCE** — Strip to minimum viable. Questions will probe "what can we cut?"
+
+If the user doesn't pick, default to **HOLD**. The scope mode frames all Phase 1 questions:
+- **EXPAND**: bias questions toward opportunity ("What if this also handled X?", "Have you considered Y?")
+- **HOLD**: bias questions toward precision ("Is this exactly what you mean by X?", "Does this include Y or not?")
+- **REDUCE**: bias questions toward elimination ("Do we actually need X?", "What's the minimum that ships value?")
 
 ---
 
@@ -146,6 +163,8 @@ Using the task description + user's answers from Phase 1, write a 4-part contrac
 ```markdown
 ## Contract
 
+SCOPE MODE: [EXPAND | HOLD | REDUCE]
+
 GOAL: [What does success look like? Include a measurable metric.]
 
 CONSTRAINTS:
@@ -163,6 +182,14 @@ FAILURE (any of these = not done):
 - [Specific failure condition 2]
 - [Edge case that must be handled]
 - [Quality bar that must be met]
+
+NOT IN SCOPE:
+- [Explicitly excluded item 1 — with rationale]
+- [Explicitly excluded item 2 — with rationale]
+
+EXISTING (leverage these):
+- [Existing code, pattern, or asset that should be reused — from Step 2 context scan]
+- [Existing convention or config that constrains the approach]
 ```
 
 #### Writing good GOAL statements:
