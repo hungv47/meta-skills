@@ -60,8 +60,36 @@ If `.agents/` doesn't exist or is empty, say so and skip to step 3.
 | `mkt/imc-plan.md` | `/imc-plan` | Content needs channel strategy |
 | `design/brand-system.md` | `/brand-system` | Visual decisions need brand identity |
 | `design/user-flow.md` | `/user-flow` | Architecture and tasks need flow context |
+| `meta/review-chain-report.md` | `/review-chain` | Ship gate checks review status |
+| `ship-report.md` | `/ship` | Deploy-verify reads ship context |
 
 Don't list every missing artifact — focus on the **one or two skills that unblock the most**.
+
+## Cross-Project Mode (--cross-project)
+
+When invoked with `--cross-project` or "scan all projects":
+
+1. Scan `.agents/` in the current directory AND in sibling skill repo directories:
+   - `../research-skills/.agents/`
+   - `../marketing-skills/.agents/`
+   - `../product-skills/.agents/`
+   - `../meta-skills/.agents/`
+   (Adjust paths based on the actual repo layout — these are sibling directories at the same level)
+
+2. Report as a unified table with a **Project** column:
+
+```
+| Project | Artifact | Skill | Date | Age | Status |
+|---------|----------|-------|------|-----|--------|
+| research | product-context.md | icp-research | 2026-03-15 | 13d | ok |
+| marketing | mkt/imc-plan.md | imc-plan | 2026-02-10 | 46d | STALE |
+| product | system-architecture.md | system-architecture | — | — | no frontmatter |
+| meta | meta/review-chain-report.md | review-chain | 2026-03-28 | 3d | ok |
+```
+
+3. Trace cross-project dependencies — a stale `product-context.md` in research-skills affects downstream artifacts in marketing-skills and product-skills.
+
+4. Recommend the highest-impact action across ALL projects, noting which project directory to run it in.
 
 ## Critical Gates
 
@@ -86,6 +114,9 @@ product-context.md ← /icp-research
 │                                           │   ├→ mkt/imc-plan.md ← /imc-plan → mkt/content/ → mkt/*.humanized.md
 │                                           │   └→ system-architecture.md ← /system-architecture
 │                                           │       └→ tasks.md ← /task-breakdown
+│                                           │           └→ (execute) → review-chain-report.md ← /review-chain
+│                                           │               └→ ship-report.md ← /ship
+│                                           │                   └→ deploy-verify-report.md ← /deploy-verify
 ├→ spec.md ← /plan-interviewer ────────────→┘
 ├→ design/brand-system.md ← /brand-system
 └→ design/user-flow.md ← /user-flow ──→ system-architecture.md, tasks.md
