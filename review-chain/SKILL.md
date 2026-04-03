@@ -1,6 +1,6 @@
 ---
 name: review-chain
-description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use multi-lens)."
+description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use agent-room)."
 argument-hint: "[code or artifact to verify]"
 user-invocable: true
 license: MIT
@@ -21,7 +21,7 @@ routing:
   defers-to:
     - skill: code-cleanup
       when: "user wants structural refactoring, not quality verification"
-    - skill: multi-lens
+    - skill: agent-room
       when: "user wants multi-perspective analysis of a decision, not code review"
   parallel-with: []
   interactive: false
@@ -51,7 +51,7 @@ routing:
 
 ## Chain Position
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
-- **Together with preflight:** preflight before build, review-chain after build
+- **Together with discover:** discover before build, review-chain after build
 
 ## Orchestration Pattern: Dynamic Agent Spawning
 

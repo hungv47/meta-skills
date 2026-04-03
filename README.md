@@ -1,6 +1,6 @@
 # Meta Skills
 
-7 process-layer skills that wrap around domain skills to improve quality at every stage.
+5 process-layer skills that wrap around domain skills to improve quality at every stage.
 
 ## Install
 
@@ -8,138 +8,114 @@
 npx skills add hungv47/meta-skills
 ```
 
-## How They Compose
+## Design Philosophy
 
-<picture>
-  <img src="./assets/pipeline.svg" alt="Meta composition: preflight → plan-interviewer → task-breakdown → execute → review-chain, plus multi-lens for decisions and navigation skills" width="100%">
-</picture>
+**"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
+
+- **Conversation-first**: Decisions live in conversation context. Artifacts are save-points, not pipeline stages.
+- **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview.
+- **One skill per job**: Each skill does a fundamentally different job.
+- **Agent-room for perspectives**: When multiple perspectives or debate are needed, invoke agent-room.
 
 ## Skills
 
-### `preflight` — scope before building
+### `discover` — talk until you're clear, then build
 
-Surfaces assumptions and defines a 4-part success contract (GOAL / CONSTRAINTS / FORMAT / FAILURE) before any build starts.
+Conversational discovery that adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Surfaces assumptions, detects should-want framing, and probes real needs through natural conversation.
 
 **Use when:**
-- You're about to start building and want to catch blind spots first
-- You want explicit success criteria before investing time
-- The task is non-trivial and failure would be costly
+- You have a vague idea and need to figure out what to build
+- You're about to start a task and want to catch blind spots
+- Requirements are unclear and need structured discovery
 
-**Not for:** vague ideas needing multi-round discovery (use `plan-interviewer`) or trivial tasks
+**Not for:** multi-perspective debate (use `agent-room`) or decomposing work (use `task-breakdown`)
 
-**Produces:** Inline output (no persistent artifact)
+**Produces:** Conversation context (default) or `.agents/spec.md` (when explicitly saved)
 
 ---
 
-### `plan-interviewer` — turn a vague idea into a spec
+### `agent-room` — multi-agent discussion rooms
 
-Multi-round interactive interview that asks probing questions, identifies gaps, and produces a structured PRD.
+Stochastic multi-agent debate (agents argue in rounds, converge) or consensus polling (agents analyze independently with varied framings). Works standalone or as a sub-routine invoked by other skills.
 
 **Use when:**
-- You have a fuzzy idea and need an AI to grill you into a concrete spec
-- Requirements are unclear and you need structured discovery before architecture
-- You want to surface hidden assumptions and edge cases through questioning
+- You're facing a complex trade-off — architecture, strategic direction, design decision
+- You want to stress-test an idea by having agents argue against it
+- Another skill (like discover) hits a decision point that needs multiple perspectives
 
-**Not for:** breaking an existing spec into tasks (use `task-breakdown`) or designing technical architecture (use `system-architecture`)
+**Not for:** implementation (use `system-architecture`) or verification (use `review-chain`)
 
-**Produces:** `.agents/spec.md`
+**Produces:** `.agents/meta/agent-room-report.md`
 
 ---
 
 ### `task-breakdown` — decompose into buildable tasks
 
-Breaks a spec or architecture into granular, testable tasks with acceptance criteria, dependencies, and implementation order.
+Breaks work into granular, testable tasks with acceptance criteria, dependencies, and implementation order. Works from conversation context or artifacts.
 
 **Use when:**
-- You have an architecture or spec and need a buildable task list
-- You want tasks sized for AI agents or individual developer work sessions
+- Work is too big to just start — needs decomposition first
+- You want tasks sized for AI agents or individual work sessions
 - You need clear acceptance criteria and dependency ordering
 
-**Not for:** clarifying unclear requirements (use `plan-interviewer`) or designing architecture (use `system-architecture`)
+**Not for:** clarifying requirements (use `discover`) or designing architecture (use `system-architecture`)
 
 **Produces:** `.agents/tasks.md`
 
 ---
 
-### `multi-lens` — get multiple perspectives on a decision
-
-Multi-agent debate (agents argue in rounds, converge on recommendations) or consensus polling (agents analyze independently with varied framings).
-
-**Use when:**
-- You're facing a high-stakes decision — tech stack, strategic direction, architecture trade-off
-- You want to stress-test an idea by having agents argue against it
-- You want independent perspectives aggregated by consensus and divergence
-
-**Not for:** implementation (use `system-architecture`) or verification (use `review-chain`)
-
-**Produces:** `.agents/meta/multi-lens-report.md`
-
----
-
 ### `review-chain` — independent quality check
 
-Fresh-eyes review chain: implement → review (by an agent with no access to implementation reasoning) → resolve if issues found. Max 2 rounds.
+Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bias) → resolve if issues found. Max 2 rounds. Auto-triggers for security-sensitive code.
 
 **Use when:**
-- You've built something and want an independent verification pass
+- You've built something and want independent verification
 - The work is security-sensitive or involves data mutations
 - You want a reviewer who hasn't seen the implementation reasoning
 
-**Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `multi-lens`)
+**Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agent-room`)
 
 **Produces:** `.agents/meta/review-chain-report.md`
 
 ---
 
-### `artifact-status` — see where you are
+### `navigate` — orient and route
 
-Scans `.agents/`, reports what exists, what's stale, and the critical path to your next goal.
-
-**Use when:**
-- You're picking up a project and need to know what's already been done
-- You want to check which artifacts are stale before re-running skills
-- You need to decide what to run next
-
-**Not for:** deciding which skills to run for a new goal (use `skill-router`)
-
-**Produces:** Inline report (no persistent artifact)
-
----
-
-### `skill-router` — figure out what to run
-
-Analyzes a goal, suggests the right skill team, and orchestrates multi-phase workflows with parallel tracks and checkpoints.
+Scans artifacts, checks freshness, recommends next skill, and composes multi-phase workflows. One skill for "what exists?", "what should I do next?", and "orchestrate this goal."
 
 **Use when:**
-- You have a goal ("build a SaaS app", "launch a content campaign") but don't know where to start
-- You want a phased execution plan with the right skills in the right order
-- You need to understand which skills apply to your situation
+- You're picking up a project and need to know what's been done
+- You have a goal but don't know which skills to run
+- You want a phased execution plan with parallel tracks
 
 **Not for:** executing skills (it coordinates, not executes)
 
-**Produces:** `.agents/workflow-plan.md`
+**Produces:** `.agents/workflow-plan.md` (orchestrate mode) or inline report (status mode)
 
 ---
 
-## Composition Modes
-
-| Mode | Skills | How it works |
-|------|--------|-------------|
-| **Before** (improve input) | `preflight`, `plan-interviewer`, `task-breakdown` | Run before domain skills to sharpen scope, spec, or task list |
-| **After** (verify output) | `review-chain` | Run after any domain skill to verify quality |
-| **Instead** (replace decision) | `multi-lens` | Replace a single-agent decision with multi-perspective analysis |
-| **Navigate** (orient anytime) | `artifact-status`, `skill-router` | Run at any point to check state or plan next steps |
-
-## Rigorous Build Recipe
+## How They Compose
 
 ```
-1. /preflight            → surface assumptions, define contract
-2. /plan-interviewer     → spec.md (interactive)
-3. /system-architecture  → system-architecture.md
-4. /review-chain         → verify architecture
-5. /task-breakdown       → tasks.md
-6. (build tasks, /review-chain after each critical task)
-7. /code-cleanup + /technical-writer (parallel)
+discover (conversation) --> build directly
+    |                          |
+    +-- agent-room             +-- review-chain
+        (complex decisions)        (after build)
+    |
+    +-- task-breakdown
+        (complex work)
+    |
+    navigate (orient anytime)
+```
+
+## Quick Build Recipe
+
+```
+1. /discover              → conversational clarity (interactive)
+2. /system-architecture    → system-architecture.md
+3. /task-breakdown         → tasks.md
+4. (build tasks, /review-chain after critical ones)
+5. /code-cleanup + /technical-writer (parallel)
 ```
 
 ## License
