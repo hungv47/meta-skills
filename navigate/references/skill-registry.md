@@ -227,7 +227,7 @@ Skills that can run simultaneously (no shared dependencies):
 | `code-cleanup` + `technical-writer` | Both are standalone horizontal skills, no shared artifacts | Quality |
 | `icp-research` + `market-research` | Both are entry-point research skills with no shared dependencies | Foundation |
 
-These mappings are encoded in each skill's `routing.parallel-with` frontmatter field and should be used by the team-composer-agent when constructing phases.
+These mappings are encoded in each skill's `routing.parallel-with` frontmatter field and should be used by navigate when constructing workflow phases.
 
 ---
 
