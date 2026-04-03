@@ -94,7 +94,7 @@
 
 ### Template 1: Full Product Launch
 **Trigger phrases:** "launch", "new product", "go to market", "build and ship"
-**Skills (14 steps):**
+**Skills (16 steps):**
 ```
 Phase 1 — Foundation:
   /icp-research → product-context.md
@@ -115,23 +115,27 @@ Phase 5 — Design:
   /user-flow → design/user-flow.md
 
 Phase 6 — Spec & Architecture:
-  /discover → spec.md (interactive)
+  /discover (interactive conversation)
   /system-architecture → system-architecture.md
 
 Phase 7 — Build:
   /task-breakdown → tasks.md
-  (execution — build the tasks)
+  (execution — build the tasks, /review-chain after critical tasks)
 
-Phase 8 — Content:
+Phase 8 — Ship:
+  /ship → ship-report.md
+  /deploy-verify → deploy-verify-report.md
+
+Phase 9 — Content:
   /content-create → mkt/content/*.md
   /copywriting → mkt/content/*.copy.md
   /humanize → mkt/content/*.humanized.md
 
-Phase 9 — Optimize:
+Phase 10 — Optimize:
   /lp-optimization → mkt/lp-optimization.md
   /seo → mkt/seo-*.md
 
-Phase 10 — Validate:
+Phase 11 — Validate:
   /experiment → experiment-*.md
   /attribution → mkt/attribution.md
 ```
@@ -151,27 +155,30 @@ Phase 7: /attribution → mkt/attribution.md
 
 ### Template 3: Technical Build
 **Trigger phrases:** "build the app", "implement", "code it", "ship it"
-**Skills (5 steps):**
+**Skills (7 steps):**
 ```
-Phase 1: /discover → spec.md (interactive)
+Phase 1: /discover (interactive conversation — optionally saves spec.md)
 Phase 2: /system-architecture → system-architecture.md
 Phase 3: /task-breakdown → tasks.md
 Phase 4: (execution — build the tasks)
 Phase 5: /code-cleanup + /technical-writer (parallel)
+Phase 6: /ship → ship-report.md
+Phase 7: /deploy-verify → deploy-verify-report.md
 ```
 
 ### Template 3b: Rigorous Technical Build
 **Trigger phrases:** "build carefully", "high-quality build", "production-ready", "rigorous"
-**Skills (8 steps):**
+**Skills (9 steps):**
 ```
-Phase 1: /discover scope → surface assumptions, define contract
-Phase 2: /discover → spec.md (interactive)
-Phase 3: /system-architecture → system-architecture.md
-Phase 4: /review-chain → verify architecture
-Phase 5: /task-breakdown → tasks.md
-Phase 6: (execution — build the tasks, /review-chain after each critical task)
-Phase 7: /code-cleanup + /technical-writer (parallel)
-Phase 8: /review-chain → final verification
+Phase 1: /discover (interactive — surface assumptions, align on approach)
+Phase 2: /system-architecture → system-architecture.md
+Phase 3: /review-chain → verify architecture
+Phase 4: /task-breakdown → tasks.md
+Phase 5: (execution — build the tasks, /review-chain after each critical task)
+Phase 6: /code-cleanup + /technical-writer (parallel)
+Phase 7: /review-chain → final verification
+Phase 8: /ship → ship-report.md
+Phase 9: /deploy-verify → deploy-verify-report.md
 ```
 
 ### Template 3c: Architecture Decision
@@ -248,13 +255,15 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 | attribution | pipeline | medium | no | mkt/attribution.md |
 | humanize | horizontal | medium | no | mkt/content/[slug].humanized.md |
 
-### Product (4 skills)
+### Product (6 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
 | user-flow | pipeline | medium | no | design/user-flow.md |
 | system-architecture | pipeline | heavy | no | system-architecture.md |
 | code-cleanup | horizontal | heavy | no | cleanup-report.md |
 | technical-writer | horizontal | medium | no | (writes to project) |
+| ship | pipeline | medium | no | ship-report.md |
+| deploy-verify | pipeline | light | no | deploy-verify-report.md |
 
 ### Meta (5 skills)
 | Skill | Position | Complexity | Interactive | Produces |
@@ -271,6 +280,8 @@ Meta-skills are domain-agnostic process wrappers — they compose with any skill
 
 ## Dependency Graph (Canonical)
 
+Artifacts are optional save-points, not mandatory gates. Conversation context from the current session is equally valid as a file on disk.
+
 ```
 product-context.md ← /icp-research
 ├→ market-research.md ← /market-research ─┐
@@ -280,7 +291,8 @@ product-context.md ← /icp-research
 │                                           │   ├→ mkt/imc-plan.md ← /imc-plan → mkt/content/ → mkt/*.humanized.md
 │                                           │   └→ system-architecture.md ← /system-architecture
 │                                           │       └→ tasks.md ← /task-breakdown
-├→ spec.md ← /discover ─────────────→┘
+│                                           │           └→ (execute) → review-chain → /ship → /deploy-verify
+├→ /discover (conversation context or spec.md) ──→┘
 ├→ design/brand-system.md ← /brand-system
 └→ design/user-flow.md ← /user-flow ──→ system-architecture.md, tasks.md
 ```
