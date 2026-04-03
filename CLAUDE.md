@@ -1,79 +1,98 @@
 # Meta Skills
 
-Domain-agnostic process skills: prepare, plan, analyze, verify, navigate. These skills wrap around other skills — they improve input quality, decision quality, or output quality for any domain skill in the ecosystem.
+Domain-agnostic process skills: discover, debate, decompose, verify, navigate. These skills wrap around other skills — they improve input quality, decision quality, or output quality for any domain skill in the ecosystem.
 
-## Skills (7)
+## Design Philosophy
 
-| Skill | What it does | Composition |
-|-------|-------------|-------------|
-| `preflight` | Surface assumptions + define success contract | Run BEFORE any domain skill |
-| `plan-interviewer` | Multi-round interview → produce spec | Run BEFORE architecture/tasks |
-| `task-breakdown` | Decompose into granular, testable tasks | Run AFTER architecture |
-| `multi-lens` | Multi-agent debate or consensus polling | REPLACE a decision step |
-| `review-chain` | Fresh-eyes review → resolve chain | Run AFTER any domain skill |
-| `artifact-status` | Scan .agents/, report state, recommend next | Run ANYTIME for navigation |
-| `skill-router` | Analyze goal → suggest skill team | Run ANYTIME for navigation |
+**"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
+
+- **Conversation-first**: Decisions live in conversation context by default. Artifacts are save-points, not pipeline stages.
+- **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview. No mode switching.
+- **One skill per job**: Each skill does a fundamentally different job. No two skills that "ask questions to clarify things."
+- **Agent-room for perspectives**: When multiple perspectives or debate are needed, invoke agent-room. Structured decomposition (task-breakdown) retains specialized agents.
+
+## Skills (5)
+
+| Skill | What it does | When |
+|-------|-------------|------|
+| `discover` | Conversational discovery — adaptive from quick scoping to deep interviews | Before building anything non-trivial |
+| `agent-room` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
+| `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
+| `review-chain` | Fresh-eyes quality check after implementation | After building |
+| `navigate` | Orient: scan artifacts, recommend next skill, compose workflows | Anytime you're lost |
 
 ## Process Flow
 
 ```
-preflight → plan-interviewer → task-breakdown → (execute) → review-chain
-                                    ↕
-                              multi-lens (for decisions at any point)
-                                    ↕
-                    artifact-status + skill-router (navigate anytime)
+discover (conversation) --> build directly
+    |                          |
+    +-- agent-room             +-- review-chain
+        (when complex              (after build)
+         decision hit)
+    |
+    +-- task-breakdown
+        (when work is complex enough
+         to decompose first)
+    |
+    navigate (orient anytime)
 ```
 
-## Composition Modes
-- **Pre-skill:** preflight, plan-interviewer, task-breakdown (run BEFORE domain skills)
-- **Post-skill:** review-chain (run AFTER domain skills)
-- **Alternative:** multi-lens (replace a single-agent decision with multi-perspective analysis)
-- **Navigation:** artifact-status, skill-router (orient at any time)
+No rigid pipeline. The conversation guides what happens next.
+
+## Context Resolution
+
+Skills resolve context in this order:
+1. **Conversation context** — same session, decisions are in the chat
+2. **Artifacts on disk** — previous session saved a spec, architecture doc, etc.
+3. **Discovery** — ask the user or scan the codebase
+
+This means downstream skills don't REQUIRE artifacts to exist as files. They need the decisions to be known, from whatever source.
 
 ## Artifacts
-Meta-skill artifacts save to `.agents/meta/`:
-- `.agents/meta/multi-lens-report.md` (+ `multi-lens-transcript.json` for debate mode)
-- `.agents/meta/review-chain-report.md`
-- `.agents/meta/learned-rules.md` (cross-cutting, persists across all runs)
-- `preflight` produces inline output (no persistent artifact)
-- `plan-interviewer` produces `.agents/spec.md`
-- `task-breakdown` produces `.agents/tasks.md`
 
-## Orchestration Patterns
+| Skill | Artifact | Notes |
+|-------|----------|-------|
+| `discover` | `.agents/spec.md` | Optional — only when user asks to save |
+| `agent-room` | `.agents/meta/agent-room-report.md` | Ephemeral — overwritten each run |
+| `task-breakdown` | `.agents/tasks.md` | Task list with acceptance criteria |
+| `review-chain` | `.agents/meta/review-chain-report.md` | Ephemeral — overwritten each run |
+| `navigate` | `.agents/workflow-plan.md` | Only in orchestrate mode |
 
-Meta-skills use three patterns:
+## Multi-Agent Patterns
 
-1. **Two-layer orchestration** (`plan-interviewer`, `task-breakdown`, `skill-router`): Static agent roster with L1 parallel → merge → L2 sequential → critic gate
-2. **Methodology** (`preflight`, `artifact-status`): Single-pass, no subagents
-3. **Dynamic spawning** (`multi-lens`, `review-chain`): Agent count, roles, and instructions defined at runtime. No `agents/` directory — prompts are inline templates.
+**For decisions, analysis, and multiple perspectives:** `agent-room` is the centralized capability. It works two ways:
+- **Standalone**: User invokes directly (`/agent-room "debate X"`)
+- **Sub-routine**: Other skills invoke it when they hit a complex decision (e.g., discover hits a fork)
+
+**For structured decomposition:** `task-breakdown` retains its own specialized agents (decomposer, dependency-mapper, ordering, acceptance, critic) because they do structured work — each produces a different output that gets merged. This is different from the perspective-based debate/poll that agent-room provides.
+
+**The principle:** Don't use multi-agent for conversations. Use it for structured work (task-breakdown) or for genuine multi-perspective analysis (agent-room).
 
 ## Learned Rules (Self-Correcting)
 
-Meta-skills improve over time via a persistent learned-rules system.
-
-**How it works:**
-1. When a user corrects agent behavior, the correction is captured as a rule in `.agents/meta/learned-rules.md`
-2. Before dispatching agents, meta-skills read relevant learned rules
-3. Rules are included in agent prompts to prevent repeating mistakes
-
-**Rule format:**
-```markdown
-## Rule: {short name}
-- **Trigger**: {what situation activates this rule}
-- **Rule**: {what to do or not do}
-- **Source**: {which skill/conversation discovered this}
-- **Date**: {YYYY-MM-DD}
-```
-
-**Rules:**
-- Only learn from explicit user corrections — never auto-append
+Meta-skills improve over time via `.agents/meta/learned-rules.md`:
+- User corrections are captured as rules
+- Before dispatching, skills read relevant learned rules
 - Rules supplement SKILL.md instructions, never override them
 - Cap at ~50 rules — archive old ones when exceeded
 
 ## Cross-Stack
 
 All meta-skills are domain-agnostic. They compose with any skill in any stack:
-- `preflight` before `system-architecture`, `content-create`, or any build/create skill
-- `plan-interviewer` before complex builds needing a spec
-- `multi-lens` for architecture decisions, strategic choices, or design trade-offs
-- `review-chain` after `system-architecture`, `code-cleanup`, or any critical artifact
+- `discover` before any build/create skill
+- `agent-room` for any decision that needs multiple perspectives
+- `task-breakdown` after architecture for complex builds
+- `review-chain` after any critical artifact or implementation
+- `navigate` to orient at any point
+
+## Migration from Previous Stack (7 -> 5)
+
+| Old Skill | New Home | Notes |
+|-----------|----------|-------|
+| `plan-interviewer` | `discover` | Full interview mode = discover at deep depth |
+| `preflight` | `discover` | Quick scope mode = discover at light depth |
+| `multi-lens` | `agent-room` | Same debate/poll mechanics, new name + sub-routine capability |
+| `artifact-status` | `navigate` | Status mode = `/navigate status` |
+| `skill-router` | `navigate` | Suggest/orchestrate modes preserved |
+| `task-breakdown` | `task-breakdown` | Updated: no hard artifact dependency |
+| `review-chain` | `review-chain` | Unchanged |

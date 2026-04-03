@@ -1,4 +1,4 @@
-# Question Bank for Plan Interviews
+# Question Bank for Discovery Conversations
 
 Extended collection of non-obvious, probing questions organized by domain. Use these to surface hidden complexity and assumptions.
 
