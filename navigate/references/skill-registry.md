@@ -1,6 +1,6 @@
 # Skill Registry
 
-> Compiled reference for the skill-router. Maps intents to skills, disambiguates confusable pairs, and provides pre-built workflow templates.
+> Compiled reference for navigate. Maps intents to skills, disambiguates confusable pairs, and provides pre-built workflow templates.
 
 ## Intent → Skill Quick Reference
 
@@ -9,7 +9,7 @@
 | Understand my audience | `/icp-research` | `/market-research` (that's landscape, not audience) |
 | See what competitors do | `/market-research` | `/icp-research` (that's YOUR audience, not competitors) |
 | Figure out why metric X is declining | `/problem-analysis` | `/market-research` (that's landscape, not diagnosis) |
-| Decide what to build next | `/solution-design` | `/plan-interviewer` (that clarifies HOW, not WHAT) |
+| Decide what to build next | `/solution-design` | `/discover` (that clarifies HOW, not WHAT) |
 | Set growth targets | `/funnel-planner` | `/experiment` (that tests, not targets) |
 | Test an idea before going all-in | `/experiment` | `/funnel-planner` (that sets targets, not tests) |
 | Write a headline / CTA / tagline | `/copywriting` | `/content-create` (that's full assets, not craft) |
@@ -21,17 +21,17 @@
 | Track what marketing works | `/attribution` | `/funnel-planner` (that sets targets, not tracks) |
 | Design a brand identity | `/brand-system` | `/user-flow` (that's UX, not brand) |
 | Map screens and user journeys | `/user-flow` | `/brand-system` (that's visual, not flow) |
-| Clarify a vague idea into a spec | `/plan-interviewer` | `/system-architecture` (that designs, not clarifies) |
+| Clarify a vague idea into a spec | `/discover` | `/system-architecture` (that designs, not clarifies) |
+| Scope a task before building | `/discover` | `/system-architecture` (that designs, not scopes) |
 | Design tech stack + DB schema | `/system-architecture` | `/task-breakdown` (that decomposes, not designs) |
 | Break work into buildable tasks | `/task-breakdown` | `/system-architecture` (that designs, not decomposes) |
 | Clean up messy code | `/code-cleanup` | `/task-breakdown` (that plans new work, not cleans) |
-| Generate docs from code | `/technical-writer` | `/plan-interviewer` (that writes specs, not docs) |
-| Scope a task before building | `/plan-interviewer scope` (Route C) | `/plan-interviewer` full (that discovers requirements from scratch) |
-| Have agents debate a decision | `/multi-lens` (debate mode) | `/multi-lens` poll (that polls independently, not debates) |
-| Get consensus from multiple perspectives | `/multi-lens` (poll mode) | `/multi-lens` debate (that debates, not polls) |
+| Generate docs from code | `/technical-writer` | `/discover` (that writes specs, not docs) |
+| Have agents debate a decision | `/agent-room` (debate mode) | `/agent-room` poll (that polls independently, not debates) |
+| Get consensus from multiple perspectives | `/agent-room` (poll mode) | `/agent-room` debate (that debates, not polls) |
 | Verify code/output quality | `/review-chain` | `/code-cleanup` (that refactors, not reviews) |
-| See what artifacts exist / what's stale | `/skill-router status` | — |
-| Figure out what to do next | `/skill-router [your goal]` | — |
+| See what artifacts exist / what's stale | `/navigate status` | — |
+| Figure out what to do next | `/navigate [your goal]` | — |
 
 ---
 
@@ -49,12 +49,12 @@
 - **Rule:** Polished headline → copywriting. Complete LinkedIn carousel → content-create.
 - **Together:** content-create often calls copywriting internally for key lines.
 
-### plan-interviewer vs. system-architecture vs. task-breakdown
-- **plan-interviewer:** Clarify WHAT to build (interviews the user, produces spec.md)
+### discover vs. system-architecture vs. task-breakdown
+- **discover:** Clarify WHAT to build (conversational discovery, optionally saves spec.md)
 - **system-architecture:** Design HOW to build it (tech stack, schema, API → system-architecture.md)
 - **task-breakdown:** Decompose into STEPS (granular tasks with acceptance criteria → tasks.md)
-- **Rule:** Unclear idea → plan-interviewer → system-architecture → task-breakdown. Never skip architecture before tasks.
-- **plan-interviewer is interactive** — uses AskUserQuestion for multi-round interviews.
+- **Rule:** Unclear idea → discover (conversation) → system-architecture → task-breakdown. Or if it's simple: discover → build directly.
+- **discover is interactive** — uses AskUserQuestion for interview rounds.
 
 ### solution-design vs. funnel-planner vs. experiment
 - **solution-design:** WHAT initiatives to pursue (ICE scoring, prioritization)
@@ -77,13 +77,7 @@
 - **funnel-planner:** SET targets (model funnel stages, define success metrics)
 - **Rule:** "What should our conversion targets be?" → funnel-planner. "Which channels are driving conversions?" → attribution.
 
-### plan-interviewer Route C vs. Route A/B
-- **Route C (Quick Scope):** SCOPE an existing task — 5 assumption-surfacing questions + 4-part success contract (GOAL/CONSTRAINTS/FORMAT/FAILURE). Lightweight, ~5 min.
-- **Route A/B (Full Interview):** DISCOVER what to build — multi-round interviews to produce a full spec from scratch. ~30 min.
-- **Rule:** Task exists but approach unclear → Route C. Vague idea needs a full spec → Route A/B.
-- **Together:** Route A/B first (produce spec.md), then Route C on individual features within the spec.
-
-### multi-lens debate vs. multi-lens poll
+### agent-room debate vs. agent-room poll
 - **debate:** Agents READ each other's responses and ARGUE across rounds. Produces convergence through disagreement.
 - **poll:** Agents work INDEPENDENTLY with varied framings. Produces consensus through aggregation.
 - **Rule:** Trade-off decision with no clear answer → debate. Need to filter hallucinations / find the mode → poll.
@@ -121,7 +115,7 @@ Phase 5 — Design:
   /user-flow → design/user-flow.md
 
 Phase 6 — Spec & Architecture:
-  /plan-interviewer → spec.md (interactive)
+  /discover → spec.md (interactive)
   /system-architecture → system-architecture.md
 
 Phase 7 — Build:
@@ -159,7 +153,7 @@ Phase 7: /attribution → mkt/attribution.md
 **Trigger phrases:** "build the app", "implement", "code it", "ship it"
 **Skills (5 steps):**
 ```
-Phase 1: /plan-interviewer → spec.md (interactive)
+Phase 1: /discover → spec.md (interactive)
 Phase 2: /system-architecture → system-architecture.md
 Phase 3: /task-breakdown → tasks.md
 Phase 4: (execution — build the tasks)
@@ -170,8 +164,8 @@ Phase 5: /code-cleanup + /technical-writer (parallel)
 **Trigger phrases:** "build carefully", "high-quality build", "production-ready", "rigorous"
 **Skills (8 steps):**
 ```
-Phase 1: /plan-interviewer scope → surface assumptions, define contract
-Phase 2: /plan-interviewer → spec.md (interactive)
+Phase 1: /discover scope → surface assumptions, define contract
+Phase 2: /discover → spec.md (interactive)
 Phase 3: /system-architecture → system-architecture.md
 Phase 4: /review-chain → verify architecture
 Phase 5: /task-breakdown → tasks.md
@@ -184,8 +178,8 @@ Phase 8: /review-chain → final verification
 **Trigger phrases:** "debate the tech stack", "which approach", "compare options", "agents debate"
 **Skills (3 steps):**
 ```
-Phase 1: /plan-interviewer scope → scope the decision
-Phase 2: /multi-lens debate → multi-lens-report.md
+Phase 1: /discover scope → scope the decision
+Phase 2: /agent-room debate → agent-room-report.md
 Phase 3: /system-architecture → system-architecture.md (informed by debate)
 ```
 
@@ -262,16 +256,14 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 | code-cleanup | horizontal | heavy | no | cleanup-report.md |
 | technical-writer | horizontal | medium | no | (writes to project) |
 
-### Meta (7 skills)
+### Meta (5 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
-| preflight | horizontal | light | **yes** | (inline output) |
-| plan-interviewer | pipeline | medium | **yes** | spec.md |
+| discover | horizontal | medium | **yes** | spec.md (optional) |
+| agent-room | horizontal | heavy | no | meta/agent-room-report.md |
 | task-breakdown | pipeline | medium | no | tasks.md |
-| multi-lens | horizontal | heavy | no | meta/multi-lens-report.md |
 | review-chain | horizontal | medium | no | meta/review-chain-report.md |
-| artifact-status | utility | light | no | (console output) |
-| skill-router | utility | medium | no | workflow-plan.md |
+| navigate | utility | medium | no | workflow-plan.md |
 
 Meta-skills are domain-agnostic process wrappers — they compose with any skill in any stack.
 
@@ -288,11 +280,11 @@ product-context.md ← /icp-research
 │                                           │   ├→ mkt/imc-plan.md ← /imc-plan → mkt/content/ → mkt/*.humanized.md
 │                                           │   └→ system-architecture.md ← /system-architecture
 │                                           │       └→ tasks.md ← /task-breakdown
-├→ spec.md ← /plan-interviewer ────────────→┘
+├→ spec.md ← /discover ─────────────→┘
 ├→ design/brand-system.md ← /brand-system
 └→ design/user-flow.md ← /user-flow ──→ system-architecture.md, tasks.md
 ```
 
-Horizontal skills (copywriting, lp-optimization, seo, humanize, attribution, code-cleanup, technical-writer, multi-lens, review-chain) can be called at any point — they read upstream artifacts but don't block downstream skills.
+Horizontal skills (copywriting, lp-optimization, seo, humanize, attribution, code-cleanup, technical-writer, agent-room, review-chain) can be called at any point — they read upstream artifacts but don't block downstream skills.
 
-> **Note:** multi-lens and review-chain are domain-agnostic process wrappers that compose with any skill in any stack. `preflight` scope-locking is `/plan-interviewer scope` (Route C).
+> **Note:** agent-room and review-chain are domain-agnostic process wrappers that compose with any skill in any stack.
