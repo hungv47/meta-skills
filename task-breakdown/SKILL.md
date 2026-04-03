@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use plan-interviewer) or designing architecture (use system-architecture)."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture)."
 argument-hint: "[spec or architecture to decompose]"
 license: MIT
 metadata:
@@ -20,11 +20,10 @@ routing:
     - system-architecture.md
     - spec.md
     - design/user-flow.md
-  requires:
-    - system-architecture.md
+  requires: []
   defers-to:
-    - skill: plan-interviewer
-      when: "spec is unclear, need to clarify requirements first"
+    - skill: discover
+      when: "requirements are unclear, need to clarify first"
     - skill: system-architecture
       when: "architecture undefined, need technical design first"
   parallel-with: []
@@ -46,18 +45,20 @@ routing:
 - `.agents/tasks.md`
 
 ## Chain Position
-Previous: `system-architecture` or `plan-interviewer` | Next: task execution (Phase 2)
+Previous: `system-architecture`, `discover`, or conversation context | Next: task execution (Phase 2)
 
 **Re-run triggers:** When architecture changes after initial breakdown, when scope mode changes (e.g., full → minimal), or when tasks consistently fail acceptance criteria (indicates decomposition issues).
 
-### Optional Artifacts
-| Artifact | Source | Benefit |
-|----------|--------|---------|
-| `system-architecture.md` | system-architecture | Architecture defines structure for task decomposition |
-| `spec.md` | plan-interviewer | Feature specification with decided requirements |
-| `.agents/design/user-flow.md` | user-flow (from `hungv47/product-skills`) | User flow diagrams for feature decomposition and acceptance criteria |
+## Context Resolution
 
-If upstream artifacts' `date` fields are older than 30 days, recommend re-running the source skill before proceeding.
+Task-breakdown works from whatever context is available. It does NOT require artifacts on disk — conversation context from the current session is equally valid.
+
+**Resolution order:**
+1. **Conversation context** — if discover or system-architecture ran in this session, their decisions are in context
+2. **Artifacts on disk** — `.agents/system-architecture.md`, `.agents/spec.md`, `.agents/design/user-flow.md`
+3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
+
+If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill.
 
 ---
 

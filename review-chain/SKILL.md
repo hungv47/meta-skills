@@ -1,6 +1,6 @@
 ---
 name: review-chain
-description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use multi-lens)."
+description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use agent-room)."
 argument-hint: "[code or artifact to verify]"
 user-invocable: true
 license: MIT
@@ -15,13 +15,13 @@ routing:
     - fresh-eyes
   position: horizontal
   produces:
-    - .agents/meta/review-chain-report.md
+    - meta/review-chain-report.md
   consumes: []
   requires: []
   defers-to:
     - skill: code-cleanup
       when: "user wants structural refactoring, not quality verification"
-    - skill: multi-lens
+    - skill: agent-room
       when: "user wants multi-perspective analysis of a decision, not code review"
   parallel-with: []
   interactive: false
@@ -51,7 +51,7 @@ routing:
 
 ## Chain Position
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
-- **Together with preflight:** preflight before build, review-chain after build
+- **Together with discover:** discover before build, review-chain after build
 
 ## Orchestration Pattern: Dynamic Agent Spawning
 
@@ -79,9 +79,7 @@ Gather the full artifact to review:
 Spawn a single reviewer agent with fresh context. The reviewer has NO access to the implementation reasoning — only the output and the requirements.
 
 **Agent config:**
-- `subagent_type: "general-purpose"`
 - `model: "sonnet"` (default — use opus if the code is complex or security-critical)
-- `mode: "bypassPermissions"`
 
 **Learned rules:** Before constructing the reviewer prompt, read `.agents/meta/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
 
@@ -161,9 +159,7 @@ The reviewer found a critical bug (security vulnerability, data loss, completely
 The resolver sees BOTH the original implementation AND the review. Its job is to produce a corrected version.
 
 **Agent config:**
-- `subagent_type: "general-purpose"`
 - `model: "sonnet"` (match the reviewer's model)
-- `mode: "bypassPermissions"`
 
 **Resolver prompt:**
 
