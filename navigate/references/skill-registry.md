@@ -54,7 +54,7 @@
 - **system-architecture:** Design HOW to build it (tech stack, schema, API → system-architecture.md)
 - **task-breakdown:** Decompose into STEPS (granular tasks with acceptance criteria → tasks.md)
 - **Rule:** Unclear idea → discover (conversation) → system-architecture → task-breakdown. Or if it's simple: discover → build directly.
-- **discover is interactive** — uses AskUserQuestion for interview rounds.
+- **discover is interactive** — asks questions conversationally during the session.
 
 ### solution-design vs. funnel-planner vs. experiment
 - **solution-design:** WHAT initiatives to pursue (ICE scoring, prioritization)
