@@ -165,6 +165,8 @@ When invoked with `--cross-project`:
 
 ## Dependency Graph (Canonical)
 
+Artifacts are **optional save-points**, not mandatory pipeline gates. The graph shows what CAN flow between skills, not what MUST exist on disk. Conversation context from the current session is equally valid.
+
 ```
 product-context.md <- /icp-research
 |-> market-research.md <- /market-research --+
@@ -174,7 +176,10 @@ product-context.md <- /icp-research
 |                                             |   |-> mkt/imc-plan.md <- /imc-plan -> mkt/content/ -> mkt/*.humanized.md
 |                                             |   +-> system-architecture.md <- /system-architecture
 |                                             |       +-> tasks.md <- /task-breakdown
-|-> spec.md <- /discover ----------------------+
+|                                             |           +-> (execute) -> review-chain-report.md <- /review-chain
+|                                             |               +-> ship-report.md <- /ship
+|                                             |                   +-> deploy-verify-report.md <- /deploy-verify
+|-> /discover (conversation context or spec.md) --+
 |-> design/brand-system.md <- /brand-system
 +-> design/user-flow.md <- /user-flow --> system-architecture.md, tasks.md
 ```
@@ -183,14 +188,14 @@ product-context.md <- /icp-research
 
 ## Priority Table
 
-When recommending next action:
+When recommending next action. Note: if discover ran in the current session, its decisions are in conversation context — no spec.md file is required.
 
 | If missing/stale | Run | Because |
 |------------------|-----|---------|
 | `product-context.md` | `/icp-research` | 12+ downstream skills depend on it |
 | `market-research.md` or `problem-analysis.md` | `/market-research` or `/problem-analysis` | Feed into `/solution-design` |
 | `solution-design.md` | `/solution-design` | Architecture, funnel, comms need it |
-| `spec.md` | `/discover` | Can't architect without clarity |
+| No clarity on what to build (no conversation or spec) | `/discover` | Need alignment before architecture |
 | `system-architecture.md` | `/system-architecture` | Can't decompose without design |
 | `tasks.md` | `/task-breakdown` | Needs architecture first |
 
@@ -201,11 +206,12 @@ When recommending next action:
 ### Technical Build
 **Triggers:** "build the app", "implement", "code it"
 ```
-Phase 1: /discover -> spec.md (interactive)
+Phase 1: /discover (interactive conversation — optionally saves spec.md)
 Phase 2: /system-architecture -> system-architecture.md
 Phase 3: /task-breakdown -> tasks.md
-Phase 4: (execution)
-Phase 5: /code-cleanup + /technical-writer (parallel)
+Phase 4: (execution, /review-chain after critical tasks)
+Phase 5: /ship -> ship-report.md
+Phase 6: /deploy-verify -> deploy-verify-report.md
 ```
 
 ### Full Product Launch
@@ -216,11 +222,13 @@ Phase 2: /market-research + /problem-analysis (parallel)
 Phase 3: /solution-design -> solution-design.md
 Phase 4: /brand-system + /imc-plan + /funnel-planner (parallel)
 Phase 5: /user-flow -> design/user-flow.md
-Phase 6: /discover -> spec.md (interactive)
+Phase 6: /discover (interactive conversation)
 Phase 7: /system-architecture -> system-architecture.md
-Phase 8: /task-breakdown -> tasks.md + execution
-Phase 9: /content-create + /copywriting -> mkt/content/
-Phase 10: /lp-optimization + /seo (parallel)
+Phase 8: /task-breakdown -> tasks.md + execution (/review-chain after critical tasks)
+Phase 9: /ship -> ship-report.md
+Phase 10: /deploy-verify -> deploy-verify-report.md
+Phase 11: /content-create + /copywriting -> mkt/content/
+Phase 12: /lp-optimization + /seo (parallel)
 ```
 
 ### Strategy Sprint
@@ -287,13 +295,15 @@ Phase 3: /system-architecture -> system-architecture.md
 | attribution | medium | no | mkt/attribution.md |
 | humanize | medium | no | mkt/content/*.humanized.md |
 
-### Product (4 skills)
+### Product (6 skills)
 | Skill | Complexity | Interactive | Produces |
 |-------|------------|-------------|----------|
 | user-flow | medium | no | design/user-flow.md |
 | system-architecture | heavy | no | system-architecture.md |
 | code-cleanup | heavy | no | cleanup-report.md |
 | technical-writer | medium | no | (writes to project) |
+| ship | medium | no | ship-report.md |
+| deploy-verify | light | no | deploy-verify-report.md |
 
 ### Meta (5 skills)
 | Skill | Complexity | Interactive | Produces |
