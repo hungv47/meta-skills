@@ -79,9 +79,7 @@ Gather the full artifact to review:
 Spawn a single reviewer agent with fresh context. The reviewer has NO access to the implementation reasoning — only the output and the requirements.
 
 **Agent config:**
-- `subagent_type: "general-purpose"`
 - `model: "sonnet"` (default — use opus if the code is complex or security-critical)
-- `mode: "bypassPermissions"`
 
 **Learned rules:** Before constructing the reviewer prompt, read `.agents/meta/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
 
@@ -161,9 +159,7 @@ The reviewer found a critical bug (security vulnerability, data loss, completely
 The resolver sees BOTH the original implementation AND the review. Its job is to produce a corrected version.
 
 **Agent config:**
-- `subagent_type: "general-purpose"`
 - `model: "sonnet"` (match the reviewer's model)
-- `mode: "bypassPermissions"`
 
 **Resolver prompt:**
 

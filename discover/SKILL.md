@@ -154,7 +154,7 @@ Use proven interview techniques naturally. Don't announce the technique — just
 When detected, switch to probing actual needs before continuing.
 
 **Pacing:**
-- 2-4 questions per round via AskUserQuestion
+- 2-4 questions per round (ask naturally in the conversation)
 - Each question with 2-4 concrete options representing real tradeoffs
 - State which option you recommend and why
 - Group related questions together
