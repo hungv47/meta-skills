@@ -18,7 +18,7 @@ routing:
     - chatroom
   position: horizontal
   produces:
-    - .agents/meta/agent-room-report.md
+    - meta/agent-room-report.md
   consumes: []
   requires: []
   defers-to:

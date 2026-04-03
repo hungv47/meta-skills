@@ -210,8 +210,9 @@ Phase 1: /discover (interactive conversation — optionally saves spec.md)
 Phase 2: /system-architecture -> system-architecture.md
 Phase 3: /task-breakdown -> tasks.md
 Phase 4: (execution, /review-chain after critical tasks)
-Phase 5: /ship -> ship-report.md
-Phase 6: /deploy-verify -> deploy-verify-report.md
+Phase 5: /code-cleanup + /technical-writer (parallel)
+Phase 6: /ship -> ship-report.md
+Phase 7: /deploy-verify -> deploy-verify-report.md
 ```
 
 ### Full Product Launch

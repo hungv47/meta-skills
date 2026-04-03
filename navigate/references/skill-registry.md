@@ -271,7 +271,7 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 | discover | horizontal | medium | **yes** | spec.md (optional) |
 | agent-room | horizontal | heavy | no | meta/agent-room-report.md |
 | task-breakdown | pipeline | medium | no | tasks.md |
-| review-chain | horizontal | medium | no | meta/review-chain-report.md |
+| review-chain | horizontal (gate for /ship) | medium | no | meta/review-chain-report.md |
 | navigate | utility | medium | no | workflow-plan.md |
 
 Meta-skills are domain-agnostic process wrappers — they compose with any skill in any stack.
@@ -297,6 +297,6 @@ product-context.md ← /icp-research
 └→ design/user-flow.md ← /user-flow ──→ system-architecture.md, tasks.md
 ```
 
-Horizontal skills (copywriting, lp-optimization, seo, humanize, attribution, code-cleanup, technical-writer, agent-room, review-chain) can be called at any point — they read upstream artifacts but don't block downstream skills.
+Horizontal skills (copywriting, lp-optimization, seo, humanize, attribution, code-cleanup, technical-writer, agent-room) can be called at any point — they read upstream artifacts but don't block downstream skills.
 
-> **Note:** agent-room and review-chain are domain-agnostic process wrappers that compose with any skill in any stack.
+> **Note:** review-chain is horizontal in general use but acts as a **gate for /ship** — ship consumes `meta/review-chain-report.md` as its review prerequisite. When ship is in the workflow, review-chain is a dependency, not optional.
