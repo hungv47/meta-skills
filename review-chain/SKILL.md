@@ -15,7 +15,7 @@ routing:
     - fresh-eyes
   position: horizontal
   produces:
-    - .agents/meta/review-chain-report.md
+    - meta/review-chain-report.md
   consumes: []
   requires: []
   defers-to:

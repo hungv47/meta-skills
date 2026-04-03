@@ -116,6 +116,8 @@ discover (conversation) --> build directly
 3. /task-breakdown         → tasks.md
 4. (build tasks, /review-chain after critical ones)
 5. /code-cleanup + /technical-writer (parallel)
+6. /ship                   → ship-report.md
+7. /deploy-verify          → deploy-verify-report.md
 ```
 
 ## License
