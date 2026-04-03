@@ -56,7 +56,7 @@ Task-breakdown works from whatever context is available. It does NOT require art
 **Resolution order:**
 1. **Conversation context** — if discover or system-architecture ran in this session, their decisions are in context
 2. **Artifacts on disk** — `.agents/system-architecture.md`, `.agents/spec.md`, `.agents/design/user-flow.md`
-3. **Discovery** — if neither exists, ask the user key questions before decomposing
+3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
 
 If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill.
 
