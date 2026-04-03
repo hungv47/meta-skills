@@ -42,7 +42,7 @@ routing:
 
 Scan `.agents/` and report. Single-pass, no sub-agents.
 
-1. **Scan** `.agents/` for every `.md` file, including `.agents/meta/`. For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Meta-skill artifacts (`.agents/meta/`) are ephemeral — report but don't include in the dependency graph.
+1. **Scan** `.agents/` for every `.md` file, including `.agents/meta/`. For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Most meta-skill artifacts (`.agents/meta/`) are ephemeral analysis outputs — report them but weigh them lightly in recommendations. Exception: `meta/review-chain-report.md` is consumed by `/ship` as a review gate, so treat it as a real dependency when ship is in the workflow.
 
 2. **Report** as a table sorted by date (newest first). Mark **STALE** if `date:` > 30 days old.
 
@@ -176,7 +176,7 @@ product-context.md <- /icp-research
 |                                             |   |-> mkt/imc-plan.md <- /imc-plan -> mkt/content/ -> mkt/*.humanized.md
 |                                             |   +-> system-architecture.md <- /system-architecture
 |                                             |       +-> tasks.md <- /task-breakdown
-|                                             |           +-> (execute) -> review-chain-report.md <- /review-chain
+|                                             |           +-> (execute) -> meta/review-chain-report.md <- /review-chain
 |                                             |               +-> ship-report.md <- /ship
 |                                             |                   +-> deploy-verify-report.md <- /deploy-verify
 |-> /discover (conversation context or spec.md) --+
@@ -265,7 +265,7 @@ Phase 5: /humanize -> mkt/content/*.humanized.md
 **Triggers:** "debate the tech stack", "which approach", "compare options"
 ```
 Phase 1: /discover -> scope the decision (interactive)
-Phase 2: /agent-room debate -> agent-room-report.md
+Phase 2: /agent-room debate -> meta/agent-room-report.md
 Phase 3: /system-architecture -> system-architecture.md
 ```
 

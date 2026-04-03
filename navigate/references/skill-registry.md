@@ -186,7 +186,7 @@ Phase 9: /deploy-verify → deploy-verify-report.md
 **Skills (3 steps):**
 ```
 Phase 1: /discover scope → scope the decision
-Phase 2: /agent-room debate → agent-room-report.md
+Phase 2: /agent-room debate → meta/agent-room-report.md
 Phase 3: /system-architecture → system-architecture.md (informed by debate)
 ```
 
