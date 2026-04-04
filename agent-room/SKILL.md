@@ -1,6 +1,6 @@
 ---
 name: agent-room
-description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use system-architecture). Not for verification (use review-chain)."
+description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use system-architecture). Not for verification (use review-chain). For clarifying requirements first, see discover. For decomposing work after a decision, see task-breakdown."
 argument-hint: "[problem or decision to analyze]"
 user-invocable: true
 license: MIT
@@ -133,6 +133,11 @@ This is Round 1 of a multi-agent debate. State your initial position.
 Be specific — propose actual solutions, not vague principles. Take a clear stance.
 Other agents will challenge you in subsequent rounds.
 
+Communication discipline:
+- No performative agreement: never open with "Great point" or "I appreciate X's perspective"
+- State disagreements directly: "That approach fails because [X]" not "While that has merit..."
+- No hedging: "This will break under load" not "This might potentially have scaling concerns"
+
 Respond in this format:
 POSITION: [One-sentence stance]
 REASONING: [3-5 key points]
@@ -161,6 +166,8 @@ This is Round {N}. Read the previous discussion carefully.
 
 Do NOT repeat your previous position. Engage with what others said.
 Change your mind if they made a better argument.
+Do NOT soften disagreements with praise. "I appreciate Agent A's point, but..." is
+sycophancy disguised as discourse. State the disagreement directly.
 
 Respond in this format:
 AGREEMENTS: [What other agents got right]
