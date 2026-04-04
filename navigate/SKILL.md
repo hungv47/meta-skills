@@ -42,7 +42,7 @@ routing:
 
 Scan `.agents/` and report. Single-pass, no sub-agents.
 
-1. **Scan** `.agents/` for every `.md` file, including `.agents/meta/`. For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Most meta-skill artifacts (`.agents/meta/`) are ephemeral analysis outputs — report them but weigh them lightly in recommendations. Exception: `meta/review-chain-report.md` is consumed by `/ship` as a review gate, so treat it as a real dependency when ship is in the workflow.
+1. **Scan** `.agents/` for every `.md` file, including `.agents/meta/`. For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Most meta-skill artifacts (`.agents/meta/`) are ephemeral analysis outputs — report them but weigh them lightly in recommendations. Exception: `meta/review-chain-report.md` is consumed by `/ship` as a review gate, so treat it as a real dependency when ship is in the workflow. Also scan `.agents/meta/out-of-scope/` — report count of out-of-scope decisions and flag any whose "Revisit if" conditions may now be met.
 
 2. **Report** as a table sorted by date (newest first). Mark **STALE** if `date:` > 30 days old.
 
@@ -62,8 +62,9 @@ If `.agents/` doesn't exist or is empty, say so.
 
 1. Classify the goal's intent tags using the skill registry
 2. Scan `.agents/` for existing artifacts
-3. Match intents to skills, check dependencies, identify parallel tracks
-4. Present: goal analysis + recommended skill team with phases
+3. Check `.agents/meta/out-of-scope/` — if the goal overlaps with a prior out-of-scope decision, surface it: "This was previously scoped out because [reason]. Revisit condition: [condition]. Proceed anyway?"
+4. Match intents to skills, check dependencies, identify parallel tracks
+5. Present: goal analysis + recommended skill team with phases
 
 ### Mode C: Orchestrate
 **When:** Argument starts with `orchestrate` or user asks for a full workflow plan
@@ -124,10 +125,16 @@ goal: "[user's goal]"
 
 ### Phase 1: [Name]
 - [ ] /[skill] -> [artifact]
+**Decisions:**
+- Mechanical: [auto-decided, not surfaced]
+- Taste: [auto-decided, surfaced at checkpoint]
+- User Challenge: [must ask before proceeding]
 **Checkpoint:** [validation criteria]
 
 ### Phase 2: [Name]
 - [ ] /[skill] -> [artifact]
+**Decisions:**
+- [same format]
 **Checkpoint:** [validation criteria]
 
 ## Status
@@ -136,6 +143,33 @@ Next action: Run `/[first-skill] [context]`
 ```
 
 ---
+
+## Decision Classification
+
+In Orchestrate mode, classify decisions within each phase into three types:
+
+| Type | Behavior | Examples |
+|------|----------|---------|
+| **Mechanical** | Auto-decide silently — obvious from context, low risk | "Use the ORM already in the codebase", "Follow existing naming conventions" |
+| **Taste** | Auto-decide but surface at phase checkpoint for user review | "Chose polling over WebSockets because latency requirements are relaxed", "Picked 3 personas instead of 2" |
+| **User Challenge** | Always ask — never assume | "Should we support mobile?", "Which pricing tier to target?", "Build vs buy for auth?" |
+
+**How to classify:**
+- If the codebase, spec, or prior artifacts answer it → **Mechanical**
+- If you have a defensible recommendation but the user might disagree → **Taste**
+- If it's expensive to reverse, subjective, or has business implications → **User Challenge**
+
+**In the workflow plan**, annotate each phase:
+```
+### Phase 2: Architecture
+- [ ] /system-architecture -> system-architecture.md
+**Decisions:**
+- Mechanical: tech stack (matches existing codebase)
+- Taste: DB schema normalization level — will default to 3NF, surface at checkpoint
+- User Challenge: self-hosted vs managed DB — must ask before proceeding
+```
+
+**At phase checkpoints**, present Taste decisions as a batch: "I made these calls — confirm or override before I continue." User Challenges block the phase until answered.
 
 ## Checkpoint Validation
 
