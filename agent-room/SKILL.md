@@ -166,8 +166,7 @@ This is Round {N}. Read the previous discussion carefully.
 
 Do NOT repeat your previous position. Engage with what others said.
 Change your mind if they made a better argument.
-Do NOT soften disagreements with praise. "I appreciate Agent A's point, but..." is
-sycophancy disguised as discourse. State the disagreement directly.
+Do NOT soften disagreements with praise. "I appreciate Agent A's point, but..." is sycophancy disguised as discourse. State the disagreement directly.
 
 Respond in this format:
 AGREEMENTS: [What other agents got right]
