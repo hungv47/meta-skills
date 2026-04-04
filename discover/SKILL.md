@@ -88,6 +88,7 @@ Scan for answers that already exist. Don't spend more than a few minutes here �
 - **Artifacts**: Check `.agents/` for existing specs, architecture docs, product context
 - **Experience docs**: Check `.agents/experience/{domain}.md` for answers from prior sessions
 - **Learned rules**: Read `.agents/meta/learned-rules.md` for behavior corrections
+- **Out-of-scope decisions**: Check `.agents/meta/out-of-scope/` for features or approaches already rejected in prior sessions — don't re-ask about these unless the user brings them up
 - **Project conventions**: Skim `CLAUDE.md` for patterns
 
 Anything found here is a question you don't need to ask.
@@ -128,6 +129,15 @@ Instead of 5 fixed dimensions, identify **3-5 coverage zones** that matter for T
 State the zones at the start: "Here's what I think we need clarity on: [zones]. Anything you'd add or remove?" The user can adjust.
 
 Zones are a compass, not a checklist. Some problems only need 2 zones explored deeply. Others need 5 touched lightly. Let the conversation guide it.
+
+### Communication Discipline
+
+During diagnostic questioning:
+- No affirmation before probing — never say "Great!", "That makes sense!", "Solid approach" before asking the next question
+- State disagreements directly: "That approach has a problem: [X]" not "That's interesting, though..."
+- When the user's answer reveals a weak premise, say so before moving on
+- Praise only completed outcomes, never stated intentions
+- If you agree, just proceed — agreement doesn't need to be performed
 
 ### Step 4: Conversation
 
@@ -246,6 +256,12 @@ status: draft
 ## Edge Cases
 - **[Scenario]**: [How we handle it]
 
+## Failure Conditions
+Any of these = not done:
+- [Specific condition that would make this feature "technically working" but wrong]
+- [Edge case that must be handled — not a nice-to-have]
+- [Quality bar that must be met — e.g., "latency under 200ms", "works offline"]
+
 ## Out of Scope
 - [Explicitly NOT doing]
 
@@ -303,6 +319,17 @@ NOT IN SCOPE:
 - [ ] All CONSTRAINTS respected: {confirmation}
 - [ ] FORMAT matches spec: {confirmation}
 ```
+
+**Out-of-scope persistence** (for institutional memory):
+When features are explicitly scoped out during conversation, write to `.agents/meta/out-of-scope/[kebab-case-name].md`:
+```markdown
+# [Feature/Approach Name]
+**Decided:** [date]
+**Context:** [what was being discussed when this was scoped out]
+**Decision:** Not pursuing because [reason from conversation]
+**Revisit if:** [condition that would change the decision]
+```
+Create the directory if it doesn't exist. This prevents future sessions from re-asking about decisions already made.
 
 **Experience doc** (for the learning flywheel):
 Append Q&A to `.agents/experience/{domain}.md` after each session:

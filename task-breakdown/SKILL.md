@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture)."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see review-chain. For packaging and PRs, see ship."
 argument-hint: "[spec or architecture to decompose]"
 license: MIT
 metadata:
@@ -170,6 +170,9 @@ status: draft
 
 **Acceptance:** [How to verify - specific test, expected result]
 
+**Autonomy:** AFK | HITL
+**Why HITL:** [only if HITL — what specific judgment is needed]
+
 **Human action:** [External setup needed, if any]
 ```
 
@@ -184,6 +187,19 @@ Split if:
 - Multiple independent things to test
 - Multiple files for different reasons
 - Acceptance has multiple unrelated conditions
+
+### Autonomy Classification
+
+Every task gets an **Autonomy** label:
+
+| Label | Meaning | When to use |
+|-------|---------|-------------|
+| **AFK** | Agent can execute end-to-end without human judgment | Deterministic tasks: scaffolding, CRUD, tests, migrations with clear schema |
+| **HITL** | Needs human judgment during execution | Taste decisions, external approvals, ambiguous acceptance criteria, security-sensitive changes |
+
+**Default to AFK.** Only mark HITL when the task genuinely requires a judgment call that the agent can't make from the spec alone. Every HITL task must state *what specific judgment* is needed — "needs review" is not sufficient.
+
+**Why this matters:** Orchestrators (navigate, multi-agent systems) use this to batch-run AFK tasks autonomously and queue HITL tasks for user attention. Mislabeling AFK as HITL wastes the user's time. Mislabeling HITL as AFK risks wrong decisions.
 
 ### Content Rules
 
@@ -214,9 +230,8 @@ Every task lists what it needs. Enables parallel work and failure impact analysi
 1. State which task you're starting
 2. Write minimum code to pass acceptance
 3. State exactly what to test and expected result
-4. Stop and wait for confirmation — proceeding without it risks wasted work.
-5. Pass → commit, announce next task
-6. Fail → fix the specific issue only, don't expand scope
+4. **AFK tasks:** Run the acceptance test. Pass → commit and move to the next task without waiting. Fail → fix and re-test (max 2 attempts, then flag to user).
+5. **HITL tasks:** Stop and present the result. Wait for user confirmation. Pass → commit, announce next task. Fail → fix the specific issue only, don't expand scope.
 
 ### Coding Rules
 
