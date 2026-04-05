@@ -105,6 +105,13 @@ Before diving into details, challenge the premise with 3 quick questions:
 
 If the premise is weak, say so. Suggest reframing if applicable. But don't block — advise and let the user decide.
 
+**Framing checkpoint** — after receiving the user's first substantive answer, pause and verify before continuing:
+- **Language precision:** Are key terms defined concretely, or hiding behind buzzwords ("AI-powered", "seamless", "platform")?
+- **Real vs hypothetical:** Is the user describing what IS happening or what MIGHT happen? Past behavior beats future predictions.
+- **Hidden assumptions:** What is the user taking for granted that could be wrong? State it back to them.
+
+If framing is vague, fix it before proceeding. An entire session built on imprecise framing produces precise-looking nonsense.
+
 **Skip the premise check when:** the task is clearly scoped ("add a dark mode toggle"), the user is continuing from a previous decision, or context makes it obvious the premise is sound.
 
 ### Step 3: Adaptive Coverage Zones
@@ -138,6 +145,30 @@ During diagnostic questioning:
 - When the user's answer reveals a weak premise, say so before moving on
 - Praise only completed outcomes, never stated intentions
 - If you agree, just proceed — agreement doesn't need to be performed
+
+**Pushback patterns** — when you hear these, push back with the rigorous version:
+
+*Vague market:*
+- BAD: "That's a big market! Let's explore what kind of tool."
+- GOOD: "There are thousands of tools in that space. What specific task does a specific person waste 2+ hours on per week that yours eliminates? Name the person."
+
+*Social proof as substitute for evidence:*
+- BAD: "That's great validation! Let's build on that momentum."
+- GOOD: "Likes and signups are interest, not demand. How many people have paid you money or done real work to solve this problem without your product?"
+
+*Platform vision before wedge:*
+- BAD: "That's ambitious! Let's map out the phases."
+- GOOD: "Platforms are built from wedges, not designed top-down. What is the single smallest thing you could ship that one specific person would pay for today?"
+
+*Undefined terms:*
+- BAD: "AI-powered is definitely trending. Let's think about the AI features."
+- GOOD: "What specifically does 'AI-powered' mean in your product? What input goes in, what output comes out, and why can't the user do it themselves in 5 minutes?"
+
+*Growth stats without unit economics:*
+- BAD: "200% growth is impressive! How do you plan to scale?"
+- GOOD: "200% growth of what base? What does each user cost to acquire, and what do they pay you? Growth without unit economics is just spending."
+
+The best reward for a good answer is a harder follow-up, not praise.
 
 ### Step 4: Conversation
 

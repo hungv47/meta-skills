@@ -90,10 +90,11 @@ Layer 2 (sequential):
 ### Dispatch Protocol
 
 1. **Confirm scope mode** — ask the user: "Are we decomposing everything (FULL), building exactly what's spec'd (LOCKED), or cutting to minimum (MINIMAL)?" Default to LOCKED if finished spec provided, MINIMAL if MVP mentioned.
-2. **Layer 1 dispatch** — send brief + scope mode to `decomposer-agent` and `dependency-mapper-agent` in parallel.
-3. **Layer 2 sequential chain** — pass both outputs to `ordering-agent`, then ordered list to `acceptance-agent`, then complete breakdown to `critic-agent`.
-4. **Revision loop** — if critic returns FAIL, re-dispatch affected agents with feedback. Maximum 2 rounds.
-5. **Assembly** — merge into the task artifact format. Save to `.agents/tasks.md`.
+2. **Extract durable decisions** — before decomposing, identify and list the architectural decisions that every task will reference: route structures, database schema shape, key data models, auth approach, third-party service boundaries, deployment target. Write these as a "Shared Context" header in the task artifact so every task can reference them without repeating or diverging. If system-architecture.md exists, extract from there. If not, extract from conversation context.
+3. **Layer 1 dispatch** — send brief + scope mode + shared context to `decomposer-agent` and `dependency-mapper-agent` in parallel.
+4. **Layer 2 sequential chain** — pass both outputs to `ordering-agent`, then ordered list to `acceptance-agent`, then complete breakdown to `critic-agent`.
+5. **Revision loop** — if critic returns FAIL, re-dispatch affected agents with feedback. Maximum 2 rounds.
+6. **Assembly** — merge into the task artifact format. Save to `.agents/tasks.md`.
 
 ### Routing Rules
 
@@ -118,6 +119,7 @@ Before delivering, the critic-agent verifies ALL of these pass:
 - [ ] All external config is in Prerequisites, not buried in tasks
 - [ ] A junior dev could verify each acceptance criterion
 - [ ] No task requires unstated knowledge to complete
+- [ ] Tasks are vertical slices (each delivers a testable increment through all layers). Horizontal-only tasks require explicit justification.
 
 **If any gate fails:** the critic identifies which agent must fix it and the orchestrator re-dispatches with specific feedback.
 
@@ -254,6 +256,7 @@ Every task lists what it needs. Enables parallel work and failure impact analysi
 
 ### When Stuck
 
+0. It is better to stop and say "I'm stuck — here's what I've tried" than to keep attempting fixes that aren't working. Bad work is worse than no work.
 1. State what's blocking
 2. Propose smallest modification to unblock
 3. Wait for approval

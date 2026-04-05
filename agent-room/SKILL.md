@@ -117,6 +117,14 @@ Each agent gets a distinct perspective to maximize productive disagreement.
 
 For N > 3, add roles that create productive tension with existing ones.
 
+**Constraint-assignment for divergence** — when the debate is about design or architecture (not strategy), assign each agent a structural constraint instead of (or in addition to) a perspective. This mechanically forces different solutions rather than hoping for them:
+- Agent 1: "Minimize surface area — aim for the fewest possible methods/endpoints"
+- Agent 2: "Maximize flexibility — support the widest range of use cases"
+- Agent 3: "Optimize for the most common case — make the 80% path trivially simple"
+- Agent 4 (if N > 3): "Take inspiration from [specific paradigm/library the user knows]"
+
+Constraint-assigned agents produce genuinely different designs. Perspective-assigned agents tend to converge on similar designs with different justifications.
+
 ### A3. Run Debate Rounds
 
 **Round 1 — Opening positions.** Agent prompt:

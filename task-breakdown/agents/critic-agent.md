@@ -37,6 +37,7 @@ Return a single markdown document with exactly these sections:
 - [PASS/FAIL] All external config is in Prerequisites, not buried in tasks
 - [PASS/FAIL] A junior dev could verify each acceptance criterion
 - [PASS/FAIL] No task requires unstated knowledge to complete
+- [PASS/FAIL] Tasks are vertical slices (each delivers a testable increment through all layers). Horizontal-only tasks (e.g., "create all DB tables") require explicit justification.
 
 ### Sizing Review
 | Task | Size Verdict | Issue |
