@@ -90,7 +90,8 @@ Layer 2 (sequential):
 ### Dispatch Protocol
 
 1. **Confirm scope mode** — ask the user: "Are we decomposing everything (FULL), building exactly what's spec'd (LOCKED), or cutting to minimum (MINIMAL)?" Default to LOCKED if finished spec provided, MINIMAL if MVP mentioned.
-2. **Layer 1 dispatch** — send brief + scope mode to `decomposer-agent` and `dependency-mapper-agent` in parallel.
+2. **Extract durable decisions** — before decomposing, identify and list the architectural decisions that every task will reference: route structures, database schema shape, key data models, auth approach, third-party service boundaries, deployment target. Write these as a "Shared Context" header in the task artifact so every task can reference them without repeating or diverging. If system-architecture.md exists, extract from there. If not, extract from conversation context.
+3. **Layer 1 dispatch** — send brief + scope mode + shared context to `decomposer-agent` and `dependency-mapper-agent` in parallel.
 3. **Layer 2 sequential chain** — pass both outputs to `ordering-agent`, then ordered list to `acceptance-agent`, then complete breakdown to `critic-agent`.
 4. **Revision loop** — if critic returns FAIL, re-dispatch affected agents with feedback. Maximum 2 rounds.
 5. **Assembly** — merge into the task artifact format. Save to `.agents/tasks.md`.
