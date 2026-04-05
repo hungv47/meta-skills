@@ -254,6 +254,7 @@ Every task lists what it needs. Enables parallel work and failure impact analysi
 
 ### When Stuck
 
+0. It is better to stop and say "I'm stuck — here's what I've tried" than to keep attempting fixes that aren't working. Bad work is worse than no work.
 1. State what's blocking
 2. Propose smallest modification to unblock
 3. Wait for approval
