@@ -106,6 +106,13 @@ Review for:
    without losing functionality?
 4. **Security** — SQL injection, XSS, command injection, auth bypasses, secrets in code?
 5. **Consistency** — Does it match the patterns and conventions of the surrounding codebase?
+6. **Input Quality** — Was this built on solid ground? Check what context the implementation
+   had access to. Rate each:
+   - Product/domain context: Rich (from research/spec) | Thin (user-provided, minimal) | Missing (improvised)
+   - Requirements clarity: Precise (specific acceptance criteria) | Vague (general direction only) | Absent
+   - Upstream artifacts: Fresh (< 30 days) | Stale (> 30 days) | None
+   This is not about the code quality — it is about whether the RIGHT thing was built.
+   A perfectly crafted solution to the wrong problem is still wrong.
 
 Respond in this exact format:
 
@@ -130,6 +137,19 @@ SUMMARY: {one paragraph — overall assessment}
 - Full-weight findings 8+/10 — these are real issues.
 - If you can cite a specific line, test, or proof, confidence should be 8+.
 - If you're pattern-matching without verification, confidence should be 5-7.
+
+**Verification rules (signal vs noise):**
+Before reporting any issue, verify it is SIGNAL not NOISE:
+- CHECK if the problem is already handled elsewhere in the code (a different file,
+  a wrapper, a middleware, a test). If handled, it is noise — do not report it.
+- CHECK if the fix already exists (the "improvement" you would suggest is already
+  implemented under a different name or in a different location). If it exists, it is noise.
+- ASK "has this actually caused a problem, or is it theoretical?" If purely theoretical
+  with no plausible trigger path, downgrade to nit or suppress.
+- ASK "will this fix actually change runtime behavior?" If the fix is cosmetic or
+  the code path is equivalent, it is noise.
+Issues that survive verification are signal. Issues that fail any check are noise —
+suppress them entirely. Do not pad the report with noise to appear thorough.
 
 Be ruthless. Better to flag a false positive than miss a real bug.
 But don't invent problems that don't exist — if the code is clean, say PASS.
@@ -245,6 +265,13 @@ status: final
 | 1 | major | 9/10 | file.ts:42 | Off-by-one in loop | Fixed |
 | 2 | minor | 8/10 | file.ts:15 | Unused import | Fixed |
 | 3 | nit | 6/10 | file.ts:8 | Naming convention | Declined (uncertain) |
+
+## Input Quality Assessment
+| Input | Rating | Evidence |
+|-------|--------|----------|
+| Product/domain context | {Rich/Thin/Missing} | {what was available} |
+| Requirements clarity | {Precise/Vague/Absent} | {source} |
+| Upstream artifacts | {Fresh/Stale/None} | {what existed} |
 
 ## Simplifications Applied
 {What was simplified and why}
