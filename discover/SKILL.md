@@ -194,11 +194,21 @@ Use proven interview techniques naturally. Don't announce the technique — just
 
 When detected, switch to probing actual needs before continuing.
 
+**Question Delivery:**
+
+You have two tools for asking questions — use whichever fits the moment:
+
+**`AskUserQuestion` tool** — presents clickable options with descriptions. Best when you can offer 2-4 concrete choices with real tradeoffs. Reduces friction: the user clicks instead of typing. Mark your recommended option clearly (e.g., "(Recommended)" suffix). Use `preview` for comparing code or architecture. Use `multiSelect: true` for non-exclusive choices. The user always has "Other" for free-text input.
+
+**Chat questions** — plain conversational questions. Best when the answer space is wide open or you're following a thread deeper (why chains, past behavior, premise challenges).
+
+Most sessions will mix both naturally. A scoping question with known options → AskUserQuestion. A follow-up probing why they chose that → chat. Don't overthink the choice — if you can offer concrete options, use the tool; if you're exploring, just ask.
+
 **Pacing:**
-- 2-4 questions per round (ask naturally in the conversation)
-- Each question with 2-4 concrete options representing real tradeoffs
-- State which option you recommend and why
-- Group related questions together
+- 2-4 questions per round
+- Each question targets 2-4 decision points with real tradeoffs
+- State which choice you recommend and why
+- Group related questions together — batch up to 4 into a single AskUserQuestion call when they're independent
 - After each round, briefly acknowledge answers and track clarity internally
 
 **Question formats** (use whichever fits the question):
@@ -210,6 +220,7 @@ My default assumption: REST, since the existing codebase uses Express.
 Why it matters: GraphQL would require adding apollo-server and
 restructuring the resolver layer — completely different implementation path.
 ```
+This maps naturally to AskUserQuestion with 2 options: "REST (Recommended)" and the alternative, with the rationale in descriptions. But chat works fine too — use your judgment.
 
 *Options format* (best for design decisions with clear tradeoffs):
 ```
@@ -220,6 +231,7 @@ Options:
 3. Badge indicator — Subtle, user can investigate when ready
 Recommended: Option 1 — most sync failures are transient
 ```
+This is a natural fit for AskUserQuestion — the options become clickable choices with tradeoff descriptions.
 
 At light depth (scoping), prefer the assumption-surfacing format — it's the key innovation that prevents silent assumption failures. At deeper depths, mix both formats based on what the question needs.
 
