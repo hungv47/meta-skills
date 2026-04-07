@@ -1,21 +1,18 @@
 ---
 name: navigate
-description: "Orient and route — scan artifacts, check freshness, recommend next skill, compose multi-phase workflows. One skill for 'what exists?', 'what should I do next?', and 'orchestrate this goal'. Not for executing skills (it coordinates, not executes)."
-argument-hint: "[goal — e.g. 'build a SaaS app'] or 'status'"
+description: "Artifact status + multi-phase orchestration. Scan what exists, check freshness, compose and track complex workflows across sessions. Not for skill routing (the agent does that proactively)."
+argument-hint: "'status' or 'orchestrate [goal]'"
 user-invocable: true
 license: MIT
 metadata:
   author: hungv47
-  version: "2.0.0"
+  version: "3.0.0"
 routing:
   intent-tags:
     - artifact-scan
     - staleness-check
-    - next-action
     - project-status
-    - skill-discovery
     - workflow-planning
-    - team-formation
   position: utility
   produces:
     - workflow-plan.md
@@ -29,15 +26,17 @@ routing:
 
 # Navigate
 
-*Meta — Utility. Orient, route, and orchestrate across the skill ecosystem.*
+*Meta — Utility. Artifact awareness and multi-phase orchestration.*
 
-**Core Question:** "Given this goal and the current artifact state, what's the fastest path to the outcome?"
+**Core Question:** "What exists, and how do I track a complex workflow across sessions?"
+
+> **Note:** Skill routing (matching a user's goal to the right skills) is the agent's job — it reads skill descriptions and proposes matches proactively on every response. Navigate does NOT route. It provides artifact state awareness and persistent workflow tracking that the agent can't do implicitly.
 
 ---
 
-## Three Modes
+## Two Modes
 
-### Mode A: Status
+### Status
 **When:** Argument is `status` or user asks "what exists", "what's stale", "what do I have"
 
 Scan `.agents/` and report. Single-pass, no sub-agents.
@@ -57,54 +56,16 @@ If `.agents/` doesn't exist or is empty, say so.
 
 3. **Recommend** the one or two skills that unblock the most, using the dependency graph below. Don't dump a flat list of everything missing — trace the graph, find the root blocker.
 
-### Mode B: Suggest (default)
-**When:** Argument is a goal description
-
-1. Classify the goal's intent tags using the skill registry
-2. Scan `.agents/` for existing artifacts
-3. Check `.agents/meta/out-of-scope/` — if the goal overlaps with a prior out-of-scope decision, surface it: "This was previously scoped out because [reason]. Revisit condition: [condition]. Proceed anyway?"
-4. Match intents to skills, check dependencies, identify parallel tracks
-5. Present: goal analysis + recommended skill team with phases
-
-### Mode C: Orchestrate
+### Orchestrate
 **When:** Argument starts with `orchestrate` or user asks for a full workflow plan
 
-1. Run Mode B to get the skill team
-2. Produce a `workflow-plan.md` artifact with phases, checkpoints, and progress tracking
-3. Return the plan + instructions for Phase 1
+1. Scan `.agents/` for existing artifacts (same as Status step 1)
+2. Check `.agents/meta/out-of-scope/` — if the goal overlaps with a prior out-of-scope decision, surface it: "This was previously scoped out because [reason]. Revisit condition: [condition]. Proceed anyway?"
+3. Classify the goal, match to skills using the skill registry, check dependencies, identify parallel tracks
+4. Produce a `workflow-plan.md` artifact with phases, checkpoints, and progress tracking
+5. Return the plan + instructions for Phase 1
 
 **Continuation:** Run `/navigate orchestrate` again (no new goal) to validate current phase, update progress, and recommend next phase.
-
----
-
-## Suggest Output Format
-
-```markdown
-## Goal Analysis
-**Goal:** [user's goal]
-**Scope:** [Light (1-2 skills) | Medium (3-5) | Heavy (6+)]
-
-## Artifact State
-| Artifact | Status | Age | Action |
-|----------|--------|-----|--------|
-| product-context.md | exists | 5d | fresh — skip |
-| solution-design.md | missing | — | run /solution-design |
-
-## Recommended Team
-
-### Phase 1: [Name]
-| Skill | Why | Parallel? | Interactive? |
-|-------|-----|-----------|-------------|
-| `/skill-name` | [reason] | Yes/No | Yes/No |
-
-**Checkpoint:** [what must exist before Phase 2]
-
-### Phase 2: [Name]
-[...]
-
-## Quick Start
-Run: `/[first-skill] [context]`
-```
 
 ---
 
@@ -306,75 +267,10 @@ Phase 3: /system-architecture -> system-architecture.md
 
 ---
 
-## Skill Inventory by Stack
-
-### Research (6 skills)
-| Skill | Complexity | Interactive | Produces |
-|-------|------------|-------------|----------|
-| icp-research | heavy | no | product-context.md |
-| market-research | heavy | no | market-research.md |
-| problem-analysis | heavy | no | problem-analysis.md |
-| solution-design | heavy | no | solution-design.md |
-| funnel-planner | medium | no | targets.md |
-| experiment | medium | no | experiment-[name].md |
-
-### Marketing (8 skills)
-| Skill | Complexity | Interactive | Produces |
-|-------|------------|-------------|----------|
-| brand-system | heavy | no | design/brand-system.md |
-| imc-plan | heavy | no | mkt/imc-plan.md |
-| content-create | heavy | no | mkt/content/[slug].md |
-| copywriting | heavy | no | mkt/content/[slug].copy.md |
-| lp-optimization | medium | no | mkt/lp-optimization.md |
-| seo | heavy | no | mkt/seo-[mode].md |
-| attribution | medium | no | mkt/attribution.md |
-| humanize | medium | no | mkt/content/*.humanized.md |
-
-### Product (6 skills)
-| Skill | Complexity | Interactive | Produces |
-|-------|------------|-------------|----------|
-| user-flow | medium | no | design/user-flow.md |
-| system-architecture | heavy | no | system-architecture.md |
-| code-cleanup | heavy | no | cleanup-report.md |
-| technical-writer | medium | no | (writes to project) |
-| ship | medium | no | ship-report.md |
-| deploy-verify | light | no | deploy-verify-report.md |
-
-### Meta (5 skills)
-| Skill | Complexity | Interactive | Produces |
-|-------|------------|-------------|----------|
-| discover | medium | **yes** | spec.md (optional) |
-| agent-room | heavy | no | meta/agent-room-report.md |
-| task-breakdown | medium | no | tasks.md |
-| review-chain | medium | no | meta/review-chain-report.md |
-| navigate | medium | no | workflow-plan.md |
-
----
-
-## Disambiguation: Commonly Confused Skills
-
-| "I want to..." | Run this | Not this |
-|----------------|----------|----------|
-| Clarify a vague idea | `/discover` | `/system-architecture` (designs, not clarifies) |
-| Scope a task before building | `/discover` | `/system-architecture` (designs, not scopes) |
-| Have agents debate a decision | `/agent-room` debate | `/agent-room` poll (polls, not debates) |
-| Get consensus from multiple perspectives | `/agent-room` poll | `/agent-room` debate (debates, not polls) |
-| Verify code/output quality | `/review-chain` | `/code-cleanup` (refactors, not reviews) |
-| Break work into tasks | `/task-breakdown` | `/system-architecture` (designs, not decomposes) |
-| See what artifacts exist | `/navigate status` | — |
-| Figure out what to do next | `/navigate [goal]` | — |
-| Design tech stack + DB schema | `/system-architecture` | `/task-breakdown` (decomposes, not designs) |
-| Figure out why metric X is declining | `/problem-analysis` | `/market-research` (landscape, not diagnosis) |
-| Decide what to build next | `/solution-design` | `/discover` (clarifies HOW, not WHAT) |
-| Write a headline / CTA | `/copywriting` | `/content-create` (full assets, not craft) |
-| Create a social post / email | `/content-create` | `/copywriting` (craft, not format) |
-
----
-
 ## Anti-Patterns
 
 - **Dumping a flat list** — Trace the graph, find the root blocker. Don't list every missing artifact equally.
 - **Ignoring artifact state** — Don't recommend `/icp-research` when `product-context.md` is 3 days old.
 - **Skipping dependency tracing** — Don't recommend `/task-breakdown` when `system-architecture.md` doesn't exist.
-- **Recommending every possible skill** — Match scope to goal. A headline needs 1-2 skills, not 14.
 - **Treating templates as rigid** — Skip phases where fresh artifacts exist.
+- **Using navigate for skill routing** — The agent proposes skills proactively. Navigate is for artifact status and orchestration only.

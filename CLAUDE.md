@@ -19,7 +19,7 @@ Domain-agnostic process skills: discover, debate, decompose, verify, navigate. T
 | `agent-room` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
 | `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
 | `review-chain` | Fresh-eyes quality check after implementation | After building |
-| `navigate` | Orient: scan artifacts, recommend next skill, compose workflows | Anytime you're lost |
+| `navigate` | Artifact status + multi-phase orchestration | Complex projects spanning sessions |
 
 ## Process Flow
 
@@ -83,9 +83,11 @@ All meta-skills are domain-agnostic. They compose with any skill in any stack:
 - `agent-room` for any decision that needs multiple perspectives
 - `task-breakdown` after architecture for complex builds
 - `review-chain` after any critical artifact or implementation
-- `navigate` to orient at any point
+- `navigate` for artifact status checks and multi-phase orchestration (skill routing is the agent's job — it proposes skills proactively)
 
-## Migration from Previous Stack (7 -> 5)
+## Migration History
+
+### v1 → v2: 7 skills → 5 skills
 
 | Old Skill | New Home | Notes |
 |-----------|----------|-------|
@@ -96,3 +98,10 @@ All meta-skills are domain-agnostic. They compose with any skill in any stack:
 | `skill-router` | `navigate` | Suggest/orchestrate modes preserved |
 | `task-breakdown` | `task-breakdown` | Updated: no hard artifact dependency |
 | `review-chain` | `review-chain` | Unchanged |
+
+### v2 → v3: navigate trimmed
+
+| Change | Rationale |
+|--------|-----------|
+| Removed navigate Mode B (Suggest/routing) | The agent proposes skills proactively on every response — navigate's routing was redundant. Skill registry reference file retained for the agent to read on demand. |
+| Navigate now: Status + Orchestrate only | Two clear jobs: "what exists/what's stale" and "track a complex multi-phase workflow across sessions" |

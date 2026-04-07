@@ -1,6 +1,6 @@
 # Skill Registry
 
-> Compiled reference for navigate. Maps intents to skills, disambiguates confusable pairs, and provides pre-built workflow templates.
+> Reference for the agent and navigate's orchestrate mode. Maps intents to skills, disambiguates confusable pairs, and provides workflow templates. The agent reads this on demand for deep disambiguation; navigate uses it when composing multi-phase workflows.
 
 ## Intent → Skill Quick Reference
 
