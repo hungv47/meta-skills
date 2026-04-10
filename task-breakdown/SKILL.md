@@ -2,6 +2,7 @@
 name: task-breakdown
 description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see review-chain. For packaging and PRs, see ship."
 argument-hint: "[spec or architecture to decompose]"
+allowed-tools: Read Grep Glob Bash
 license: MIT
 metadata:
   author: hungv47
@@ -325,6 +326,10 @@ On re-run: rename existing artifact to `tasks.v[N].md` and create new with incre
 Save to `.agents/tasks.md` using the Task Format above.
 
 ---
+
+## Next Step
+
+Tasks are ready. Begin implementation of the first unblocked task. Run `review-chain` after each major task completion. Run `ship` when all tasks are done.
 
 ## References
 
