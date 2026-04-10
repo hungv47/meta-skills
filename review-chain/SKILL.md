@@ -285,11 +285,11 @@ status: final
 
 ## Resolver's Notes
 {Any "DECLINED" decisions and reasoning}
+```
 
 ## Next Step
 
 If PASS: run `ship` to create a PR. If ISSUES_FOUND: resolve and re-run. If more than 2 cycles: escalate to user.
-```
 
 ### 8. Deliver results
 
