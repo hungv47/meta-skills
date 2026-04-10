@@ -2,6 +2,7 @@
 name: navigate
 description: "Artifact status + multi-phase orchestration. Scan what exists, check freshness, compose and track complex workflows across sessions. Not for skill routing (the agent does that proactively)."
 argument-hint: "'status' or 'orchestrate [goal]'"
+allowed-tools: Read Grep Glob Bash
 user-invocable: true
 license: MIT
 metadata:
@@ -274,3 +275,7 @@ Phase 3: /system-architecture -> system-architecture.md
 - **Skipping dependency tracing** — Don't recommend `/task-breakdown` when `system-architecture.md` doesn't exist.
 - **Treating templates as rigid** — Skip phases where fresh artifacts exist.
 - **Using navigate for skill routing** — The agent proposes skills proactively. Navigate is for artifact status and orchestration only.
+
+## Chain Position
+
+Meta skill — scans artifact state and recommends the highest-impact next skill to run. Start here when unsure what to do next.
