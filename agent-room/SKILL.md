@@ -2,6 +2,7 @@
 name: agent-room
 description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use system-architecture). Not for verification (use review-chain). For clarifying requirements first, see discover. For decomposing work after a decision, see task-breakdown."
 argument-hint: "[problem or decision to analyze]"
+allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 user-invocable: true
 license: MIT
 metadata:
@@ -306,3 +307,7 @@ When invoked as sub-routine: return the synthesis inline, skip disk write.
 - Opus multiplies ~10x — only use when explicitly requested
 - Early convergence saves cost
 - For binary decisions, 5 poll agents usually suffices
+
+## Chain Position
+
+Standalone skill — can be invoked by any other skill as a sub-routine for multi-perspective decisions. Typical callers: `solution-design`, `system-architecture`, `discover`.

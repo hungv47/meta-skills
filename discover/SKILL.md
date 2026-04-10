@@ -2,6 +2,7 @@
 name: discover
 description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use agent-room). Not for decomposing work (use task-breakdown)."
 argument-hint: "[idea, feature, or task to clarify]"
+allowed-tools: Read Grep Glob Bash
 user-invocable: true
 license: MIT
 metadata:
@@ -457,6 +458,10 @@ Previous: none (or any skill that surfaces a need for clarification)
 Next: `system-architecture`, `task-breakdown`, or direct implementation
 
 **Re-run triggers:** When requirements change significantly, when new constraints emerge, or when implementation reveals the spec was wrong.
+
+## Next Step
+
+Run `task-breakdown` to decompose the scoped work into buildable tasks. Run `system-architecture` if technical design is needed. Run `icp-research` if audience needs further definition.
 
 ---
 
