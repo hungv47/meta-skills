@@ -2,6 +2,7 @@
 name: review-chain
 description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use agent-room). For post-deploy verification, see deploy-verify. For shipping and PRs, see ship."
 argument-hint: "[code or artifact to verify]"
+allowed-tools: Read Grep Glob Bash
 user-invocable: true
 license: MIT
 metadata:
@@ -284,6 +285,10 @@ status: final
 
 ## Resolver's Notes
 {Any "DECLINED" decisions and reasoning}
+
+## Next Step
+
+If PASS: run `ship` to create a PR. If ISSUES_FOUND: resolve and re-run. If more than 2 cycles: escalate to user.
 ```
 
 ### 8. Deliver results
