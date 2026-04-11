@@ -7,6 +7,8 @@ license: MIT
 metadata:
   author: hungv47
   version: "2.0.0"
+  budget: standard
+  estimated-cost: "$0.15-0.50"
 routing:
   intent-tags:
     - task-decomposition
