@@ -61,7 +61,7 @@ Task-breakdown works from whatever context is available. It does NOT require art
 2. **Artifacts on disk** — `.agents/system-architecture.md`, `.agents/spec.md`, `.agents/design/user-flow.md`
 3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
 
-If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill.
+If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill. Run `/navigate status` first for a single-pass freshness report across all upstream artifacts.
 
 ---
 

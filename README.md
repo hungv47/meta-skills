@@ -4,9 +4,28 @@
 
 ## Install
 
+Installs via the [`skills` CLI](https://skills.sh). Requires Node.js 18+. Auto-detects Claude Code, Cursor, Codex, Windsurf, Gemini CLI, or VS Code.
+
 ```bash
+# Install the full meta stack (5 skills)
 npx skills add hungv47/meta-skills
+
+# Cherry-pick a single skill
+npx skills add hungv47/meta-skills --skill review-chain
+npx skills add hungv47/meta-skills --skill discover
+npx skills add hungv47/meta-skills --skill task-breakdown
+
+# List available skills without installing
+npx skills add hungv47/meta-skills --list
+
+# Target a specific editor
+npx skills add hungv47/meta-skills --agent claude-code
+
+# Install globally — recommended for meta-skills since they're domain-agnostic
+npx skills add hungv47/meta-skills -g
 ```
+
+See the [root README](https://github.com/hungv47/agent-skills#install) for the full install reference.
 
 ## Design Philosophy
 
