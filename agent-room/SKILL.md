@@ -10,6 +10,27 @@ metadata:
   version: "2.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
+promptSignals:
+  phrases:
+    - "debate this"
+    - "get perspectives"
+    - "discuss this from multiple angles"
+    - "pros and cons"
+    - "multiple viewpoints"
+  allOf:
+    - [multiple, perspective]
+  anyOf:
+    - "debate"
+    - "discuss"
+    - "perspective"
+    - "consensus"
+    - "viewpoint"
+    - "pros"
+    - "cons"
+  noneOf:
+    - "code review"
+    - "quality check"
+  minScore: 6
 routing:
   intent-tags:
     - debate

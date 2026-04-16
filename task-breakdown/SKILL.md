@@ -9,6 +9,26 @@ metadata:
   version: "2.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
+promptSignals:
+  phrases:
+    - "break this down"
+    - "task list"
+    - "acceptance criteria"
+    - "sprint planning"
+    - "work breakdown"
+    - "decompose this"
+  allOf:
+    - [break, down, tasks]
+  anyOf:
+    - "tasks"
+    - "breakdown"
+    - "acceptance criteria"
+    - "sprint"
+    - "dependencies"
+  noneOf:
+    - "code review"
+    - "documentation"
+  minScore: 6
 routing:
   intent-tags:
     - task-decomposition

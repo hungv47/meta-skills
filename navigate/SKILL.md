@@ -10,6 +10,22 @@ metadata:
   version: "3.0.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
+promptSignals:
+  phrases:
+    - "what skills should i use"
+    - "which skill"
+    - "where do i start"
+    - "project status"
+    - "what skills do we have"
+  allOf:
+    - [which, skill]
+  anyOf:
+    - "navigate"
+    - "skill"
+    - "workflow"
+    - "status"
+  noneOf: []
+  minScore: 6
 routing:
   intent-tags:
     - artifact-scan
