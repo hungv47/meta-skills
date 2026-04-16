@@ -10,6 +10,30 @@ metadata:
   version: "3.0.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
+promptSignals:
+  phrases:
+    - "what should we build"
+    - "help me think through"
+    - "i have an idea"
+    - "scope this"
+    - "what do we need"
+    - "clarify requirements"
+  allOf:
+    - [scope, definition]
+    - [clarify, requirements]
+  anyOf:
+    - "requirements"
+    - "idea"
+    - "scope"
+    - "clarify"
+    - "spec"
+    - "preflight"
+    - "assumptions"
+  noneOf:
+    - "market research"
+    - "competitive analysis"
+    - "competitor"
+  minScore: 6
 routing:
   intent-tags:
     - requirements
