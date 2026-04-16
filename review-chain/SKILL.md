@@ -10,6 +10,28 @@ metadata:
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
+promptSignals:
+  phrases:
+    - "review this"
+    - "code review"
+    - "fresh eyes"
+    - "quality check"
+    - "check my work"
+    - "review my code"
+    - "review the code"
+  allOf:
+    - [review, code]
+    - [quality, check]
+  anyOf:
+    - "review"
+    - "verify"
+    - "quality"
+    - "fresh eyes"
+  noneOf:
+    - "debate"
+    - "discuss"
+    - "perspectives"
+  minScore: 6
 routing:
   intent-tags:
     - verify
