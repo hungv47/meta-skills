@@ -58,27 +58,32 @@ routing:
 ### Status
 **When:** Argument is `status` or user asks "what exists", "what's stale", "what do I have"
 
-Scan `.agents/` and report. Single-pass, no sub-agents.
+Scan `.agents/` **and the canonical top-level folders** (`brand/`, `architecture/`, `research/`), then report. Single-pass, no sub-agents.
 
-1. **Scan** `.agents/` for every `.md` file, including `.agents/meta/`. For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Most meta-skill artifacts (`.agents/meta/`) are ephemeral analysis outputs — report them but weigh them lightly in recommendations. Exception: `meta/review-chain-report.md` is consumed by `/ship` as a review gate, so treat it as a real dependency when ship is in the workflow. Also scan `.agents/meta/out-of-scope/` — report count of out-of-scope decisions and flag any whose "Revisit if" conditions may now be met.
+1. **Scan** every `.md` file in:
+   - `.agents/` (pipeline artifacts — including `.agents/meta/`)
+   - `brand/`, `architecture/`, `research/` (canonical records)
 
-2. **Report** as a table sorted by date (newest first). Mark **STALE** if `date:` > 30 days old.
+   For each, read frontmatter to extract `skill:`, `date:`, `status:`, `version:`. Missing fields = `—`. Most meta-skill artifacts (`.agents/meta/`) are ephemeral analysis outputs — report them but weigh them lightly in recommendations. Exception: `meta/review-chain-report.md` is consumed by `/ship` as a review gate, so treat it as a real dependency when ship is in the workflow. Also scan `.agents/meta/out-of-scope/` — report count of out-of-scope decisions and flag any whose "Revisit if" conditions may now be met.
+
+2. **Report** as a table sorted by date (newest first), with a `Location` column distinguishing `.agents/` pipeline outputs from top-level canonical records. Mark **STALE** if `date:` > 30 days old.
 
 ```
-| Artifact | Skill | Date | Age | Status |
-|----------|-------|------|-----|--------|
-| product-context.md | icp-research | 2026-03-15 | 13d | ok |
-| solution-design.md | solution-design | 2026-02-10 | 46d | STALE |
+| Artifact | Location | Skill | Date | Age | Status |
+|----------|----------|-------|------|-----|--------|
+| product-context.md | research/ | icp-research | 2026-03-15 | 13d | ok |
+| system-architecture.md | architecture/ | system-architecture | 2026-03-10 | 18d | ok |
+| solution-design.md | .agents/ | solution-design | 2026-02-10 | 46d | STALE |
 ```
 
-If `.agents/` doesn't exist or is empty, say so.
+If none of the scanned folders exist or all are empty, say so.
 
 3. **Recommend** the one or two skills that unblock the most, using the dependency graph below. Don't dump a flat list of everything missing — trace the graph, find the root blocker.
 
 ### Orchestrate
 **When:** Argument starts with `orchestrate` or user asks for a full workflow plan
 
-1. Scan `.agents/` for existing artifacts (same as Status step 1)
+1. Scan `.agents/` + `brand/` + `architecture/` + `research/` for existing artifacts (same as Status step 1)
 2. Check `.agents/meta/out-of-scope/` — if the goal overlaps with a prior out-of-scope decision, surface it: "This was previously scoped out because [reason]. Revisit condition: [condition]. Proceed anyway?"
 3. Classify the goal, match to skills using the skill registry, check dependencies, identify parallel tracks
 4. Produce a `workflow-plan.md` artifact with phases, checkpoints, and progress tracking

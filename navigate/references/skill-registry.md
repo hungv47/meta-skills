@@ -236,7 +236,7 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 ### Research (6 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
-| icp-research | foundation | heavy | no | product-context.md, mkt/icp-research.md |
+| icp-research | foundation | heavy | no | product-context.md, icp-research.md |
 | market-research | pipeline | heavy | no | market-research.md |
 | problem-analysis | pipeline | heavy | no | problem-analysis.md |
 | solution-design | pipeline | heavy | no | solution-design.md |
