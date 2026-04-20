@@ -51,7 +51,7 @@ routing:
     - spec.md
   consumes:
     - product-context.md
-    - design/user-flow.md
+    - product/flow/*.md
   requires: []
   defers-to:
     - skill: problem-analysis

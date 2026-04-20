@@ -111,8 +111,8 @@ Phase 4 — Planning (parallel):
   /imc-plan → mkt/imc-plan.md              ┘ run simultaneously
   /funnel-planner → targets.md
 
-Phase 5 — Design:
-  /user-flow → design/user-flow.md
+Phase 5 — Design (run once per flow — checkout, onboarding, etc.):
+  /user-flow → product/flow/<flow-name>.md (+ product/flow/index.md when ≥2 flows exist)
 
 Phase 6 — Spec & Architecture:
   /discover (interactive conversation)
@@ -258,7 +258,7 @@ These mappings are encoded in each skill's `routing.parallel-with` frontmatter f
 ### Product (6 skills)
 | Skill | Position | Complexity | Interactive | Produces |
 |-------|----------|------------|-------------|----------|
-| user-flow | pipeline | medium | no | design/user-flow.md |
+| user-flow | pipeline | medium | no | product/flow/<flow-name>.md (+ product/flow/index.md when ≥2) |
 | system-architecture | pipeline | heavy | no | system-architecture.md |
 | code-cleanup | horizontal | heavy | no | cleanup-report.md |
 | technical-writer | horizontal | medium | no | (writes to project) |
@@ -294,7 +294,7 @@ product-context.md ← /icp-research
 │                                           │           └→ (execute) → review-chain → /ship → /deploy-verify
 ├→ /discover (conversation context or spec.md) ──→┘
 ├→ design/brand-system.md ← /brand-system
-└→ design/user-flow.md ← /user-flow ──→ system-architecture.md, tasks.md
+└→ product/flow/*.md + product/flow/index.md ← /user-flow ──→ system-architecture.md, tasks.md
 ```
 
 Horizontal skills (copywriting, lp-optimization, seo, humanize, attribution, code-cleanup, technical-writer, agent-room) can be called at any point — they read upstream artifacts but don't block downstream skills.

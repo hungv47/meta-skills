@@ -195,7 +195,7 @@ product-context.md <- /icp-research
 |                                             |                   +-> deploy-verify-report.md <- /deploy-verify
 |-> /discover (conversation context or spec.md) --+
 |-> design/brand-system.md <- /brand-system
-+-> design/user-flow.md <- /user-flow --> system-architecture.md, tasks.md
++-> product/flow/*.md + product/flow/index.md <- /user-flow --> system-architecture.md, tasks.md
 ```
 
 ---
@@ -236,7 +236,7 @@ Phase 1: /icp-research -> product-context.md
 Phase 2: /market-research + /problem-analysis (parallel)
 Phase 3: /solution-design -> solution-design.md
 Phase 4: /brand-system + /imc-plan + /funnel-planner (parallel)
-Phase 5: /user-flow -> design/user-flow.md
+Phase 5: /user-flow -> product/flow/<flow-name>.md (once per flow)
 Phase 6: /discover (interactive conversation)
 Phase 7: /system-architecture -> system-architecture.md
 Phase 8: /task-breakdown -> tasks.md + execution (/review-chain after critical tasks)
