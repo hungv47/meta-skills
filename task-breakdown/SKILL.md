@@ -42,7 +42,7 @@ routing:
   consumes:
     - system-architecture.md
     - spec.md
-    - design/user-flow.md
+    - product/flow/*.md  # reads every flow file in the directory
   requires: []
   defers-to:
     - skill: discover
@@ -78,7 +78,7 @@ Task-breakdown works from whatever context is available. It does NOT require art
 
 **Resolution order:**
 1. **Conversation context** — if discover or system-architecture ran in this session, their decisions are in context
-2. **Artifacts on disk** — `.agents/system-architecture.md`, `.agents/spec.md`, `.agents/design/user-flow.md`
+2. **Artifacts on disk** — `.agents/system-architecture.md`, `.agents/spec.md`, every `.agents/product/flow/*.md`
 3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
 
 If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill. Tip: `/navigate status` gives a single-pass freshness report across all upstream artifacts.
