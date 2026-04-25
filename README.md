@@ -27,6 +27,17 @@ npx skills add hungv47/meta-skills -g
 
 See the [root README](https://github.com/hungv47/agent-skills#install) for the full install reference.
 
+### Alternative: Claude Code plugin
+
+For Claude Code users who prefer the native plugin system:
+
+```
+/plugin marketplace add hungv47/agent-skills
+/plugin install meta-skills@agent-skills
+```
+
+Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skills:review-chain`, etc. **`npx skills add` is recommended for most users** (editor-agnostic, no namespace prefix, per-skill cherry-pick). Plugin path is Claude Code only.
+
 ## Design Philosophy
 
 **"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
