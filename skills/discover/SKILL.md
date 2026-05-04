@@ -73,9 +73,7 @@ routing:
 
 *Meta — Conversational. Transform vague ideas into shared clarity through adaptive conversation.*
 
-**Core Philosophy:** "Just talk with your agent."
-
-The gap between stated requirements and true needs is where most failed projects begin. This skill closes that gap through conversation — not documents, not formal phases, not plan mode.
+**Core Philosophy:** "Just talk with your agent." Close the gap between stated requirements and true needs through conversation — not documents, formal phases, or plan mode.
 
 **Core Question:** "What would we silently get wrong if we just started building?"
 
@@ -103,9 +101,9 @@ The skill auto-calibrates based on signals it reads from the request:
 | Feature with some ambiguity, multiple approaches | **Medium** (5-10 questions) | Explore key decisions, probe edge cases |
 | Vague idea, greenfield, "I want to build X" | **Deep** (multi-round) | Challenge premise, interview across zones, iterate |
 
-You don't choose the depth. The agent reads the situation. If you want to skip ahead — "that's enough, let's build" — the agent respects it and notes current clarity level.
+The agent reads the situation. "That's enough, let's build" skips ahead — agent notes current clarity level.
 
-**Override:** "quick scope", "deep interview", "just ask 3 questions" — overrides the auto-calibration.
+**Override:** "quick scope", "deep interview", "just ask 3 questions".
 
 ---
 
@@ -113,71 +111,62 @@ You don't choose the depth. The agent reads the situation. If you want to skip a
 
 ### Step 1: Context Gathering (silent, before asking anything)
 
-Scan for answers that already exist. Don't spend more than a few minutes here — this narrows questions, not a research step.
+Scan for answers that already exist. A few minutes max — this narrows questions, not a research step.
 
-- **Codebase**: `package.json`, schemas, entry points, existing implementations relevant to the request (use Glob, Grep, Read — not a separate agent)
-- **Artifacts**: Check `.agents/` for existing specs, architecture docs, product context
-- **Experience docs**: Check `.agents/experience/{domain}.md` for answers from prior sessions
-- **Learned rules**: Read `.agents/meta/learned-rules.md` for behavior corrections
-- **Out-of-scope decisions**: Check `.agents/meta/out-of-scope/` for features or approaches already rejected in prior sessions — don't re-ask about these unless the user brings them up
-- **Project conventions**: Skim `CLAUDE.md` for patterns
+- **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
+- **Artifacts**: `.agents/` for existing specs, architecture docs, product context
+- **Experience docs**: `.agents/experience/{domain}.md` for answers from prior sessions
+- **Learned rules**: `.agents/meta/learned-rules.md` for behavior corrections
+- **Out-of-scope decisions**: `.agents/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
+- **Project conventions**: skim `CLAUDE.md`
 
-Anything found here is a question you don't need to ask.
+Anything found here is a question you don't ask.
 
 ### Step 2: Premise Check (for non-trivial work)
 
-Before diving into details, challenge the premise with 3 quick questions:
+Challenge the premise with 3 quick questions before diving in:
 
-1. **Right problem?** Restate the actual outcome in one sentence. Is the proposed approach the most direct path? Watch for solution-framing vs problem-framing: "We need notifications" (solution) vs "Users miss time-sensitive events" (problem).
+1. **Right problem?** Restate the outcome in one sentence. Is the proposed approach the most direct path? Watch solution-framing vs problem-framing: "We need notifications" (solution) vs "Users miss time-sensitive events" (problem).
 
-2. **What if we did nothing?** Is there real, measurable pain today? If nobody is complaining, probe why this surfaced now.
+2. **What if we did nothing?** Real, measurable pain today? If nobody's complaining, probe why this surfaced now.
 
-3. **What already exists?** Map the request against existing code and tooling. If 60% of the solution exists, the scope is 40% of what was described.
+3. **What already exists?** Map the request against existing code and tooling. If 60% exists, scope is 40% of what was described.
 
-If the premise is weak, say so. Suggest reframing if applicable. But don't block — advise and let the user decide.
+If the premise is weak, say so. Suggest reframing — don't block; advise and let the user decide.
 
-**Framing checkpoint** — after receiving the user's first substantive answer, pause and verify before continuing:
-- **Language precision:** Are key terms defined concretely, or hiding behind buzzwords ("AI-powered", "seamless", "platform")?
-- **Real vs hypothetical:** Is the user describing what IS happening or what MIGHT happen? Past behavior beats future predictions.
-- **Hidden assumptions:** What is the user taking for granted that could be wrong? State it back to them.
+**Framing checkpoint** — after the user's first substantive answer, verify before continuing:
+- **Language precision:** Key terms defined concretely, or hiding behind buzzwords ("AI-powered", "seamless", "platform")?
+- **Real vs hypothetical:** Describing what IS happening or what MIGHT happen? Past behavior beats future predictions.
+- **Hidden assumptions:** What's the user taking for granted that could be wrong? State it back.
 
-If framing is vague, fix it before proceeding. An entire session built on imprecise framing produces precise-looking nonsense.
+Vague framing produces precise-looking nonsense. Fix it before proceeding.
 
-**Skip the premise check when:** the task is clearly scoped ("add a dark mode toggle"), the user is continuing from a previous decision, or context makes it obvious the premise is sound.
+**Skip premise check when:** task is clearly scoped ("add a dark mode toggle"), user is continuing a prior decision, or context makes the premise obviously sound.
 
 ### Step 3: Adaptive Coverage Zones
 
-Instead of 5 fixed dimensions, identify **3-5 coverage zones** that matter for THIS specific problem.
+Identify **3-5 coverage zones** that matter for THIS problem (not 5 fixed dimensions).
 
-**For a product feature:**
-- Problem validation → Solution clarity → Technical risks → Success criteria
+- **Product feature:** Problem validation → Solution clarity → Technical risks → Success criteria
+- **Business strategy:** Problem clarity → Options landscape → Tradeoffs → Validation path
+- **Marketing initiative:** Audience fit → Channel strategy → Messaging → Measurement
+- **Infrastructure/devops:** Requirements → Constraints → Failure modes → Rollout plan
+- **Design task:** User needs → Information architecture → Interaction patterns → Edge states
 
-**For a business strategy:**
-- Problem clarity → Options landscape → Tradeoffs → Validation path
+State zones upfront: "Here's what I think we need clarity on: [zones]. Anything to add or remove?" User can adjust.
 
-**For a marketing initiative:**
-- Audience fit → Channel strategy → Messaging → Measurement
-
-**For infrastructure/devops:**
-- Requirements → Constraints → Failure modes → Rollout plan
-
-**For a design task:**
-- User needs → Information architecture → Interaction patterns → Edge states
-
-State the zones at the start: "Here's what I think we need clarity on: [zones]. Anything you'd add or remove?" The user can adjust.
-
-Zones are a compass, not a checklist. Some problems only need 2 zones explored deeply. Others need 5 touched lightly. Let the conversation guide it.
+Zones are a compass, not a checklist. Some problems need 2 zones deep; others 5 touched lightly. Let the conversation guide it.
 
 ### Communication Discipline
 
 During diagnostic questioning:
-- No affirmation before probing — never say "Great!", "That makes sense!", "Solid approach" before asking the next question
+- No affirmation before probing — no "Great!", "That makes sense!", "Solid approach" before the next question
 - State disagreements directly: "That approach has a problem: [X]" not "That's interesting, though..."
-- When the user's answer reveals a weak premise, say so before moving on
-- Praise only completed outcomes, never stated intentions
-- If you agree, just proceed — agreement doesn't need to be performed
+- If the user's answer reveals a weak premise, say so before moving on
+- Praise completed outcomes only, never stated intentions
+- Agreement doesn't need to be performed — just proceed
 
-**Pushback patterns** — when you hear these, push back with the rigorous version:
+**Pushback patterns** — push back with the rigorous version:
 
 *Vague market:*
 - BAD: "That's a big market! Let's explore what kind of tool."
@@ -203,44 +192,42 @@ The best reward for a good answer is a harder follow-up, not praise.
 
 ### Step 4: Conversation
 
-Use proven interview techniques naturally. Don't announce the technique — just ask.
+Use proven interview techniques naturally. Don't announce them — just ask.
 
 **Why Chains** — "Why this approach specifically?" → drill past surface answers. "We need real-time updates." → "Why real-time?" → "Users check every few minutes." → "So 30s polling works?" → "Actually, yes."
 
-**Past Behavior Probes** — "What are you/users doing today to solve this?" Past behavior reveals actual needs; future descriptions reveal aspirations.
+**Past Behavior Probes** — "What are you/users doing today to solve this?" Past behavior reveals real needs; future descriptions reveal aspirations.
 
 **Daily Use Visualization** — "Walk me through a typical day where you'd use this. What triggers you to open it?"
 
 **Forced Tradeoffs** — "If you could only keep 2 of these 4 features, which 2?" Forced choices reveal true priorities.
 
-**Failed Attempt Archaeology** — "Have you tried this before? Used a tool for this? What was wrong with it?"
+**Failed Attempt Archaeology** — "Have you tried this before? Used a tool for it? What was wrong?"
 
 **Success Criteria Grounding** — "If this ships and works perfectly, what's the first thing you'd notice is different?"
 
-**Should-Want Detection** — Watch for:
+**Should-Want Detection** — watch for:
 - Overly formal or buzzword-heavy language
-- Features described from elsewhere without connecting to specific pain
+- Features described from elsewhere without connection to specific pain
 - Quick, confident answers to complex questions (real complexity produces hesitation)
 - Answers that don't connect to any user story or past experience
 
-When detected, switch to probing actual needs before continuing.
+When detected, switch to probing actual needs.
 
-**Question Delivery:**
+**Question Delivery:** two tools — use whichever fits.
 
-You have two tools for asking questions — use whichever fits the moment:
+**`AskUserQuestion` tool** — clickable options with descriptions. Best for 2-4 concrete choices with real tradeoffs. Mark recommended option ("(Recommended)" suffix). Use `preview` for comparing code/architecture; `multiSelect: true` for non-exclusive choices. "Other" is always available for free text.
 
-**`AskUserQuestion` tool** — presents clickable options with descriptions. Best when you can offer 2-4 concrete choices with real tradeoffs. Reduces friction: the user clicks instead of typing. Mark your recommended option clearly (e.g., "(Recommended)" suffix). Use `preview` for comparing code or architecture. Use `multiSelect: true` for non-exclusive choices. The user always has "Other" for free-text input.
+**Chat questions** — plain conversational. Best when answer space is wide open or you're following a thread deeper (why chains, past behavior, premise challenges).
 
-**Chat questions** — plain conversational questions. Best when the answer space is wide open or you're following a thread deeper (why chains, past behavior, premise challenges).
-
-Most sessions will mix both naturally. A scoping question with known options → AskUserQuestion. A follow-up probing why they chose that → chat. Don't overthink the choice — if you can offer concrete options, use the tool; if you're exploring, just ask.
+Most sessions mix both. Concrete options → tool; exploring → just ask.
 
 **Pacing:**
 - 2-4 questions per round
-- Each question targets 2-4 decision points with real tradeoffs
+- Each targets 2-4 decision points with real tradeoffs
 - State which choice you recommend and why
-- Group related questions together — batch up to 4 into a single AskUserQuestion call when they're independent
-- After each round, briefly acknowledge answers and track clarity internally
+- Batch up to 4 independent questions into a single AskUserQuestion call
+- Briefly acknowledge answers each round; track clarity internally
 
 **Question formats** (use whichever fits the question):
 
@@ -251,7 +238,7 @@ My default assumption: REST, since the existing codebase uses Express.
 Why it matters: GraphQL would require adding apollo-server and
 restructuring the resolver layer — completely different implementation path.
 ```
-This maps naturally to AskUserQuestion with 2 options: "REST (Recommended)" and the alternative, with the rationale in descriptions. But chat works fine too — use your judgment.
+Maps naturally to AskUserQuestion with 2 options: "REST (Recommended)" + alternative, rationale in descriptions. Chat works fine too — use judgment.
 
 *Options format* (best for design decisions with clear tradeoffs):
 ```
@@ -262,46 +249,45 @@ Options:
 3. Badge indicator — Subtle, user can investigate when ready
 Recommended: Option 1 — most sync failures are transient
 ```
-This is a natural fit for AskUserQuestion — the options become clickable choices with tradeoff descriptions.
+Natural fit for AskUserQuestion — options become clickable choices with tradeoff descriptions.
 
-At light depth (scoping), prefer the assumption-surfacing format — it's the key innovation that prevents silent assumption failures. At deeper depths, mix both formats based on what the question needs.
+At light depth (scoping), prefer assumption-surfacing — it's the key innovation that prevents silent assumption failures. Deeper depths: mix both formats per question.
 
 ### Step 5: Complex Decision Points → Agent Room
 
-When you hit a genuinely complex decision where your single perspective isn't enough — architecture choice, strategic direction, design tradeoff with no clear winner — invoke the `agents-panel` skill as a sub-routine.
+When a decision genuinely needs more than one perspective — architecture choice, strategic direction, design tradeoff with no clear winner — invoke `agents-panel` as a sub-routine.
 
 **When to invoke:**
 - Two+ viable approaches with non-obvious tradeoffs
-- The decision will be expensive to reverse
-- You feel uncertain and want to pressure-test your thinking
+- Decision is expensive to reverse
+- You're uncertain and want to pressure-test your thinking
 
-**How to invoke:**
-Frame the specific decision for the agents-panel: "Should we use WebSocket push or polling for this use case?" Include the context gathered so far. The agents-panel debates, returns a recommendation, and you continue the conversation.
+**How:** Frame the specific decision ("WebSocket push or polling for this use case?"), include context. Panel debates, returns a recommendation, conversation continues.
 
 **When NOT to invoke:**
-- The decision has a clear best answer from the context
-- The user has already expressed a strong preference
-- The choice is easily reversible
+- Clear best answer from context
+- User already has a strong preference
+- Choice is easily reversible
 
 ### Step 6: Clarity Check
 
-When the conversation has reached enough clarity to build:
+When clarity is sufficient to build:
 
-1. Summarize key decisions made
-2. Note any remaining open questions and their impact
-3. Ask: "Ready to build, or want to go deeper on anything?"
+1. Summarize key decisions
+2. Note remaining open questions and their impact
+3. Ask: "Ready to build, or go deeper on anything?"
 
-If the user says go, go. Don't pad with more questions.
+If the user says go, go. Don't pad.
 
 ### Step 7: Output
 
-**Default: conversation context.** Decisions live in the conversation. The next skill (system-architecture, task-breakdown, or direct implementation) can read everything that was discussed.
+**Default: conversation context.** Decisions live in chat. The next skill (system-architecture, task-breakdown, direct implementation) reads everything discussed.
 
-**Optional save points** — produce these when:
-- The user explicitly asks ("save this to a spec")
-- The session is ending and decisions would be lost
-- The output is needed by someone outside this conversation
-- A natural milestone is reached and the user confirms saving
+**Optional save points** — produce when:
+- User explicitly asks ("save this to a spec")
+- Session is ending and decisions would be lost
+- Output is needed by someone outside this conversation
+- Natural milestone reached and user confirms saving
 
 **Save point formats:**
 
@@ -370,13 +356,13 @@ NOT IN SCOPE:
 
 **Writing good contract clauses:**
 
-*GOAL* — include a number: "handles 50K req/sec" not "handles high traffic". Define the user-visible outcome: "user can filter by date, status, and assignee" not "add filtering".
+*GOAL* — include a number: "handles 50K req/sec" not "handles high traffic". User-visible outcome: "user can filter by date, status, assignee" not "add filtering".
 
-*CONSTRAINTS* — only hard limits that are NOT negotiable. Technology: "must use existing ORM". Scope: "under 200 lines, single file". Compatibility: "backwards compatible with v2 API".
+*CONSTRAINTS* — only hard, non-negotiable limits. Technology: "must use existing ORM". Scope: "under 200 lines, single file". Compatibility: "backwards compatible with v2 API".
 
-*FORMAT* — exact file structure: "single file: `rate_limiter.py`" not "a Python file". What to include: "type hints on all public methods, 5+ tests". What to exclude: "no comments explaining obvious code".
+*FORMAT* — exact file structure: "single file: `rate_limiter.py`" not "a Python file". Include: "type hints on all public methods, 5+ tests". Exclude: "no comments explaining obvious code".
 
-*FAILURE* — the key innovation. Think about how the task could "technically work" but actually be wrong:
+*FAILURE* — the key innovation. How could this "technically work" but be wrong?
 - Missing edge case: "no test for empty input"
 - Performance miss: "latency exceeds 1ms on synthetic load"
 - Silent failure: "swallows errors without logging"
@@ -394,8 +380,8 @@ NOT IN SCOPE:
 - [ ] FORMAT matches spec: {confirmation}
 ```
 
-**Out-of-scope persistence** (for institutional memory):
-When features are explicitly scoped out during conversation, write to `.agents/meta/out-of-scope/[kebab-case-name].md`:
+**Out-of-scope persistence** (institutional memory):
+When features are explicitly scoped out, write to `.agents/meta/out-of-scope/[kebab-case-name].md`:
 ```markdown
 # [Feature/Approach Name]
 **Decided:** [date]
@@ -403,9 +389,9 @@ When features are explicitly scoped out during conversation, write to `.agents/m
 **Decision:** Not pursuing because [reason from conversation]
 **Revisit if:** [condition that would change the decision]
 ```
-Create the directory if it doesn't exist. This prevents future sessions from re-asking about decisions already made.
+Create the directory if missing. Prevents future sessions from re-asking decided questions.
 
-**Experience doc** (for the learning flywheel):
+**Experience doc** (learning flywheel):
 Append Q&A to `.agents/experience/{domain}.md` after each session:
 ```markdown
 ## {Task Name} — Decisions ({date})
@@ -415,19 +401,19 @@ A: {user's answer}
 Rationale: {why this matters for future tasks}
 ```
 
-The flywheel effect: each session adds context → future sessions need fewer questions → output quality improves immediately.
+Flywheel: each session adds context → future sessions need fewer questions → quality improves immediately.
 
 ---
 
 ## Context Resolution Order
 
-When the discover skill (or any downstream skill) needs context about prior decisions:
+When discover (or any downstream skill) needs prior decisions:
 
-1. **Conversation context** — same session, decisions are in the chat
+1. **Conversation context** — same session, decisions in chat
 2. **Artifact on disk** — previous session saved a spec or contract
 3. **Discovery** — ask the user or scan the codebase
 
-This means downstream skills don't REQUIRE artifacts to exist as files. They need the decisions to be known, from whatever source.
+Downstream skills don't REQUIRE artifacts as files. They need decisions known, from whatever source.
 
 ---
 
@@ -460,25 +446,25 @@ This means downstream skills don't REQUIRE artifacts to exist as files. They nee
 
 ## Edge Cases
 
-- **"Just do it"**: List assumptions inline and start building. Skip questions. If critical assumptions exist, mention them briefly.
-- **"Skip questions"**: Use context scan only, summarize what you know, proceed.
-- **"Save this"**: Write to `.agents/spec.md` or emit contract format inline.
-- **All questions answered by context**: Skip to clarity check. Note that context was sufficient.
-- **User answers are contradictory**: Flag the contradiction. Ask one follow-up to resolve.
-- **Task changes mid-conversation**: Re-assess whether prior answers still apply. Ask 1-2 new questions if scope shifted. Don't restart from scratch.
-- **Experience doc has answers**: Read `.agents/experience/{domain}.md` first. Only ask questions NOT already answered.
-- **Task is trivial**: Say so. Suggest skipping discovery entirely.
-- **User says "that's enough"**: Respect it. Note current clarity level and any unexplored zones.
+- **"Just do it"**: List assumptions inline and start building. Skip questions; mention critical assumptions briefly.
+- **"Skip questions"**: Context scan only, summarize what you know, proceed.
+- **"Save this"**: Write `.agents/spec.md` or emit contract format inline.
+- **All questions answered by context**: Skip to clarity check. Note context was sufficient.
+- **Contradictory answers**: Flag it. One follow-up to resolve.
+- **Task changes mid-conversation**: Re-assess whether prior answers still apply. 1-2 new questions if scope shifted. Don't restart.
+- **Experience doc has answers**: Read `.agents/experience/{domain}.md` first. Only ask what's not answered.
+- **Task is trivial**: Say so. Suggest skipping discovery.
+- **"That's enough"**: Respect it. Note current clarity level and unexplored zones.
 
 ---
 
 ## Skill Deference
 
-- **Have a FEATURE or TASK to clarify?** → Use this skill.
-- **Have a declining METRIC to diagnose?** → Use `diagnose` instead.
-- **Need multi-perspective debate on a specific decision?** → Use `agents-panel`.
-- **Know what to build and need technical design?** → Use `system-architecture`.
-- **Need to decompose into tasks?** → Use `task-breakdown`.
+- **FEATURE or TASK to clarify?** → this skill.
+- **Declining METRIC to diagnose?** → `diagnose`.
+- **Multi-perspective debate on a decision?** → `agents-panel`.
+- **Know what to build, need technical design?** → `system-architecture`.
+- **Decompose into tasks?** → `task-breakdown`.
 
 ---
 
@@ -487,11 +473,11 @@ This means downstream skills don't REQUIRE artifacts to exist as files. They nee
 Previous: none (or any skill that surfaces a need for clarification)
 Next: `system-architecture`, `task-breakdown`, or direct implementation
 
-**Re-run triggers:** When requirements change significantly, when new constraints emerge, or when implementation reveals the spec was wrong.
+**Re-run triggers:** requirements change significantly, new constraints emerge, or implementation reveals the spec was wrong.
 
 ## Next Step
 
-Run `task-breakdown` to decompose the scoped work into buildable tasks. Run `system-architecture` if technical design is needed. Run `icp-research` if audience needs further definition.
+Run `task-breakdown` to decompose scoped work into buildable tasks. Run `system-architecture` for technical design. Run `icp-research` if audience needs further definition.
 
 ---
 

@@ -76,18 +76,18 @@ routing:
 ## Chain Position
 Previous: `system-architecture`, `discover`, or conversation context | Next: task execution (Phase 2)
 
-**Re-run triggers:** When architecture changes after initial breakdown, when scope mode changes (e.g., full → minimal), or when tasks consistently fail acceptance criteria (indicates decomposition issues).
+**Re-run triggers:** architecture changes after initial breakdown; scope mode changes (e.g., full → minimal); tasks consistently fail acceptance (signals decomposition issues).
 
 ## Context Resolution
 
-Task-breakdown works from whatever context is available. It does NOT require artifacts on disk — conversation context from the current session is equally valid.
+Works from whatever context is available — does NOT require disk artifacts. Conversation context is equally valid.
 
 **Resolution order:**
-1. **Conversation context** — if discover or system-architecture ran in this session, their decisions are in context
+1. **Conversation context** — decisions from discover or system-architecture in this session
 2. **Artifacts on disk** — `architecture/system-architecture.md`, `.agents/spec.md`, every `.agents/product/flow/*.md`
-3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
+3. **Defer to discover** — if neither exists, recommend `/discover`. Do not conduct your own interview — clarification is discover's job.
 
-If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill.
+If artifact `date` fields are older than 30 days, recommend re-running the source skill.
 
 ---
 
@@ -118,12 +118,12 @@ Layer 2 (sequential):
 
 ### Dispatch Protocol
 
-1. **Confirm scope mode** — ask the user: "Are we decomposing everything (FULL), building exactly what's spec'd (LOCKED), or cutting to minimum (MINIMAL)?" Default to LOCKED if finished spec provided, MINIMAL if MVP mentioned.
-2. **Extract durable decisions** — before decomposing, identify and list the architectural decisions that every task will reference: route structures, database schema shape, key data models, auth approach, third-party service boundaries, deployment target. Write these as a "Shared Context" header in the task artifact so every task can reference them without repeating or diverging. If system-architecture.md exists, extract from there. If not, extract from conversation context.
-3. **Layer 1 dispatch** — send brief + scope mode + shared context to `decomposer-agent` and `dependency-mapper-agent` in parallel.
-4. **Layer 2 sequential chain** — pass both outputs to `ordering-agent`, then ordered list to `acceptance-agent`, then complete breakdown to `critic-agent`.
-5. **Revision loop** — if critic returns FAIL, re-dispatch affected agents with feedback. Maximum 2 rounds.
-6. **Assembly** — merge into the task artifact format. Every task block gets a seeded `**History:**` entry (`{{today}} · task-breakdown · created`) so the audit trail has an origin. Save to `.agents/tasks.md`.
+1. **Confirm scope mode** — ask: "FULL (decompose everything), LOCKED (build exactly what's spec'd), or MINIMAL (cut to MVP)?" Default LOCKED if finished spec provided, MINIMAL if MVP mentioned.
+2. **Extract durable decisions** — list architectural decisions every task references: routes, schema shape, key data models, auth approach, third-party service boundaries, deployment target. Write as a "Shared Context" header so tasks reference without repeating or diverging. Source from system-architecture.md or conversation context.
+3. **Layer 1 dispatch** — brief + scope mode + shared context → `decomposer-agent` and `dependency-mapper-agent` in parallel.
+4. **Layer 2 sequential chain** — both outputs → `ordering-agent` → `acceptance-agent` → `critic-agent`.
+5. **Revision loop** — if critic FAILs, re-dispatch affected agents with feedback. Max 2 rounds.
+6. **Assembly** — merge into artifact format. Seed each task block with `**History:**` entry (`{{today}} · task-breakdown · created`). Save to `.agents/tasks.md`.
 
 ### Routing Rules
 
@@ -150,22 +150,21 @@ Before delivering, the critic-agent verifies ALL of these pass:
 - [ ] No task requires unstated knowledge to complete
 - [ ] Tasks are vertical slices (each delivers a testable increment through all layers). Horizontal-only tasks require explicit justification.
 
-**If any gate fails:** the critic identifies which agent must fix it and the orchestrator re-dispatches with specific feedback.
+**On gate fail:** critic identifies the agent to fix; orchestrator re-dispatches with specific feedback.
 
 ---
 
 ## Single-Agent Fallback
 
-When context window is constrained or the decomposition is simple (fewer than 10 tasks expected):
+When context is constrained or decomposition is simple (<10 tasks):
 
 1. Skip multi-agent dispatch
-2. Confirm scope mode with the user
-3. Decompose using the Task Format and Sizing Rules below
-4. Map dependencies inline
-5. Order risk-first
-6. Write acceptance criteria for each task
-7. Run the Critical Gates checklist as self-review
-8. Save to `.agents/tasks.md`
+2. Confirm scope mode
+3. Decompose using Task Format + Sizing Rules below
+4. Map dependencies inline; order risk-first
+5. Write acceptance criteria per task
+6. Run Critical Gates checklist as self-review
+7. Save to `.agents/tasks.md`
 
 ---
 
@@ -183,13 +182,13 @@ Default to LOCKED SCOPE if the user provides a finished spec. Default to MINIMAL
 
 ## Task Format
 
-Every task gets a **stable ID** (`T1`, `T2`, `T3`...) assigned at creation and **never renumbered**. Inserting a task later uses the next free number (e.g., `T8` even if it belongs between `T3` and `T4`). Removed tasks keep their ID with `Status: removed` — don't delete the block, so dependents fail loudly instead of silently mis-pointing.
+Every task gets a **stable ID** (`T1`, `T2`...) at creation, **never renumbered**. Inserts use the next free number (e.g., `T8` even if it belongs between `T3` and `T4`). Removed tasks keep their ID with `Status: removed` — don't delete the block, so dependents fail loudly instead of mis-pointing silently.
 
-**Index ordering:** Rows in the Status Index are ordered by **execution order**, not ID. When inserting `T8` logically between `T3` and `T4`, place the T8 row between them. IDs never move; rows do.
+**Index ordering:** rows ordered by **execution order**, not ID. Insert `T8` between `T3` and `T4` rows when logically positioned there. IDs never move; rows do.
 
 ### File Layout
 
-The artifact opens with a **status index table** — a single skim surface so a resuming agent finds the next task in one read, without scanning every block. The index is the source of truth for status; task blocks carry the detail. Both must stay in sync — whenever a task's `Status` flips, update its row in the index in the same edit.
+The artifact opens with a **status index table** — single skim surface so a resuming agent finds the next task in one read. The index is source of truth for status; task blocks carry detail. Both must stay in sync — whenever `Status` flips, update its index row in the same edit.
 
 ```markdown
 ---
@@ -240,9 +239,9 @@ status: draft
 - {{today}} · task-breakdown · created
 ```
 
-Each task is a `###` block under the `## Tasks` container. Siblings, not nested. Agents anchor on `### Task T[N]:` to jump from index row to task block.
+Each task is a `###` block under `## Tasks` — siblings, not nested. Agents anchor on `### Task T[N]:` to jump from index row to block.
 
-Every task block carries a seeded `**History:**` entry at creation time (`{{today}} · task-breakdown · created`). This guarantees the audit trail has an origin — Update/Remove/Reopen entries append below it.
+Every task block seeds a `**History:**` entry at creation (`{{today}} · task-breakdown · created`) so the audit trail has an origin — Update/Remove/Reopen entries append below.
 
 ### Status field
 
@@ -255,8 +254,8 @@ Every task block carries a seeded `**History:**` entry at creation time (`{{toda
 | `removed` | No longer needed. Block stays so dependent tasks surface breakage. |
 
 **Transition rules:**
-- Only flip `pending → in_progress` if every task in `Depends on` is `done`.
-- Flipping to `done` or `blocked` requires a non-empty `Evidence` line (commit SHA, test pass, artifact path, or blocker description). No evidence → not done and not blocked.
+- `pending → in_progress` only if every `Depends on` task is `done`.
+- `done` or `blocked` requires non-empty `Evidence` (commit SHA, test pass, artifact path, or blocker). No evidence → neither done nor blocked.
 - `blocked` and `removed` are terminal until reopened — see Reopen Protocol.
 
 **Who may make each transition:**
@@ -273,7 +272,7 @@ Every task block carries a seeded `**History:**` entry at creation time (`{{toda
 | `* → removed` | Human | Via Remove Protocol |
 | `done → in_progress` directly | **Never** | Always Reopen to `pending` first |
 
-Always bump `Updated:` with the current date and `· {agent/user identity}` in the same format used in the Status Index (`YYYY-MM-DD · {actor}`).
+Always bump `Updated:` with current date + `· {actor}` matching index format (`YYYY-MM-DD · {actor}`).
 
 ### Sizing Rules
 
@@ -296,9 +295,9 @@ Every task gets an **Autonomy** label:
 | **AFK** | Agent can execute end-to-end without human judgment | Deterministic tasks: scaffolding, CRUD, tests, migrations with clear schema |
 | **HITL** | Needs human judgment during execution | Taste decisions, external approvals, ambiguous acceptance criteria, security-sensitive changes |
 
-**Default to AFK.** Only mark HITL when the task genuinely requires a judgment call that the agent can't make from the spec alone. Every HITL task must state *what specific judgment* is needed — "needs review" is not sufficient.
+**Default to AFK.** Mark HITL only when the task genuinely requires judgment the agent can't make from the spec alone. Every HITL task must state *what specific judgment* is needed — "needs review" is insufficient.
 
-**Why this matters:** Orchestrators (multi-agent systems, automation pipelines) use this to batch-run AFK tasks autonomously and queue HITL tasks for user attention. Mislabeling AFK as HITL wastes the user's time. Mislabeling HITL as AFK risks wrong decisions.
+**Why this matters:** Orchestrators batch-run AFK autonomously and queue HITL for user attention. Mislabeling AFK→HITL wastes time; HITL→AFK risks wrong decisions.
 
 ### Content Rules
 
@@ -320,119 +319,108 @@ Every task lists what it needs. Enables parallel work and failure impact analysi
 ### Before Starting
 
 1. Read architecture doc fully
-2. Read task list fully — Status Index first, then Shared Context, then individual task blocks
+2. Read task list fully — Status Index first, then Shared Context, then individual blocks
 3. Understand the end state before writing code
-4. If anything is ambiguous, ask — assumptions cause rework.
+4. If ambiguous, ask — assumptions cause rework.
 
 ### Resume Protocol (agent picking up an existing task list)
 
-Any agent (including a fresh session with no prior context) uses this exact sequence to determine what to work on:
+Any agent (including a fresh session) uses this exact sequence:
 
-1. **Read the Status Index table** in execution order, top to bottom. Do not scan task blocks yet.
-2. **Find the first row where:** `Status: pending` AND every ID in `Depends on` has `Status: done` in the index. This is the next task.
-3. **If none exists**, check for `Status: in_progress` rows:
-   - If the `Updated` attribution is *you* (same agent, same session) → continue it.
-   - If the attribution is a different agent, apply the staleness check below. If stale → flip back to `pending` with a note in `Updated`, then restart step 2.
-   - Otherwise → do not touch it. Stop and surface to the user ("T2 is claimed by agent-X, updated {date}").
-4. **If all tasks are `done` or `removed`** → report completion and stop.
-5. **If only `blocked` tasks remain** → surface the blockers to the user. Do not silently skip them.
-6. **Claim the task:** flip `Status: pending → in_progress`, set `Updated:` to today + your agent identity, in both the index row and the task block. Commit this status change **before** starting work so concurrent agents see the claim (see Concurrency Model below).
+1. **Read Status Index** in execution order, top to bottom. Don't scan task blocks yet.
+2. **Find first row where:** `Status: pending` AND every `Depends on` ID has `Status: done`. That's the next task.
+3. **If none**, check `in_progress` rows:
+   - `Updated` attribution is *you* (same agent, same session) → continue it.
+   - Different agent → apply staleness check below. If stale → flip to `pending` with note in `Updated`, restart step 2.
+   - Otherwise → don't touch. Stop and surface to user ("T2 claimed by agent-X, updated {date}").
+4. **All `done` or `removed`** → report completion and stop.
+5. **Only `blocked` remain** → surface blockers. Don't silently skip.
+6. **Claim:** flip `pending → in_progress`, set `Updated:` to today + your agent identity, in both index row and task block. Commit the status change **before** starting work so concurrent agents see the claim (see Concurrency Model).
 7. Execute Per-Task Protocol below.
-8. **On completion:** flip `Status: in_progress → done`, fill `Evidence:` with commit SHA or test output, update the index row. Then loop back to step 1 for the next task.
+8. **On completion:** flip `in_progress → done`, fill `Evidence:` with commit SHA or test output, update the index row. Loop back to step 1.
 
-**Never flip a status without updating both the index and the task block in the same edit.** They are the same fact written twice — drift breaks resume.
+**Never flip status without updating both index and task block in the same edit.** Drift breaks resume.
 
-#### Staleness check (for step 3 claim reclamation)
+#### Staleness check (step 3 claim reclamation)
 
-Do **not** reclaim a task just because its timestamp is old. A HITL task legitimately claimed by a human reviewer may sit for a day. Only reclaim if **both** of these are true:
+Don't reclaim just because the timestamp is old — a HITL task legitimately claimed by a human reviewer may sit for a day. Only reclaim if **both**:
 
-- Time since `Updated` exceeds the task's expected window: **2 hours for AFK**, **24 hours for HITL**.
-- **No commits by the claiming agent** appear in `git log --author` (or the relevant VCS history) within that window.
+- Time since `Updated` exceeds the window: **2h AFK**, **24h HITL**.
+- **No commits by the claiming agent** in `git log --author` within that window.
 
-If either check fails, assume the agent is legitimately working — do not steal. When in doubt, stop and surface to the user.
+Either check fails → assume the agent is working. Don't steal. When in doubt, surface to user.
 
 #### Concurrency model
 
-Markdown-as-coordination is **best-effort, not a lock**. Two agents reading the file simultaneously can both decide `T3` is next and both write `in_progress` — last write wins.
+Markdown coordination is **best-effort, not a lock**. Two agents reading simultaneously can both claim `T3` — last write wins.
 
 **Safe patterns:**
-- **Serial execution** (default): only one agent works the list at a time. Simplest and covers 90% of real use.
-- **Shared git remote**: before claiming, `git pull --rebase`. Write the claim. `git commit && git push`. If push fails due to conflict, pull and restart Resume Protocol from step 1.
-- **Shared filesystem without git**: not safe without an external lock. Run agents serially.
+- **Serial execution** (default): one agent at a time. Covers 90% of cases.
+- **Shared git remote**: `git pull --rebase` before claiming. Write claim. `git commit && git push`. On push conflict, pull and restart Resume Protocol from step 1.
+- **Shared filesystem without git**: unsafe without external lock. Run serially.
 
-If you discover mid-work that your claim was overwritten (your `Updated` attribution is gone from the task block), **abort current work** and restart Resume Protocol from step 1.
+If mid-work you find your claim overwritten (your `Updated` attribution gone), **abort** and restart Resume Protocol from step 1.
 
 ### Per-Task Protocol
 
-1. State which task you're starting (by ID, e.g. "Starting T3"). Note the task's current `Revision:` number if present.
+1. State which task you're starting by ID (e.g. "Starting T3"). Note current `Revision:` number if present.
 2. Write minimum code to pass acceptance.
-3. **Before committing work**, re-read the task block. Abort current work and restart Resume Protocol if any of:
+3. **Before committing**, re-read the task block. Abort and restart Resume Protocol if any of:
    (a) `Revision:` bumped since you claimed — spec changed mid-flight,
-   (b) `Status` flipped back to `pending` — PM unclaimed the task,
-   (c) your agent identity is no longer in `Updated:` — another agent overwrote your claim.
-   On abort, re-read the new Acceptance before re-claiming.
+   (b) `Status` flipped to `pending` — PM unclaimed,
+   (c) your identity gone from `Updated:` — another agent overwrote your claim.
+   On abort, re-read new Acceptance before re-claiming.
 4. State exactly what to test and expected result.
-5. **AFK tasks:** Run the acceptance test. Pass → write `Evidence`, flip to `done`, commit, move to next task without waiting. Fail → fix and re-test (max 2 attempts, then flip to `blocked` with reason and flag to user).
-6. **HITL tasks:** Stop and present the result. Wait for user confirmation. Pass → write `Evidence`, flip to `done`, commit, announce next task. Fail → fix the specific issue only, don't expand scope.
+5. **AFK:** Run acceptance test. Pass → write `Evidence`, flip `done`, commit, move on without waiting. Fail → fix and re-test (max 2 attempts, then `blocked` with reason and flag user).
+6. **HITL:** Stop and present result. Wait for user confirmation. Pass → write `Evidence`, flip `done`, commit, announce next. Fail → fix the specific issue only, don't expand scope.
 
 ### Coding Rules
 
-**Do:**
-- Write absolute minimum code required
-- Focus only on current task
-- Keep code modular and testable
-- Preserve existing functionality
+**Do:** write minimum code; focus only on current task; keep code modular and testable; preserve existing functionality.
 
-**Avoid — these cause scope creep and breakage:**
-- Sweeping changes across unrelated files
-- Touching unrelated code
-- Refactoring unless the task requires it
-- Adding features not in the current task
-- Premature optimization
+**Avoid (causes scope creep and breakage):** sweeping changes across unrelated files; touching unrelated code; refactoring unless task requires it; adding features not in current task; premature optimization.
 
-**When human action is needed:**
-- State exactly what to do and which file/value to update
-- Wait for confirmation before continuing
+**When human action is needed:** state exactly what to do and which file/value to update; wait for confirmation.
 
 ### When Stuck
 
-0. It is better to stop and say "I'm stuck — here's what I've tried" than to keep attempting fixes that aren't working. Bad work is worse than no work.
+0. Better to stop and say "I'm stuck — here's what I've tried" than keep attempting fixes that aren't working. Bad work is worse than no work.
 1. State what's blocking
-2. Propose smallest modification to unblock
+2. Propose smallest unblock
 3. Wait for approval
 
 ### Scope Change Protocol
 
-If you discover a missing requirement:
+If a missing requirement surfaces:
 
 1. Stop current task
-2. State what's missing and why it's needed
+2. State what's missing and why
 3. Propose where it fits in task order
 4. Wait for PM to update task list
-5. Resume only after task list is updated
+5. Resume only after update
 
 ### Update / Remove / Reopen Protocol
 
-The task file is **append-only for history**. Never silently overwrite acceptance criteria or delete a task block — future agents need to see what changed. Every mutation lands as a new line in a `**History:**` block at the bottom of the task, with date + actor + one-line reason.
+The task file is **append-only for history**. Never silently overwrite acceptance or delete a block — future agents need to see what changed. Every mutation appends to `**History:**` at the bottom of the task: date + actor + one-line reason.
 
-**Update** (acceptance, outcome, or dependencies changed while task is still open):
+**Update** (acceptance, outcome, or deps changed while task is open):
 
-1. Bump `**Revision:**` counter on the task block (add the field if absent; start at `2` on first revision).
-2. Rewrite the changed field in place (e.g., replace `Acceptance:` with the new test).
-3. Append to `**History:**` below the task: `- 2026-04-21 · user · revision 2: tightened acceptance to require RLS test, not just row creation.`
-4. If `Status` was `in_progress`, flip it back to `pending` — the in-flight work is now against a stale spec. Agent must re-claim.
+1. Bump `**Revision:**` counter (add field if absent; start at `2` on first revision).
+2. Rewrite the changed field in place (e.g., replace `Acceptance:`).
+3. Append to `**History:**`: `- 2026-04-21 · user · revision 2: tightened acceptance to require RLS test, not just row creation.`
+4. If `Status` was `in_progress`, flip back to `pending` — in-flight work is now against stale spec. Agent must re-claim.
 
-**Remove** (task is no longer needed):
+**Remove** (task no longer needed):
 
-1. Flip `Status: removed` in both the index and the task block.
-2. Keep the block — do not delete. Dependents (`T7 depends on T4`) must continue to resolve IDs.
+1. Flip `Status: removed` in both index and task block.
+2. Keep the block — don't delete. Dependents (`T7 depends on T4`) must still resolve IDs.
 3. Append to `**History:**`: `- 2026-04-21 · user · removed: superseded by T9 (unified auth flow).`
-4. **Check downstream**: any task with this ID in `Depends on` needs review. Flag them in the response, don't auto-rewrite their deps. For any downstream task already `in_progress` or `done` at removal time, call it out explicitly — the in-flight or completed work may need reopening.
+4. **Check downstream**: any task with this ID in `Depends on` needs review. Flag them — don't auto-rewrite deps. For downstream tasks already `in_progress` or `done` at removal, call out explicitly — in-flight or completed work may need reopening.
 
 **Reopen** (a `done`, `blocked`, or `removed` task needs to run again):
 
-1. Flip `Status` back to `pending` (or directly to `in_progress` if claiming immediately).
-2. Clear `Evidence:` to `—` (the old evidence no longer proves the current spec).
+1. Flip `Status` to `pending` (or `in_progress` if claiming immediately).
+2. Clear `Evidence:` to `—` (old evidence no longer proves current spec).
 3. Append to `**History:**`: `- 2026-04-21 · user · reopened: production bug in T5's email template, re-running task.`
 4. Update the index row to match.
 
@@ -531,16 +519,16 @@ Save to `.agents/tasks.md` using the Task Format above.
 
 **Re-run behavior** depends on what changed:
 
-- **Additive refinement** (new tasks discovered, acceptance tightened, dependencies adjusted): **edit in place** using the Update / Remove / Reopen protocols. Stable IDs persist, `History:` blocks accumulate, the Status Index is updated row-by-row. This is the default — multi-agent resume depends on it.
-- **Full re-decomposition** (architecture changed significantly, scope pivoted, the old breakdown no longer maps to current reality): **snapshot** the existing file as `tasks.v[N].md` (incremented), then write a fresh `tasks.md` from scratch. Confirm with the user before snapshotting — they lose live status and in-flight claims.
+- **Additive refinement** (new tasks, tightened acceptance, dep adjustments): **edit in place** using Update/Remove/Reopen protocols. Stable IDs persist, `History:` accumulates, index updates row-by-row. Default — multi-agent resume depends on it.
+- **Full re-decomposition** (architecture pivoted, old breakdown no longer maps): **snapshot** to `tasks.v[N].md`, then write fresh `tasks.md`. Confirm with user first — they lose live status and in-flight claims.
 
-Default to additive refinement. Only snapshot when the user confirms the old plan is discarded.
+Default to additive refinement. Snapshot only on user confirmation.
 
 ---
 
 ## Next Step
 
-Tasks are ready. Begin implementation of the first unblocked task. Run `fresh-eyes` after each major task completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks are done.
+Tasks are ready. Implement the first unblocked task. Run `fresh-eyes` after each major completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks done.
 
 ## References
 
