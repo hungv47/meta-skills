@@ -21,15 +21,17 @@ promptSignals:
     - [multiple, perspective]
   anyOf:
     - "debate"
-    - "discuss"
     - "perspective"
     - "consensus"
     - "viewpoint"
-    - "pros"
-    - "cons"
+    - "panel"
+    - "multi-agent debate"
   noneOf:
     - "code review"
     - "quality check"
+    - "task breakdown"
+    - "decompose"
+    - "scope this"
   minScore: 6
 routing:
   intent-tags:

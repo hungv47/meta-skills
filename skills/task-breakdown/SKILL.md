@@ -19,15 +19,21 @@ promptSignals:
     - "decompose this"
   allOf:
     - [break, down, tasks]
+    - [task, list]
   anyOf:
-    - "tasks"
-    - "breakdown"
     - "acceptance criteria"
-    - "sprint"
-    - "dependencies"
+    - "sprint planning"
+    - "implementation order"
+    - "task dependencies"
+    - "decompose"
   noneOf:
     - "code review"
     - "documentation"
+    - "system architecture"
+    - "user flow"
+    - "scope this"
+    - "what should we build"
+    - "fresh eyes"
   minScore: 6
 routing:
   intent-tags:
