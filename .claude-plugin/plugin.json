@@ -1,6 +1,6 @@
 {
   "name": "meta-skills",
-  "description": "Process-layer skills — discover, agent-room, task-breakdown, review-chain. Multi-agent orchestration for scoping, planning, debate, and fresh-eyes review.",
+  "description": "Process-layer skills — discover, agents-panel, task-breakdown, fresh-eyes. Multi-agent orchestration for scoping, planning, debate, and fresh-eyes review.",
   "version": "1.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
@@ -9,8 +9,8 @@
   "keywords": ["skills", "orchestration", "multi-agent", "review", "discovery"],
   "skills": [
     "./discover/",
-    "./agent-room/",
+    "./agents-panel/",
     "./task-breakdown/",
-    "./review-chain/"
+    "./fresh-eyes/"
   ]
 }

@@ -1,6 +1,6 @@
 ---
-name: review-chain
-description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use agent-room)."
+name: fresh-eyes
+description: "Post-implementation quality check via fresh-eyes review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use code-cleanup). Not for decision analysis (use agents-panel)."
 argument-hint: "[code or artifact to verify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
@@ -40,13 +40,13 @@ routing:
     - fresh-eyes
   position: horizontal
   produces:
-    - meta/review-chain-report.md
+    - meta/fresh-eyes-report.md
   consumes: []
   requires: []
   defers-to:
     - skill: code-cleanup
       when: "user wants structural refactoring, not quality verification"
-    - skill: agent-room
+    - skill: agents-panel
       when: "user wants multi-perspective analysis of a decision, not code review"
   parallel-with: []
   interactive: false
@@ -72,11 +72,11 @@ routing:
 - Relevant context (surrounding files, API contracts, tests)
 
 ## Output
-- `.agents/meta/review-chain-report.md` — verdict, issues found/fixed/declined, changes made
+- `.agents/meta/fresh-eyes-report.md` — verdict, issues found/fixed/declined, changes made
 
 ## Chain Position
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
-- **Together with discover:** discover before build, review-chain after build
+- **Together with discover:** discover before build, fresh-eyes after build
 
 ## Orchestration Pattern: Dynamic Agent Spawning
 
@@ -266,11 +266,11 @@ Done.
 
 ### 7. Write the report
 
-Write to `.agents/meta/review-chain-report.md`:
+Write to `.agents/meta/fresh-eyes-report.md`:
 
 ```markdown
 ---
-skill: review-chain
+skill: fresh-eyes
 version: 1
 date: {YYYY-MM-DD}
 status: final
@@ -325,7 +325,7 @@ Present to the user:
 
 ## When to Trigger Automatically
 
-Use review-chain proactively (without the user asking) when:
+Use fresh-eyes proactively (without the user asking) when:
 - Writing security-sensitive code (auth, crypto, access control)
 - Writing data-mutation code (migrations, bulk updates, deletes)
 - The implementation was complex or you felt uncertain
@@ -407,7 +407,7 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 - **Resolver introduces new bugs**: This is why round 2 exists for critical code.
 - **Reviewer and resolver disagree**: You (the orchestrator) break the tie.
 - **Code is too large**: Split into logical chunks and review each separately. Don't send 2000 lines in one prompt.
-- **Existing report**: Overwrite `.agents/meta/review-chain-report.md` — these are ephemeral process artifacts, not archives.
+- **Existing report**: Overwrite `.agents/meta/fresh-eyes-report.md` — these are ephemeral process artifacts, not archives.
 - **Reviewer or resolver agent fails**: If the reviewer crashes or returns garbage, retry once with the same prompt. If it fails again, fall back to your own review (single-agent mode). Note the failure in the report.
 - **Architecture or design review** (not code): Adjust the reviewer prompt — replace "code" references with "design" or "architecture". The 5 review categories still apply (Correctness, Edge cases, Simplification, Security, Consistency).
 
@@ -415,6 +415,6 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 
 | File | Description |
 |------|-------------|
-| `.agents/meta/review-chain-report.md` | Verification report with issues and resolutions |
+| `.agents/meta/fresh-eyes-report.md` | Verification report with issues and resolutions |
 
 Previous reports are overwritten — these are ephemeral quality tools, not archives.

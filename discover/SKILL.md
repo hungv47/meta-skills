@@ -1,6 +1,6 @@
 ---
 name: discover
-description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use agent-room). Not for decomposing work (use task-breakdown)."
+description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use agents-panel). Not for decomposing work (use task-breakdown). Not for diagnosing a known metric decline or root-causing a problem (use diagnose)."
 argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
@@ -33,6 +33,10 @@ promptSignals:
     - "market research"
     - "competitive analysis"
     - "competitor"
+    - "root cause"
+    - "metric decline"
+    - "why is"
+    - "diagnose"
   minScore: 6
 routing:
   intent-tags:
@@ -54,11 +58,11 @@ routing:
     - product/flow/*.md
   requires: []
   defers-to:
-    - skill: problem-analysis
+    - skill: diagnose
       when: "diagnosing a metric decline, not clarifying a build spec"
     - skill: system-architecture
       when: "spec is clear, need technical design"
-    - skill: agent-room
+    - skill: agents-panel
       when: "complex decision needs multi-perspective debate, not interview"
   parallel-with: []
   interactive: true
@@ -264,7 +268,7 @@ At light depth (scoping), prefer the assumption-surfacing format — it's the ke
 
 ### Step 5: Complex Decision Points → Agent Room
 
-When you hit a genuinely complex decision where your single perspective isn't enough — architecture choice, strategic direction, design tradeoff with no clear winner — invoke the `agent-room` skill as a sub-routine.
+When you hit a genuinely complex decision where your single perspective isn't enough — architecture choice, strategic direction, design tradeoff with no clear winner — invoke the `agents-panel` skill as a sub-routine.
 
 **When to invoke:**
 - Two+ viable approaches with non-obvious tradeoffs
@@ -272,7 +276,7 @@ When you hit a genuinely complex decision where your single perspective isn't en
 - You feel uncertain and want to pressure-test your thinking
 
 **How to invoke:**
-Frame the specific decision for the agent-room: "Should we use WebSocket push or polling for this use case?" Include the context gathered so far. The agent-room debates, returns a recommendation, and you continue the conversation.
+Frame the specific decision for the agents-panel: "Should we use WebSocket push or polling for this use case?" Include the context gathered so far. The agents-panel debates, returns a recommendation, and you continue the conversation.
 
 **When NOT to invoke:**
 - The decision has a clear best answer from the context
@@ -471,8 +475,8 @@ This means downstream skills don't REQUIRE artifacts to exist as files. They nee
 ## Skill Deference
 
 - **Have a FEATURE or TASK to clarify?** → Use this skill.
-- **Have a declining METRIC to diagnose?** → Use `problem-analysis` instead.
-- **Need multi-perspective debate on a specific decision?** → Use `agent-room`.
+- **Have a declining METRIC to diagnose?** → Use `diagnose` instead.
+- **Need multi-perspective debate on a specific decision?** → Use `agents-panel`.
 - **Know what to build and need technical design?** → Use `system-architecture`.
 - **Need to decompose into tasks?** → Use `task-breakdown`.
 

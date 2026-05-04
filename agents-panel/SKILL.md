@@ -1,6 +1,6 @@
 ---
-name: agent-room
-description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use system-architecture). Not for verification (use review-chain). For clarifying requirements first, see discover. For decomposing work after a decision, see task-breakdown."
+name: agents-panel
+description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use system-architecture). Not for verification (use fresh-eyes). For clarifying requirements first, see discover. For decomposing work after a decision, see task-breakdown."
 argument-hint: "[problem or decision to analyze]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 user-invocable: true
@@ -37,16 +37,16 @@ routing:
     - consensus
     - perspectives
     - multi-agent
-    - agent-room
+    - agents-panel
     - discuss
     - chatroom
   position: horizontal
   produces:
-    - meta/agent-room-report.md
+    - meta/agents-panel-report.md
   consumes: []
   requires: []
   defers-to:
-    - skill: review-chain
+    - skill: fresh-eyes
       when: "user wants to verify existing code/output quality, not analyze a decision"
     - skill: system-architecture
       when: "user wants to design a system, not debate options"
@@ -61,26 +61,26 @@ routing:
 
 **Core Question:** "What do multiple perspectives converge on — and where do they genuinely disagree?"
 
-This is the centralized **multi-perspective analysis** capability. When any skill needs debate, consensus, or multiple viewpoints on a decision, it invokes agent-room. Structured decomposition work (like task-breakdown) may retain specialized agents for their domain.
+This is the centralized **multi-perspective analysis** capability. When any skill needs debate, consensus, or multiple viewpoints on a decision, it invokes agents-panel. Structured decomposition work (like task-breakdown) may retain specialized agents for their domain.
 
 ---
 
 ## Two Entry Points
 
 ### 1. Standalone (user invokes directly)
-User runs `/agent-room "Should we use a monorepo or polyrepo?"` — the skill runs a full debate or poll session.
+User runs `/agents-panel "Should we use a monorepo or polyrepo?"` — the skill runs a full debate or poll session.
 
 ### 2. Sub-routine (another skill invokes mid-flow)
-The `discover` skill hits a complex decision during conversation. It invokes agent-room with the specific decision framed, waits for the result, then continues the conversation.
+The `discover` skill hits a complex decision during conversation. It invokes agents-panel with the specific decision framed, waits for the result, then continues the conversation.
 
 **Sub-routine protocol** (for invoking skills):
 ```
 1. Frame the specific decision as a clear problem statement
 2. Include relevant context gathered so far
-3. Invoke agent-room with mode (debate/poll) and agent count
+3. Invoke agents-panel with mode (debate/poll) and agent count
 4. Receive the report: consensus, disagreements, recommendation
 5. Integrate the recommendation into the ongoing conversation
-6. The agent-room report is ephemeral — it lives in context, not necessarily on disk
+6. The agents-panel report is ephemeral — it lives in context, not necessarily on disk
 ```
 
 When invoked as a sub-routine, skip writing the report to disk unless the user asks. The value is the insight, not the artifact.
@@ -274,11 +274,11 @@ One-pass — no convergence detection. Independent samples give better statistic
 
 ## Report
 
-When standalone (or when explicitly requested), write to `.agents/meta/agent-room-report.md`:
+When standalone (or when explicitly requested), write to `.agents/meta/agents-panel-report.md`:
 
 ```markdown
 ---
-skill: agent-room
+skill: agents-panel
 version: 1
 date: {YYYY-MM-DD}
 status: final
@@ -333,4 +333,4 @@ When invoked as sub-routine: return the synthesis inline, skip disk write.
 
 ## Chain Position
 
-Standalone skill — can be invoked by any other skill as a sub-routine for multi-perspective decisions. Typical callers: `solution-design`, `system-architecture`, `discover`.
+Standalone skill — can be invoked by any other skill as a sub-routine for multi-perspective decisions. Typical callers: `prioritize`, `system-architecture`, `discover`.

@@ -11,7 +11,7 @@ Installs via the [`skills` CLI](https://skills.sh). Requires Node.js 18+. Auto-d
 npx skills add hungv47/meta-skills
 
 # Cherry-pick a single skill (any skill in the stack — these are just examples)
-npx skills add hungv47/meta-skills --skill review-chain
+npx skills add hungv47/meta-skills --skill fresh-eyes
 npx skills add hungv47/meta-skills --skill discover
 npx skills add hungv47/meta-skills --skill task-breakdown
 
@@ -36,7 +36,7 @@ For Claude Code users who prefer the native plugin system:
 /plugin install meta-skills@agent-skills
 ```
 
-Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skills:review-chain`, etc. **`npx skills add` is recommended for most users** (editor-agnostic, no namespace prefix, per-skill cherry-pick). Plugin path is Claude Code only.
+Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skills:fresh-eyes`, etc. **`npx skills add` is recommended for most users** (editor-agnostic, no namespace prefix, per-skill cherry-pick). Plugin path is Claude Code only.
 
 ## Design Philosophy
 
@@ -45,7 +45,7 @@ Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skil
 - **Conversation-first**: Decisions live in conversation context. Artifacts are save-points, not pipeline stages.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview.
 - **One skill per job**: Each skill does a fundamentally different job.
-- **Agent-room for perspectives**: When multiple perspectives or debate are needed, invoke agent-room.
+- **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel.
 
 ## Skills
 
@@ -58,13 +58,13 @@ Conversational discovery that adapts from quick scoping (3-5 questions) to deep 
 - You're about to start a task and want to catch blind spots
 - Requirements are unclear and need structured discovery
 
-**Not for:** multi-perspective debate (use `agent-room`) or decomposing work (use `task-breakdown`)
+**Not for:** multi-perspective debate (use `agents-panel`) or decomposing work (use `task-breakdown`)
 
 **Produces:** Conversation context (default) or `.agents/spec.md` (when explicitly saved)
 
 ---
 
-### `agent-room` — multi-agent discussion rooms
+### `agents-panel` — multi-agent discussion rooms
 
 Stochastic multi-agent debate (agents argue in rounds, converge) or consensus polling (agents analyze independently with varied framings). Works standalone or as a sub-routine invoked by other skills.
 
@@ -73,9 +73,9 @@ Stochastic multi-agent debate (agents argue in rounds, converge) or consensus po
 - You want to stress-test an idea by having agents argue against it
 - Another skill (like discover) hits a decision point that needs multiple perspectives
 
-**Not for:** implementation (use `system-architecture`) or verification (use `review-chain`)
+**Not for:** implementation (use `system-architecture`) or verification (use `fresh-eyes`)
 
-**Produces:** `.agents/meta/agent-room-report.md`
+**Produces:** `.agents/meta/agents-panel-report.md`
 
 ---
 
@@ -94,7 +94,7 @@ Breaks work into granular, testable tasks with acceptance criteria, dependencies
 
 ---
 
-### `review-chain` — independent quality check
+### `fresh-eyes` — independent quality check
 
 Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bias) → resolve if issues found. Max 2 rounds. Auto-triggers for security-sensitive code.
 
@@ -103,9 +103,9 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 - The work is security-sensitive or involves data mutations
 - You want a reviewer who hasn't seen the implementation reasoning
 
-**Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agent-room`)
+**Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agents-panel`)
 
-**Produces:** `.agents/meta/review-chain-report.md`
+**Produces:** `.agents/meta/fresh-eyes-report.md`
 
 ---
 
@@ -114,7 +114,7 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 ```
 discover (conversation) --> build directly
     |                          |
-    +-- agent-room             +-- review-chain
+    +-- agents-panel             +-- fresh-eyes
         (complex decisions)        (after build)
     |
     +-- task-breakdown
@@ -127,8 +127,8 @@ discover (conversation) --> build directly
 1. /discover              → conversational clarity (interactive)
 2. /system-architecture    → system-architecture.md
 3. /task-breakdown         → tasks.md
-4. (build tasks, /review-chain after critical ones)
-5. /code-cleanup + /technical-writer (parallel)
+4. (build tasks, /fresh-eyes after critical ones)
+5. /code-cleanup + /docs-writing (parallel)
 6. (commit + PR via gh; deploy via project's CI)
 ```
 
