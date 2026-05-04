@@ -25,12 +25,18 @@ promptSignals:
   anyOf:
     - "review"
     - "verify"
-    - "quality"
     - "fresh eyes"
+    - "post-implementation"
+    - "independent review"
   noneOf:
     - "debate"
     - "discuss"
     - "perspectives"
+    - "review the plan"
+    - "review the spec"
+    - "review the brief"
+    - "design review"
+    - "scope review"
   minScore: 6
 routing:
   intent-tags:
