@@ -1,16 +1,16 @@
 {
   "name": "meta-skills",
   "description": "Process-layer skills — discover, agents-panel, task-breakdown, fresh-eyes. Multi-agent orchestration for scoping, planning, debate, and fresh-eyes review.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",
   "license": "MIT",
   "keywords": ["skills", "orchestration", "multi-agent", "review", "discovery"],
   "skills": [
-    "./discover/",
-    "./agents-panel/",
-    "./task-breakdown/",
-    "./fresh-eyes/"
+    "./skills/discover/",
+    "./skills/agents-panel/",
+    "./skills/task-breakdown/",
+    "./skills/fresh-eyes/"
   ]
 }
