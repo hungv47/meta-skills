@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see review-chain. For packaging and PRs, see ship."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see review-chain."
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
 license: MIT
