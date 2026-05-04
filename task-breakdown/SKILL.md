@@ -81,7 +81,7 @@ Task-breakdown works from whatever context is available. It does NOT require art
 2. **Artifacts on disk** — `architecture/system-architecture.md`, `.agents/spec.md`, every `.agents/product/flow/*.md`
 3. **Defer to discover** — if neither exists, recommend running `/discover` first. Do not conduct your own interview — clarification is discover's job.
 
-If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill. Tip: `/navigate status` gives a single-pass freshness report across all upstream artifacts.
+If artifacts exist but their `date` fields are older than 30 days, recommend re-running the source skill.
 
 ---
 
@@ -292,7 +292,7 @@ Every task gets an **Autonomy** label:
 
 **Default to AFK.** Only mark HITL when the task genuinely requires a judgment call that the agent can't make from the spec alone. Every HITL task must state *what specific judgment* is needed — "needs review" is not sufficient.
 
-**Why this matters:** Orchestrators (navigate, multi-agent systems) use this to batch-run AFK tasks autonomously and queue HITL tasks for user attention. Mislabeling AFK as HITL wastes the user's time. Mislabeling HITL as AFK risks wrong decisions.
+**Why this matters:** Orchestrators (multi-agent systems, automation pipelines) use this to batch-run AFK tasks autonomously and queue HITL tasks for user attention. Mislabeling AFK as HITL wastes the user's time. Mislabeling HITL as AFK risks wrong decisions.
 
 ### Content Rules
 
