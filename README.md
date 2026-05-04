@@ -1,6 +1,6 @@
 # Meta Skills
 
-5 process-layer skills that wrap around domain skills to improve quality at every stage.
+4 process-layer skills that wrap around domain skills to improve quality at every stage.
 
 ## Install
 
@@ -109,21 +109,6 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 
 ---
 
-### `navigate` — artifact status + orchestration
-
-Scans artifacts, checks freshness, and composes multi-phase workflows for tracking complex goals across sessions. Two modes: status ("what exists and what's stale?") and orchestrate ("track this multi-phase workflow").
-
-**Use when:**
-- You're picking up a project and need to know what artifacts exist and their freshness
-- You have a complex goal that spans multiple sessions and need persistent workflow tracking
-- You want a phased execution plan with parallel tracks
-
-**Not for:** skill routing (the agent does that proactively on every response) or executing skills (it coordinates, not executes)
-
-**Produces:** `.agents/workflow-plan.md` (orchestrate mode) or inline report (status mode)
-
----
-
 ## How They Compose
 
 ```
@@ -134,8 +119,6 @@ discover (conversation) --> build directly
     |
     +-- task-breakdown
         (complex work)
-    |
-    navigate (orient anytime)
 ```
 
 ## Quick Build Recipe

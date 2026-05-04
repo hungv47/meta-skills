@@ -1,6 +1,6 @@
 # Meta Skills
 
-Domain-agnostic process skills: discover, debate, decompose, verify, navigate. These skills wrap around other skills — they improve input quality, decision quality, or output quality for any domain skill in the ecosystem.
+Domain-agnostic process skills: discover, debate, decompose, verify. These skills wrap around other skills — they improve input quality, decision quality, or output quality for any domain skill in the ecosystem.
 
 ## Design Philosophy
 
@@ -11,7 +11,7 @@ Domain-agnostic process skills: discover, debate, decompose, verify, navigate. T
 - **One skill per job**: Each skill does a fundamentally different job. No two skills that "ask questions to clarify things."
 - **Agent-room for perspectives**: When multiple perspectives or debate are needed, invoke agent-room. Structured decomposition (task-breakdown) retains specialized agents.
 
-## Skills (5)
+## Skills (4)
 
 | Skill | What it does | When |
 |-------|-------------|------|
@@ -19,7 +19,6 @@ Domain-agnostic process skills: discover, debate, decompose, verify, navigate. T
 | `agent-room` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
 | `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
 | `review-chain` | Fresh-eyes quality check after implementation | After building |
-| `navigate` | Artifact status + multi-phase orchestration | Complex projects spanning sessions |
 
 ## Process Flow
 
@@ -33,8 +32,6 @@ discover (conversation) --> build directly
     +-- task-breakdown
         (when work is complex enough
          to decompose first)
-    |
-    navigate (orient anytime)
 ```
 
 No rigid pipeline. The conversation guides what happens next.
@@ -56,7 +53,6 @@ This means downstream skills don't REQUIRE artifacts to exist as files. They nee
 | `agent-room` | `.agents/meta/agent-room-report.md` | Ephemeral — overwritten each run |
 | `task-breakdown` | `.agents/tasks.md` | Task list with acceptance criteria |
 | `review-chain` | `.agents/meta/review-chain-report.md` | Ephemeral — overwritten each run |
-| `navigate` | `.agents/workflow-plan.md` | Only in orchestrate mode |
 
 ## Multi-Agent Patterns
 
@@ -83,7 +79,8 @@ All meta-skills are domain-agnostic. They compose with any skill in any stack:
 - `agent-room` for any decision that needs multiple perspectives
 - `task-breakdown` after architecture for complex builds
 - `review-chain` after any critical artifact or implementation
-- `navigate` for artifact status checks and multi-phase orchestration (skill routing is the agent's job — it proposes skills proactively)
+
+Skill routing is the agent's job — it proposes skills proactively based on the system reminder skill list. There is no routing skill.
 
 ## Migration History
 
@@ -105,3 +102,9 @@ All meta-skills are domain-agnostic. They compose with any skill in any stack:
 |--------|-----------|
 | Removed navigate Mode B (Suggest/routing) | The agent proposes skills proactively on every response — navigate's routing was redundant. Skill registry reference file retained for the agent to read on demand. |
 | Navigate now: Status + Orchestrate only | Two clear jobs: "what exists/what's stale" and "track a complex multi-phase workflow across sessions" |
+
+### v3 → v4: navigate removed
+
+| Change | Rationale |
+|--------|-----------|
+| Removed navigate skill entirely | Status mode unused in practice — artifact freshness checks happen inline within consuming skills. Orchestrate mode unused — workflows compose conversationally. Routing was already handled by the agent. No remaining job justified the surface area. |
