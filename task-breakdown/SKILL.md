@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see review-chain."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see fresh-eyes."
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
 license: MIT
@@ -534,7 +534,7 @@ Default to additive refinement. Only snapshot when the user confirms the old pla
 
 ## Next Step
 
-Tasks are ready. Begin implementation of the first unblocked task. Run `review-chain` after each major task completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks are done.
+Tasks are ready. Begin implementation of the first unblocked task. Run `fresh-eyes` after each major task completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks are done.
 
 ## References
 

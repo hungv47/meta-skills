@@ -9,23 +9,23 @@ Domain-agnostic process skills: discover, debate, decompose, verify. These skill
 - **Conversation-first**: Decisions live in conversation context by default. Artifacts are save-points, not pipeline stages.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview. No mode switching.
 - **One skill per job**: Each skill does a fundamentally different job. No two skills that "ask questions to clarify things."
-- **Agent-room for perspectives**: When multiple perspectives or debate are needed, invoke agent-room. Structured decomposition (task-breakdown) retains specialized agents.
+- **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel. Structured decomposition (task-breakdown) retains specialized agents.
 
 ## Skills (4)
 
 | Skill | What it does | When |
 |-------|-------------|------|
 | `discover` | Conversational discovery — adaptive from quick scoping to deep interviews | Before building anything non-trivial |
-| `agent-room` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
+| `agents-panel` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
 | `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
-| `review-chain` | Fresh-eyes quality check after implementation | After building |
+| `fresh-eyes` | Fresh-eyes quality check after implementation | After building |
 
 ## Process Flow
 
 ```
 discover (conversation) --> build directly
     |                          |
-    +-- agent-room             +-- review-chain
+    +-- agents-panel             +-- fresh-eyes
         (when complex              (after build)
          decision hit)
     |
@@ -50,19 +50,19 @@ This means downstream skills don't REQUIRE artifacts to exist as files. They nee
 | Skill | Artifact | Notes |
 |-------|----------|-------|
 | `discover` | `.agents/spec.md` | Optional — only when user asks to save |
-| `agent-room` | `.agents/meta/agent-room-report.md` | Ephemeral — overwritten each run |
+| `agents-panel` | `.agents/meta/agents-panel-report.md` | Ephemeral — overwritten each run |
 | `task-breakdown` | `.agents/tasks.md` | Task list with acceptance criteria |
-| `review-chain` | `.agents/meta/review-chain-report.md` | Ephemeral — overwritten each run |
+| `fresh-eyes` | `.agents/meta/fresh-eyes-report.md` | Ephemeral — overwritten each run |
 
 ## Multi-Agent Patterns
 
-**For decisions, analysis, and multiple perspectives:** `agent-room` is the centralized capability. It works two ways:
-- **Standalone**: User invokes directly (`/agent-room "debate X"`)
+**For decisions, analysis, and multiple perspectives:** `agents-panel` is the centralized capability. It works two ways:
+- **Standalone**: User invokes directly (`/agents-panel "debate X"`)
 - **Sub-routine**: Other skills invoke it when they hit a complex decision (e.g., discover hits a fork)
 
-**For structured decomposition:** `task-breakdown` retains its own specialized agents (decomposer, dependency-mapper, ordering, acceptance, critic) because they do structured work — each produces a different output that gets merged. This is different from the perspective-based debate/poll that agent-room provides.
+**For structured decomposition:** `task-breakdown` retains its own specialized agents (decomposer, dependency-mapper, ordering, acceptance, critic) because they do structured work — each produces a different output that gets merged. This is different from the perspective-based debate/poll that agents-panel provides.
 
-**The principle:** Don't use multi-agent for conversations. Use it for structured work (task-breakdown) or for genuine multi-perspective analysis (agent-room).
+**The principle:** Don't use multi-agent for conversations. Use it for structured work (task-breakdown) or for genuine multi-perspective analysis (agents-panel).
 
 ## Learned Rules (Self-Correcting)
 
@@ -76,9 +76,9 @@ Meta-skills improve over time via `.agents/meta/learned-rules.md`:
 
 All meta-skills are domain-agnostic. They compose with any skill in any stack:
 - `discover` before any build/create skill
-- `agent-room` for any decision that needs multiple perspectives
+- `agents-panel` for any decision that needs multiple perspectives
 - `task-breakdown` after architecture for complex builds
-- `review-chain` after any critical artifact or implementation
+- `fresh-eyes` after any critical artifact or implementation
 
 Skill routing is the agent's job — it proposes skills proactively based on the system reminder skill list. There is no routing skill.
 
@@ -90,11 +90,11 @@ Skill routing is the agent's job — it proposes skills proactively based on the
 |-----------|----------|-------|
 | `plan-interviewer` | `discover` | Full interview mode = discover at deep depth |
 | `preflight` | `discover` | Quick scope mode = discover at light depth |
-| `multi-lens` | `agent-room` | Same debate/poll mechanics, new name + sub-routine capability |
+| `multi-lens` | `agent-room` | Same debate/poll mechanics, new name + sub-routine capability (later renamed to `agents-panel` in v5) |
 | `artifact-status` | `navigate` | Status mode = `/navigate status` |
 | `skill-router` | `navigate` | Suggest/orchestrate modes preserved |
 | `task-breakdown` | `task-breakdown` | Updated: no hard artifact dependency |
-| `review-chain` | `review-chain` | Unchanged |
+| `review-chain` | `review-chain` | Unchanged (later renamed to `fresh-eyes` in v5) |
 
 ### v2 → v3: navigate trimmed
 
@@ -108,3 +108,10 @@ Skill routing is the agent's job — it proposes skills proactively based on the
 | Change | Rationale |
 |--------|-----------|
 | Removed navigate skill entirely | Status mode unused in practice — artifact freshness checks happen inline within consuming skills. Orchestrate mode unused — workflows compose conversationally. Routing was already handled by the agent. No remaining job justified the surface area. |
+
+### v4 → v5: rename pass for clarity
+
+| Old name | New name | Rationale |
+|----------|----------|-----------|
+| `agent-room` | `agents-panel` | "agent-room" leaked implementation; "agents-panel" describes the user-facing job (debate or poll a panel of perspectives). |
+| `review-chain` | `fresh-eyes` | "chain" described mechanism; "fresh-eyes" describes value — independent post-implementation review. |
