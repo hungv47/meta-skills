@@ -534,7 +534,7 @@ Default to additive refinement. Only snapshot when the user confirms the old pla
 
 ## Next Step
 
-Tasks are ready. Begin implementation of the first unblocked task. Run `review-chain` after each major task completion. Run `ship` when all tasks are done.
+Tasks are ready. Begin implementation of the first unblocked task. Run `review-chain` after each major task completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks are done.
 
 ## References
 
