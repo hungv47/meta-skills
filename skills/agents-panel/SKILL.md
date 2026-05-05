@@ -283,7 +283,7 @@ When standalone (or when explicitly requested), write to `.agents/meta/agents-pa
 skill: agents-panel
 version: 1
 date: {YYYY-MM-DD}
-status: final
+status: done | done_with_concerns | blocked | needs_context
 ---
 
 # Agent Room Report
@@ -336,3 +336,13 @@ When invoked as sub-routine: return the synthesis inline, skip disk write.
 ## Chain Position
 
 Standalone skill — can be invoked by any other skill as a sub-routine for multi-perspective decisions. Typical callers: `prioritize`, `system-architecture`, `discover`.
+
+---
+
+## Completion Status
+
+Every run ends with explicit status:
+- **DONE** — debate converged on consensus, or poll yielded a clear synthesis
+- **DONE_WITH_CONCERNS** — significant unresolved disagreement (debate) or split opinion (poll); report flags it explicitly under Unresolved Risks / Divergences
+- **BLOCKED** — agents fundamentally couldn't engage (problem under-specified, scope unclear, or rounds exhausted without progress)
+- **NEEDS_CONTEXT** — problem requires upstream artifact (spec, ICP, architecture) before perspectives can be meaningful
