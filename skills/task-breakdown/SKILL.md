@@ -195,7 +195,7 @@ The artifact opens with a **status index table** — single skim surface so a re
 skill: task-breakdown
 version: 1
 date: {{today}}
-status: draft
+status: done | done_with_concerns | blocked | needs_context
 ---
 
 # Tasks
@@ -529,6 +529,18 @@ Default to additive refinement. Snapshot only on user confirmation.
 ## Next Step
 
 Tasks are ready. Implement the first unblocked task. Run `fresh-eyes` after each major completion. Hand off to commit/PR creation (e.g., `gh pr create`) when all tasks done.
+
+---
+
+## Completion Status
+
+Every run ends with explicit status:
+- **DONE** — all tasks decomposed, sized, ordered with deps, acceptance criteria written; critic PASS
+- **DONE_WITH_CONCERNS** — decomposition complete but with sizing ambiguity, fuzzy dependencies, or acceptance criteria the user should sanity-check
+- **BLOCKED** — work too large or under-specified to decompose; needs scope reduction or further discovery
+- **NEEDS_CONTEXT** — missing spec, architecture, or product-context; recommend `discover` or `system-architecture` first
+
+---
 
 ## References
 

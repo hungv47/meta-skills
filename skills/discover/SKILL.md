@@ -297,7 +297,7 @@ If the user says go, go. Don't pad.
 skill: discover
 version: 1
 date: {{today}}
-status: draft
+status: done | done_with_concerns | blocked | needs_context
 ---
 
 # [Feature Name] Specification
@@ -478,6 +478,16 @@ Next: `system-architecture`, `task-breakdown`, or direct implementation
 ## Next Step
 
 Run `task-breakdown` to decompose scoped work into buildable tasks. Run `system-architecture` for technical design. Run `icp-research` if audience needs further definition.
+
+---
+
+## Completion Status
+
+Every run ends with explicit status:
+- **DONE** — discovery converged, decision is clear (optionally saved as `.agents/spec.md` if user asked)
+- **DONE_WITH_CONCERNS** — decision made but with non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved)
+- **BLOCKED** — irreconcilable conflict in user inputs or scope; needs human resolution before any path forward
+- **NEEDS_CONTEXT** — user cannot answer key questions; recommend upstream skill (icp-research, market-research, diagnose) or external consultation
 
 ---
 
