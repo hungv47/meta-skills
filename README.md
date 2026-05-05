@@ -136,7 +136,7 @@ discover (conversation) --> build directly
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release notes.
+See [CHANGELOG.md](CHANGELOG.md) for release notes (commit 99bf93b, 2026-05-05).
 
 ## License
 
