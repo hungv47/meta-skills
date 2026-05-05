@@ -91,6 +91,53 @@ If artifact `date` fields are older than 30 days, recommend re-running the sourc
 
 ---
 
+## Pre-Dispatch
+
+Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`).
+
+**Needed dimensions:** source (architecture / spec / conversation), scope mode (mvp / full / spike), autonomy bias (mostly AFK / mixed / mostly HITL), target audience for the resulting tasks (AI agent / human dev / mixed).
+
+**Read order:**
+1. Pipeline: `architecture/system-architecture.md`, `.agents/spec.md`, `.agents/product/flow/*.md`.
+2. Conversation context: decisions from discover or system-architecture earlier this session.
+3. No experience-file reads — task-breakdown is project-specific, not user-profile-driven.
+
+**Warm Start** (architecture or spec exists, scope clear from upstream): summarize source + propose scope mode + dispatch.
+
+```
+Found:
+- architecture → "[1-line summary]"
+- declared scope → "[mvp | full | spike, from spec or conversation]"
+
+Proceeding with these. Override scope mode or autonomy bias, or proceed?
+```
+
+**Cold Start** (no upstream artifacts, no session context):
+
+```
+task-breakdown decomposes work into buildable tasks with stable IDs, deps,
+acceptance criteria, and autonomy classification. Before I dispatch:
+
+1. **Source** — paste the architecture/spec, name a file path, or describe
+   the work in 2-3 paragraphs. Defer to `/discover` first if requirements
+   are still fuzzy — task-breakdown won't conduct an interview.
+2. **Scope mode** — mvp (smallest shippable), full (complete feature),
+   or spike (validation/research, not production)?
+3. **Autonomy bias** — will tasks run mostly AFK (deterministic, agent
+   ships without asking), mixed (some HITL judgment calls), or mostly
+   HITL (human-in-loop most steps)?
+4. **Audience** — who picks up these tasks: AI agents, human devs, or both?
+   Affects writing style and acceptance precision.
+
+Answer 1-4 in one response. I'll decompose.
+```
+
+**Write-back:** none. Task lists are project-specific — they live in `.agents/tasks.md`, not the user-profile experience layer.
+
+---
+
+---
+
 ## Multi-Agent Architecture
 
 ### Agent Roster
