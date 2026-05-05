@@ -132,6 +132,10 @@ discover (conversation) --> build directly
 6. (commit + PR via gh; deploy via project's CI)
 ```
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
+
 ## License
 
 MIT
