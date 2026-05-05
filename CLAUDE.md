@@ -41,9 +41,21 @@ No rigid pipeline. The conversation guides what happens next.
 Skills resolve context in this order:
 1. **Conversation context** — same session, decisions are in the chat
 2. **Artifacts on disk** — previous session saved a spec, architecture doc, etc.
-3. **Discovery** — ask the user or scan the codebase
+3. **`.agents/experience/{domain}.md`** — append-only Q&A substrate written by every skill on cold-start (see Pre-Dispatch Protocol below)
+4. **Discovery** — ask the user or scan the codebase
 
 This means downstream skills don't REQUIRE artifacts to exist as files. They need the decisions to be known, from whatever source.
+
+## Pre-Dispatch Protocol
+
+Every skill in this stack (and across research/marketing/product) follows the canonical Pre-Dispatch protocol — see [`references/pre-dispatch-protocol.md`](references/pre-dispatch-protocol.md) for the full spec.
+
+The protocol governs the moment between user invocation and agent dispatch. Two flows:
+
+- **Warm Start** — most needed dimensions resolvable from artifacts or `.agents/experience/`. Skill summarizes findings, invites override, dispatches.
+- **Cold Start** — ≥1 dimension missing. Skill emits a single bundled prompt with 3-5 decision-ranked questions, multiple-choice where possible, one round-trip. Answers persist to `.agents/experience/{domain}.md` so the next skill never re-asks.
+
+`discover` is exempt — it IS the multi-round interview by design.
 
 ## Artifacts
 
