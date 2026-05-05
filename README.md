@@ -1,5 +1,7 @@
 # Meta Skills
 
+![Meta Skills](./assets/banner.png)
+
 4 process-layer skills that wrap around domain skills to improve quality at every stage.
 
 ## Install
