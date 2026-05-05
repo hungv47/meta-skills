@@ -98,6 +98,39 @@ When invoked as a sub-routine, skip writing the report to disk unless the user a
 
 ---
 
+## Pre-Dispatch
+
+Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`) before spawning agents. Sub-routine invocations skip Pre-Dispatch — the calling skill is responsible for problem framing.
+
+**Needed dimensions:** problem statement, mode (debate/poll), agent count (default 3 debate / 10 poll), rounds (debate only, default 3).
+
+**Read order:** conversation context for the problem framing. No experience-file reads — agents-panel doesn't carry persistent state across sessions.
+
+**Warm Start** (problem clear from invocation): summarize "Debating [X] with [N] agents over [R] rounds — proceed?"
+
+**Cold Start** (problem fuzzy or invocation lacks framing):
+
+```
+agents-panel runs N specialist perspectives on a decision and synthesizes
+the result. Before I spawn:
+
+1. **Problem** — state the decision in one paragraph. Specific enough that
+   3+ experts could disagree productively. ("Should we use a monorepo or
+   polyrepo for our 4-service backend?" — yes. "What about our architecture?" — no.)
+2. **Mode** — debate (trade-off decisions, 3 agents × 3 rounds) or poll
+   (filter hallucinations, 10 agents × 1 pass)?
+3. **Agent count** — default 3 debate / 10 poll. Override if you want richer
+   debate (5 agents) or wider poll (15 agents).
+4. **Rounds** (debate only) — default 3. Increase only if you expect deep
+   disagreement that needs more cycles to converge.
+
+Answer 1-4 in one response. I'll spawn.
+```
+
+**Write-back:** none. agents-panel is ephemeral — outputs are insight, not artifacts. Cost per run is recorded in the report frontmatter for telemetry, not in experience/.
+
+---
+
 ## Mode Routing
 
 | Keywords | Mode |

@@ -84,6 +84,45 @@ routing:
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
 - **Together with discover:** discover before build, fresh-eyes after build
 
+---
+
+## Pre-Dispatch
+
+Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`) before spawning reviewer/resolver agents.
+
+**Needed dimensions:** diff/branch reference (what to review), risk class (security / performance / correctness / all), prior reviewer feedback if any, requirements or spec the work was supposed to implement.
+
+**Read order:**
+1. Conversation context — usually fresh-eyes is invoked right after the work it's reviewing, so the spec lives in the same session.
+2. Pipeline: `.agents/spec.md`, `.agents/tasks.md`, `architecture/system-architecture.md` if referenced.
+3. Git: `git diff <base>...HEAD` or named branch.
+
+**Warm Start** (invoked at end of build session, spec known): summarize what's being reviewed and dispatch.
+
+```
+Reviewing [N files / diff vs main] against [spec.md / tasks.md / inline requirements].
+Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?
+```
+
+**Cold Start** (no upstream session, user invoking standalone):
+
+```
+fresh-eyes runs an independent post-implementation review. Before I dispatch:
+
+1. **What to review** — diff, branch name, file paths, or paste of the artifact.
+2. **Risk class** — security / performance / correctness / consistency / all.
+   Auto-trigger applies for security, auth, crypto, money, PII regardless.
+3. **Original intent** — paste the spec, requirements, or one-paragraph
+   description of what this code is supposed to do. Without this, the review
+   only catches obvious bugs, not goal-fit problems.
+
+Answer 1-3 in one response. I'll dispatch reviewer + resolver.
+```
+
+**Write-back:** none. Reviews are ephemeral — overwrite the previous report each run, no experience-file persistence.
+
+---
+
 ## Orchestration Pattern: Dynamic Agent Spawning
 
 This skill uses runtime-defined agents (reviewer, resolver), NOT the static agent roster pattern. Agent prompts are constructed per-use based on the artifact being reviewed. There is no `agents/` directory.
