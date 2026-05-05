@@ -279,7 +279,7 @@ Write to `.agents/meta/fresh-eyes-report.md`:
 skill: fresh-eyes
 version: 1
 date: {YYYY-MM-DD}
-status: final
+status: done | done_with_concerns | blocked | needs_context
 ---
 
 # Review Chain Report
@@ -424,3 +424,13 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 | `.agents/meta/fresh-eyes-report.md` | Verification report with issues and resolutions |
 
 Previous reports are overwritten — these are ephemeral quality tools, not archives.
+
+---
+
+## Completion Status
+
+Every run ends with explicit status:
+- **DONE** — all reviewer findings resolved by resolver, or explicitly marked acceptable; PASS gate met
+- **DONE_WITH_CONCERNS** — non-blocking issues flagged for follow-up; report names what was deferred and why
+- **BLOCKED** — critical issue surfaced (security, data-loss, broken contract) requiring user judgment before proceeding
+- **NEEDS_CONTEXT** — review requirements unclear; missing the spec, intent, or acceptance criteria the implementation should be checked against
