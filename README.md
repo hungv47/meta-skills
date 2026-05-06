@@ -2,7 +2,9 @@
 
 ![Meta Skills](./assets/banner.png)
 
-4 process-layer skills that wrap around domain skills to improve quality at every stage.
+5 process-layer skills (incl. `/start-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
+
+**New here, or unsure which stack to use?** Run `/start-meta` — it reads cross-stack state and routes you to the right stack-orchestrator (`/start-research`, `/start-marketing`, `/start-product`) or process skill (`discover`, `agents-panel`, `task-breakdown`, `fresh-eyes`).
 
 ## Install
 
