@@ -6,6 +6,22 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [2.2.0] - 2026-05-07
+
+Manifest spec + sync script — derived `.agents/manifest.json` state index. `start-meta` reads manifest first.
+
+### Added
+
+- `references/manifest-spec.md` — canonical contract for `.agents/manifest.json`, the derived state index that lets every skill in the stack discover, evaluate, and collaborate around artifacts without re-scanning the filesystem. Defines artifact frontmatter contract (`skill`, `version`, `date`, `status`, optional `stale_after_days` + `summary`), the manifest schema (artifacts + experience maps), Read/Write protocols for consumers and producers, status-aware consumption rules, and per-artifact-type staleness defaults.
+- `scripts/manifest-sync.ts` — Bun TypeScript sync script (~170 lines, no deps). Walks `.agents/`, `research/`, `brand/`, `architecture/`, parses frontmatter, computes per-artifact staleness, counts experience entries, writes `.agents/manifest.json`. Idempotent, self-healing — running twice produces identical output. Skills call it as their last step after producing an artifact.
+
+### Changed
+
+- `start-meta` SKILL.md — Step 1 (Cross-Stack State Detection) now reads `.agents/manifest.json` first with a status-aware lookup table (`done`, `done_with_concerns`, `blocked`/`needs_context`, `stale`, `frontmatter_present: false`). Per-path filesystem scan demoted to fallback for fresh projects. Anti-pattern entry added: "Don't ignore the manifest." Added `side-effects: [manifest-sync]` to the skill's routing block.
+- `CLAUDE.md` — added "Manifest Spec" section pointing skill authors at the contract and frontmatter obligations.
+
+---
+
 ## [2.1.0] - 2026-05-06
 
 Cross-stack orchestrator added.
