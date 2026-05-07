@@ -44,6 +44,8 @@ routing:
   position: orchestrator
   produces:
     - .agents/experience/meta-workflow.md
+  side-effects:
+    - manifest-sync
   consumes:
     - research/product-context.md
     - research/icp-research.md
@@ -119,7 +121,27 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 ## Step 1: Cross-Stack State Detection
 
-Silent scan, broader than other start-* skills:
+Read `.agents/manifest.json` first — it's the canonical state index. Single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
+
+```bash
+bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
+```
+
+**Status-aware lookup:** for each artifact entry in `manifest.artifacts`, read `status` and `stale` to qualify the state map:
+
+| Manifest signal | State map value |
+|---|---|
+| `status: done`, `stale: false` | ✅ done |
+| `status: done_with_concerns` | ⚠️ done-with-concerns — surface the concern in routing output |
+| `status: blocked` or `needs_context` | treat as missing |
+| `stale: true` | ✅ done (stale) — propose refresh as an option, don't block |
+| `frontmatter_present: false` | ✅ done (legacy, no frontmatter) — quality unknown, suggest refresh |
+
+**Experience block:** `manifest.experience` tracks `.agents/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
+
+See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for the full contract.
+
+**Path reference / filesystem fallback** — used only when `.agents/manifest.json` doesn't exist (fresh project) or sync hasn't been run:
 
 | Path | What it tells you |
 |---|---|
@@ -327,6 +349,7 @@ For the canonical cross-stack pipeline, decision rules, and per-skill catalog, s
 
 ## Anti-Patterns
 
+- **Don't ignore the manifest** — always read `.agents/manifest.json` first; per-path filesystem scans are a fallback, not the default.
 - **Don't duplicate work of /start-research, /start-marketing, /start-product.** When intent is single-domain, route there. Don't pick the specific skill yourself.
 - **Don't lecture about all 24 skills.** Show only what's relevant to the user's ask + state.
 - **Don't auto-invoke.** Always print `/skill-name` for the user to type.
