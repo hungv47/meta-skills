@@ -57,6 +57,10 @@ The protocol governs the moment between user invocation and agent dispatch. Two 
 
 `discover` is exempt — it IS the multi-round interview by design.
 
+## Manifest Spec
+
+State detection across all meta-skills (especially `start-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/spec.md`, `task-breakdown` → `.agents/tasks.md`, `agents-panel` → `.agents/meta/agents-panel-report.md`, `fresh-eyes` → `.agents/meta/fresh-eyes-report.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.
+
 ## Artifacts
 
 | Skill | Artifact | Notes |
