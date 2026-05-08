@@ -117,7 +117,7 @@ Scan for answers that already exist. A few minutes max — this narrows question
 - **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
 - **Artifacts**: `.agents/` for existing specs, architecture docs, product context
 - **Experience docs**: `.agents/experience/{domain}.md` for answers from prior sessions
-- **Learned rules**: `.agents/skill-artifacts/meta/learned-rules.md` for behavior corrections
+- **Learned rules**: `.agents/skill-artifacts/meta/records/learned-rules.md` for behavior corrections
 - **Out-of-scope decisions**: `.agents/skill-artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
 - **Project conventions**: skim `CLAUDE.md`
 

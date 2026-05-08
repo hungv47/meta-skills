@@ -79,7 +79,7 @@ routing:
 - Relevant context (surrounding files, API contracts, tests)
 
 ## Output
-- `.agents/skill-artifacts/meta/fresh-eyes-report.md` — verdict, issues found/fixed/declined, changes made
+- `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — verdict, issues found/fixed/declined, changes made. Dated, slug-suffixed, immutable per-run record (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing what was reviewed (e.g., `2026-05-08-fresh-eyes-claude-md-migration.md`). Do NOT overwrite prior reports — they accumulate as audit trail; operator can prune via cleanup-artifacts when needed.
 
 ## Chain Position
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
@@ -152,7 +152,7 @@ Spawn a single reviewer agent with fresh context. The reviewer has NO access to 
 **Agent config:**
 - `model: "sonnet"` (default — use opus if the code is complex or security-critical)
 
-**Learned rules:** Before constructing the reviewer prompt, read `.agents/skill-artifacts/meta/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
+**Learned rules:** Before constructing the reviewer prompt, read `.agents/skill-artifacts/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
 
 **Reviewer prompt:**
 
@@ -318,7 +318,7 @@ Done.
 
 ### 7. Write the report
 
-Write to `.agents/skill-artifacts/meta/fresh-eyes-report.md`:
+Write to `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable):
 
 ```markdown
 ---
@@ -459,7 +459,7 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 - **Resolver introduces new bugs**: This is why round 2 exists for critical code.
 - **Reviewer and resolver disagree**: You (the orchestrator) break the tie.
 - **Code is too large**: Split into logical chunks and review each separately. Don't send 2000 lines in one prompt.
-- **Existing report**: Overwrite `.agents/skill-artifacts/meta/fresh-eyes-report.md` — these are ephemeral process artifacts, not archives.
+- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md`. Reports accumulate as audit trail (lifecycle: snapshot — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
 - **Reviewer or resolver agent fails**: If the reviewer crashes or returns garbage, retry once with the same prompt. If it fails again, fall back to your own review (single-agent mode). Note the failure in the report.
 - **Architecture or design review** (not code): Adjust the reviewer prompt — replace "code" references with "design" or "architecture". The 5 review categories still apply (Correctness, Edge cases, Simplification, Security, Consistency).
 
@@ -467,9 +467,9 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 
 | File | Description |
 |------|-------------|
-| `.agents/skill-artifacts/meta/fresh-eyes-report.md` | Verification report with issues and resolutions |
+| `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` | Verification report with issues and resolutions |
 
-Previous reports are overwritten — these are ephemeral quality tools, not archives.
+Each run writes a new dated, slug-suffixed file (lifecycle: snapshot — dated, immutable). Reports accumulate as audit trail; operator prunes via cleanup-artifacts when needed.
 
 ---
 
