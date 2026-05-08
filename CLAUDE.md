@@ -59,16 +59,16 @@ The protocol governs the moment between user invocation and agent dispatch. Two 
 
 ## Manifest Spec
 
-State detection across all meta-skills (especially `start-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/spec.md`, `task-breakdown` → `.agents/tasks.md`, `agents-panel` → `.agents/meta/agents-panel-report.md`, `fresh-eyes` → `.agents/meta/fresh-eyes-report.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.
+State detection across all meta-skills (especially `start-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/skill-artifacts/meta/specs/<slug>.md`, `task-breakdown` → `.agents/skill-artifacts/meta/tasks.md`, `agents-panel` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.
 
 ## Artifacts
 
 | Skill | Artifact | Notes |
 |-------|----------|-------|
-| `discover` | `.agents/spec.md` | Optional — only when user asks to save |
-| `agents-panel` | `.agents/meta/agents-panel-report.md` | Ephemeral — overwritten each run |
-| `task-breakdown` | `.agents/tasks.md` | Task list with acceptance criteria |
-| `fresh-eyes` | `.agents/meta/fresh-eyes-report.md` | Ephemeral — overwritten each run |
+| `discover` | `.agents/skill-artifacts/meta/specs/<slug>.md` | Optional — only when user asks to save. Per-spec slug, working drafts (lifecycle: spec). |
+| `agents-panel` | `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md` | Dated, immutable — operator-committed strategic decision (lifecycle: decision). |
+| `task-breakdown` | `.agents/skill-artifacts/meta/tasks.md` | Task list with acceptance criteria. Session anchor (lifecycle: pipeline). |
+| `fresh-eyes` | `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md` | Often returned inline; when persisted, dated snapshot (lifecycle: snapshot). |
 
 ## Multi-Agent Patterns
 
@@ -82,7 +82,7 @@ State detection across all meta-skills (especially `start-meta`) reads `.agents/
 
 ## Learned Rules (Self-Correcting)
 
-Meta-skills improve over time via `.agents/meta/learned-rules.md`:
+Meta-skills improve over time via `.agents/skill-artifacts/meta/records/learned-rules.md`:
 - User corrections are captured as rules
 - Before dispatching, skills read relevant learned rules
 - Rules supplement SKILL.md instructions, never override them
