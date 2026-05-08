@@ -51,11 +51,12 @@ routing:
     - scope
     - preflight
   position: horizontal
+  lifecycle: spec
   produces:
-    - spec.md
+    - skill-artifacts/meta/specs/*.md
   consumes:
     - product-context.md
-    - product/flow/*.md
+    - skill-artifacts/product/flow/*.md
   requires: []
   defers-to:
     - skill: diagnose
@@ -116,8 +117,8 @@ Scan for answers that already exist. A few minutes max — this narrows question
 - **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
 - **Artifacts**: `.agents/` for existing specs, architecture docs, product context
 - **Experience docs**: `.agents/experience/{domain}.md` for answers from prior sessions
-- **Learned rules**: `.agents/meta/learned-rules.md` for behavior corrections
-- **Out-of-scope decisions**: `.agents/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
+- **Learned rules**: `.agents/skill-artifacts/meta/learned-rules.md` for behavior corrections
+- **Out-of-scope decisions**: `.agents/skill-artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
 - **Project conventions**: skim `CLAUDE.md`
 
 Anything found here is a question you don't ask.
@@ -381,7 +382,7 @@ NOT IN SCOPE:
 ```
 
 **Out-of-scope persistence** (institutional memory):
-When features are explicitly scoped out, write to `.agents/meta/out-of-scope/[kebab-case-name].md`:
+When features are explicitly scoped out, write to `.agents/skill-artifacts/meta/out-of-scope/[kebab-case-name].md`:
 ```markdown
 # [Feature/Approach Name]
 **Decided:** [date]
@@ -448,7 +449,7 @@ Downstream skills don't REQUIRE artifacts as files. They need decisions known, f
 
 - **"Just do it"**: List assumptions inline and start building. Skip questions; mention critical assumptions briefly.
 - **"Skip questions"**: Context scan only, summarize what you know, proceed.
-- **"Save this"**: Write `.agents/spec.md` or emit contract format inline.
+- **"Save this"**: Write `.agents/skill-artifacts/meta/specs/*.md` or emit contract format inline.
 - **All questions answered by context**: Skip to clarity check. Note context was sufficient.
 - **Contradictory answers**: Flag it. One follow-up to resolve.
 - **Task changes mid-conversation**: Re-assess whether prior answers still apply. 1-2 new questions if scope shifted. Don't restart.
@@ -484,7 +485,7 @@ Run `task-breakdown` to decompose scoped work into buildable tasks. Run `system-
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — discovery converged, decision is clear (optionally saved as `.agents/spec.md` if user asked)
+- **DONE** — discovery converged, decision is clear (optionally saved as `.agents/skill-artifacts/meta/specs/*.md` if user asked)
 - **DONE_WITH_CONCERNS** — decision made but with non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved)
 - **BLOCKED** — irreconcilable conflict in user inputs or scope; needs human resolution before any path forward
 - **NEEDS_CONTEXT** — user cannot answer key questions; recommend upstream skill (icp-research, market-research, diagnose) or external consultation

@@ -6,6 +6,31 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [2.3.0] - 2026-05-08
+
+`fresh-eyes` simplification dimension hardening + T33 path migration.
+
+### Changed
+
+- `fresh-eyes/SKILL.md` lines 175-184 — replaced the one-line "Simplification" review category with an enumerated symptom list at parity with peer dimensions (Security, Edge cases). Adds 6 concrete sub-bullets: redundancy/duplication, unnecessary wrappers, dead branches, over-defensive validation, hand-rolled stdlib equivalents, manual loops where map/filter/reduce reads cleaner. Goal is parity with peer dimensions, not elevation — simplification stays at #3 of 6.
+- All 5 SKILL.md files (`agents-panel`, `discover`, `fresh-eyes`, `start-meta`, `task-breakdown`) — frontmatter `description`, `routing.produces`, `routing.consumes`, and inline body references updated to the new `.agents/skill-artifacts/meta/` lifecycle taxonomy:
+  - `.agents/meta/agents-panel-report.md` → `.agents/skill-artifacts/meta/decisions/[date]-*.md`
+  - `.agents/meta/fresh-eyes-report.md` → `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`
+  - `.agents/meta/learned-rules.md` → `.agents/skill-artifacts/meta/records/learned-rules.md`
+  - `.agents/meta/out-of-scope/` → `.agents/skill-artifacts/meta/out-of-scope/`
+  - `.agents/spec.md` → `.agents/skill-artifacts/meta/specs/*.md`
+  - `.agents/tasks.md` → `.agents/skill-artifacts/meta/tasks.md`
+  - Cross-stack refs in `start-meta` (`.agents/product/`, `.agents/mkt/`, etc.) updated.
+- All 5 SKILL.md files declare `routing.lifecycle:` — `decision` (agents-panel), `spec` (discover), `snapshot` (fresh-eyes), `pipeline` (start-meta orchestrator, task-breakdown).
+
+### Notes
+
+`fresh-eyes` simplification edit: load-bearing only — preserves dimension order, resolver hedge ("where genuinely simpler"), confidence rules, and SIMPLIFICATIONS schema. T33 path migration: mechanical churn, no behavioral changes.
+
+Minor bump (not patch) because the fresh-eyes simplification hardening is a meaningful behavior change — reviewer prompt now enumerates symptoms it previously caught only inconsistently.
+
+---
+
 ## [2.2.0] - 2026-05-07
 
 Manifest spec + sync script — derived `.agents/manifest.json` state index. `start-meta` reads manifest first.
