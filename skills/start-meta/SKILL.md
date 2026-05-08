@@ -42,6 +42,7 @@ routing:
     - top-level-entry-point
     - meta-orchestration
   position: orchestrator
+  lifecycle: pipeline
   produces:
     - .agents/experience/meta-workflow.md
   side-effects:
@@ -53,14 +54,14 @@ routing:
     - brand/BRAND.md
     - brand/DESIGN.md
     - architecture/system-architecture.md
-    - .agents/spec.md
-    - .agents/diagnose.md
-    - .agents/prioritize.md
-    - .agents/targets.md
-    - .agents/tasks.md
-    - .agents/product/flow/*.md
-    - .agents/mkt/**/*.md
-    - .agents/meta/**/*.md
+    - .agents/skill-artifacts/meta/specs/*.md
+    - .agents/skill-artifacts/meta/records/diagnose-*.md
+    - .agents/skill-artifacts/meta/sketches/prioritize-*.md
+    - .agents/skill-artifacts/meta/records/targets-*.md
+    - .agents/skill-artifacts/meta/tasks.md
+    - .agents/skill-artifacts/product/flow/*.md
+    - .agents/skill-artifacts/mkt/**/*.md
+    - .agents/skill-artifacts/meta/**/*.md
     - .agents/experience/*.md
     - CLAUDE.md
   requires: []
@@ -150,16 +151,16 @@ See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for
 | `research/icp-research.md`, `research/market-research.md` | Research stack progress. |
 | `brand/BRAND.md`, `brand/DESIGN.md` | Marketing stack foundation. |
 | `architecture/system-architecture.md` | Product stack architecture done. |
-| `.agents/product/flow/index.md` + flow files | Product flows mapped. |
-| `.agents/spec.md` | Spec exists from `discover`. |
-| `.agents/tasks.md` | Tasks decomposed from `task-breakdown`. |
-| `.agents/diagnose.md`, `.agents/prioritize.md`, `.agents/targets.md` | Research mid-pipeline outputs. |
-| `.agents/mkt/campaign-plan.md` + `.agents/mkt/content/`, `.agents/mkt/lp-brief/`, etc. | Marketing artifacts. |
-| `.agents/cleanup-report.md`, `.agents/machine-cleanup-report.md` | Cleanup audits. |
-| `.agents/meta/agents-panel-report.md`, `.agents/meta/fresh-eyes-report.md` | Meta-skill artifacts (ephemeral). |
+| `.agents/skill-artifacts/product/flow/index.md` + flow files | Product flows mapped. |
+| `.agents/skill-artifacts/meta/specs/*.md` | Spec exists from `discover`. |
+| `.agents/skill-artifacts/meta/tasks.md` | Tasks decomposed from `task-breakdown`. |
+| `.agents/skill-artifacts/meta/records/diagnose-*.md`, `.agents/skill-artifacts/meta/sketches/prioritize-*.md`, `.agents/skill-artifacts/meta/records/targets-*.md` | Research mid-pipeline outputs. |
+| `.agents/skill-artifacts/mkt/campaign-plan.md` + `.agents/skill-artifacts/mkt/content/`, `.agents/skill-artifacts/mkt/lp-brief/`, etc. | Marketing artifacts. |
+| `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
+| `.agents/skill-artifacts/meta/agents-panel-report.md`, `.agents/skill-artifacts/meta/fresh-eyes-report.md` | Meta-skill artifacts (ephemeral). |
 | `.agents/experience/*.md` | All cold-start answers across stacks. |
 | `.agents/experience/meta-workflow.md` | Prior `/start-meta` breadcrumb. |
-| `.agents/meta/learned-rules.md` | Behavior corrections from prior sessions. |
+| `.agents/skill-artifacts/meta/learned-rules.md` | Behavior corrections from prior sessions. |
 
 Build a cross-stack state map:
 
@@ -313,7 +314,7 @@ Output format for **process skill**:
 Why: post-implementation independent review. Runs an independent
 agent against your changes, returns issues + severity.
 
-Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/meta/fresh-eyes-report.md
+Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/fresh-eyes-report.md
 
 →  /fresh-eyes
 ```

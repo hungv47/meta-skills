@@ -1,6 +1,6 @@
 ---
 name: task-breakdown
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see fresh-eyes."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.agents/skill-artifacts/meta/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use system-architecture). For code quality checks after building, see fresh-eyes."
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
 license: MIT
@@ -43,12 +43,13 @@ routing:
     - sprint-planning
     - work-breakdown
   position: pipeline
+  lifecycle: pipeline
   produces:
-    - tasks.md
+    - skill-artifacts/meta/tasks.md
   consumes:
     - system-architecture.md
-    - spec.md
-    - product/flow/*.md  # reads every flow file in the directory
+    - skill-artifacts/meta/specs/*.md
+    - skill-artifacts/product/flow/*.md  # reads every flow file in the directory
   requires: []
   defers-to:
     - skill: discover
@@ -71,7 +72,7 @@ routing:
 - Target scope (MVP, full feature, spike)
 
 ## Output
-- `.agents/tasks.md`
+- `.agents/skill-artifacts/meta/tasks.md`
 
 ## Chain Position
 Previous: `system-architecture`, `discover`, or conversation context | Next: implementation (see [`references/execution-protocol.md`](references/execution-protocol.md))
@@ -84,7 +85,7 @@ Works from whatever context is available — does NOT require disk artifacts. Co
 
 **Resolution order:**
 1. **Conversation context** — decisions from discover or system-architecture in this session
-2. **Artifacts on disk** — `architecture/system-architecture.md`, `.agents/spec.md`, every `.agents/product/flow/*.md`
+2. **Artifacts on disk** — `architecture/system-architecture.md`, `.agents/skill-artifacts/meta/specs/*.md`, every `.agents/product/flow/*.md`
 3. **Defer to discover** — if neither exists, recommend `/discover`. Do not conduct your own interview — clarification is discover's job.
 
 If artifact `date` fields are older than 30 days, recommend re-running the source skill.
@@ -98,7 +99,7 @@ Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`
 **Needed dimensions:** source (architecture / spec / conversation), scope mode (mvp / full / spike), autonomy bias (mostly AFK / mixed / mostly HITL), target audience for the resulting tasks (AI agent / human dev / mixed).
 
 **Read order:**
-1. Pipeline: `architecture/system-architecture.md`, `.agents/spec.md`, `.agents/product/flow/*.md`.
+1. Pipeline: `architecture/system-architecture.md`, `.agents/skill-artifacts/meta/specs/*.md`, `.agents/product/flow/*.md`.
 2. Conversation context: decisions from discover or system-architecture earlier this session.
 3. No experience-file reads — task-breakdown is project-specific, not user-profile-driven.
 
@@ -132,7 +133,7 @@ acceptance criteria, and autonomy classification. Before I dispatch:
 Answer 1-4 in one response. I'll decompose.
 ```
 
-**Write-back:** none. Task lists are project-specific — they live in `.agents/tasks.md`, not the user-profile experience layer.
+**Write-back:** none. Task lists are project-specific — they live in `.agents/skill-artifacts/meta/tasks.md`, not the user-profile experience layer.
 
 ---
 
@@ -170,7 +171,7 @@ Layer 2 (sequential):
 3. **Layer 1 dispatch** — brief + scope mode + shared context → `decomposer-agent` and `dependency-mapper-agent` in parallel.
 4. **Layer 2 sequential chain** — both outputs → `ordering-agent` → `acceptance-agent` → `critic-agent`.
 5. **Revision loop** — if critic FAILs, re-dispatch affected agents with feedback. Max 2 rounds.
-6. **Assembly** — merge into artifact format. Seed each task block with `**History:**` entry (`{{today}} · task-breakdown · created`). Save to `.agents/tasks.md`.
+6. **Assembly** — merge into artifact format. Seed each task block with `**History:**` entry (`{{today}} · task-breakdown · created`). Save to `.agents/skill-artifacts/meta/tasks.md`.
 
 ### Routing Rules
 
@@ -211,7 +212,7 @@ When context is constrained or decomposition is simple (<10 tasks):
 4. Map dependencies inline; order risk-first
 5. Write acceptance criteria per task
 6. Run Critical Gates checklist as self-review
-7. Save to `.agents/tasks.md`
+7. Save to `.agents/skill-artifacts/meta/tasks.md`
 
 ---
 
@@ -406,7 +407,7 @@ Agents implementing tasks should read that file top-to-bottom before claiming th
 - `acceptance-agent` → writes T2 acceptance: "Submit signup form → user appears in Supabase Auth → confirmation email sent"
 - `critic-agent` → PASS, all gates pass
 
-**First-run artifact (all pending, saved to `.agents/tasks.md`):**
+**First-run artifact (all pending, saved to `.agents/skill-artifacts/meta/tasks.md`):**
 
 ```markdown
 ## Status Index
@@ -441,7 +442,7 @@ Task T[N]: PASS | FAIL | BLOCKED
 
 ## Artifact Template
 
-Save to `.agents/tasks.md` using the Task Format above.
+Save to `.agents/skill-artifacts/meta/tasks.md` using the Task Format above.
 
 **Re-run behavior** depends on what changed:
 

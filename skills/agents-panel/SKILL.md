@@ -43,8 +43,9 @@ routing:
     - discuss
     - chatroom
   position: horizontal
+  lifecycle: decision
   produces:
-    - meta/agents-panel-report.md
+    - skill-artifacts/meta/decisions/[date]-*.md
   consumes: []
   requires: []
   defers-to:
@@ -309,7 +310,7 @@ One-pass — no convergence detection. Independent samples give better statistic
 
 ## Report
 
-When standalone (or when explicitly requested), write to `.agents/meta/agents-panel-report.md`:
+When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/agents-panel-report.md`:
 
 ```markdown
 ---
