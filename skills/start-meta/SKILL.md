@@ -157,10 +157,10 @@ See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for
 | `.agents/skill-artifacts/meta/records/diagnose-*.md`, `.agents/skill-artifacts/meta/sketches/prioritize-*.md`, `.agents/skill-artifacts/meta/records/targets-*.md` | Research mid-pipeline outputs. |
 | `.agents/skill-artifacts/mkt/campaign-plan.md` + `.agents/skill-artifacts/mkt/content/`, `.agents/skill-artifacts/mkt/lp-brief/`, etc. | Marketing artifacts. |
 | `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
-| `.agents/skill-artifacts/meta/agents-panel-report.md`, `.agents/skill-artifacts/meta/fresh-eyes-report.md` | Meta-skill artifacts (ephemeral). |
+| `.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
 | `.agents/experience/*.md` | All cold-start answers across stacks. |
 | `.agents/experience/meta-workflow.md` | Prior `/start-meta` breadcrumb. |
-| `.agents/skill-artifacts/meta/learned-rules.md` | Behavior corrections from prior sessions. |
+| `.agents/skill-artifacts/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
 
 Build a cross-stack state map:
 
@@ -314,7 +314,7 @@ Output format for **process skill**:
 Why: post-implementation independent review. Runs an independent
 agent against your changes, returns issues + severity.
 
-Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/fresh-eyes-report.md
+Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md
 
 →  /fresh-eyes
 ```

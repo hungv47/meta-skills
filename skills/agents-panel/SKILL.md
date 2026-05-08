@@ -310,7 +310,7 @@ One-pass — no convergence detection. Independent samples give better statistic
 
 ## Report
 
-When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/agents-panel-report.md`:
+When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-<slug>.md` — dated, slug-suffixed, immutable per-run record (lifecycle: decision; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing the debate topic (e.g., `2026-05-08-content-stack-direction.md`). Do NOT overwrite prior decisions — operator-committed strategic choices accumulate as audit trail.
 
 ```markdown
 ---
