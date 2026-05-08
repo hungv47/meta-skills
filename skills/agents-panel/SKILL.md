@@ -83,7 +83,7 @@ The `discover` skill hits a complex decision during conversation. It invokes age
 3. Invoke agents-panel with mode (debate/poll) and agent count
 4. Receive the report: consensus, disagreements, recommendation
 5. Integrate the recommendation into the ongoing conversation
-6. The agents-panel report is ephemeral — it lives in context, not necessarily on disk
+6. The agents-panel result lives in context for this run — skip the disk write unless the user asks (sub-routine path; standalone invocations write the dated decisions/ file)
 ```
 
 When invoked as a sub-routine, skip writing the report to disk unless the user asks. The value is the insight, not the artifact.
@@ -128,7 +128,7 @@ the result. Before I spawn:
 Answer 1-4 in one response. I'll spawn.
 ```
 
-**Write-back:** none. agents-panel is ephemeral — outputs are insight, not artifacts. Cost per run is recorded in the report frontmatter for telemetry, not in experience/.
+**Write-back:** none. Sub-routine invocations produce inline insight only — no disk artifact. (Standalone invocations write to the decisions/ path per the Report section above; lifecycle: decision — dated, immutable.) Cost telemetry lives in the report frontmatter, not in experience/.
 
 ---
 
@@ -310,7 +310,7 @@ One-pass — no convergence detection. Independent samples give better statistic
 
 ## Report
 
-When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-<slug>.md` — dated, slug-suffixed, immutable per-run record (lifecycle: decision; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing the debate topic (e.g., `2026-05-08-content-stack-direction.md`). Do NOT overwrite prior decisions — operator-committed strategic choices accumulate as audit trail.
+When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` — dated, skill-prefixed, slug-suffixed, immutable per-run record (lifecycle: decision; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing the debate topic (e.g., `2026-05-08-agents-panel-content-stack-direction.md`). Do NOT overwrite prior decisions — operator-committed strategic choices accumulate as audit trail.
 
 ```markdown
 ---
@@ -355,7 +355,7 @@ When invoked as sub-routine: return the synthesis inline, skip disk write.
 - **Deadlock after R rounds**: Report honestly. The finding IS that no dominant answer exists.
 - **Even poll split**: Report the split. No forced tiebreaker.
 - **Agent goes off-topic**: Exclude from synthesis, note effective N.
-- **Existing report**: Overwrite — these are ephemeral analysis artifacts.
+- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md`. Reports accumulate as audit trail (lifecycle: decision — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
 
 ---
 

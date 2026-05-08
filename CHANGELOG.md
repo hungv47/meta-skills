@@ -6,6 +6,28 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [2.3.3] - 2026-05-08
+
+Behavioral fix completion — close the remaining body-vs-frontmatter contradictions and stale path references that v2.3.2 missed (caught by the v2.3.2 fresh-eyes review pass).
+
+### Fixed
+
+- `agents-panel/SKILL.md` Edge Cases "Existing report" entry — was still saying `Overwrite — these are ephemeral analysis artifacts`, directly contradicting the Report section's "Do NOT overwrite prior decisions" instruction. Now declares dated/immutable accumulation per lifecycle: decision.
+- `agents-panel/SKILL.md` Report section slug example — changed from `2026-05-08-content-stack-direction.md` to `2026-05-08-agents-panel-content-stack-direction.md` to match the convention already established on disk (existing decisions files all use `[date]-agents-panel-<topic>.md`). Path scheme now explicit: `[YYYY-MM-DD]-agents-panel-<slug>.md`.
+- `agents-panel/SKILL.md` sub-routine wording (lines 86, 131) — "agents-panel is ephemeral" replaced with sub-routine-scoped wording that doesn't conflict with the new lifecycle: decision classification for standalone invocations.
+- `fresh-eyes/SKILL.md` Pre-Dispatch Write-back note — was still saying `Reviews are ephemeral — overwrite the previous report each run`, contradicting the rest of the file. Now points to the Output section's dated-snapshot path convention.
+- `meta-skills/skills/start-meta/references/workflow-graph.md` — every old `.agents/{meta,tasks,spec,prioritize,targets,diagnose,product,mkt}/...` reference (including agents-panel and fresh-eyes Produces lines) migrated to the `.agents/skill-artifacts/...` taxonomy. "(ephemeral)" classifications corrected to "lifecycle: decision / snapshot."
+- `meta-skills/references/manifest-spec.md` — staleness defaults table and any other path references migrated to the new taxonomy.
+- `meta-skills/README.md` — agents-panel and fresh-eyes Produces lines updated to dated paths.
+
+### Notes
+
+This patch closes the rest of the body-vs-frontmatter contradictions the v2.3.2 fresh-eyes pass surfaced. v2.3.2 fixed 5 of 7 affected locations; v2.3.3 closes the remaining 2 in-SKILL.md contradictions plus 2 reference files (workflow-graph.md, manifest-spec.md) that had been overlooked. No new contract surface — implementation aligns with the already-declared lifecycle taxonomy.
+
+Same pattern as v2.3.2: the v1.5.0 T33 pass updated frontmatter `routing.produces` declarations but left body write instructions and reference docs stale. v2.3.2 + v2.3.3 close the gap.
+
+---
+
 ## [2.3.2] - 2026-05-08
 
 Behavioral fix — close pre-existing body-vs-frontmatter mismatch in `agents-panel` and `fresh-eyes` SKILL.md files exposed by the v2.3.1 fresh-eyes review pass.
