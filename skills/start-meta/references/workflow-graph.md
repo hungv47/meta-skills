@@ -25,10 +25,10 @@ Cross-stack data flow:
   research/icp-research.md      ←── read by marketing + cross-stack skills
   research/market-research.md   ←── read by prioritize, campaign-plan
   brand/BRAND.md, DESIGN.md     ←── read by lp-brief, design-brief, copywriting, short-form-brief
-  .agents/prioritize.md         ←── read by system-architecture, campaign-plan
-  .agents/spec.md               ←── read by system-architecture, task-breakdown
+  .agents/skill-artifacts/meta/sketches/prioritize-*.md         ←── read by system-architecture, campaign-plan
+  .agents/skill-artifacts/meta/specs/*.md               ←── read by system-architecture, task-breakdown
   architecture/system-arch.md   ←── read by task-breakdown
-  .agents/product/flow/*        ←── read by system-architecture, task-breakdown
+  .agents/skill-artifacts/product/flow/*        ←── read by system-architecture, task-breakdown
 ```
 
 **Key insight:** every stack's first artifact is the foundation for every other stack. `research/product-context.md` (from icp-research) is the most-consumed file in the entire system.
@@ -40,15 +40,15 @@ Cross-stack data flow:
 ### discover
 
 - **Job:** conversational discovery — clarifies WHAT to build through adaptive conversation (3-5 Qs to multi-round).
-- **Produces:** `.agents/spec.md` (optional)
-- **Consumes:** `research/product-context.md`, `.agents/product/flow/*.md`
+- **Produces:** `.agents/skill-artifacts/meta/specs/*.md` (optional)
+- **Consumes:** `research/product-context.md`, `.agents/skill-artifacts/product/flow/*.md`
 - **When to recommend:** scope is unclear; user has a vague idea; "what should we build". Upstream of any non-trivial work in any stack.
 - **Cost:** $0.03–0.10 · 0 agents (single-agent conversational) · fast budget
 
 ### agents-panel
 
 - **Job:** multi-agent debate or consensus poll. N agents argue (debate mode) OR independently analyze + aggregate (poll mode).
-- **Produces:** `.agents/meta/agents-panel-report.md` (ephemeral)
+- **Produces:** `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md` (lifecycle: decision — dated, immutable)
 - **Consumes:** nothing
 - **When to recommend:** complex decision needs multiple perspectives. "Which framework should we use?" "Is this LP design strong?" "Should we sunset feature X?"
 - **Cost:** $0.15–0.50 · 3–10 agents · standard budget · ~5 min
@@ -56,15 +56,15 @@ Cross-stack data flow:
 ### task-breakdown
 
 - **Job:** decompose spec/architecture into buildable tasks with acceptance criteria, dependencies, implementation order.
-- **Produces:** `.agents/tasks.md`
-- **Consumes:** `.agents/spec.md`, `architecture/system-architecture.md`, `.agents/product/flow/*.md`
+- **Produces:** `.agents/skill-artifacts/meta/tasks.md`
+- **Consumes:** `.agents/skill-artifacts/meta/specs/*.md`, `architecture/system-architecture.md`, `.agents/skill-artifacts/product/flow/*.md`
 - **When to recommend:** spec OR architecture exists; user is about to build. Hard-gated.
 - **Cost:** $0.15–0.50 · 5 agents · standard budget · ~5 min
 
 ### fresh-eyes
 
 - **Job:** post-implementation independent review. Chain: Implement → Review → Resolve. Max 2 rounds.
-- **Produces:** `.agents/meta/fresh-eyes-report.md` (ephemeral)
+- **Produces:** `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md` (lifecycle: snapshot — dated, immutable)
 - **Consumes:** nothing (reads code/artifacts directly)
 - **When to recommend:** implementation done; user wants second opinion. Auto-suggest after security-sensitive code, data-mutation code, or critical artifacts (system-architecture, brand-system, lp-brief).
 - **Cost:** $0.15–0.50 · 2 agents · standard budget · ~3 min
@@ -150,7 +150,7 @@ These are SUGGESTIONS, not recommendations. Mention them as optional terminal st
 
 - Project-level mismatch: `CLAUDE.md` describes product X, but `research/product-context.md` describes product Y → flag the whole state as questionable.
 - Foundation mismatch: brand voice in `brand/BRAND.md` contradicts ICP segment in `research/icp-research.md` → flag the brand as stale.
-- Pipeline-skip: `.agents/prioritize.md` exists but no `research/market-research.md` upstream → unusual; surface for user awareness.
+- Pipeline-skip: `.agents/skill-artifacts/meta/sketches/prioritize-*.md` exists but no `research/market-research.md` upstream → unusual; surface for user awareness.
 
 ---
 

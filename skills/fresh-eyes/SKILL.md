@@ -120,7 +120,7 @@ fresh-eyes runs an independent post-implementation review. Before I dispatch:
 Answer 1-3 in one response. I'll dispatch reviewer + resolver.
 ```
 
-**Write-back:** none. Reviews are ephemeral — overwrite the previous report each run, no experience-file persistence.
+**Write-back:** none. Reports are written to dated snapshot files (lifecycle: snapshot — dated, immutable; accumulate as audit trail), not to experience/. See Output section for the path convention.
 
 ---
 

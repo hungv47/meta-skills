@@ -64,7 +64,7 @@ Conversational discovery that adapts from quick scoping (3-5 questions) to deep 
 
 **Not for:** multi-perspective debate (use `agents-panel`) or decomposing work (use `task-breakdown`)
 
-**Produces:** Conversation context (default) or `.agents/spec.md` (when explicitly saved)
+**Produces:** Conversation context (default) or `.agents/skill-artifacts/meta/specs/*.md` (when explicitly saved)
 
 ---
 
@@ -79,7 +79,7 @@ Stochastic multi-agent debate (agents argue in rounds, converge) or consensus po
 
 **Not for:** implementation (use `system-architecture`) or verification (use `fresh-eyes`)
 
-**Produces:** `.agents/meta/agents-panel-report.md`
+**Produces:** `.agents/skill-artifacts/meta/decisions/[date]-*.md`
 
 ---
 
@@ -94,7 +94,7 @@ Breaks work into granular, testable tasks with acceptance criteria, dependencies
 
 **Not for:** clarifying requirements (use `discover`) or designing architecture (use `system-architecture`)
 
-**Produces:** `.agents/tasks.md`
+**Produces:** `.agents/skill-artifacts/meta/tasks.md`
 
 ---
 
@@ -109,7 +109,7 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 
 **Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agents-panel`)
 
-**Produces:** `.agents/meta/fresh-eyes-report.md`
+**Produces:** `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`
 
 ---
 
