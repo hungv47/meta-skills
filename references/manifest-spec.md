@@ -36,7 +36,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "size_bytes": 18432,
       "frontmatter_present": true
     },
-    ".agents/diagnose.md": {
+    ".agents/skill-artifacts/meta/records/diagnose-*.md": {
       "produced_by": "diagnose",
       "produced_at": "2026-05-01",
       "status": "done_with_concerns",
@@ -229,14 +229,14 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 | Audience / market research (`icp-research`, `market-research`) | 90 |
 | Brand identity (`brand/BRAND.md`, `brand/DESIGN.md`) | 365 |
 | Architecture (`architecture/system-architecture.md`) | 180 |
-| Diagnosis (`.agents/diagnose.md`) | 30 — diagnoses age fast |
-| Prioritization (`.agents/prioritize.md`) | 60 |
-| Funnel targets (`.agents/targets.md`) | 60 |
-| Tasks (`.agents/tasks.md`) | 14 — tasks should be acted on quickly |
-| Cleanup reports (`.agents/cleanup-report.md`) | 30 |
-| Spec from `discover` (`.agents/spec.md`) | 60 |
-| Marketing artifacts (`.agents/mkt/**`) | 30 |
-| Meta reports (`.agents/meta/agents-panel-report.md`, `fresh-eyes-report.md`) | 14 — these are point-in-time |
+| Diagnosis (`.agents/skill-artifacts/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
+| Prioritization (`.agents/skill-artifacts/meta/sketches/prioritize-*.md`) | 60 |
+| Funnel targets (`.agents/skill-artifacts/meta/records/targets-*.md`) | 60 |
+| Tasks (`.agents/skill-artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
+| Cleanup reports (`.agents/skill-artifacts/meta/records/cleanup-*.md`) | 30 |
+| Spec from `discover` (`.agents/skill-artifacts/meta/specs/*.md`) | 60 |
+| Marketing artifacts (`.agents/skill-artifacts/mkt/**`) | 30 |
+| Meta reports (`.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
 
 These are defaults. A producer can override per-artifact if context warrants (e.g., a campaign-plan locked to a 90-day campaign sets `stale_after_days: 90`).
 
