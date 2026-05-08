@@ -6,6 +6,26 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [2.3.1] - 2026-05-08
+
+CLAUDE.md doc cleanup — align stack-level documentation with the new `.agents/skill-artifacts/` taxonomy shipped in v2.3.0 and across the umbrella as marketplace 1.5.0.
+
+### Changed
+
+- `meta-skills/CLAUDE.md` Manifest Spec, Artifacts, and Learned Rules sections — paths migrated to lifecycle-shaped substructure:
+  - `agents-panel` artifact path: `.agents/meta/agents-panel-report.md` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md` (lifecycle: decision — dated, immutable)
+  - `fresh-eyes` artifact path: `.agents/meta/fresh-eyes-report.md` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md` (lifecycle: snapshot)
+  - `discover` spec path: `.agents/spec.md` → `.agents/skill-artifacts/meta/specs/<slug>.md`
+  - `task-breakdown` tasks path: `.agents/tasks.md` → `.agents/skill-artifacts/meta/tasks.md` (session anchor)
+  - Learned rules: `.agents/meta/learned-rules.md` → `.agents/skill-artifacts/meta/records/learned-rules.md`
+- Artifacts table Notes column updated — `agents-panel` and `fresh-eyes` are no longer "ephemeral, overwritten each run"; they're dated decision/snapshot records under the new lifecycle taxonomy.
+
+### Notes
+
+Doc-only patch — no SKILL.md or skill-behavior changes.
+
+---
+
 ## [2.3.0] - 2026-05-08
 
 `fresh-eyes` simplification dimension hardening + T33 path migration.
