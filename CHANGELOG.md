@@ -6,6 +6,28 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [2.3.2] - 2026-05-08
+
+Behavioral fix — close pre-existing body-vs-frontmatter mismatch in `agents-panel` and `fresh-eyes` SKILL.md files exposed by the v2.3.1 fresh-eyes review pass.
+
+### Fixed
+
+- `agents-panel/SKILL.md` line 313 (Report section) — body prose was instructing agents to write to flat undated `.agents/skill-artifacts/meta/agents-panel-report.md`, contradicting both the skill's own `routing.produces: skill-artifacts/meta/decisions/[date]-*.md` frontmatter declaration and the `lifecycle: decision` taxonomy (dated, immutable per `agent-skills/CLAUDE.md` §"Artifact Placement"). Now writes to `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-<slug>.md` with explicit naming-convention guidance.
+- `fresh-eyes/SKILL.md` Output section + Step 7 + Edge Cases + Output Files table — body prose was writing to flat undated `.agents/skill-artifacts/meta/fresh-eyes-report.md` and explicitly described the artifact as "ephemeral process artifacts, not archives" + "Previous reports are overwritten." Contradicted both the skill's own `routing.produces: skill-artifacts/meta/records/fresh-eyes-*.md` frontmatter and the `lifecycle: snapshot` taxonomy (dated, immutable). Now writes to `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md`; reports accumulate as audit trail; operator prunes via cleanup-artifacts when needed.
+- `fresh-eyes/SKILL.md` Learned rules instruction (line 155) — path `.agents/skill-artifacts/meta/learned-rules.md` migrated to `.agents/skill-artifacts/meta/records/learned-rules.md` per CLAUDE.md taxonomy (learned-rules belong in `records/` subdir, not flat at `meta/` root).
+- `discover/SKILL.md` line 120 — same `learned-rules.md` path migration.
+- `start-meta/SKILL.md` state-detection table (line 160) — `agents-panel-report.md` + `fresh-eyes-report.md` flat paths replaced with `decisions/[date]-*.md` + `records/[date]-fresh-eyes-*.md` glob patterns; misleading "(ephemeral)" classification corrected to "(dated, immutable — lifecycle: decision / snapshot)."
+- `start-meta/SKILL.md` cost panel (line 317) — fresh-eyes Produces line updated to dated path.
+- `start-meta/SKILL.md` learned-rules row — `records/` subdir added.
+
+### Notes
+
+This is a real behavioral fix, not just doc cleanup. The v1.5.0 T33 pass updated `routing.produces` frontmatter declarations to the new lifecycle taxonomy but left body write instructions stale. The v1.5.1 fresh-eyes review caught the contradiction between body prose and frontmatter. Patch bump because the fix changes runtime behavior (where files are written, whether they accumulate or overwrite) — but it aligns the implementation with the already-declared contract; no new contract surface.
+
+Caught and dogfooded simultaneously: the fresh-eyes review report itself was written to the new dated-snapshot path (`.agents/skill-artifacts/meta/records/2026-05-08-fresh-eyes-claude-md-migration.md`) per the new contract.
+
+---
+
 ## [2.3.1] - 2026-05-08
 
 CLAUDE.md doc cleanup — align stack-level documentation with the new `.agents/skill-artifacts/` taxonomy shipped in v2.3.0 and across the umbrella as marketplace 1.5.0.
