@@ -6,6 +6,27 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.1.2] - 2026-05-10
+
+REB-4 ships: stack canonizes the `` ! `<cmd>` `` script-interpolation convention from the WorkOS Skills-at-Scale workshop, plus 3 retrofits inside `meta-skills/`. Slash-command bodies that previously asked Claude to "go figure out X" now embed deterministic shell output inline — no spin-up, no model-side variance, deterministic base instead of speculation.
+
+### Added
+- **`meta-skills/CLAUDE.md` — new §"Skill-Authoring Patterns" section** canonizing the `` ! `<cmd>` `` convention. Covers when to use (Pre-Dispatch context surfacing, state-detection prose, sub-agent prompt-building) and when NOT to (non-deterministic data, SKILL.md content read by sub-agents via Read tool, slow / side-effecting / unsafe commands, cross-platform-fragile flags). Worked example shows substitution semantics. Source: Skills at Scale workshop (Nick Nisi & Zack Proser, WorkOS DX). First entry under what's intended to be a growing skill-authoring patterns section.
+
+### Changed
+- **`cleanup-artifacts/SKILL.md` Pre-Dispatch §Warm Start** — manifest-snapshot placeholder replaced with two `` ! `find` `` interpolations (total artifact count + 90d-stale count) + one `` ! `git log` `` for manifest mtime. Operator no longer derives `[N artifacts, M stale, K orphan]` by hand.
+- **`orchestrate-meta/SKILL.md` Step 1 Cross-Stack State Detection** — three interpolations land BEFORE the manifest read: artifacts-by-domain count via `find | awk | uniq -c`, top-level canonical-folder presence (research/brand/architecture) via shell loop, last 5 commits via `git log`. Free-standing disk snapshot even when manifest is stale or missing.
+- **`fresh-eyes/SKILL.md` Pre-Dispatch §Warm Start** — `[N files / diff vs main]` placeholder replaced with `` ! `git log --oneline main..HEAD` `` (commits in range) + `` ! `git diff --stat main...HEAD` `` (file change summary). Diff range visible inline before reviewer dispatch.
+
+### Notes
+- All commands are macOS+Linux portable: `find` with `-name`/`-type f`/`-mtime` portable subset, `wc -l | tr -d ' '` to handle macOS leading-whitespace, POSIX `awk -F/`, `sort | uniq -c | sort -rn`, portable `git log` formats. No `stat -f`/`stat -c` (fragmentation), no GNU-only flags. All wrapped with `2>/dev/null || echo "..."` graceful fallback.
+- **Skipped retrofits with rationale** (audit doc at `.agents/skill-artifacts/meta/records/2026-05-10-bang-backtick-retrofit-audit.md`):
+  - **3 sibling orchestrate-* skills** (research/marketing/product) — structurally identical to orchestrate-meta. Re-entry condition = next-touch enrichment session in each stack. Lift the 3-line block from orchestrate-meta Step 1; same `find | awk | uniq -c` pattern. Avoids 4-stack ceremony for ~3-line additions per skill. Adversarial check ("real lift verified at ≥2 spots") already met by cleanup-artifacts + orchestrate-meta + fresh-eyes (3 spots).
+  - **`cold-outreach`** — roadmap REB-4 named it as candidate but the adversarial check explicitly says "SKIP for skills that don't read deterministic data — this isn't a hammer." Cold-outreach signal-extraction is web-data (LinkedIn posts, GitHub activity, company news) — not deterministic local data. Bang-backtick would force-fit. Existing 7-question Cold-Start questionnaire is the right surface for prospect-signal collection.
+- Slash-command interpolation only renders when invoked as `/<skill-name>`. Sub-agents that read these SKILL.md files via the Read tool see literal `! \`...\`` text — no execution. Each retrofit includes a trailing one-paragraph note pointing readers to `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns" for semantics.
+
+---
+
 ## [3.1.1] - 2026-05-10
 
 REB-5 Wave 1 ships: `discover` gains explicit anti-sycophancy rules and an always-recommend rule. Body-only edit to `discover/SKILL.md` Communication Discipline section. The 5 BAD-vs-GOOD pushback patterns from REB-5a were already shipped in an earlier release; this patch closes the remaining gaps.

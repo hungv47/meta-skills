@@ -122,7 +122,22 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 ## Step 1: Cross-Stack State Detection
 
-Read `.agents/manifest.json` first — it's the canonical state index. Single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
+**Disk snapshot** (rendered inline when `/orchestrate-meta` is invoked — see `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns" for the inline-shell-interpolation convention):
+
+```
+Artifacts by domain:
+! `find .agents/skill-artifacts -mindepth 2 -name "*.md" -type f 2>/dev/null | awk -F/ '{print $3}' | sort | uniq -c | sort -rn || echo "no .agents/skill-artifacts/"`
+
+Top-level canonical folders present:
+! `for d in research brand architecture; do [ -d "$d" ] && echo "  $d/ ✓"; done; echo`
+
+Last 5 commits in this repo:
+! `git log --oneline -5 2>/dev/null || echo "no git history"`
+```
+
+The `! \`...\`` lines run at slash-command invocation time and substitute the command output — so the orchestrator starts from concrete state instead of speculating about what's on disk.
+
+Then read `.agents/manifest.json` for the structured detail — it's the canonical state index, single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
 
 ```bash
 bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
