@@ -126,13 +126,13 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 ```
 Artifacts by domain:
-! `find .agents/skill-artifacts -mindepth 2 -name "*.md" -type f 2>/dev/null | awk -F/ '{print $3}' | sort | uniq -c | sort -rn || echo "no .agents/skill-artifacts/"`
+! `[ -d .agents/skill-artifacts ] && find .agents/skill-artifacts -mindepth 2 -name "*.md" -type f 2>/dev/null | awk -F/ '{print $3}' | sort | uniq -c | sort -rn | grep . || echo "  (no .agents/skill-artifacts/ yet)"`
 
 Top-level canonical folders present:
-! `for d in research brand architecture; do [ -d "$d" ] && echo "  $d/ ✓"; done; echo`
+! `found=0; for d in research brand architecture; do [ -d "$d" ] && { echo "  $d/ ✓"; found=1; }; done; [ $found -eq 0 ] && echo "  (none yet)" || true`
 
 Last 5 commits in this repo:
-! `git log --oneline -5 2>/dev/null || echo "no git history"`
+! `git log --oneline -5 2>/dev/null | grep . || echo "no git history"`
 ```
 
 The `! \`...\`` lines run at slash-command invocation time and substitute the command output — so the orchestrator starts from concrete state instead of speculating about what's on disk.
