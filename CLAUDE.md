@@ -11,7 +11,7 @@ Domain-agnostic process skills: discover, debate, decompose, verify. These skill
 - **One skill per job**: Each skill does a fundamentally different job. No two skills that "ask questions to clarify things."
 - **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel. Structured decomposition (task-breakdown) retains specialized agents.
 
-## Skills (4)
+## Skills (5)
 
 | Skill | What it does | When |
 |-------|-------------|------|
@@ -19,6 +19,7 @@ Domain-agnostic process skills: discover, debate, decompose, verify. These skill
 | `agents-panel` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
 | `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
 | `fresh-eyes` | Fresh-eyes quality check after implementation | After building |
+| `cleanup-artifacts` | Audit + groom `.agents/` — classify, critic-gate, archive (never delete) | When `.agents/` accumulates cruft, before a release |
 
 ## Process Flow
 
@@ -59,7 +60,7 @@ The protocol governs the moment between user invocation and agent dispatch. Two 
 
 ## Manifest Spec
 
-State detection across all meta-skills (especially `start-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/skill-artifacts/meta/specs/<slug>.md`, `task-breakdown` → `.agents/skill-artifacts/meta/tasks.md`, `agents-panel` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.
+State detection across all meta-skills (especially `orchestrate-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/skill-artifacts/meta/specs/<slug>.md`, `task-breakdown` → `.agents/skill-artifacts/meta/tasks.md`, `agents-panel` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.
 
 ## Artifacts
 
@@ -69,6 +70,7 @@ State detection across all meta-skills (especially `start-meta`) reads `.agents/
 | `agents-panel` | `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md` | Dated, immutable — operator-committed strategic decision (lifecycle: decision). |
 | `task-breakdown` | `.agents/skill-artifacts/meta/tasks.md` | Task list with acceptance criteria. Session anchor (lifecycle: pipeline). |
 | `fresh-eyes` | `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md` | Often returned inline; when persisted, dated snapshot (lifecycle: snapshot). |
+| `cleanup-artifacts` | `.agents/skill-artifacts/meta/records/[date]-cleanup-artifacts-<slug>.md` | Per-run audit report (lifecycle: snapshot). Side effect: moves to `.agents/skill-artifacts/.archive/[date]/` on `--apply`. |
 
 ## Multi-Agent Patterns
 

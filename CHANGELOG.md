@@ -6,6 +6,28 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.0.0] - 2026-05-08
+
+### BREAKING
+- Renamed `start-meta` → `orchestrate-meta`. The skill scans existing artifacts and continues mid-pipeline; the orchestration role now reads explicitly in the slash command. No backward-compat alias — single-rev cutover.
+- Update any `/start-meta` invocations in your workflows to `/orchestrate-meta`.
+
+### Added
+- New skill `cleanup-artifacts` — closes the long-open hygiene gap (T4/T6 in the stack roadmap). Single-agent meta-skill (standard budget) that audits the `.agents/` artifact tree and grooms it without ever deleting. Classifies every artifact as KEEP / STALE / ORPHAN / LEGACY / EPHEMERAL per `references/cleanup-rules.md`, runs a mandatory critic gate (5-random spot-check for live cross-references across `.agents/`, `brand/`, `research/`, `architecture/`), and — on `--apply` — MOVES confirmed candidates to `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/` behind explicit per-category operator confirmation. Default mode is `--dry-run`. Critic FAIL or HARD-NEVER attempt → `BLOCKED` with no destructive action.
+- HARD-NEVER guarantees in `cleanup-artifacts`: refuses to touch `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, or `roadmap.md` even on explicit operator request inside the skill.
+- `cleanup-artifacts/references/cleanup-rules.md` — full classification taxonomy with per-class file-pattern examples, ephemeral pattern list (`*-candidates.md`, `*-rejected.md`, `*-draft.md`, `scratch-*`, undated `fresh-eyes-report.md` / `agents-panel-report.md` pre-T33 leftovers), reference-detection grep patterns (full-path + basename + slug), risk-tier rules (TIER-1 gitignored / TIER-2 tracked-clean / TIER-3 tracked-dirty refused), and manifest-driven freshness decision tree.
+- `cleanup-artifacts/agents/cleanup-runner.md` — the single execution agent (walk → classify → critic → prompt → move → manifest-sync) with anti-patterns and self-check.
+- Side effect: `cleanup-artifacts` re-runs `bun meta-skills/scripts/manifest-sync.ts` after any actual move so the manifest reflects new disk state.
+
+### Changed
+- `meta-skills/CLAUDE.md` — Skills table updated (4 → 5) to include `cleanup-artifacts`; Artifacts table now lists its dated snapshot path.
+
+### Notes
+- `cleanup-artifacts` mirrors the proven `machine-cleanup` pattern (per-target classification, risk surfacing, explicit confirmation, MOVE-not-delete) but at the project artifact-tree level instead of the developer's machine. Operator chose option (b) full meta-skill over (c) helper script + start-* hook (resolved 2026-05-08 PM s3, see `.agents/skill-artifacts/meta/roadmap.md` §"Hygiene & Process Skills").
+- v1 of `cleanup-artifacts` only moves; an explicit `--purge-archive` flag and `--paranoid` per-file mode are deliberate v2 candidates with re-entry conditions documented in `SKILL.md` §"Future Work".
+
+---
+
 ## [2.3.3] - 2026-05-08
 
 Behavioral fix completion — close the remaining body-vs-frontmatter contradictions and stale path references that v2.3.2 missed (caught by the v2.3.2 fresh-eyes review pass).
