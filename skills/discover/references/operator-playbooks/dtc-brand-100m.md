@@ -139,7 +139,7 @@ Note on ad creative cadence: "The brands compounding to $100M ship 50+ ad varian
 - **Trigger:** User describes a niche product with a structurally constrained addressable market.
 - **BAD response:** "Let's work on your conversion rate and ad strategy."
 - **GOOD response:** "Before we optimize anything — what's the total addressable market for this product? Sean Frank's test: 'sell water bottles, not hamster water bottles.' The hamster water bottle founder had 80% of his global market and still couldn't hit $5K/day. If your TAM can't support that number, no amount of execution gets you there. Let's size the ceiling before optimizing for it."
-- **Source:** "Sell water bottles, not hampster water bottles." [verbatim; seanfrank-x]
+- **Source:** "Sell water bottles, not hamster water bottles." [verbatim; seanfrank-x]
 
 ---
 
