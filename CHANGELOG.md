@@ -6,6 +6,25 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.1.1] - 2026-05-10
+
+REB-5 Wave 1 ships: `discover` gains explicit anti-sycophancy rules and an always-recommend rule. Body-only edit to `discover/SKILL.md` Communication Discipline section. The 5 BAD-vs-GOOD pushback patterns from REB-5a were already shipped in an earlier release; this patch closes the remaining gaps.
+
+REB-1 (3.1.0) gave `discover` the *content* spine (operator-playbooks); REB-5 Wave 1 gives it the *posture*. Wave 2 (4-mode framework, mandatory output sections, idea-critic agent) gated on operator evaluation after ≥2 real Wave-1 sessions per the REB-5 risk plan.
+
+### Changed
+- **`discover/SKILL.md` (3.1.0 → 3.1.1)** — Communication Discipline section gains 3 named rules:
+  - **Banned phrases** — verbatim list of 5 sycophantic hedges never to emit (`interesting approach` · `many ways to think about this` · `you might want to consider` · `that could work` · `I can see why you'd think that`). Closes REB-5a.
+  - **Take a position on every answer** — codifies the "what evidence would change my mind" requirement. Two sentences mandatory: position + falsifier. If you can't name what would change your mind, your position isn't a position. Closes REB-5a.
+  - **Always recommend while asking** — every AskUserQuestion (and equivalent chat-format question) must carry an LLM-recommended answer with a one-line reason. Asking without recommending is offloading thinking onto the user. Closes REB-5b. (Previously implicit in pacing bullets at line 257; now an explicit named rule.)
+
+### Notes
+- REB-5c / 5d / 5e (4-mode framework, mandatory artifact output sections, idea-critic agent) are Wave 2 — gated on operator running ≥2 real discover sessions with Wave 1 and deciding PROCEED / PARTIAL / SKIP per T61. Wave 2 has cross-skill coordination cost (mode framework affects orchestrate-meta routing; mandatory output sections affect downstream consumers like task-breakdown). Don't pay that tax until Wave 1 has earned it.
+- Sources: `garrytan/gstack/office-hours` §Anti-Sycophancy Rules + §Pushback Patterns; `mattpocock/skills/skills/productivity/grill-me` ("For each question, provide your recommended answer").
+- The 5 BAD-vs-GOOD pushback patterns named in REB-5a were already present in `discover/SKILL.md` lines 198-220 prior to this patch — this release does not add them, only the missing banned-phrases / take-position / always-recommend rules.
+
+---
+
 ## [3.1.0] - 2026-05-09
 
 REB-1 ships: `discover` gains a 9-doc operator-playbook reference catalog, and SKILL.md routes to it during Step 1 Context Gathering. Mirrors the `platform-intelligence/` pattern from `short-form-brief` — practitioner-grade frames with `last_verified` frontmatter, named-cohort sourcing, and explicit pushback patterns the skill cites by name.
