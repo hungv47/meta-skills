@@ -6,6 +6,38 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.1.0] - 2026-05-09
+
+REB-1 ships: `discover` gains a 9-doc operator-playbook reference catalog, and SKILL.md routes to it during Step 1 Context Gathering. Mirrors the `platform-intelligence/` pattern from `short-form-brief` — practitioner-grade frames with `last_verified` frontmatter, named-cohort sourcing, and explicit pushback patterns the skill cites by name.
+
+The catalog gives `discover` a knowledge spine for pushing back from named playbooks ("the DTC $100M frame says X — your direction conflicts because Y") rather than asking generic interview questions. North star per stated direction: discover should act like the best business operator/CEO on the planet.
+
+### Added
+- **`discover/references/operator-playbooks/` — 9 new reference docs.**
+  - **Operator-craft (load on every non-trivial discover invocation, regardless of domain — these are stance, not domain knowledge):**
+    - `ceo-cognitive-patterns.md` (484 lines) — 18 named cognitive instincts (Bezos one-way/two-way doors · Grove paranoid scanning · Munger inversion · Jobs focus-as-subtraction · Horowitz people-first / wartime-vs-peacetime · Hastings talent density · Bezos 70%-info / regret minimization · Chesky/Graham founder-mode · Altman willfulness / leverage · Rams hierarchy-as-service / subtraction default · plus narrative coherence, courage accumulation, edge-case paranoia, design-for-trust). Each with named operator + cognitive move + when-it-fires + worked example + counter-cases. Source: `garrytan/gstack/plan-ceo-review`.
+    - `yc-six-forcing-questions.md` (371 lines) — Q1-Q6 demand-reality framework (would-they-be-upset · what-they-do-now · name-the-actual-human · narrowest-wedge · observation-and-surprise · 3-year-essentialness) with smart routing by product stage (pre-product / has users / paying customers / pure infra) and intrapreneurship adaptation. Source: `garrytan/gstack/office-hours`.
+    - `minimalist-entrepreneur.md` (389 lines) — 8 principles (Community First / Start Manual / Build As Little As Possible / Sell Before Scale / Spend Time Before Money / Profitability Goal / Grow At Speed Of Customers / Build The House You Want To Live In) + 8-question decision rubric + processize-before-productize thesis + red-flags / green-flags rubric (≥2 red OR <2 green → push back hard before generating alternatives) + Validated / Needs-more / Pivot verdict. Sources: `slavingia/skills/{processize,minimalist-review,validate-idea}`.
+  - **Founder-domain (load on product-context match):**
+    - `consumer-app-growth.md` (225 lines) — Channel sequencing $0→$50M with budget thresholds; marketing-before-building; 3-second consumer rule. Sources: Jibran (Lightreel, 60M views), Cali playbook-app-growth + playbook-influencer, Zach Yadegari.
+    - `dtc-brand-100m.md` (210 lines) — TAM check ("water bottles, not hamster water bottles"); marketing = ≥30% of revenue; CAC/LTV first-purchase profitability; Meta-as-king (2026); 5+ year horizon. Source: Sean Frank (Ridge).
+    - `b2b-saas-bootstrap.md` (207 lines) — Sales-led for B2B (not self-serve); EGC non-negotiable; warm-outbound-first; AEO + AI search; pricing-as-fastest-lever. Source: Yasser Elsaid (Chatbase, $9M ARR).
+    - `second-time-founder-discipline.md` (222 lines) — Distribution-before-product; lawyer-first; ruthless feature-killing; no deck until asked 3x; term-sheet humility. Sources: Will Henry + Timon Zimmermann + Chip Actual commenters.
+    - `pricing-defaults.md` (228 lines) — Opinionated no-free-tier prior with explicit carve-outs (early-stage feedback, freemium soft paywall, two-sided platforms, vocab/learning apps, free trials vs. permanent free tiers). Source: pie6k + comment thread.
+    - `ai-era-discoverability.md` (155 lines) — Ship `/pricing.md`, `/docs.md`, content-negotiated `text/markdown` mirrors so LLM agents parse cleanly. Source: Zeno Rocha (Resend).
+
+  Each doc carries: `last_verified: 2026-05-09` frontmatter, `sources` block with primary/secondary tier, opinionated rules with verbatim source quotes, counter-cases (carve-outs), worked Pushback Patterns (Trigger / BAD / GOOD / Source), Anti-Patterns with detection rules, and required Open Questions section. 90-day staleness flag rides the same pattern as `platform-intelligence/`.
+
+### Changed
+- **`discover/SKILL.md` (3.0.0 → 3.1.0)** — Step 1 Context Gathering now loads operator-craft frames on every non-trivial invocation (skipped only on Light-depth trivial scoping) and matches founder-domain frames against product-context via the trigger table. Step 6 Clarity Check gains a **playbook-citation self-check**: before asking "ready to build?", verify the recommendation cited at least one applicable frame when one was loaded. References section enumerates the new 9-doc catalog. `routing.consumes` adds `references/operator-playbooks/*.md`.
+
+### Notes
+- REB-1 entry in `.agents/skill-artifacts/meta/roadmap.md` (lines 666–807) drove this build. T45 (6 founder-domain), T46 (3 operator-craft), T47 (SKILL.md routing) all closed in this minor.
+- North star per the roadmap: REB-1 is *content* (what discover loads); REB-5 (deferred to a separate Wave 1 / Wave 2 cycle) is *structure* (how discover loads and uses content). Together they form operator-grade discover. Either can ship first.
+- Source-fetch caveat: `garrytan/gstack/{plan-ceo-review,office-hours}` SKILL.md files live at the repo root, NOT under `skills/`. Caveat captured for future re-verification work.
+
+---
+
 ## [3.0.1] - 2026-05-09
 
 Fresh-eyes review of v3.0.0 caught the symmetric gap to marketing-skills@4.0.0: the new skill was on disk but not in the plugin manifest.
