@@ -6,6 +6,30 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.1.3] - 2026-05-10
+
+Fresh-eyes patch on REB-4 (v3.1.2 ship). Single Opus generalist reviewer caught 4 issues in the bang-backtick retrofit; resolver confirmed 3 with empirical reproduction and applied targeted fixes. Same-day patch — no v3.1.2-based work was at risk; the retrofitted slash-commands hadn't been organically invoked yet.
+
+### Fixed
+- **`! `cmd 2>/dev/null || echo fallback`` silent-failure pattern across all 3 retrofitted SKILL.md files.** `||` keys on exit code, not on empty stdout. When the underlying file/dir is missing, `find ... 2>/dev/null` and `git log <untracked-or-empty-range>` both exit 0 with empty stdout — so the fallback never fires and the warm-start renders blank where the snapshot should be. Reproduced in this repo (`.agents/manifest.json` is gitignored per the local-only convention; `git log -1 .agents/manifest.json` exited 0 with empty stdout) and in `/tmp/test-fresh` (no `.agents/skill-artifacts/` dir; `find ... | awk | sort | uniq -c` exited 0 with empty stdout). Fix: pipe through `grep .` (forces non-zero on empty input) or front-gate on `[ -d X ] && ...`. All 5 affected interpolations updated:
+  - `cleanup-artifacts/SKILL.md` — manifest mtime line: `git log ... | grep . || echo 'untracked or no git history'`.
+  - `orchestrate-meta/SKILL.md` — artifacts-by-domain line: `[ -d .agents/skill-artifacts ] && find ... | awk | sort | uniq -c | sort -rn | grep . || echo "  (no .agents/skill-artifacts/ yet)"`.
+  - `orchestrate-meta/SKILL.md` — last 5 commits line: `git log --oneline -5 2>/dev/null | grep . || echo "no git history"`.
+  - `fresh-eyes/SKILL.md` — diff range line: `git log --oneline main..HEAD ... | head -10 | grep . || echo "no diff against main (or main branch missing)"`.
+  - `fresh-eyes/SKILL.md` — diff stat line: `git diff --stat main...HEAD ... | tail -10 | grep . || echo "(none)"`.
+- **`orchestrate-meta/SKILL.md` canonical-folder loop emitted whitespace-only output when none of `research/` / `brand/` / `architecture/` were present** (the fresh-project case where this signal matters most). Loop now tracks `found` state and emits `(none yet)` on no-match, with `|| true` to keep overall exit 0.
+
+### Changed
+- **`meta-skills/CLAUDE.md` §"Skill-Authoring Patterns" — Read-tool semantic claim tightened.** Prior text claimed sub-agents reading SKILL.md via Read tool "see literal `! `...`` text — no execution" as a definitive statement. Replaced with a more precisely-scoped explanation (the Claude Code slash-command preprocessor handles `!`-prefixed lines at slash-command invocation time only; Read tool returns file bytes as-is) plus an actionable corollary for sub-agent prompt-builders (run the command in the orchestrator and inline the output into the sub-agent's prompt; don't expect the sub-agent's read of the SKILL.md to interpolate).
+- **`.agents/skill-artifacts/meta/records/2026-05-10-bang-backtick-retrofit-audit.md` §Verification expanded** with an Empty-output fallback subsection documenting the `grep .` / front-gate pattern and the verification it survived (`/tmp/test-fresh` + this repo's actual state on 2026-05-10 s4).
+
+### Notes
+- Self-regulation gate held: 5 surgical line-replacements + ~15 lines added/changed across 3 SKILL.md files + CLAUDE.md + audit doc; well below the 30%-modified threshold and 10-finding cap.
+- Fresh-eyes report at `.agents/skill-artifacts/meta/records/2026-05-10-fresh-eyes-reb-4.md`.
+- Verified end-to-end: re-ran each fixed interpolation in 3 cases (missing dir, empty dir, populated dir; missing branch, empty range, real diff; no canonical folders, 1 of 3 canonical folders). All three cases produce useful output instead of blank lines.
+
+---
+
 ## [3.1.2] - 2026-05-10
 
 REB-4 ships: stack canonizes the `` ! `<cmd>` `` script-interpolation convention from the WorkOS Skills-at-Scale workshop, plus 3 retrofits inside `meta-skills/`. Slash-command bodies that previously asked Claude to "go figure out X" now embed deterministic shell output inline — no spin-up, no model-side variance, deterministic base instead of speculation.
