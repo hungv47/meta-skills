@@ -7,7 +7,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: hungv47
-  version: "3.0.0"
+  version: "3.1.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
 promptSignals:
@@ -57,6 +57,7 @@ routing:
   consumes:
     - product-context.md
     - skill-artifacts/product/flow/*.md
+    - references/operator-playbooks/*.md
   requires: []
   defers-to:
     - skill: diagnose
@@ -122,6 +123,33 @@ Scan for answers that already exist. A few minutes max — this narrows question
 - **Project conventions**: skim `CLAUDE.md`
 
 Anything found here is a question you don't ask.
+
+**Operator-craft stance load** (every non-trivial invocation, regardless of domain):
+
+Read these three before the first question — they shape *how* you push back, not *what* you ask:
+
+- `references/operator-playbooks/ceo-cognitive-patterns.md` — 18 named instincts (Bezos / Grove / Munger / Jobs / Horowitz / Hastings / Altman / Rams). Stance, not checklist.
+- `references/operator-playbooks/yc-six-forcing-questions.md` — Q1-Q6 demand-reality framework with smart routing by product stage.
+- `references/operator-playbooks/minimalist-entrepreneur.md` — processize-before-productize, sell-before-scale, red/green-flags rubric.
+
+Trivial scoping (clear task, existing codebase, well-defined scope per the Light depth row) skips this load — the playbooks earn their token cost on Medium/Deep work where the user is making strategic calls.
+
+**Founder-domain frame load** (only when product-context matches):
+
+Match the product-context against these frames; load the matching one:
+
+| Trigger | Frame |
+|---|---|
+| Consumer mobile/web app, app-store distribution, $0→$50M growth questions | `references/operator-playbooks/consumer-app-growth.md` |
+| Physical product / DTC e-commerce / Shopify-stack brand | `references/operator-playbooks/dtc-brand-100m.md` |
+| B2B SaaS for human/team users (not pure infra) | `references/operator-playbooks/b2b-saas-bootstrap.md` |
+| Founder has shipped before; second-time discipline questions | `references/operator-playbooks/second-time-founder-discipline.md` |
+| Pricing / monetization questions, free-tier debate | `references/operator-playbooks/pricing-defaults.md` |
+| AI agent discoverability, LLM-readable docs/pricing surfaces | `references/operator-playbooks/ai-era-discoverability.md` |
+
+Match by *job-shape*, not keyword — a B2B-SaaS founder asking pricing questions loads both `b2b-saas-bootstrap.md` and `pricing-defaults.md`. No match → no founder-domain frame loaded; the operator-craft stance covers it.
+
+If a frame's `last_verified` exceeds 90 days, flag it inline ("frame may be stale; verify before relying on numeric thresholds") but still apply the stance.
 
 ### Step 2: Premise Check (for non-trivial work)
 
@@ -276,7 +304,8 @@ When clarity is sufficient to build:
 
 1. Summarize key decisions
 2. Note remaining open questions and their impact
-3. Ask: "Ready to build, or go deeper on anything?"
+3. **Playbook-citation self-check**: before asking "ready to build?", verify — did the recommendation cite at least one applicable operator-playbook frame when one was loaded? If a founder-domain frame was loaded but no rule from it surfaced in the recommendation, you've ignored loaded context. Either cite the relevant rule, explain why the frame doesn't apply here, or revisit the recommendation. The frames exist to be *used*, not just read.
+4. Ask: "Ready to build, or go deeper on anything?"
 
 If the user says go, go. Don't pad.
 
@@ -495,3 +524,6 @@ Every run ends with explicit status:
 ## References
 
 - **`references/question-bank.md`** — Extended probing questions by domain (data/state, errors, UX, security, performance, integration, business logic, intent alignment)
+- **`references/operator-playbooks/`** — Practitioner-grade operator frames loaded during Step 1 Context Gathering. 9 docs:
+  - **Operator-craft (always-on stance)** — `ceo-cognitive-patterns.md` (18 named instincts) · `yc-six-forcing-questions.md` (Q1-Q6 demand reality) · `minimalist-entrepreneur.md` (processize → productize, sell-before-scale, red/green-flags rubric)
+  - **Founder-domain (load on product-context match)** — `consumer-app-growth.md` · `dtc-brand-100m.md` · `b2b-saas-bootstrap.md` · `second-time-founder-discipline.md` · `pricing-defaults.md` · `ai-era-discoverability.md`
