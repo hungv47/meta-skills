@@ -138,6 +138,16 @@ discover (conversation) --> build directly
 6. (commit + PR via gh; deploy via project's CI)
 ```
 
+## Releases
+
+```bash
+# Update to latest version (if already installed)
+npx skills update
+
+# Add this stack to your project
+npx skills add hungv47/meta-skills
+```
+
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md) for release notes (commit 99bf93b, 2026-05-05).
