@@ -123,7 +123,7 @@ Found:
   ! `find .agents/skill-artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk;
   ! `find .agents/skill-artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d
 - manifest last touched →
-  ! `git log -1 --format='%cr' .agents/manifest.json 2>/dev/null || echo 'no git history'`
+  ! `git log -1 --format='%cr' .agents/manifest.json 2>/dev/null | grep . || echo 'untracked or no git history'`
 - excluded paths from experience → "[list or none]"
 
 Mode defaults to --dry-run (preview only). Threshold defaults to 90 days.

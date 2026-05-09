@@ -102,10 +102,10 @@ Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`
 
 ```
 Diff range against main:
-! `git log --oneline main..HEAD 2>/dev/null | head -10 || echo "no diff against main"`
+! `git log --oneline main..HEAD 2>/dev/null | head -10 | grep . || echo "no diff against main (or main branch missing)"`
 
 Files changed (stat):
-! `git diff --stat main...HEAD 2>/dev/null | tail -10 || echo "(none)"`
+! `git diff --stat main...HEAD 2>/dev/null | tail -10 | grep . || echo "(none)"`
 
 Reviewing the above against [spec.md / tasks.md / inline requirements].
 Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?

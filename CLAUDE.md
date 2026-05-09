@@ -95,7 +95,7 @@ When `/cleanup-artifacts` runs, Claude Code substitutes both lines with command 
 
 **When NOT to use:**
 - **Non-deterministic data** — web fetches, prospect signals, anything that varies by external state. Bang-backtick assumes one command → one consistent answer.
-- **SKILL.md/agents/references content read by sub-agents via Read tool** — Read returns literal text; no shell interpolation happens. Bang-backtick only renders when the file is invoked as a slash command surface, not when it's loaded as reference content. Keep agent-prompt-builder snippets self-contained text the agent reads as-is.
+- **SKILL.md/agents/references content read by sub-agents via Read tool** — the Claude Code slash-command preprocessor handles `! `<cmd>`` lines at slash-command invocation time only; loading SKILL.md via the Read tool returns the file content as-is, without shell substitution. Bang-backtick only renders when the file is invoked as a slash command surface. For sub-agent prompts that need deterministic data, build the snippet in the orchestrator (run the command yourself) and inline the output into the prompt before dispatching — don't expect the sub-agent's read of the SKILL.md to interpolate.
 - **Slow, side-effecting, or unsafe commands** — cap at <2s read-only operations. Never write, install, or call external services. The slash-command invocation is interactive; the user is waiting.
 - **Cross-platform-fragile flags** — `stat -f` (macOS) vs `stat -c` (Linux), GNU-only `find` flags, etc. Stick to the portable subset (`git`, `find` with portable options, `wc`, `awk`, `head`, `tail`, `grep -E`, `sort | uniq -c`).
 
