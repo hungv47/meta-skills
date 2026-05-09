@@ -62,6 +62,47 @@ The protocol governs the moment between user invocation and agent dispatch. Two 
 
 `discover` is exempt — it IS the multi-round interview by design.
 
+## Skill-Authoring Patterns
+
+Conventions for writing skill bodies. The first canonized pattern:
+
+### Inline shell interpolation — `` ! `<cmd>` ``
+
+When a skill body needs **deterministic data** (git log, file count, manifest read, last-modified date, repo file list), embed `` ! `<cmd>` `` inline inside the skill body rather than instructing Claude to "go figure out X." When the user invokes the skill as a slash command, Claude Code executes the bracketed command and substitutes the output **before** the prompt reaches the LLM — so the model starts from a deterministic base instead of speculating.
+
+**Three concrete wins:**
+
+1. **Token saving.** No spin-up to derive the data each run. The first turn already has the answer.
+2. **Determinism.** Same command → same output every invocation. No model-generation variance on a derived fact.
+3. **Deterministic base, not speculation.** "Here are the latest 10 commits in the format I expect — go and do something with that." vs. "Go figure out the latest 10 commits, then …" The former skips a guess-step.
+
+**Worked example** (inside a Pre-Dispatch warm-start prompt):
+
+```markdown
+Found:
+- artifact disk snapshot →
+  ! `find .agents/skill-artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk
+- manifest last touched →
+  ! `git log -1 --format='%cr' .agents/manifest.json 2>/dev/null || echo 'no git history'`
+```
+
+When `/cleanup-artifacts` runs, Claude Code substitutes both lines with command output. The orchestrator sees concrete numbers, not the literal backtick syntax.
+
+**When to use:**
+- **Pre-Dispatch context surfacing** — give the warm-start prompt a real snapshot instead of placeholders the LLM has to fill.
+- **State-detection prose** — anywhere prose says "read X, count Y, derive Z" and X/Y/Z are local-deterministic.
+- **Sub-agent prompt-building** in skill orchestrators — embed git/find/jq output inside the prompt block sent to Layer-1 agents so they don't re-derive.
+
+**When NOT to use:**
+- **Non-deterministic data** — web fetches, prospect signals, anything that varies by external state. Bang-backtick assumes one command → one consistent answer.
+- **SKILL.md/agents/references content read by sub-agents via Read tool** — Read returns literal text; no shell interpolation happens. Bang-backtick only renders when the file is invoked as a slash command surface, not when it's loaded as reference content. Keep agent-prompt-builder snippets self-contained text the agent reads as-is.
+- **Slow, side-effecting, or unsafe commands** — cap at <2s read-only operations. Never write, install, or call external services. The slash-command invocation is interactive; the user is waiting.
+- **Cross-platform-fragile flags** — `stat -f` (macOS) vs `stat -c` (Linux), GNU-only `find` flags, etc. Stick to the portable subset (`git`, `find` with portable options, `wc`, `awk`, `head`, `tail`, `grep -E`, `sort | uniq -c`).
+
+**Source:** Skills at Scale workshop (Nick Nisi & Zack Proser, WorkOS DX) — `Skills at Scale — Nick Nisi and Zack Proser, WorkOS.md`.
+
+---
+
 ## Manifest Spec
 
 State detection across all meta-skills (especially `orchestrate-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, summary). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/skill-artifacts/meta/specs/<slug>.md`, `task-breakdown` → `.agents/skill-artifacts/meta/tasks.md`, `agents-panel` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) and call sync as their last step.

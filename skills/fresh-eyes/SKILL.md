@@ -101,9 +101,17 @@ Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`
 **Warm Start** (invoked at end of build session, spec known): summarize what's being reviewed and dispatch.
 
 ```
-Reviewing [N files / diff vs main] against [spec.md / tasks.md / inline requirements].
+Diff range against main:
+! `git log --oneline main..HEAD 2>/dev/null | head -10 || echo "no diff against main"`
+
+Files changed (stat):
+! `git diff --stat main...HEAD 2>/dev/null | tail -10 || echo "(none)"`
+
+Reviewing the above against [spec.md / tasks.md / inline requirements].
 Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?
 ```
+
+The two `! \`...\`` lines are inline shell interpolation (see `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns"). When `/fresh-eyes` is invoked, Claude Code substitutes the git output before the LLM sees the prompt — so the warm-start summary lands with the actual diff range instead of asking the orchestrator to derive it.
 
 **Cold Start** (no upstream session, user invoking standalone):
 
