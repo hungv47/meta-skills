@@ -1,17 +1,17 @@
 # Cross-Stack Workflow Graph
 
-Canonical pipeline definition for cross-stack orchestration. `start-meta` reads this for routing decisions across all 4 plugins.
+Canonical pipeline definition for cross-stack orchestration. `orchestrate-meta` reads this for routing decisions across all 4 plugins.
 
 ---
 
 ## The Cross-Stack Pipeline
 
 ```
-                    /start-meta  (top-level entry)
+                    /orchestrate-meta  (top-level entry)
                           │
              ┌────────────┼────────────┬───────────────┐
              ↓            ↓            ↓               ↓
-       /start-research  /start-marketing  /start-product   process skills:
+       /orchestrate-research  /orchestrate-marketing  /orchestrate-product   process skills:
              │            │            │               │   ├ /discover
              ↓            ↓            ↓               │   ├ /agents-panel
        (research        (marketing   (product          │   ├ /task-breakdown
@@ -77,9 +77,9 @@ When parsing user intent, classify into one of:
 
 | Bucket | Signals | Route to |
 |---|---|---|
-| **research-domain** | "audience", "ICP", "personas", "competitors", "market sizing", "TAM", "diagnose", "metric decline", "prioritize", "ICE score", "funnel math", "revenue targets" | `/start-research` |
-| **marketing-domain** | "brand", "voice", "design system", "campaign", "channel strategy", "copy", "headline", "tagline", "CTA", "landing page", "LP", "SEO", "keywords", "AI search", "video", "TikTok", "Reels", "Shorts", "cold email", "outreach", "humanize", "VN tone" | `/start-marketing` |
-| **product-domain** | "user flow", "screen", "edge case", "tech stack", "schema", "API design", "file structure", "deployment", "code cleanup", "refactor", "dead code", "machine cleanup", "dotfolders", "README", "docs", "API ref" | `/start-product` |
+| **research-domain** | "audience", "ICP", "personas", "competitors", "market sizing", "TAM", "diagnose", "metric decline", "prioritize", "ICE score", "funnel math", "revenue targets" | `/orchestrate-research` |
+| **marketing-domain** | "brand", "voice", "design system", "campaign", "channel strategy", "copy", "headline", "tagline", "CTA", "landing page", "LP", "SEO", "keywords", "AI search", "video", "TikTok", "Reels", "Shorts", "cold email", "outreach", "humanize", "VN tone" | `/orchestrate-marketing` |
+| **product-domain** | "user flow", "screen", "edge case", "tech stack", "schema", "API design", "file structure", "deployment", "code cleanup", "refactor", "dead code", "machine cleanup", "dotfolders", "README", "docs", "API ref" | `/orchestrate-product` |
 | **process: scoping** | "what should we build", "scope this", "clarify requirements", "I have an idea" | `/discover` |
 | **process: debate** | "debate", "multiple perspectives", "consensus", "what do experts think", "should we…" with no clear answer | `/agents-panel` |
 | **process: decompose** | "break this down", "task list", "implementation order", "decompose" | `/task-breakdown` (gated) |
@@ -95,18 +95,18 @@ When parsing user intent, classify into one of:
 
 ```
 1. /discover                    (clarify what to build)
-2. /start-research              (icp-research → market-research → prioritize)
-3. /start-product               (user-flow → system-architecture)
+2. /orchestrate-research              (icp-research → market-research → prioritize)
+3. /orchestrate-product               (user-flow → system-architecture)
 4. /task-breakdown              (decompose architecture into tasks)
 5. (build)
 6. /fresh-eyes                  (review the build)
-7. /start-marketing             (brand-system → campaign-plan → lp-brief → copywriting)
+7. /orchestrate-marketing             (brand-system → campaign-plan → lp-brief → copywriting)
 ```
 
 ### Path 2: New marketing initiative for existing product
 
 ```
-1. /start-marketing             (brand-system if missing → campaign-plan → content)
+1. /orchestrate-marketing             (brand-system if missing → campaign-plan → content)
 2. /fresh-eyes                  (review LP / copy)
 ```
 
@@ -115,7 +115,7 @@ When parsing user intent, classify into one of:
 ```
 1. /diagnose                    (root-cause the metric drop)
 2. /prioritize                  (rank fixes)
-3. /start-product OR /start-marketing  (depending on whether fix is product or marketing)
+3. /orchestrate-product OR /orchestrate-marketing  (depending on whether fix is product or marketing)
 4. /fresh-eyes                  (review the fix)
 ```
 
@@ -127,7 +127,7 @@ When parsing user intent, classify into one of:
 3. /fresh-eyes                  (review the cleanup)
 ```
 
-`start-meta` should propose paths like these when intent spans 2+ domains, but cap at 3 hops. If the path needs 5+ hops, the project is too vague — recommend `/discover` first.
+`orchestrate-meta` should propose paths like these when intent spans 2+ domains, but cap at 3 hops. If the path needs 5+ hops, the project is too vague — recommend `/discover` first.
 
 ---
 
@@ -146,7 +146,7 @@ These are SUGGESTIONS, not recommendations. Mention them as optional terminal st
 
 ## Stale Detection
 
-`start-meta` does broader stale detection than the per-stack starters:
+`orchestrate-meta` does broader stale detection than the per-stack starters:
 
 - Project-level mismatch: `CLAUDE.md` describes product X, but `research/product-context.md` describes product Y → flag the whole state as questionable.
 - Foundation mismatch: brand voice in `brand/BRAND.md` contradicts ICP segment in `research/icp-research.md` → flag the brand as stale.
@@ -156,7 +156,7 @@ These are SUGGESTIONS, not recommendations. Mention them as optional terminal st
 
 ## Re-Entry Behavior
 
-`/start-meta` is the most-likely starter to be re-invoked across sessions. Behavior:
+`/orchestrate-meta` is the most-likely starter to be re-invoked across sessions. Behavior:
 
 1. Read `.agents/experience/meta-workflow.md` for prior breadcrumbs.
 2. Read all per-stack breadcrumbs (`research-workflow.md`, `marketing-workflow.md`, `product-workflow.md`).

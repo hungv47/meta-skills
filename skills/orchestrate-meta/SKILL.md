@@ -1,6 +1,6 @@
 ---
-name: start-meta
-description: "Cross-stack orchestrator. The top-level entry point when you don't know which stack to use. Reads project state, parses your ask, and either routes you to the right stack-orchestrator (`/start-research`, `/start-marketing`, `/start-product`) or proposes a meta-skill that wraps around your current work (discover for scoping, agents-panel for multi-perspective decisions, task-breakdown for decomposition, fresh-eyes for post-implementation review). Use when you're not sure which domain your task belongs to, or when you need a process skill (scoping, debate, decomposition, review) rather than a domain skill. Not for executing work itself — it routes."
+name: orchestrate-meta
+description: "Cross-stack orchestrator. The top-level entry point when you don't know which stack to use. Reads project state, parses your ask, and either routes you to the right stack-orchestrator (`/orchestrate-research`, `/orchestrate-marketing`, `/orchestrate-product`) or proposes a meta-skill that wraps around your current work (discover for scoping, agents-panel for multi-perspective decisions, task-breakdown for decomposition, fresh-eyes for post-implementation review). Use when you're not sure which domain your task belongs to, or when you need a process skill (scoping, debate, decomposition, review) rather than a domain skill. Not for executing work itself — it routes. Renamed from `start-meta` in v3.0.0."
 argument-hint: "[free-form ask, or empty to be guided]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
@@ -66,11 +66,11 @@ routing:
     - CLAUDE.md
   requires: []
   defers-to:
-    - skill: start-research
+    - skill: orchestrate-research
       when: "intent is in the research domain (audience, market, diagnosis, prioritization, targets)"
-    - skill: start-marketing
+    - skill: orchestrate-marketing
       when: "intent is in the marketing domain (brand, campaign, copy, LP, SEO, outreach)"
-    - skill: start-product
+    - skill: orchestrate-product
       when: "intent is in the product domain (flows, architecture, code, machine, docs)"
     - skill: discover
       when: "scope or requirements are unclear before any other skill can run"
@@ -85,7 +85,7 @@ routing:
   estimated-complexity: low
 ---
 
-# Start Meta
+# Orchestrate Meta
 
 *Meta — Cross-stack orchestrator. The top-level entry point when you don't know where to start.*
 
@@ -93,7 +93,7 @@ routing:
 
 **Core Question:** "Is this a domain task (research / marketing / product) or a process task (scope / debate / decompose / review)?"
 
-This skill does NOT execute work. It is a router. The actual work is done by the skill it routes you to (which may itself be a router, like `/start-research`).
+This skill does NOT execute work. It is a router. The actual work is done by the skill it routes you to (which may itself be a router, like `/orchestrate-research`).
 
 ---
 
@@ -106,7 +106,7 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 ## When NOT To Use
 
-- You already know your domain — go straight to `/start-research`, `/start-marketing`, or `/start-product`.
+- You already know your domain — go straight to `/orchestrate-research`, `/orchestrate-marketing`, or `/orchestrate-product`.
 - You already know your skill — invoke it directly.
 
 ---
@@ -159,7 +159,7 @@ See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for
 | `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
 | `.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
 | `.agents/experience/*.md` | All cold-start answers across stacks. |
-| `.agents/experience/meta-workflow.md` | Prior `/start-meta` breadcrumb. |
+| `.agents/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
 | `.agents/skill-artifacts/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
 
 Build a cross-stack state map:
@@ -206,9 +206,9 @@ Parse the user's argument. Classify into one of these:
 
 | User says | Classification | Route to |
 |---|---|---|
-| "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "targets", "funnel" | research | `/start-research` |
-| "brand", "campaign", "copy", "headline", "landing page", "LP", "SEO", "video", "TikTok", "cold email", "outreach", "humanize", "VN tone" | marketing | `/start-marketing` |
-| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | `/start-product` |
+| "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "targets", "funnel" | research | `/orchestrate-research` |
+| "brand", "campaign", "copy", "headline", "landing page", "LP", "SEO", "video", "TikTok", "cold email", "outreach", "humanize", "VN tone" | marketing | `/orchestrate-marketing` |
+| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | `/orchestrate-product` |
 | "scope this", "clarify", "what should we build", "requirements" | process | `/discover` |
 | "debate this", "multiple perspectives", "poll", "consensus", "what do experts think" | process | `/agents-panel` |
 | "decompose", "task list", "break down", "implementation order", "tasks" | process | `/task-breakdown` |
@@ -237,12 +237,12 @@ Option 8 prints the cross-stack state map and asks again.
 
 **Domain routing:**
 
-1. **Single-domain intent** → defer to that stack's orchestrator. "Looks like a research task — run `/start-research`." Don't try to do `/start-research`'s job here.
+1. **Single-domain intent** → defer to that stack's orchestrator. "Looks like a research task — run `/orchestrate-research`." Don't try to do `/orchestrate-research`'s job here.
 2. **Process intent** → propose the specific meta-skill (`/discover`, `/agents-panel`, `/task-breakdown`, `/fresh-eyes`) with rationale.
 3. **Cross-stack intent** ("launch a new product feature") → propose a 2-3 step path:
-   - Step 1: `/start-research` (verify ICP exists; if no, run icp-research)
-   - Step 2: `/start-product` (design feature: flows + architecture)
-   - Step 3: `/start-marketing` (positioning + LP + content for launch)
+   - Step 1: `/orchestrate-research` (verify ICP exists; if no, run icp-research)
+   - Step 2: `/orchestrate-product` (design feature: flows + architecture)
+   - Step 3: `/orchestrate-marketing` (positioning + LP + content for launch)
    - Optional terminal: `/fresh-eyes` after each.
 
 **Process-skill rules:**
@@ -274,12 +274,12 @@ Meta:       no reports yet
 
 "I want to figure out who my customers are" → research domain.
 
-## Recommended: route to /start-research
+## Recommended: route to /orchestrate-research
 
-Why: this is a research-domain task. /start-research will read the
+Why: this is a research-domain task. /orchestrate-research will read the
 research-stack state and propose the next skill (likely icp-research).
 
-→  /start-research
+→  /orchestrate-research
 ```
 
 Output format for **cross-stack**:
@@ -291,14 +291,14 @@ Output format for **cross-stack**:
 
 ## Recommended path
 
-1. /start-research        → verify audience clarity for the feature
-2. /start-product         → design flows + architecture
-3. /start-marketing       → positioning, LP, content for launch
+1. /orchestrate-research        → verify audience clarity for the feature
+2. /orchestrate-product         → design flows + architecture
+3. /orchestrate-marketing       → positioning, LP, content for launch
    (optional /fresh-eyes after each artifact)
 
-Each /start-X is its own router; you'll get sub-recommendations from each.
+Each /orchestrate-X is its own router; you'll get sub-recommendations from each.
 
-→  Run /start-research first.
+→  Run /orchestrate-research first.
 ```
 
 Output format for **process skill**:
@@ -330,13 +330,13 @@ Append to `.agents/experience/meta-workflow.md`:
 
 - Read state: cross-stack snapshot
 - User intent: research-domain (audience clarity)
-- Recommended: /start-research
+- Recommended: /orchestrate-research
 - User confirmed: yes
 ```
 
 Print:
 
-> Run `/start-research` next. Re-run `/start-meta` if your task shifts to a different domain.
+> Run `/orchestrate-research` next. Re-run `/orchestrate-meta` if your task shifts to a different domain.
 
 Exit.
 
@@ -351,7 +351,7 @@ For the canonical cross-stack pipeline, decision rules, and per-skill catalog, s
 ## Anti-Patterns
 
 - **Don't ignore the manifest** — always read `.agents/manifest.json` first; per-path filesystem scans are a fallback, not the default.
-- **Don't duplicate work of /start-research, /start-marketing, /start-product.** When intent is single-domain, route there. Don't pick the specific skill yourself.
+- **Don't duplicate work of /orchestrate-research, /orchestrate-marketing, /orchestrate-product.** When intent is single-domain, route there. Don't pick the specific skill yourself.
 - **Don't lecture about all 24 skills.** Show only what's relevant to the user's ask + state.
 - **Don't auto-invoke.** Always print `/skill-name` for the user to type.
 - **Don't recommend `discover` defensively** when the user has clear intent. That's patronizing.
