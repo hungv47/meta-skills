@@ -150,7 +150,7 @@ npx skills add hungv47/meta-skills
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for release notes (commit 99bf93b, 2026-05-05).
+Full release history with per-version notes: [meta-skills/releases](https://github.com/hungv47/meta-skills/releases)
 
 ## License
 
