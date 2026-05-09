@@ -119,12 +119,18 @@ Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`
 ```
 Found:
 - scope → "[full .agents/ | <subpath>]"
-- manifest snapshot → "[N artifacts, M stale (>90d), K with no manifest entry]"
+- artifact disk snapshot →
+  ! `find .agents/skill-artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk;
+  ! `find .agents/skill-artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d
+- manifest last touched →
+  ! `git log -1 --format='%cr' .agents/manifest.json 2>/dev/null || echo 'no git history'`
 - excluded paths from experience → "[list or none]"
 
 Mode defaults to --dry-run (preview only). Threshold defaults to 90 days.
 Override (e.g., --apply, --threshold-days 30) or proceed?
 ```
+
+The two `! \`...\`` lines are inline shell interpolation (see `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns"). When `/cleanup-artifacts` is invoked, Claude Code substitutes the command output before the LLM sees the prompt — so the warm-start summary lands with real counts instead of placeholders the orchestrator has to derive.
 
 **Cold Start** (general "clean up artifacts" with no scope hint):
 
