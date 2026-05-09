@@ -15,7 +15,8 @@ Canonical pipeline definition for cross-stack orchestration. `orchestrate-meta` 
              │            │            │               │   ├ /discover
              ↓            ↓            ↓               │   ├ /agents-panel
        (research        (marketing   (product          │   ├ /task-breakdown
-        skills)          skills)     skills)           │   └ /fresh-eyes
+        skills)          skills)     skills)           │   ├ /fresh-eyes
+                                                       │   └ /cleanup-artifacts
                                                        │
                                                   (wraps around
                                                   any stack's work)
@@ -35,7 +36,7 @@ Cross-stack data flow:
 
 ---
 
-## The 4 Process Skills (meta-skills, domain-agnostic)
+## The 5 Process Skills (meta-skills, domain-agnostic)
 
 ### discover
 
@@ -69,6 +70,14 @@ Cross-stack data flow:
 - **When to recommend:** implementation done; user wants second opinion. Auto-suggest after security-sensitive code, data-mutation code, or critical artifacts (system-architecture, brand-system, lp-brief).
 - **Cost:** $0.15–0.50 · 2 agents · standard budget · ~3 min
 
+### cleanup-artifacts
+
+- **Job:** audit + groom the `.agents/` artifact tree. Classifies every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), runs critic gate (5-random spot-check for live cross-references), MOVES (never deletes) confirmed candidates to `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/` behind explicit per-category operator confirmation. Default mode `--dry-run`.
+- **Produces:** `.agents/skill-artifacts/meta/records/[date]-cleanup-artifacts-<slug>.md` (lifecycle: snapshot — audit trail). Side effect: file moves under `.archive/[date]/` on `--apply`.
+- **Consumes:** `.agents/manifest.json`
+- **When to recommend:** `.agents/` has grown junk-drawer (operator self-report or 50+ entries); pre-release / pre-PR cleanup; suspected orphan artifacts from renamed/removed skills. Hard-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`.
+- **Cost:** $0.05–0.20 · 1 agent · standard budget · ~2–3 min (dry-run); ~5 min including operator confirmation prompts on `--apply`.
+
 ---
 
 ## Domain Classification Rules
@@ -84,6 +93,7 @@ When parsing user intent, classify into one of:
 | **process: debate** | "debate", "multiple perspectives", "consensus", "what do experts think", "should we…" with no clear answer | `/agents-panel` |
 | **process: decompose** | "break this down", "task list", "implementation order", "decompose" | `/task-breakdown` (gated) |
 | **process: review** | "review my work", "second opinion", "did I miss anything", "post-implementation" | `/fresh-eyes` |
+| **process: cleanup** | ".agents is messy", "groom artifacts", "archive stale", "prune .agents", "clean up the artifact tree", pre-PR / pre-release | `/cleanup-artifacts` |
 | **cross-stack** | "launch a feature", "go to market with X", "build and ship Y" — multi-domain | propose 2-3 stack orchestrators in sequence |
 | **unknown** | empty, single word, ambiguous | ask scoping question |
 
@@ -168,7 +178,7 @@ These are SUGGESTIONS, not recommendations. Mention them as optional terminal st
 
 ## Anti-Patterns
 
-- **Don't pick the specific skill yourself** when intent is single-domain. Defer to `/start-X`.
+- **Don't pick the specific skill yourself** when intent is single-domain. Defer to `/orchestrate-X`.
 - **Don't recommend more than 3 hops** in a cross-stack path.
 - **Don't suggest `/discover` defensively** when user has clear intent.
 - **Don't suggest `/fresh-eyes` for trivial work** (small bug fix, README tweak).
