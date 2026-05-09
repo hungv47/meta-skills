@@ -6,6 +6,22 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.0.1] - 2026-05-09
+
+Fresh-eyes review of v3.0.0 caught the symmetric gap to marketing-skills@4.0.0: the new skill was on disk but not in the plugin manifest.
+
+### Fixed
+- **plugin.json `skills` array was missing `cleanup-artifacts`** — installed copies of meta-skills@3.0.0 would not have surfaced the new skill (skill files on disk but not in the manifest). Added `./skills/cleanup-artifacts/` to the array. **Load-bearing fix.**
+- `orchestrate-meta/references/workflow-graph.md` did not list cleanup-artifacts — the cross-stack orchestrator could not route users to it. Added a 5th process-skill catalog entry, an `process: cleanup` row in the Domain Classification Rules table, and updated "The 4 Process Skills" → "The 5 Process Skills". Also fixed stale `/start-X` reference in the anti-patterns section to `/orchestrate-X`.
+- `meta-skills/CLAUDE.md` Process Flow diagram did not include cleanup-artifacts; v5 → v6 migration history entry added covering the orchestrate-meta rename + cleanup-artifacts introduction.
+- plugin.json description updated to enumerate cleanup-artifacts; added `cleanup`, `hygiene` keywords.
+
+### Notes
+- The fresh-eyes report driving this patch is at `.agents/skill-artifacts/meta/records/2026-05-09-fresh-eyes-marketplace-2.0.0.md` (local-only).
+- v3.0.0 was pushed remotely before these gaps surfaced. Anyone who ran `/plugin install meta-skills@3.0.0` would not have received `cleanup-artifacts` in the install. v3.0.1 corrects this.
+
+---
+
 ## [3.0.0] - 2026-05-08
 
 ### BREAKING

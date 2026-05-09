@@ -33,6 +33,10 @@ discover (conversation) --> build directly
     +-- task-breakdown
         (when work is complex enough
          to decompose first)
+    |
+    +-- cleanup-artifacts
+        (when .agents/ has gone junk-drawer
+         or before a release)
 ```
 
 No rigid pipeline. The conversation guides what happens next.
@@ -133,3 +137,10 @@ Skill routing is the agent's job — it proposes skills proactively based on the
 |----------|----------|-----------|
 | `agent-room` | `agents-panel` | "agent-room" leaked implementation; "agents-panel" describes the user-facing job (debate or poll a panel of perspectives). |
 | `review-chain` | `fresh-eyes` | "chain" described mechanism; "fresh-eyes" describes value — independent post-implementation review. |
+
+### v5 → v6: orchestrate-* rename + cleanup-artifacts
+
+| Change | Rationale |
+|--------|-----------|
+| `start-meta` → `orchestrate-meta` | The skill scans existing artifacts and continues mid-pipeline; "start" implied first-run init. The orchestration role belongs in the slash-command surface. (BREAKING; no backward-compat alias.) |
+| Added `cleanup-artifacts` | The `.agents/` artifact tree accumulates fast (skill outputs, briefs, fresh-eyes reports, manifest snapshots). Without active grooming, it becomes a junk drawer. New single-agent meta-skill mirrors `machine-cleanup`'s safety pattern at the project artifact-tree level. MOVE-not-delete (archives to `.agents/skill-artifacts/.archive/[date]/`); explicit per-category operator confirmation; HARD-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`. |
