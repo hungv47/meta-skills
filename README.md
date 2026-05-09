@@ -2,9 +2,11 @@
 
 ![Meta Skills](./assets/banner.png)
 
-5 process-layer skills (incl. `/start-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
+> **v3.0.0 BREAKING:** `start-meta` renamed to `orchestrate-meta`. Update any `/start-meta` invocations in your workflows to `/orchestrate-meta`.
 
-**New here, or unsure which stack to use?** Run `/start-meta` — it reads cross-stack state and routes you to the right stack-orchestrator (`/start-research`, `/start-marketing`, `/start-product`) or process skill (`discover`, `agents-panel`, `task-breakdown`, `fresh-eyes`).
+5 process-layer skills (incl. `/orchestrate-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
+
+**New here, or unsure which stack to use?** Run `/orchestrate-meta` — it reads cross-stack state and routes you to the right stack-orchestrator (`/orchestrate-research`, `/orchestrate-marketing`, `/orchestrate-product`) or process skill (`discover`, `agents-panel`, `task-breakdown`, `fresh-eyes`).
 
 ## Install
 
