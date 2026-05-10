@@ -6,6 +6,27 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.2.1] - 2026-05-11
+
+Fresh-eyes patch on REB-5 Wave 2 (v3.2.0 ship). Single Opus generalist reviewer dispatched on the discover operator-grade upgrade; verdict PASS WITH MINOR FIXES across 8 findings (3 major, 3 minor, 2 nits — no blockers, no fabrications, no behavioral regressions). Same-day patch — no v3.2.0-based work was at risk; the new behavior hadn't been organically invoked yet.
+
+### Fixed
+- **`routing.consumes` no longer mis-declares the dispatched idea-critic agent file.** Sibling multi-agent skills (`agents-panel`, `task-breakdown`) don't list their `agents/*.md` files in `consumes` — that field enumerates input data the orchestrator reads, not sub-agents it dispatches. Removed `agents/idea-critic.md` from `discover` SKILL.md `routing.consumes`. Dispatch surface stays documented inline (§Step 2.7 + §References) like every other multi-agent skill in the stack.
+- **"Premise-check greenlight signal" skip condition removed from §Step 2.7 idea-critic gate.** Step 2 doesn't currently emit a structured greenlight/redlight signal for §Step 2.7 to read — the prose claim was unwired. Three skip conditions remain (mode is plan-review, explicit operator override, trivial Light-depth scoping); they cover the practical cases without relying on prose interpretation between Steps.
+- **§Step 2.7 dispatch now specifies all three Input Contract fields** the idea-critic agent declares (`idea-statement`, `context-gathered`, `mode`). Prior wording said only "the user's idea-statement plus context-gathered" without describing what to assemble from §Step 1's unstructured findings. Implementer reading the SKILL.md now has explicit guidance on what to serialize for `context-gathered` (codebase signals + experience-doc Q&A + prior specs + operator-craft stance + founder-domain frame match) and that `mode` is the literal string `idea-stage`.
+- **§Step 2.7 PUSH_BACK handling now names the agent's `## Push-Back Routing` output section by name** rather than saying "ask the agent's routing questions" (which required the implementer to round-trip to the agent doc to know which section to read).
+- **Step 6 Clarity Check Verdict no longer reads as duplicating Step 7 Verdict.** Added a "Single verdict, two surfaces" bridge line clarifying that Step 6 is the conversational utterance and Step 7 is the persisted record — same enum, stated once in conversation, recorded once in artifact. Resolves the doubling ambiguity caught in review.
+- **§Step 7 Light-depth exception front-loaded** at the top of "Save point formats" rather than buried at the bottom under "MANDATORY" / "LOAD-BEARING" prose. Prior ordering required the reader to absorb the absolute rule, then mentally retract it. The exception is now stated before the heavyweight template, so a reader skimming top-down gets the depth gating immediately. The redundant exception block at the bottom of the spec format is replaced by a one-line recap. Contract-format note (Premise Challenge / Dream State Mapping don't apply to scope-locking contracts) preserved in the front-loaded version.
+- **Idea-critic agent Self-Check now notes the De Morgan equivalence** of the verdict rule with the Output Contract PUSH_BACK rule. Both are stated independently in the agent doc; a sub-agent reading both might wonder if there's a discrepancy. Equivalence-note resolves.
+- **`workflow-graph.md` discover cost band** changed from "0–1 agents" notation (stylistically inconsistent with sibling entries' fixed counts / min-max ranges) to "1 agent (idea-critic, conditional on idea-stage; skipped on plan-review and Light-depth scoping)". Reads more naturally and matches the pattern in adjacent rows.
+
+### Coordination notes
+- All findings closed with single-line edits across 4 files (SKILL.md, idea-critic.md, workflow-graph.md, plugin.json/CHANGELOG.md/SKILL.md frontmatter for version bump). Self-regulation gate held: <30% modified per artifact, 8 findings ≤ 10 cap, no resolver regressions.
+- Findings 9 and 10 from the review were PASS confirmations (CHANGELOG accuracy verified item-by-item; anti-sycophancy compatibility with Wave 1 banned-phrases rule verified clean) — no fixes needed.
+- Report at `.agents/skill-artifacts/meta/records/2026-05-11-fresh-eyes-reb-5-wave-2.md`.
+
+---
+
 ## [3.2.0] - 2026-05-11
 
 REB-5 Wave 2 — discover skill operator-grade structural upgrade. Largest behavioral change to discover since the stack started; ships as a single coordinated rev-up after Wave 1 (anti-sycophancy + always-recommend) cleared its evaluation gate. Wave 2 is structural: a new sub-mode framework for plan-review entry, mandatory output sections that codify operator-grade rigor in saved specs, and a new sub-agent that gates idea-stage progression on demand-side validation.
