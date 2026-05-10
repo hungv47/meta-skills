@@ -7,7 +7,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: hungv47
-  version: "3.2.0"
+  version: "3.2.1"
   budget: fast
   estimated-cost: "$0.03-0.10"
 promptSignals:
@@ -58,7 +58,6 @@ routing:
     - product-context.md
     - skill-artifacts/product/flow/*.md
     - references/operator-playbooks/*.md
-    - agents/idea-critic.md
   requires: []
   defers-to:
     - skill: diagnose
@@ -209,15 +208,20 @@ For idea-stage sessions (no mode), Verdict maps to `VALIDATED` / `NEEDS_MORE_VAL
 
 When mode is `idea-stage`, run the idea-critic agent ONCE before opening coverage zones. The agent scores the user's substantive idea-statement against 5 red flags and 5 green flags ([`agents/idea-critic.md`](agents/idea-critic.md)), returns PROCEED or PUSH_BACK with cited flags.
 
-**How to dispatch:** Call the agent via the Agent tool with the user's idea-statement plus context-gathered. The agent is single-shot — do not re-invoke per turn. Output is structured (Red Flags Detected / Green Flags Detected / Score / Verdict / Push-Back Routing).
+**How to dispatch:** Call the agent via the Agent tool, passing all three Input Contract fields the agent declares:
+
+- **`idea-statement`** — the user's substantive description of what they want to build, post-Premise Check (a one-paragraph summary of the user's first turn after the framing checkpoint, paraphrased faithfully — not the user's whole transcript).
+- **`context-gathered`** — the orchestrator's serialized findings from §Step 1 (codebase signals worth flagging, relevant `.agents/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any).
+- **`mode`** — literal string `idea-stage`.
+
+The agent is single-shot — do not re-invoke per turn. Output is structured (Red Flags Detected / Green Flags Detected / Score / Verdict / Push-Back Routing / Change Log).
 
 **On PROCEED:** Acknowledge any green flags inline ("the manual-loved-by-few signal is strong here"), note any single red flag as a watch-item (it didn't cross threshold but stays surfaced), and continue to Step 3 Adaptive Coverage Zones.
 
-**On PUSH_BACK:** Do NOT proceed to coverage zones / alternatives generation. Surface the cited flags to the user in plain language, ask the agent's routing questions (one round), and treat the responses as new idea-statement input. Re-run idea-critic at most once after the user's clarifying answers. If still PUSH_BACK after one re-run, surface explicitly: "the idea is currently failing the demand-side validation rubric — recommend pausing here to gather evidence (manual-solve a few people, observe the community for complaints, find paid alternatives) before scoping further. Want to keep going with the rubric flagged, or pause?" The user can override; discover proceeds with `status: done_with_concerns` baked into the spec frontmatter if saved.
+**On PUSH_BACK:** Do NOT proceed to coverage zones / alternatives generation. Surface the cited flags to the user in plain language, then read the agent's `## Push-Back Routing` output section and ask those questions to the user (one round). Treat the responses as new idea-statement input. Re-run idea-critic at most once after the user's clarifying answers. If still PUSH_BACK after one re-run, surface explicitly: "the idea is currently failing the demand-side validation rubric — recommend pausing here to gather evidence (manual-solve a few people, observe the community for complaints, find paid alternatives) before scoping further. Want to keep going with the rubric flagged, or pause?" The user can override; discover proceeds with `status: done_with_concerns` baked into the spec frontmatter if saved.
 
 **Skip idea-critic when:**
 - Mode is `plan-review` — wrong rubric for the input
-- Premise check already concluded the idea is sound (greenlight signal in Step 2)
 - User explicitly says "skip the idea critic" / "I've already validated this" — record the override in the conversation log so the spec frontmatter records it
 - Trivial scoping (Light depth — feature add to existing codebase) — the rubric is designed for blank-slate ideas, not feature scope inside an established product
 
@@ -371,6 +375,7 @@ When clarity is sufficient to build:
    - Idea-stage: `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT` based on the idea-critic outcome and alternatives clarity.
    - Plan-review: one of `BUILD_AS_PROPOSED` / `CHERRY-PICK_EXPANSIONS` / `EXPAND_BEYOND_PROPOSED` / `HOLD_AS_PROPOSED` / `HOLD_WITH_RISK_NOTES` / `CUT_TO_MINIMUM` / `CUT_AGGRESSIVELY`, mapped to the chosen plan-review-mode.
    The verdict is not optional — operator-grade discover ends on a clear decisional output. If you cannot pick one, the conversation isn't done; surface what's missing and continue.
+   **Single verdict, two surfaces:** if the spec is saved (Step 7), this same verdict persists verbatim to the `## Verdict` section of the saved artifact — same enum, stated once in conversation, recorded once in artifact. There are not two verdicts; conversation Verdict and spec Verdict are one decision rendered in two places.
 5. Ask: "Ready to build, or go deeper on anything?"
 
 If the user says go, go. Don't pad.
@@ -387,7 +392,12 @@ If the user says go, go. Don't pad.
 
 **Save point formats:**
 
-**Spec** (for complex features, handoff to others):
+**Operator-grade spec format** (medium/deep depth — handoff to others, strategic calls being made). Includes 5 mandatory sections (Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict) — they are the operator-grade rigor structure and apply to every spec save AT MEDIUM/DEEP DEPTH.
+
+**Light-depth exception** (compact spec format, frontmatter `light_spec: true`): light scoping (Adaptive Depth row 1: clear task, well-defined scope, existing codebase) skips the 5 mandatory sections explicitly and uses the compact format described after the heavyweight template below. Don't apply Premise Challenge or Dream State Mapping to a "add a dark mode toggle" scope — the rigor structure is for medium/deep work where the user is making strategic calls. Light specs use Problem Statement / Decided Approach / Key Decisions / Edge Cases / Open Questions only.
+
+**Contract format** (scope-locking, separate template after the spec format) — the Contract format is unchanged from prior versions; Premise Challenge and Dream State Mapping do not apply (contracts are scope-locking, not idea-validating). Implementation Alternatives, Temporal Interrogation, and Verdict (in `BUILD_AS_PROPOSED` / `CUT_TO_MINIMUM` shape) DO apply when a contract is generated downstream of the operator-grade spec format.
+
 ```markdown
 ---
 skill: discover
@@ -489,9 +499,7 @@ One line, mode-mapped:
 The Verdict line maps to the Completion Status Protocol — `VALIDATED` / `BUILD_AS_PROPOSED` etc. → `done`; verdicts with caveats → `done_with_concerns`; `NEEDS_MORE_VALIDATION` → `needs_context`; irreconcilable inputs → `blocked`.
 ```
 
-**Mandatory-sections rule:** Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict are LOAD-BEARING — they are the operator-grade rigor structure. Every spec save MUST include them. The exceptions are narrow:
-- **Light depth scoping** (Adaptive Depth row 1: clear task, well-defined scope, existing codebase): the spec format above is heavyweight. Light-depth saves use the prior compact spec format (Problem Statement / Decided Approach / Key Decisions / Edge Cases / Open Questions); skip the 5 mandatory sections explicitly with a frontmatter note `light_spec: true`. Don't pretend light scoping needs Dream State Mapping.
-- **Contract format** (below): contracts are scope-locking, not idea-validating. Premise Challenge and Dream State Mapping don't apply; the Contract format remains as-is. Implementation Alternatives, Temporal Interrogation, and Verdict (in `BUILD_AS_PROPOSED` / `CUT_TO_MINIMUM` shape) apply.
+**Mandatory-sections rule (recap of the front-loaded scope):** the 5 mandatory sections above apply at medium/deep depth. Light-depth saves use the compact format described in the front matter of this Step (frontmatter `light_spec: true`); contract saves use the Contract format below — Premise Challenge and Dream State Mapping do not apply to contracts (scope-locking, not idea-validating).
 
 **Contract** (for scope-locking before building):
 ```markdown
