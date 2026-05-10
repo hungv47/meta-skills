@@ -44,7 +44,7 @@ Cross-stack data flow:
 - **Produces:** `.agents/skill-artifacts/meta/specs/*.md` (optional). When saved, spec includes 5 mandatory sections — Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict — except light-depth saves which use the compact format.
 - **Consumes:** `research/product-context.md`, `.agents/skill-artifacts/product/flow/*.md`, `references/operator-playbooks/*.md`, `agents/idea-critic.md`
 - **When to recommend:** scope is unclear; user has a vague idea; "what should we build" (idea-stage). OR user pastes/links an existing plan and asks for review (plan-review). Upstream of any non-trivial work in any stack.
-- **Cost:** $0.03–0.15 · 0–1 agents (orchestrator + optional idea-critic dispatch on idea-stage) · fast budget
+- **Cost:** $0.03–0.15 · 1 agent (idea-critic, conditional on idea-stage; skipped on plan-review and Light-depth scoping) · fast budget
 
 ### agents-panel
 

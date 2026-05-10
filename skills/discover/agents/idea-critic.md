@@ -164,7 +164,7 @@ Before returning your output, verify every item:
 
 - [ ] Every flag I marked triggered cites specific evidence from the idea-statement (paraphrase or quote acceptable)
 - [ ] Every flag I marked inconclusive surfaces a corresponding evidence question in Push-Back Routing
-- [ ] My verdict matches the rule: PROCEED iff (red < 2) AND (green ≥ 2); PUSH_BACK otherwise
+- [ ] My verdict matches the rule: PROCEED iff (red < 2) AND (green ≥ 2); PUSH_BACK otherwise — this is the De Morgan equivalent of the Output Contract's PUSH_BACK rule above ("≥2 red OR <2 green"); the two should always agree
 - [ ] Push-Back Routing questions are flag-specific, not generic ("how would you validate this" is generic and disallowed)
 - [ ] I did not invent or merge flags outside the named 10
 - [ ] Output stays within my section boundaries (orchestrator handles user routing)
