@@ -6,6 +6,32 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.2.0] - 2026-05-11
+
+REB-5 Wave 2 — discover skill operator-grade structural upgrade. Largest behavioral change to discover since the stack started; ships as a single coordinated rev-up after Wave 1 (anti-sycophancy + always-recommend) cleared its evaluation gate. Wave 2 is structural: a new sub-mode framework for plan-review entry, mandatory output sections that codify operator-grade rigor in saved specs, and a new sub-agent that gates idea-stage progression on demand-side validation.
+
+### Added
+- **Plan-Review 4-mode framework** (`SKILL.md` §Step 2.5). When the user brings an existing plan/spec/sketch rather than a blank-slate idea, discover auto-detects `plan-review` mode and asks the user to pick one of four sub-modes upfront — SCOPE EXPANSION (build the cathedral, push scope up), SELECTIVE EXPANSION (hold scope baseline, surface expansions for cherry-pick), HOLD SCOPE (make it bulletproof, don't expand or reduce), SCOPE REDUCTION (ruthless minimum-viable cut). Mode locks for the session; no silent drift between modes; user can switch explicitly. Equal-weight rule: when EXPANSION or REDUCTION is picked, recommend whichever serves the stated outcome (often the rewrite, given AI compresses implementation), not whichever is smaller. Mode also locks the Step 7 Verdict mapping. Source: garrytan/gstack `plan-ceo-review` §Mode-Specific Analysis.
+- **Idea Critic Gate** (`SKILL.md` §Step 2.7 + new `agents/idea-critic.md`). On idea-stage sessions, a single sub-agent scores the user's substantive idea-statement against 5 named red flags (no-workarounds-exist · cannot-name-10-people · friends-validation-only · must-educate-the-problem · outside-the-community) and 5 named green flags (paying-for-inferior · manual-loved-by-few · community-actively-complaining · crisp-customer-and-pain · scratching-own-itch). Threshold: ≥2 red OR <2 green → PUSH_BACK with cited flags + flag-specific routing questions; discover does NOT proceed to coverage zones / alternatives generation while PUSH_BACK is unresolved. Re-runs at most once after user clarifying answers; persistent PUSH_BACK surfaces the explicit "pause to gather evidence" recommendation but doesn't hard-block — user can override with `done_with_concerns` baked into spec frontmatter. Source: slavingia/skills `validate-idea` §Red/Green Flags.
+- **Mandatory output sections in saved specs** (`SKILL.md` §Step 7 spec format). Every spec save MUST include: **Premise Challenge** (right problem · outcome vs proxy · do-nothing baseline · what partially solves this · distribution path), **Dream State Mapping** (CURRENT STATE → THIS PLAN → 12-MONTH IDEAL three-column delta forces forward-time thinking before locking architecture), **Implementation Alternatives MANDATORY** (minimum 2-3 distinct approaches with effort/risk/pros/cons/reuse story; equal-weight rule on recommendation; single-option lock-in must explain the hard constraint), **Temporal Interrogation** (Hour 1 / Hour 2-3 / Hour 4-5 / Hour 6+ ambiguities the implementer will hit at each stage — resolve in spec, not during build), and **Verdict** (mode-mapped: idea-stage → VALIDATED / NEEDS_MORE_VALIDATION / PIVOT; plan-review → BUILD_AS_PROPOSED / CHERRY-PICK_EXPANSIONS / EXPAND_BEYOND_PROPOSED / HOLD_AS_PROPOSED / HOLD_WITH_RISK_NOTES / CUT_TO_MINIMUM / CUT_AGGRESSIVELY). Light-depth saves (clear task, well-defined scope) keep the prior compact spec format with `light_spec: true` frontmatter — operator-grade rigor is for medium/deep work where strategic calls are being made. Contract format unchanged. Source: garrytan/gstack `plan-ceo-review` §0A-0E + slavingia/skills `validate-idea` §Verdict.
+- **`agents/` subdirectory** under `discover/` — first sub-agent for what was previously a single-agent conversational skill. `idea-critic.md` sits as a single-shot scoring gate; not a multi-agent dispatch graph.
+- **Configuration knobs:** `mode` (auto-detected; override "treat this as a plan review" / "fresh idea, ignore the existing spec"), `plan-review-mode` (user-picked when mode = plan-review), `idea-critic` (auto-on for idea-stage; "skip the idea critic" override records in spec frontmatter).
+
+### Changed
+- **`SKILL.md` §Step 6 Clarity Check** gains a 4th item — explicit Verdict assignment before "ready to build?" is asked. Discover now ends on a clear decisional output every session, not just "is the conversation done." Idea-stage and plan-review map to different verdict enums (see §Step 7 Verdict).
+- **`SKILL.md` Configuration table** — added `mode`, `plan-review-mode`, `idea-critic` rows.
+- **`SKILL.md` Routing.consumes** — adds `agents/idea-critic.md` to declared dispatch surface.
+- **`orchestrate-meta` workflow-graph routing** — `discover` entry rewritten to surface both modes (idea-stage / plan-review) with consume + cost reflecting the new agent dispatch. New domain classification row "process: plan-review" routes to `/discover` with mode pick (signals: "review my plan" / "audit this spec" / "should we expand/cut this" / pasted structured plan). Cost band adjusted from $0.03–0.10 → $0.03–0.15 to reflect optional idea-critic dispatch.
+- **`README.md` discover section** — rewritten to describe both modes + new mandatory output structure + idea-critic gate.
+
+### Coordination notes
+- **No breaking changes for downstream consumers.** `task-breakdown` still reads `.agents/skill-artifacts/meta/specs/*.md` the same way — the new mandatory sections are additive; task-breakdown reads what it needs and ignores the rest.
+- **No backward-compat alias for `--mode` overrides** — mode auto-detection in Step 2.5 covers the common case; explicit overrides land in conversation, not as CLI flags. Existing user invocations of `/discover` continue to work unchanged on idea-stage.
+- **Frontmatter additions are optional for legacy specs.** Old specs without `mode:` / `plan-review-mode:` / `light_spec:` continue to parse — these are new fields, not required-on-read.
+- **Wave 1 + Wave 2 together form the operator-grade discover** the stack's north star calls for. REB-5 closed end-to-end at 3.2.0; no Wave 3 planned.
+
+---
+
 ## [3.1.3] - 2026-05-10
 
 Fresh-eyes patch on REB-4 (v3.1.2 ship). Single Opus generalist reviewer caught 4 issues in the bang-backtick retrofit; resolver confirmed 3 with empirical reproduction and applied targeted fixes. Same-day patch — no v3.1.2-based work was at risk; the retrofitted slash-commands hadn't been organically invoked yet.
