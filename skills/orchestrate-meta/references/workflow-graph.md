@@ -40,11 +40,11 @@ Cross-stack data flow:
 
 ### discover
 
-- **Job:** conversational discovery — clarifies WHAT to build through adaptive conversation (3-5 Qs to multi-round).
-- **Produces:** `.agents/skill-artifacts/meta/specs/*.md` (optional)
-- **Consumes:** `research/product-context.md`, `.agents/skill-artifacts/product/flow/*.md`
-- **When to recommend:** scope is unclear; user has a vague idea; "what should we build". Upstream of any non-trivial work in any stack.
-- **Cost:** $0.03–0.10 · 0 agents (single-agent conversational) · fast budget
+- **Job:** conversational discovery — two modes auto-detected at Step 2.5. **Idea-stage** clarifies WHAT to build through adaptive conversation (3-5 Qs to multi-round); idea-critic gate scores demand-side validation against 5 red + 5 green flags before alternatives generation. **Plan-review** audits an existing plan / spec / sketch with one of 4 sub-modes (SCOPE EXPANSION / SELECTIVE EXPANSION / HOLD SCOPE / SCOPE REDUCTION) — user picks upfront, mode locks for the session.
+- **Produces:** `.agents/skill-artifacts/meta/specs/*.md` (optional). When saved, spec includes 5 mandatory sections — Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict — except light-depth saves which use the compact format.
+- **Consumes:** `research/product-context.md`, `.agents/skill-artifacts/product/flow/*.md`, `references/operator-playbooks/*.md`, `agents/idea-critic.md`
+- **When to recommend:** scope is unclear; user has a vague idea; "what should we build" (idea-stage). OR user pastes/links an existing plan and asks for review (plan-review). Upstream of any non-trivial work in any stack.
+- **Cost:** $0.03–0.15 · 0–1 agents (orchestrator + optional idea-critic dispatch on idea-stage) · fast budget
 
 ### agents-panel
 
@@ -89,7 +89,8 @@ When parsing user intent, classify into one of:
 | **research-domain** | "audience", "ICP", "personas", "competitors", "market sizing", "TAM", "diagnose", "metric decline", "prioritize", "ICE score", "funnel math", "revenue targets" | `/orchestrate-research` |
 | **marketing-domain** | "brand", "voice", "design system", "campaign", "channel strategy", "copy", "headline", "tagline", "CTA", "landing page", "LP", "SEO", "keywords", "AI search", "video", "TikTok", "Reels", "Shorts", "cold email", "outreach", "humanize", "VN tone" | `/orchestrate-marketing` |
 | **product-domain** | "user flow", "screen", "edge case", "tech stack", "schema", "API design", "file structure", "deployment", "code cleanup", "refactor", "dead code", "machine cleanup", "dotfolders", "README", "docs", "API ref" | `/orchestrate-product` |
-| **process: scoping** | "what should we build", "scope this", "clarify requirements", "I have an idea" | `/discover` |
+| **process: scoping** | "what should we build", "scope this", "clarify requirements", "I have an idea" | `/discover` (idea-stage mode) |
+| **process: plan-review** | "review my plan", "audit this spec", "should we expand/cut this", "is this scope right", user pastes a structured plan/spec | `/discover` (plan-review mode — pick SCOPE EXPANSION / SELECTIVE EXPANSION / HOLD SCOPE / SCOPE REDUCTION) |
 | **process: debate** | "debate", "multiple perspectives", "consensus", "what do experts think", "should we…" with no clear answer | `/agents-panel` |
 | **process: decompose** | "break this down", "task list", "implementation order", "decompose" | `/task-breakdown` (gated) |
 | **process: review** | "review my work", "second opinion", "did I miss anything", "post-implementation" | `/fresh-eyes` |
