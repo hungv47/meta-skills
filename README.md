@@ -57,10 +57,11 @@ Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skil
 
 ### `discover` — talk until you're clear, then build
 
-Conversational discovery that adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Surfaces assumptions, detects should-want framing, and probes real needs through natural conversation.
+Conversational discovery that adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Two modes auto-detected: **idea-stage** (vague idea → demand-validated alternatives, gated by an idea-critic agent scoring 5 red + 5 green flags) and **plan-review** (existing spec/sketch → audit through one of 4 sub-modes: SCOPE EXPANSION / SELECTIVE EXPANSION / HOLD SCOPE / SCOPE REDUCTION). Operator-grade rigor structure — saved specs include Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict.
 
 **Use when:**
-- You have a vague idea and need to figure out what to build
+- You have a vague idea and need to figure out what to build (idea-stage)
+- You have an existing plan/spec and want it pressure-tested (plan-review)
 - You're about to start a task and want to catch blind spots
 - Requirements are unclear and need structured discovery
 

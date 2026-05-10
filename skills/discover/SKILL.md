@@ -7,7 +7,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: hungv47
-  version: "3.1.1"
+  version: "3.2.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
 promptSignals:
@@ -58,6 +58,7 @@ routing:
     - product-context.md
     - skill-artifacts/product/flow/*.md
     - references/operator-playbooks/*.md
+    - agents/idea-critic.md
   requires: []
   defers-to:
     - skill: diagnose
@@ -171,6 +172,54 @@ If the premise is weak, say so. Suggest reframing — don't block; advise and le
 Vague framing produces precise-looking nonsense. Fix it before proceeding.
 
 **Skip premise check when:** task is clearly scoped ("add a dark mode toggle"), user is continuing a prior decision, or context makes the premise obviously sound.
+
+### Step 2.5: Mode Detection — Idea Stage vs Plan Review
+
+After the premise check, classify which job discover is doing this session. The two jobs are different enough that mixing them produces mush.
+
+**Idea stage** — the user is bringing an unstructured idea: "I want to build X," "I have an idea for a tool that…", "thinking about a feature where…". No prior plan, sketch, or spec the conversation is anchored to. Discover proceeds to Step 2.7 (Idea Critic Gate) before opening coverage zones.
+
+**Plan review** — the user is bringing an existing plan, spec, sketch, ADR, or detailed proposal and wants to test it. Signal includes: linking or pasting an existing artifact (`.agents/skill-artifacts/meta/specs/*`, `.agents/skill-artifacts/meta/sketches/*`, an ADR, a design doc, a Linear ticket body), saying "review this plan," "should we expand/cut this," "is this the right scope," or pasting a numbered/structured plan into the conversation. Discover proceeds to mode-pick (below) before coverage zones; idea-critic does NOT fire (it scores idea-stage demand validation, not plan scope).
+
+**Detection is a one-shot read of the user's first substantive turn.** If ambiguous, ask one question: "Is this a fresh idea you want to scope, or an existing plan you want me to review?" — chat format, recommend the read you think is more likely, one line of reason. Don't over-invest in detection; the user can correct mid-session and discover re-anchors.
+
+#### Plan-Review: 4-Mode Framework
+
+When mode is `plan-review`, ask the user to pick one of four sub-modes upfront — once. Lock for the session. Do not silently drift between modes; if the user wants to switch, they say so, and discover re-anchors.
+
+| Mode | Posture | When to recommend |
+|---|---|---|
+| **SCOPE EXPANSION** | Build the cathedral. Push scope up. Surface every reasonable expansion; recommend rebuild over patch when the rewrite is small and the existing scope undersells the goal. | User signals "I want to make this great," there's strong evidence the proposed scope is too small for the stated outcome, AI compresses implementation enough that a bigger rewrite is feasible. |
+| **SELECTIVE EXPANSION** | Hold scope as the baseline. Surface expansions individually for cherry-pick. User accepts/rejects each one on its own merits. | User has a concrete plan they trust but is open to specific extensions. Default for "review my plan and tell me what's missing." |
+| **HOLD SCOPE** | Make it bulletproof. Don't expand or reduce — interrogate the existing plan for hidden risks, missing edge cases, premise weakness, implementation traps. | User has shipped pressure or strong scope conviction; the question is execution quality, not scope debate. |
+| **SCOPE REDUCTION** | Ruthless minimum-viable cut. Identify what's actually load-bearing for the stated outcome and propose cuts to everything else. Recommend cuts even when the user seems committed to a feature. | Time/budget pressure, MVP framing, "what's the smallest version of this that ships," or evidence the plan has padding masking the core. |
+
+**Mode-pick mechanics:** Use `AskUserQuestion` with the 4 options. Pick a recommendation based on the signals above; mark it `(Recommended)` in the label; put the one-line reason in `description`. The user can pick "Other" with custom framing — common variants ("expand cautiously," "cut to v0 then expand later") map back to one of the four with a quick clarifying read.
+
+**Equal-weight rule (load-bearing):** When the user picks SCOPE EXPANSION or SCOPE REDUCTION, do NOT default to the "smaller, safer" option in alternatives generation just because it feels cautious. AI compresses implementation; the rewrite often serves the stated outcome better than the patch. Recommend whichever serves the goal — and say so explicitly with a reason.
+
+**Mode locks Step 7 Verdict.** The Verdict section in saved artifacts (Step 7) maps to the chosen mode:
+- SCOPE EXPANSION / SELECTIVE EXPANSION → `BUILD_AS_PROPOSED` / `CHERRY-PICK_EXPANSIONS` / `EXPAND_BEYOND_PROPOSED`
+- HOLD SCOPE → `HOLD_AS_PROPOSED` / `HOLD_WITH_RISK_NOTES`
+- SCOPE REDUCTION → `CUT_TO_MINIMUM` / `CUT_AGGRESSIVELY`
+
+For idea-stage sessions (no mode), Verdict maps to `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT` per the idea-critic rubric.
+
+### Step 2.7: Idea Critic Gate (idea-stage only)
+
+When mode is `idea-stage`, run the idea-critic agent ONCE before opening coverage zones. The agent scores the user's substantive idea-statement against 5 red flags and 5 green flags ([`agents/idea-critic.md`](agents/idea-critic.md)), returns PROCEED or PUSH_BACK with cited flags.
+
+**How to dispatch:** Call the agent via the Agent tool with the user's idea-statement plus context-gathered. The agent is single-shot — do not re-invoke per turn. Output is structured (Red Flags Detected / Green Flags Detected / Score / Verdict / Push-Back Routing).
+
+**On PROCEED:** Acknowledge any green flags inline ("the manual-loved-by-few signal is strong here"), note any single red flag as a watch-item (it didn't cross threshold but stays surfaced), and continue to Step 3 Adaptive Coverage Zones.
+
+**On PUSH_BACK:** Do NOT proceed to coverage zones / alternatives generation. Surface the cited flags to the user in plain language, ask the agent's routing questions (one round), and treat the responses as new idea-statement input. Re-run idea-critic at most once after the user's clarifying answers. If still PUSH_BACK after one re-run, surface explicitly: "the idea is currently failing the demand-side validation rubric — recommend pausing here to gather evidence (manual-solve a few people, observe the community for complaints, find paid alternatives) before scoping further. Want to keep going with the rubric flagged, or pause?" The user can override; discover proceeds with `status: done_with_concerns` baked into the spec frontmatter if saved.
+
+**Skip idea-critic when:**
+- Mode is `plan-review` — wrong rubric for the input
+- Premise check already concluded the idea is sound (greenlight signal in Step 2)
+- User explicitly says "skip the idea critic" / "I've already validated this" — record the override in the conversation log so the spec frontmatter records it
+- Trivial scoping (Light depth — feature add to existing codebase) — the rubric is designed for blank-slate ideas, not feature scope inside an established product
 
 ### Step 3: Adaptive Coverage Zones
 
@@ -318,7 +367,11 @@ When clarity is sufficient to build:
 1. Summarize key decisions
 2. Note remaining open questions and their impact
 3. **Playbook-citation self-check**: before asking "ready to build?", verify — did the recommendation cite at least one applicable operator-playbook frame when one was loaded? If a founder-domain frame was loaded but no rule from it surfaced in the recommendation, you've ignored loaded context. Either cite the relevant rule, explain why the frame doesn't apply here, or revisit the recommendation. The frames exist to be *used*, not just read.
-4. Ask: "Ready to build, or go deeper on anything?"
+4. **Verdict assignment** — state the explicit verdict before asking the user to build:
+   - Idea-stage: `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT` based on the idea-critic outcome and alternatives clarity.
+   - Plan-review: one of `BUILD_AS_PROPOSED` / `CHERRY-PICK_EXPANSIONS` / `EXPAND_BEYOND_PROPOSED` / `HOLD_AS_PROPOSED` / `HOLD_WITH_RISK_NOTES` / `CUT_TO_MINIMUM` / `CUT_AGGRESSIVELY`, mapped to the chosen plan-review-mode.
+   The verdict is not optional — operator-grade discover ends on a clear decisional output. If you cannot pick one, the conversation isn't done; surface what's missing and continue.
+5. Ask: "Ready to build, or go deeper on anything?"
 
 If the user says go, go. Don't pad.
 
@@ -341,15 +394,60 @@ skill: discover
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
+mode: idea-stage | plan-review
+plan-review-mode: scope-expansion | selective-expansion | hold-scope | scope-reduction  # only when mode = plan-review
 ---
 
 # [Feature Name] Specification
 
-## Problem Statement
-[What we're solving and why]
+## Premise Challenge
+
+State of premises the user must agree with before solution generation. Each line names a premise and the user's stance:
+- **Right problem?** [The actual outcome being optimized for, restated in one sentence — not the proposed solution.]
+- **Outcome vs proxy?** [What is the user-visible outcome, not the metric proxy. Example: "user keeps their place in the document on reload" vs "we add session storage".]
+- **Do nothing?** [What happens if we ship nothing — measurable pain today, or hypothetical?]
+- **What partially solves this?** [Existing code, tools, or processes that already cover some of the surface. Re-scope from that delta, not from zero.]
+- **Distribution path?** [For new artifacts — CLI, library, mobile app: how will users actually get it? If "we'll figure that out" — flag and scope distribution before build.]
+
+If a premise was challenged and adjusted during the session, record the adjustment here. If a premise was uncomfortable for the user but they confirmed it — record that too.
+
+## Dream State Mapping
+
+Three-column delta — forces forward-time thinking before locking architecture:
+
+| CURRENT STATE | THIS PLAN (proposed) | 12-MONTH IDEAL |
+|---|---|---|
+| [What exists today, including pain] | [What this spec ships] | [What "great" looks like a year out] |
+
+The 12-month column is the corrective lens — if "this plan" looks orthogonal to "12-month ideal," the proposed plan is locally rational but globally wrong. Surface the gap before building.
 
 ## Decided Approach
 [High-level approach with key decisions]
+
+## Implementation Alternatives (MANDATORY — minimum 2-3 distinct approaches)
+
+Equal-weight presentation. Do NOT default to the smaller, safer option in the recommendation row just because it's smaller — recommend whichever serves the stated outcome (often the rewrite, given AI compresses implementation).
+
+| Alternative | Effort | Risk | Pros | Cons | Reuses Existing |
+|---|---|---|---|---|---|
+| **A. Minimum-viable** | S/M | Low | [pros] | [cons] | [what existing code/system this leverages] |
+| **B. Ideal architecture** | M/L | Med | [pros] | [cons] | [reuse story] |
+| **C. [optional middle ground]** | M | Med | [pros] | [cons] | [reuse story] |
+
+**Recommended: [A or B or C]** — [one-paragraph reason, citing the stated outcome and the equal-weight rule]
+
+If only one alternative was generated, this section MUST flag the reason: "Only one viable path because [hard constraint X]." Premature single-option lock-in is the failure mode this section exists to prevent.
+
+## Temporal Interrogation
+
+Walk forward through implementation time and surface ambiguities the implementer will hit at each stage. Resolve them HERE in the spec, not during build.
+
+- **Hour 1 (foundations / scaffold):** [What unblocks setup? File paths, package boundaries, schema baseline. Ambiguities to lock now.]
+- **Hour 2-3 (core logic):** [What's the load-bearing logic? What edge cases will the implementer ask about?]
+- **Hour 4-5 (integration):** [How does this slot into existing systems? Auth, routing, data flow? Where will integration assumptions break?]
+- **Hour 6+ (polish / tests / docs):** [What's the test strategy? What docs need to land? What's the "done" bar beyond "works on happy path"?]
+
+Each row that the spec leaves unresolved gets carried into the build as an unprompted decision the implementer will make alone. Resolve them now.
 
 ## Key Decisions
 | Decision | Choice | Rationale |
@@ -373,7 +471,27 @@ Any of these = not done:
 
 ## Implementation Notes
 [Technical details, gotchas, dependencies]
+
+## Verdict
+
+One line, mode-mapped:
+
+- **Idea-stage** (mode: idea-stage) — `VALIDATED` (idea-critic PROCEED + alternatives clear) / `NEEDS_MORE_VALIDATION` (idea-critic PUSH_BACK; demand evidence still missing) / `PIVOT` (the right problem is adjacent to the originally-stated one — see Premise Challenge)
+- **Plan-review** (mode: plan-review) — based on the chosen plan-review-mode:
+  - `BUILD_AS_PROPOSED` — plan stands as-is
+  - `CHERRY-PICK_EXPANSIONS` — plan stands plus the named expansions in Implementation Alternatives B/C
+  - `EXPAND_BEYOND_PROPOSED` — recommend a strictly larger plan (SCOPE EXPANSION mode only)
+  - `HOLD_AS_PROPOSED` — keep scope, no expansions; risk-notes attached (HOLD SCOPE mode)
+  - `HOLD_WITH_RISK_NOTES` — keep scope but flag execution risks the spec must address
+  - `CUT_TO_MINIMUM` — strip to load-bearing core (SCOPE REDUCTION mode)
+  - `CUT_AGGRESSIVELY` — recommend cuts even beyond the user's framing
+
+The Verdict line maps to the Completion Status Protocol — `VALIDATED` / `BUILD_AS_PROPOSED` etc. → `done`; verdicts with caveats → `done_with_concerns`; `NEEDS_MORE_VALIDATION` → `needs_context`; irreconcilable inputs → `blocked`.
 ```
+
+**Mandatory-sections rule:** Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict are LOAD-BEARING — they are the operator-grade rigor structure. Every spec save MUST include them. The exceptions are narrow:
+- **Light depth scoping** (Adaptive Depth row 1: clear task, well-defined scope, existing codebase): the spec format above is heavyweight. Light-depth saves use the prior compact spec format (Problem Statement / Decided Approach / Key Decisions / Edge Cases / Open Questions); skip the 5 mandatory sections explicitly with a frontmatter note `light_spec: true`. Don't pretend light scoping needs Dream State Mapping.
+- **Contract format** (below): contracts are scope-locking, not idea-validating. Premise Challenge and Dream State Mapping don't apply; the Contract format remains as-is. Implementation Alternatives, Temporal Interrogation, and Verdict (in `BUILD_AS_PROPOSED` / `CUT_TO_MINIMUM` shape) apply.
 
 **Contract** (for scope-locking before building):
 ```markdown
@@ -482,8 +600,11 @@ Downstream skills don't REQUIRE artifacts as files. They need decisions known, f
 | Parameter | Default | Override example |
 |-----------|---------|-----------------|
 | depth | auto | "quick scope" / "deep interview" / "ask 3 questions" |
+| mode | auto-detected (Step 2.5) | "treat this as a plan review" / "fresh idea, ignore the existing spec" |
+| plan-review-mode | user-picked when mode = plan-review | "expand the scope" / "hold scope, find risks" / "cut to minimum" / "cherry-pick expansions" |
 | output | conversation | "save to spec" / "write a contract" / "save answers" |
 | zones | auto (3-5 based on problem) | "focus on technical risks and UX" |
+| idea-critic | auto-on for idea-stage | "skip the idea critic" (records override in spec frontmatter) |
 
 ---
 
@@ -540,3 +661,4 @@ Every run ends with explicit status:
 - **`references/operator-playbooks/`** — Practitioner-grade operator frames loaded during Step 1 Context Gathering. 9 docs:
   - **Operator-craft (always-on stance)** — `ceo-cognitive-patterns.md` (18 named instincts) · `yc-six-forcing-questions.md` (Q1-Q6 demand reality) · `minimalist-entrepreneur.md` (processize → productize, sell-before-scale, red/green-flags rubric)
   - **Founder-domain (load on product-context match)** — `consumer-app-growth.md` · `dtc-brand-100m.md` · `b2b-saas-bootstrap.md` · `second-time-founder-discipline.md` · `pricing-defaults.md` · `ai-era-discoverability.md`
+- **`agents/idea-critic.md`** — Single sub-agent dispatched in Step 2.7 on idea-stage sessions. Scores idea-statement against 5 red + 5 green flags; returns PROCEED or PUSH_BACK with cited flags. Threshold: ≥2 red OR <2 green → PUSH_BACK. Discover does not proceed to coverage zones / alternatives generation while PUSH_BACK is unresolved.
