@@ -101,6 +101,74 @@ When `/cleanup-artifacts` runs, Claude Code substitutes both lines with command 
 
 **Source:** Skills at Scale workshop (Nick Nisi & Zack Proser, WorkOS DX) — `Skills at Scale — Nick Nisi and Zack Proser, WorkOS.md`.
 
+### Description-as-router
+
+The `description` frontmatter field is not documentation — it IS the routing logic the harness reads when deciding whether to load the skill for a given turn. Write it dense with the acronyms, verbs, file types, and product names that should trigger the skill; generic-but-keyword-rich beats clever. When multiple sibling skills overlap (e.g., per-stack `orchestrate-*` skills), the description is also where you encode the disambiguation rule ("use this on X domains where output is always Y").
+
+**Sanity check before shipping:** feed the description back to Claude with "given this description, when would you load this skill?" If the answer doesn't match the skill's intended triggers, the description is mis-routing — tighten before merging.
+
+**When to use:** every new skill; every rename; every time a sibling skill is added that could route-collide.
+
+**Source:** Skills at Scale workshop (WorkOS DX).
+
+### Progressive disclosure
+
+Keep `SKILL.md` thin (router + references map) and split heavy domain content into `references/*.md` files that load conditionally. The skill body says "if testing → load `testing.md`; if scoring → load `scoring-rubric.md`" so only the relevant references reach the context window. The pattern is already in use in this stack (`short-form-brief/references/platform-intelligence/`, `copywriting/references/`, `discover/references/operator-playbooks/`) — this entry canonizes it as the norm for any skill with >~200 lines of domain content.
+
+**When to use:**
+- A single skill spans multiple distinct sub-domains (per-platform, per-channel, per-archetype).
+- Content is reference material (frameworks, catalogs, rubrics) that not every invocation needs.
+- The SKILL.md is past ~250 lines and clearly readable as "router + appendix."
+
+**When NOT to use:**
+- A skill with a single workflow and <~200 lines of domain prose. Splitting adds navigation cost without payoff.
+- Critic rubrics that every agent in the skill consumes — those belong in the SKILL.md or in the agent body, not in a conditional reference.
+
+**Source:** Skills at Scale workshop (WorkOS DX); observed stack practice.
+
+### Confidence-scoring gate
+
+Before producing high-stakes output (architecture decisions, irreversible commits, scope-altering specs), have the skill score its own understanding on a 1–100 scale (problem clarity / goal definition / success criteria / scope / consistency, each 0–20). Refuse to proceed below a threshold (e.g., ≥95) and surface the gap as a clarifying question to the operator. The numeric score isn't the value — the iterative clarifying loop is. Pairs with, doesn't replace, the stack's multi-agent + critic gate: critic gates evaluate produced output; confidence-scoring gates prevent under-spec'd dispatch in the first place.
+
+**When to use:** skills that produce high-stakes irreversible outputs from operator intent — `system-architecture` (blueprints that commit a tech stack), `discover` deep mode (specs that gate downstream `task-breakdown`), `cold-outreach` (sends).
+
+**When NOT to use:** read-only audits (`fresh-eyes`, `cleanup-artifacts --dry-run`); creative-divergent skills where low-confidence exploration is the point (`agents-panel` mode=debate).
+
+**Source:** Skills at Scale workshop — Nick Nisi's `ideation` skill.
+
+### Audience-detection branching
+
+When skill behavior should adapt to operator identity (veteran vs. new contributor; internal vs. external; multi-tenant org), branch on `` ! `git config user.email` `` plus `` ! `git log --author=... --oneline | wc -l` `` (peer to the bang-backtick convention above). Avoids per-environment forks and keeps the routing logic inside the skill rather than the harness.
+
+**When to use:** stack-portable skills shipped to multiple users with materially different signals (a `fresh-eyes` that roasts harder on a 10k-commit veteran; a `cold-outreach` that adjusts house-voice for a contractor vs. employee operator).
+
+**When NOT to use:** single-operator stacks where the branch always evaluates the same way. The current stack is solo-operator — this pattern is canonized as a forward-leaning convention; today's marginal applicability.
+
+**Source:** Skills at Scale workshop (WorkOS DX).
+
+### Eval methodology — N-with vs. N-without
+
+Before shipping a skill (or a significant skill enrichment), run the same task N times with the skill loaded and N times without, score both outputs by rubric, and only ship if accuracy is higher with the skill loaded. Without this gate, additive enrichment can silently regress quality — Claude was already good at the domain, and the skill's prescriptions are pulling it off the optimal path. WorkOS's Next.js installer skill measurably dropped accuracy ~30% before this eval caught it.
+
+**When to use:** every new skill; every enrichment that adds ≥5 prescription rules to an existing skill; suspected regressions when downstream-skill output quality changes after an upstream-skill ship.
+
+**When NOT to use:** mechanical refactors that don't change behavior (path migrations, rename passes); reference-only additions that don't alter the skill's prompt routing.
+
+**Source:** Skills at Scale workshop — Nick Nisi (caught a 30% regression on the WorkOS Next.js installer skill via this gate).
+
+### Anti-pattern: over-prescribing in already-strong domains
+
+A skill that prescribes 20+ rules in a domain Claude is already 90th-percentile at will **reduce** accuracy — the model defers to the prescriptions and ignores its own (often-better) defaults. Skills should add structure where the model lacks it, not constrain it where it doesn't.
+
+**Observable stack risk:** `humanize` is high-prescription (47 patterns post-REB-6). At the cliff. If patterns grow past ~55, run the N-with vs. N-without eval (entry above) against the calibration set before merging. If skill-loaded accuracy regresses, fold new patterns into existing entries rather than extending the catalog. Same risk applies to any future skill that hits the prescription wall.
+
+**Detection signals:**
+- The same rule appears in 3+ places in the skill body or across reference files (the model has already absorbed it).
+- Reviewers describe the skill output as "stiff" or "formulaic" compared to no-skill baseline.
+- The skill's critic gate FAILs outputs the operator would accept by hand.
+
+**Source:** Skills at Scale workshop — WorkOS observation; cross-applies to `humanize`'s growth trajectory.
+
 ---
 
 ## Manifest Spec

@@ -6,6 +6,29 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.2.2] - 2026-05-11
+
+`CLAUDE.md` §Skill-Authoring Patterns grows from one entry to seven. Five patterns plus one anti-pattern, all sourced from the WorkOS Skills at Scale workshop. The section is reference material for anyone authoring or reviewing a new skill in this stack — fresh-eyes review and new-skill scaffolding can now cite a canonical pattern by name instead of reasoning from first principles each time.
+
+### New patterns
+
+- **Description-as-router** — the `description` frontmatter field is the runtime routing logic, not docs. Write it dense with the acronyms, verbs, and product names that should trigger the skill. Sanity-check by feeding the description back to Claude with "given this, when would you load me?" before merging.
+- **Progressive disclosure** — keep `SKILL.md` thin (router + references map); split heavy domain content into `references/*.md` that load conditionally. Canonizes a pattern already in use across `short-form-brief`, `copywriting`, and `discover`.
+- **Confidence-scoring gate** — before high-stakes output (architecture, irreversible commits, scope-altering specs), have the skill score its own understanding 0–100 across five dimensions and refuse to proceed below ≥95. Pairs with the existing multi-agent + critic gate; doesn't replace it.
+- **Audience-detection branching** — branch skill behavior on `` ! `git config user.email` `` and commit-count signals (peer to the bang-backtick convention added in 3.1.2). Forward-leaning for the current solo-operator stack; today's marginal applicability.
+- **Eval methodology — N-with vs. N-without** — run the same task N times with the skill loaded and N times without; only ship if accuracy goes up with it. Without this, additive enrichment can silently regress quality — WorkOS's Next.js installer dropped accuracy ~30% before this eval caught it.
+
+### New anti-pattern
+
+- **Over-prescribing in already-strong domains** — a skill that prescribes 20+ rules in a domain Claude is already 90th-percentile at will reduce accuracy. The model defers to the rules and ignores its own (often-better) defaults. The entry calls out `humanize` (currently 47 patterns, near the cliff) as the observable stack risk and ties pattern growth past ~55 to the N-with vs. N-without eval gate.
+
+### Notes
+
+- All entries follow the same shape as the bang-backtick entry shipped in 3.1.2: heading + one-paragraph what + when-to-use + when-not-to-use + source attribution.
+- No skill body changes. No contract changes for downstream consumers. Pure additive CLAUDE.md reference content.
+
+---
+
 ## [3.2.1] - 2026-05-11
 
 Documentation and wiring fixes for `discover` after the 3.2.0 release. Polish on the new plan-review mode, idea-critic gate, and mandatory spec sections so they're easier to read and behave as documented.
