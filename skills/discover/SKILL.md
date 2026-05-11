@@ -321,7 +321,7 @@ Most sessions mix both. Concrete options → tool; exploring → just ask.
 - 2-4 questions per round
 - Each targets 2-4 decision points with real tradeoffs
 - State which choice you recommend and why
-- Batch up to 4 independent questions into a single AskUserQuestion call
+- Batch up to 4 questions **on one decision-tree branch** into a single AskUserQuestion call (depth-first dependency-walk — batching is the *width* at each node, not a shortcut around the walk; questions whose answers depend on a yet-unresolved upstream branch wait their turn)
 - Briefly acknowledge answers each round; track clarity internally
 
 **Question formats** (use whichever fits the question):
@@ -378,7 +378,23 @@ When clarity is sufficient to build:
    **Single verdict, two surfaces:** if the spec is saved (Step 7), this same verdict persists verbatim to the `## Verdict` section of the saved artifact — same enum, stated once in conversation, recorded once in artifact. There are not two verdicts; conversation Verdict and spec Verdict are one decision rendered in two places.
 5. Ask: "Ready to build, or go deeper on anything?"
 
-If the user says go, go. Don't pad.
+**Resolution-exit condition** (replaces the prior "if the user says go, go" escape hatch):
+
+The session exits when the decision tree is *resolved* — not when the user runs out of patience. Resolved means **all three** are true:
+
+1. Every load-bearing branch has a recommended answer with a cited reason (operator-playbook rule, prior artifact, evidence surfaced this session, or explicit defer-with-trigger).
+2. Every Premise Challenge premise has the user's stance recorded (accepted / rejected / deferred — not silently passed over).
+3. At least one piece of evidence has surfaced that wasn't already in the user's head at the start (a constraint, a counter-example, a tradeoff they hadn't priced in, a citation from a loaded playbook). If you can't name what this session changed, you didn't grill — you transcribed.
+
+**When clauses 2 and 3 are N/A** (resolution exits on clause 1 alone):
+- **Light-depth sessions** (Adaptive Depth row 1: clear task, well-defined scope, existing codebase) — the rigor structure exists for medium/deep work where strategic calls are being made; Light-depth saves resolve when every load-bearing branch has a recommended answer.
+- **Contract-format saves** — Premise Challenge does not apply (contracts are scope-locking, not idea-validating, per the existing rule at Step 7); clause 2 is N/A and clause 3 is advisory.
+- **Plan-review HOLD SCOPE mode** — operator brought a plan they trust; the job is execution-risk surfacing, not premise re-litigation. Clauses 2 and 3 are advisory.
+- **Premise-skipped sessions** (Step 2 skip rule fired: trivial scope, continuation of a prior decision, or obviously-sound premise) — clause 2 is N/A; note "Premise Challenge skipped" once in the conversation and proceed.
+
+**Operator override is allowed**, silent exit is not. If the operator says "ship it" with unresolved branches, log them inline in the conversation under the line `Open branches (operator-overridden):` — one entry per branch (lowercase form, conversational). If the spec is saved (Step 7), set frontmatter `status: done_with_concerns` and persist the same entries under the artifact's `## Open Branches (operator-overridden)` section (Title Case form, template heading — see Step 7).
+
+Don't pad — but don't false-resolve either. A 1-line per-branch list is not padding; it's the audit trail of what the operator chose to skip.
 
 ### Step 7: Output
 
@@ -478,6 +494,14 @@ Any of these = not done:
 
 ## Open Questions
 - [ ] [Unresolved items]
+
+## Open Branches (operator-overridden)
+
+Only present when the session exited via operator override on the resolution-exit condition (Step 6). Each entry is a load-bearing decision-tree branch the operator chose to skip — separate from Open Questions (general unresolved items). If this section is non-empty, frontmatter `status` MUST be `done_with_concerns`.
+
+**Branch vs. question** (routing rule): a *branch* is a decision-tree node where discover offered a recommended answer and the operator chose not to ratify it. A *question* is an unresolved item where no recommendation was made (insufficient context, deferred to a future session, scope-out-of-bounds). When in doubt: did discover offer a recommendation this session? Yes → branch. No → question.
+
+- [Branch description] — [what would have resolved it: more evidence, a follow-up session, a decision the operator deferred]
 
 ## Implementation Notes
 [Technical details, gotchas, dependencies]
