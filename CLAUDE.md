@@ -109,6 +109,8 @@ The `description` frontmatter field is not documentation — it IS the routing l
 
 **When to use:** every new skill; every rename; every time a sibling skill is added that could route-collide.
 
+**When NOT to use:** the sanity-check loop is for new skills, renames, or sibling-collision risk — don't re-run it on a stable, in-use skill just because it exists. Routine audits of existing descriptions belong in a periodic-review pass, not in this pattern.
+
 **Source:** Skills at Scale workshop (WorkOS DX).
 
 ### Progressive disclosure
@@ -148,7 +150,7 @@ When skill behavior should adapt to operator identity (veteran vs. new contribut
 
 ### Eval methodology — N-with vs. N-without
 
-Before shipping a skill (or a significant skill enrichment), run the same task N times with the skill loaded and N times without, score both outputs by rubric, and only ship if accuracy is higher with the skill loaded. Without this gate, additive enrichment can silently regress quality — Claude was already good at the domain, and the skill's prescriptions are pulling it off the optimal path. WorkOS's Next.js installer skill measurably dropped accuracy ~30% before this eval caught it.
+Before shipping a skill (or a significant skill enrichment), run the same task N times with the skill loaded and N times without, score both outputs by rubric, and only ship if accuracy is higher with the skill loaded. Without this gate, additive enrichment can silently regress quality — Claude was already good at the domain, and the skill's prescriptions are pulling it off the optimal path. Nick Nisi's Next.js installer skill (shipped as part of WorkOS's `workos install` CLI) measurably dropped accuracy ~30% before this eval caught it.
 
 **When to use:** every new skill; every enrichment that adds ≥5 prescription rules to an existing skill; suspected regressions when downstream-skill output quality changes after an upstream-skill ship.
 
@@ -160,7 +162,9 @@ Before shipping a skill (or a significant skill enrichment), run the same task N
 
 A skill that prescribes 20+ rules in a domain Claude is already 90th-percentile at will **reduce** accuracy — the model defers to the prescriptions and ignores its own (often-better) defaults. Skills should add structure where the model lacks it, not constrain it where it doesn't.
 
-**Observable stack risk:** `humanize` is high-prescription (47 patterns post-REB-6). At the cliff. If patterns grow past ~55, run the N-with vs. N-without eval (entry above) against the calibration set before merging. If skill-loaded accuracy regresses, fold new patterns into existing entries rather than extending the catalog. Same risk applies to any future skill that hits the prescription wall.
+**When to flag this risk:** any skill enrichment that pushes the prescription count past the model's existing-strength threshold for the domain. Humanize is the current observable example; copywriting and humanize are the next-most-at-risk surfaces if their patterns keep growing.
+
+**Observable stack risk:** `humanize` is high-prescription (47 patterns post-REB-6). At the cliff. If patterns grow past ~55, run the N-with vs. N-without eval (entry above) against the calibration set before merging. If skill-loaded accuracy regresses, fold new patterns into existing entries rather than extending the catalog.
 
 **Detection signals:**
 - The same rule appears in 3+ places in the skill body or across reference files (the model has already absorbed it).
