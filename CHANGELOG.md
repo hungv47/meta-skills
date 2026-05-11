@@ -6,6 +6,18 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [3.2.3] - 2026-05-11
+
+Three consistency fixes to the §Skill-Authoring Patterns section that landed in 3.2.2. Independent review caught format-spec slips and an attribution inconsistency.
+
+### Documentation fixes (no behavioral change)
+- **Description-as-router now has a When-NOT-to-use block** for format parity with sibling pattern entries (the sanity-check loop is for new skills, renames, and sibling-collision risk — not routine audits of stable descriptions).
+- **N-with vs. N-without eval entry attribution unified.** The body sentence previously credited "WorkOS's Next.js installer" while the Source line credited "Nick Nisi" — now both say "Nick Nisi's Next.js installer skill (shipped as part of WorkOS's `workos install` CLI)."
+- **Over-prescribing anti-pattern adds a "When to flag this risk" line** before Detection signals, for format parity with the other six pattern entries that all carry an explicit when-to-use guidance.
+- **Filler line cut** from the over-prescribing anti-pattern ("Same risk applies to any future skill that hits the prescription wall" was a restatement of the prior sentence).
+
+---
+
 ## [3.2.2] - 2026-05-11
 
 `CLAUDE.md` §Skill-Authoring Patterns grows from one entry to seven. Five patterns plus one anti-pattern, all sourced from the WorkOS Skills at Scale workshop. The section is reference material for anyone authoring or reviewing a new skill in this stack — fresh-eyes review and new-skill scaffolding can now cite a canonical pattern by name instead of reasoning from first principles each time.
