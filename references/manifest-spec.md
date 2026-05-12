@@ -10,7 +10,7 @@ Three failure modes this spec prevents:
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**.
+Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.agents/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
@@ -32,7 +32,17 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "schema_version": 1,
       "stale_after_days": 90,
       "stale": false,
+      "title": "ICP Research",
       "summary": "Engineering managers, mid-size SaaS, 50-200 engineers",
+      "purpose": "Canonical audience record for downstream product, marketing, and research skills",
+      "lifecycle": "canonical",
+      "use_when": "Grounding audience, buyer, pain, VoC, or market-facing output",
+      "do_not_use_when": "The product, audience, or market has materially changed since this was produced",
+      "supersedes": "",
+      "superseded_by": "",
+      "upstream": "operator interview, product source material",
+      "downstream": "brand-system, campaign-plan, copywriting, system-architecture",
+      "decision_status": "",
       "size_bytes": 18432,
       "frontmatter_present": true
     },
@@ -75,7 +85,17 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `schema_version` — version of the artifact's own schema (NOT the manifest version). From frontmatter `version:`; default `1`.
 - `stale_after_days` — staleness threshold for THIS artifact type. From frontmatter; default `90`.
 - `stale` — derived: `true` if `now > produced_at + stale_after_days`.
+- `title` — display title from frontmatter `title:`, first H1, or filename fallback.
 - `summary` — one-line summary from frontmatter `summary:`. Empty string if absent.
+- `purpose` — why this artifact exists. This is selection context, not a body summary.
+- `lifecycle` — `canonical | anchor | registry | decision | spec | pipeline | snapshot | archive | ephemeral`. From frontmatter when present, inferred from path otherwise.
+- `use_when` — short routing rule for when a skill or human should read the artifact.
+- `do_not_use_when` — short guardrail for when the artifact is misleading or out of scope.
+- `supersedes` — path or slug this artifact replaces. Lineage metadata; may point into archive.
+- `superseded_by` — path or slug that replaces this artifact. Consumers should prefer the replacement.
+- `upstream` — comma-separated sources or prerequisite artifacts that fed this one.
+- `downstream` — comma-separated skills or artifacts expected to consume this one.
+- `decision_status` — optional decision state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts.
 - `size_bytes` — file size, useful for sanity checks.
 - `frontmatter_present` — `true` if any frontmatter was found, `false` if file has none. Lets consumers distinguish well-formed artifacts from legacy ones.
 
@@ -100,6 +120,12 @@ date: 2026-05-07
 status: done
 stale_after_days: 90
 summary: "Engineering managers, mid-size SaaS, 50-200 engineers"
+purpose: "Canonical audience record for downstream skills"
+lifecycle: canonical
+use_when: "Grounding audience, buyer, pain, VoC, or market-facing output"
+do_not_use_when: "The product, audience, or market has materially changed"
+upstream: "operator interview, product source material"
+downstream: "brand-system, campaign-plan, copywriting, system-architecture"
 ---
 ```
 
@@ -114,6 +140,16 @@ summary: "Engineering managers, mid-size SaaS, 50-200 engineers"
 
 - `stale_after_days` — how long before this artifact should be considered stale (default `90`). Use shorter values for fast-moving artifacts (e.g., `diagnose.md` → `30`); use longer for slow-moving (e.g., `brand/BRAND.md` → `365`).
 - `summary` — one-line summary of the artifact's key takeaway. Quoted string. Lets consumers preview without reading the full file.
+- `title` — display title. Optional because sync derives it from the first H1.
+- `purpose` — why the artifact exists. Required in practice for new non-terminal artifacts; optional only for legacy compatibility.
+- `lifecycle` — lifecycle taxonomy value. Required in practice for new artifacts; sync infers from path for legacy compatibility.
+- `use_when` — when this artifact should be selected.
+- `do_not_use_when` — when this artifact should be skipped or refreshed.
+- `supersedes` / `superseded_by` — lineage pointers for replacements and archived history.
+- `upstream` / `downstream` — comma-separated dependency/context hints.
+- `decision_status` — decision state for specs and decisions.
+
+Keep optional frontmatter fields flat scalar strings. Do not use nested YAML or multiline values; the sync parser intentionally stays small and deterministic.
 
 ### Skill author obligations
 
@@ -140,8 +176,15 @@ What it does:
 4. For experience files (`.agents/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
 6. Write `.agents/manifest.json` (pretty-printed JSON, trailing newline).
+7. Write `.agents/artifact-index.md` (human-readable selection index derived from the manifest).
 
 The script is **idempotent** — running it twice on the same state produces identical output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
+
+### Human-readable index
+
+`manifest-sync` also writes `.agents/artifact-index.md`. This file is infrastructure, like `.agents/manifest.json`; it is not a skill output and should not be hand-edited. It exists for the exact failure mode the JSON manifest does not solve well: a human or agent browsing artifacts needs to know **why** an artifact exists, **when** to use it, and **what replaced it**.
+
+The index groups active artifacts separately from archived/historical artifacts. Active canonical records, anchors, registries, decisions, and specs come first. Snapshots and archived rows are audit trail by default unless their `use_when` field says otherwise.
 
 ### Invocation
 
@@ -168,6 +211,8 @@ When a skill needs to know what artifacts exist, what their status is, or whethe
 2. **If the artifact you need is listed → read the artifact itself for content.** Manifest gives you the metadata; the markdown gives you the substance.
 3. **If the artifact is NOT in the manifest → it does not exist OR sync is stale.** Fall back to filesystem check only if you suspect drift.
 
+For exploratory browsing or human-facing status summaries, read `.agents/artifact-index.md` after the JSON manifest. The JSON is the machine contract; the index is the readable map.
+
 ### Status-aware consumption
 
 A consumer should react to the manifest entry's `status` and `stale` fields:
@@ -179,6 +224,8 @@ A consumer should react to the manifest entry's `status` and `stale` fields:
 | `status: blocked` or `needs_context` | Treat as missing. Don't consume. Recommend re-running the producer skill. |
 | `stale: true` | Consume but warn. ("icp-research is 6 months old. Refresh before proceeding?") |
 | `frontmatter_present: false` | Consume cautiously. The artifact is from a legacy run; quality assumptions don't hold. Suggest a refresh. |
+| `superseded_by` present | Prefer the replacement artifact unless the user explicitly asks for history. |
+| `do_not_use_when` matches current situation | Treat as stale/misleading even if `stale: false`; ask whether to refresh or proceed. |
 
 ### What manifest-aware orchestrators do
 
@@ -264,8 +311,10 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
 5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. If you need richer queries, add SQLite later — but only when first real need surfaces.
-6. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
-7. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.
+6. **Hand-editing `.agents/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
+7. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
+8. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.
+9. **Leaving `purpose` / `use_when` blank on new non-terminal artifacts.** This recreates the original selection problem: the artifact exists, but nobody knows why to select it.
 
 ---
 
