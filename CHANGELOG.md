@@ -6,6 +6,22 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [5.0.1] - 2026-05-12
+
+Adds a human-readable artifact selection index generated from the manifest.
+
+### Added
+- `manifest-sync` now writes `.agents/artifact-index.md` alongside `.agents/manifest.json`. The index separates active artifacts from archived history and shows why each artifact exists, when to use it, status, and lineage.
+- Manifest entries now carry richer selection metadata when frontmatter provides it: `title`, `purpose`, `lifecycle`, `use_when`, `do_not_use_when`, `supersedes`, `superseded_by`, `upstream`, `downstream`, and `decision_status`.
+- `manifest-spec.md` documents the richer frontmatter contract and clarifies that `.agents/artifact-index.md` is generated infrastructure, not a skill output.
+
+### Fixed
+- `schema_version` now stays numeric even when artifact frontmatter uses non-numeric human versions such as `pruned-2`.
+
+Review records: `.agents/skill-artifacts/meta/records/2026-05-12-fresh-eyes-artifact-index-system.md` and `.agents/skill-artifacts/meta/records/2026-05-12-cleanup-artifact-index-system.md`
+
+---
+
 ## [5.0.0] - 2026-05-12
 
 Stack-major cut coordinated across the 4-stack marketplace to mark the post-tier-discipline stable era. No meta-skill removed or renamed; no API breaking change. The cross-stack orchestrator declares itself fast-tier. Major bump signals the alignment, not breakage.

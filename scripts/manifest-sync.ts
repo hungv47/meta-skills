@@ -14,9 +14,33 @@ const ROOT = process.argv[2] ? process.argv[2] : process.cwd();
 const ARTIFACT_ROOTS = [".agents", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = ".agents/experience";
 const MANIFEST_PATH = join(ROOT, ".agents", "manifest.json");
+const ARTIFACT_INDEX_PATH = join(ROOT, ".agents", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
+const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
+const LIFECYCLE_SORT_ORDER = ["canonical", "anchor", "registry", "decision", "spec", "pipeline", "snapshot", "archive", ""];
 
 type Frontmatter = Record<string, string | number | boolean>;
+type ArtifactEntry = {
+  produced_by: string;
+  produced_at: string;
+  status: string;
+  schema_version: number;
+  stale_after_days: number;
+  stale: boolean;
+  title: string;
+  summary: string;
+  purpose: string;
+  lifecycle: string;
+  use_when: string;
+  do_not_use_when: string;
+  supersedes: string;
+  superseded_by: string;
+  upstream: string;
+  downstream: string;
+  decision_status: string;
+  size_bytes: number;
+  frontmatter_present: boolean;
+};
 
 // Minimal flat-YAML frontmatter parser. Handles `key: value`, optional quoting,
 // and integer coercion. Anything more exotic (lists, nested maps) is ignored —
@@ -70,6 +94,16 @@ function inferProducer(rel: string): string {
     [/^\.agents\/spec/, "discover"],
     [/^\.agents\/cleanup-report/, "code-cleanup"],
     [/^\.agents\/machine-cleanup-report/, "machine-cleanup"],
+    [/^\.agents\/skill-artifacts\/meta\/roadmap/, "agents-panel"],
+    [/^\.agents\/skill-artifacts\/meta\/tasks/, "task-breakdown"],
+    [/^\.agents\/skill-artifacts\/meta\/specs\//, "discover"],
+    [/^\.agents\/skill-artifacts\/meta\/sketches\//, "prioritize"],
+    [/^\.agents\/skill-artifacts\/meta\/decisions\//, "agents-panel"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts/, "meta-system"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*fresh-eyes/, "fresh-eyes"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*cleanup-artifacts/, "cleanup-artifacts"],
+    [/^\.agents\/skill-artifacts\/mkt\/ad-copy\//, "ad-copy"],
+    [/^\.agents\/skill-artifacts\/mkt\/copy\//, "copywriting"],
     [/^\.agents\/meta\/agents-panel/, "agents-panel"],
     [/^\.agents\/meta\/fresh-eyes/, "fresh-eyes"],
     [/^\.agents\/meta\/short-form-content-plan/, "short-form-research"],
@@ -101,18 +135,123 @@ function normalizeDate(v: unknown, fallback: Date): string {
   return fallback.toISOString().slice(0, 10);
 }
 
-const artifacts: Record<string, unknown> = {};
+function numberField(fm: Frontmatter | null, key: string, fallback: number): number {
+  const v = fm?.[key];
+  if (typeof v === "number") return v;
+  if (typeof v === "string" && /^\d+$/.test(v)) return parseInt(v, 10);
+  return fallback;
+}
+
+function textField(fm: Frontmatter | null, key: string): string {
+  const v = fm?.[key];
+  return typeof v === "string" || typeof v === "number" || typeof v === "boolean" ? String(v).trim() : "";
+}
+
+function inferTitle(rel: string, content: string, fm: Frontmatter | null): string {
+  const explicit = textField(fm, "title");
+  if (explicit) return explicit;
+  const h1 = content.match(/^#\s+(.+)$/m)?.[1]?.trim();
+  if (h1 && !GENERIC_H1_TITLES.has(h1)) return h1;
+  return basename(rel, ".md");
+}
+
+function inferLifecycle(rel: string, fm: Frontmatter | null): string {
+  const explicit = textField(fm, "lifecycle");
+  if (explicit) return explicit;
+  if (/^brand\//.test(rel) || /^research\/(product-context|icp-research|market-research)/.test(rel) || /^architecture\//.test(rel)) return "canonical";
+  if (/^\.agents\/skill-artifacts\/meta\/decisions\//.test(rel)) return "decision";
+  if (/^\.agents\/skill-artifacts\/meta\/specs\//.test(rel)) return "spec";
+  if (/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
+  if (/^\.agents\/skill-artifacts\/meta\/records\//.test(rel)) return "snapshot";
+  if (/^\.agents\/skill-artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
+  if (/^\.agents\/skill-artifacts\/\.archive\//.test(rel)) return "archive";
+  if (/^\.agents\/skill-artifacts\//.test(rel)) return "pipeline";
+  return "";
+}
+
+function escapeTableCell(value: string): string {
+  return value.replace(/\|/g, "\\|").replace(/\r?\n/g, " ").trim();
+}
+
+function truncate(value: string, max = 220): string {
+  return value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value;
+}
+
+function formatCell(value: string, fallback = "—", max = 220): string {
+  return escapeTableCell(truncate(value || fallback, max));
+}
+
+function artifactSort(a: [string, ArtifactEntry], b: [string, ArtifactEntry]): number {
+  const ao = LIFECYCLE_SORT_ORDER.indexOf(a[1].lifecycle);
+  const bo = LIFECYCLE_SORT_ORDER.indexOf(b[1].lifecycle);
+  if (ao !== bo) return (ao === -1 ? 99 : ao) - (bo === -1 ? 99 : bo);
+  return b[1].produced_at.localeCompare(a[1].produced_at) || a[0].localeCompare(b[0]);
+}
+
+function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<string, ArtifactEntry> }): string {
+  const entries = Object.entries(manifest.artifacts).sort(artifactSort);
+  const active = entries.filter(([path]) => !path.includes("/.archive/"));
+  const archived = entries.filter(([path]) => path.includes("/.archive/"));
+  const withContext = entries.filter(([, entry]) => entry.summary || entry.purpose || entry.use_when).length;
+
+  const renderRows = (rows: Array<[string, ArtifactEntry]>): string => {
+    if (rows.length === 0) return "_None._\n";
+    return [
+      "| Artifact | Type | Why it exists | Use when | Status | Lineage |",
+      "|---|---|---|---|---|---|",
+      ...rows.map(([path, entry]) => {
+        const why = entry.purpose || entry.summary || entry.title;
+        const useWhen = entry.use_when || (entry.lifecycle === "snapshot" ? "Point-in-time audit trail; read only when investigating that run." : "");
+        const useRules = [useWhen, entry.do_not_use_when ? `Skip when: ${entry.do_not_use_when}` : ""].filter(Boolean).join("; ");
+        const lineageParts = [
+          entry.superseded_by ? `superseded by ${entry.superseded_by}` : "",
+          entry.supersedes ? `supersedes ${entry.supersedes}` : "",
+          entry.upstream ? `upstream: ${entry.upstream}` : "",
+          entry.downstream ? `downstream: ${entry.downstream}` : "",
+        ].filter(Boolean);
+        const status = `${entry.status}${entry.stale ? " / stale" : ""}`;
+        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(lineageParts.join("; "))} |`;
+      }),
+    ].join("\n") + "\n";
+  };
+
+  return `# Artifact Index
+
+Generated from artifact frontmatter by \`meta-skills/scripts/manifest-sync.ts\`.
+
+- Updated: ${manifest.updated_at}
+- Artifacts indexed: ${entries.length}
+- Artifacts with selection context: ${withContext}/${entries.length}
+
+## How to use this index
+
+Read this before browsing \`.agents/skill-artifacts/\`. The goal is not to list every file equally; it is to answer which artifacts are active, why they exist, when to use them, and what has been superseded.
+
+For grounded work, prefer active canonical records, anchors, registries, decisions, and specs. Use snapshots and archived artifacts as audit trail unless their row explicitly says they are load-bearing.
+
+## Active Artifacts
+
+${renderRows(active)}
+## Archived / Historical
+
+${renderRows(archived)}
+`;
+}
+
+const artifacts: Record<string, ArtifactEntry> = {};
 const experience: Record<string, unknown> = {};
 
 for (const base of ARTIFACT_ROOTS) {
   const root = join(ROOT, base);
   for (const file of walkMd(root)) {
     const rel = relative(ROOT, file).split("\\").join("/");
-    const stat = statSync(file);
-    const content = readFileSync(file, "utf8");
+    if (rel === ".agents/artifact-index.md") continue;
 
     // Skip README files anywhere — documentation, not artifacts.
-    if (basename(rel).toUpperCase() === "README.MD") continue;
+    if (basename(rel).toLowerCase() === "readme.md") continue;
+
+    const stat = statSync(file);
+    const content = readFileSync(file, "utf8");
 
     if (rel.startsWith(EXPERIENCE_PREFIX) && rel.endsWith(".md")) {
       const name = basename(rel);
@@ -132,9 +271,9 @@ for (const base of ARTIFACT_ROOTS) {
     const skill = (fm?.skill as string | undefined) ?? inferProducer(rel);
     const producedAt = normalizeDate(fm?.date, stat.mtime);
     const status = (fm?.status as string | undefined) ?? "done";
-    const schemaVersion = (fm?.version as number | undefined) ?? 1;
-    const staleAfterDays = (fm?.stale_after_days as number | undefined) ?? DEFAULT_STALE_DAYS;
-    const summary = (fm?.summary as string | undefined) ?? "";
+    const schemaVersion = numberField(fm, "version", 1);
+    const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
+    const summary = textField(fm, "summary");
 
     artifacts[rel] = {
       produced_by: skill,
@@ -143,7 +282,17 @@ for (const base of ARTIFACT_ROOTS) {
       schema_version: schemaVersion,
       stale_after_days: staleAfterDays,
       stale: isStale(producedAt, staleAfterDays),
+      title: inferTitle(rel, content, fm),
       summary,
+      purpose: textField(fm, "purpose"),
+      lifecycle: inferLifecycle(rel, fm),
+      use_when: textField(fm, "use_when"),
+      do_not_use_when: textField(fm, "do_not_use_when"),
+      supersedes: textField(fm, "supersedes"),
+      superseded_by: textField(fm, "superseded_by"),
+      upstream: textField(fm, "upstream"),
+      downstream: textField(fm, "downstream"),
+      decision_status: textField(fm, "decision_status"),
       size_bytes: stat.size,
       frontmatter_present: fm !== null,
     };
@@ -160,6 +309,7 @@ const manifest = {
 const manifestDir = join(ROOT, ".agents");
 if (!existsSync(manifestDir)) mkdirSync(manifestDir, { recursive: true });
 writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n");
+writeFileSync(ARTIFACT_INDEX_PATH, renderArtifactIndex(manifest) + "\n");
 
 const artifactCount = Object.keys(artifacts).length;
 const experienceCount = Object.keys(experience).length;
@@ -167,5 +317,5 @@ const staleCount = Object.values(artifacts).filter((a) => (a as { stale: boolean
 const noFrontmatterCount = Object.values(artifacts).filter((a) => !(a as { frontmatter_present: boolean }).frontmatter_present).length;
 
 console.log(
-  `manifest-sync: ${artifactCount} artifacts (${staleCount} stale, ${noFrontmatterCount} without frontmatter), ${experienceCount} experience files → ${relative(ROOT, MANIFEST_PATH)}`
+  `manifest-sync: ${artifactCount} artifacts (${staleCount} stale, ${noFrontmatterCount} without frontmatter), ${experienceCount} experience files → ${relative(ROOT, MANIFEST_PATH)} + ${relative(ROOT, ARTIFACT_INDEX_PATH)}`
 );

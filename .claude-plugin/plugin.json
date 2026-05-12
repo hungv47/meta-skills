@@ -1,7 +1,7 @@
 {
   "name": "meta-skills",
   "description": "Process-layer skills — discover, agents-panel, task-breakdown, fresh-eyes, cleanup-artifacts, plus orchestrate-meta cross-stack orchestrator. Multi-agent orchestration for scoping, planning, debate, review, and artifact-tree hygiene.",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",
