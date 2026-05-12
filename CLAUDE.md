@@ -62,6 +62,29 @@ The protocol governs the moment between user invocation and agent dispatch. Two 
 
 `discover` is exempt — it IS the multi-round interview by design.
 
+## Complexity Routing
+
+Every skill declares a `budget` tier in frontmatter: `fast`, `standard`, or `deep`. The harness reads the tier and adjusts execution before dispatch:
+
+| Budget | Execution |
+|--------|-----------|
+| **fast** | Single-agent, no sub-agent dispatch, no critic gate. Respond directly. |
+| **standard** | Reduced orchestration — essential agents only, one critic pass. |
+| **deep** | Full orchestration as documented — all agents, all layers, full critic gate. |
+
+**Auto-downgrade** (before dispatch): ≤3 sentences AND no prior artifacts AND not deep → fast; single-topic clear-scope → cap at standard; multi-artifact / cross-domain / ambiguous → full tier.
+
+**Override — bidirectional.** Auto-downgrade is heuristic; operator intent wins.
+
+- **Upward (force deeper):** "run this thoroughly", "full analysis", "deep mode" → use the documented tier even on small inputs.
+- **Downward (`--fast`):** `--fast` flag on the slash command, OR phrases "fast mode" / "quick pass" / "skip the orchestration" in the same turn → force single-agent execution regardless of tier. No sub-agents, no critic gate, no rewrite loops, no warm-start Pre-Dispatch interrogation. Skill produces its core deliverable in one pass and ends with "Ran in --fast mode; rerun without the flag for full critique."
+
+**`--fast` does NOT skip Cold Start.** When no context is resolvable from artifacts or `.agents/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing decisions.
+
+**Safety gates supersede `--fast`.** Hard-gated skills (mandatory Pre-Dispatch hard blocks or in-skill safety checkers — see each skill's Pre-Dispatch section for stack-specific examples) enforce gates regardless of `--fast`. The contract is "skip the heavy lift, not the guardrails."
+
+Conflict rules: `--fast` on a `fast`-tier skill is a no-op. `--fast` + "run thoroughly" → `--fast` wins (explicit flag > upward phrase). `--fast` + `--deep` → `--fast` wins (downward bias on conflicting explicit flags). Budget is the default — never a ceiling, never a floor.
+
 ## Skill-Authoring Patterns
 
 Conventions for writing skill bodies. The first canonized pattern:
