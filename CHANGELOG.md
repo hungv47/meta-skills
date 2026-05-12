@@ -6,6 +6,17 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [5.0.0] - 2026-05-12
+
+Stack-major cut coordinated across the 4-stack marketplace to mark the post-tier-discipline stable era. No meta-skill removed or renamed; no API breaking change. The cross-stack orchestrator declares itself fast-tier. Major bump signals the alignment, not breakage.
+
+### Changed
+- `orchestrate-meta` budget reclassified standard → fast; body declares it is a pure router (no agent dispatch, no critic gate).
+
+Full review: `.agents/skill-artifacts/meta/records/2026-05-12-fresh-eyes-tier-discipline-phase-ab.md`
+
+---
+
 ## [3.2.3] - 2026-05-11
 
 Three consistency fixes to the §Skill-Authoring Patterns section that landed in 3.2.2. Independent review caught format-spec slips and an attribution inconsistency.
