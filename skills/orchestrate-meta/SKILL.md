@@ -8,8 +8,8 @@ license: MIT
 metadata:
   author: hungv47
   version: "1.0.0"
-  budget: standard
-  estimated-cost: "$0.10-0.30"
+  budget: fast
+  estimated-cost: "$0.03-0.10"
 promptSignals:
   phrases:
     - "where do i start"
@@ -112,6 +112,8 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 ---
 
 ## How It Works
+
+**Tier note (`metadata.budget: fast`):** This is a pure router — no sub-agent dispatch, no critic gate. The body below runs in-line: read state, parse intent, propose next skill, await user confirmation. No `agents/` directory, no L1/L2 layers, no rewrite cycles. The premium-orchestration substrate (multi-agent + critic) lives in the skills this router proposes; running it here would be theater.
 
 1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `.agents/`, and `.agents/experience/*.md` to build a picture of the whole project.
 2. **Domain classification** — parse the user's ask. Classify as: research / marketing / product / cross-stack / process.
