@@ -223,13 +223,6 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 2. Dialect — north / south / neutral. → routing
 3. Subvariant (only if bro selected) — bro-otofun / bro-voz. → routing
 
-**lp-optimization**
-1. URL or paste of page. → input
-2. Traffic source(s) — paid ad / SEO / email / direct / referral. → routing
-3. Page goal — signup / purchase / demo / lead capture. → `goals`
-4. Audience (or "use icp-research.md"). → `audience` if novel
-5. Conversion baseline if known. → `goals`
-
 **lp-brief**
 1. Page route + tier — e.g., "/pricing, Tier 1 (primary)". → routing
 2. Hypothesis — what's the redesign trying to prove? → `goals`

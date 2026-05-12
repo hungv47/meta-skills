@@ -6,6 +6,15 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [5.0.2] - 2026-05-12
+
+Coordinated cross-stack cleanup of cross-references to `lp-optimization`, which was hard-removed in marketing-skills 6.0.0.
+
+### Removed
+- `references/pre-dispatch-protocol.md` — removed the per-skill Pre-Dispatch question block for `lp-optimization` (URL, traffic source, page goal, audience, conversion baseline). The skill no longer exists; the question registry now skips from `vn-tone` directly to `lp-brief`.
+
+No skill behavior changed; question-registry cleanup only.
+
 ## [5.0.1] - 2026-05-12
 
 Adds a human-readable artifact selection index generated from the manifest.
