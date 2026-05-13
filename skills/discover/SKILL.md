@@ -53,10 +53,10 @@ routing:
   position: horizontal
   lifecycle: spec
   produces:
-    - skill-artifacts/meta/specs/*.md
+    - skills-resources/meta/specs/*.md
   consumes:
     - product-context.md
-    - skill-artifacts/product/flow/*.md
+    - skills-resources/product/flow/*.md
     - references/operator-playbooks/*.md
   requires: []
   defers-to:
@@ -116,10 +116,10 @@ The agent reads the situation. "That's enough, let's build" skips ahead — agen
 Scan for answers that already exist. A few minutes max — this narrows questions, not a research step.
 
 - **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
-- **Artifacts**: `.agents/` for existing specs, architecture docs, product context
-- **Experience docs**: `.agents/experience/{domain}.md` for answers from prior sessions
-- **Learned rules**: `.agents/skill-artifacts/meta/records/learned-rules.md` for behavior corrections
-- **Out-of-scope decisions**: `.agents/skill-artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
+- **Artifacts**: `skills-resources/` for existing specs, architecture docs, product context
+- **Experience docs**: `skills-resources/experience/{domain}.md` for answers from prior sessions
+- **Learned rules**: `skills-resources/meta/records/learned-rules.md` for behavior corrections
+- **Out-of-scope decisions**: `skills-resources/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
 - **Project conventions**: skim `CLAUDE.md`
 
 Anything found here is a question you don't ask.
@@ -178,7 +178,7 @@ After the premise check, classify which job discover is doing this session. The 
 
 **Idea stage** — the user is bringing an unstructured idea: "I want to build X," "I have an idea for a tool that…", "thinking about a feature where…". No prior plan, sketch, or spec the conversation is anchored to. Discover proceeds to Step 2.7 (Idea Critic Gate) before opening coverage zones.
 
-**Plan review** — the user is bringing an existing plan, spec, sketch, ADR, or detailed proposal and wants to test it. Signal includes: linking or pasting an existing artifact (`.agents/skill-artifacts/meta/specs/*`, `.agents/skill-artifacts/meta/sketches/*`, an ADR, a design doc, a Linear ticket body), saying "review this plan," "should we expand/cut this," "is this the right scope," or pasting a numbered/structured plan into the conversation. Discover proceeds to mode-pick (below) before coverage zones; idea-critic does NOT fire (it scores idea-stage demand validation, not plan scope).
+**Plan review** — the user is bringing an existing plan, spec, sketch, ADR, or detailed proposal and wants to test it. Signal includes: linking or pasting an existing artifact (`skills-resources/meta/specs/*`, `skills-resources/meta/sketches/*`, an ADR, a design doc, a Linear ticket body), saying "review this plan," "should we expand/cut this," "is this the right scope," or pasting a numbered/structured plan into the conversation. Discover proceeds to mode-pick (below) before coverage zones; idea-critic does NOT fire (it scores idea-stage demand validation, not plan scope).
 
 **Detection is a one-shot read of the user's first substantive turn.** If ambiguous, ask one question: "Is this a fresh idea you want to scope, or an existing plan you want me to review?" — chat format, recommend the read you think is more likely, one line of reason. Don't over-invest in detection; the user can correct mid-session and discover re-anchors.
 
@@ -211,7 +211,7 @@ When mode is `idea-stage`, run the idea-critic agent ONCE before opening coverag
 **How to dispatch:** Call the agent via the Agent tool, passing all three Input Contract fields the agent declares:
 
 - **`idea-statement`** — the user's substantive description of what they want to build, post-Premise Check (a one-paragraph summary of the user's first turn after the framing checkpoint, paraphrased faithfully — not the user's whole transcript).
-- **`context-gathered`** — the orchestrator's serialized findings from §Step 1 (codebase signals worth flagging, relevant `.agents/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any).
+- **`context-gathered`** — the orchestrator's serialized findings from §Step 1 (codebase signals worth flagging, relevant `skills-resources/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any).
 - **`mode`** — literal string `idea-stage`.
 
 The agent is single-shot — do not re-invoke per turn. Output is structured (Red Flags Detected / Green Flags Detected / Score / Verdict / Push-Back Routing / Change Log).
@@ -574,7 +574,7 @@ NOT IN SCOPE:
 ```
 
 **Out-of-scope persistence** (institutional memory):
-When features are explicitly scoped out, write to `.agents/skill-artifacts/meta/out-of-scope/[kebab-case-name].md`:
+When features are explicitly scoped out, write to `skills-resources/meta/out-of-scope/[kebab-case-name].md`:
 ```markdown
 # [Feature/Approach Name]
 **Decided:** [date]
@@ -585,7 +585,7 @@ When features are explicitly scoped out, write to `.agents/skill-artifacts/meta/
 Create the directory if missing. Prevents future sessions from re-asking decided questions.
 
 **Experience doc** (learning flywheel):
-Append Q&A to `.agents/experience/{domain}.md` after each session:
+Append Q&A to `skills-resources/experience/{domain}.md` after each session:
 ```markdown
 ## {Task Name} — Decisions ({date})
 
@@ -644,11 +644,11 @@ Downstream skills don't REQUIRE artifacts as files. They need decisions known, f
 
 - **"Just do it"**: List assumptions inline and start building. Skip questions; mention critical assumptions briefly.
 - **"Skip questions"**: Context scan only, summarize what you know, proceed.
-- **"Save this"**: Write `.agents/skill-artifacts/meta/specs/*.md` or emit contract format inline.
+- **"Save this"**: Write `skills-resources/meta/specs/*.md` or emit contract format inline.
 - **All questions answered by context**: Skip to clarity check. Note context was sufficient.
 - **Contradictory answers**: Flag it. One follow-up to resolve.
 - **Task changes mid-conversation**: Re-assess whether prior answers still apply. 1-2 new questions if scope shifted. Don't restart.
-- **Experience doc has answers**: Read `.agents/experience/{domain}.md` first. Only ask what's not answered.
+- **Experience doc has answers**: Read `skills-resources/experience/{domain}.md` first. Only ask what's not answered.
 - **Task is trivial**: Say so. Suggest skipping discovery.
 - **"That's enough"**: Respect it. Note current clarity level and unexplored zones.
 
@@ -680,7 +680,7 @@ Run `task-breakdown` to decompose scoped work into buildable tasks. Run `system-
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — discovery converged, decision is clear (optionally saved as `.agents/skill-artifacts/meta/specs/*.md` if user asked)
+- **DONE** — discovery converged, decision is clear (optionally saved as `skills-resources/meta/specs/*.md` if user asked)
 - **DONE_WITH_CONCERNS** — decision made but with non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved)
 - **BLOCKED** — irreconcilable conflict in user inputs or scope; needs human resolution before any path forward
 - **NEEDS_CONTEXT** — user cannot answer key questions; recommend upstream skill (icp-research, market-research, diagnose) or external consultation

@@ -1,6 +1,6 @@
 # Execution Protocol — Reader's Manual for `tasks.md`
 
-This file is the **operating manual for any agent (or human) picking up an existing `.agents/tasks.md`** to implement work. The `task-breakdown` skill produces the artifact; this protocol governs how downstream consumers run it.
+This file is the **operating manual for any agent (or human) picking up an existing `skills-resources/meta/tasks.md`** to implement work. The `task-breakdown` skill produces the artifact; this protocol governs how downstream consumers run it.
 
 If you're decomposing fresh work, you don't need this file — go to `task-breakdown`'s `SKILL.md`. If you're holding a tasks.md and ready to build, read top to bottom.
 
