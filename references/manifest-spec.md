@@ -1,22 +1,22 @@
 # Manifest Spec
 
-> Canonical spec for `.agents/manifest.json` — the derived state index that lets every skill in the stack discover, evaluate, and collaborate around artifacts without re-scanning the filesystem. Every skill that produces or consumes artifacts points here.
+> Canonical spec for `skills-resources/manifest.json` — the derived state index that lets every skill in the stack discover, evaluate, and collaborate around artifacts without re-scanning the filesystem. Every skill that produces or consumes artifacts points here.
 
 ## Purpose
 
 Three failure modes this spec prevents:
 
-1. **Skills re-derive state every invocation** — every consumer re-globs `.agents/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
+1. **Skills re-derive state every invocation** — every consumer re-globs `skills-resources/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.agents/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them.
+Solution: a single `skills-resources/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `skills-resources/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes every artifact under `skills-resources/` — pipeline outputs in `meta/`, `marketing/`, `product/`, `research/`, plus loop workspaces in `{marketing,product,research}/loops/[slug]/` — along with canonical top-level `brand/`, `research/`, and `architecture/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
 ---
 
-## The Substrate: `.agents/manifest.json`
+## The Substrate: `skills-resources/manifest.json`
 
 Single JSON file at project root. Cheap to read (<50KB at scale), trivially parseable, machine-friendly. Schema:
 
@@ -46,7 +46,28 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "size_bytes": 18432,
       "frontmatter_present": true
     },
-    ".agents/skill-artifacts/meta/records/diagnose-*.md": {
+    "skills-resources/marketing/loops/pricing-page/program.md": {
+      "produced_by": "eval-loop",
+      "produced_at": "2026-05-13",
+      "status": "done",
+      "schema_version": 1,
+      "stale_after_days": 90,
+      "stale": false,
+      "title": "Pricing Page Program",
+      "summary": "Pricing page conversion loop",
+      "purpose": "Operating program for repeated strategy, execution, evaluation, and keep/discard cycles",
+      "lifecycle": "loop",
+      "use_when": "Coordinating future pricing page improvement cycles",
+      "do_not_use_when": "The pricing page has no measurable conversion event or attribution path",
+      "supersedes": "",
+      "superseded_by": "",
+      "upstream": "operator intent, analytics baseline",
+      "downstream": "lp-brief, copywriting, lp-eval",
+      "decision_status": "",
+      "size_bytes": 7342,
+      "frontmatter_present": true
+    },
+    "skills-resources/meta/records/diagnose-*.md": {
       "produced_by": "diagnose",
       "produced_at": "2026-05-01",
       "status": "done_with_concerns",
@@ -60,7 +81,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
   },
   "experience": {
     "audience.md": {
-      "path": ".agents/experience/audience.md",
+      "path": "skills-resources/experience/audience.md",
       "last_written_by": "icp-research",
       "last_written_at": "2026-05-06T09:11:00.000Z",
       "entries": 7,
@@ -75,7 +96,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 **Top level:**
 - `version` — manifest schema version. Currently `1`. Bump only on breaking shape changes.
 - `updated_at` — ISO timestamp of last sync run. Consumers can use this to detect drift.
-- `artifacts` — map of path → artifact entry.
+- `artifacts` — map of path → artifact entry. Paths may come from `skills-resources/`, `research/`, `brand/`, or `architecture/`.
 - `experience` — map of `<domain>.md` filename → experience entry. Separate because experience files are append-only multi-skill, not single-producer.
 
 **Artifact entry:**
@@ -88,7 +109,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `title` — display title from frontmatter `title:`, first H1, or filename fallback.
 - `summary` — one-line summary from frontmatter `summary:`. Empty string if absent.
 - `purpose` — why this artifact exists. This is selection context, not a body summary.
-- `lifecycle` — `canonical | anchor | registry | decision | spec | pipeline | snapshot | archive | ephemeral`. From frontmatter when present, inferred from path otherwise.
+- `lifecycle` — common values: `canonical | loop | loop-context | learning | anchor | registry | decision | spec | strategy | execution | evaluation | pipeline | snapshot | archive | ephemeral`. From frontmatter when present, inferred from path otherwise.
 - `use_when` — short routing rule for when a skill or human should read the artifact.
 - `do_not_use_when` — short guardrail for when the artifact is misleading or out of scope.
 - `supersedes` — path or slug this artifact replaces. Lineage metadata; may point into archive.
@@ -157,7 +178,7 @@ When you ship a new skill OR edit an existing skill that produces artifacts:
 
 1. **Write frontmatter on every produced artifact** with at minimum the four required fields.
 2. **Call `manifest-sync` at end of skill** as the final side-effect (one bash line — see Write Protocol below).
-3. **Don't write to `.agents/manifest.json` directly.** It's derived state. Update artifact frontmatter; let sync derive the rest.
+3. **Don't write to `skills-resources/manifest.json` directly.** It's derived state. Update artifact frontmatter; let sync derive the rest.
 
 Legacy artifacts without frontmatter are tolerated — sync infers `produced_by` from path patterns and defaults the rest. But missing frontmatter shows up in the manifest as `frontmatter_present: false`, which orchestrators can surface as a quality signal.
 
@@ -170,21 +191,40 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 `meta-skills/scripts/manifest-sync.ts` — Bun TypeScript, ~100 lines, no dependencies.
 
 What it does:
-1. Walk `.agents/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
+1. Walk `skills-resources/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
 2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`).
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields.
-4. For experience files (`.agents/experience/*.md`): count entries, find last writer.
+4. For experience files (`skills-resources/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
-6. Write `.agents/manifest.json` (pretty-printed JSON, trailing newline).
-7. Write `.agents/artifact-index.md` (human-readable selection index derived from the manifest).
+6. Write `skills-resources/manifest.json` (pretty-printed JSON, trailing newline).
+7. Write `skills-resources/artifact-index.md` (human-readable selection index derived from the manifest).
 
 The script is **idempotent** — running it twice on the same state produces identical output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
 
 ### Human-readable index
 
-`manifest-sync` also writes `.agents/artifact-index.md`. This file is infrastructure, like `.agents/manifest.json`; it is not a skill output and should not be hand-edited. It exists for the exact failure mode the JSON manifest does not solve well: a human or agent browsing artifacts needs to know **why** an artifact exists, **when** to use it, and **what replaced it**.
+`manifest-sync` also writes `skills-resources/artifact-index.md`. This file is infrastructure, like `skills-resources/manifest.json`; it is not a skill output and should not be hand-edited. It exists for the exact failure mode the JSON manifest does not solve well: a human or agent browsing artifacts needs to know **why** an artifact exists, **when** to use it, and **what replaced it**.
 
 The index groups active artifacts separately from archived/historical artifacts. Active canonical records, anchors, registries, decisions, and specs come first. Snapshots and archived rows are audit trail by default unless their `use_when` field says otherwise.
+
+### Eval loop workspaces
+
+Measurable initiatives use `skills-resources/marketing/loops/[slug]/`:
+
+```text
+skills-resources/
+└── loops/
+    └── pricing-page/
+        ├── program.md      # lifecycle: loop
+        ├── context.md      # lifecycle: loop-context
+        ├── strategy/       # lifecycle: strategy
+        ├── execution/      # lifecycle: execution
+        ├── evals/          # lifecycle: evaluation
+        ├── results.tsv     # compact ledger, not indexed because it is not markdown
+        └── learnings.md    # lifecycle: learning
+```
+
+See `meta-skills/references/eval-loop-spec.md` for the full loop contract. The manifest does not parse `results.tsv`; evaluation skills append rows there and write markdown eval artifacts with frontmatter under `evals/` for indexing.
 
 ### Invocation
 
@@ -207,11 +247,11 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
 
 When a skill needs to know what artifacts exist, what their status is, or whether they're stale, the read order is:
 
-1. **Read `.agents/manifest.json` first.** Single file, single read. Tells you everything you need to discover and evaluate artifacts.
+1. **Read `skills-resources/manifest.json` first.** Single file, single read. Tells you everything you need to discover and evaluate artifacts.
 2. **If the artifact you need is listed → read the artifact itself for content.** Manifest gives you the metadata; the markdown gives you the substance.
 3. **If the artifact is NOT in the manifest → it does not exist OR sync is stale.** Fall back to filesystem check only if you suspect drift.
 
-For exploratory browsing or human-facing status summaries, read `.agents/artifact-index.md` after the JSON manifest. The JSON is the machine contract; the index is the readable map.
+For exploratory browsing or human-facing status summaries, read `skills-resources/artifact-index.md` after the JSON manifest. The JSON is the machine contract; the index is the readable map.
 
 ### Status-aware consumption
 
@@ -238,7 +278,7 @@ const marketExists = await fileExists('research/market-research.md')
 // ...
 
 // After (manifest read)
-const manifest = JSON.parse(await readFile('.agents/manifest.json', 'utf8'))
+const manifest = JSON.parse(await readFile('skills-resources/manifest.json', 'utf8'))
 const icpEntry = manifest.artifacts['research/icp-research.md']
 const icpDone = icpEntry?.status === 'done' && !icpEntry.stale
 ```
@@ -256,7 +296,7 @@ When a skill finishes producing an artifact:
    ```bash
    bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
    ```
-3. **Do NOT write to `.agents/manifest.json` directly.** Sync owns it.
+3. **Do NOT write to `skills-resources/manifest.json` directly.** Sync owns it.
 
 This is intentionally a single-script approach instead of per-skill manifest writes:
 - **No skill can corrupt the manifest** — sync rebuilds from scratch.
@@ -276,14 +316,18 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 | Audience / market research (`icp-research`, `market-research`) | 90 |
 | Brand identity (`brand/BRAND.md`, `brand/DESIGN.md`) | 365 |
 | Architecture (`architecture/system-architecture.md`) | 180 |
-| Diagnosis (`.agents/skill-artifacts/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
-| Prioritization (`.agents/skill-artifacts/meta/sketches/prioritize-*.md`) | 60 |
-| Funnel targets (`.agents/skill-artifacts/meta/records/targets-*.md`) | 60 |
-| Tasks (`.agents/skill-artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
-| Cleanup reports (`.agents/skill-artifacts/meta/records/cleanup-*.md`) | 30 |
-| Spec from `discover` (`.agents/skill-artifacts/meta/specs/*.md`) | 60 |
-| Marketing artifacts (`.agents/skill-artifacts/mkt/**`) | 30 |
-| Meta reports (`.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
+| Diagnosis (`skills-resources/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
+| Prioritization (`skills-resources/meta/sketches/prioritize-*.md`) | 60 |
+| Funnel targets (`skills-resources/meta/records/targets-*.md`) | 60 |
+| Tasks (`skills-resources/meta/tasks.md`) | 14 — tasks should be acted on quickly |
+| Cleanup reports (`skills-resources/meta/records/cleanup-*.md`) | 30 |
+| Spec from `discover` (`skills-resources/meta/specs/*.md`) | 60 |
+| Marketing artifacts (`skills-resources/marketing/**`) | 30 |
+| Loop programs (`skills-resources/marketing/loops/*/program.md`) | 90 |
+| Loop context (`skills-resources/marketing/loops/*/context.md`) | 60 |
+| Loop evals (`skills-resources/marketing/loops/*/evals/*.md`) | 90 |
+| Loop learnings (`skills-resources/marketing/loops/*/learnings.md`) | 180 |
+| Meta reports (`skills-resources/meta/decisions/[date]-*.md`, `skills-resources/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
 
 These are defaults. A producer can override per-artifact if context warrants (e.g., a campaign-plan locked to a 90-day campaign sets `stale_after_days: 90`).
 
@@ -293,7 +337,7 @@ Consumers should respect `stale: true` as a warning signal, not a hard block. Th
 
 ## Experience Domain Handling
 
-`.agents/experience/{domain}.md` files are different from regular artifacts:
+`skills-resources/experience/{domain}.md` files are different from regular artifacts:
 - **Multi-producer** — many skills append to the same file.
 - **Append-only** — never overwritten, only added to.
 - **No single status** — each Q+A block is independently valid.
@@ -306,12 +350,12 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 
 ## Anti-Patterns
 
-1. **Writing to `.agents/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
-2. **Reading the filesystem when the manifest would do.** Per-skill `glob('.agents/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
+1. **Writing to `skills-resources/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
+2. **Reading the filesystem when the manifest would do.** Per-skill `glob('skills-resources/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
-5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. If you need richer queries, add SQLite later — but only when first real need surfaces.
-6. **Hand-editing `.agents/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
+5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `skills-resources/marketing/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
+6. **Hand-editing `skills-resources/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
 7. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
 8. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.
 9. **Leaving `purpose` / `use_when` blank on new non-terminal artifacts.** This recreates the original selection problem: the artifact exists, but nobody knows why to select it.
@@ -325,8 +369,8 @@ These are recorded so future-us doesn't accidentally rebuild them ad-hoc:
 - **Schema validation.** When the first breaking change to an artifact type happens, add a per-type schema validator. Until then, `schema_version` is metadata-only.
 - **Event bus / pub-sub.** No skill currently needs to be notified when another skill finishes. If autonomous mode (deferred) is built, it may need this — but not now.
 - **Locking.** Pipeline artifacts have single producers; experience files are append-only. No collisions to resolve. Add only if multi-producer artifacts emerge.
-- **SQLite backing.** Only if manifest exceeds ~1MB or queries become complex. Currently <50KB even at scale.
-- **Autonomous orchestrator mode.** A separate consumer of this manifest, built later. The manifest is *designed* to support it (status, stale, summary, schema_version all enable safe auto-decisions) but the orchestrator is a separate scope.
+- **SQLite backing.** Only if manifest exceeds ~1MB or loop queries become complex. Currently <50KB even at scale.
+- **Autonomous orchestrator mode.** A separate consumer of this manifest, built later. The manifest is *designed* to support it (status, stale, summary, schema_version all enable safe auto-decisions) but the orchestrator is a separate scope. Eval loops intentionally require human approval before publishing or mutating live marketing/content surfaces.
 
 ---
 

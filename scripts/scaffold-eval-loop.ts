@@ -1,0 +1,129 @@
+#!/usr/bin/env bun
+// scaffold-eval-loop — create a loop-centered workspace for measurable work.
+// See meta-skills/references/eval-loop-spec.md for the full contract.
+//
+// Usage:
+//   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [project-root]
+//
+// Domain defaults to "marketing" since every current evaluator (lp-eval,
+// short-form-eval, future ad-eval/email-eval/campaign-eval) targets a
+// marketing initiative.
+
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { dirname, join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const args = process.argv.slice(2);
+
+const ALLOWED_DOMAINS = new Set(["marketing", "product", "research"]);
+const domainIdx = args.indexOf("--domain");
+const domain = domainIdx !== -1 && args[domainIdx + 1] ? args[domainIdx + 1] : "marketing";
+if (!ALLOWED_DOMAINS.has(domain)) {
+  console.error(`Invalid --domain ${JSON.stringify(domain)}. Expected one of: ${[...ALLOWED_DOMAINS].join(", ")}`);
+  process.exit(1);
+}
+
+const positional = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--domain");
+const name = positional[0];
+if (!name) {
+  console.error('Usage: scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [project-root]');
+  process.exit(1);
+}
+
+const ROOT = positional[1] ? positional[1] : process.cwd();
+const TODAY = new Date().toISOString().slice(0, 10);
+
+function slugify(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
+function titleize(value: string): string {
+  return value
+    .trim()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .map((word) => (word ? word[0].toUpperCase() + word.slice(1) : word))
+    .join(" ");
+}
+
+function yamlString(value: string): string {
+  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+}
+
+function writeIfMissing(path: string, content: string, created: string[], skipped: string[]): void {
+  if (existsSync(path)) {
+    skipped.push(relative(ROOT, path));
+    return;
+  }
+  writeFileSync(path, content);
+  created.push(relative(ROOT, path));
+}
+
+const slug = slugify(name);
+if (!slug) {
+  console.error(`Could not derive a valid slug from ${JSON.stringify(name)}`);
+  process.exit(1);
+}
+
+const title = titleize(name);
+const loopDir = join(ROOT, "skills-resources", domain, "loops", slug);
+const created: string[] = [];
+const skipped: string[] = [];
+
+for (const subdir of ["strategy", "execution", "evals"]) {
+  mkdirSync(join(loopDir, subdir), { recursive: true });
+}
+
+writeIfMissing(
+  join(loopDir, "program.md"),
+  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`${title} measurable improvement loop`)}\npurpose: "Operating program for a measurable strategy -> execution -> evaluation loop"\nlifecycle: loop\nuse_when: "Coordinating repeated strategy, content/marketing execution, evaluation, and keep/discard decisions for this initiative"\ndo_not_use_when: "The work has no observable metric or the metric cannot be attributed to this loop"\nupstream: "operator intent, prior artifacts, metric baseline"\ndownstream: "strategy skills, marketing/content execution skills, evaluation skills"\n---\n\n# ${title} Program\n\n## Goal\n\nTBD.\n\n## Measurable Surface\n\nTBD. Name the asset, campaign, channel, page, sequence, or content series this loop owns.\n\n## Primary Metric\n\nTBD. Choose one decision metric. Examples: conversion rate, CTR, qualified replies, completion rate, saves, signups, revenue.\n\n## Guardrail Metrics\n\n- TBD.\n\n## Mutable Surface\n\nTBD. Name what agents may change between cycles: copy, offer, targeting, creative angle, sequence order, CTA, post format, etc.\n\n## Frozen Context\n\n- Canonical brand/research constraints stay authoritative unless explicitly refreshed.\n- External execution systems remain outside this folder; this loop stores strategy, produced marketing/content assets, evals, and learning decisions.\n\n## Cycle Protocol\n\n1. Read \`context.md\`, \`learnings.md\`, prior \`results.tsv\`, and the latest artifacts in \`strategy/\`, \`execution/\`, and \`evals/\`.\n2. Produce or revise one bounded strategy or execution artifact.\n3. Run or ingest an evaluation snapshot after the measurement window closes.\n4. Record the cycle in \`results.tsv\` with status \`keep\`, \`discard\`, \`watch\`, or \`blocked\`.\n5. Promote only reusable, evidence-backed lessons to \`learnings.md\`.\n\n## Promotion Rule\n\n- \`keep\` — clear metric improvement, useful simplification, or strong qualitative signal with adequate sample.\n- \`discard\` — worse result, confounded test, or added complexity without measurable upside.\n- \`watch\` — promising but underpowered; needs another cycle before changing defaults.\n- \`blocked\` — missing data, attribution, execution proof, or measurement window.\n`,
+  created,
+  skipped
+);
+
+writeIfMissing(
+  join(loopDir, "context.md"),
+  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Context substrate for ${title}`)}\npurpose: "Loop-local assumptions, constraints, baselines, and links to canonical artifacts"\nlifecycle: loop-context\nuse_when: "Before any strategy, execution, or evaluation step inside this loop"\ndo_not_use_when: "Canonical brand, research, or architecture artifacts conflict; refresh this context first"\nupstream: "research/, brand/, architecture/, skills-resources/experience/"\ndownstream: "program.md, strategy artifacts, execution artifacts, eval artifacts"\n---\n\n# ${title} Context\n\n## Canonical Inputs\n\n| Source | What to use | Freshness / caveat |\n|---|---|---|\n| TBD | TBD | TBD |\n\n## Baseline\n\n| Metric | Value | Window | Source |\n|---|---:|---|---|\n| TBD | TBD | TBD | TBD |\n\n## Audience / Segment\n\nTBD.\n\n## Offer / Message Hypothesis\n\nTBD.\n\n## Constraints\n\n- TBD.\n\n## Open Questions\n\n- TBD.\n`,
+  created,
+  skipped
+);
+
+writeIfMissing(
+  join(loopDir, "learnings.md"),
+  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Promoted learnings for ${title}`)}\npurpose: "Reusable evidence-backed lessons from completed loop cycles"\nlifecycle: learning\nuse_when: "Before creating new strategy or execution artifacts for this loop or adjacent loops"\ndo_not_use_when: "A lesson is contradicted by newer evidence or marked expired"\nupstream: "evals/, results.tsv"\ndownstream: "future strategy, execution, and evaluation cycles"\n---\n\n# ${title} Learnings\n\nPromote lessons here only after an eval artifact and \`results.tsv\` row support them.\n\n## Active Lessons\n\n_None yet._\n\n## Expired / Refuted Lessons\n\n_None yet._\n`,
+  created,
+  skipped
+);
+
+writeIfMissing(
+  join(loopDir, "results.tsv"),
+  "cycle\tdate\tartifact\tprimary_metric\tvalue\tbaseline\tstatus\tdescription\n",
+  created,
+  skipped
+);
+
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const syncPath = join(scriptDir, "manifest-sync.ts");
+if (existsSync(syncPath)) {
+  try {
+    const sync = Bun.spawnSync(["bun", syncPath, ROOT], { stdout: "pipe", stderr: "pipe" });
+    if (sync.exitCode !== 0) {
+      console.error(sync.stderr.toString());
+      process.exit(sync.exitCode || 1);
+    }
+    process.stdout.write(sync.stdout.toString());
+  } catch (err) {
+    console.warn(`manifest-sync skipped: ${(err as Error).message}. Run it manually with:\n  bun ${relative(ROOT, syncPath)}`);
+  }
+}
+
+console.log(`scaffold-eval-loop: ${relative(ROOT, loopDir)}`);
+if (created.length) console.log(`created:\n${created.map((p) => `  - ${p}`).join("\n")}`);
+if (skipped.length) console.log(`already existed:\n${skipped.map((p) => `  - ${p}`).join("\n")}`);

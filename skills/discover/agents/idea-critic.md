@@ -174,4 +174,4 @@ If any check fails, revise your output before returning. The rubric only does it
 
 ## Source
 
-Adapted from slavingia/skills `validate-idea` SKILL.md §Red Flags / §Green Flags. The threshold (≥2 red OR <2 green → push back) is the original rule preserved verbatim; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `.agents/skill-artifacts/meta/roadmap.md` for adoption rationale.
+Adapted from slavingia/skills `validate-idea` SKILL.md §Red Flags / §Green Flags. The threshold (≥2 red OR <2 green → push back) is the original rule preserved verbatim; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `skills-resources/meta/roadmap.md` for adoption rationale.

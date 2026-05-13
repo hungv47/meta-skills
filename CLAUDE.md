@@ -1,25 +1,28 @@
 # Meta Skills
 
-Domain-agnostic process skills: discover, debate, decompose, verify. These skills wrap around other skills — they improve input quality, decision quality, or output quality for any domain skill in the ecosystem.
+Domain-agnostic process skills: discover, debate, decompose, verify, and run measurable eval loops. These skills wrap around other skills — they improve input quality, decision quality, output quality, or cross-cycle learning for any domain skill in the ecosystem.
 
 ## Design Philosophy
 
 **"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
 
 - **Conversation-first**: Decisions live in conversation context by default. Artifacts are save-points, not pipeline stages.
+- **Loop-first when measurable**: When an initiative has a real-world metric and future cycles, use `skills-resources/marketing/loops/[slug]/` so strategy, execution, evals, results, and learnings stay together.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview. No mode switching.
 - **One skill per job**: Each skill does a fundamentally different job. No two skills that "ask questions to clarify things."
 - **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel. Structured decomposition (task-breakdown) retains specialized agents.
 
-## Skills (5)
+## Skills (7)
 
 | Skill | What it does | When |
 |-------|-------------|------|
+| `orchestrate-meta` | Cross-stack router — proposes the right stack orchestrator or process skill | When the user is unsure where to start |
 | `discover` | Conversational discovery — adaptive from quick scoping to deep interviews | Before building anything non-trivial |
 | `agents-panel` | Multi-perspective debate or consensus polling | Complex decision points, anywhere |
+| `eval-loop` | Create/resume loop-centered measurable workspaces | Measurable marketing/content/product-growth initiatives that should improve over cycles |
 | `task-breakdown` | Decompose complex work into buildable steps | When work is too big to just start |
 | `fresh-eyes` | Fresh-eyes quality check after implementation | After building |
-| `cleanup-artifacts` | Audit + groom `.agents/` — classify, critic-gate, archive (never delete) | When `.agents/` accumulates cruft, before a release |
+| `cleanup-artifacts` | Audit + groom `skills-resources/` — classify, critic-gate, archive (never delete) | When `skills-resources/` accumulates cruft, before a release |
 
 ## Process Flow
 
@@ -30,12 +33,16 @@ discover (conversation) --> build directly
         (when complex              (after build)
          decision hit)
     |
+    +-- eval-loop
+        (when the work has a metric
+         and should improve by cycles)
+    |
     +-- task-breakdown
         (when work is complex enough
          to decompose first)
     |
     +-- cleanup-artifacts
-        (when .agents/ has gone junk-drawer
+        (when skills-resources/ has gone junk-drawer
          or before a release)
 ```
 
@@ -46,7 +53,7 @@ No rigid pipeline. The conversation guides what happens next.
 Skills resolve context in this order:
 1. **Conversation context** — same session, decisions are in the chat
 2. **Artifacts on disk** — previous session saved a spec, architecture doc, etc.
-3. **`.agents/experience/{domain}.md`** — append-only Q&A substrate written by every skill on cold-start (see Pre-Dispatch Protocol below)
+3. **`skills-resources/experience/{domain}.md`** — append-only Q&A substrate written by every skill on cold-start (see Pre-Dispatch Protocol below)
 4. **Discovery** — ask the user or scan the codebase
 
 This means downstream skills don't REQUIRE artifacts to exist as files. They need the decisions to be known, from whatever source.
@@ -57,8 +64,8 @@ Every skill in this stack (and across research/marketing/product) follows the ca
 
 The protocol governs the moment between user invocation and agent dispatch. Two flows:
 
-- **Warm Start** — most needed dimensions resolvable from artifacts or `.agents/experience/`. Skill summarizes findings, invites override, dispatches.
-- **Cold Start** — ≥1 dimension missing. Skill emits a single bundled prompt with 3-5 decision-ranked questions, multiple-choice where possible, one round-trip. Answers persist to `.agents/experience/{domain}.md` so the next skill never re-asks.
+- **Warm Start** — most needed dimensions resolvable from artifacts or `skills-resources/experience/`. Skill summarizes findings, invites override, dispatches.
+- **Cold Start** — ≥1 dimension missing. Skill emits a single bundled prompt with 3-5 decision-ranked questions, multiple-choice where possible, one round-trip. Answers persist to `skills-resources/experience/{domain}.md` so the next skill never re-asks.
 
 `discover` is exempt — it IS the multi-round interview by design.
 
@@ -79,7 +86,7 @@ Every skill declares a `budget` tier in frontmatter: `fast`, `standard`, or `dee
 - **Upward (force deeper):** "run this thoroughly", "full analysis", "deep mode" → use the documented tier even on small inputs.
 - **Downward (`--fast`):** `--fast` flag on the slash command, OR phrases "fast mode" / "quick pass" / "skip the orchestration" in the same turn → force single-agent execution regardless of tier. No sub-agents, no critic gate, no rewrite loops, no warm-start Pre-Dispatch interrogation. Skill produces its core deliverable in one pass and ends with "Ran in --fast mode; rerun without the flag for full critique."
 
-**`--fast` does NOT skip Cold Start.** When no context is resolvable from artifacts or `.agents/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing decisions.
+**`--fast` does NOT skip Cold Start.** When no context is resolvable from artifacts or `skills-resources/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing decisions.
 
 **Safety gates supersede `--fast`.** Hard-gated skills (mandatory Pre-Dispatch hard blocks or in-skill safety checkers — see each skill's Pre-Dispatch section for stack-specific examples) enforce gates regardless of `--fast`. The contract is "skip the heavy lift, not the guardrails."
 
@@ -104,9 +111,9 @@ When a skill body needs **deterministic data** (git log, file count, manifest re
 ```markdown
 Found:
 - artifact disk snapshot →
-  ! `find .agents/skill-artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk
+  ! `find skills-resources -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk
 - manifest last touched →
-  ! `git log -1 --format='%cr' .agents/manifest.json 2>/dev/null || echo 'no git history'`
+  ! `git log -1 --format='%cr' skills-resources/manifest.json 2>/dev/null || echo 'no git history'`
 ```
 
 When `/cleanup-artifacts` runs, Claude Code substitutes both lines with command output. The orchestrator sees concrete numbers, not the literal backtick syntax.
@@ -200,17 +207,18 @@ A skill that prescribes 20+ rules in a domain Claude is already 90th-percentile 
 
 ## Manifest Spec
 
-State detection across all meta-skills (especially `orchestrate-meta`) reads `.agents/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, title, summary, purpose, lifecycle, selection rules, and lineage). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. The same sync pass writes `.agents/artifact-index.md`, a human-readable selection index for browsing why artifacts exist and when to use them. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Skills that produce artifacts (`discover` → `.agents/skill-artifacts/meta/specs/<slug>.md`, `task-breakdown` → `.agents/skill-artifacts/meta/tasks.md`, `agents-panel` → `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) plus selection fields (`summary`, `purpose`, `lifecycle`, `use_when`) for non-terminal artifacts, then call sync as their last step.
+State detection across all meta-skills (especially `orchestrate-meta`) reads `skills-resources/manifest.json` — a derived index of artifact metadata (producer, date, status, schema version, staleness, title, summary, purpose, lifecycle, selection rules, and lineage). The manifest is rebuilt from artifact frontmatter by `meta-skills/scripts/manifest-sync.ts`; skills don't write to it directly. The same sync pass writes `skills-resources/artifact-index.md`, a human-readable selection index for browsing why artifacts exist and when to use them. See [`references/manifest-spec.md`](references/manifest-spec.md) for the full contract. Measurable initiative loops live under `skills-resources/marketing/loops/[slug]/` and are specified in [`references/eval-loop-spec.md`](references/eval-loop-spec.md). Skills that produce artifacts (`discover` → `skills-resources/meta/specs/<slug>.md`, `eval-loop` → `skills-resources/marketing/loops/[slug]/program.md`, `task-breakdown` → `skills-resources/meta/tasks.md`, `agents-panel` → `skills-resources/meta/decisions/[date]-<slug>.md`, `fresh-eyes` → `skills-resources/meta/records/[date]-fresh-eyes-<slug>.md`) must write the required frontmatter fields (`skill`, `version`, `date`, `status`) plus selection fields (`summary`, `purpose`, `lifecycle`, `use_when`) for non-terminal artifacts, then call sync as their last step.
 
 ## Artifacts
 
 | Skill | Artifact | Notes |
 |-------|----------|-------|
-| `discover` | `.agents/skill-artifacts/meta/specs/<slug>.md` | Optional — only when user asks to save. Per-spec slug, working drafts (lifecycle: spec). |
-| `agents-panel` | `.agents/skill-artifacts/meta/decisions/[date]-<slug>.md` | Dated, immutable — operator-committed strategic decision (lifecycle: decision). |
-| `task-breakdown` | `.agents/skill-artifacts/meta/tasks.md` | Task list with acceptance criteria. Session anchor (lifecycle: pipeline). |
-| `fresh-eyes` | `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md` | Often returned inline; when persisted, dated snapshot (lifecycle: snapshot). |
-| `cleanup-artifacts` | `.agents/skill-artifacts/meta/records/[date]-cleanup-artifacts-<slug>.md` | Per-run audit report (lifecycle: snapshot). Side effect: moves to `.agents/skill-artifacts/.archive/[date]/` on `--apply`. |
+| `discover` | `skills-resources/meta/specs/<slug>.md` | Optional — only when user asks to save. Per-spec slug, working drafts (lifecycle: spec). |
+| `eval-loop` | `skills-resources/marketing/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md` | Loop-centered workspace for measurable strategy → marketing/content execution → evaluation cycles. |
+| `agents-panel` | `skills-resources/meta/decisions/[date]-<slug>.md` | Dated, immutable — operator-committed strategic decision (lifecycle: decision). |
+| `task-breakdown` | `skills-resources/meta/tasks.md` | Task list with acceptance criteria. Session anchor (lifecycle: pipeline). |
+| `fresh-eyes` | `skills-resources/meta/records/[date]-fresh-eyes-<slug>.md` | Often returned inline; when persisted, dated snapshot (lifecycle: snapshot). |
+| `cleanup-artifacts` | `skills-resources/meta/records/[date]-cleanup-artifacts-<slug>.md` | Per-run audit report (lifecycle: snapshot). Side effect: moves to `skills-resources/.archive/[date]/` on `--apply`. |
 
 ## Multi-Agent Patterns
 
@@ -224,7 +232,7 @@ State detection across all meta-skills (especially `orchestrate-meta`) reads `.a
 
 ## Learned Rules (Self-Correcting)
 
-Meta-skills improve over time via `.agents/skill-artifacts/meta/records/learned-rules.md`:
+Meta-skills improve over time via `skills-resources/meta/records/learned-rules.md`:
 - User corrections are captured as rules
 - Before dispatching, skills read relevant learned rules
 - Rules supplement SKILL.md instructions, never override them
@@ -279,4 +287,4 @@ Skill routing is the agent's job — it proposes skills proactively based on the
 | Change | Rationale |
 |--------|-----------|
 | `start-meta` → `orchestrate-meta` | The skill scans existing artifacts and continues mid-pipeline; "start" implied first-run init. The orchestration role belongs in the slash-command surface. (BREAKING; no backward-compat alias.) |
-| Added `cleanup-artifacts` | The `.agents/` artifact tree accumulates fast (skill outputs, briefs, fresh-eyes reports, manifest snapshots). Without active grooming, it becomes a junk drawer. New single-agent meta-skill mirrors `machine-cleanup`'s safety pattern at the project artifact-tree level. MOVE-not-delete (archives to `.agents/skill-artifacts/.archive/[date]/`); explicit per-category operator confirmation; HARD-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`. |
+| Added `cleanup-artifacts` | The `skills-resources/` artifact tree accumulates fast (skill outputs, briefs, fresh-eyes reports, manifest snapshots). Without active grooming, it becomes a junk drawer. New single-agent meta-skill mirrors `machine-cleanup`'s safety pattern at the project artifact-tree level. MOVE-not-delete (archives to `skills-resources/.archive/[date]/`); explicit per-category operator confirmation; HARD-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `skills-resources/manifest.json`, `skills-resources/experience/`, `tasks.md`, `roadmap.md`. |

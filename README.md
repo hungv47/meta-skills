@@ -4,9 +4,9 @@
 
 > **v3.0.0 BREAKING:** `start-meta` renamed to `orchestrate-meta`. Update any `/start-meta` invocations in your workflows to `/orchestrate-meta`.
 
-5 process-layer skills (incl. `/orchestrate-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
+7 process-layer skills (incl. `/orchestrate-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
 
-**New here, or unsure which stack to use?** Run `/orchestrate-meta` — it reads cross-stack state and routes you to the right stack-orchestrator (`/orchestrate-research`, `/orchestrate-marketing`, `/orchestrate-product`) or process skill (`discover`, `agents-panel`, `task-breakdown`, `fresh-eyes`).
+**New here, or unsure which stack to use?** Run `/orchestrate-meta` — it reads cross-stack state and routes you to the right stack-orchestrator (`/orchestrate-research`, `/orchestrate-marketing`, `/orchestrate-product`) or process skill (`discover`, `eval-loop`, `agents-panel`, `task-breakdown`, `fresh-eyes`).
 
 ## Install
 
@@ -49,11 +49,25 @@ Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skil
 **"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
 
 - **Conversation-first**: Decisions live in conversation context. Artifacts are save-points, not pipeline stages.
+- **Loop-first when measurable**: Measurable initiatives live in `skills-resources/marketing/loops/[slug]/` so strategy, execution, evals, result rows, and learnings compound together.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview.
 - **One skill per job**: Each skill does a fundamentally different job.
 - **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel.
 
 ## Skills
+
+### `orchestrate-meta` — route across stacks
+
+Top-level router that reads project state and proposes the right stack orchestrator or process skill. It never auto-invokes; it prints the recommended next command with rationale.
+
+**Use when:**
+- You are not sure whether the work is research, marketing, product, or process
+- You are returning to a project and want a state-aware next step
+- The ask spans multiple stacks
+
+**Produces:** `skills-resources/experience/meta-workflow.md`
+
+---
 
 ### `discover` — talk until you're clear, then build
 
@@ -67,7 +81,7 @@ Conversational discovery that adapts from quick scoping (3-5 questions) to deep 
 
 **Not for:** multi-perspective debate (use `agents-panel`) or decomposing work (use `task-breakdown`)
 
-**Produces:** Conversation context (default) or `.agents/skill-artifacts/meta/specs/*.md` (when explicitly saved)
+**Produces:** Conversation context (default) or `skills-resources/meta/specs/*.md` (when explicitly saved)
 
 ---
 
@@ -82,7 +96,22 @@ Stochastic multi-agent debate (agents argue in rounds, converge) or consensus po
 
 **Not for:** implementation (use `system-architecture`) or verification (use `fresh-eyes`)
 
-**Produces:** `.agents/skill-artifacts/meta/decisions/[date]-*.md`
+**Produces:** `skills-resources/meta/decisions/[date]-*.md`
+
+---
+
+### `eval-loop` — measurable improvement workspace
+
+Creates or resumes a loop-centered workspace for measurable strategy → marketing/content execution → evaluation cycles. It is the single scaffold and ledger entrypoint: fixed scope, metric contract, mutable surface, results ledger, keep/discard decisions, and learning promotion. Surface-specific eval skills still do the actual scoring.
+
+**Use when:**
+- You want a campaign, page, ad set, email sequence, social series, or content motion to improve over cycles
+- You need one place for strategy artifacts, produced marketing/content assets, eval snapshots, result rows, and promoted learnings
+- You're deciding where measurable outputs and evals should live
+
+**Not for:** vague strategy with no metric (use `discover`), one-shot implementation tasks (use `task-breakdown`), or generic scoring of every surface. Use the relevant eval skill for measurement artifacts (`short-form-eval` and `lp-eval` today; future `ad-eval`, `email-eval`, `campaign-eval`).
+
+**Produces:** `skills-resources/marketing/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
 
 ---
 
@@ -97,7 +126,7 @@ Breaks work into granular, testable tasks with acceptance criteria, dependencies
 
 **Not for:** clarifying requirements (use `discover`) or designing architecture (use `system-architecture`)
 
-**Produces:** `.agents/skill-artifacts/meta/tasks.md`
+**Produces:** `skills-resources/meta/tasks.md`
 
 ---
 
@@ -112,7 +141,20 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 
 **Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agents-panel`)
 
-**Produces:** `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`
+**Produces:** `skills-resources/meta/records/fresh-eyes-*.md`
+
+---
+
+### `cleanup-artifacts` — groom the artifact tree
+
+Audits `skills-resources/` for stale, orphaned, legacy, and ephemeral artifacts, then archives confirmed candidates behind explicit operator approval. Moves files; never deletes.
+
+**Use when:**
+- `skills-resources/` has become hard to navigate
+- You're preparing a release or PR and want artifact hygiene
+- You suspect renamed or removed skills left orphan outputs
+
+**Produces:** `skills-resources/meta/records/[date]-cleanup-artifacts-<slug>.md`
 
 ---
 
@@ -124,6 +166,10 @@ discover (conversation) --> build directly
     +-- agents-panel             +-- fresh-eyes
         (complex decisions)        (after build)
     |
+    +-- eval-loop
+        (when work is measurable
+         and should improve by cycles)
+    |
     +-- task-breakdown
         (complex work)
 ```
@@ -133,10 +179,11 @@ discover (conversation) --> build directly
 ```
 1. /discover              → conversational clarity (interactive)
 2. /system-architecture    → system-architecture.md
-3. /task-breakdown         → tasks.md
-4. (build tasks, /fresh-eyes after critical ones)
-5. /code-cleanup + /docs-writing (parallel)
-6. (commit + PR via gh; deploy via project's CI)
+3. /eval-loop          → loop workspace for measurable marketing/content work, when relevant
+4. /task-breakdown         → tasks.md
+5. (build tasks, /fresh-eyes after critical ones)
+6. /code-cleanup + /docs-writing (parallel)
+7. (commit + PR via gh; deploy via project's CI)
 ```
 
 ## Releases

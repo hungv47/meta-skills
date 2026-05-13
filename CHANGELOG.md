@@ -6,6 +6,47 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.0.0] - 2026-05-13
+
+BREAKING: every artifact path migrates from `.agents/` to `skills-resources/` with domain-scoped subfolders. Loops are organized under each domain rather than a single `loops/` root.
+
+### Changed (BREAKING)
+- `.agents/manifest.json` → `skills-resources/manifest.json`.
+- `.agents/artifact-index.md` → `skills-resources/artifact-index.md`.
+- `.agents/experience/` → `skills-resources/experience/`.
+- `.agents/skill-artifacts/meta/` → `skills-resources/meta/` (specs, decisions, sketches, records, tasks.md, roadmap.md, out-of-scope).
+- `.agents/skill-artifacts/mkt/` → `skills-resources/marketing/` (folder also renamed from `mkt` to `marketing`).
+- `.agents/skill-artifacts/product/` → `skills-resources/product/`.
+- `.agents/skill-artifacts/research/` → `skills-resources/research/`.
+- `.agents/skill-artifacts/.archive/` → `skills-resources/.archive/`.
+- Loop workspaces moved from `skills-resources/loops/[slug]/` to `skills-resources/{marketing|product|research}/loops/[slug]/`. Pick the domain by who owns the measurable surface.
+- `scripts/manifest-sync.ts` rewrites `ARTIFACT_ROOTS`, producer inference, lifecycle inference, and writes to the new infrastructure paths.
+- `scripts/scaffold-eval-loop.ts` accepts `--domain marketing|product|research` (defaults to `marketing`) and creates loops at the domain-scoped path.
+- `scripts/append-loop-result.ts` now slugifies the human-readable loop argument and searches `skills-resources/{marketing,product,research}/loops/` for the loop folder. Negative values, `--`-prefixed strings, and empty strings are now validated cleanly.
+- `references/manifest-spec.md` and `references/eval-loop-spec.md` rewritten to document the new tree and domain-scoped loop placement.
+- `cleanup-artifacts` SKILL.md description and prompt signals updated to reference `skills-resources/` (the legacy `.agents` terminology is retired).
+
+### Migration
+Users upgrading from 5.x must move their existing artifacts to the new tree. The mechanical mapping is documented in this changelog entry; run `bun meta-skills/scripts/manifest-sync.ts` after migration to regenerate `skills-resources/manifest.json` and `skills-resources/artifact-index.md`.
+
+---
+
+## [5.1.0] - 2026-05-13
+
+Adds the first loop-centered artifact system for measurable strategy → marketing/content execution → evaluation work.
+
+### Added
+- New `eval-loop` skill creates or resumes measurable initiative workspaces under `skills-resources/loops/[slug]/` with `program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, and `learnings.md`.
+- New `references/eval-loop-spec.md` defines the loop-centered artifact contract, lifecycle values, results ledger, placement rules, execution boundaries, and eval guardrails.
+- New `scripts/scaffold-eval-loop.ts` creates the loop workspace and runs manifest sync.
+- New `scripts/append-loop-result.ts` validates and appends `results.tsv` rows without hand-editing the ledger.
+- `manifest-sync` now indexes `skills-resources/` and infers loop lifecycles (`loop`, `loop-context`, `strategy`, `execution`, `evaluation`, `learning`).
+
+### Changed
+- The meta stack now treats measurable initiative loops as a first-class artifact surface alongside `.agents/`, `research/`, `brand/`, and `architecture/`.
+
+---
+
 ## [5.0.2] - 2026-05-12
 
 Coordinated cross-stack cleanup of cross-references to `lp-optimization`, which was hard-removed in marketing-skills 6.0.0.
