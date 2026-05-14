@@ -204,7 +204,19 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 2. Audience (or "use icp-research.md"). → `audience` if novel
 3. The one shift — what should the reader believe after reading? → `goals` (campaign-specific)
 4. Unique proof — what can you say nobody else can? → `product`
-5. Traffic source (if landing page or email). → routing only
+5. Unique Mechanism — proprietary "how" that makes the offer different and better. → `product`
+6. Traffic source (if landing page or email). → routing only
+
+**ad-copy**
+1. Audience temperature — retargeting / cold traffic. → routing only
+2. Offer — destination + value prop. → `product`
+3. Creative format — dedicated / repurposed-UGC. → routing only
+4. Conversion event — trial-start / purchase / lead / install / view-content. → `goals`
+5. Production model — in-house / affiliate-creator / external-freelance. → routing only
+6. Proof — named customers, measured outcomes, named research, specific numbers. → `product`
+7. Transmutation goal — AI UGC/VSSL / native static / AI animation / advertorial pre-lander / strategist choose. → routing only
+8. Competitor pattern — hooks, tone, proof type, offer promise, or visual convention. → `business` if reusable
+9. LP description — 1-2 sentences on destination promise and action. → routing only
 
 **campaign-plan**
 1. Campaign goal — acquire leads / drive trial / launch / revenue / awareness. → `goals`
@@ -217,6 +229,8 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 1. Target voice — 3 adjectives OR a reference brand OR `brand/BRAND.md`. → `brand` if novel
 2. Preserve register? (e.g., keep formal if technical) → routing only
 3. Compression target — light (10-15%) / moderate (20-30%) / heavy (30%+). → routing only
+4. Detector mode — off / proxy-only / external if configured. → routing only
+5. Protected tokens — names, numbers, claims, URLs, citations, disclaimers that must survive unchanged. → routing only
 
 **vn-tone**
 1. Target register — báo chí / semi-casual / bro / pop-marketing. → routing

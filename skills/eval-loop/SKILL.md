@@ -87,7 +87,10 @@ routing:
 
 ## Reference
 
-Read `../../references/eval-loop-spec.md` before writing or modifying any loop artifact.
+Read before writing or modifying any loop artifact:
+
+- `../../references/eval-loop-spec.md`
+- `../../references/quality-feedback-protocol.md`
 
 ## Responsibility Split
 
@@ -210,8 +213,9 @@ After the user answers, write the answers to `context.md`, update `program.md`, 
 4. Layer 2 sequential: Scope Guard -> Critic.
 5. If Critic FAIL, revise only the named failing sections once.
 6. Write final `program.md` and `context.md` with required frontmatter.
-7. Run `manifest-sync` once after the final files are written.
-8. Return the loop path, the next recommended strategy/execution/eval skill, and status.
+7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `skills-resources/experience/`, log critic overrides when present, create or update the quality dashboard when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
+8. Run `manifest-sync` once after the final files are written.
+9. Return the loop path, the next recommended strategy/execution/eval skill, quality-feedback action, and status.
 
 ## Artifact Requirements
 
@@ -243,3 +247,9 @@ End every response with one of:
 - `DONE_WITH_CONCERNS` — loop exists but metric/baseline/attribution is weak
 - `NEEDS_CONTEXT` — missing measurable surface or metric source
 - `BLOCKED` — filesystem/script failure or conflicting loop state
+
+Also include:
+
+```text
+Quality feedback: [promoted learning | kept in loop | dashboard updated | critic override logged | research eval recommended | none]
+```
