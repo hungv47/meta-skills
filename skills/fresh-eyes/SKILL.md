@@ -72,6 +72,7 @@ routing:
 2. **Resolver sees BOTH original + review** — it synthesizes, not just patches
 3. **Max 2 loops** — if code isn't clean after 2 review cycles, flag to the user. There may be a deeper design problem that review can't fix.
 4. **Auto-trigger for critical code** — security, auth, crypto, data mutations, money, PII. Don't wait to be asked.
+5. **Quality feedback applies** — repeated reviewer misses, critic overrides, and post-humanize regressions feed the shared quality system instead of staying trapped in one report.
 
 ## Inputs Required
 - Code, artifact, or output to verify
@@ -161,6 +162,8 @@ Spawn a single reviewer agent with fresh context. The reviewer has NO access to 
 - `model: "sonnet"` (default — use opus if the code is complex or security-critical)
 
 **Learned rules:** Before constructing the reviewer prompt, read `skills-resources/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
+
+**Quality feedback:** Also read `meta-skills/references/quality-feedback-protocol.md`. If this review includes a critic override, repeated rubric disagreement, high-stakes artifact, or post-humanize rewrite, apply the relevant logging, dashboard creation/update, or consensus guidance. Use `meta-skills/references/shared-critic-rubrics.md` when a review needs a reusable quality dimension such as claim substantiation, protected-token preservation, mechanism distinctness, or humanize regression.
 
 **Reviewer prompt:**
 
@@ -422,6 +425,16 @@ When invoked with `--thorough`, or when the code touches security/auth/payments/
 - Total diff exceeds 500 lines (sum of all files changed, not per-file)
 
 **Cost:** 3x single reviewer cost. Still cheap relative to catching a production bug.
+
+## Critic Consensus Mode
+
+Use critic consensus when the artifact is high-stakes but does not fit the code-focused specialist set: compliance-sensitive marketing copy, paid media with meaningful spend, public launch announcements, canonical research updates, or a repeated operator override of a critic dimension.
+
+Pattern:
+
+1. Run the normal reviewer against the full requirements.
+2. Run a second critic focused only on the highest-risk dimensions: substantiation, compliance, audience fit, mechanism distinctness, protected-token preservation, or research validity.
+3. Merge disagreements in the report. If the critics disagree on a hard gate, resolve the dimension directly or return `DONE_WITH_CONCERNS` / `BLOCKED`; do not average the scores.
 
 ## Scope Drift Detection
 

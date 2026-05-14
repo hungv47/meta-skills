@@ -6,6 +6,18 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.1.0] - 2026-05-14
+
+Quality-feedback layer for measured loops and reviewer outcomes.
+
+### Added
+- New `references/quality-feedback-protocol.md` defines learning promotion to `skills-resources/experience/`, optional quality dashboard shape, cross-skill feedback routing, post-humanize regression checks, research artifact evaluation triggers, critic override logging, shared-rubric extraction, learned-rules hygiene, and critic consensus.
+- New `references/shared-critic-rubrics.md` provides reusable dimensions for claim substantiation, protected-token preservation, audience specificity, mechanism distinctness, pattern-interruption specificity, and humanize regression.
+- `eval-loop` now applies the quality-feedback protocol after loop updates, and `fresh-eyes` can run critic consensus for high-stakes non-code artifacts.
+- `pre-dispatch-protocol` now records `humanize` detector mode and protected-token inputs.
+
+---
+
 ## [6.0.1] - 2026-05-14
 
 Fresh-eyes patch for the 6.0.0 artifact-tree migration.
