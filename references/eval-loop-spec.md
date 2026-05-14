@@ -62,6 +62,12 @@ Most loops are marketing. Pick the domain by who owns the measurable surface, no
 | `results.tsv` | One row per cycle; compact keep/discard/watch/blocked ledger | Evaluation skills |
 | `learnings.md` | Promoted lessons that future cycles should reuse | Evaluation skills, critic-approved |
 
+### Learning Promotion To Experience
+
+`learnings.md` is loop-local by default. Promote a learning into `skills-resources/experience/` only after it clears the Quality Feedback Protocol: the source result is `keep`, the metric source and confidence are explicit, the lesson is reusable beyond one execution artifact, and its scope is named.
+
+Promoted learnings should be appended to the relevant experience file (`audience.md`, `business.md`, `product.md`, `brand.md`, or `goals.md`) with the source loop/eval path, confidence, applicability boundary, and "do not apply when" caveat. Do not promote `watch`, `discard`, `blocked`, or confounded findings.
+
 ## Where Loops Sit in `skills-resources/`
 
 The umbrella `skills-resources/` is the single home for every agent-generated artifact. Loops are one shape inside it; non-loop pipeline outputs sit alongside them:
@@ -175,7 +181,7 @@ Examples:
 - Cold outreach/email -> reply rate, positive reply rate, meeting booked rate, deliverability caveats
 - Campaign -> traffic, leads, revenue, channel mix, spend efficiency
 
-Research artifacts such as ICP or market research are not evaluated directly. Their assumptions may be updated when downstream loop evidence repeatedly contradicts them.
+Research artifacts such as ICP or market research are not evaluated with generic taste rubrics. They are evaluated through downstream usefulness: cite frequency, repeated contradiction from loop evidence, operator reports of off-target outputs, or obvious staleness after a market shift. When that threshold is met, write the review under the relevant loop's `evals/` folder or `skills-resources/research/evals/` if the evidence spans multiple loops. Update canonical `research/` only as a separate, explicit revision after the evidence is accepted.
 
 `eval-loop` may route to the relevant evaluator, but it should not fake surface-specific scoring itself. If no evaluator exists yet, it creates the loop and marks the next eval step as a gap rather than inventing a generic rubric.
 
@@ -205,6 +211,7 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/append-loop-result.ts "pr
 
 - Do not run autonomous marketing/content loops indefinitely. Human approval is required before publishing or materially changing a live external surface.
 - Do not promote a lesson from a single weak or confounded metric snapshot.
+- Do not promote loop learnings to `skills-resources/experience/` without a `keep` result, confidence note, and named applicability boundary.
 - Do not mutate canonical `brand/`, `research/`, or `architecture/` from a loop. Propose updates separately when evidence accumulates.
 - Do not create one loop per skill. Create one loop per measurable initiative.
 - Do not create a loop if there is no metric, no baseline path, and no future cycle.
