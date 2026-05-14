@@ -7,15 +7,18 @@
 //
 // Defaults to cwd if no project-root is provided.
 
-import { readdirSync, readFileSync, statSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync, existsSync, mkdirSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, basename } from "node:path";
 
-const ROOT = process.argv[2] ? process.argv[2] : process.cwd();
+const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
+const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-archive") ?? process.cwd();
+const ROOT = realpathSync(ROOT_ARG);
 const ARTIFACT_ROOTS = ["skills-resources", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = "skills-resources/experience";
 const MANIFEST_PATH = join(ROOT, "skills-resources", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, "skills-resources", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
+const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
 const LIFECYCLE_SORT_ORDER = ["canonical", "loop", "loop-context", "learning", "anchor", "registry", "decision", "spec", "strategy", "execution", "evaluation", "pipeline", "snapshot", "archive", ""];
 
@@ -70,8 +73,13 @@ function parseFrontmatter(content: string): Frontmatter | null {
 
 function walkMd(dir: string, files: string[] = []): string[] {
   if (!existsSync(dir)) return files;
+  if (lstatSync(dir).isSymbolicLink()) {
+    throw new Error(`Refusing to walk symlinked artifact root: ${relative(ROOT, dir)}`);
+  }
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, entry.name);
+    if (entry.isSymbolicLink()) continue;
+    if (!INCLUDE_ARCHIVE && relative(ROOT, p).split("\\").join("/").startsWith("skills-resources/.archive")) continue;
     if (entry.isDirectory()) walkMd(p, files);
     else if (entry.isFile() && entry.name.endsWith(".md")) files.push(p);
   }
@@ -246,6 +254,7 @@ ${renderRows(archived)}
 
 const artifacts: Record<string, ArtifactEntry> = {};
 const experience: Record<string, unknown> = {};
+const warnings: string[] = [];
 
 for (const base of ARTIFACT_ROOTS) {
   const root = join(ROOT, base);
@@ -276,7 +285,12 @@ for (const base of ARTIFACT_ROOTS) {
     const fm = parseFrontmatter(content);
     const skill = (fm?.skill as string | undefined) ?? inferProducer(rel);
     const producedAt = normalizeDate(fm?.date, stat.mtime);
-    const status = (fm?.status as string | undefined) ?? "done";
+    const rawStatus = (fm?.status as string | undefined) ?? "done";
+    const isArchived = rel.includes("/.archive/");
+    const status = VALID_STATUSES.has(rawStatus) ? rawStatus : "done_with_concerns";
+    if (!VALID_STATUSES.has(rawStatus) && !isArchived) {
+      warnings.push(`${rel}: unknown status ${JSON.stringify(rawStatus)} normalized to "done_with_concerns"`);
+    }
     const schemaVersion = numberField(fm, "version", 1);
     const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
     const summary = textField(fm, "summary");
@@ -313,7 +327,29 @@ const manifest = {
 };
 
 const manifestDir = join(ROOT, "skills-resources");
+if (existsSync(manifestDir) && lstatSync(manifestDir).isSymbolicLink()) {
+  throw new Error("Refusing to write through symlinked skills-resources/");
+}
 if (!existsSync(manifestDir)) mkdirSync(manifestDir, { recursive: true });
+for (const target of [MANIFEST_PATH, ARTIFACT_INDEX_PATH]) {
+  if (existsSync(target) && lstatSync(target).isSymbolicLink()) {
+    throw new Error(`Refusing to overwrite symlinked generated file: ${relative(ROOT, target)}`);
+  }
+}
+
+try {
+  const existing = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
+  if (
+    existing.version === manifest.version &&
+    JSON.stringify(existing.artifacts) === JSON.stringify(manifest.artifacts) &&
+    JSON.stringify(existing.experience) === JSON.stringify(manifest.experience)
+  ) {
+    manifest.updated_at = existing.updated_at;
+  }
+} catch {
+  // Missing or malformed generated manifest: rewrite with a fresh timestamp.
+}
+
 writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n");
 writeFileSync(ARTIFACT_INDEX_PATH, renderArtifactIndex(manifest) + "\n");
 
@@ -323,5 +359,8 @@ const staleCount = Object.values(artifacts).filter((a) => (a as { stale: boolean
 const noFrontmatterCount = Object.values(artifacts).filter((a) => !(a as { frontmatter_present: boolean }).frontmatter_present).length;
 
 console.log(
-  `manifest-sync: ${artifactCount} artifacts (${staleCount} stale, ${noFrontmatterCount} without frontmatter), ${experienceCount} experience files → ${relative(ROOT, MANIFEST_PATH)} + ${relative(ROOT, ARTIFACT_INDEX_PATH)}`
+  `manifest-sync: ${artifactCount} artifacts (${staleCount} stale, ${noFrontmatterCount} without frontmatter), ${experienceCount} experience files${INCLUDE_ARCHIVE ? " including archive" : ""} → ${relative(ROOT, MANIFEST_PATH)} + ${relative(ROOT, ARTIFACT_INDEX_PATH)}`
 );
+if (warnings.length) {
+  console.warn(`manifest-sync warnings:\n${warnings.map((w) => `  - ${w}`).join("\n")}`);
+}

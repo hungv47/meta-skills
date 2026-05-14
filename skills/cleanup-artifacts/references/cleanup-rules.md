@@ -68,7 +68,7 @@ The artifact has a manifest entry but it has aged past the threshold and no down
 | Path | Why STALE |
 |---|---|
 | `skills-resources/meta/records/2025-11-30-fresh-eyes-foo.md` | dated record, > 90d old, no live ref |
-| `skills-resources/research/short-form-eval/2025-12-01-cycle-1.md` | pipeline output, > 90d, superseded by later cycles |
+| `skills-resources/marketing/loops/video-series/evals/2025-12-01-cycle-1.md` | loop evaluation output, > 90d, superseded by later cycles |
 | `skills-resources/marketing/copy/linkedin-2025-08-15.md` | pipeline output, > 90d, no recent consumer |
 
 ---

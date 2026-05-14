@@ -63,11 +63,29 @@ Also confirm the audit scope exists:
 test -d "<scope>" || exit_with_status BLOCKED "Scope <scope> does not exist."
 ```
 
-Refuse HARD-NEVER scopes (operator passed `--scope brand/`, etc.) at this step:
+Canonicalize and validate the audit scope before walking it. Refuse `..` path segments, a symlinked `skills-resources/` root, symlinked scopes, and any scope whose lexical path or real path is outside `skills-resources/`:
+
+```bash
+case "<scope>" in *..*) exit_with_status BLOCKED "Scope <scope> contains '..' and cannot be cleaned." ;; esac
+test ! -L skills-resources || exit_with_status BLOCKED "skills-resources/ is a symlink; refusing to clean through symlinked artifact roots."
+case "<scope>" in
+  skills-resources|skills-resources/*) ;;
+  *) exit_with_status BLOCKED "Scope <scope> must be skills-resources/ or a subpath under it." ;;
+esac
+SKILLS_RESOURCES_REAL="$(realpath skills-resources)"
+SCOPE_REAL="$(realpath "<scope>")" || exit_with_status BLOCKED "Scope <scope> cannot be resolved."
+case "$SCOPE_REAL" in
+  "$SKILLS_RESOURCES_REAL"|"$SKILLS_RESOURCES_REAL"/*) ;;
+  *) exit_with_status BLOCKED "Scope <scope> resolves outside skills-resources/ and cannot be cleaned by this skill." ;;
+esac
+test ! -L "<scope>" || exit_with_status BLOCKED "Scope <scope> is a symlink; refusing to clean through symlinks."
+```
+
+Refuse HARD-NEVER scopes (operator passed `--scope skills-resources/experience/`, etc.) at this step:
 
 ```bash
 case "<scope>" in
-  brand/*|research/*|architecture/*|.git/*|skills-resources/experience/*) \
+  skills-resources/manifest.json|skills-resources/artifact-index.md|skills-resources/experience|skills-resources/experience/*|skills-resources/meta/tasks.md|skills-resources/meta/roadmap.md) \
     exit_with_status BLOCKED "Scope <scope> is HARD-NEVER and cannot be cleaned by this skill." ;;
 esac
 ```
@@ -151,9 +169,8 @@ No files were moved.
 Recommendations:
   - Re-run with these candidates excluded (--excluded-paths <list>)
   - Edit the referencing files to drop stale citations
-  - If you're certain the references are themselves stale, override with
-    --skip-critic --apply (NOT RECOMMENDED; requires explicit re-confirmation
-    in a separate skill invocation)
+  - If you're certain the references are themselves stale, fix or remove those
+    references first, then re-run cleanup. The critic gate is not skippable.
 
 Status: BLOCKED
 ```
@@ -225,8 +242,15 @@ For each confirmed candidate, MOVE to the dated archive. Mirror source path insi
 ARCHIVE_ROOT="skills-resources/.archive/$(date +%Y-%m-%d)"
 SRC="<candidate-path>"
 DST="$ARCHIVE_ROOT/${SRC#./}"   # mirror full source path under archive root
+test ! -L skills-resources || { echo "refusing symlinked skills-resources root"; exit 1; }
+mkdir -p "$ARCHIVE_ROOT"
+test ! -L skills-resources/.archive || { echo "refusing symlinked archive root"; exit 1; }
+SRC_REAL="$(realpath "$SRC")"
+SKILLS_RESOURCES_REAL="$(realpath skills-resources)"
+case "$SRC_REAL" in "$SKILLS_RESOURCES_REAL"/*) ;; *) echo "refusing outside-scope source $SRC"; exit 1 ;; esac
+test ! -L "$SRC" || { echo "refusing symlink source $SRC"; exit 1; }
 mkdir -p "$(dirname "$DST")"
-mv "$SRC" "$DST" && echo "moved $SRC -> $DST"
+mv -- "$SRC" "$DST" && echo "moved $SRC -> $DST"
 ```
 
 If the source is git-tracked, the move shows as a rename in `git status`; the operator can stage/commit as part of their own pre-PR flow.

@@ -199,7 +199,7 @@ What it does:
 6. Write `skills-resources/manifest.json` (pretty-printed JSON, trailing newline).
 7. Write `skills-resources/artifact-index.md` (human-readable selection index derived from the manifest).
 
-The script is **idempotent** — running it twice on the same state produces identical output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
+The script is **idempotent** for unchanged artifact state — running it twice preserves `updated_at` and generated output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
 
 ### Human-readable index
 
@@ -209,19 +209,20 @@ The index groups active artifacts separately from archived/historical artifacts.
 
 ### Eval loop workspaces
 
-Measurable initiatives use `skills-resources/marketing/loops/[slug]/`:
+Measurable initiatives use `skills-resources/{marketing|product|research}/loops/[slug]/`:
 
 ```text
 skills-resources/
-└── loops/
-    └── pricing-page/
-        ├── program.md      # lifecycle: loop
-        ├── context.md      # lifecycle: loop-context
-        ├── strategy/       # lifecycle: strategy
-        ├── execution/      # lifecycle: execution
-        ├── evals/          # lifecycle: evaluation
-        ├── results.tsv     # compact ledger, not indexed because it is not markdown
-        └── learnings.md    # lifecycle: learning
+└── marketing/
+    └── loops/
+        └── pricing-page/
+            ├── program.md      # lifecycle: loop
+            ├── context.md      # lifecycle: loop-context
+            ├── strategy/       # lifecycle: strategy
+            ├── execution/      # lifecycle: execution
+            ├── evals/          # lifecycle: evaluation
+            ├── results.tsv     # compact ledger, not indexed because it is not markdown
+            └── learnings.md    # lifecycle: learning
 ```
 
 See `meta-skills/references/eval-loop-spec.md` for the full loop contract. The manifest does not parse `results.tsv`; evaluation skills append rows there and write markdown eval artifacts with frontmatter under `evals/` for indexing.
@@ -354,7 +355,7 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 2. **Reading the filesystem when the manifest would do.** Per-skill `glob('skills-resources/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
-5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `skills-resources/marketing/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
+5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `skills-resources/{marketing|product|research}/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
 6. **Hand-editing `skills-resources/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
 7. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
 8. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.

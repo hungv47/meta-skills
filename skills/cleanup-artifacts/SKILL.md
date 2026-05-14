@@ -88,7 +88,7 @@ routing:
 
 ## Inputs Required
 - A project root containing a `skills-resources/` tree (the working directory by default)
-- Optional scope: a subpath under `skills-resources/` to limit the audit (e.g., `skills-resources/research/short-form-eval/`)
+- Optional scope: a subpath under `skills-resources/` to limit the audit (e.g., `skills-resources/marketing/loops/`)
 - Optional mode: `--dry-run` (default) or `--apply`
 - Optional staleness threshold in days (default: 90)
 
@@ -141,7 +141,7 @@ Never deletes. Before I scan:
 
 1. **Scope** — pick one:
    - full (skills-resources/ — most common)
-   - subpath (e.g., skills-resources/research/short-form-eval/)
+   - subpath (e.g., skills-resources/marketing/loops/)
 2. **Mode** — dry-run (default; preview only) or apply (executes after
    per-category confirmation, MOVES to archive, never deletes).
 3. **Staleness threshold** — days since last update before an artifact
@@ -335,8 +335,7 @@ Critic gate FAILED — 1 of 9 STALE/ORPHAN candidates has a live reference:
 
 Recommendations:
   - Re-run with that file excluded, OR
-  - Edit roadmap.md to drop the citation, OR
-  - Override (force --apply --skip-critic — NOT RECOMMENDED, requires explicit re-confirmation)
+  - Edit roadmap.md to drop the stale citation, then re-run
 
 No files were moved. Report: skills-resources/meta/records/2026-05-08-cleanup-artifacts-apply-blocked.md
 
