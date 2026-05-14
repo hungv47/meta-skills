@@ -317,4 +317,4 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 ## Telemetry / Self-Correction
 
-Per the existing learned-rules system (`skills-resources/meta/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.
+Per the existing learned-rules system (`skills-resources/meta/records/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.

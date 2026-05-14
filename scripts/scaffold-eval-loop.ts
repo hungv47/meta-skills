@@ -3,14 +3,14 @@
 // See meta-skills/references/eval-loop-spec.md for the full contract.
 //
 // Usage:
-//   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [project-root]
+//   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]
 //
 // Domain defaults to "marketing" since every current evaluator (lp-eval,
 // short-form-eval, future ad-eval/email-eval/campaign-eval) targets a
 // marketing initiative.
 
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { existsSync, mkdirSync, writeFileSync, lstatSync, realpathSync } from "node:fs";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
@@ -23,14 +23,15 @@ if (!ALLOWED_DOMAINS.has(domain)) {
   process.exit(1);
 }
 
+const noSync = args.includes("--no-sync");
 const positional = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--domain");
 const name = positional[0];
 if (!name) {
-  console.error('Usage: scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [project-root]');
+  console.error('Usage: scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]');
   process.exit(1);
 }
 
-const ROOT = positional[1] ? positional[1] : process.cwd();
+const ROOT = realpathSync(positional[1] ? positional[1] : process.cwd());
 const TODAY = new Date().toISOString().slice(0, 10);
 
 function slugify(value: string): string {
@@ -59,11 +60,35 @@ function yamlString(value: string): string {
 
 function writeIfMissing(path: string, content: string, created: string[], skipped: string[]): void {
   if (existsSync(path)) {
+    if (lstatSync(path).isSymbolicLink()) {
+      console.error(`Refusing to write through symlink: ${relative(ROOT, path)}`);
+      process.exit(1);
+    }
     skipped.push(relative(ROOT, path));
     return;
   }
   writeFileSync(path, content);
   created.push(relative(ROOT, path));
+}
+
+function assertNotSymlink(path: string): void {
+  if (existsSync(path) && lstatSync(path).isSymbolicLink()) {
+    console.error(`Refusing to use symlinked path: ${relative(ROOT, path)}`);
+    process.exit(1);
+  }
+}
+
+function assertExistingDirectorySafe(path: string): void {
+  if (!existsSync(path)) return;
+  const stat = lstatSync(path);
+  if (stat.isSymbolicLink()) {
+    console.error(`Refusing to use symlinked path: ${relative(ROOT, path)}`);
+    process.exit(1);
+  }
+  if (!stat.isDirectory()) {
+    console.error(`Expected directory path: ${relative(ROOT, path)}`);
+    process.exit(1);
+  }
 }
 
 const slug = slugify(name);
@@ -73,10 +98,33 @@ if (!slug) {
 }
 
 const title = titleize(name);
-const loopDir = join(ROOT, "skills-resources", domain, "loops", slug);
+const skillsResources = join(ROOT, "skills-resources");
+assertExistingDirectorySafe(skillsResources);
+mkdirSync(skillsResources, { recursive: true });
+const domainRoot = join(skillsResources, domain);
+assertExistingDirectorySafe(domainRoot);
+mkdirSync(domainRoot, { recursive: true });
+const loopRoot = join(skillsResources, domain, "loops");
+assertExistingDirectorySafe(loopRoot);
+mkdirSync(loopRoot, { recursive: true });
+const loopDir = join(loopRoot, slug);
+assertNotSymlink(loopDir);
+const realLoopRoot = realpathSync(loopRoot);
+const projectedLoopDir = resolve(loopRoot, slug);
+if (projectedLoopDir !== realLoopRoot && !projectedLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
+  console.error("Refusing to create loop outside skills-resources/<domain>/loops.");
+  process.exit(1);
+}
 const created: string[] = [];
 const skipped: string[] = [];
 
+mkdirSync(loopDir, { recursive: true });
+assertNotSymlink(loopDir);
+const realLoopDir = realpathSync(loopDir);
+if (realLoopDir !== realLoopRoot && !realLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
+  console.error("Refusing to create loop outside skills-resources/<domain>/loops.");
+  process.exit(1);
+}
 for (const subdir of ["strategy", "execution", "evals"]) {
   mkdirSync(join(loopDir, subdir), { recursive: true });
 }
@@ -111,7 +159,7 @@ writeIfMissing(
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const syncPath = join(scriptDir, "manifest-sync.ts");
-if (existsSync(syncPath)) {
+if (!noSync && existsSync(syncPath)) {
   try {
     const sync = Bun.spawnSync(["bun", syncPath, ROOT], { stdout: "pipe", stderr: "pipe" });
     if (sync.exitCode !== 0) {

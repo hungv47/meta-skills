@@ -58,10 +58,10 @@ Cross-stack data flow:
 
 ### eval-loop
 
-- **Job:** create or resume a loop-centered workspace for measurable strategy → marketing/content execution → evaluation cycles. Adapts the useful parts of autoresearch: fixed scope, fixed evaluator, mutable surface, `results.tsv`, and keep/discard/watch/blocked decisions.
-- **Produces:** `skills-resources/marketing/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
+- **Job:** create or resume a domain-scoped loop-centered workspace for measurable strategy → execution → evaluation cycles. Adapts the useful parts of autoresearch: fixed scope, fixed evaluator, mutable surface, `results.tsv`, and keep/discard/watch/blocked decisions.
+- **Produces:** `skills-resources/{marketing|product|research}/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
 - **Consumes:** `skills-resources/manifest.json`, `skills-resources/artifact-index.md`, `research/`, `brand/`, `architecture/`, `skills-resources/experience/`, prior loop artifacts if resuming
-- **When to recommend:** user asks for an improvement loop, experiment ledger, closed-loop marketing/content system, strategy/execution/eval artifact placement, or has a measurable page/campaign/content/ad/email initiative that should improve over cycles.
+- **When to recommend:** user asks for an improvement loop, experiment ledger, closed-loop system, strategy/execution/eval artifact placement, or has a measurable marketing, product, or research initiative that should improve over cycles.
 - **Cost:** $0.20–0.80 · 4 agents · standard budget · ~3–5 min
 
 ### task-breakdown

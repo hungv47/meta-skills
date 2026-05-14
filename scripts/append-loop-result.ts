@@ -16,7 +16,7 @@
 //   --date YYYY-MM-DD Defaults to today.
 //   --root <path>   Project root when not running from the project root.
 
-import { existsSync, readFileSync, appendFileSync } from "node:fs";
+import { existsSync, readFileSync, appendFileSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
 type Status = "keep" | "discard" | "watch" | "blocked";
@@ -31,7 +31,7 @@ if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
 
 const loopArg = args[0];
 const opts = parseArgs(args.slice(1));
-const root = resolve(opts.root ?? process.cwd());
+const root = realpathSync(resolve(opts.root ?? process.cwd()));
 const today = new Date().toISOString().slice(0, 10);
 
 const artifact = required(opts.artifact, "--artifact");
@@ -66,12 +66,25 @@ for (const [name, v] of Object.entries(fields)) {
 const loopDir = resolveLoopDir(root, loopArg, requestedDomain);
 const resultsPath = join(loopDir, "results.tsv");
 for (const requiredFile of ["program.md", "context.md", "results.tsv"]) {
-  if (!existsSync(join(loopDir, requiredFile))) {
+  const requiredPath = join(loopDir, requiredFile);
+  if (!existsSync(requiredPath)) {
     fail(`Loop workspace is missing ${requiredFile}: ${relative(root, loopDir)}`);
   }
+  if (lstatSync(requiredPath).isSymbolicLink()) {
+    fail(`Refusing to use symlinked loop file: ${relative(root, requiredPath)}`);
+  }
 }
-if (!existsSync(join(loopDir, artifact))) {
+const artifactPath = join(loopDir, artifact);
+if (!existsSync(artifactPath)) {
   fail(`Artifact does not exist inside loop: ${artifact}`);
+}
+if (lstatSync(artifactPath).isSymbolicLink()) {
+  fail(`Refusing to reference symlinked artifact inside loop: ${artifact}`);
+}
+const realLoopDir = realpathSync(loopDir);
+const realArtifactPath = realpathSync(artifactPath);
+if (realArtifactPath !== realLoopDir && !realArtifactPath.startsWith(`${realLoopDir}${sep}`)) {
+  fail(`Artifact resolves outside the loop folder: ${artifact}`);
 }
 
 const raw = readFileSync(resultsPath, "utf8").trimEnd();
@@ -121,15 +134,35 @@ function resolveLoopDir(projectRoot: string, value: string, requestedDomain?: st
     fail(`Loop argument must resolve to a valid slug (got ${JSON.stringify(value)}).`);
   }
   const skillsResources = resolve(projectRoot, "skills-resources");
+  assertSafeDirectory(skillsResources, "skills-resources");
+  const realSkillsResources = realpathSync(skillsResources);
   const domainsToSearch = requestedDomain ? [requestedDomain] : ["marketing", "product", "research"];
   const matches: Array<{ domain: string; path: string }> = [];
   for (const domain of domainsToSearch) {
+    const domainRoot = resolve(skillsResources, domain);
+    if (!existsSync(domainRoot)) continue;
+    assertSafeDirectory(domainRoot, `skills-resources/${domain}`);
     const candidate = resolve(skillsResources, domain, "loops", slug);
     const domainLoopsRoot = resolve(skillsResources, domain, "loops");
+    if (!existsSync(domainLoopsRoot)) continue;
+    assertSafeDirectory(domainLoopsRoot, `skills-resources/${domain}/loops`);
+    const realDomainLoopsRoot = realpathSync(domainLoopsRoot);
+    if (realDomainLoopsRoot !== realSkillsResources && !realDomainLoopsRoot.startsWith(`${realSkillsResources}${sep}`)) {
+      fail(`Loop root escapes skills-resources: skills-resources/${domain}/loops`);
+    }
     if (candidate !== domainLoopsRoot && !candidate.startsWith(`${domainLoopsRoot}${sep}`)) {
       fail("Loop path escaped skills-resources/<domain>/loops.");
     }
-    if (existsSync(candidate)) matches.push({ domain, path: candidate });
+    if (existsSync(candidate)) {
+      if (lstatSync(candidate).isSymbolicLink()) {
+        fail(`Refusing to use symlinked loop folder: ${relative(projectRoot, candidate)}`);
+      }
+      const realCandidate = realpathSync(candidate);
+      if (realCandidate !== realDomainLoopsRoot && !realCandidate.startsWith(`${realDomainLoopsRoot}${sep}`)) {
+        fail(`Loop folder escapes skills-resources/<domain>/loops: ${relative(projectRoot, candidate)}`);
+      }
+      matches.push({ domain, path: candidate });
+    }
   }
   if (matches.length === 0) {
     const where = requestedDomain ? `skills-resources/${requestedDomain}/loops/` : "skills-resources/{marketing,product,research}/loops/";
@@ -140,6 +173,13 @@ function resolveLoopDir(projectRoot: string, value: string, requestedDomain?: st
     fail(`Loop slug ${JSON.stringify(slug)} is ambiguous — exists in: ${domains}. Pass --domain <${domains.replace(/, /g, "|")}> to disambiguate.`);
   }
   return matches[0].path;
+}
+
+function assertSafeDirectory(path: string, label: string): void {
+  if (!existsSync(path)) fail(`Missing required directory: ${label}`);
+  const stat = lstatSync(path);
+  if (stat.isSymbolicLink()) fail(`Refusing to use symlinked directory: ${label}`);
+  if (!stat.isDirectory()) fail(`Expected directory: ${label}`);
 }
 
 function required(value: string | undefined, name: string): string {
