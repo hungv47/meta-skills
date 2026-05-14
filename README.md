@@ -49,7 +49,7 @@ Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skil
 **"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
 
 - **Conversation-first**: Decisions live in conversation context. Artifacts are save-points, not pipeline stages.
-- **Loop-first when measurable**: Measurable initiatives live in `skills-resources/marketing/loops/[slug]/` so strategy, execution, evals, result rows, and learnings compound together.
+- **Loop-first when measurable**: Measurable initiatives live in `skills-resources/{marketing|product|research}/loops/[slug]/` so strategy, execution, evals, result rows, and learnings compound together.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview.
 - **One skill per job**: Each skill does a fundamentally different job.
 - **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel.
@@ -111,7 +111,7 @@ Creates or resumes a loop-centered workspace for measurable strategy → marketi
 
 **Not for:** vague strategy with no metric (use `discover`), one-shot implementation tasks (use `task-breakdown`), or generic scoring of every surface. Use the relevant eval skill for measurement artifacts (`short-form-eval` and `lp-eval` today; future `ad-eval`, `email-eval`, `campaign-eval`).
 
-**Produces:** `skills-resources/marketing/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
+**Produces:** `skills-resources/{marketing|product|research}/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
 
 ---
 

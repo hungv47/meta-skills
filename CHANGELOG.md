@@ -6,6 +6,19 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.0.1] - 2026-05-14
+
+Fresh-eyes patch for the 6.0.0 artifact-tree migration.
+
+### Fixed
+- `eval-loop` now documents and invokes the domain-scoped loop contract end to end: `skills-resources/{marketing|product|research}/loops/[slug]/`, with explicit domain selection and a single final manifest sync after scaffold creation.
+- `manifest-sync` now skips `skills-resources/.archive/` by default, rejects symlinked artifact roots/generated files, normalizes unknown active statuses to `done_with_concerns` with warnings, and preserves `updated_at` on repeat runs when artifact state is unchanged.
+- `scaffold-eval-loop.ts` and `append-loop-result.ts` now reject symlinked artifact/domain/loop roots and loop files before writing, and verify resolved loop/artifact paths stay inside the intended domain loop.
+- `cleanup-artifacts` no longer suggests `--skip-critic`; critic failures must be resolved by excluding candidates or fixing stale references. Scope validation now requires a real path inside `skills-resources/`.
+- `manifest-spec.md` and `pre-dispatch-protocol.md` now use the domain-scoped loop tree and the current learned-rules path.
+
+---
+
 ## [6.0.0] - 2026-05-13
 
 BREAKING: every artifact path migrates from `.agents/` to `skills-resources/` with domain-scoped subfolders. Loops are organized under each domain rather than a single `loops/` root.

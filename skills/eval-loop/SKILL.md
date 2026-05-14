@@ -1,6 +1,6 @@
 ---
 name: eval-loop
-description: "Single scaffold and ledger entrypoint for measurable strategy -> marketing/content execution -> evaluation cycles. Use when the user wants an eval-loop, autoresearch-style improvement loop, experiment ledger, campaign/content iteration system, or asks where to store strategy/execution/eval artifacts for a measurable initiative. Produces `skills-resources/marketing/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md`, and strategy/execution/evals subfolders. Not a universal evaluator: route actual surface scoring to the relevant eval skill (e.g. short-form-eval, lp-eval; future ad-eval/email-eval/campaign-eval). Not for one-shot planning (use discover/task-breakdown) or multi-perspective debate (agents-panel)."
+description: "Single scaffold and ledger entrypoint for measurable strategy -> execution -> evaluation cycles. Use when the user wants an eval-loop, autoresearch-style improvement loop, experiment ledger, campaign/content iteration system, or asks where to store strategy/execution/eval artifacts for a measurable initiative. Produces `skills-resources/{marketing|product|research}/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md`, and strategy/execution/evals subfolders. Not a universal evaluator: route actual surface scoring to the relevant eval skill (e.g. short-form-eval, lp-eval; future ad-eval/email-eval/campaign-eval). Not for one-shot planning (use discover/task-breakdown) or multi-perspective debate (agents-panel)."
 argument-hint: "[measurable initiative name, e.g. 'pricing page conversion' or 'founder outbound sequence']"
 allowed-tools: Read Write Edit Grep Glob Bash
 license: MIT
@@ -47,10 +47,10 @@ routing:
   position: meta
   lifecycle: loop
   produces:
-    - skills-resources/marketing/loops/[slug]/program.md
-    - skills-resources/marketing/loops/[slug]/context.md
-    - skills-resources/marketing/loops/[slug]/results.tsv
-    - skills-resources/marketing/loops/[slug]/learnings.md
+    - skills-resources/{marketing|product|research}/loops/[slug]/program.md
+    - skills-resources/{marketing|product|research}/loops/[slug]/context.md
+    - skills-resources/{marketing|product|research}/loops/[slug]/results.tsv
+    - skills-resources/{marketing|product|research}/loops/[slug]/learnings.md
   consumes:
     - skills-resources/manifest.json
     - skills-resources/artifact-index.md
@@ -73,7 +73,7 @@ routing:
 
 # Eval Loop — Orchestrator
 
-*Meta process skill. Turns a measurable initiative into a loop-centered workspace where strategy artifacts, marketing/content execution artifacts, eval snapshots, result rows, and promoted learnings live together.*
+*Meta process skill. Turns a measurable initiative into a domain-scoped loop workspace where strategy artifacts, execution artifacts, eval snapshots, result rows, and promoted learnings live together.*
 
 **Core Question:** "Can future agents improve this measurable surface by reading one loop folder instead of reconstructing history from scattered skill outputs?"
 
@@ -103,6 +103,7 @@ It does not replace surface evaluators. `short-form-eval` handles short-form sco
 ## Inputs
 
 - Initiative name or slug (argument or inferred from prompt)
+- Domain: `marketing`, `product`, or `research` (default-infer from surface; ask if ambiguous)
 - Measurable surface (required)
 - Primary metric and source (required)
 - Mutable surface (what strategy/execution skills may change)
@@ -113,7 +114,7 @@ It does not replace surface evaluators. `short-form-eval` handles short-form sco
 Create or resume:
 
 ```text
-skills-resources/marketing/loops/[slug]/
+skills-resources/{marketing|product|research}/loops/[slug]/
 ├── program.md
 ├── context.md
 ├── strategy/
@@ -126,13 +127,13 @@ skills-resources/marketing/loops/[slug]/
 Use the scaffold helper for first creation:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/scaffold-eval-loop.ts "<loop name>"
+bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
 ```
 
 If running from this repo or a submodule checkout, this path is also valid:
 
 ```bash
-bun meta-skills/scripts/scaffold-eval-loop.ts "<loop name>"
+bun meta-skills/scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
 ```
 
 Evaluation skills should append result rows with the validated helper instead of hand-editing the TSV:
@@ -167,7 +168,7 @@ If a matching loop exists, summarize:
 
 ```text
 Found:
-- loop: skills-resources/marketing/loops/[slug]/
+- loop: skills-resources/[domain]/loops/[slug]/
 - program status: [status]
 - latest strategy artifact: [path or none]
 - latest execution artifact: [path or none]
@@ -185,9 +186,10 @@ Ask one bundled question set:
 
 1. What measurable surface does this loop own? (page / campaign / ad set / email sequence / social series / other)
 2. What is the primary metric and source? (e.g. conversion rate from GA, CTR from Meta, replies from CRM)
-3. What can change between cycles? (copy / offer / CTA / targeting / creative angle / sequence / format)
-4. What must stay fixed? (brand constraints, audience, budget, channel, product facts, compliance)
-5. What baseline or first measurement window should the loop use? ("unknown yet" is allowed if source is known)
+3. Which domain owns the measurable surface? (`marketing` for pages/campaigns/ads/email/social, `product` for in-product UX/activation/retention surfaces, `research` for recurring research motions)
+4. What can change between cycles? (copy / offer / CTA / targeting / creative angle / sequence / format / UX surface)
+5. What must stay fixed? (brand constraints, audience, budget, channel, product facts, compliance)
+6. What baseline or first measurement window should the loop use? ("unknown yet" is allowed if source is known)
 
 After the user answers, write the answers to `context.md`, update `program.md`, and dispatch agents.
 
@@ -202,13 +204,13 @@ After the user answers, write the answers to `context.md`, update `program.md`, 
 
 ## Dispatch
 
-1. If creating a new loop, run `scaffold-eval-loop.ts`.
+1. If creating a new loop, infer/confirm the domain and run `scaffold-eval-loop.ts "<loop name>" --domain <domain> --no-sync`.
 2. Read `program.md`, `context.md`, and any existing `results.tsv` row.
 3. Layer 1 parallel: Loop Architect + Metric Designer.
 4. Layer 2 sequential: Scope Guard -> Critic.
 5. If Critic FAIL, revise only the named failing sections once.
 6. Write final `program.md` and `context.md` with required frontmatter.
-7. Run `manifest-sync`.
+7. Run `manifest-sync` once after the final files are written.
 8. Return the loop path, the next recommended strategy/execution/eval skill, and status.
 
 ## Artifact Requirements
