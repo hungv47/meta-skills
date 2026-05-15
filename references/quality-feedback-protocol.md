@@ -19,10 +19,11 @@ Promote a loop learning into `skills-resources/experience/` only when the eviden
 Promotion criteria:
 
 1. The source result is `keep`, not `watch`, `discard`, or `blocked`.
-2. The evaluation has a named metric source, measurement window, and confidence note.
-3. The learning describes a reusable pattern, not a one-off execution detail.
-4. The learning names its scope: audience, offer, channel, product surface, or brand context.
-5. The target experience domain is explicit.
+2. The evidence is either three consecutive `keep` ratings across separate cycles OR one `keep` finding with explicit operator confirmation that it is reusable.
+3. The evaluation has a named metric source, measurement window, and confidence note.
+4. The learning describes a reusable pattern, not a one-off execution detail.
+5. The learning names its scope: audience, offer, channel, product surface, or brand context.
+6. The target experience domain is explicit.
 
 Domain routing:
 
@@ -50,7 +51,7 @@ Do not promote weak, confounded, or single-anecdote findings. Keep them in the l
 
 ## Quality Dashboard
 
-Maintain a living dashboard when a project has repeated evals or reviewer findings:
+Maintain a living dashboard when a project has repeated evals or reviewer findings. Full schema and helper usage live in `meta-skills/references/quality-dashboard-spec.md`.
 
 ```text
 skills-resources/meta/records/quality-dashboard.json
@@ -100,6 +101,12 @@ Create the dashboard when any of these thresholds are met:
 - the user asks for quality tracking.
 
 After creation, update it on every eval-loop result, critic override, and fresh-eyes report that changes a skill/rubric/loop quality signal. Do not create it for a single isolated successful run with no quality finding.
+
+Use the helper when possible:
+
+```bash
+bun meta-skills/scripts/update-quality-dashboard.ts --skill ad-copy --invocations 1 --critic-pass 1
+```
 
 ## Cross-Skill Feedback
 

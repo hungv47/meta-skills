@@ -68,6 +68,8 @@ Most loops are marketing. Pick the domain by who owns the measurable surface, no
 
 Promoted learnings should be appended to the relevant experience file (`audience.md`, `business.md`, `product.md`, `brand.md`, or `goals.md`) with the source loop/eval path, confidence, applicability boundary, and "do not apply when" caveat. Do not promote `watch`, `discard`, `blocked`, or confounded findings.
 
+Use `meta-skills/references/quality-dashboard-spec.md` for aggregate quality tracking when a project has repeated evals, critic overrides, or rubric calibration findings. The loop folder remains the evidence source; the dashboard is only a compact trend index.
+
 ## Where Loops Sit in `skills-resources/`
 
 The umbrella `skills-resources/` is the single home for every agent-generated artifact. Loops are one shape inside it; non-loop pipeline outputs sit alongside them:
@@ -205,6 +207,19 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/append-loop-result.ts "pr
   --baseline 2.9% \
   --status keep \
   --description "Sharper hero offer improved pricing page trial starts"
+```
+
+Update the quality dashboard when protocol thresholds are met:
+
+```bash
+bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/update-quality-dashboard.ts \
+  --loop pricing-page \
+  --latest-cycle 1 \
+  --latest-status keep \
+  --primary-metric conversion_rate \
+  --latest-value 3.4% \
+  --quality-risk low \
+  --next-action "Carry sharper hero proof into cycle 2"
 ```
 
 ## Guardrails

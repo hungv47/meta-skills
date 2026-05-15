@@ -91,6 +91,7 @@ Read before writing or modifying any loop artifact:
 
 - `../../references/eval-loop-spec.md`
 - `../../references/quality-feedback-protocol.md`
+- `../../references/quality-dashboard-spec.md`
 
 ## Responsibility Split
 
@@ -149,6 +150,19 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/append-loop-result.ts "<l
   --baseline 2.9% \
   --status keep \
   --description "One sentence without tabs"
+```
+
+When the Quality Feedback Protocol threshold is met, update the dashboard with:
+
+```bash
+bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/update-quality-dashboard.ts \
+  --loop "<loop slug>" \
+  --latest-cycle N \
+  --latest-status keep \
+  --primary-metric conversion_rate \
+  --latest-value 3.4% \
+  --quality-risk low \
+  --next-action "One sentence"
 ```
 
 ## Pre-Dispatch
@@ -213,7 +227,7 @@ After the user answers, write the answers to `context.md`, update `program.md`, 
 4. Layer 2 sequential: Scope Guard -> Critic.
 5. If Critic FAIL, revise only the named failing sections once.
 6. Write final `program.md` and `context.md` with required frontmatter.
-7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `skills-resources/experience/`, log critic overrides when present, create or update the quality dashboard when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
+7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `skills-resources/experience/`, log critic overrides when present, create or update the quality dashboard with `update-quality-dashboard.ts` when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
 8. Run `manifest-sync` once after the final files are written.
 9. Return the loop path, the next recommended strategy/execution/eval skill, quality-feedback action, and status.
 
