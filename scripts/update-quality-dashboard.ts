@@ -50,12 +50,14 @@ const root = realpathSync(resolve(args.root ?? process.cwd()));
 const today = args.date ?? new Date().toISOString().slice(0, 10);
 if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) fail(`Invalid --date ${JSON.stringify(today)}. Expected YYYY-MM-DD.`);
 
-const skillsResourcesDir = join(root, "skills-resources");
-const metaDir = join(skillsResourcesDir, "meta");
+const agentsDir = join(root, ".agents");
+const skillArtifactsDir = join(agentsDir, "skill-artifacts");
+const metaDir = join(skillArtifactsDir, "meta");
 const recordsDir = join(metaDir, "records");
-ensureSafeDirectory(skillsResourcesDir, "skills-resources");
-ensureSafeDirectory(metaDir, "skills-resources/meta");
-ensureSafeDirectory(recordsDir, "skills-resources/meta/records");
+ensureSafeDirectory(agentsDir, ".agents");
+ensureSafeDirectory(skillArtifactsDir, ".agents/skill-artifacts");
+ensureSafeDirectory(metaDir, ".agents/skill-artifacts/meta");
+ensureSafeDirectory(recordsDir, ".agents/skill-artifacts/meta/records");
 const dashboardPath = join(recordsDir, "quality-dashboard.json");
 const dashboard = readDashboard(dashboardPath, today);
 
@@ -78,7 +80,7 @@ if (!changed) {
 
 dashboard.updated = today;
 writeFileSync(dashboardPath, `${JSON.stringify(dashboard, null, 2)}\n`);
-console.log(`update-quality-dashboard: skills-resources/meta/records/quality-dashboard.json`);
+console.log(`update-quality-dashboard: .agents/skill-artifacts/meta/records/quality-dashboard.json`);
 
 function updateSkill(dashboard: Dashboard, skill: string, values: Record<string, string>, date: string): void {
   const deltaInvocations = intOpt(values.invocations, 0, "--invocations");

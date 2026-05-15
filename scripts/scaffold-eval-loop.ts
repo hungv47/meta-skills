@@ -5,9 +5,8 @@
 // Usage:
 //   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]
 //
-// Domain defaults to "marketing" since every current evaluator (lp-eval,
-// short-form-eval, future ad-eval/email-eval/campaign-eval) targets a
-// marketing initiative.
+// --domain is accepted for backward-compatible command lines but loops now live
+// in a domain-neutral workspace: skills-resources/loops/<slug>.
 
 import { existsSync, mkdirSync, writeFileSync, lstatSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
@@ -15,11 +14,10 @@ import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 
-const ALLOWED_DOMAINS = new Set(["marketing", "product", "research"]);
 const domainIdx = args.indexOf("--domain");
 const domain = domainIdx !== -1 && args[domainIdx + 1] ? args[domainIdx + 1] : "marketing";
-if (!ALLOWED_DOMAINS.has(domain)) {
-  console.error(`Invalid --domain ${JSON.stringify(domain)}. Expected one of: ${[...ALLOWED_DOMAINS].join(", ")}`);
+if (!["marketing", "product", "research"].includes(domain)) {
+  console.error(`Invalid --domain ${JSON.stringify(domain)}. Expected one of: marketing, product, research`);
   process.exit(1);
 }
 
@@ -101,10 +99,7 @@ const title = titleize(name);
 const skillsResources = join(ROOT, "skills-resources");
 assertExistingDirectorySafe(skillsResources);
 mkdirSync(skillsResources, { recursive: true });
-const domainRoot = join(skillsResources, domain);
-assertExistingDirectorySafe(domainRoot);
-mkdirSync(domainRoot, { recursive: true });
-const loopRoot = join(skillsResources, domain, "loops");
+const loopRoot = join(skillsResources, "loops");
 assertExistingDirectorySafe(loopRoot);
 mkdirSync(loopRoot, { recursive: true });
 const loopDir = join(loopRoot, slug);
@@ -112,7 +107,7 @@ assertNotSymlink(loopDir);
 const realLoopRoot = realpathSync(loopRoot);
 const projectedLoopDir = resolve(loopRoot, slug);
 if (projectedLoopDir !== realLoopRoot && !projectedLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
-  console.error("Refusing to create loop outside skills-resources/<domain>/loops.");
+  console.error("Refusing to create loop outside skills-resources/loops.");
   process.exit(1);
 }
 const created: string[] = [];
@@ -122,7 +117,7 @@ mkdirSync(loopDir, { recursive: true });
 assertNotSymlink(loopDir);
 const realLoopDir = realpathSync(loopDir);
 if (realLoopDir !== realLoopRoot && !realLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
-  console.error("Refusing to create loop outside skills-resources/<domain>/loops.");
+  console.error("Refusing to create loop outside skills-resources/loops.");
   process.exit(1);
 }
 for (const subdir of ["strategy", "execution", "evals"]) {
@@ -138,7 +133,7 @@ writeIfMissing(
 
 writeIfMissing(
   join(loopDir, "context.md"),
-  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Context substrate for ${title}`)}\npurpose: "Loop-local assumptions, constraints, baselines, and links to canonical artifacts"\nlifecycle: loop-context\nuse_when: "Before any strategy, execution, or evaluation step inside this loop"\ndo_not_use_when: "Canonical brand, research, or architecture artifacts conflict; refresh this context first"\nupstream: "research/, brand/, architecture/, skills-resources/experience/"\ndownstream: "program.md, strategy artifacts, execution artifacts, eval artifacts"\n---\n\n# ${title} Context\n\n## Canonical Inputs\n\n| Source | What to use | Freshness / caveat |\n|---|---|---|\n| TBD | TBD | TBD |\n\n## Baseline\n\n| Metric | Value | Window | Source |\n|---|---:|---|---|\n| TBD | TBD | TBD | TBD |\n\n## Audience / Segment\n\nTBD.\n\n## Offer / Message Hypothesis\n\nTBD.\n\n## Constraints\n\n- TBD.\n\n## Open Questions\n\n- TBD.\n`,
+  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Context substrate for ${title}`)}\npurpose: "Loop-local assumptions, constraints, baselines, and links to canonical artifacts"\nlifecycle: loop-context\nuse_when: "Before any strategy, execution, or evaluation step inside this loop"\ndo_not_use_when: "Canonical brand, research, or architecture artifacts conflict; refresh this context first"\nupstream: "research/, brand/, architecture/, .agents/experience/"\ndownstream: "program.md, strategy artifacts, execution artifacts, eval artifacts"\n---\n\n# ${title} Context\n\n## Canonical Inputs\n\n| Source | What to use | Freshness / caveat |\n|---|---|---|\n| TBD | TBD | TBD |\n\n## Baseline\n\n| Metric | Value | Window | Source |\n|---|---:|---|---|\n| TBD | TBD | TBD | TBD |\n\n## Audience / Segment\n\nTBD.\n\n## Offer / Message Hypothesis\n\nTBD.\n\n## Constraints\n\n- TBD.\n\n## Open Questions\n\n- TBD.\n`,
   created,
   skipped
 );

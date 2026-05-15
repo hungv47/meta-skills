@@ -232,7 +232,7 @@ Before finalizing acceptance criteria for any task:
 | Binary | Is it clearly pass or fail, with no "sort of works"? |
 | Independent | Does it test this task only, not upstream tasks? |
 | Quick | Can someone verify it in under 2 minutes? |
-| Outcome-focused | Does it describe WHAT, not HOW? |
+| internal | Does it describe WHAT, not HOW? |
 
 **Template sentence structure:** `[Action] with [input/state] produces [observable result].`
 

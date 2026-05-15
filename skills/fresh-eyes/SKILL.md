@@ -47,7 +47,7 @@ routing:
   position: horizontal
   lifecycle: snapshot
   produces:
-    - skills-resources/meta/records/fresh-eyes-*.md
+    - .agents/skill-artifacts/meta/records/fresh-eyes-*.md
   consumes: []
   requires: []
   defers-to:
@@ -80,7 +80,7 @@ routing:
 - Relevant context (surrounding files, API contracts, tests)
 
 ## Output
-- `skills-resources/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — verdict, issues found/fixed/declined, changes made. Dated, slug-suffixed, immutable per-run record (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing what was reviewed (e.g., `2026-05-08-fresh-eyes-claude-md-migration.md`). Do NOT overwrite prior reports — they accumulate as audit trail; operator can prune via cleanup-artifacts when needed.
+- `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — verdict, issues found/fixed/declined, changes made. Dated, slug-suffixed, immutable per-run record (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing what was reviewed (e.g., `2026-05-08-fresh-eyes-claude-md-migration.md`). Do NOT overwrite prior reports — they accumulate as audit trail; operator can prune via cleanup-artifacts when needed.
 
 ## Chain Position
 - **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
@@ -90,13 +90,13 @@ routing:
 
 ## Pre-Dispatch
 
-Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`) before spawning reviewer/resolver agents.
+Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`) before spawning reviewer/resolver agents.
 
 **Needed dimensions:** diff/branch reference (what to review), risk class (security / performance / correctness / all), prior reviewer feedback if any, requirements or spec the work was supposed to implement.
 
 **Read order:**
 1. Conversation context — usually fresh-eyes is invoked right after the work it's reviewing, so the spec lives in the same session.
-2. Pipeline: `skills-resources/meta/specs/*.md`, `skills-resources/meta/tasks.md`, `architecture/system-architecture.md` if referenced.
+2. Pipeline: `.agents/skill-artifacts/meta/specs/*.md`, `.agents/skill-artifacts/meta/tasks.md`, `architecture/system-architecture.md` if referenced.
 3. Git: `git diff <base>...HEAD` or named branch.
 
 **Warm Start** (invoked at end of build session, spec known): summarize what's being reviewed and dispatch.
@@ -112,7 +112,7 @@ Reviewing the above against [spec.md / tasks.md / inline requirements].
 Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?
 ```
 
-The two `! \`...\`` lines are inline shell interpolation (see `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns"). When `/fresh-eyes` is invoked, Claude Code substitutes the git output before the LLM sees the prompt — so the warm-start summary lands with the actual diff range instead of asking the orchestrator to derive it.
+The two `! \`...\`` lines are inline shell interpolation (see this skill's generated support notes). When `/fresh-eyes` is invoked, Claude Code substitutes the git output before the LLM sees the prompt — so the warm-start summary lands with the actual diff range instead of asking the orchestrator to derive it.
 
 **Cold Start** (no upstream session, user invoking standalone):
 
@@ -161,9 +161,9 @@ Spawn a single reviewer agent with fresh context. The reviewer has NO access to 
 **Agent config:**
 - `model: "sonnet"` (default — use opus if the code is complex or security-critical)
 
-**Learned rules:** Before constructing the reviewer prompt, read `skills-resources/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
+**Learned rules:** Before constructing the reviewer prompt, read `.agents/skill-artifacts/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
 
-**Quality feedback:** Also read `meta-skills/references/quality-feedback-protocol.md`. If this review includes a critic override, repeated rubric disagreement, high-stakes artifact, or post-humanize rewrite, apply the relevant logging, dashboard creation/update, or consensus guidance. Use `meta-skills/references/shared-critic-rubrics.md` when a review needs a reusable quality dimension such as claim substantiation, protected-token preservation, mechanism distinctness, or humanize regression.
+**Quality feedback:** Also read `references/_shared/quality-feedback-protocol.md`. If this review includes a critic override, repeated rubric disagreement, high-stakes artifact, or post-humanize rewrite, apply the relevant logging, dashboard creation/update, or consensus guidance. Use `references/_shared/shared-critic-rubrics.md` when a review needs a reusable quality dimension such as claim substantiation, protected-token preservation, mechanism distinctness, or humanize regression.
 
 **Reviewer prompt:**
 
@@ -329,7 +329,7 @@ Done.
 
 ### 7. Write the report
 
-Write to `skills-resources/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable):
+Write to `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable):
 
 ```markdown
 ---
@@ -438,11 +438,11 @@ Pattern:
 
 ## Scope Drift Detection
 
-When `skills-resources/meta/tasks.md` or `skills-resources/meta/specs/*.md` exists, the reviewer adds a scope check:
+When `.agents/skill-artifacts/meta/tasks.md` or `.agents/skill-artifacts/meta/specs/*.md` exists, the reviewer adds a scope check:
 
 After reviewing code quality, compare the implementation against the stated requirements:
-- Read `skills-resources/meta/tasks.md` — are all tasks addressed? Are there changes that don't map to any task?
-- Read `skills-resources/meta/specs/*.md` — does the implementation match the spec? Are there requirements that were missed or scope additions that weren't planned?
+- Read `.agents/skill-artifacts/meta/tasks.md` — are all tasks addressed? Are there changes that don't map to any task?
+- Read `.agents/skill-artifacts/meta/specs/*.md` — does the implementation match the spec? Are there requirements that were missed or scope additions that weren't planned?
 
 Report scope drift findings separately:
 
@@ -480,7 +480,7 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 - **Resolver introduces new bugs**: This is why round 2 exists for critical code.
 - **Reviewer and resolver disagree**: You (the orchestrator) break the tie.
 - **Code is too large**: Split into logical chunks and review each separately. Don't send 2000 lines in one prompt.
-- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `skills-resources/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md`. Reports accumulate as audit trail (lifecycle: snapshot — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
+- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md`. Reports accumulate as audit trail (lifecycle: snapshot — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
 - **Reviewer or resolver agent fails**: If the reviewer crashes or returns garbage, retry once with the same prompt. If it fails again, fall back to your own review (single-agent mode). Note the failure in the report.
 - **Architecture or design review** (not code): Adjust the reviewer prompt — replace "code" references with "design" or "architecture". The 5 review categories still apply (Correctness, Edge cases, Simplification, Security, Consistency).
 
@@ -488,7 +488,7 @@ User can override: "review this with opus", "do 2 rounds of verification", or "r
 
 | File | Description |
 |------|-------------|
-| `skills-resources/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` | Verification report with issues and resolutions |
+| `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` | Verification report with issues and resolutions |
 
 Each run writes a new dated, slug-suffixed file (lifecycle: snapshot — dated, immutable). Reports accumulate as audit trail; operator prunes via cleanup-artifacts when needed.
 

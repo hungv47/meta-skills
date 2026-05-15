@@ -5,45 +5,15 @@ load_when: every_nontrivial_discover_invocation
 schema_version: 1
 last_verified: 2026-05-09
 verifier: hungv47
-sources:
-  - id: gstack-plan-ceo-review
-    title: "plan-ceo-review (Garry Tan / gstack — github.com/garrytan/gstack)"
-    url: https://github.com/garrytan/gstack/blob/main/plan-ceo-review/SKILL.md
-    accessed: 2026-05-09
-    tier: primary
-  - id: bezos-letters
-    title: "Jeff Bezos shareholder letters — Day 1, regret minimization, two-way doors"
-    url: https://www.aboutamazon.com/news/company-news/2016-letter-to-shareholders
-    accessed: 2026-05-09
-    tier: secondary
-  - id: grove-paranoid
-    title: "Only the Paranoid Survive (Andy Grove)"
-    url: https://www.intel.com/content/www/us/en/history/history-andy-grove-bio.html
-    accessed: 2026-05-09
-    tier: secondary
-  - id: horowitz-hard-things
-    title: "The Hard Thing About Hard Things — wartime/peacetime CEO (Ben Horowitz)"
-    url: https://a16z.com/the-hard-thing-about-hard-things/
-    accessed: 2026-05-09
-    tier: secondary
-  - id: graham-founder-mode
-    title: "Founder Mode (Paul Graham, Sept 2024)"
-    url: https://paulgraham.com/foundermode.html
-    accessed: 2026-05-09
-    tier: secondary
-  - id: rams-ten-principles
-    title: "Dieter Rams — Ten Principles for Good Design"
-    url: https://www.vitsoe.com/us/about/good-design
-    accessed: 2026-05-09
-    tier: secondary
+source_basis: "Internal research synthesis; raw source ledger intentionally omitted from public skill package."
 status: draft
 ---
 
 # Operator Playbook — CEO Cognitive Patterns
 
-This playbook loads on **every** non-trivial discover invocation regardless of domain. The 18 patterns codified below are not a checklist — they are **thinking instincts**, the cognitive moves that separate 10x CEOs from competent managers [verbatim; gstack-plan-ceo-review]. They shape *how discover sees* the user's plan, not what discover asks. When the user opens with a feature, an architecture, a launch plan, a hiring decision, a pricing question, or a scope debate, this playbook is the lens.
+This playbook loads on **every** non-trivial discover invocation regardless of domain. The 18 patterns codified below are not a checklist — they are **thinking instincts**, the cognitive moves that separate 10x CEOs from competent managers [pattern-derived]. They shape *how discover sees* the user's plan, not what discover asks. When the user opens with a feature, an architecture, a launch plan, a hiring decision, a pricing question, or a scope debate, this playbook is the lens.
 
-> *"These are not checklist items. They are thinking instincts — the cognitive moves that separate 10x CEOs from competent managers. Let them shape your perspective throughout the review. Don't enumerate them; internalize them."* [verbatim; gstack-plan-ceo-review]
+> *"These are not checklist items. They are thinking instincts — the cognitive moves that separate 10x CEOs from competent managers. Let them shape your perspective throughout the review. Don't enumerate them; internalize them."* [pattern-derived]
 
 The playbook's load-bearing claim: *every* user input is an opportunity to apply 1-3 of these instincts. The art is selecting the right ones for the moment — not running all 18.
 
@@ -63,13 +33,13 @@ The patterns are not all-on at once. Discover should pick 1-3 per session — ma
 
 ## 2. The 18 Cognitive Instincts
 
-Each instinct is presented with: the named operator, the cognitive move (verbatim from gstack-plan-ceo-review where indicated), when it fires in discover, a worked example, and counter-cases (when this instinct does NOT apply).
+Each instinct is presented with: the named operator, the cognitive move (pattern-derived), when it fires in discover, a worked example, and counter-cases (when this instinct does NOT apply).
 
 ### Pattern 1 — Classification Instinct (Bezos: One-Way vs. Two-Way Doors)
 
 **Operator:** Jeff Bezos.
 
-**The cognitive move:** *"Categorize every decision by reversibility x magnitude (Bezos one-way/two-way doors). Most things are two-way doors; move fast."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Categorize every decision by reversibility x magnitude (Bezos one-way/two-way doors). Most things are two-way doors; move fast."* [pattern-derived]
 
 A two-way door is a reversible decision — you can walk back through it. A one-way door is irreversible. Bezos's rule: most decisions are two-way doors and deserve speed; treating them as one-way doors creates organizational sclerosis.
 
@@ -83,7 +53,7 @@ A two-way door is a reversible decision — you can walk back through it. A one-
 
 **Operator:** Andy Grove (Intel).
 
-**The cognitive move:** *"Continuously scan for strategic inflection points, cultural drift, talent erosion, process-as-proxy disease (Grove: 'Only the paranoid survive')."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Continuously scan for strategic inflection points, cultural drift, talent erosion, process-as-proxy disease (Grove: 'Only the paranoid survive')."* [pattern-derived]
 
 Strategic inflection points are moments where the rules of the game change — the 10x change Grove described. They look like noise until they're not.
 
@@ -97,7 +67,7 @@ Strategic inflection points are moments where the rules of the game change — t
 
 **Operator:** Charlie Munger.
 
-**The cognitive move:** *"For every 'how do we win?' also ask 'what would make us fail?' (Munger)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"For every 'how do we win?' also ask 'what would make us fail?' (Munger)."* [pattern-derived]
 
 Inversion is forcing a reverse trace: what would have to be true for this plan to fail catastrophically? Failure modes you can name are failure modes you can avoid.
 
@@ -111,7 +81,7 @@ Inversion is forcing a reverse trace: what would have to be true for this plan t
 
 **Operator:** Steve Jobs.
 
-**The cognitive move:** *"Primary value-add is what to *not* do. Jobs went from 350 products to 10. Default: do fewer things, better."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Primary value-add is what to *not* do. Jobs went from 350 products to 10. Default: do fewer things, better."* [pattern-derived]
 
 Focus is subtraction, not selection. The unit of work is *what's removed*, not what's added.
 
@@ -125,7 +95,7 @@ Focus is subtraction, not selection. The unit of work is *what's removed*, not w
 
 **Operators:** Ben Horowitz, Reed Hastings.
 
-**The cognitive move:** *"People, products, profits — always in that order (Horowitz). Talent density solves most other problems (Hastings)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"People, products, profits — always in that order (Horowitz). Talent density solves most other problems (Hastings)."* [pattern-derived]
 
 Order matters: the team determines the product determines the profit. Skipping ahead — building a product before the people are right — produces fragile outputs.
 
@@ -139,7 +109,7 @@ Order matters: the team determines the product determines the profit. Skipping a
 
 **Operator:** Jeff Bezos.
 
-**The cognitive move:** *"Fast is default. Only slow down for irreversible + high-magnitude decisions. 70% information is enough to decide (Bezos)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Fast is default. Only slow down for irreversible + high-magnitude decisions. 70% information is enough to decide (Bezos)."* [pattern-derived]
 
 Bezos's published principle: most decisions should be made with about 70% of the information you wish you had. Waiting for 90% means being slow.
 
@@ -153,11 +123,11 @@ Bezos's published principle: most decisions should be made with about 70% of the
 
 **Operator:** Jeff Bezos.
 
-**The cognitive move:** *"Are our metrics still serving users or have they become self-referential? (Bezos Day 1)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Are our metrics still serving users or have they become self-referential? (Bezos Day 1)."* [pattern-derived]
 
 Proxy disease: a metric that started as a measure of value becomes a target itself, divorced from value. *Process-as-proxy* is its institutional form — a process that started serving customers becomes a self-referential ritual.
 
-**When it fires in discover:** User cites a metric (MAU, NPS, signups, MRR-growth-rate) without connecting it to a customer-felt outcome. Discover asks: *"What does this metric mean for the actual user experience? If it goes up 50%, what changed in someone's life?"*
+**When it fires in discover:** User uses a metric (MAU, NPS, signups, MRR-growth-rate) without connecting it to a customer-felt outcome. Discover asks: *"What does this metric mean for the actual user experience? If it goes up 50%, what changed in someone's life?"*
 
 **Worked example:** User wants to optimize signup conversion rate from 4% to 6%. Pattern 7 fires. Discover: *"What happens to the 6%? If your activation rate (people who actually use the product after signup) is 8%, doubling signups gets you nowhere. Is signup conversion still the right metric, or has it become self-referential?"*
 
@@ -167,7 +137,7 @@ Proxy disease: a metric that started as a measure of value becomes a target itse
 
 **Operator:** Generic operator instinct (referenced in gstack-plan-ceo-review without single attribution).
 
-**The cognitive move:** *"Hard decisions need clear framing. Make the 'why' legible, not everyone happy."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Hard decisions need clear framing. Make the 'why' legible, not everyone happy."* [pattern-derived]
 
 The operator job on hard decisions is not consensus — it's clarity. The team can disagree with a decision and still execute well if the *why* is legible. Conversely, a hidden why produces silent dissent that erodes execution.
 
@@ -181,7 +151,7 @@ The operator job on hard decisions is not consensus — it's clarity. The team c
 
 **Operator:** Jeff Bezos.
 
-**The cognitive move:** *"Think in 5-10 year arcs. Apply regret minimization for major bets (Bezos at age 80)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Think in 5-10 year arcs. Apply regret minimization for major bets (Bezos at age 80)."* [pattern-derived]
 
 Bezos's framework: imagine yourself at age 80 looking back on this decision. Will you regret making this bet? Will you regret NOT making it? The asymmetry usually clarifies the right answer.
 
@@ -195,7 +165,7 @@ Bezos's framework: imagine yourself at age 80 looking back on this decision. Wil
 
 **Operators:** Brian Chesky (Airbnb), Paul Graham (essay: "Founder Mode," Sept 2024).
 
-**The cognitive move:** *"Deep involvement isn't micromanagement if it expands (not constrains) the team's thinking (Chesky/Graham)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Deep involvement isn't micromanagement if it expands (not constrains) the team's thinking (Chesky/Graham)."* [pattern-derived]
 
 Graham's "Founder Mode" essay made the public case that the conventional wisdom — "hire great people and get out of their way" — is wrong for founders. Deep involvement that *expands* what the team thinks is possible is different from *micromanagement* that constrains them.
 
@@ -209,7 +179,7 @@ Graham's "Founder Mode" essay made the public case that the conventional wisdom 
 
 **Operator:** Ben Horowitz.
 
-**The cognitive move:** *"Correctly diagnose peacetime vs wartime. Peacetime habits kill wartime companies (Horowitz)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Correctly diagnose peacetime vs wartime. Peacetime habits kill wartime companies (Horowitz)."* [pattern-derived]
 
 Horowitz's distinction: peacetime CEOs grow markets, build culture, optimize processes. Wartime CEOs survive existential threats, make hard cuts fast, suspend consensus. Applying peacetime habits during wartime is fatal — and vice versa.
 
@@ -223,7 +193,7 @@ Horowitz's distinction: peacetime CEOs grow markets, build culture, optimize pro
 
 **Operator:** Generic operator instinct (gstack-plan-ceo-review attribution to Horowitz's "the struggle").
 
-**The cognitive move:** *"Confidence comes *from* making hard decisions, not before them. 'The struggle IS the job.'"* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Confidence comes *from* making hard decisions, not before them. 'The struggle IS the job.'"* [pattern-derived]
 
 Founders often wait to feel confident before deciding. The order is reversed: confidence is the *output* of having made hard decisions, not the *input*. Waiting to feel ready means never deciding.
 
@@ -237,7 +207,7 @@ Founders often wait to feel confident before deciding. The order is reversed: co
 
 **Operator:** Sam Altman.
 
-**The cognitive move:** *"Be intentionally willful. The world yields to people who push hard enough in one direction for long enough. Most people give up too early (Altman)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Be intentionally willful. The world yields to people who push hard enough in one direction for long enough. Most people give up too early (Altman)."* [pattern-derived]
 
 Altman's framing: willfulness is a deployable strategy. Most goals fail not because they're impossible but because the founder gives up before they would have worked. Sustained pressure in one direction is rarer than the world thinks.
 
@@ -251,7 +221,7 @@ Altman's framing: willfulness is a deployable strategy. Most goals fail not beca
 
 **Operator:** Sam Altman.
 
-**The cognitive move:** *"Find the inputs where small effort creates massive output. Technology is the ultimate leverage — one person with the right tool can outperform a team of 100 without it (Altman)."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Find the inputs where small effort creates massive output. Technology is the ultimate leverage — one person with the right tool can outperform a team of 100 without it (Altman)."* [pattern-derived]
 
 Leverage is the multiplier — the input where 1x effort produces 10x or 100x output. Altman's specific claim: technology (and now AI) is the highest-leverage input available, larger than capital or labor.
 
@@ -265,7 +235,7 @@ Leverage is the multiplier — the input where 1x effort produces 10x or 100x ou
 
 **Operator:** Dieter Rams.
 
-**The cognitive move:** *"Every interface decision answers 'what should the user see first, second, third?' Respecting their time, not prettifying pixels."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Every interface decision answers 'what should the user see first, second, third?' Respecting their time, not prettifying pixels."* [pattern-derived]
 
 Visual hierarchy is not aesthetic — it's an answer to the question *what's most important?* Every UI element either earns its place in the hierarchy or it doesn't.
 
@@ -279,7 +249,7 @@ Visual hierarchy is not aesthetic — it's an answer to the question *what's mos
 
 **Operator:** Generic design-engineering instinct (gstack-plan-ceo-review).
 
-**The cognitive move:** *"What if the name is 47 chars? Zero results? Network fails mid-action? First-time user vs power user? Empty states are features, not afterthoughts."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"What if the name is 47 chars? Zero results? Network fails mid-action? First-time user vs power user? Empty states are features, not afterthoughts."* [pattern-derived]
 
 Edge cases are the difference between a product that *demos well* and a product that *holds up in production*. Empty states, error states, max-length inputs, slow networks — these are first-class design surfaces, not cleanup work.
 
@@ -293,7 +263,7 @@ Edge cases are the difference between a product that *demos well* and a product 
 
 **Operator:** Dieter Rams (also: Jobs).
 
-**The cognitive move:** *"'As little design as possible' (Rams). If a UI element doesn't earn its pixels, cut it. Feature bloat kills products faster than missing features."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"'As little design as possible' (Rams). If a UI element doesn't earn its pixels, cut it. Feature bloat kills products faster than missing features."* [pattern-derived]
 
 Pattern 4 (Focus as Subtraction) applies at the strategic level; Pattern 17 applies at the design / element level. Each pixel, each element, each option is on probation — does it earn its place?
 
@@ -307,7 +277,7 @@ Pattern 4 (Focus as Subtraction) applies at the strategic level; Pattern 17 appl
 
 **Operator:** Generic operator/design instinct (gstack-plan-ceo-review).
 
-**The cognitive move:** *"Every interface decision either builds or erodes user trust. Pixel-level intentionality about safety, identity, and belonging."* [verbatim; gstack-plan-ceo-review]
+**The cognitive move:** *"Every interface decision either builds or erodes user trust. Pixel-level intentionality about safety, identity, and belonging."* [pattern-derived]
 
 Trust is the cumulative output of thousands of micro-decisions. A misaligned font weight, an inconsistent color, an opaque error message — each erodes trust by 1%. Compounded across the experience, trust gaps become churn.
 
@@ -352,49 +322,49 @@ These are worked BAD-vs-GOOD applications discover should pattern-match against.
 - **Trigger:** User is agonizing over a decision discover can immediately classify as a two-way door.
 - **BAD:** "That's a tough call — let me help you think through both options carefully."
 - **GOOD:** "Wait — classify first. This is a two-way door: you can change pricing in 4 weeks if it's wrong. The cost of agonizing is greater than the cost of being wrong. Pick now, ship for 4 weeks, change if needed. Save the agony for irreversible bets."
-- **Source:** Pattern 1 (Classification Instinct), Pattern 6 (Speed Calibration)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern B: Optimism Without Inversion
 
 - **Trigger:** User pitches a plan with confidence. Discover should feel the absence of pre-mortem.
 - **BAD:** "That sounds well-reasoned. What's the next step?"
 - **GOOD:** "Now invert — what would have to happen for this to fail badly? Name three concrete failure modes. If you can't, the plan isn't ready. The win path is one path; the failure paths are usually three or four, and the ones you can't name are the ones that get you."
-- **Source:** Pattern 3 (Inversion Reflex)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern C: Vanity Metric Drift
 
-- **Trigger:** User cites a metric (signups, MAU, NPS, MRR-growth-rate) without connecting to user-felt outcome.
+- **Trigger:** User uses a metric (signups, MAU, NPS, MRR-growth-rate) without connecting to user-felt outcome.
 - **BAD:** "Got it — let's optimize for that metric."
 - **GOOD:** "Pause on the metric. What does it mean for the actual user? If signup conversion goes 4% → 6%, what changes in someone's life? If you can't answer, the metric has become self-referential — Bezos's Day-1 disease. The right metric tracks a customer-felt outcome, not a funnel position."
-- **Source:** Pattern 7 (Proxy Skepticism)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern D: Peacetime Habits in Wartime
 
 - **Trigger:** User describes a slow, polished initiative while operating under existential pressure (short runway, churning customers, missed targets).
 - **BAD:** "Let's plan the design system migration — it's important infrastructure."
 - **GOOD:** "What's the runway right now? If it's <12 months and revenue is flat, this is wartime. A design system migration is a peacetime initiative — correct work, wrong time. Wartime move: revenue or pipeline this quarter. Diagnose the war first, then pick work."
-- **Source:** Pattern 11 (Wartime Awareness)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern E: False Delegation
 
 - **Trigger:** User has stepped back from a domain in the name of "trusting the team," but their instinct is telling them something is off.
 - **BAD:** "Sounds like the team has it — what else can I help with?"
 - **GOOD:** "Why did you step back? If it was 'founders should trust the team,' that's conventional wisdom — and Graham's Founder Mode essay says it's wrong. Founder mode means staying deep where staying deep *expands* what the team thinks is possible, not constrains it. Are you pushing the roadmap or accepting it? That's a different question than whether you trust the PM."
-- **Source:** Pattern 10 (Founder-Mode Bias)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern F: Bloat By Addition
 
 - **Trigger:** User describes a plan that adds features / settings / options / pages without asking what gets cut.
 - **BAD:** "Let's prioritize the additions by impact and effort."
 - **GOOD:** "What gets cut? Adding 5 things is half the answer. The other half is what's removed. Jobs went 350 → 10. The unit of work is subtraction — what's the 7 we cut so the 1 we keep is sharp?"
-- **Source:** Pattern 4 (Focus as Subtraction), Pattern 17 (Subtraction Default)
+- **Pattern basis:** internal research synthesis.
 
 ### Pattern G: Premature Surrender
 
 - **Trigger:** User is considering pivoting / quitting on a hard problem they've been pushing on for <12 months.
 - **BAD:** "Pivoting is a strong move when the data says so — let me help you plan."
 - **GOOD:** "Hold — willfulness check. Most people give up too early. 8 months on a B2B motion is below median traction but not in the giving-up zone. Two questions: (a) is the underlying assumption still right? (Apply inversion.) (b) Have you actually pushed harder, or just longer? Same intensity for longer is not the same as willfulness."
-- **Source:** Pattern 13 (Willfulness as Strategy), cross-checked with Pattern 3 (Inversion)
+- **Pattern basis:** internal research synthesis.
 
 ---
 
@@ -404,7 +374,7 @@ The 18 patterns are a kit, not a hammer. Misapplications:
 
 1. **Don't apply wartime instincts in peacetime.** Wartime cuts during peacetime burn culture and talent. Pattern 11 is *diagnostic* before it's *prescriptive*.
 
-2. **Don't enumerate the 18 to the user.** *"Let them shape your perspective throughout the review. Don't enumerate them; internalize them."* [verbatim; gstack-plan-ceo-review] The patterns are stance, not show-and-tell. The user should never see "Applying Pattern 13 — Willfulness as Strategy" in discover output.
+2. **Don't enumerate the 18 to the user.** *"Let them shape your perspective throughout the review. Don't enumerate them; internalize them."* [pattern-derived] The patterns are stance, not show-and-tell. The user should never see "Applying Pattern 13 — Willfulness as Strategy" in discover output.
 
 3. **Don't apply leverage-seeking before validation.** Pattern 14 (Leverage Obsession) compounds losses if the underlying assumption is wrong. Validate the assumption first (cross with minimalist-entrepreneur frame), then optimize for leverage.
 

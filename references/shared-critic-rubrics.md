@@ -83,4 +83,3 @@ Use when a draft passes through a terminal humanize step.
 | 0-2 | Output is smoother but materially less true, less specific, or less useful. |
 
 Auto-fail: protected-token loss, quantified proof removed, CTA changed, or compliance caveat compressed away.
-

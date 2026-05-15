@@ -1,6 +1,6 @@
 # Execution Protocol — Reader's Manual for `tasks.md`
 
-This file is the **operating manual for any agent (or human) picking up an existing `skills-resources/meta/tasks.md`** to implement work. The `task-breakdown` skill produces the artifact; this protocol governs how downstream consumers run it.
+This file is the **operating manual for any agent (or human) picking up an existing `.agents/skill-artifacts/meta/tasks.md`** to implement work. The `task-breakdown` skill produces the artifact; this protocol governs how downstream consumers run it.
 
 If you're decomposing fresh work, you don't need this file — go to `task-breakdown`'s `SKILL.md`. If you're holding a tasks.md and ready to build, read top to bottom.
 
@@ -22,9 +22,9 @@ Any agent (including a fresh session) uses this exact sequence:
 1. **Read Status Index** in execution order, top to bottom. Don't scan task blocks yet.
 2. **Find first row where:** `Status: pending` AND every `Depends on` ID has `Status: done`. That's the next task.
 3. **If none**, check `in_progress` rows:
-   - `Updated` attribution is *you* (same agent, same session) → continue it.
-   - Different agent → apply staleness check below. If stale → flip to `pending` with note in `Updated`, restart step 2.
-   - Otherwise → don't touch. Stop and surface to user ("T2 claimed by agent-X, updated {date}").
+ - `Updated` attribution is *you* (same agent, same session) → continue it.
+ - Different agent → apply staleness check below. If stale → flip to `pending` with note in `Updated`, restart step 2.
+ - Otherwise → don't touch. Stop and surface to user ("T2 claimed by agent-X, updated {date}").
 4. **All `done` or `removed`** → report completion and stop.
 5. **Only `blocked` remain** → surface blockers. Don't silently skip.
 6. **Claim:** flip `pending → in_progress`, set `Updated:` to today + your agent identity, in both index row and task block. Commit the status change **before** starting work so concurrent agents see the claim (see Concurrency Model).
@@ -60,10 +60,10 @@ If mid-work you find your claim overwritten (your `Updated` attribution gone), *
 1. State which task you're starting by ID (e.g. "Starting T3"). Note current `Revision:` number if present.
 2. Write minimum code to pass acceptance.
 3. **Before committing**, re-read the task block. Abort and restart Resume Protocol if any of:
-   (a) `Revision:` bumped since you claimed — spec changed mid-flight,
-   (b) `Status` flipped to `pending` — PM unclaimed,
-   (c) your identity gone from `Updated:` — another agent overwrote your claim.
-   On abort, re-read new Acceptance before re-claiming.
+ (a) `Revision:` bumped since you claimed — spec changed mid-flight,
+ (b) `Status` flipped to `pending` — PM unclaimed,
+ (c) your identity gone from `Updated:` — another agent overwrote your claim.
+ On abort, re-read new Acceptance before re-claiming.
 4. State exactly what to test and expected result.
 5. **AFK:** Run acceptance test. Pass → write `Evidence`, flip `done`, commit, move on without waiting. Fail → fix and re-test (max 2 attempts, then `blocked` with reason and flag user).
 6. **HITL:** Stop and present result. Wait for user confirmation. Pass → write `Evidence`, flip `done`, commit, announce next. Fail → fix the specific issue only, don't expand scope.

@@ -27,10 +27,10 @@ The artifact is load-bearing for the project and must stay in place.
 - `architecture/**` (canonical system blueprint)
 - `.git/**`, `.gitmodules`
 - Any path inside a directory listed in `.gitmodules` (submodule)
-- `skills-resources/manifest.json` (infrastructure)
-- `skills-resources/experience/**` (Q&A substrate, append-only)
-- `skills-resources/meta/roadmap.md` (session anchor)
-- `skills-resources/meta/tasks.md` (session anchor)
+- `.agents/manifest.json` (infrastructure)
+- `.agents/experience/**` (Q&A substrate, append-only)
+- `.agents/skill-artifacts/meta/roadmap.md` (session anchor)
+- `.agents/skill-artifacts/meta/tasks.md` (session anchor)
 - `node_modules/**` (never recurse here in the first place)
 
 **Concrete examples:**
@@ -40,12 +40,12 @@ The artifact is load-bearing for the project and must stay in place.
 | `brand/BRAND.md` | canonical |
 | `research/icp-research.md` | canonical |
 | `architecture/system-architecture.md` | canonical |
-| `skills-resources/manifest.json` | infrastructure |
-| `skills-resources/experience/audience.md` | append-only substrate |
-| `skills-resources/meta/tasks.md` | session anchor |
-| `skills-resources/meta/records/skill-contracts.md` | living registry (`kind: registry`) |
-| `skills-resources/meta/records/learned-rules.md` | living registry |
-| `skills-resources/marketing/copy/twitter-2026-05-01.md` (within 90d, manifest done) | fresh pipeline output |
+| `.agents/manifest.json` | infrastructure |
+| `.agents/experience/audience.md` | append-only substrate |
+| `.agents/skill-artifacts/meta/tasks.md` | session anchor |
+| `.agents/skill-artifacts/meta/records/skill-contracts.md` | living registry (`kind: registry`) |
+| `.agents/skill-artifacts/meta/records/learned-rules.md` | living registry |
+| `.agents/skill-artifacts/mkt/copy/twitter-2026-05-01.md` (within 90d, manifest done) | fresh pipeline output |
 
 ---
 
@@ -60,16 +60,16 @@ The artifact has a manifest entry but it has aged past the threshold and no down
 
 **STALE-only carve-outs (still STALE, but treat with extra care):**
 
-- Records under `skills-resources/meta/records/` are dated immutable snapshots (audit trail). They are STALE-eligible by age but should NEVER be classified as EPHEMERAL even if their filename matches an ephemeral pattern. Records lifecycle = snapshot.
-- Decisions under `skills-resources/meta/decisions/` are dated immutable strategic records. STALE-eligible but the operator typically declines archival; surface them with a "decision record — usually keep" note.
+- Records under `.agents/skill-artifacts/meta/records/` are dated immutable snapshots (audit trail). They are STALE-eligible by age but should NEVER be classified as EPHEMERAL even if their filename matches an ephemeral pattern. Records lifecycle = snapshot.
+- Decisions under `.agents/skill-artifacts/meta/decisions/` are dated immutable strategic records. STALE-eligible but the operator typically declines archival; surface them with a "decision record — usually keep" note.
 
 **Concrete examples:**
 
 | Path | Why STALE |
 |---|---|
-| `skills-resources/meta/records/2025-11-30-fresh-eyes-foo.md` | dated record, > 90d old, no live ref |
-| `skills-resources/marketing/loops/video-series/evals/2025-12-01-cycle-1.md` | loop evaluation output, > 90d, superseded by later cycles |
-| `skills-resources/marketing/copy/linkedin-2025-08-15.md` | pipeline output, > 90d, no recent consumer |
+| `.agents/skill-artifacts/meta/records/2025-11-30-fresh-eyes-foo.md` | dated record, > 90d old, no live ref |
+| `skills-resources/loops/video-series/evals/2025-12-01-cycle-1.md` | loop evaluation output, > 90d, superseded by later cycles |
+| `.agents/skill-artifacts/mkt/copy/linkedin-2025-08-15.md` | pipeline output, > 90d, no recent consumer |
 
 ---
 
@@ -81,15 +81,15 @@ The file exists on disk but has no manifest entry, OR its producing skill was re
 
 1. File exists; no manifest entry covers it; not on the HARD-NEVER list.
 2. Manifest entry's `producing_skill` no longer exists in the installed skill list (renamed/removed).
-3. File is under a per-skill subdir (e.g., `skills-resources/research/<skill-name>/`) where `<skill-name>` is no longer present.
+3. File is under a per-skill subdir (e.g., `.agents/skill-artifacts/research/<skill-name>/`) where `<skill-name>` is no longer present.
 
 **Concrete examples:**
 
 | Path | Why ORPHAN |
 |---|---|
-| `skills-resources/meta/sketches/foo-sketch.md` | hand-created sketch, no manifest entry, no producing skill |
-| `skills-resources/research/old-skill-name/some-output.md` | producing skill was renamed/removed |
-| `skills-resources/marketing/random-scratch.md` | no manifest entry, no clear producer |
+| `.agents/skill-artifacts/meta/sketches/foo-sketch.md` | hand-created sketch, no manifest entry, no producing skill |
+| `.agents/skill-artifacts/research/old-skill-name/some-output.md` | producing skill was renamed/removed |
+| `.agents/skill-artifacts/mkt/random-scratch.md` | no manifest entry, no clear producer |
 
 ORPHAN ≠ STALE. STALE has a manifest entry that aged out. ORPHAN has none, or its producer no longer exists.
 
@@ -112,14 +112,14 @@ LEGACY is a strong-recommend ARCHIVE; the artifact's own author flagged it as no
 
 | Path | Why LEGACY |
 |---|---|
-| `skills-resources/meta/specs/old-scope.md` (frontmatter `status: superseded`) | author flagged |
-| `skills-resources/meta/decisions/2026-04-01-foo.md` (`superseded_by: 2026-05-01-foo-v2.md`) | newer decision exists |
+| `.agents/skill-artifacts/meta/specs/old-scope.md` (frontmatter `status: superseded`) | author flagged |
+| `.agents/skill-artifacts/meta/decisions/2026-04-01-foo.md` (`superseded_by: 2026-05-01-foo-v2.md`) | newer decision exists |
 
 ---
 
 ### EPHEMERAL
 
-The filename matches a known ephemeral pattern AND the file is NOT in `skills-resources/meta/records/` or `meta/decisions/` (those are immutable audit trail, not ephemeral).
+The filename matches a known ephemeral pattern AND the file is NOT in `.agents/skill-artifacts/meta/records/` or `meta/decisions/` (those are immutable audit trail, not ephemeral).
 
 **Ephemeral patterns:**
 
@@ -127,7 +127,7 @@ The filename matches a known ephemeral pattern AND the file is NOT in `skills-re
 - `*-rejected.md` (rejected options scratch)
 - `*-draft.md` (drafts that should have been promoted or discarded)
 - `scratch-*.md`, `tmp-*.md`, `wip-*.md`
-- Files inside `skills-resources/meta/sketches/` older than threshold AND not referenced
+- Files inside `.agents/skill-artifacts/meta/sketches/` older than threshold AND not referenced
 - `fresh-eyes-report.md` (UNDATED; old pre-T33 pattern that ignored the lifecycle: snapshot dated convention — these should never appear in a post-T33 tree, but if they do, they're ephemeral cruft)
 - `agents-panel-report.md` (UNDATED; same reason as above)
 
@@ -135,47 +135,47 @@ The filename matches a known ephemeral pattern AND the file is NOT in `skills-re
 
 | Path | Why EPHEMERAL |
 |---|---|
-| `skills-resources/meta/sketches/foo-candidates.md` (>30d, no refs) | matches `*-candidates.md` pattern, in sketches/ |
-| `skills-resources/meta/fresh-eyes-report.md` | undated (pre-T33 leftover); should be at meta/records/[date]-fresh-eyes-*.md |
-| `skills-resources/meta/sketches/scratch-experiment.md` | matches `scratch-*.md` |
+| `.agents/skill-artifacts/meta/sketches/foo-candidates.md` (>30d, no refs) | matches `*-candidates.md` pattern, in sketches/ |
+| `.agents/skill-artifacts/meta/fresh-eyes-report.md` | undated (pre-T33 leftover); should be at meta/records/[date]-fresh-eyes-*.md |
+| `.agents/skill-artifacts/meta/sketches/scratch-experiment.md` | matches `scratch-*.md` |
 
 **NOT ephemeral despite filename:**
 
 | Path | Why NOT |
 |---|---|
-| `skills-resources/meta/records/2025-11-30-fresh-eyes-foo.md` | DATED record under records/ — lifecycle: snapshot, treat as STALE if old, never EPHEMERAL |
-| `skills-resources/meta/decisions/2026-04-01-agents-panel-foo.md` | DATED decision — lifecycle: decision, treat as STALE-with-keep-recommendation |
+| `.agents/skill-artifacts/meta/records/2025-11-30-fresh-eyes-foo.md` | DATED record under records/ — lifecycle: snapshot, treat as STALE if old, never EPHEMERAL |
+| `.agents/skill-artifacts/meta/decisions/2026-04-01-agents-panel-foo.md` | DATED decision — lifecycle: decision, treat as STALE-with-keep-recommendation |
 
 ---
 
 ## Reference-Detection Grep Patterns
 
-For every non-KEEP candidate, the runner greps for live references across `skills-resources/`, `brand/`, `research/`, `architecture/`. The candidate is "referenced" if any pattern below matches in any other file.
+For every non-KEEP candidate, the runner greps for live references across `.agents/skill-artifacts/`, `brand/`, `research/`, `architecture/`. The candidate is "referenced" if any pattern below matches in any other file.
 
 **Patterns (run all three, ignore self-matches):**
 
 1. **Full path string** — exact match against the candidate's path:
-   ```bash
-   grep -rl --include='*.md' --include='*.json' --include='*.ts' \
-        --include='*.mjs' --include='*.yml' --include='*.yaml' \
-        "<full-path>" skills-resources brand research architecture 2>/dev/null
-   ```
+ ```bash
+ grep -rl --include='*.md' --include='*.json' --include='*.ts' \
+ --include='*.mjs' --include='*.yml' --include='*.yaml' \
+ "<full-path>".agents/skill-artifacts brand research architecture 2>/dev/null
+ ```
 2. **Basename without extension** — catches references that name the file without its full path:
-   ```bash
-   grep -rl --include='*.md' --include='*.json' --include='*.ts' \
-        --include='*.mjs' --include='*.yml' --include='*.yaml' \
-        "<basename-no-ext>" skills-resources brand research architecture 2>/dev/null
-   ```
+ ```bash
+ grep -rl --include='*.md' --include='*.json' --include='*.ts' \
+ --include='*.mjs' --include='*.yml' --include='*.yaml' \
+ "<basename-no-ext>".agents/skill-artifacts brand research architecture 2>/dev/null
+ ```
 3. **Slug-only** — the kebab-case slug after the date prefix (for `YYYY-MM-DD-slug.md` files, this is the slug). Catches references that drop the date:
-   ```bash
-   grep -rl --include='*.md' --include='*.json' --include='*.ts' \
-        --include='*.mjs' --include='*.yml' --include='*.yaml' \
-        "<slug-only>" skills-resources brand research architecture 2>/dev/null
-   ```
+ ```bash
+ grep -rl --include='*.md' --include='*.json' --include='*.ts' \
+ --include='*.mjs' --include='*.yml' --include='*.yaml' \
+ "<slug-only>".agents/skill-artifacts brand research architecture 2>/dev/null
+ ```
 
 **Self-matches to exclude:**
 - The candidate itself.
-- Any other file in `skills-resources/.archive/` (the archive references its own contents; that's not "live").
+- Any other file in `.agents/skill-artifacts/.archive/` (the archive references its own contents; that's not "live").
 - The current cleanup-artifacts report being written.
 
 **False-positive risk:** common words as slugs (e.g., `report`, `notes`) will hit. The runner mitigates by:
@@ -202,7 +202,7 @@ The runner emits the tier in the per-candidate report so the operator can audit 
 
 ## Manifest-Driven Freshness Rules
 
-The runner reads `skills-resources/manifest.json` (per `meta-skills/references/manifest-spec.md`) and uses these fields:
+The runner reads `.agents/manifest.json` (per `references/_shared/manifest-spec.md`) and uses these fields:
 
 - **`updated_at`** — date of last write to the artifact's frontmatter or the file's mtime (manifest-sync derives this).
 - **`status`** — `done`, `done_with_concerns`, `blocked`, `needs_context`. Only `done` and `done_with_concerns` count as "load-bearing"; `blocked` and `needs_context` artifacts may be STALE candidates if old.
@@ -227,12 +227,12 @@ For artifacts WITHOUT a manifest entry: classify ORPHAN unless HARD-NEVER.
 
 ## When the Manifest is Missing or Stale
 
-If `skills-resources/manifest.json` doesn't exist or its mtime is > 1 day old, the runner emits status `NEEDS_CONTEXT` and recommends:
+If `.agents/manifest.json` doesn't exist or its mtime is > 1 day old, the runner emits status `NEEDS_CONTEXT` and recommends:
 
 ```
-skills-resources/manifest.json is missing or stale.
+.agents/manifest.json is missing or stale.
 Re-run before continuing:
-  bun meta-skills/scripts/manifest-sync.ts
+ bun scripts/manifest-sync.ts
 ```
 
 The runner does NOT proceed with classification on a stale manifest — STALE/ORPHAN signals would be unreliable.
@@ -242,5 +242,5 @@ The runner does NOT proceed with classification on a stale manifest — STALE/OR
 ## Cross-Reference
 
 - `agent-skills/CLAUDE.md` §"Artifact Placement" — full lifecycle taxonomy this skill enforces.
-- `meta-skills/references/manifest-spec.md` — manifest contract the freshness rules read from.
-- `meta-skills/references/pre-dispatch-protocol.md` — the read/ask/dispatch loop the SKILL.md follows.
+- `references/_shared/manifest-spec.md` — manifest contract the freshness rules read from.
+- `references/_shared/pre-dispatch-protocol.md` — the read/ask/dispatch loop the SKILL.md follows.

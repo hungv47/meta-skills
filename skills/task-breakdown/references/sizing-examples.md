@@ -131,7 +131,7 @@ Combine into: **Typed API client for [resource] with request/response contracts*
 
 Why: Types without usage aren't testable. The client function is the deliverable.
 
-### 6. "Create .env.example file" + "Add DATABASE_URL to config"
+### 6. "Create.env.example file" + "Add DATABASE_URL to config"
 
 Combine into: **Environment configuration with database connection and documented env vars**
 

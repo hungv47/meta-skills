@@ -15,6 +15,7 @@
 //   --cycle N        Defaults to next cycle after the max existing row.
 //   --date YYYY-MM-DD Defaults to today.
 //   --root <path>   Project root when not running from the project root.
+//   --domain <name> Accepted for legacy compatibility; loop folders are domain-neutral.
 
 import { existsSync, readFileSync, appendFileSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
@@ -41,7 +42,6 @@ const baseline = required(opts.baseline, "--baseline");
 const status = required(opts.status, "--status") as Status;
 const description = required(opts.description, "--description");
 const date = opts.date ?? today;
-const requestedDomain = opts.domain;
 
 if (!STATUSES.has(status)) {
   fail(`Invalid --status ${JSON.stringify(status)}. Expected one of: ${[...STATUSES].join(", ")}`);
@@ -49,8 +49,8 @@ if (!STATUSES.has(status)) {
 if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
   fail(`Invalid --date ${JSON.stringify(date)}. Expected YYYY-MM-DD.`);
 }
-if (requestedDomain && !["marketing", "product", "research"].includes(requestedDomain)) {
-  fail(`Invalid --domain ${JSON.stringify(requestedDomain)}. Expected one of: marketing, product, research`);
+if (opts.domain && !["marketing", "product", "research"].includes(opts.domain)) {
+  fail(`Invalid --domain ${JSON.stringify(opts.domain)}. Expected one of: marketing, product, research`);
 }
 if (artifact.startsWith("/") || artifact.split("/").includes("..")) {
   fail("--artifact must be a safe path relative to the loop folder.");
@@ -63,7 +63,7 @@ for (const [name, v] of Object.entries(fields)) {
   }
 }
 
-const loopDir = resolveLoopDir(root, loopArg, requestedDomain);
+const loopDir = resolveLoopDir(root, loopArg);
 const resultsPath = join(loopDir, "results.tsv");
 for (const requiredFile of ["program.md", "context.md", "results.tsv"]) {
   const requiredPath = join(loopDir, requiredFile);
@@ -128,7 +128,7 @@ function slugifyLoopName(value: string): string {
     .slice(0, 80);
 }
 
-function resolveLoopDir(projectRoot: string, value: string, requestedDomain?: string): string {
+function resolveLoopDir(projectRoot: string, value: string): string {
   const slug = slugifyLoopName(value);
   if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(slug)) {
     fail(`Loop argument must resolve to a valid slug (got ${JSON.stringify(value)}).`);
@@ -136,43 +136,27 @@ function resolveLoopDir(projectRoot: string, value: string, requestedDomain?: st
   const skillsResources = resolve(projectRoot, "skills-resources");
   assertSafeDirectory(skillsResources, "skills-resources");
   const realSkillsResources = realpathSync(skillsResources);
-  const domainsToSearch = requestedDomain ? [requestedDomain] : ["marketing", "product", "research"];
-  const matches: Array<{ domain: string; path: string }> = [];
-  for (const domain of domainsToSearch) {
-    const domainRoot = resolve(skillsResources, domain);
-    if (!existsSync(domainRoot)) continue;
-    assertSafeDirectory(domainRoot, `skills-resources/${domain}`);
-    const candidate = resolve(skillsResources, domain, "loops", slug);
-    const domainLoopsRoot = resolve(skillsResources, domain, "loops");
-    if (!existsSync(domainLoopsRoot)) continue;
-    assertSafeDirectory(domainLoopsRoot, `skills-resources/${domain}/loops`);
-    const realDomainLoopsRoot = realpathSync(domainLoopsRoot);
-    if (realDomainLoopsRoot !== realSkillsResources && !realDomainLoopsRoot.startsWith(`${realSkillsResources}${sep}`)) {
-      fail(`Loop root escapes skills-resources: skills-resources/${domain}/loops`);
-    }
-    if (candidate !== domainLoopsRoot && !candidate.startsWith(`${domainLoopsRoot}${sep}`)) {
-      fail("Loop path escaped skills-resources/<domain>/loops.");
-    }
-    if (existsSync(candidate)) {
-      if (lstatSync(candidate).isSymbolicLink()) {
-        fail(`Refusing to use symlinked loop folder: ${relative(projectRoot, candidate)}`);
-      }
-      const realCandidate = realpathSync(candidate);
-      if (realCandidate !== realDomainLoopsRoot && !realCandidate.startsWith(`${realDomainLoopsRoot}${sep}`)) {
-        fail(`Loop folder escapes skills-resources/<domain>/loops: ${relative(projectRoot, candidate)}`);
-      }
-      matches.push({ domain, path: candidate });
-    }
+  const loopRoot = resolve(skillsResources, "loops");
+  assertSafeDirectory(loopRoot, "skills-resources/loops");
+  const realLoopRoot = realpathSync(loopRoot);
+  if (realLoopRoot !== realSkillsResources && !realLoopRoot.startsWith(`${realSkillsResources}${sep}`)) {
+    fail("Loop root escapes skills-resources: skills-resources/loops");
   }
-  if (matches.length === 0) {
-    const where = requestedDomain ? `skills-resources/${requestedDomain}/loops/` : "skills-resources/{marketing,product,research}/loops/";
-    fail(`No loop folder found for slug ${JSON.stringify(slug)} under ${where}. Run scaffold-eval-loop first.`);
+  const candidate = resolve(loopRoot, slug);
+  if (candidate !== loopRoot && !candidate.startsWith(`${loopRoot}${sep}`)) {
+    fail("Loop path escaped skills-resources/loops.");
   }
-  if (matches.length > 1) {
-    const domains = matches.map((m) => m.domain).join(", ");
-    fail(`Loop slug ${JSON.stringify(slug)} is ambiguous — exists in: ${domains}. Pass --domain <${domains.replace(/, /g, "|")}> to disambiguate.`);
+  if (!existsSync(candidate)) {
+    fail(`No loop folder found for slug ${JSON.stringify(slug)} under skills-resources/loops/. Run scaffold-eval-loop first.`);
   }
-  return matches[0].path;
+  if (lstatSync(candidate).isSymbolicLink()) {
+    fail(`Refusing to use symlinked loop folder: ${relative(projectRoot, candidate)}`);
+  }
+  const realCandidate = realpathSync(candidate);
+  if (realCandidate !== realLoopRoot && !realCandidate.startsWith(`${realLoopRoot}${sep}`)) {
+    fail(`Loop folder escapes skills-resources/loops: ${relative(projectRoot, candidate)}`);
+  }
+  return candidate;
 }
 
 function assertSafeDirectory(path: string, label: string): void {

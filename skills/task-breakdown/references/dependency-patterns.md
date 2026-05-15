@@ -18,10 +18,10 @@ Task 1 → Task 2 → Task 3 → Task 4
 
 **Example:**
 ```
-Task 1: Database schema for users        (depends: none)
-Task 2: User registration endpoint        (depends: 1)
-Task 3: Login with session creation        (depends: 2)
-Task 4: Protected dashboard page           (depends: 3)
+Task 1: Database schema for users (depends: none)
+Task 2: User registration endpoint (depends: 1)
+Task 3: Login with session creation (depends: 2)
+Task 4: Protected dashboard page (depends: 3)
 ```
 
 **Risk:** Long chains are fragile. A block on Task 2 stops everything downstream.
@@ -35,19 +35,19 @@ Task 4: Protected dashboard page           (depends: 3)
 One task unblocks multiple independent tasks.
 
 ```
-        ┌→ Task 2
+ ┌→ Task 2
 Task 1 ─┼→ Task 3
-        └→ Task 4
+ └→ Task 4
 ```
 
 **When it appears:** After foundational setup, after schema creation, after core infrastructure.
 
 **Example:**
 ```
-Task 1: Project schema + CRUD API          (depends: none)
-Task 2: Project list page                  (depends: 1)
-Task 3: Project settings panel             (depends: 1)
-Task 4: Project export to CSV              (depends: 1)
+Task 1: Project schema + CRUD API (depends: none)
+Task 2: Project list page (depends: 1)
+Task 3: Project settings panel (depends: 1)
+Task 4: Project export to CSV (depends: 1)
 ```
 
 **Benefit:** Maximum parallelism. Three agents or engineers can work simultaneously after Task 1 ships.
@@ -70,10 +70,10 @@ Task 4 ─┘
 
 **Example:**
 ```
-Task 2: Stripe checkout session endpoint   (depends: 1)
-Task 3: Order creation with line items     (depends: 1)
-Task 4: Email notification on purchase     (depends: 1)
-Task 5: End-to-end purchase flow test      (depends: 2, 3, 4)
+Task 2: Stripe checkout session endpoint (depends: 1)
+Task 3: Order creation with line items (depends: 1)
+Task 4: Email notification on purchase (depends: 1)
+Task 5: End-to-end purchase flow test (depends: 2, 3, 4)
 ```
 
 **Risk:** Fan-in is a bottleneck. If any upstream task is late, the downstream task is blocked.
@@ -87,18 +87,18 @@ Task 5: End-to-end purchase flow test      (depends: 2, 3, 4)
 A fan-out followed by a fan-in, forming a diamond shape.
 
 ```
-        ┌→ Task 2 ─┐
-Task 1 ─┤          ├→ Task 4
-        └→ Task 3 ─┘
+ ┌→ Task 2 ─┐
+Task 1 ─┤ ├→ Task 4
+ └→ Task 3 ─┘
 ```
 
 **When it appears:** Common in feature builds where a foundation enables parallel work that converges in a UI or integration layer.
 
 **Example:**
 ```
-Task 1: Auth middleware + user context      (depends: none)
-Task 2: User profile API endpoint           (depends: 1)
-Task 3: User avatar upload endpoint         (depends: 1)
+Task 1: Auth middleware + user context (depends: none)
+Task 2: User profile API endpoint (depends: 1)
+Task 3: User avatar upload endpoint (depends: 1)
 Task 4: Profile settings page (shows profile + avatar) (depends: 2, 3)
 ```
 
@@ -114,8 +114,8 @@ Tasks that require something outside the codebase: API keys, third-party account
 
 ```
 [Human: create Stripe account] → Task 3: Integrate Stripe SDK
-[Human: provision database]    → Task 1: Database schema
-[Human: approve design]       → Task 6: Build final UI
+[Human: provision database] → Task 1: Database schema
+[Human: approve design] → Task 6: Build final UI
 ```
 
 **Rule:** External dependencies go in Prerequisites, never buried inside a task.
@@ -131,11 +131,11 @@ Acceptance: Register → email arrives in inbox
 **Good:**
 ```
 ## Prerequisites
-- Resend API key in .env.local (RESEND_API_KEY)
+- Resend API key in.env.local (RESEND_API_KEY)
 
 ## Task 5: Send transactional emails
 Depends on: 2
-Human action: Verify RESEND_API_KEY is set in .env.local
+Human action: Verify RESEND_API_KEY is set in.env.local
 Outcome: Users receive welcome email on signup
 Acceptance: Register → email arrives in inbox
 ```
@@ -169,10 +169,10 @@ Use ASCII DAGs in task documents for complex dependency graphs.
 ```
 1 (setup)
 ├─ 2 (schema)
-│  ├─ 4 (CRUD API)
-│  └─ 5 (seed data)
+│ ├─ 4 (CRUD API)
+│ └─ 5 (seed data)
 ├─ 3 (auth)
-│  └─ 6 (protected routes)
+│ └─ 6 (protected routes)
 └─ 7 (deploy config)
 
 Integration: 8 (depends: 4, 5, 6)
@@ -180,16 +180,16 @@ Integration: 8 (depends: 4, 5, 6)
 
 ### Table Format (for linear reviews)
 ```
-| Task | Depends On | Unblocks  | Parallel With |
+| Task | Depends On | Unblocks | Parallel With |
 |------|------------|-----------|---------------|
-| 1    | --          | 2, 3, 7   | --             |
-| 2    | 1          | 4, 5      | 3, 7          |
-| 3    | 1          | 6         | 2, 7          |
-| 4    | 2          | 8         | 3, 5, 6, 7    |
-| 5    | 2          | 8         | 3, 4, 6, 7    |
-| 6    | 3          | 8         | 2, 4, 5, 7    |
-| 7    | 1          | --         | 2, 3, 4, 5, 6 |
-| 8    | 4, 5, 6    | --         | 7             |
+| 1 | -- | 2, 3, 7 | -- |
+| 2 | 1 | 4, 5 | 3, 7 |
+| 3 | 1 | 6 | 2, 7 |
+| 4 | 2 | 8 | 3, 5, 6, 7 |
+| 5 | 2 | 8 | 3, 4, 6, 7 |
+| 6 | 3 | 8 | 2, 4, 5, 7 |
+| 7 | 1 | -- | 2, 3, 4, 5, 6 |
+| 8 | 4, 5, 6 | -- | 7 |
 ```
 
 ---
@@ -215,8 +215,8 @@ Task 5 says "depends on 7" and Task 7 says "depends on 5."
 
 ### Mistake 3: Unnecessary sequential ordering
 ```
-Task 3: Build header component     (depends: 2)
-Task 4: Build footer component     (depends: 3)
+Task 3: Build header component (depends: 2)
+Task 4: Build footer component (depends: 3)
 ```
 **Problem:** Footer doesn't need header. These are parallel.
 
