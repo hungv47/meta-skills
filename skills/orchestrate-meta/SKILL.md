@@ -48,7 +48,7 @@ routing:
   position: orchestrator
   lifecycle: pipeline
   produces:
-    - skills-resources/experience/meta-workflow.md
+    - .agents/experience/meta-workflow.md
   side-effects:
     - manifest-sync
   consumes:
@@ -58,15 +58,15 @@ routing:
     - brand/BRAND.md
     - brand/DESIGN.md
     - architecture/system-architecture.md
-    - skills-resources/meta/specs/*.md
-    - skills-resources/meta/records/diagnose-*.md
-    - skills-resources/meta/sketches/prioritize-*.md
-    - skills-resources/meta/records/targets-*.md
-    - skills-resources/meta/tasks.md
-    - skills-resources/product/flow/*.md
-    - skills-resources/marketing/**/*.md
-    - skills-resources/meta/**/*.md
-    - skills-resources/experience/*.md
+    - .agents/skill-artifacts/meta/specs/*.md
+    - .agents/skill-artifacts/meta/records/diagnose-*.md
+    - .agents/skill-artifacts/meta/sketches/prioritize-*.md
+    - .agents/skill-artifacts/meta/records/targets-*.md
+    - .agents/skill-artifacts/meta/tasks.md
+    - .agents/skill-artifacts/product/flow/*.md
+    - .agents/skill-artifacts/mkt/**/*.md
+    - .agents/skill-artifacts/meta/**/*.md
+    - .agents/experience/*.md
     - CLAUDE.md
   requires: []
   defers-to:
@@ -121,7 +121,7 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 **Tier note (`metadata.budget: fast`):** This is a pure router — no sub-agent dispatch, no critic gate. The body below runs in-line: read state, parse intent, propose next skill, await user confirmation. No `agents/` directory, no L1/L2 layers, no rewrite cycles. The premium-orchestration substrate (multi-agent + critic) lives in the skills this router proposes; running it here would be theater.
 
-1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `skills-resources/`, and `skills-resources/experience/*.md` to build a picture of the whole project.
+1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`, and `.agents/experience/*.md` to build a picture of the whole project.
 2. **Domain classification** — parse the user's ask. Classify as: research / marketing / product / cross-stack / process.
 3. **Routing decision** — either defer to a stack-orchestrator (`/start-X`) or propose a specific meta-skill.
 4. **User confirmation** — print hand-off command. Never auto-invoke.
@@ -130,14 +130,14 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 ## Step 1: Cross-Stack State Detection
 
-**Disk snapshot** (rendered inline when `/orchestrate-meta` is invoked — see `meta-skills/CLAUDE.md` §"Skill-Authoring Patterns" for the inline-shell-interpolation convention):
+**Disk snapshot** (rendered inline when `/orchestrate-meta` is invoked — see this skill's generated support notes for the inline-shell-interpolation convention):
 
 ```
 Artifacts by domain:
-! `[ -d skills-resources ] && find skills-resources -mindepth 2 -name "*.md" -type f 2>/dev/null | awk -F/ '{print $3}' | sort | uniq -c | sort -rn | grep . || echo "  (no skills-resources/ yet)"`
+! `[ -d .agents/skill-artifacts ] && find .agents/skill-artifacts -mindepth 2 -name "*.md" -type f 2>/dev/null | awk -F/ '{print $3}' | sort | uniq -c | sort -rn | grep . || echo "  (no .agents/skill-artifacts/ yet)"`
 
 Evidence loops:
-! `find skills-resources/marketing/loops skills-resources/product/loops skills-resources/research/loops -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sed 's#^#  #' | sort | grep . || echo "  (no loops yet)"`
+! `find .agents/skill-artifacts/mkt/loops .agents/skill-artifacts/product/loops .agents/skill-artifacts/research/loops -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sed 's#^#  #' | sort | grep . || echo "  (no loops yet)"`
 
 Top-level canonical folders present:
 ! `found=0; for d in research brand architecture; do [ -d "$d" ] && { echo "  $d/ ✓"; found=1; }; done; [ $found -eq 0 ] && echo "  (none yet)" || true`
@@ -148,10 +148,10 @@ Last 5 commits in this repo:
 
 The `! \`...\`` lines run at slash-command invocation time and substitute the command output — so the orchestrator starts from concrete state instead of speculating about what's on disk.
 
-Then read `skills-resources/manifest.json` for the structured detail — it's the canonical state index, single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
+Then read `.agents/manifest.json` for the structured detail — it's the canonical state index, single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
+bun scripts/manifest-sync.ts
 ```
 
 **Status-aware lookup:** for each artifact entry in `manifest.artifacts`, read `status` and `stale` to qualify the state map:
@@ -164,11 +164,11 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
 | `stale: true` | ✅ done (stale) — propose refresh as an option, don't block |
 | `frontmatter_present: false` | ✅ done (legacy, no frontmatter) — quality unknown, suggest refresh |
 
-**Experience block:** `manifest.experience` tracks `skills-resources/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
+**Experience block:** `manifest.experience` tracks `.agents/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
 
-See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for the full contract.
+See [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md) for the full contract.
 
-**Path reference / filesystem fallback** — used only when `skills-resources/manifest.json` doesn't exist (fresh project) or sync hasn't been run:
+**Path reference / filesystem fallback** — used only when `.agents/manifest.json` doesn't exist (fresh project) or sync hasn't been run:
 
 | Path | What it tells you |
 |---|---|
@@ -177,16 +177,16 @@ See [`../../references/manifest-spec.md`](../../references/manifest-spec.md) for
 | `research/icp-research.md`, `research/market-research.md` | Research stack progress. |
 | `brand/BRAND.md`, `brand/DESIGN.md` | Marketing stack foundation. |
 | `architecture/system-architecture.md` | Product stack architecture done. |
-| `skills-resources/product/flow/index.md` + flow files | Product flows mapped. |
-| `skills-resources/meta/specs/*.md` | Spec exists from `discover`. |
-| `skills-resources/meta/tasks.md` | Tasks decomposed from `task-breakdown`. |
-| `skills-resources/meta/records/diagnose-*.md`, `skills-resources/meta/sketches/prioritize-*.md`, `skills-resources/meta/records/targets-*.md` | Research mid-pipeline outputs. |
-| `skills-resources/marketing/campaign-plan.md` + `skills-resources/marketing/content/`, `skills-resources/marketing/lp-brief/`, etc. | Marketing artifacts. |
-| `skills-resources/meta/records/cleanup-*.md`, `skills-resources/meta/records/machine-cleanup-*.md` | Cleanup audits. |
-| `skills-resources/meta/decisions/[date]-*.md`, `skills-resources/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
-| `skills-resources/experience/*.md` | All cold-start answers across stacks. |
-| `skills-resources/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
-| `skills-resources/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
+| `.agents/skill-artifacts/product/flow/index.md` + flow files | Product flows mapped. |
+| `.agents/skill-artifacts/meta/specs/*.md` | Spec exists from `discover`. |
+| `.agents/skill-artifacts/meta/tasks.md` | Tasks decomposed from `task-breakdown`. |
+| `.agents/skill-artifacts/meta/records/diagnose-*.md`, `.agents/skill-artifacts/meta/sketches/prioritize-*.md`, `.agents/skill-artifacts/meta/records/targets-*.md` | Research mid-pipeline outputs. |
+| `.agents/skill-artifacts/mkt/campaign-plan.md` + `.agents/skill-artifacts/mkt/content/`, `.agents/skill-artifacts/mkt/lp-brief/`, etc. | Marketing artifacts. |
+| `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
+| `.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
+| `.agents/experience/*.md` | All cold-start answers across stacks. |
+| `.agents/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
+| `.agents/skill-artifacts/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
 
 Build a cross-stack state map:
 
@@ -340,7 +340,7 @@ Output format for **process skill**:
 Why: post-implementation independent review. Runs an independent
 agent against your changes, returns issues + severity.
 
-Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: skills-resources/meta/records/[date]-fresh-eyes-<slug>.md
+Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md
 
 →  /fresh-eyes
 ```
@@ -349,7 +349,7 @@ Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: skills-resources/meta/records
 
 ## Step 5: Persist + Hand Off
 
-Append to `skills-resources/experience/meta-workflow.md`:
+Append to `.agents/experience/meta-workflow.md`:
 
 ```markdown
 ## Session 2026-05-06
@@ -376,7 +376,7 @@ For the canonical cross-stack pipeline, decision rules, and per-skill catalog, s
 
 ## Anti-Patterns
 
-- **Don't ignore the manifest** — always read `skills-resources/manifest.json` first; per-path filesystem scans are a fallback, not the default.
+- **Don't ignore the manifest** — always read `.agents/manifest.json` first; per-path filesystem scans are a fallback, not the default.
 - **Don't duplicate work of /orchestrate-research, /orchestrate-marketing, /orchestrate-product.** When intent is single-domain, route there. Don't pick the specific skill yourself.
 - **Don't lecture about all 24 skills.** Show only what's relevant to the user's ask + state.
 - **Don't auto-invoke.** Always print `/skill-name` for the user to type.
@@ -389,7 +389,7 @@ For the canonical cross-stack pipeline, decision rules, and per-skill catalog, s
 ## Output
 
 - **Inline only.**
-- **Side effect:** appends one entry to `skills-resources/experience/meta-workflow.md`.
+- **Side effect:** appends one entry to `.agents/experience/meta-workflow.md`.
 
 ## Status
 

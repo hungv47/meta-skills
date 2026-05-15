@@ -98,7 +98,7 @@ For each red flag triggered, the corresponding clarifying question discover shou
 
 #### Green Flags (5)
 
-**G1 — `paying-for-inferior`** — People are already paying money for inferior solutions. Existing competitors, kludgy SaaS, Excel macros sold on Gumroad, expensive consultants — the willingness-to-pay is proven; the question becomes "can you steal share?" not "is there demand?"
+**G1 — `paying-for-inferior`** — People are already paying money for inferior solutions. Existing competitors, kludgy SaaS, paid spreadsheet templates, expensive consultants — the willingness-to-pay is proven; the question becomes "can you steal share?" not "is there demand?"
 
 *Evidence test:* Idea-statement names competitors, paid alternatives, or paid manual labor solving this today → clears.
 
@@ -172,6 +172,6 @@ Before returning your output, verify every item:
 
 If any check fails, revise your output before returning. The rubric only does its job when the output is rule-bound and citation-bound.
 
-## Source
+## Source Basis
 
-Adapted from slavingia/skills `validate-idea` SKILL.md §Red Flags / §Green Flags. The threshold (≥2 red OR <2 green → push back) is the original rule preserved verbatim; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `skills-resources/meta/roadmap.md` for adoption rationale.
+Internal research synthesis. The threshold (≥2 red OR <2 green → push back) is preserved as a stack-owned critic rule; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `.agents/skill-artifacts/meta/roadmap.md` for adoption rationale.

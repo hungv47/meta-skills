@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// manifest-sync — derive `skills-resources/manifest.json` from artifact frontmatter.
+// manifest-sync — derive `.agents/manifest.json` from artifact frontmatter.
 // See meta-skills/references/manifest-spec.md for the full contract.
 //
 // Usage:
@@ -13,10 +13,10 @@ import { join, relative, basename } from "node:path";
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
 const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-archive") ?? process.cwd();
 const ROOT = realpathSync(ROOT_ARG);
-const ARTIFACT_ROOTS = ["skills-resources", "research", "brand", "architecture"];
-const EXPERIENCE_PREFIX = "skills-resources/experience";
-const MANIFEST_PATH = join(ROOT, "skills-resources", "manifest.json");
-const ARTIFACT_INDEX_PATH = join(ROOT, "skills-resources", "artifact-index.md");
+const ARTIFACT_ROOTS = [".agents/skill-artifacts", ".agents/experience", "skills-resources/loops", "research", "brand", "architecture"];
+const EXPERIENCE_PREFIX = ".agents/experience";
+const MANIFEST_PATH = join(ROOT, ".agents", "manifest.json");
+const ARTIFACT_INDEX_PATH = join(ROOT, ".agents", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
@@ -79,7 +79,7 @@ function walkMd(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, entry.name);
     if (entry.isSymbolicLink()) continue;
-    if (!INCLUDE_ARCHIVE && relative(ROOT, p).split("\\").join("/").startsWith("skills-resources/.archive")) continue;
+    if (!INCLUDE_ARCHIVE && relative(ROOT, p).split("\\").join("/").startsWith(".agents/skill-artifacts/.archive")) continue;
     if (entry.isDirectory()) walkMd(p, files);
     else if (entry.isFile() && entry.name.endsWith(".md")) files.push(p);
   }
@@ -95,37 +95,37 @@ function inferProducer(rel: string): string {
     [/^research\/product-context/, "icp-research"],
     [/^brand\/(BRAND|DESIGN|ASSETS)/, "brand-system"],
     [/^architecture\/system-architecture/, "system-architecture"],
-    [/^skills-resources\/meta\/roadmap/, "agents-panel"],
-    [/^skills-resources\/meta\/tasks/, "task-breakdown"],
-    [/^skills-resources\/meta\/specs\//, "discover"],
-    [/^skills-resources\/meta\/sketches\/prioritize/, "prioritize"],
-    [/^skills-resources\/meta\/sketches\//, "discover"],
-    [/^skills-resources\/meta\/decisions\//, "agents-panel"],
-    [/^skills-resources\/meta\/records\/skill-contracts/, "meta-system"],
-    [/^skills-resources\/meta\/records\/.*fresh-eyes/, "fresh-eyes"],
-    [/^skills-resources\/meta\/records\/.*cleanup-artifacts/, "cleanup-artifacts"],
-    [/^skills-resources\/meta\/records\/.*diagnose/, "diagnose"],
-    [/^skills-resources\/meta\/records\/.*targets/, "funnel-planner"],
-    [/^skills-resources\/meta\/records\/.*cleanup-report/, "code-cleanup"],
-    [/^skills-resources\/meta\/records\/.*machine-cleanup/, "machine-cleanup"],
-    [/^skills-resources\/meta\/records\/learned-rules/, "meta-system"],
-    [/^skills-resources\/meta\/out-of-scope/, "discover"],
-    [/^skills-resources\/marketing\/ad-copy\//, "ad-copy"],
-    [/^skills-resources\/marketing\/copy\//, "copywriting"],
-    [/^skills-resources\/marketing\/content\//, "copywriting"],
-    [/^skills-resources\/marketing\/campaign-plan/, "campaign-plan"],
-    [/^skills-resources\/marketing\/lp-brief\//, "lp-brief"],
-    [/^skills-resources\/marketing\/seo/, "seo"],
-    [/^skills-resources\/marketing\/cold-outreach\//, "cold-outreach"],
-    [/^skills-resources\/marketing\/design-briefs\//, "design-brief"],
-    [/^skills-resources\/marketing\/short-form-brief\//, "short-form-brief"],
-    [/^skills-resources\/marketing\/social-copy\//, "social-copy"],
-    [/^skills-resources\/product\/flow\//, "user-flow"],
-    [/^skills-resources\/research\/short-form-research/, "short-form-research"],
-    [/^skills-resources\/research\/short-form-eval/, "short-form-eval"],
-    [/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/program\.md$/, "eval-loop"],
-    [/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/context\.md$/, "eval-loop"],
-    [/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/learnings\.md$/, "eval-loop"],
+    [/^\.agents\/skill-artifacts\/meta\/roadmap/, "agents-panel"],
+    [/^\.agents\/skill-artifacts\/meta\/tasks/, "task-breakdown"],
+    [/^\.agents\/skill-artifacts\/meta\/specs\//, "discover"],
+    [/^\.agents\/skill-artifacts\/meta\/sketches\/prioritize/, "prioritize"],
+    [/^\.agents\/skill-artifacts\/meta\/sketches\//, "discover"],
+    [/^\.agents\/skill-artifacts\/meta\/decisions\//, "agents-panel"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts/, "meta-system"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*fresh-eyes/, "fresh-eyes"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*cleanup-artifacts/, "cleanup-artifacts"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*diagnose/, "diagnose"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*targets/, "funnel-planner"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*cleanup-report/, "code-cleanup"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/.*machine-cleanup/, "machine-cleanup"],
+    [/^\.agents\/skill-artifacts\/meta\/records\/learned-rules/, "meta-system"],
+    [/^\.agents\/skill-artifacts\/meta\/out-of-scope/, "discover"],
+    [/^\.agents\/skill-artifacts\/mkt\/ad-copy\//, "ad-copy"],
+    [/^\.agents\/skill-artifacts\/mkt\/copy\//, "copywriting"],
+    [/^\.agents\/skill-artifacts\/mkt\/content\//, "copywriting"],
+    [/^\.agents\/skill-artifacts\/mkt\/campaign-plan/, "campaign-plan"],
+    [/^\.agents\/skill-artifacts\/mkt\/lp-brief\//, "lp-brief"],
+    [/^\.agents\/skill-artifacts\/mkt\/seo/, "seo"],
+    [/^\.agents\/skill-artifacts\/mkt\/cold-outreach\//, "cold-outreach"],
+    [/^\.agents\/skill-artifacts\/mkt\/design-briefs\//, "design-brief"],
+    [/^\.agents\/skill-artifacts\/mkt\/short-form-brief\//, "short-form-brief"],
+    [/^\.agents\/skill-artifacts\/mkt\/social-copy\//, "social-copy"],
+    [/^\.agents\/skill-artifacts\/product\/flow\//, "user-flow"],
+    [/^\.agents\/skill-artifacts\/research\/short-form-research/, "short-form-research"],
+    [/^\.agents\/skill-artifacts\/research\/short-form-eval/, "short-form-eval"],
+    [/^skills-resources\/loops\/[^/]+\/program\.md$/, "eval-loop"],
+    [/^skills-resources\/loops\/[^/]+\/context\.md$/, "eval-loop"],
+    [/^skills-resources\/loops\/[^/]+\/learnings\.md$/, "eval-loop"],
   ];
   for (const [re, skill] of map) if (re.test(rel)) return skill;
   return "unknown";
@@ -167,19 +167,19 @@ function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   const explicit = textField(fm, "lifecycle");
   if (explicit) return explicit;
   if (/^brand\//.test(rel) || /^research\/(product-context|icp-research|market-research)/.test(rel) || /^architecture\//.test(rel)) return "canonical";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/program\.md$/.test(rel)) return "loop";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/context\.md$/.test(rel)) return "loop-context";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/learnings\.md$/.test(rel)) return "learning";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
-  if (/^skills-resources\/(marketing|product|research)\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
-  if (/^skills-resources\/meta\/decisions\//.test(rel)) return "decision";
-  if (/^skills-resources\/meta\/specs\//.test(rel)) return "spec";
-  if (/^skills-resources\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
-  if (/^skills-resources\/meta\/records\//.test(rel)) return "snapshot";
-  if (/^skills-resources\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
-  if (/^skills-resources\/\.archive\//.test(rel)) return "archive";
-  if (/^skills-resources\//.test(rel)) return "pipeline";
+  if (/^skills-resources\/loops\/[^/]+\/program\.md$/.test(rel)) return "loop";
+  if (/^skills-resources\/loops\/[^/]+\/context\.md$/.test(rel)) return "loop-context";
+  if (/^skills-resources\/loops\/[^/]+\/learnings\.md$/.test(rel)) return "learning";
+  if (/^skills-resources\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
+  if (/^skills-resources\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
+  if (/^skills-resources\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
+  if (/^\.agents\/skill-artifacts\/meta\/decisions\//.test(rel)) return "decision";
+  if (/^\.agents\/skill-artifacts\/meta\/specs\//.test(rel)) return "spec";
+  if (/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
+  if (/^\.agents\/skill-artifacts\/meta\/records\//.test(rel)) return "snapshot";
+  if (/^\.agents\/skill-artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
+  if (/^\.agents\/skill-artifacts\/\.archive\//.test(rel)) return "archive";
+  if (/^\.agents\/skill-artifacts\//.test(rel)) return "pipeline";
   return "";
 }
 
@@ -239,7 +239,7 @@ Generated from artifact frontmatter by \`meta-skills/scripts/manifest-sync.ts\`.
 
 ## How to use this index
 
-Read this before browsing \`skills-resources/\`. The goal is not to list every file equally; it is to answer which artifacts are active, why they exist, when to use them, and what has been superseded.
+Read this before browsing \`.agents/skill-artifacts/\`, \`skills-resources/loops/\`, or canonical folders. The goal is not to list every file equally; it is to answer which artifacts are active, why they exist, when to use them, and what has been superseded.
 
 For grounded work, prefer active canonical records, anchors, registries, decisions, and specs. Use snapshots and archived artifacts as audit trail unless their row explicitly says they are load-bearing.
 
@@ -260,7 +260,7 @@ for (const base of ARTIFACT_ROOTS) {
   const root = join(ROOT, base);
   for (const file of walkMd(root)) {
     const rel = relative(ROOT, file).split("\\").join("/");
-    if (rel === "skills-resources/artifact-index.md") continue;
+    if (rel === ".agents/artifact-index.md") continue;
 
     // Skip README files anywhere — documentation, not artifacts.
     if (basename(rel).toLowerCase() === "readme.md") continue;
@@ -326,9 +326,9 @@ const manifest = {
   experience,
 };
 
-const manifestDir = join(ROOT, "skills-resources");
+const manifestDir = join(ROOT, ".agents");
 if (existsSync(manifestDir) && lstatSync(manifestDir).isSymbolicLink()) {
-  throw new Error("Refusing to write through symlinked skills-resources/");
+  throw new Error("Refusing to write through symlinked .agents/");
 }
 if (!existsSync(manifestDir)) mkdirSync(manifestDir, { recursive: true });
 for (const target of [MANIFEST_PATH, ARTIFACT_INDEX_PATH]) {

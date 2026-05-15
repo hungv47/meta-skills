@@ -1,6 +1,6 @@
 ---
 name: eval-loop
-description: "Single scaffold and ledger entrypoint for measurable strategy -> execution -> evaluation cycles. Use when the user wants an eval-loop, autoresearch-style improvement loop, experiment ledger, campaign/content iteration system, or asks where to store strategy/execution/eval artifacts for a measurable initiative. Produces `skills-resources/{marketing|product|research}/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md`, and strategy/execution/evals subfolders. Not a universal evaluator: route actual surface scoring to the relevant eval skill (e.g. short-form-eval, lp-eval; future ad-eval/email-eval/campaign-eval). Not for one-shot planning (use discover/task-breakdown) or multi-perspective debate (agents-panel)."
+description: "Single scaffold and ledger entrypoint for measurable strategy -> execution -> evaluation cycles. Use when the user wants an eval-loop, autoresearch-style improvement loop, experiment ledger, campaign/content iteration system, or asks where to store strategy/execution/eval artifacts for a measurable initiative. Produces `skills-resources/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md`, and strategy/execution/evals subfolders. Not a universal evaluator: route actual surface scoring to the relevant eval skill (e.g. short-form-eval, lp-eval; future ad-eval/email-eval/campaign-eval). Not for one-shot planning (use discover/task-breakdown) or multi-perspective debate (agents-panel)."
 argument-hint: "[measurable initiative name, e.g. 'pricing page conversion' or 'founder outbound sequence']"
 allowed-tools: Read Write Edit Grep Glob Bash
 license: MIT
@@ -47,17 +47,17 @@ routing:
   position: meta
   lifecycle: loop
   produces:
-    - skills-resources/{marketing|product|research}/loops/[slug]/program.md
-    - skills-resources/{marketing|product|research}/loops/[slug]/context.md
-    - skills-resources/{marketing|product|research}/loops/[slug]/results.tsv
-    - skills-resources/{marketing|product|research}/loops/[slug]/learnings.md
+    - skills-resources/loops/[slug]/program.md
+    - skills-resources/loops/[slug]/context.md
+    - skills-resources/loops/[slug]/results.tsv
+    - skills-resources/loops/[slug]/learnings.md
   consumes:
-    - skills-resources/manifest.json
-    - skills-resources/artifact-index.md
+    - .agents/manifest.json
+    - .agents/artifact-index.md
     - research/
     - brand/
     - architecture/
-    - skills-resources/experience/
+    - .agents/experience/
   requires: []
   defers-to:
     - skill: discover
@@ -81,7 +81,7 @@ routing:
 
 1. **Measurable surface required.** If the user cannot name a page, campaign, post series, ad set, email sequence, outreach motion, or other observable surface, return `NEEDS_CONTEXT` and recommend `discover`.
 2. **Metric path required.** The loop must name at least one primary metric and where it will come from, even if the baseline is not known yet. No metric path -> no loop.
-3. **No skill-centered folders.** Do not create `skills-resources/{skill-name}/...`. Eval loops are organized by measurable initiative.
+3. **No skill-centered folders.** Do not create `.agents/skill-artifacts/{skill-name}/...`. Eval loops are organized by measurable initiative.
 4. **Execution boundary.** This stack may execute marketing/content assets. It does not deploy code, publish to platforms, build app UI, or mutate external systems.
 5. **No unattended infinite marketing loops.** Borrow `autoresearch`'s ledger and keep/discard discipline, not its "run forever" posture. Human approval gates publishing and live-surface changes.
 
@@ -89,9 +89,9 @@ routing:
 
 Read before writing or modifying any loop artifact:
 
-- `../../references/eval-loop-spec.md`
-- `../../references/quality-feedback-protocol.md`
-- `../../references/quality-dashboard-spec.md`
+- `references/_shared/eval-loop-spec.md`
+- `references/_shared/quality-feedback-protocol.md`
+- `references/_shared/quality-dashboard-spec.md`
 
 ## Responsibility Split
 
@@ -118,7 +118,7 @@ It does not replace surface evaluators. `short-form-eval` handles short-form sco
 Create or resume:
 
 ```text
-skills-resources/{marketing|product|research}/loops/[slug]/
+skills-resources/loops/[slug]/
 ├── program.md
 ├── context.md
 ├── strategy/
@@ -131,19 +131,19 @@ skills-resources/{marketing|product|research}/loops/[slug]/
 Use the scaffold helper for first creation:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
+bun scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
 ```
 
 If running from this repo or a submodule checkout, this path is also valid:
 
 ```bash
-bun meta-skills/scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
+bun scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
 ```
 
 Evaluation skills should append result rows with the validated helper instead of hand-editing the TSV:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/append-loop-result.ts "<loop slug>" \
+bun scripts/append-loop-result.ts "<loop slug>" \
   --artifact evals/YYYY-MM-DD-cycle-N.md \
   --metric conversion_rate \
   --value 3.4% \
@@ -155,7 +155,7 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/append-loop-result.ts "<l
 When the Quality Feedback Protocol threshold is met, update the dashboard with:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/update-quality-dashboard.ts \
+bun scripts/update-quality-dashboard.ts \
   --loop "<loop slug>" \
   --latest-cycle N \
   --latest-status keep \
@@ -167,16 +167,16 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/update-quality-dashboard.
 
 ## Pre-Dispatch
 
-Read `skills-resources/manifest.json` first if present. If missing or stale, run:
+Read `.agents/manifest.json` first if present. If missing or stale, run:
 
 ```bash
-bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
+bun scripts/manifest-sync.ts
 ```
 
 Then inspect existing loop folders:
 
 ```bash
-find skills-resources/marketing/loops skills-resources/product/loops skills-resources/research/loops -maxdepth 2 -type f 2>/dev/null | sort
+find .agents/skill-artifacts/mkt/loops .agents/skill-artifacts/product/loops .agents/skill-artifacts/research/loops -maxdepth 2 -type f 2>/dev/null | sort
 ```
 
 ### Warm Start
@@ -185,7 +185,7 @@ If a matching loop exists, summarize:
 
 ```text
 Found:
-- loop: skills-resources/[domain]/loops/[slug]/
+- loop: .agents/skill-artifacts/[domain]/loops/[slug]/
 - program status: [status]
 - latest strategy artifact: [path or none]
 - latest execution artifact: [path or none]
@@ -227,7 +227,7 @@ After the user answers, write the answers to `context.md`, update `program.md`, 
 4. Layer 2 sequential: Scope Guard -> Critic.
 5. If Critic FAIL, revise only the named failing sections once.
 6. Write final `program.md` and `context.md` with required frontmatter.
-7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `skills-resources/experience/`, log critic overrides when present, create or update the quality dashboard with `update-quality-dashboard.ts` when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
+7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `.agents/experience/`, log critic overrides when present, create or update the quality dashboard with `update-quality-dashboard.ts` when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
 8. Run `manifest-sync` once after the final files are written.
 9. Return the loop path, the next recommended strategy/execution/eval skill, quality-feedback action, and status.
 

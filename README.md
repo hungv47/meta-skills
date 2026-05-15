@@ -49,7 +49,7 @@ Skills are then namespaced — call them as `/meta-skills:discover`, `/meta-skil
 **"Just talk with your agent."** No plan mode. No giant documents nobody reads. Conversation IS the plan.
 
 - **Conversation-first**: Decisions live in conversation context. Artifacts are save-points, not pipeline stages.
-- **Loop-first when measurable**: Measurable initiatives live in `skills-resources/{marketing|product|research}/loops/[slug]/` so strategy, execution, evals, result rows, and learnings compound together.
+- **Loop-first when measurable**: Measurable initiatives live in `skills-resources/loops/[slug]/` so strategy, execution, evals, result rows, and learnings compound together.
 - **Adaptive depth**: Skills auto-calibrate. A clear task gets 3 questions. A vague idea gets a multi-round interview.
 - **One skill per job**: Each skill does a fundamentally different job.
 - **Agents-panel for perspectives**: When multiple perspectives or debate are needed, invoke agents-panel.
@@ -65,7 +65,7 @@ Top-level router that reads project state and proposes the right stack orchestra
 - You are returning to a project and want a state-aware next step
 - The ask spans multiple stacks
 
-**Produces:** `skills-resources/experience/meta-workflow.md`
+**Produces:** `.agents/experience/meta-workflow.md`
 
 ---
 
@@ -81,7 +81,7 @@ Conversational discovery that adapts from quick scoping (3-5 questions) to deep 
 
 **Not for:** multi-perspective debate (use `agents-panel`) or decomposing work (use `task-breakdown`)
 
-**Produces:** Conversation context (default) or `skills-resources/meta/specs/*.md` (when explicitly saved)
+**Produces:** Conversation context (default) or `.agents/skill-artifacts/meta/specs/*.md` (when explicitly saved)
 
 ---
 
@@ -96,7 +96,7 @@ Stochastic multi-agent debate (agents argue in rounds, converge) or consensus po
 
 **Not for:** implementation (use `system-architecture`) or verification (use `fresh-eyes`)
 
-**Produces:** `skills-resources/meta/decisions/[date]-*.md`
+**Produces:** `.agents/skill-artifacts/meta/decisions/[date]-*.md`
 
 ---
 
@@ -111,7 +111,7 @@ Creates or resumes a loop-centered workspace for measurable strategy → marketi
 
 **Not for:** vague strategy with no metric (use `discover`), one-shot implementation tasks (use `task-breakdown`), or generic scoring of every surface. Use the relevant eval skill for measurement artifacts (`short-form-eval` and `lp-eval` today; future `ad-eval`, `email-eval`, `campaign-eval`).
 
-**Produces:** `skills-resources/{marketing|product|research}/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
+**Produces:** `skills-resources/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
 
 ---
 
@@ -126,7 +126,7 @@ Breaks work into granular, testable tasks with acceptance criteria, dependencies
 
 **Not for:** clarifying requirements (use `discover`) or designing architecture (use `system-architecture`)
 
-**Produces:** `skills-resources/meta/tasks.md`
+**Produces:** `.agents/skill-artifacts/meta/tasks.md`
 
 ---
 
@@ -141,20 +141,20 @@ Fresh-eyes review chain: implement → review (by an agent with no sunk-cost bia
 
 **Not for:** code refactoring (use `code-cleanup`) or decision analysis (use `agents-panel`)
 
-**Produces:** `skills-resources/meta/records/fresh-eyes-*.md`
+**Produces:** `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`
 
 ---
 
 ### `cleanup-artifacts` — groom the artifact tree
 
-Audits `skills-resources/` for stale, orphaned, legacy, and ephemeral artifacts, then archives confirmed candidates behind explicit operator approval. Moves files; never deletes.
+Audits `.agents/skill-artifacts/` for stale, orphaned, legacy, and ephemeral artifacts, then archives confirmed candidates behind explicit operator approval. Moves files; never deletes.
 
 **Use when:**
-- `skills-resources/` has become hard to navigate
+- `.agents/skill-artifacts/` has become hard to navigate
 - You're preparing a release or PR and want artifact hygiene
 - You suspect renamed or removed skills left orphan outputs
 
-**Produces:** `skills-resources/meta/records/[date]-cleanup-artifacts-<slug>.md`
+**Produces:** `.agents/skill-artifacts/meta/records/[date]-cleanup-artifacts-<slug>.md`
 
 ---
 

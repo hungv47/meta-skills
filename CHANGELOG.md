@@ -11,9 +11,9 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 Executable feedback-loop scaffolding for experience and quality telemetry.
 
 ### Added
-- `scripts/bootstrap-experience.ts` creates the local `skills-resources/experience/` substrate with starter domain files.
+- `scripts/bootstrap-experience.ts` creates the local `.agents/experience/` substrate with starter domain files.
 - `references/quality-dashboard-spec.md` defines the living quality dashboard schema and update rules.
-- `scripts/update-quality-dashboard.ts` creates or updates `skills-resources/meta/records/quality-dashboard.json` for skill, loop, and rubric quality signals.
+- `scripts/update-quality-dashboard.ts` creates or updates `.agents/skill-artifacts/meta/records/quality-dashboard.json` for skill, loop, and rubric quality signals.
 
 ### Changed
 - Quality-feedback promotion now requires either three consecutive `keep` results or explicit operator confirmation before a reusable learning is promoted to experience.
@@ -27,7 +27,7 @@ Executable feedback-loop scaffolding for experience and quality telemetry.
 Quality-feedback layer for measured loops and reviewer outcomes.
 
 ### Added
-- New `references/quality-feedback-protocol.md` defines learning promotion to `skills-resources/experience/`, optional quality dashboard shape, cross-skill feedback routing, post-humanize regression checks, research artifact evaluation triggers, critic override logging, shared-rubric extraction, learned-rules hygiene, and critic consensus.
+- New `references/quality-feedback-protocol.md` defines learning promotion to `.agents/experience/`, optional quality dashboard shape, cross-skill feedback routing, post-humanize regression checks, research artifact evaluation triggers, critic override logging, shared-rubric extraction, learned-rules hygiene, and critic consensus.
 - New `references/shared-critic-rubrics.md` provides reusable dimensions for claim substantiation, protected-token preservation, audience specificity, mechanism distinctness, pattern-interruption specificity, and humanize regression.
 - `eval-loop` now applies the quality-feedback protocol after loop updates, and `fresh-eyes` can run critic consensus for high-stakes non-code artifacts.
 - `pre-dispatch-protocol` now records `humanize` detector mode and protected-token inputs.
@@ -39,36 +39,36 @@ Quality-feedback layer for measured loops and reviewer outcomes.
 Fresh-eyes patch for the 6.0.0 artifact-tree migration.
 
 ### Fixed
-- `eval-loop` now documents and invokes the domain-scoped loop contract end to end: `skills-resources/{marketing|product|research}/loops/[slug]/`, with explicit domain selection and a single final manifest sync after scaffold creation.
-- `manifest-sync` now skips `skills-resources/.archive/` by default, rejects symlinked artifact roots/generated files, normalizes unknown active statuses to `done_with_concerns` with warnings, and preserves `updated_at` on repeat runs when artifact state is unchanged.
+- `eval-loop` now documents and invokes the domain-scoped loop contract end to end: `skills-resources/loops/[slug]/`, with explicit domain selection and a single final manifest sync after scaffold creation.
+- `manifest-sync` now skips `.agents/skill-artifacts/.archive/` by default, rejects symlinked artifact roots/generated files, normalizes unknown active statuses to `done_with_concerns` with warnings, and preserves `updated_at` on repeat runs when artifact state is unchanged.
 - `scaffold-eval-loop.ts` and `append-loop-result.ts` now reject symlinked artifact/domain/loop roots and loop files before writing, and verify resolved loop/artifact paths stay inside the intended domain loop.
-- `cleanup-artifacts` no longer suggests `--skip-critic`; critic failures must be resolved by excluding candidates or fixing stale references. Scope validation now requires a real path inside `skills-resources/`.
+- `cleanup-artifacts` no longer suggests `--skip-critic`; critic failures must be resolved by excluding candidates or fixing stale references. Scope validation now requires a real path inside `.agents/skill-artifacts/`.
 - `manifest-spec.md` and `pre-dispatch-protocol.md` now use the domain-scoped loop tree and the current learned-rules path.
 
 ---
 
 ## [6.0.0] - 2026-05-13
 
-BREAKING: every artifact path migrates from `.agents/` to `skills-resources/` with domain-scoped subfolders. Loops are organized under each domain rather than a single `loops/` root.
+BREAKING: every artifact path migrates from `.agents/` to `.agents/skill-artifacts/` with domain-scoped subfolders. Loops are organized under each domain rather than a single `loops/` root.
 
 ### Changed (BREAKING)
-- `.agents/manifest.json` → `skills-resources/manifest.json`.
-- `.agents/artifact-index.md` → `skills-resources/artifact-index.md`.
-- `.agents/experience/` → `skills-resources/experience/`.
-- `.agents/skill-artifacts/meta/` → `skills-resources/meta/` (specs, decisions, sketches, records, tasks.md, roadmap.md, out-of-scope).
-- `.agents/skill-artifacts/mkt/` → `skills-resources/marketing/` (folder also renamed from `mkt` to `marketing`).
-- `.agents/skill-artifacts/product/` → `skills-resources/product/`.
-- `.agents/skill-artifacts/research/` → `skills-resources/research/`.
-- `.agents/skill-artifacts/.archive/` → `skills-resources/.archive/`.
-- Loop workspaces moved from `skills-resources/loops/[slug]/` to `skills-resources/{marketing|product|research}/loops/[slug]/`. Pick the domain by who owns the measurable surface.
+- `.agents/manifest.json` → `.agents/manifest.json`.
+- `.agents/artifact-index.md` → `.agents/artifact-index.md`.
+- `.agents/experience/` → `.agents/experience/`.
+- `.agents/skill-artifacts/meta/` → `.agents/skill-artifacts/meta/` (specs, decisions, sketches, records, tasks.md, roadmap.md, out-of-scope).
+- `.agents/skill-artifacts/mkt/` → `.agents/skill-artifacts/mkt/` (folder also renamed from `mkt` to `marketing`).
+- `.agents/skill-artifacts/product/` → `.agents/skill-artifacts/product/`.
+- `.agents/skill-artifacts/research/` → `.agents/skill-artifacts/research/`.
+- `.agents/skill-artifacts/.archive/` → `.agents/skill-artifacts/.archive/`.
+- Loop workspaces moved from `skills-resources/loops/[slug]/` to `skills-resources/loops/[slug]/`. Pick the domain by who owns the measurable surface.
 - `scripts/manifest-sync.ts` rewrites `ARTIFACT_ROOTS`, producer inference, lifecycle inference, and writes to the new infrastructure paths.
 - `scripts/scaffold-eval-loop.ts` accepts `--domain marketing|product|research` (defaults to `marketing`) and creates loops at the domain-scoped path.
-- `scripts/append-loop-result.ts` now slugifies the human-readable loop argument and searches `skills-resources/{marketing,product,research}/loops/` for the loop folder. Negative values, `--`-prefixed strings, and empty strings are now validated cleanly.
+- `scripts/append-loop-result.ts` now slugifies the human-readable loop argument and searches `skills-resources/loops/` for the loop folder. Negative values, `--`-prefixed strings, and empty strings are now validated cleanly.
 - `references/manifest-spec.md` and `references/eval-loop-spec.md` rewritten to document the new tree and domain-scoped loop placement.
-- `cleanup-artifacts` SKILL.md description and prompt signals updated to reference `skills-resources/` (the legacy `.agents` terminology is retired).
+- `cleanup-artifacts` SKILL.md description and prompt signals updated to reference `.agents/skill-artifacts/` (the legacy `.agents` terminology is retired).
 
 ### Migration
-Users upgrading from 5.x must move their existing artifacts to the new tree. The mechanical mapping is documented in this changelog entry; run `bun meta-skills/scripts/manifest-sync.ts` after migration to regenerate `skills-resources/manifest.json` and `skills-resources/artifact-index.md`.
+Users upgrading from 5.x must move their existing artifacts to the new tree. The mechanical mapping is documented in this changelog entry; run `bun meta-skills/scripts/manifest-sync.ts` after migration to regenerate `.agents/manifest.json` and `.agents/artifact-index.md`.
 
 ---
 
@@ -81,7 +81,7 @@ Adds the first loop-centered artifact system for measurable strategy → marketi
 - New `references/eval-loop-spec.md` defines the loop-centered artifact contract, lifecycle values, results ledger, placement rules, execution boundaries, and eval guardrails.
 - New `scripts/scaffold-eval-loop.ts` creates the loop workspace and runs manifest sync.
 - New `scripts/append-loop-result.ts` validates and appends `results.tsv` rows without hand-editing the ledger.
-- `manifest-sync` now indexes `skills-resources/` and infers loop lifecycles (`loop`, `loop-context`, `strategy`, `execution`, `evaluation`, `learning`).
+- `manifest-sync` now indexes `.agents/skill-artifacts/` and infers loop lifecycles (`loop`, `loop-context`, `strategy`, `execution`, `evaluation`, `learning`).
 
 ### Changed
 - The meta stack now treats measurable initiative loops as a first-class artifact surface alongside `.agents/`, `research/`, `brand/`, and `architecture/`.

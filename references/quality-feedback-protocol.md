@@ -14,7 +14,7 @@ Apply this protocol after:
 
 ## Learning Promotion To Experience
 
-Promote a loop learning into `skills-resources/experience/` only when the evidence is strong enough to reuse across sessions.
+Promote a loop learning into `.agents/experience/` only when the evidence is strong enough to reuse across sessions.
 
 Promotion criteria:
 
@@ -29,11 +29,11 @@ Domain routing:
 
 | Learning Type | Experience File |
 |---|---|
-| Audience behavior, objections, language | `skills-resources/experience/audience.md` |
-| Offer economics, pricing, buying trigger | `skills-resources/experience/business.md` |
-| Product mechanism, claim boundary, feature proof | `skills-resources/experience/product.md` |
-| Brand voice, trust pattern, taboo | `skills-resources/experience/brand.md` |
-| Goal, metric, channel result, campaign rule | `skills-resources/experience/goals.md` |
+| Audience behavior, objections, language | `.agents/experience/audience.md` |
+| Offer economics, pricing, buying trigger | `.agents/experience/business.md` |
+| Product mechanism, claim boundary, feature proof | `.agents/experience/product.md` |
+| Brand voice, trust pattern, taboo | `.agents/experience/brand.md` |
+| Goal, metric, channel result, campaign rule | `.agents/experience/goals.md` |
 
 Append format:
 
@@ -54,7 +54,7 @@ Do not promote weak, confounded, or single-anecdote findings. Keep them in the l
 Maintain a living dashboard when a project has repeated evals or reviewer findings. Full schema and helper usage live in `meta-skills/references/quality-dashboard-spec.md`.
 
 ```text
-skills-resources/meta/records/quality-dashboard.json
+.agents/skill-artifacts/meta/records/quality-dashboard.json
 ```
 
 Suggested shape:
@@ -113,7 +113,7 @@ bun meta-skills/scripts/update-quality-dashboard.ts --skill ad-copy --invocation
 When an evaluator repeatedly finds an upstream construction issue, preserve the signal in the smallest durable place:
 
 1. **One loop only:** keep it in that loop's `learnings.md`.
-2. **Reusable audience/offer/product truth:** promote to `skills-resources/experience/`.
+2. **Reusable audience/offer/product truth:** promote to `.agents/experience/`.
 3. **Rubric gap shared across skills:** update or create a shared rubric in `meta-skills/references/shared-critic-rubrics.md`.
 4. **Skill-specific construction flaw:** propose a targeted SKILL.md or agent edit for the producing skill; do not silently mutate the skill during an eval run.
 
@@ -147,7 +147,7 @@ Trigger a research artifact review when any of these happen:
 Review output belongs in:
 
 - The relevant loop's `evals/` folder when the evidence comes from one measurable initiative.
-- `skills-resources/research/evals/` when the evaluation spans multiple loops or canonical research artifacts.
+- `.agents/skill-artifacts/research/evals/` when the evaluation spans multiple loops or canonical research artifacts.
 
 Update canonical `research/` only as a separate, explicit revision after the evidence is accepted.
 
@@ -156,7 +156,7 @@ Update canonical `research/` only as a separate, explicit revision after the evi
 When the operator overrides a critic or asks to ship despite a failed dimension, log it here if the project has repeated quality work:
 
 ```text
-skills-resources/meta/records/critic-overrides.md
+.agents/skill-artifacts/meta/records/critic-overrides.md
 ```
 
 Entry format:

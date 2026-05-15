@@ -45,7 +45,7 @@ routing:
   position: horizontal
   lifecycle: decision
   produces:
-    - skills-resources/meta/decisions/[date]-*.md
+    - .agents/skill-artifacts/meta/decisions/[date]-*.md
   consumes: []
   requires: []
   defers-to:
@@ -101,7 +101,7 @@ When invoked as a sub-routine, skip writing the report to disk unless the user a
 
 ## Pre-Dispatch
 
-Run the Pre-Dispatch protocol (`meta-skills/references/pre-dispatch-protocol.md`) before spawning agents. Sub-routine invocations skip Pre-Dispatch — the calling skill is responsible for problem framing.
+Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`) before spawning agents. Sub-routine invocations skip Pre-Dispatch — the calling skill is responsible for problem framing.
 
 **Needed dimensions:** problem statement, mode (debate/poll), agent count (default 3 debate / 10 poll), rounds (debate only, default 3).
 
@@ -310,7 +310,7 @@ One-pass — no convergence detection. Independent samples give better statistic
 
 ## Report
 
-When standalone (or when explicitly requested), write to `skills-resources/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` — dated, skill-prefixed, slug-suffixed, immutable per-run record (lifecycle: decision; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing the debate topic (e.g., `2026-05-08-agents-panel-content-stack-direction.md`). Do NOT overwrite prior decisions — operator-committed strategic choices accumulate as audit trail.
+When standalone (or when explicitly requested), write to `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` — dated, skill-prefixed, slug-suffixed, immutable per-run record (lifecycle: decision; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing the debate topic (e.g., `2026-05-08-agents-panel-content-stack-direction.md`). Do NOT overwrite prior decisions — operator-committed strategic choices accumulate as audit trail.
 
 ```markdown
 ---
@@ -355,7 +355,7 @@ When invoked as sub-routine: return the synthesis inline, skip disk write.
 - **Deadlock after R rounds**: Report honestly. The finding IS that no dominant answer exists.
 - **Even poll split**: Report the split. No forced tiebreaker.
 - **Agent goes off-topic**: Exclude from synthesis, note effective N.
-- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `skills-resources/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md`. Reports accumulate as audit trail (lifecycle: decision — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
+- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `.agents/skill-artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md`. Reports accumulate as audit trail (lifecycle: decision — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
 
 ---
 
