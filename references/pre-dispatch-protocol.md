@@ -44,6 +44,14 @@ If the user says proceed (or stays silent past one beat), dispatch.
 
 The growing source of truth. Skills **read before asking**, **write after the user answers**.
 
+If the folder is missing in a project, bootstrap it before cold-start write-back:
+
+```bash
+bun meta-skills/scripts/bootstrap-experience.ts
+```
+
+The helper creates `skills-resources/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
+
 ### Format
 
 One markdown file per knowledge domain. Append-only Q+A blocks, newest at bottom:
