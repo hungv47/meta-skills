@@ -6,6 +6,22 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.2.0] - 2026-05-15
+
+Executable feedback-loop scaffolding for experience and quality telemetry.
+
+### Added
+- `scripts/bootstrap-experience.ts` creates the local `skills-resources/experience/` substrate with starter domain files.
+- `references/quality-dashboard-spec.md` defines the living quality dashboard schema and update rules.
+- `scripts/update-quality-dashboard.ts` creates or updates `skills-resources/meta/records/quality-dashboard.json` for skill, loop, and rubric quality signals.
+
+### Changed
+- Quality-feedback promotion now requires either three consecutive `keep` results or explicit operator confirmation before a reusable learning is promoted to experience.
+- `eval-loop` and `eval-loop-spec` now reference the quality dashboard helper directly.
+- `pre-dispatch-protocol` now documents the experience bootstrap path.
+
+---
+
 ## [6.1.0] - 2026-05-14
 
 Quality-feedback layer for measured loops and reviewer outcomes.
