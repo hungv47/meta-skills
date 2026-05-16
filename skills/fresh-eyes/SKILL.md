@@ -10,6 +10,13 @@ metadata:
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
+  refactor_history:
+    - refactored_at: 2026-05-16
+      refactored_for: implementation-roadmap v6 Phase 1E+ (body-diet + playbook + procedures extraction + chain hardening)
+      body_before: 436
+      body_after: 202
+      body_delta_pct: -53.7
+      note: body-only line counts (frontmatter excluded). Total file 503 → 270. Body slightly over the ≤200 soft target (202) — Step 4.5 locked decision #9 allows soft targets when load-bearing safety content (5 Critical Gates + auto-trigger + max-2-loops + self-regulation gate + Path A/B/C classification + 8-step execution skeleton) must stay verbatim in body.
 promptSignals:
   phrases:
     - "review this"
@@ -60,46 +67,50 @@ routing:
   estimated-complexity: medium
 ---
 
-# Review Chain
+# Review Chain — Fresh-Eyes Post-Implementation Quality
 
-*Meta — Dynamic Multi-Agent. Fresh-eyes review chain for post-implementation quality.*
+*Meta — Dynamic Multi-Agent. Reviewer-resolver loop with auto-trigger for security/auth/data-mutation/money/PII code.*
 
 **Core Question:** "What would a senior reviewer with no sunk-cost bias catch?"
+
+[Read `references/playbook.md` [PLAYBOOK] to understand methodology (reviewer-with-no-context / resolver-with-both), principles, why-no-critic-on-critic, when NOT to use.]
 
 ## Critical Gates — Read First
 
 1. **Reviewer has NO access to implementation reasoning** — only the output and the requirements. This is intentional: fresh eyes, no bias.
-2. **Resolver sees BOTH original + review** — it synthesizes, not just patches
+2. **Resolver sees BOTH original + review** — it synthesizes, not just patches.
 3. **Max 2 loops** — if code isn't clean after 2 review cycles, flag to the user. There may be a deeper design problem that review can't fix.
 4. **Auto-trigger for critical code** — security, auth, crypto, data mutations, money, PII. Don't wait to be asked.
 5. **Quality feedback applies** — repeated reviewer misses, critic overrides, and post-humanize regressions feed the shared quality system instead of staying trapped in one report.
 
-## Inputs Required
-- Code, artifact, or output to verify
-- The original requirements or prompt that produced it
-- Relevant context (surrounding files, API contracts, tests)
+## Before Starting
 
-## Output
-- `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — verdict, issues found/fixed/declined, changes made. Dated, slug-suffixed, immutable per-run record (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing what was reviewed (e.g., `2026-05-08-fresh-eyes-claude-md-migration.md`). Do NOT overwrite prior reports — they accumulate as audit trail; operator can prune via cleanup-artifacts when needed.
+Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
-## Chain Position
-- **After:** Any domain skill — system-architecture, task-breakdown, code-cleanup, or raw implementation
-- **Together with discover:** discover before build, fresh-eyes after build
+0. **Mode resolution** — load [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. `budget: standard` is default. **Auto-escalate to deep** (specialist dispatch per [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE]) when code touches auth/sessions/access-control/payments/financial-data/migrations/bulk-mutations/PII OR diff exceeds 500 lines. **Auto-downgrade to fast** when reviewing trivial changes (typos, log lines, config tweaks). Mode map: `fast` = generalist reviewer, skip resolver if PASS; `standard` = full generalist reviewer + resolver loop; `deep` = 3 specialists in parallel OR critic-consensus for non-code. Emit:
+   ```
+   Resolved mode: <fast|standard|deep> (<reason>). Run as <mode>? [Y / fast / standard / deep]
+   ```
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches inventory.
+2. Read `.agents/skill-artifacts/meta/specs/*.md` + `tasks.md` if they exist — enables scope-drift detection per [`references/procedures/scope-drift.md`](references/procedures/scope-drift.md) [PROCEDURE].
+3. Read `.agents/skill-artifacts/meta/records/learned-rules.md` for rules to append to reviewer's CONTEXT.
 
----
+## Artifact Contract
+
+- **Path:** `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable per-run)
+- **Lifecycle:** `snapshot` (audit trail; accumulates; never overwritten)
+- **Frontmatter fields:** `skill`, `produced_by`, `version`, `date`, `status`, `mode` (generalist/specialist/critic-consensus), `rounds`, `verdict` (PASS/FIXED/CRITICAL), `provenance` (skill + run_date + input_artifacts + config_sources + null output_eval). Full template: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
+- **Required sections:** Verdict, Issues Found (table), Input Quality Assessment, Scope Drift (if applicable), Simplifications, Changes Made, Self-Regulation Gate, Reviewer's Summary, Resolver's Notes, Specialist Verdicts (if mode=specialist), Critic Disagreements (if mode=critic-consensus)
+- **Consumed by:** operator (the report IS the audit trail); future fresh-eyes runs (precedent — was this issue raised before?); commit/PR creation (PASS gate hands off to `gh pr create` etc.).
+- **Eval workspace:** none — fresh-eyes IS the eval mechanism for code/artifacts; no downstream eval skill.
 
 ## Pre-Dispatch
 
-Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`) before spawning reviewer/resolver agents.
+Run the Pre-Dispatch protocol ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE]) before spawning reviewer/resolver agents.
 
 **Needed dimensions:** diff/branch reference (what to review), risk class (security / performance / correctness / all), prior reviewer feedback if any, requirements or spec the work was supposed to implement.
 
-**Read order:**
-1. Conversation context — usually fresh-eyes is invoked right after the work it's reviewing, so the spec lives in the same session.
-2. Pipeline: `.agents/skill-artifacts/meta/specs/*.md`, `.agents/skill-artifacts/meta/tasks.md`, `architecture/system-architecture.md` if referenced.
-3. Git: `git diff <base>...HEAD` or named branch.
-
-**Warm Start** (invoked at end of build session, spec known): summarize what's being reviewed and dispatch.
+**Warm Start** (invoked at end of build session, spec known):
 
 ```
 Diff range against main:
@@ -112,7 +123,7 @@ Reviewing the above against [spec.md / tasks.md / inline requirements].
 Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?
 ```
 
-The two `! \`...\`` lines are inline shell interpolation (see this skill's generated support notes). When `/fresh-eyes` is invoked, Claude Code substitutes the git output before the LLM sees the prompt — so the warm-start summary lands with the actual diff range instead of asking the orchestrator to derive it.
+Shell-bang interpolation per `meta-skills/CLAUDE.md` §"Inline shell interpolation" — fires at slash-command invocation; stays in body (would not fire from a ref).
 
 **Cold Start** (no upstream session, user invoking standalone):
 
@@ -129,262 +140,72 @@ fresh-eyes runs an independent post-implementation review. Before I dispatch:
 Answer 1-3 in one response. I'll dispatch reviewer + resolver.
 ```
 
-**Write-back:** none. Reports are written to dated snapshot files (lifecycle: snapshot — dated, immutable; accumulate as audit trail), not to experience/. See Output section for the path convention.
-
----
+**Write-back:** none. Reports are dated snapshot files; never persisted to experience/.
 
 ## Orchestration Pattern: Dynamic Agent Spawning
 
-This skill uses runtime-defined agents (reviewer, resolver), NOT the static agent roster pattern. Agent prompts are constructed per-use based on the artifact being reviewed. There is no `agents/` directory.
-
----
+Runtime-defined agents (reviewer, resolver), NOT static agent roster. Agent prompts constructed per-use from the templates in [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE] + [`references/procedures/resolver.md`](references/procedures/resolver.md) [PROCEDURE]. No `agents/` directory.
 
 ## Execution
 
 ### 1. Identify what to verify
 
-Determine what output needs verification:
-- **Code just written** — the most common case. You just implemented something, now verify it.
-- **Architecture/design decision** — verify a plan before implementing.
-- **User-provided code** — user asks you to review their code with this pattern.
+What needs review:
+- **Code just written** — most common case. You just implemented something, verify it.
+- **Architecture/design decision** — verify a plan before implementing (per [`reviewer.md`](references/procedures/reviewer.md) §"Architecture/design-review variant").
+- **User-provided code** — user asks you to review their code.
 - **Any prior output** — user says "double-check that" or "verify this".
 
-Gather the full artifact to review:
-- The code/output itself
-- The original requirements or prompt that produced it
-- Any relevant context (surrounding files, API contracts, tests)
+Gather: the artifact itself + original requirements + relevant context (surrounding files, API contracts, tests).
 
-### 2. Spawn the Reviewer
+### 2. Spawn the Reviewer (or Specialists if deep mode)
 
-Spawn a single reviewer agent with fresh context. The reviewer has NO access to the implementation reasoning — only the output and the requirements.
-
-**Agent config:**
-- `model: "sonnet"` (default — use opus if the code is complex or security-critical)
-
-**Learned rules:** Before constructing the reviewer prompt, read `.agents/skill-artifacts/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
-
-**Quality feedback:** Also read `references/_shared/quality-feedback-protocol.md`. If this review includes a critic override, repeated rubric disagreement, high-stakes artifact, or post-humanize rewrite, apply the relevant logging, dashboard creation/update, or consensus guidance. Use `references/_shared/shared-critic-rubrics.md` when a review needs a reusable quality dimension such as claim substantiation, protected-token preservation, mechanism distinctness, or humanize regression.
-
-**Reviewer prompt:**
-
-```
-You are a senior code reviewer with fresh eyes. You did NOT write this code.
-Your job is to find problems.
-
-ORIGINAL REQUIREMENTS:
-{what the code was supposed to do}
-
-CODE/OUTPUT TO REVIEW:
-{the full artifact}
-
-CONTEXT:
-{surrounding code, API contracts, types, or other relevant files}
-
-Review for:
-1. **Correctness** — Does it actually do what the requirements ask? Are there logic errors?
-2. **Edge cases** — What inputs or states would break this? Empty arrays, null values,
-   concurrent access, network failures?
-3. **Simplification** — Is anything over-engineered? Can code be removed or simplified
-   without losing functionality? Look for:
-   - **Redundancy / duplication** — same logic in multiple places where one would do
-   - **Unnecessary wrappers** — single-call helpers, pass-through abstractions adding no value
-   - **Dead branches** — code paths that can never execute (defensive `if` for impossible states)
-   - **Over-defensive validation** — runtime checks for invariants the type system or call site already guarantees
-   - **Hand-rolled equivalents of stdlib/Bun built-ins** — manual implementations of `Array.prototype.flat`, `Object.entries`, etc. when built-ins are available
-   - **Manual loops where map/filter/reduce reads cleaner** — imperative loops doing trivial transformations
-4. **Security** — SQL injection, XSS, command injection, auth bypasses, secrets in code?
-5. **Consistency** — Does it match the patterns and conventions of the surrounding codebase?
-6. **Input Quality** — Was this built on solid ground? Check what context the implementation
-   had access to. Rate each:
-   - Product/domain context: Rich (from research/spec) | Thin (user-provided, minimal) | Missing (improvised)
-   - Requirements clarity: Precise (specific acceptance criteria) | Vague (general direction only) | Absent
-   - Upstream artifacts: Fresh (< 30 days) | Stale (> 30 days) | None
-   This is not about the code quality — it is about whether the RIGHT thing was built.
-   A perfectly crafted solution to the wrong problem is still wrong.
-
-Respond in this exact format:
-
-VERDICT: PASS | ISSUES_FOUND | CRITICAL
-
-ISSUES (if any):
-For each issue:
-- SEVERITY: critical | major | minor | nit
-- CONFIDENCE: [1-10] (how certain you are this is a real problem — 10 = proven, 7 = likely, 4 = possible, 1 = speculative)
-- LOCATION: {file:line or section}
-- PROBLEM: {what's wrong}
-- FIX: {concrete fix — show the corrected code, not just "fix this"}
-
-SIMPLIFICATIONS (if any):
-- {what can be removed or simplified, with the simpler version}
-
-SUMMARY: {one paragraph — overall assessment}
-
-**Confidence rules:**
-- Suppress findings below 5/10 — don't include them at all.
-- Caveat findings 5-7/10 — include them but mark as "UNCERTAIN — may be a false positive."
-- Full-weight findings 8+/10 — these are real issues.
-- If you can cite a specific line, test, or proof, confidence should be 8+.
-- If you're pattern-matching without verification, confidence should be 5-7.
-
-**Verification rules (signal vs noise):**
-Before reporting any issue, verify it is SIGNAL not NOISE:
-- CHECK if the problem is already handled elsewhere in the code (a different file,
-  a wrapper, a middleware, a test). If handled, it is noise — do not report it.
-- CHECK if the fix already exists (the "improvement" you would suggest is already
-  implemented under a different name or in a different location). If it exists, it is noise.
-- ASK "has this actually caused a problem, or is it theoretical?" If purely theoretical
-  with no plausible trigger path, downgrade to nit or suppress.
-- ASK "will this fix actually change runtime behavior?" If the fix is cosmetic or
-  the code path is equivalent, it is noise.
-Issues that survive verification are signal. Issues that fail any check are noise —
-suppress them entirely. Do not pad the report with noise to appear thorough.
-
-Be ruthless. Better to flag a false positive than miss a real bug.
-But don't invent problems that don't exist — if the code is clean, say PASS.
-
-Write your response directly — do not write to any files.
-```
+- **Generalist (fast/standard):** spawn one reviewer per [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE]. Prompt template + pre-construction reads (learned-rules, quality-feedback-protocol, shared-critic-rubrics) live in the ref.
+- **Specialist (deep, --thorough, or auto-escalated):** spawn 3 specialists in parallel per [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE] — security + performance + correctness. Merge findings; aggregate verdict (any CRITICAL → CRITICAL; any ISSUES_FOUND → ISSUES_FOUND; all PASS → PASS).
+- **Critic consensus (deep, non-code high-stakes):** for compliance copy / paid media / launches / canonical research, use [`references/procedures/critic-consensus.md`](references/procedures/critic-consensus.md) [PROCEDURE] — 2 critics on highest-risk dimensions, merge agreement + disagreements.
 
 ### 3. Evaluate the review
 
 Read the reviewer's output. Three paths:
 
-**Path A: PASS (no issues)**
-The reviewer found nothing wrong. You're done. Report to the user:
-- "Verified by independent reviewer — no issues found."
-- Include the reviewer's summary as confirmation.
-
-**Path B: ISSUES_FOUND (non-critical)**
-The reviewer found real issues but nothing catastrophic. Before proceeding to the Resolve step, classify each finding:
-- **AUTO_FIX**: confidence 9+ AND severity minor/nit → resolver applies without asking
-- **ASK**: everything else → resolver presents these to the user for judgment after fixing
-
-**Path C: CRITICAL**
-The reviewer found a critical bug (security vulnerability, data loss, completely wrong logic). Flag immediately to the user before resolving — they may want to change approach entirely.
+- **Path A: PASS** — no issues. Done. Write the dated report; report to user "Verified by independent reviewer — no issues found"; include reviewer's summary.
+- **Path B: ISSUES_FOUND** — non-critical. Classify each finding:
+  - **AUTO_FIX**: confidence 9+ AND severity minor/nit → resolver applies without asking
+  - **ASK**: everything else → resolver fixes but flags for operator judgment
+- **Path C: CRITICAL** — security vulnerability, data loss, completely wrong logic. **Flag immediately to user before resolving** — they may want to change approach entirely.
 
 ### 4. Spawn the Resolver (if issues found)
 
-The resolver sees BOTH the original implementation AND the review. Its job is to produce a corrected version.
+Per [`references/procedures/resolver.md`](references/procedures/resolver.md) [PROCEDURE]. Resolver sees BOTH original code AND reviewer's full output. Returns FIXED/DECLINED per finding + COMPLETE corrected output.
 
-**Agent config:**
-- `model: "sonnet"` (match the reviewer's model)
+### 5. Apply the resolution (with self-regulation gate)
 
-**Resolver prompt:**
+**Self-regulation gate** — before applying resolver output, check:
 
-```
-You are a senior engineer resolving code review feedback. You have two inputs:
+- **Resolver modified >30% of the original artifact** → STOP. "This artifact may need a redesign rather than incremental fixes."
+- **Resolver addressed >10 findings in a single pass** → STOP. Too many changes at once increases regression risk.
+- **Resolver's output introduces new issues that the reviewer didn't find in the original (regression)** → STOP. "The resolver is making things worse."
 
-1. ORIGINAL CODE:
-{the original implementation}
+Any trigger → do NOT apply; surface to operator with the gate name. This bounds the loop from grinding indefinitely on a fundamentally-broken artifact.
 
-2. REVIEW FEEDBACK:
-{the reviewer's full response}
-
-Your job:
-- Fix every issue marked "critical" or "major"
-- Fix "minor" issues unless the fix would add complexity disproportionate to the benefit
-- Apply simplifications where the reviewer's suggestion is genuinely simpler
-- Ignore "nit" level feedback unless trivial to address
-- Issues marked AUTO_FIX (confidence 9+, severity minor/nit) should be fixed without discussion
-- Issues marked ASK should be fixed but flagged clearly so the orchestrator can present them to the user
-- Do NOT introduce new features or refactor beyond what the review requested
-
-For each issue, either:
-- FIXED: {show the fix}
-- DECLINED: {explain why the reviewer's suggestion doesn't apply or would make things worse}
-
-Then output the COMPLETE corrected code/output — not a diff, the full thing.
-The orchestrator will use this to replace the original.
-
-Write your response directly — do not write to any files.
-```
-
-### 5. Apply the resolution
-
-Read the resolver's output. You (the orchestrator) apply the corrected code to disk.
-
-Before applying, sanity-check:
-- Did the resolver address all critical/major issues?
-- Did the resolver break anything the original got right?
-- Are any "DECLINED" decisions reasonable?
-
-**Self-regulation gate:** Track cumulative changes. If any of these trigger, STOP and flag to the user instead of applying:
-- The resolver modified >30% of the original artifact — "This artifact may need a redesign rather than incremental fixes."
-- The resolver addressed >10 findings in a single pass — too many changes at once increases regression risk.
-- The resolver's output introduces new issues that the reviewer didn't find in the original (regression) — "The resolver is making things worse. Stopping."
-
-If the resolver's output looks good and passes the self-regulation gate, apply it.
+If gate passes + sanity-check (resolver addressed all critical/major, didn't break anything original got right, DECLINED decisions reasonable) → apply to disk.
 
 ### 6. Optional: Loop (for critical or complex code)
 
-For high-stakes code (auth, payments, data migrations), run a second verification loop on the resolver's output. This catches issues the resolver might have introduced.
-
-**Max loops: 2.** If the code isn't clean after 2 review cycles, stop and flag to the user.
+For high-stakes code (auth, payments, data migrations), run a second verification loop on the resolver's output. **Max loops: 2.** If code isn't clean after 2 review cycles, stop and flag to user.
 
 ```
-Round 1: Implement → Review → Resolve
-Round 2: Resolve output → Review → Resolve (if needed)
-Done.
+Round 1: Implement → Review → Resolve → Apply
+Round 2 (only if critical/complex): Resolved output → Review → Resolve → Apply (if clean)
 ```
 
 ### 7. Write the report
 
-Write to `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable):
-
-```markdown
----
-skill: fresh-eyes
-version: 1
-date: {YYYY-MM-DD}
-status: done | done_with_concerns | blocked | needs_context
----
-
-# Review Chain Report
-
-**Artifact**: {what was reviewed}
-**Date**: {date}
-**Rounds**: {how many review cycles}
-
-## Verdict: {PASS | FIXED | CRITICAL}
-
-## Issues Found
-| # | Severity | Confidence | Location | Problem | Status |
-|---|----------|------------|----------|---------|--------|
-| 1 | major | 9/10 | file.ts:42 | Off-by-one in loop | Fixed |
-| 2 | minor | 8/10 | file.ts:15 | Unused import | Fixed |
-| 3 | nit | 6/10 | file.ts:8 | Naming convention | Declined (uncertain) |
-
-## Input Quality Assessment
-| Input | Rating | Evidence |
-|-------|--------|----------|
-| Product/domain context | {Rich/Thin/Missing} | {what was available} |
-| Requirements clarity | {Precise/Vague/Absent} | {source} |
-| Upstream artifacts | {Fresh/Stale/None} | {what existed} |
-
-## Simplifications Applied
-{What was simplified and why}
-
-## Changes Made
-{Summary of what changed between original and final version}
-
-## Reviewer's Summary
-{The reviewer's overall assessment}
-
-## Resolver's Notes
-{Any "DECLINED" decisions and reasoning}
-```
-
-## Next Step
-
-If PASS: hand off to commit/PR creation (e.g., `gh pr create`). If ISSUES_FOUND: resolve and re-run. If more than 2 cycles: escalate to user.
+Per [`references/report-template.md`](references/report-template.md) [PROCEDURE]. Path: `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — dated, immutable, never overwritten.
 
 ### 8. Deliver results
 
-Present to the user:
-- **Verdict** — PASS (clean) or FIXED (issues found and resolved) or CRITICAL (flagged)
-- **Issue count** — X issues found, Y fixed, Z declined
-- **Key fix** — the most important thing that was caught
-- File path to report
+Present to user: **Verdict** (PASS/FIXED/CRITICAL), **issue count** (X found, Y fixed, Z declined), **key fix** (most important catch), **file path to report**.
 
 ## When to Trigger Automatically
 
@@ -399,105 +220,51 @@ Do NOT auto-trigger for:
 - Code the user explicitly said "just do it quick"
 - Read-only operations
 
-## Specialist Dispatch Mode (--thorough)
-
-When invoked with `--thorough`, or when the code touches security/auth/payments/data-mutations, replace the single generalist reviewer with 3 specialist reviewers running in parallel:
-
-**Specialist roles:**
-
-| Specialist | Focus | What it catches that generalists miss |
-|------------|-------|--------------------------------------|
-| **Security reviewer** | Auth bypasses, injection, secrets, access control, input validation | Deep knowledge of attack patterns — doesn't just check "is there auth?" but "can the auth be bypassed?" |
-| **Performance reviewer** | N+1 queries, unbounded loops, missing pagination, memory leaks, caching | Traces data flow through the call stack looking for scale problems |
-| **Correctness reviewer** | Logic errors, edge cases, race conditions, error handling, type safety | Reads the code as a state machine — "what happens if X is null AND Y fails?" |
-
-**How it works:**
-1. Spawn all 3 specialists in parallel with the same code and requirements. Each specialist uses the same prompt structure as the generalist reviewer (Section 2), but replace the "Review for:" instructions with the specialist's focus area. For example, the security reviewer gets: "Review ONLY for: auth bypasses, injection, secrets exposure, access control, input validation. Ignore style, naming, and performance."
-2. Each returns findings in the standard format (SEVERITY + CONFIDENCE + LOCATION + PROBLEM + FIX)
-3. Merge all findings, deduplicate (same location + same problem = one finding, keep higher confidence)
-4. Proceed to resolver with the merged findings
-
-**When to auto-escalate to specialist mode** (without user asking):
-- Code modifies auth, sessions, or access control
-- Code handles payments or financial data
-- Code performs database migrations or bulk data mutations
-- Code processes PII or sensitive user data
-- Total diff exceeds 500 lines (sum of all files changed, not per-file)
-
-**Cost:** 3x single reviewer cost. Still cheap relative to catching a production bug.
-
-## Critic Consensus Mode
-
-Use critic consensus when the artifact is high-stakes but does not fit the code-focused specialist set: compliance-sensitive marketing copy, paid media with meaningful spend, public launch announcements, canonical research updates, or a repeated operator override of a critic dimension.
-
-Pattern:
-
-1. Run the normal reviewer against the full requirements.
-2. Run a second critic focused only on the highest-risk dimensions: substantiation, compliance, audience fit, mechanism distinctness, protected-token preservation, or research validity.
-3. Merge disagreements in the report. If the critics disagree on a hard gate, resolve the dimension directly or return `DONE_WITH_CONCERNS` / `BLOCKED`; do not average the scores.
-
-## Scope Drift Detection
-
-When `.agents/skill-artifacts/meta/tasks.md` or `.agents/skill-artifacts/meta/specs/*.md` exists, the reviewer adds a scope check:
-
-After reviewing code quality, compare the implementation against the stated requirements:
-- Read `.agents/skill-artifacts/meta/tasks.md` — are all tasks addressed? Are there changes that don't map to any task?
-- Read `.agents/skill-artifacts/meta/specs/*.md` — does the implementation match the spec? Are there requirements that were missed or scope additions that weren't planned?
-
-Report scope drift findings separately:
-
-```
-SCOPE DRIFT:
-- MISSING: [requirement from spec/tasks not found in the code]
-- UNPLANNED: [code change that doesn't map to any requirement — may be scope creep]
-```
-
-Scope drift findings are informational (not blocking) — the user decides if they're intentional.
-
 ## Configuration
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | model | sonnet | Model for reviewer and resolver |
-| max_loops | 1 | Review cycles (set to 2 for critical code) |
-| severity_threshold | minor | Minimum severity to fix (minor, major, critical) |
+| max_loops | 1 | Review cycles (auto-set to 2 for critical/complex code per Step 6) |
+| severity_threshold | minor | Minimum severity to fix (minor / major / critical) |
 | auto_apply | true | Apply fixes automatically or show diff first |
-| thorough | false | Use specialist dispatch (3 parallel reviewers) instead of generalist |
+| thorough | false | Force specialist dispatch (auto-escalates regardless) |
 
-User can override: "review this with opus", "do 2 rounds of verification", or "review this thoroughly".
+Override examples: "review this with opus" / "do 2 rounds of verification" / "review this thoroughly".
 
 ## Cost Considerations
 
 - 1 round (reviewer + resolver) with sonnet: ~$0.10-0.20
 - 1 round with opus: ~$0.50-1.00
 - 2 rounds doubles the cost
-- Very cheap relative to the quality improvement — default to running 1 round for non-trivial code
+- Specialist dispatch (3 parallel): 3× single-reviewer cost (~$0.30-0.50)
+- Critic consensus: 2× (~$0.20-0.40)
+- Cheap relative to catching a production bug — default to 1 round for non-trivial code.
 
-## Edge Cases
+## Anti-Patterns + Edge Cases
 
-- **Reviewer finds no issues**: PASS. Don't force a resolve step.
-- **Reviewer hallucinates issues**: The resolver catches this — if the "fix" doesn't make sense, the resolver DECLINES it. If both agents agree on a non-issue, you catch it in your sanity check.
-- **Resolver introduces new bugs**: This is why round 2 exists for critical code.
-- **Reviewer and resolver disagree**: You (the orchestrator) break the tie.
-- **Code is too large**: Split into logical chunks and review each separately. Don't send 2000 lines in one prompt.
-- **Existing reports**: Don't overwrite. Each run writes a new dated, slug-suffixed file under `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md`. Reports accumulate as audit trail (lifecycle: snapshot — dated, immutable). Operator prunes old reports via cleanup-artifacts when needed.
-- **Reviewer or resolver agent fails**: If the reviewer crashes or returns garbage, retry once with the same prompt. If it fails again, fall back to your own review (single-agent mode). Note the failure in the report.
-- **Architecture or design review** (not code): Adjust the reviewer prompt — replace "code" references with "design" or "architecture". The 5 review categories still apply (Correctness, Edge cases, Simplification, Security, Consistency).
-
-## Output Files
-
-| File | Description |
-|------|-------------|
-| `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` | Verification report with issues and resolutions |
-
-Each run writes a new dated, slug-suffixed file (lifecycle: snapshot — dated, immutable). Reports accumulate as audit trail; operator prunes via cleanup-artifacts when needed.
-
----
+Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any of: adding a critic on top of the reviewer (banned — fresh-eyes IS the critic), giving reviewer implementation reasoning, skipping the resolver when issues found, auto-applying without self-regulation gate, running >2 loops, padding the report with nits. Edge cases (reviewer hallucinations, resolver regressions, code too large, agent failures, architecture-not-code reviews) all live in the same ref.
 
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — all reviewer findings resolved by resolver, or explicitly marked acceptable; PASS gate met
-- **DONE_WITH_CONCERNS** — non-blocking issues flagged for follow-up; report names what was deferred and why
-- **BLOCKED** — critical issue surfaced (security, data-loss, broken contract) requiring user judgment before proceeding
-- **NEEDS_CONTEXT** — review requirements unclear; missing the spec, intent, or acceptance criteria the implementation should be checked against
+- **DONE** — all reviewer findings resolved or explicitly marked acceptable; PASS gate met.
+- **DONE_WITH_CONCERNS** — non-blocking issues flagged for follow-up; report names what was deferred and why (scope drift, declined findings worth a second look, critic disagreements not fully resolved).
+- **BLOCKED** — critical issue (security, data-loss, broken contract) OR self-regulation gate triggered. Resolver did NOT apply; operator judgment required.
+- **NEEDS_CONTEXT** — review requirements unclear; missing spec, intent, or acceptance criteria the implementation should be checked against.
+
+## References
+
+- [`references/playbook.md`](references/playbook.md) [PLAYBOOK] — why this skill, methodology, principles, "no critic on critic" rationale, when NOT to use
+- [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) [PLAYBOOK] — pre-Pre-Dispatch read pattern (synced from meta-skills/references/)
+- [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE] — fast/standard/deep semantics for this skill
+- [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE] — full reviewer agent prompt template + confidence rules + signal-vs-noise verification
+- [`references/procedures/resolver.md`](references/procedures/resolver.md) [PROCEDURE] — full resolver agent prompt template + FIXED/DECLINED structure
+- [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE] — 3-specialist parallel dispatch + auto-escalation triggers
+- [`references/procedures/critic-consensus.md`](references/procedures/critic-consensus.md) [PROCEDURE] — high-stakes non-code (compliance copy, paid media, launches)
+- [`references/procedures/scope-drift.md`](references/procedures/scope-drift.md) [PROCEDURE] — MISSING + UNPLANNED detection when tasks.md or spec.md exists
+- [`references/report-template.md`](references/report-template.md) [PROCEDURE] — output template + slug convention + status semantics
+- [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — orchestration + reviewer + resolver + specialist + critic-consensus + scope-drift anti-patterns + edge cases
+- [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE] — canonical Pre-Dispatch contract
+- [`references/_shared/quality-feedback-protocol.md`](references/_shared/quality-feedback-protocol.md) — when to log critic overrides / repeated disagreements / post-humanize regressions
+- `agent-skills/CLAUDE.md` §"Artifact Placement" — lifecycle taxonomy (umbrella dependency; not shipped under `npx skills add` standalone install; the `snapshot` lifecycle this skill emits is fully documented inline in the Artifact Contract block above)
