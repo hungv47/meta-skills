@@ -6,6 +6,20 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.2.1] - 2026-05-16
+
+`eval-loop` body trimmed by 22% (270 → 211 lines) — first refactor in the skill-stack body-diet program. Same outputs, faster orchestration, fewer always-loaded tokens. Stale loop-path bug in Pre-Dispatch fixed (`.agents/skill-artifacts/{mkt,product,research}/loops` → `skills-resources/loops`).
+
+### Changed
+- `eval-loop`: Responsibility Split, Output helpers, and Quality Feedback step in Dispatch now cite `_shared/eval-loop-spec.md` and `_shared/quality-feedback-protocol.md` instead of inlining detail. Critical Gates, directory tree, and `program.md` frontmatter contract preserved verbatim. Validation: 3 fixture harness runs match baseline on Critic verdicts and contract hashes (minimal fixture identical; standard + stretch fill `context.md` instead of leaving scaffold stubs — operator-confirmed improvement).
+
+### Fixed
+- `eval-loop` Pre-Dispatch `find` command pointed at the legacy `.agents/skill-artifacts/{mkt,product,research}/loops/` paths that no longer exist; corrected to `skills-resources/loops/`.
+
+Full review: `.agents/skill-artifacts/meta/records/2026-05-16-fresh-eyes-eval-loop-refactor.md`
+
+---
+
 ## [6.2.0] - 2026-05-15
 
 Executable feedback-loop scaffolding for experience and quality telemetry.
