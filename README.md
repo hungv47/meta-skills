@@ -65,7 +65,7 @@ Top-level router that reads project state and proposes the right stack orchestra
 - You are returning to a project and want a state-aware next step
 - The ask spans multiple stacks
 
-**Produces:** `.agents/experience/meta-workflow.md`
+**Produces:** `skills-resources/experience/meta-workflow.md`
 
 ---
 

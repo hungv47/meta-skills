@@ -83,7 +83,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
   },
   "experience": {
     "audience.md": {
-      "path": ".agents/experience/audience.md",
+      "path": "skills-resources/experience/audience.md",
       "last_written_by": "icp-research",
       "last_written_at": "2026-05-06T09:11:00.000Z",
       "entries": 7,
@@ -196,7 +196,7 @@ What it does:
 1. Walk `.agents/skill-artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
 2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`).
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields.
-4. For experience files (`.agents/experience/*.md`): count entries, find last writer.
+4. For experience files (`skills-resources/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
 6. Write `.agents/manifest.json` (pretty-printed JSON, trailing newline).
 7. Write `.agents/artifact-index.md` (human-readable selection index derived from the manifest).
@@ -339,7 +339,7 @@ Consumers should respect `stale: true` as a warning signal, not a hard block. Th
 
 ## Experience Domain Handling
 
-`.agents/experience/{domain}.md` files are different from regular artifacts:
+`skills-resources/experience/{domain}.md` files are different from regular artifacts:
 - **Multi-producer** — many skills append to the same file.
 - **Append-only** — never overwritten, only added to.
 - **No single status** — each Q+A block is independently valid.

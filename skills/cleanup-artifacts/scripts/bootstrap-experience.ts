@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
-// bootstrap-experience — create the local .agents/experience substrate.
+// bootstrap-experience — create the local skills-resources/experience substrate.
 // See references/_shared/pre-dispatch-protocol.md.
 
 import { existsSync, lstatSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
@@ -8,11 +8,11 @@ import { join, relative, resolve } from "node:path";
 
 const args = process.argv.slice(2);
 const root = realpathSync(resolve(args[0] ?? process.cwd()));
-const agentsDir = join(root, ".agents");
-const experienceDir = join(agentsDir, "experience");
+const resourcesDir = join(root, "skills-resources");
+const experienceDir = join(resourcesDir, "experience");
 const starterDomains = ["audience", "brand", "business", "content", "goals", "patterns", "product", "technical"];
 
-ensureSafeDirectory(agentsDir);
+ensureSafeDirectory(resourcesDir);
 ensureSafeDirectory(experienceDir);
 
 writeIfMissing(
@@ -21,7 +21,7 @@ writeIfMissing(
 
 This folder is the local, append-only memory substrate for skills.
 
-Skills read \`.agents/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
+Skills read \`skills-resources/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
 
 Suggested domains:
 
