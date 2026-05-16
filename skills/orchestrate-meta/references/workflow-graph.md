@@ -60,7 +60,7 @@ Cross-stack data flow:
 
 - **Job:** create or resume a domain-scoped loop-centered workspace for measurable strategy → execution → evaluation cycles. Adapts the useful parts of autoresearch: fixed scope, fixed evaluator, mutable surface, `results.tsv`, and keep/discard/watch/blocked decisions.
 - **Produces:** `skills-resources/loops/[slug]/program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, `learnings.md`
-- **Consumes:** `.agents/manifest.json`, `.agents/artifact-index.md`, `research/`, `brand/`, `architecture/`, `.agents/experience/`, prior loop artifacts if resuming
+- **Consumes:** `.agents/manifest.json`, `.agents/artifact-index.md`, `research/`, `brand/`, `architecture/`, `skills-resources/experience/`, prior loop artifacts if resuming
 - **When to recommend:** user asks for an improvement loop, experiment ledger, closed-loop system, strategy/execution/eval artifact placement, or has a measurable marketing, product, or research initiative that should improve over cycles.
 - **Cost:** $0.20–0.80 · 4 agents · standard budget · ~3–5 min
 
@@ -85,7 +85,7 @@ Cross-stack data flow:
 - **Job:** audit + groom the `.agents/skill-artifacts/` artifact tree. Classifies every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), runs critic gate (5-random spot-check for live cross-references), MOVES (never deletes) confirmed candidates to `.agents/skill-artifacts/.archive/[pattern-derived]/` behind explicit per-category operator confirmation. Default mode `--dry-run`.
 - **Produces:** `.agents/skill-artifacts/meta/records/[date]-cleanup-artifacts-<slug>.md` (lifecycle: snapshot — audit trail). Side effect: file moves under `.archive/[date]/` on `--apply`.
 - **Consumes:** `.agents/manifest.json`
-- **When to recommend:** `.agents/skill-artifacts/` has grown junk-drawer (operator self-report or 50+ entries); pre-release / pre-PR cleanup; suspected orphan artifacts from renamed/removed skills. Hard-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`.
+- **When to recommend:** `.agents/skill-artifacts/` has grown junk-drawer (operator self-report or 50+ entries); pre-release / pre-PR cleanup; suspected orphan artifacts from renamed/removed skills. Hard-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `skills-resources/experience/`, `tasks.md`, `roadmap.md`.
 - **Cost:** $0.05–0.20 · 1 agent · standard budget · ~2–3 min (dry-run); ~5 min including operator confirmation prompts on `--apply`.
 
 ---
@@ -181,7 +181,7 @@ These are SUGGESTIONS, not recommendations. Mention them as optional terminal st
 
 `/orchestrate-meta` is the most-likely starter to be re-invoked across sessions. Behavior:
 
-1. Read `.agents/experience/meta-workflow.md` for prior breadcrumbs.
+1. Read `skills-resources/experience/meta-workflow.md` for prior breadcrumbs.
 2. Read all per-stack breadcrumbs (`research-workflow.md`, `marketing-workflow.md`, `product-workflow.md`).
 3. Build a "what's happened across the project" picture.
 4. If the user's current ask is the same domain as last session, suggest continuing in that domain.

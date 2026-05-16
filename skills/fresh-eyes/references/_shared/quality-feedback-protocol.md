@@ -16,7 +16,7 @@ Apply this protocol after:
 
 ## Learning Promotion To Experience
 
-Promote a loop learning into `.agents/experience/` only when the evidence is strong enough to reuse across sessions.
+Promote a loop learning into `skills-resources/experience/` only when the evidence is strong enough to reuse across sessions.
 
 Promotion criteria:
 
@@ -31,11 +31,11 @@ Domain routing:
 
 | Learning Type | Experience File |
 |---|---|
-| Audience behavior, objections, language | `.agents/experience/audience.md` |
-| Offer economics, pricing, buying trigger | `.agents/experience/business.md` |
-| Product mechanism, claim boundary, feature proof | `.agents/experience/product.md` |
-| Brand voice, trust pattern, taboo | `.agents/experience/brand.md` |
-| Goal, metric, channel result, campaign rule | `.agents/experience/goals.md` |
+| Audience behavior, objections, language | `skills-resources/experience/audience.md` |
+| Offer economics, pricing, buying trigger | `skills-resources/experience/business.md` |
+| Product mechanism, claim boundary, feature proof | `skills-resources/experience/product.md` |
+| Brand voice, trust pattern, taboo | `skills-resources/experience/brand.md` |
+| Goal, metric, channel result, campaign rule | `skills-resources/experience/goals.md` |
 
 Append format:
 
@@ -115,7 +115,7 @@ bun scripts/update-quality-dashboard.ts --skill ad-copy --invocations 1 --critic
 When an evaluator repeatedly finds an upstream construction issue, preserve the signal in the smallest durable place:
 
 1. **One loop only:** keep it in that loop's `learnings.md`.
-2. **Reusable audience/offer/product truth:** promote to `.agents/experience/`.
+2. **Reusable audience/offer/product truth:** promote to `skills-resources/experience/`.
 3. **Rubric gap shared across skills:** update or create a shared rubric in `references/_shared/shared-critic-rubrics.md`.
 4. **Skill-specific construction flaw:** propose a targeted SKILL.md or agent edit for the producing skill; do not silently mutate the skill during an eval run.
 

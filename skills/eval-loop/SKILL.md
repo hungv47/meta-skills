@@ -57,7 +57,7 @@ routing:
     - research/
     - brand/
     - architecture/
-    - .agents/experience/
+    - skills-resources/experience/
   requires: []
   defers-to:
     - skill: discover

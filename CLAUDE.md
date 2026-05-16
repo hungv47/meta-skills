@@ -53,7 +53,7 @@ No rigid pipeline. The conversation guides what happens next.
 Skills resolve context in this order:
 1. **Conversation context** — same session, decisions are in the chat
 2. **Artifacts on disk** — previous session saved a spec, architecture doc, etc.
-3. **`.agents/experience/{domain}.md`** — append-only Q&A substrate written by every skill on cold-start (see Pre-Dispatch Protocol below)
+3. **`skills-resources/experience/{domain}.md`** — append-only Q&A substrate written by every skill on cold-start (see Pre-Dispatch Protocol below)
 4. **Discovery** — ask the user or scan the codebase
 
 This means downstream skills don't REQUIRE artifacts to exist as files. They need the decisions to be known, from whatever source.
@@ -64,8 +64,8 @@ Every skill in this stack (and across research/marketing/product) follows the ca
 
 The protocol governs the moment between user invocation and agent dispatch. Two flows:
 
-- **Warm Start** — most needed dimensions resolvable from artifacts or `.agents/experience/`. Skill summarizes findings, invites override, dispatches.
-- **Cold Start** — ≥1 dimension missing. Skill emits a single bundled prompt with 3-5 decision-ranked questions, multiple-choice where possible, one round-trip. Answers persist to `.agents/experience/{domain}.md` so the next skill never re-asks.
+- **Warm Start** — most needed dimensions resolvable from artifacts or `skills-resources/experience/`. Skill summarizes findings, invites override, dispatches.
+- **Cold Start** — ≥1 dimension missing. Skill emits a single bundled prompt with 3-5 decision-ranked questions, multiple-choice where possible, one round-trip. Answers persist to `skills-resources/experience/{domain}.md` so the next skill never re-asks.
 
 `discover` is exempt — it IS the multi-round interview by design.
 
@@ -86,7 +86,7 @@ Every skill declares a `budget` tier in frontmatter: `fast`, `standard`, or `dee
 - **Upward (force deeper):** "run this thoroughly", "full analysis", "deep mode" → use the documented tier even on small inputs.
 - **Downward (`--fast`):** `--fast` flag on the slash command, OR phrases "fast mode" / "quick pass" / "skip the orchestration" in the same turn → force single-agent execution regardless of tier. No sub-agents, no critic gate, no rewrite loops, no warm-start Pre-Dispatch interrogation. Skill produces its core deliverable in one pass and ends with "Ran in --fast mode; rerun without the flag for full critique."
 
-**`--fast` does NOT skip Cold Start.** When no context is resolvable from artifacts or `.agents/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing decisions.
+**`--fast` does NOT skip Cold Start.** When no context is resolvable from artifacts or `skills-resources/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing decisions.
 
 **Safety gates supersede `--fast`.** Hard-gated skills (mandatory Pre-Dispatch hard blocks or in-skill safety checkers — see each skill's Pre-Dispatch section for stack-specific examples) enforce gates regardless of `--fast`. The contract is "skip the heavy lift, not the guardrails."
 
@@ -287,4 +287,4 @@ Skill routing is the agent's job — it proposes skills proactively based on the
 | Change | Rationale |
 |--------|-----------|
 | `start-meta` → `orchestrate-meta` | The skill scans existing artifacts and continues mid-pipeline; "start" implied first-run init. The orchestration role belongs in the slash-command surface. (BREAKING; no backward-compat alias.) |
-| Added `cleanup-artifacts` | The `.agents/skill-artifacts/` artifact tree accumulates fast (skill outputs, briefs, fresh-eyes reports, manifest snapshots). Without active grooming, it becomes a junk drawer. New single-agent meta-skill mirrors `machine-cleanup`'s safety pattern at the project artifact-tree level. MOVE-not-delete (archives to `.agents/skill-artifacts/.archive/[date]/`); explicit per-category operator confirmation; HARD-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`. |
+| Added `cleanup-artifacts` | The `.agents/skill-artifacts/` artifact tree accumulates fast (skill outputs, briefs, fresh-eyes reports, manifest snapshots). Without active grooming, it becomes a junk drawer. New single-agent meta-skill mirrors `machine-cleanup`'s safety pattern at the project artifact-tree level. MOVE-not-delete (archives to `.agents/skill-artifacts/.archive/[date]/`); explicit per-category operator confirmation; HARD-NEVER on `brand/`, `research/`, `architecture/`, `.git/`, submodule dirs, `.agents/manifest.json`, `skills-resources/experience/`, `tasks.md`, `roadmap.md`. |

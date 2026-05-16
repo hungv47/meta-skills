@@ -143,4 +143,4 @@ bun scripts/update-quality-dashboard.ts \
 - Do not store raw evaluator notes here.
 - Do not duplicate `results.tsv`.
 - Do not turn the dashboard into a project database.
-- Do not promote dashboard observations directly into `.agents/experience/`; use the Quality Feedback Protocol promotion criteria first.
+- Do not promote dashboard observations directly into `skills-resources/experience/`; use the Quality Feedback Protocol promotion criteria first.

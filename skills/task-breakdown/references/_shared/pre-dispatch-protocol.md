@@ -11,7 +11,7 @@ Two failure modes this protocol prevents:
 1. **Skill fabricates from thin context** — user gives a one-liner, skill doesn't ask, output reflects assumptions instead of intent. Quality fails silently.
 2. **Skill grills the user** — every invocation feels like a tax form; user disengages or works around the skill. Friction fails loudly.
 
-Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `.agents/experience/` so the next skill never re-asks).
+Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `skills-resources/experience/` so the next skill never re-asks).
 
 ---
 
@@ -20,7 +20,7 @@ Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3
 Every skill invocation routes to exactly one of these:
 
 ### Cold Start
-*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`) OR `.agents/experience/`.
+*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`) OR `skills-resources/experience/`.
 
 The skill emits a **single bundled prompt** with:
 
@@ -42,7 +42,7 @@ If the user says proceed (or stays silent past one beat), dispatch.
 
 ---
 
-## The Substrate: `.agents/experience/`
+## The Substrate: `skills-resources/experience/`
 
 The growing source of truth. Skills **read before asking**, **write after the user answers**.
 
@@ -52,7 +52,7 @@ If the folder is missing in a project, bootstrap it before cold-start write-back
 bun scripts/bootstrap-experience.ts
 ```
 
-The helper creates `.agents/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
+The helper creates `skills-resources/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
 
 ### Format
 
@@ -145,7 +145,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
 ```
 1. Skill resolves needed dimensions:
    a) Pipeline artifacts (research/, brand/, etc.) — existing behavior
-   b) .agents/experience/*.md — read most-recent entries
+   b) skills-resources/experience/*.md — read most-recent entries
 2. Compute (needed) - (found) = missing dimensions
 3. Choose flow:
    - missing == 0          → Warm start (summary, optional probe)
@@ -156,7 +156,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
    - Then dispatch agents
 ```
 
-The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `.agents/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
+The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `skills-resources/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
 
 ---
 

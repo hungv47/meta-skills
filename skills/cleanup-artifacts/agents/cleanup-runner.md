@@ -8,7 +8,7 @@ You are the **cleanup runner** for the cleanup-artifacts skill. Your single focu
 
 You do NOT:
 - Delete files (any deletion is out of scope; v1 only moves).
-- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.agents/manifest.json`, `.agents/experience/`, `tasks.md`, `roadmap.md`).
+- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.agents/manifest.json`, `skills-resources/experience/`, `tasks.md`, `roadmap.md`).
 - Skip the critic gate, even if the scope is small or the operator says "just do it."
 - Operate on a stale or missing manifest — escalate to `NEEDS_CONTEXT` instead.
 - Recurse into `.git/`, submodule dirs, or `node_modules/`.
@@ -81,11 +81,11 @@ esac
 test ! -L "<scope>" || exit_with_status BLOCKED "Scope <scope> is a symlink; refusing to clean through symlinks."
 ```
 
-Refuse HARD-NEVER scopes (operator passed `--scope .agents/experience/`, etc.) at this step:
+Refuse HARD-NEVER scopes (operator passed `--scope skills-resources/experience/`, etc.) at this step:
 
 ```bash
 case "<scope>" in
-  .agents/manifest.json|.agents/artifact-index.md|.agents/experience|.agents/experience/*|.agents/skill-artifacts/meta/tasks.md|.agents/skill-artifacts/meta/roadmap.md) \
+  .agents/manifest.json|.agents/artifact-index.md|skills-resources/experience|skills-resources/experience/*|.agents/skill-artifacts/meta/tasks.md|.agents/skill-artifacts/meta/roadmap.md) \
     exit_with_status BLOCKED "Scope <scope> is HARD-NEVER and cannot be cleaned by this skill." ;;
 esac
 ```

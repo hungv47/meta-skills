@@ -48,7 +48,7 @@ routing:
   position: orchestrator
   lifecycle: pipeline
   produces:
-    - .agents/experience/meta-workflow.md
+    - skills-resources/experience/meta-workflow.md
   side-effects:
     - manifest-sync
   consumes:
@@ -66,7 +66,7 @@ routing:
     - .agents/skill-artifacts/product/flow/*.md
     - .agents/skill-artifacts/mkt/**/*.md
     - .agents/skill-artifacts/meta/**/*.md
-    - .agents/experience/*.md
+    - skills-resources/experience/*.md
     - CLAUDE.md
   requires: []
   defers-to:
@@ -121,7 +121,7 @@ This skill does NOT execute work. It is a router. The actual work is done by the
 
 **Tier note (`metadata.budget: fast`):** This is a pure router — no sub-agent dispatch, no critic gate. The body below runs in-line: read state, parse intent, propose next skill, await user confirmation. No `agents/` directory, no L1/L2 layers, no rewrite cycles. The premium-orchestration substrate (multi-agent + critic) lives in the skills this router proposes; running it here would be theater.
 
-1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`, and `.agents/experience/*.md` to build a picture of the whole project.
+1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`, and `skills-resources/experience/*.md` to build a picture of the whole project.
 2. **Domain classification** — parse the user's ask. Classify as: research / marketing / product / cross-stack / process.
 3. **Routing decision** — either defer to a stack-orchestrator (`/start-X`) or propose a specific meta-skill.
 4. **User confirmation** — print hand-off command. Never auto-invoke.
@@ -164,7 +164,7 @@ bun scripts/manifest-sync.ts
 | `stale: true` | ✅ done (stale) — propose refresh as an option, don't block |
 | `frontmatter_present: false` | ✅ done (legacy, no frontmatter) — quality unknown, suggest refresh |
 
-**Experience block:** `manifest.experience` tracks `.agents/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
+**Experience block:** `manifest.experience` tracks `skills-resources/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
 
 See [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md) for the full contract.
 
@@ -184,8 +184,8 @@ See [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md)
 | `.agents/skill-artifacts/mkt/campaign-plan.md` + `.agents/skill-artifacts/mkt/content/`, `.agents/skill-artifacts/mkt/lp-brief/`, etc. | Marketing artifacts. |
 | `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
 | `.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
-| `.agents/experience/*.md` | All cold-start answers across stacks. |
-| `.agents/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
+| `skills-resources/experience/*.md` | All cold-start answers across stacks. |
+| `skills-resources/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
 | `.agents/skill-artifacts/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
 
 Build a cross-stack state map:
@@ -349,7 +349,7 @@ Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/
 
 ## Step 5: Persist + Hand Off
 
-Append to `.agents/experience/meta-workflow.md`:
+Append to `skills-resources/experience/meta-workflow.md`:
 
 ```markdown
 ## Session 2026-05-06
@@ -389,7 +389,7 @@ For the canonical cross-stack pipeline, decision rules, and per-skill catalog, s
 ## Output
 
 - **Inline only.**
-- **Side effect:** appends one entry to `.agents/experience/meta-workflow.md`.
+- **Side effect:** appends one entry to `skills-resources/experience/meta-workflow.md`.
 
 ## Status
 
