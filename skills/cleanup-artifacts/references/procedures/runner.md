@@ -1,10 +1,16 @@
-# Cleanup Runner Agent
+---
+title: Cleanup Runner Procedure
+lifecycle: canonical
+status: stable
+produced_by: cleanup-artifacts
+load_class: PROCEDURE
+---
 
-> Single execution agent for the cleanup-artifacts skill — walks `.agents/skill-artifacts/`, classifies every artifact, runs the critic gate, surfaces candidates, and (with explicit per-category operator confirmation) MOVES non-KEEP files to a dated archive. Never deletes.
+# Cleanup Runner Procedure
 
-## Role
+The orchestrator follows this procedure directly — `cleanup-artifacts` is a single-agent skill (no `Agent` in `allowed-tools`; nothing dispatched). This file is the canonical execution spec, not a sub-agent target.
 
-You are the **cleanup runner** for the cleanup-artifacts skill. Your single focus is **mechanical, auditable artifact triage**: walk the audit scope, classify with the rules in `references/cleanup-rules.md`, run the critic gate, present candidates to the operator, and execute confirmed moves into `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/`.
+## Single-Agent Constraint
 
 You do NOT:
 - Delete files (any deletion is out of scope; v1 only moves).
@@ -17,19 +23,18 @@ You do NOT:
 
 ## Input Contract
 
-You will receive from the orchestrator:
+Resolved by the orchestrator before this procedure runs:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **brief** | string | The cleanup request — typically just "scope X, mode Y, threshold Z" |
-| **pre-writing** | object | `{ scope: <path>, mode: dry-run\|apply, threshold_days: N, excluded_paths: [<path>...] }` |
-| **upstream** | null | This skill is single-agent; no upstream chain |
-| **references** | file paths[] | Absolute paths to: `references/cleanup-rules.md`, `references/_shared/manifest-spec.md` |
-| **feedback** | string \| null | Rewrite instructions if the orchestrator asks for re-run after a NEEDS_CONTEXT or BLOCKED status |
+| **scope** | path | `.agents/skill-artifacts/` or a subpath under it |
+| **mode** | `dry-run` \| `apply` | Default `dry-run` |
+| **threshold_days** | integer | Default 90 |
+| **excluded_paths** | path[] | From operator + `skills-resources/experience/technical.md` |
 
 ## Output Contract
 
-Return a single markdown report following the template in `SKILL.md` §"Report Template". The orchestrator writes your report to `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md`.
+Single markdown report at `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md`, following the template in [`../report-template.md`](../report-template.md).
 
 **Rules:**
 - Always emit a report, even on `NEEDS_CONTEXT`, `BLOCKED`, or zero candidates.
@@ -116,11 +121,11 @@ For each file collect:
 - Tracked-by-git? (`git ls-files --error-unmatch <path>` returns 0)
 - Has-uncommitted-changes? (`git diff --quiet <path>` returns nonzero)
 - Frontmatter fields if a markdown file: `status`, `lifecycle`, `kind`, `superseded_by`, `stale_after_days`
-- Manifest entry if any (look up by path in `.agents/manifest.json`)
+- Manifest entry if any (look up by path in `.agents/manifest.json`; field semantics per [`../_shared/manifest-spec.md`](../_shared/manifest-spec.md) [PROCEDURE])
 
 ### Step 3 — Classify per artifact
 
-Apply the rules in `references/cleanup-rules.md` §"Classification — Definitions" in order:
+Apply the rules in [`../cleanup-rules.md`](../cleanup-rules.md) §"Classification — Definitions" in order:
 
 1. HARD-NEVER → `KEEP (hard-never)` with note
 2. Frontmatter `status: superseded` or `archived` or `superseded_by:` → `LEGACY`
@@ -140,7 +145,7 @@ Before any operator prompt or move, run the critic gate. **This is the single no
 1. Collect all non-KEEP candidates: `STALE + ORPHAN + LEGACY + EPHEMERAL`. Call this set `C`.
 2. If `|C| == 0`: critic = `SKIPPED-because-zero-candidates`. Continue.
 3. Otherwise, sample `min(5, |C|)` random elements of `C`. Use deterministic sampling (e.g., sort by path, take every `floor(|C|/5)`-th) so reruns are auditable.
-4. For each sampled candidate, run all three reference-detection greps from `references/cleanup-rules.md` §"Reference-Detection Grep Patterns":
+4. For each sampled candidate, run all three reference-detection greps from [`../cleanup-rules.md`](../cleanup-rules.md) §"Reference-Detection Grep Patterns":
    - full path string
    - basename without extension
    - slug-only (post-date for dated files)
@@ -150,7 +155,7 @@ Before any operator prompt or move, run the critic gate. **This is the single no
 
 #### Why a sample, not exhaustive
 
-Exhaustive grep across all candidates is fine for small `|C|` but quadratic at scale. The 5-random spot-check is statistically sufficient: if the sample is clean, the operator's per-category confirmation step is the second safeguard. Operator can re-run with `--paranoid` (future v2 flag) for exhaustive checking.
+Exhaustive grep across all candidates is fine for small `|C|` but quadratic at scale. The 5-random spot-check is statistically sufficient: if the sample is clean, the operator's per-category confirmation step is the second safeguard. Operator can re-run with `--paranoid` (out of scope for v1) for exhaustive checking.
 
 #### Critic FAIL output (BLOCKED branch)
 
@@ -200,7 +205,7 @@ These have local edits that may be your in-progress work. Commit or stash first.
 
 If `mode == dry-run`:
 
-- Write the full report (template in SKILL.md §"Report Template") with `mode: dry-run`, `total_archived: 0`, every candidate's `Confirmed?: dry-run`.
+- Write the full report (template in [`../report-template.md`](../report-template.md)) with `mode: dry-run`, `total_archived: 0`, every candidate's `Confirmed?: dry-run`.
 - Status: `DONE` if critic passed and no TIER-3 surprises; `DONE_WITH_CONCERNS` if TIER-3 candidates surfaced.
 - Stop. No prompt, no move, no manifest-sync.
 
@@ -272,29 +277,12 @@ Capture the manifest delta (entries removed, entries unchanged) for the report.
 
 ### Step 8 — Write the final report
 
-Use the template in SKILL.md §"Report Template". Status:
+Use the template in [`../report-template.md`](../report-template.md). Status:
 
 - `DONE` — critic passed, all confirmed categories moved, manifest-sync clean, zero TIER-3 surprises and zero declined categories
 - `DONE_WITH_CONCERNS` — applied successfully but: (a) TIER-3 candidates surfaced (skipped), or (b) operator declined a category (manual follow-up needed), or (c) tracked files moved (git history is safety net, but operator should commit/review)
 - `BLOCKED` — critic FAIL, OR HARD-NEVER attempt, OR scope doesn't exist; no moves executed
 - `NEEDS_CONTEXT` — manifest missing or stale; cannot classify reliably
-
----
-
-## Anti-Patterns (the runner itself must avoid)
-
-| Anti-Pattern | Problem | INSTEAD |
-|---|---|---|
-| Walking with `find -L` | Symlinks may point outside scope or into `.git/` | Plain `find` — never follow links |
-| Recursing into `.git/`, submodule dirs, `node_modules/` | These are not skill artifacts; cleanup is destructive | `-not -path` filters in the walk |
-| Re-processing files inside `.archive/` | Already archived; re-archiving duplicates | Skip `.archive/` in the walk filter |
-| Deleting the report you just wrote | Self-deletion; the report goes under `.agents/skill-artifacts/meta/records/` (HARD-NEVER for snapshot lineage in this run) | Don't classify the in-progress report |
-| Treating filename-match alone as EPHEMERAL | A dated record `2025-11-30-fresh-eyes-foo.md` matches no ephemeral pattern, but a careless regex could fire | Apply the "NOT under records/ or decisions/" carve-out from cleanup-rules.md |
-| Sampling deterministically by file order without sort | Different filesystems return different order; reruns aren't auditable | Sort by path before sampling |
-| Auto-archiving TIER-3 (tracked + dirty) files | Operator's uncommitted edits could be in-progress work | Surface separately; never archive on `--apply` |
-| Skipping manifest-sync after moves | Stale manifest re-classifies wrong on next run | Always re-sync after any actual move |
-| Prompting per-file instead of per-category | UX collapse for any cleanup with >5 candidates | v1 is per-category; per-file is `--paranoid` (out of scope) |
-| Proceeding silently when scope is HARD-NEVER | Could touch canonical data | Refuse at Step 1 with BLOCKED |
 
 ---
 
@@ -316,4 +304,4 @@ Before returning your output, verify every item:
 - [ ] Report written under `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, not overwritten)
 - [ ] Status declared explicitly (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT)
 
-If any check fails, revise your output before returning. Do not return work you know is incomplete.
+If any check fails, revise the output before returning.
