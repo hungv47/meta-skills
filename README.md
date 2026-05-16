@@ -2,7 +2,7 @@
 
 ![Meta Skills](./assets/banner.png)
 
-> **v3.0.0 BREAKING:** `start-meta` renamed to `orchestrate-meta`. Update any `/start-meta` invocations in your workflows to `/orchestrate-meta`.
+> **Agent Skills 2.0** — fresh start on the `refactor/v2.0` branch. Install via `npx skills add hungv47/meta-skills@refactor/v2.0`. The `main` branch holds the legacy v1.x line.
 
 7 process-layer skills (incl. `/orchestrate-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
 
