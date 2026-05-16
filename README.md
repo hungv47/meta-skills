@@ -2,7 +2,7 @@
 
 ![Meta Skills](./assets/banner.png)
 
-> **Agent Skills 2.0** — fresh start on the `refactor/v2.0` branch. Install via `npx skills add hungv47/meta-skills@refactor/v2.0`. The `main` branch holds the legacy v1.x line.
+> **Agent Skills 2.0** — fresh start on the `refactor/v2.0` branch. Install via `npx skills add hungv47/meta-skills@refactor/v2.0`. The `main` branch holds the legacy v6.2.x line.
 
 7 process-layer skills (incl. `/orchestrate-meta` cross-stack orchestrator) that wrap around domain skills to improve quality at every stage.
 
@@ -13,22 +13,28 @@
 Installs via the [`skills` CLI](https://skills.sh). Requires Node.js 18+. Auto-detects Claude Code, Cursor, Codex, Windsurf, Gemini CLI, or VS Code.
 
 ```bash
-# Install the full meta stack
-npx skills add hungv47/meta-skills
+# Install the full meta stack (Agent Skills 2.0)
+npx skills add hungv47/meta-skills@refactor/v2.0
 
 # Cherry-pick a single skill (any skill in the stack — these are just examples)
-npx skills add hungv47/meta-skills --skill fresh-eyes
-npx skills add hungv47/meta-skills --skill discover
-npx skills add hungv47/meta-skills --skill task-breakdown
+npx skills add hungv47/meta-skills@refactor/v2.0 --skill fresh-eyes
+npx skills add hungv47/meta-skills@refactor/v2.0 --skill discover
+npx skills add hungv47/meta-skills@refactor/v2.0 --skill task-breakdown
 
 # List available skills without installing
-npx skills add hungv47/meta-skills --list
+npx skills add hungv47/meta-skills@refactor/v2.0 --list
 
 # Target a specific editor
-npx skills add hungv47/meta-skills --agent claude-code
+npx skills add hungv47/meta-skills@refactor/v2.0 --agent claude-code
 
 # Install globally — recommended for meta-skills since they're domain-agnostic
-npx skills add hungv47/meta-skills -g
+npx skills add hungv47/meta-skills@refactor/v2.0 -g
+```
+
+**Legacy v6.2.x install** (main branch — no `@refactor/v2.0` suffix):
+
+```bash
+npx skills add hungv47/meta-skills
 ```
 
 See the [root README](https://github.com/hungv47/agent-skills#install) for the full install reference.
