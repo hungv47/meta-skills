@@ -10,6 +10,13 @@ metadata:
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.05-0.20"
+  refactor_history:
+    - refactored_at: 2026-05-16
+      refactored_for: implementation-roadmap v6 Phase 1E (body-diet + playbook ref + chain hardening)
+      body_before: 360
+      body_after: 161
+      body_delta_pct: -55.2
+      note: body-only line counts (frontmatter excluded). Total file 441 → 231.
 promptSignals:
   phrases:
     - "clean up .agents/skill-artifacts"
@@ -66,9 +73,26 @@ routing:
 
 # Cleanup Artifacts — Orchestrator
 
-*Meta — Single-agent orchestration with built-in critic gate. Audits and grooms the project's `.agents/skill-artifacts/` tree, classifying every artifact and (with explicit per-category confirmation) MOVING stale/orphan/legacy/ephemeral files to a dated archive. Never deletes.*
+*Single-agent skill — the orchestrator IS the runner. Built-in critic gate as a sub-routine. Audits and grooms `.agents/skill-artifacts/`, classifies every artifact, and (with explicit per-category operator confirmation) MOVES non-KEEP files to a dated archive. Never deletes.*
 
 **Core Question:** "Is this artifact still load-bearing for the project, or is it accumulated cruft from a skill run that finished weeks ago?"
+
+[Read `references/playbook.md` [PLAYBOOK] to understand why this skill does what it does — methodology, principles, history, when NOT to use.]
+
+## Before Starting
+
+Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
+
+0. **Mode resolution** — load [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Classify input on three axes (depth, cross-domain, stakes); resolve to fast/standard/deep with this skill's `budget: standard` as default. Emit one line and wait:
+   ```
+   Resolved mode: <fast|standard|deep> (<one-sentence reason>). Run as <mode>? [Y / fast / deep]
+   ```
+   Operator override always wins. `--fast` flag bypasses the prompt. Critical Gates (HARD-NEVER, critic gate, MOVE-not-delete) supersede `--fast`.
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify this skill's output path still matches the canonical inventory.
+2. Read `.agents/manifest.json` + `.agents/artifact-index.md` (foundation files for meta skills).
+3. Read `skills-resources/experience/technical.md` for any prior `cleanup-artifacts excluded paths`.
+4. If `.agents/manifest.json` is missing or stale (>1d) → NEEDS_CONTEXT (don't fabricate); recommend `bun scripts/manifest-sync.ts`.
+5. Otherwise route to Pre-Dispatch below.
 
 ## Critical Gates — Read First
 
@@ -83,37 +107,31 @@ routing:
    - `skills-resources/experience/` — Q&A substrate, append-only by every skill
    - `.agents/skill-artifacts/meta/roadmap.md` and `tasks.md` — session anchors
 3. **Default mode is `--dry-run`.** No file is moved without an explicit `--apply` flag AND per-category operator confirmation.
-4. **Critic gate is non-negotiable.** Before any prompt for confirmation, the runner spot-checks 5 random STALE/ORPHAN candidates by grepping references across `.agents/skill-artifacts/`, `brand/`, `research/`, `architecture/`. Any live reference → escalate to operator review with the references shown. The critic catches "would-have-archived-something-still-referenced" before destructive action.
+4. **Critic gate is non-negotiable.** Before any prompt for confirmation, the orchestrator spot-checks 5 random STALE/ORPHAN candidates by grepping references across `.agents/skill-artifacts/`, `brand/`, `research/`, `architecture/`. Any live reference → escalate to operator review with the references shown. The critic catches "would-have-archived-something-still-referenced" before destructive action.
 5. **Manifest-sync after.** After any move, re-run `bun scripts/manifest-sync.ts` so `.agents/manifest.json` reflects the new disk state.
 
-## Inputs Required
-- A project root containing a `.agents/skill-artifacts/` tree (the working directory by default)
-- Optional scope: a subpath under `.agents/skill-artifacts/` to limit the audit (e.g., `skills-resources/loops/`)
-- Optional mode: `--dry-run` (default) or `--apply`
-- Optional staleness threshold in days (default: 90)
+## Artifact Contract
 
-## Output
-- `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` — dated, slug-suffixed, immutable per-run record (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Use a kebab-case `<slug>` capturing scope/mode (e.g., `2026-05-08-cleanup-artifacts-dry-run-full.md`, `2026-05-08-cleanup-artifacts-apply-research.md`). Reports accumulate as audit trail; do NOT overwrite prior reports.
-
-## Chain Position
-- **After:** any session that piled up artifacts (long brief runs, fresh-eyes review batches, panel sessions)
-- **Before:** a release commit, when the operator wants the working tree to reflect what's still load-bearing
-- **Standalone re-run:** any time `.agents/skill-artifacts/` count exceeds the operator's tolerance threshold
-
----
+- **Path:** `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, slug-suffixed, immutable per-run)
+- **Lifecycle:** `snapshot` (see `agent-skills/CLAUDE.md` §"Artifact Placement")
+- **Frontmatter fields:** `skill`, `produced_by`, `version` (matches skill plugin.json), `date`, `status`, `mode`, `scope`, `threshold_days`, `total_candidates`, `total_archived` (0 on dry-run), `critic_gate`, `provenance` (skill + run_date + input_artifacts + output_eval per Step 7.5)
+- **Required sections:** Summary, Critic Gate, Per-Candidate Detail, HARD-NEVER Overrides Applied, Manifest-Sync, Operator Decisions, Notes (template: `references/report-template.md` [PROCEDURE])
+- **Consumed by:** operator (audit trail — human-read for recovery, decision history, pre-release sweeps). No machine consumer today; future cleanup-artifacts runs MAY read prior reports for precedent, but the current Decision Tree does not.
+- **Eval workspace:** none (this is a snapshot, not a measurable initiative)
+- **Side effect:** `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/...` on `--apply`; `.agents/manifest.json` re-sync after any move
 
 ## Pre-Dispatch
 
-Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`) before dispatching the cleanup-runner agent.
+Run the Pre-Dispatch protocol ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE]) before executing the runner procedure.
 
-**Needed dimensions:** scope (full `.agents/skill-artifacts/` vs. subdir), mode (`--dry-run` vs `--apply`), staleness threshold (default 90d), excluded paths the operator wants untouched.
+**Needed dimensions:** scope (full `.agents/skill-artifacts/` vs subdir), mode (`--dry-run` vs `--apply`), staleness threshold (default 90d), excluded paths.
 
 **Read order:**
-1. Conversation context — usually the operator just signalled `.agents/skill-artifacts/` is messy; mode and scope often inferable.
+1. Conversation context — usually the operator just signalled `.agents/skill-artifacts/` is messy; mode + scope often inferable.
 2. Pipeline: `.agents/manifest.json` for current artifact inventory + freshness signals.
-3. Experience: `skills-resources/experience/technical.md` for any prior `cleanup-artifacts excluded paths` entry (durable across runs).
+3. Experience: `skills-resources/experience/technical.md` for any prior `cleanup-artifacts excluded paths` entry.
 
-**Warm Start** (scope clear from invocation, e.g., "groom .agents/skill-artifacts before commit"):
+### Warm Start (scope clear from invocation)
 
 ```
 Found:
@@ -129,70 +147,32 @@ Mode defaults to --dry-run (preview only). Threshold defaults to 90 days.
 Override (e.g., --apply, --threshold-days 30) or proceed?
 ```
 
-The two `! \`...\`` lines are inline shell interpolation (see this skill's generated support notes). When `/cleanup-artifacts` is invoked, Claude Code substitutes the command output before the LLM sees the prompt — so the warm-start summary lands with real counts instead of placeholders the orchestrator has to derive.
+The two `` ! `<cmd>` `` lines are inline shell interpolation (canonized in `meta-skills/CLAUDE.md` § "Inline shell interpolation"). When `/cleanup-artifacts` is invoked as a slash command, Claude Code substitutes the command output before the LLM sees the prompt — so the warm-start lands with real counts. This interpolation fires ONLY from SKILL.md slash invocation; it does NOT fire when the body is Read from a ref. That's why the Warm Start template stays in body and only Cold Start moves to a ref.
 
-**Cold Start** (general "clean up artifacts" with no scope hint):
+### Cold Start (general "clean up artifacts" with no scope hint)
 
-```
-cleanup-artifacts grooms the .agents/skill-artifacts/ tree — classifies every file
-(KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surfaces references and risk,
-and (with --apply) MOVES candidates to .agents/skill-artifacts/.archive/.
-Never deletes. Before I scan:
+Load `references/procedures/cold-start.md` [PROCEDURE] — emit the bundled 4-question prompt, wait one round-trip, persist excludes to `skills-resources/experience/technical.md`.
 
-1. **Scope** — pick one:
-   - full (.agents/skill-artifacts/ — most common)
-   - subpath (e.g., skills-resources/loops/)
-2. **Mode** — dry-run (default; preview only) or apply (executes after
-   per-category confirmation, MOVES to archive, never deletes).
-3. **Staleness threshold** — days since last update before an artifact
-   is flagged STALE. Default 90.
-4. **Excluded paths** — anything off-limits even if it looks stale?
-   (Persisted to experience/technical.md for future runs.)
+## Mode Resolution
 
-Answer 1-4 in one response. I'll inventory, classify, run the critic gate,
-then surface candidates.
-```
+Per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. This skill's `budget: standard` is the default. Auto-downgrade for ≤3-sentence single-subdir invocations; upward override on production stakes. `--fast` skips orchestration weight but NOT Critical Gates (HARD-NEVER, critic gate, MOVE-not-delete).
 
-**Write-back:**
+## Decision Tree
 
-| Q | File | Key |
-|---|---|---|
-| 4. Excluded paths | `skills-resources/experience/technical.md` | `Technical — cleanup-artifacts excluded paths` (durable across runs) |
+The orchestrator follows the canonical procedure in [`references/procedures/runner.md`](references/procedures/runner.md) [PROCEDURE]. Summary:
 
-Scope, mode, threshold are run-specific — not persisted.
+1. **Sanity-check** — manifest exists + fresh; scope exists + canonicalized + not symlinked + not outside `.agents/skill-artifacts/` + not HARD-NEVER. Fail-fast → NEEDS_CONTEXT or BLOCKED.
+2. **Walk** — depth-first under scope; skip `.git/`, `.gitmodules` entries, `node_modules/`, `.archive/`, operator excludes; never follow symlinks.
+3. **Classify** — apply [`references/cleanup-rules.md`](references/cleanup-rules.md) [PROCEDURE] in rule order: HARD-NEVER → LEGACY → EPHEMERAL → KEEP → STALE → ORPHAN. Record which rule fired per file.
+4. **CRITIC GATE** — sample 5 random non-KEEP candidates (deterministic sort+stride); grep full-path + basename + slug across the tree; any live reference → BLOCKED with references surfaced (no confirmation prompt). Mandatory; non-skippable.
+5. **Build candidate table** — class, bytes, last-mod, ref count, risk tier (TIER-1 gitignored / TIER-2 tracked-clean / TIER-3 tracked-dirty / HARD-NEVER); TIER-3 surfaced separately and NEVER moved.
+6. **Dry-run** — write report (template: [`references/report-template.md`](references/report-template.md) [PROCEDURE]); stop. **Apply** — per-category prompts (`Archive STALE? ORPHAN? LEGACY? EPHEMERAL?`); on `y`, `mv` to `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/` mirroring source path; **then** re-run `bun scripts/manifest-sync.ts`; **finally** write the report (so the manifest delta is captured in the report). Ordering matters: manifest-sync BEFORE report writing, never after.
 
----
-
-## Single-Agent Architecture (with built-in critic gate)
-
-This skill uses a single execution agent — `agents/cleanup-runner.md` — because file management is mechanical, not multi-perspective. The critic gate runs as an **explicit sub-routine inside the same agent**, not as a second dispatched agent. This keeps the orchestration cheap and matches the roadmap's design call ("file management is not multi-agent territory; critic gate IS non-negotiable").
-
-### Execution Flow
-
-```
-1. Read .agents/manifest.json + walk disk under scope target
-2. Per-artifact classify → KEEP / STALE / ORPHAN / LEGACY / EPHEMERAL
-3. Risk-surface each non-KEEP candidate (references, gitignore, bytes, mtime)
-4. CRITIC GATE — spot-check 5 random STALE/ORPHAN by grep across the tree
-   - Any live reference → escalate to operator, do NOT prompt for confirmation
-5. Emit dry-run report (always written, even in --apply mode — audit trail)
-6. [--apply only] HARD GATE: per-category explicit operator confirmation
-7. [--apply only] mv candidates to .agents/skill-artifacts/.archive/[date]/
-8. Re-run bun scripts/manifest-sync.ts
-9. Emit final report with status + reclaim totals + any escalations
-```
-
-### Why a critic gate (and why inside the runner)
-
-The destructive failure mode this skill must prevent is "moved an artifact still referenced by a live skill or doc." Reference detection is mechanical (grep across the tree) but easy to skip under time pressure. Codifying it as an explicit step inside the runner — with an `escalate` branch that bypasses confirmation entirely when references are live — is the cheapest way to make the safeguard non-skippable.
-
-A separate critic agent would double dispatch cost without changing the failure mode it catches. See `agents/cleanup-runner.md` §"Critic Gate Sub-Routine" for the exact procedure.
-
----
+A concrete walkthrough of the critic-FAIL → BLOCKED → operator-fix → re-run → DONE cycle lives at [`references/examples/escalation-walkthrough.md`](references/examples/escalation-walkthrough.md) [EXAMPLE].
 
 ## Classification Vocabulary
 
-Every artifact gets one classification. The runner uses these to phrase its recommendation. Full taxonomy + concrete file-pattern examples in `references/cleanup-rules.md`.
+Every artifact gets one classification. Full taxonomy + per-class file-pattern examples in [`references/cleanup-rules.md`](references/cleanup-rules.md) [PROCEDURE].
 
 | Class | Meaning | Default action |
 |---|---|---|
@@ -200,86 +180,9 @@ Every artifact gets one classification. The runner uses these to phrase its reco
 | **STALE** | manifest entry > threshold AND no recent downstream consumer | Propose ARCHIVE; require confirm |
 | **ORPHAN** | file on disk but no manifest entry; producing skill renamed/removed; or hand-created and abandoned | Propose ARCHIVE; require confirm |
 | **LEGACY** | frontmatter declares `status: superseded`/`archived` OR `lifecycle: ephemeral` | Strong-recommend ARCHIVE |
-| **EPHEMERAL** | matches known ephemeral pattern (see `references/cleanup-rules.md`) | Strong-recommend ARCHIVE |
+| **EPHEMERAL** | matches known ephemeral pattern (see `cleanup-rules.md`) | Strong-recommend ARCHIVE |
 
-### HARD-NEVER overrides
-
-The classifier MUST refuse to flag any path under the HARD-NEVER list (see Critical Gates) as anything other than KEEP, regardless of mtime or manifest state. If the disk shows a HARD-NEVER path with stale-looking signals, the runner emits a `KEEP (hard-never)` line in the report and moves on.
-
----
-
-## Risk Surfacing (per non-KEEP candidate)
-
-For every STALE / ORPHAN / LEGACY / EPHEMERAL candidate, the runner records:
-
-- **Live references** — grep result count for path-string + basename + slug across `.agents/skill-artifacts/`, `brand/`, `research/`, `architecture/`. Zero is required to proceed without escalation.
-- **Producing skill state** — does the manifest still know about the producing skill? If the skill was renamed/removed, flag it (the artifact may be load-bearing under the old name).
-- **Gitignored?** — if yes, archiving is fully reversible only via the archive itself; if tracked, git history is the safety net.
-- **Bytes + last-modified date** — context for the operator.
-- **Submodule check** — if the path crosses into a submodule directory, mark HARD-NEVER and skip.
-
-Reference-detection grep patterns are spec'd in `references/cleanup-rules.md`.
-
----
-
-## Confirmation Gate (`--apply` only)
-
-When the operator runs `--apply`, the runner does NOT proceed silently. It emits a per-category summary and waits for explicit confirmation:
-
-```
-Found 3 categories of candidates:
-  STALE:     12 files (oldest: 2026-01-12, total 480KB)
-  ORPHAN:    4 files (no manifest entry, total 92KB)
-  EPHEMERAL: 7 files (matched ephemeral patterns, total 38KB)
-
-LEGACY: 0
-HARD-NEVER overrides: 2 (kept; see report)
-
-Critic gate: PASS (spot-check found no live references)
-
-Confirm per category — answer y/n for each:
-  Archive STALE (12)?
-  Archive ORPHAN (4)?
-  Archive EPHEMERAL (7)?
-
-(Files MOVE to .agents/skill-artifacts/.archive/2026-05-08/, never deleted.
-A separate --purge-archive flag, out of scope for v1, is the only path to actual deletion.)
-```
-
-If the operator declines a category, those files stay in place; the report records the decline.
-
-If the critic gate FAILED (live references found), the runner skips the confirmation prompt entirely and instead surfaces the offending references to the operator for review. No `--apply` action runs in that branch.
-
----
-
-## Critical Safety Rules
-
-The runner enforces all of these. Any violation is an escalation, not a workaround:
-
-1. **NEVER touch HARD-NEVER paths** — even on explicit operator request inside this skill. (Operator can move/delete those manually outside the skill.)
-2. **NEVER delete** — only `mv` to `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/`. Archive structure mirrors source (e.g., `.agents/skill-artifacts/meta/records/foo.md` → `.agents/skill-artifacts/.archive/2026-05-08/.agents/skill-artifacts/meta/records/foo.md`).
-3. **NEVER skip the critic gate** — even if scope is small or operator says "just do it."
-4. **Always write the report** — even in `--dry-run`, even if zero candidates found, even if critic escalated. The report is the audit trail.
-5. **Always re-run manifest-sync** — after any actual move. Stale manifest is itself a hygiene problem.
-6. **Never recurse into `.git/`, submodule dirs, or `node_modules/`** — runner walk must skip these.
-7. **Never follow symlinks** — `find -L` and equivalents are banned in the runner's walk.
-
----
-
-## Anti-Patterns
-
-| Anti-Pattern | Problem | INSTEAD |
-|---|---|---|
-| Treating `.agents/skill-artifacts/meta/records/` as ephemeral | These are dated, immutable snapshots (audit trail). Pruning by age alone destroys the trail. | Use the `EPHEMERAL pattern list` in `references/cleanup-rules.md`. Records are STALE-only, never EPHEMERAL. |
-| Pruning `skills-resources/experience/*.md` | Append-only Q&A substrate, read by every skill. | HARD-NEVER. |
-| Pruning `tasks.md` or `roadmap.md` | Session anchors, always loaded. | HARD-NEVER. |
-| Skipping the critic gate to save time | The whole point of the skill is the gate. Without it, this is `rm -rf` with extra ceremony. | The gate is mandatory; delete operations bypass it only when escalating to operator. |
-| Deleting instead of moving | "Reversible" means the operator can recover from a mistake without git surgery. | MOVE to dated archive. Always. |
-| Operating without `.agents/manifest.json` fresh | Stale manifest classifies wrong. | Run `bun scripts/manifest-sync.ts` first if manifest mtime > 1 day. |
-| Recursing into submodule dirs | Each submodule is its own repo with its own cadence; this skill operates at one repo level only. | Read `.gitmodules`; skip those paths. |
-| Reporting with no per-file rationale | Operator can't audit a "trust me, this is stale" list. | Every candidate gets class + last-mod + bytes + reference count. |
-
----
+**HARD-NEVER overrides:** the classifier MUST refuse to flag any path under the HARD-NEVER list (Critical Gates §2) as anything other than KEEP, regardless of mtime or manifest state. Emit `KEEP (hard-never)` and move on.
 
 ## Configuration
 
@@ -289,152 +192,42 @@ The runner enforces all of these. Any violation is an escalation, not a workarou
 | mode | `--dry-run` | `--dry-run` (preview only) or `--apply` (move with confirmation) |
 | threshold-days | 90 | Days since last update before STALE classification kicks in |
 | critic-spot-check-N | 5 | Number of random STALE/ORPHAN candidates the critic greps |
-| excluded-paths | (from experience/technical.md) | Operator-declared off-limits even if they look stale |
+| excluded-paths | (from `skills-resources/experience/technical.md`) | Operator-declared off-limits even if they look stale |
 
----
+## Anti-Patterns
 
-## Worked Example
-
-**Operator:** "groom .agents/skill-artifacts — it's a junk drawer. Apply."
-
-**Pre-Dispatch (warm):**
-
-```
-Found:
-- scope → ".agents/skill-artifacts/" (full)
-- manifest snapshot → "47 artifacts, 6 stale (>90d), 3 with no manifest entry"
-- excluded paths → none recorded
-
-Mode set to --apply per your request. Threshold 90 days. Proceed?
-```
-
-**Operator:** y
-
-**Runner Layer 1 (walk + classify):**
-
-- 47 artifacts found under `.agents/skill-artifacts/`
-- Classifications:
-  - KEEP (38) — manifest fresh, or under HARD-NEVER (manifest, experience, tasks, roadmap)
-  - STALE (4) — old fresh-eyes records from prior sessions
-  - ORPHAN (3) — `.agents/skill-artifacts/meta/sketches/foo.md` referenced by no manifest entry; producing skill (`prioritize`) hasn't been run in this project
-  - LEGACY (1) — `.agents/skill-artifacts/meta/specs/old-scope.md` with `status: superseded` in frontmatter
-  - EPHEMERAL (1) — `.agents/skill-artifacts/.archive/2026-04-01/foo-candidates.md` (already archived; matches `-candidates.md` pattern but already in archive — KEEP, it's the archive)
-
-**Runner Critic Gate:**
-
-- Spot-check 5 random STALE/ORPHAN: grep path + basename + slug across `.agents/skill-artifacts/`, `brand/`, `research/`, `architecture/`
-- 1 of 4 STALE files (`2026-02-15-fresh-eyes-prior-pass.md`) cited by `.agents/skill-artifacts/meta/roadmap.md` line 412 — LIVE REFERENCE
-- ESCALATE: skip confirmation, surface to operator
-
-**Runner Output:**
-
-```
-Critic gate FAILED — 1 of 9 STALE/ORPHAN candidates has a live reference:
-  STALE: 2026-02-15-fresh-eyes-prior-pass.md
-    referenced by: .agents/skill-artifacts/meta/roadmap.md:412
-
-Recommendations:
-  - Re-run with that file excluded, OR
-  - Edit roadmap.md to drop the stale citation, then re-run
-
-No files were moved. Report: .agents/skill-artifacts/meta/records/2026-05-08-cleanup-artifacts-apply-blocked.md
-
-Status: BLOCKED — live reference found; operator decision needed.
-```
-
-**Operator decides:** edits roadmap.md to drop the stale reference, re-runs `cleanup-artifacts --apply`. Critic passes; per-category prompts fire; operator confirms STALE+ORPHAN+LEGACY; runner moves 8 files to `.agents/skill-artifacts/.archive/2026-05-08/`; manifest-sync runs; report saved with status DONE.
-
----
-
-## Report Template
-
-```markdown
----
-skill: cleanup-artifacts
-version: 1
-date: {YYYY-MM-DD}
-status: done | done_with_concerns | blocked | needs_context
-mode: dry-run | apply
-scope: <path>
-threshold_days: 90
-total_candidates: N
-total_archived: N
-critic_gate: pass | fail | skipped
----
-
-# Cleanup Artifacts Report
-
-## Summary
-- Mode: [dry-run | apply]
-- Scope: [path]
-- Threshold: [N] days
-- Total artifacts surveyed: [N]
-- KEEP: [N]   STALE: [N]   ORPHAN: [N]   LEGACY: [N]   EPHEMERAL: [N]
-- HARD-NEVER overrides applied: [N]
-- Total archived this run: [N] (0 if dry-run or critic-blocked)
-- Total bytes archived: [X KB / MB]
-
-## Critic Gate
-- Verdict: [PASS | FAIL | SKIPPED-because-zero-candidates]
-- Spot-check sample: [N candidates checked]
-- Live references found: [N]
-  - [path → referencing file:line] (if any)
-
-## Per-Candidate Detail
-| # | Path | Class | Bytes | Last-mod | Refs | Action | Confirmed? |
-|---|------|-------|-------|----------|------|--------|------------|
-| 1 | .agents/skill-artifacts/meta/records/foo.md | STALE | 12KB | 2026-01-15 | 0 | archived | y |
-| 2 | .agents/skill-artifacts/meta/sketches/bar.md | ORPHAN | 4KB | 2025-11-30 | 0 | declined | n |
-...
-
-## HARD-NEVER Overrides Applied
-- [path] — kept because [canonical / submodule / infrastructure]
-...
-
-## Manifest-Sync
-- Re-run: [yes/no]
-- Manifest delta: [N entries removed, N entries unchanged]
-
-## Operator Decisions
-- STALE: [confirmed / declined]
-- ORPHAN: [confirmed / declined]
-- LEGACY: [confirmed / declined]
-- EPHEMERAL: [confirmed / declined]
-
-## Notes
-[Any escalations, surprising classifications, references the operator should know about]
-```
-
-## Output Files
-
-| File | Description |
-|------|-------------|
-| `.agents/skill-artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` | Per-run audit report (lifecycle: snapshot — dated, immutable). Reports accumulate as audit trail. |
-| `.agents/skill-artifacts/.archive/[YYYY-MM-DD]/...` | Archive of moved files, mirroring source paths (created on `--apply` only). |
-
----
-
-## Future Work (out of scope for v1)
-
-- `--purge-archive` flag — actually delete files from `.archive/[date]/` directories older than N days. v1 only moves; v1 does not delete. Re-entry condition: archive itself becomes a junk drawer.
-- `--paranoid` mode — per-file confirmation instead of per-category. Re-entry: operator reports false positives at category granularity.
-- Hook integration — pre-commit or pre-PR cadence. Re-entry: when manual cadence misses cycles.
-
----
+Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. The orchestrator re-reads at any moment of doubt — especially before suggesting an EPHEMERAL classification on a dated record, before walking with `find -L`, or before considering a per-file prompt instead of per-category.
 
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — critic passed, per-category confirmations resolved, files moved (or `--dry-run` report written), manifest-sync ran clean.
-- **DONE_WITH_CONCERNS** — applied successfully but flagged: e.g., a tracked file moved (git history is the safety net but operator should know), or a category was declined and the operator should revisit. Report enumerates concerns.
-- **BLOCKED** — critic gate found live references AND the run was `--apply`; no moves executed; operator decision needed. Or HARD-NEVER violation attempted; halted.
+
+- **DONE** — critic passed, per-category confirmations resolved, files moved (or `--dry-run` report written), manifest-sync ran clean, zero TIER-3 surprises, zero declined categories.
+- **DONE_WITH_CONCERNS** — applied successfully but flagged: (a) TIER-3 candidates surfaced (skipped), (b) operator declined a category (manual follow-up needed), or (c) tracked files moved (git history is safety net, but operator should commit/review). Report enumerates concerns.
+- **BLOCKED** — critic gate found live references AND the run was `--apply` (no moves executed; operator decision needed). Or HARD-NEVER violation attempted; halted. Or scope doesn't exist.
 - **NEEDS_CONTEXT** — `.agents/manifest.json` missing or corrupt; cannot classify reliably. Recommend `bun scripts/manifest-sync.ts` first.
 
----
+## Future Work (out of scope for v1)
+
+- `--purge-archive` flag — actually delete files from `.archive/[date]/` directories older than N days. v1 only moves; never deletes. Re-entry condition: archive itself becomes a junk drawer.
+- `--paranoid` mode — per-file confirmation instead of per-category. Re-entry: operator reports false positives at category granularity.
+- `--exclude <pattern>` CLI flag — run-scoped exclusion without persisting to experience/technical.md. Tracked in v6.3.0 behavior-fixes (see implementation-roadmap progress).
+- **Experience write-back DRY-RUN gate** — write-back to `experience/technical.md` currently fires on every invocation (including `--dry-run`). Gate it so write-back fires only when `--apply` confirms. Tracked for v6.3.0.
+- ORPHAN-on-JSON carve-out + slug-entropy axis — 4 more behavior fixes from the Phase 1E baseline audit; tracked for v6.3.0.
+- Standardize `manifest-sync.ts` invocation path — current `bun scripts/manifest-sync.ts` cite assumes operator is at meta-skills checkout root; under `npx skills add --skill cleanup-artifacts` standalone install the script ships under the skill folder. Tracked for v6.3.0.
+- Hook integration — pre-commit or pre-PR cadence. Re-entry: when manual cadence misses cycles.
 
 ## References
 
-- `references/cleanup-rules.md` — full classification taxonomy with per-class file-pattern examples, ephemeral pattern list, reference-detection grep patterns, risk-tier rules, and manifest-driven freshness rules.
-- `agents/cleanup-runner.md` — the single execution agent (walk, classify, critic, prompt, move, sync).
-- `references/_shared/manifest-spec.md` — manifest contract the classifier reads.
-- `agent-skills/CLAUDE.md` §"Artifact Placement" — the lifecycle taxonomy this skill enforces.
+- [`references/playbook.md`](references/playbook.md) [PLAYBOOK] — why this skill exists, methodology, principles, when NOT to use
+- [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) [PLAYBOOK] — pre-Pre-Dispatch read pattern (canonical at `meta-skills/references/before-starting-check.md`, synced via `scripts/sync-skill-support.mjs`)
+- [`references/procedures/runner.md`](references/procedures/runner.md) [PROCEDURE] — execution spec the orchestrator follows
+- [`references/procedures/cold-start.md`](references/procedures/cold-start.md) [PROCEDURE] — Cold-Start question bundle
+- [`references/cleanup-rules.md`](references/cleanup-rules.md) [PROCEDURE] — classification taxonomy + reference-detection grep patterns
+- [`references/report-template.md`](references/report-template.md) [PROCEDURE] — output template
+- [`references/examples/escalation-walkthrough.md`](references/examples/escalation-walkthrough.md) [EXAMPLE] — critic-FAIL → fix → re-run cycle
+- [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — failure modes
+- [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE] — canonical Pre-Dispatch contract
+- [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE] — `--fast` behavior contract
+- [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md) — manifest contract the classifier reads
+- [`agent-skills/CLAUDE.md` §"Artifact Placement"](../../../CLAUDE.md) — lifecycle taxonomy this skill enforces (umbrella dependency). Under `npx skills add --skill cleanup-artifacts` standalone install, this cite dangles — the full taxonomy table is umbrella-only. The classes this skill emits (`snapshot` for reports, `ephemeral` for archive targets) are defined inline above; consult the umbrella for the full 11-row table.
