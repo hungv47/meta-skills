@@ -1,0 +1,16 @@
+#!/bin/sh
+# Fast no-op wrapper for the harness hook.
+# Most tool calls happen with no active recording — bail before Bun cold-start cost.
+#
+# Resolves paths relative to this script so it works regardless of repo checkout location.
+# If bun is not on PATH, exit 0 silently — never block a tool call.
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+# meta-skills/scripts/harness  →  umbrella root is three levels up
+ROOT="$(cd "$HOOK_DIR/../../.." && pwd)"
+MARKER="$ROOT/.agents/skill-artifacts/meta/records/harness/.active"
+
+[ -f "$MARKER" ] || exit 0
+command -v bun >/dev/null 2>&1 || exit 0
+
+exec bun "$HOOK_DIR/hook.ts" "$@"
