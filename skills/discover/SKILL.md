@@ -117,7 +117,7 @@ Scan for answers that already exist. A few minutes max — this narrows question
 
 - **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
 - **Artifacts**: `.agents/skill-artifacts/` for existing specs, architecture docs, product context
-- **Experience docs**: `.agents/experience/{domain}.md` for answers from prior sessions
+- **Experience docs**: `skills-resources/experience/{domain}.md` for answers from prior sessions
 - **Learned rules**: `.agents/skill-artifacts/meta/records/learned-rules.md` for behavior corrections
 - **Out-of-scope decisions**: `.agents/skill-artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
 - **Project conventions**: skim `CLAUDE.md`
@@ -211,7 +211,7 @@ When mode is `idea-stage`, run the idea-critic agent ONCE before opening coverag
 **How to dispatch:** Call the agent via the Agent tool, passing all three Input Contract fields the agent declares:
 
 - **`idea-statement`** — the user's substantive description of what they want to build, post-Premise Check (a one-paragraph summary of the user's first turn after the framing checkpoint, paraphrased faithfully — not the user's whole transcript).
-- **`context-gathered`** — the orchestrator's serialized findings from §Step 1 (codebase signals worth flagging, relevant `.agents/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any).
+- **`context-gathered`** — the orchestrator's serialized findings from §Step 1 (codebase signals worth flagging, relevant `skills-resources/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any).
 - **`mode`** — literal string `idea-stage`.
 
 The agent is single-shot — do not re-invoke per turn. Output is structured (Red Flags Detected / Green Flags Detected / Score / Verdict / Push-Back Routing / Change Log).
@@ -585,7 +585,7 @@ When features are explicitly scoped out, write to `.agents/skill-artifacts/meta/
 Create the directory if missing. Prevents future sessions from re-asking decided questions.
 
 **Experience doc** (learning flywheel):
-Append Q&A to `.agents/experience/{domain}.md` after each session:
+Append Q&A to `skills-resources/experience/{domain}.md` after each session:
 ```markdown
 ## {Task Name} — Decisions ({date})
 
@@ -648,7 +648,7 @@ Downstream skills don't REQUIRE artifacts as files. They need decisions known, f
 - **All questions answered by context**: Skip to clarity check. Note context was sufficient.
 - **Contradictory answers**: Flag it. One follow-up to resolve.
 - **Task changes mid-conversation**: Re-assess whether prior answers still apply. 1-2 new questions if scope shifted. Don't restart.
-- **Experience doc has answers**: Read `.agents/experience/{domain}.md` first. Only ask what's not answered.
+- **Experience doc has answers**: Read `skills-resources/experience/{domain}.md` first. Only ask what's not answered.
 - **Task is trivial**: Say so. Suggest skipping discovery.
 - **"That's enough"**: Respect it. Note current clarity level and unexplored zones.
 

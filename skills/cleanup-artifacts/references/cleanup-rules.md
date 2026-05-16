@@ -28,7 +28,7 @@ The artifact is load-bearing for the project and must stay in place.
 - `.git/**`, `.gitmodules`
 - Any path inside a directory listed in `.gitmodules` (submodule)
 - `.agents/manifest.json` (infrastructure)
-- `.agents/experience/**` (Q&A substrate, append-only)
+- `skills-resources/experience/**` (Q&A substrate, append-only)
 - `.agents/skill-artifacts/meta/roadmap.md` (session anchor)
 - `.agents/skill-artifacts/meta/tasks.md` (session anchor)
 - `node_modules/**` (never recurse here in the first place)
@@ -41,7 +41,7 @@ The artifact is load-bearing for the project and must stay in place.
 | `research/icp-research.md` | canonical |
 | `architecture/system-architecture.md` | canonical |
 | `.agents/manifest.json` | infrastructure |
-| `.agents/experience/audience.md` | append-only substrate |
+| `skills-resources/experience/audience.md` | append-only substrate |
 | `.agents/skill-artifacts/meta/tasks.md` | session anchor |
 | `.agents/skill-artifacts/meta/records/skill-contracts.md` | living registry (`kind: registry`) |
 | `.agents/skill-artifacts/meta/records/learned-rules.md` | living registry |

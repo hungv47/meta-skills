@@ -6,6 +6,31 @@ This file tracks stack-level releases. SKILL.md files describe current behavior;
 
 ---
 
+## [6.2.2] - 2026-05-16
+
+Phase 1A+B+C of the skill-stack v6 refactor — 7 new shared canonical refs + experience/ migration from `.agents/experience/` to `skills-resources/experience/`. Foundation for Phase 2 per-skill refactors.
+
+### Added
+- `references/mode-resolver.md` — `--fast` contract + budget tier definitions + auto-downgrade heuristics + load-class behavior under `--fast` (canonical: skills cite instead of re-explaining the contract).
+- `references/anti-sycophancy.md` — stack-internal stance contract (echoes operator's global rule #1 for stack portability).
+- `references/artifact-contract-template.md` — canonical frontmatter schema every artifact-producing skill follows (cites `manifest-spec.md` as lifecycle enum source).
+- `references/thin-critic-rubric.md` — 3-dim rubric + checklist + auto-fail pattern for skills with lightweight critic gates (`standard`-budget).
+- `references/playbook-ref-template.md` — structural template + load-class tag convention (PLAYBOOK / PROCEDURE / EXAMPLE / ANTI-PATTERN) for per-skill `references/playbook.md`.
+- `references/product-marketing-context-schema.md` — 12-section schema for `research/product-context.md` (icp-research adopts in Phase 2).
+- `references/before-starting-check.md` — pre-pre-Dispatch read pattern Phase 2 refactors will add to each SKILL.md body.
+
+### Changed
+- **Experience substrate migrated from `.agents/experience/` to `skills-resources/experience/`.** Bulk path-replace across 48 canonical sources + auto-regen of 140 per-skill copies via `sync-skill-support.mjs`. `bootstrap-experience.ts` target dir updated. `.agents/` is now strictly machine-derived state (manifest + index + ephemeral); `skills-resources/` is user-facing persistent state (loops + experience).
+- `scripts/sync-skill-support.mjs` (umbrella): 7 SUPPORT_REFS entries + 7 grep triggers for the new canonical refs.
+
+### Fixed
+- `artifact-contract-template.md` claim about `manifest-sync.ts` fail-fast behavior softened to match reality (warns + falls back to inference; strict validation is the Phase 3 target).
+- Lifecycle enum split across 3 docs reconciled — `manifest-spec.md` is now the canonical source; `artifact-contract-template.md` cites it; CLAUDE.md is maintainer-mirror only (not shipped, not authoritative).
+
+Full fresh-eyes review: `.agents/skill-artifacts/meta/records/2026-05-16-fresh-eyes-phase-1a-b-c-bundle.md`
+
+---
+
 ## [6.2.1] - 2026-05-16
 
 `eval-loop` body trimmed by 22% (270 → 211 lines) — first refactor in the skill-stack body-diet program. Same outputs, faster orchestration, fewer always-loaded tokens. Stale loop-path bug in Pre-Dispatch fixed (`.agents/skill-artifacts/{mkt,product,research}/loops` → `skills-resources/loops`).
