@@ -95,23 +95,7 @@ Read before writing or modifying any loop artifact:
 
 ## Responsibility Split
 
-`eval-loop` is the one scaffold/ledger skill:
-
-- Creates or resumes the loop folder
-- Defines measurable surface, primary metric, baseline path, mutable surface, and guardrails
-- Owns `program.md`, `context.md`, `results.tsv`, and `learnings.md`
-- Routes to the right surface-specific evaluator
-
-It does not replace surface evaluators. `short-form-eval` handles short-form scoring and `lp-eval` handles landing-page scoring today. Future `ad-eval`, `email-eval` / `outreach-eval`, and `campaign-eval` should write their measurement artifacts under the loop's `evals/` folder.
-
-## Inputs
-
-- Initiative name or slug (argument or inferred from prompt)
-- Domain: `marketing`, `product`, or `research` (default-infer from surface; ask if ambiguous)
-- Measurable surface (required)
-- Primary metric and source (required)
-- Mutable surface (what strategy/execution skills may change)
-- Optional baseline, measurement window, guardrail metrics, canonical artifacts, current assets, prior evals
+`eval-loop` is the sole scaffold/ledger skill: creates/resumes the loop folder, defines the measurable surface + metric contract + mutable surface + guardrails, owns `program.md`, `context.md`, `results.tsv`, `learnings.md`, and routes to the right surface evaluator. Full split (one-scaffold-many-evaluators table, evaluator boundaries) in `references/_shared/eval-loop-spec.md` § "One Scaffold, Many Evaluators".
 
 ## Output
 
@@ -128,87 +112,45 @@ skills-resources/loops/[slug]/
 └── learnings.md
 ```
 
-Use the scaffold helper for first creation:
+Helpers (full flags + validation rules in `references/_shared/eval-loop-spec.md`):
 
-```bash
-bun scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
-```
-
-If running from this repo or a submodule checkout, this path is also valid:
-
-```bash
-bun scripts/scaffold-eval-loop.ts "<loop name>" --domain marketing
-```
-
-Evaluation skills should append result rows with the validated helper instead of hand-editing the TSV:
-
-```bash
-bun scripts/append-loop-result.ts "<loop slug>" \
-  --artifact evals/YYYY-MM-DD-cycle-N.md \
-  --metric conversion_rate \
-  --value 3.4% \
-  --baseline 2.9% \
-  --status keep \
-  --description "One sentence without tabs"
-```
-
-When the Quality Feedback Protocol threshold is met, update the dashboard with:
-
-```bash
-bun scripts/update-quality-dashboard.ts \
-  --loop "<loop slug>" \
-  --latest-cycle N \
-  --latest-status keep \
-  --primary-metric conversion_rate \
-  --latest-value 3.4% \
-  --quality-risk low \
-  --next-action "One sentence"
-```
+- `bun scripts/scaffold-eval-loop.ts "<loop name>" --domain <marketing|product|research> [--no-sync]` — first creation (`--no-sync` skips inline manifest-sync; run sync separately at end of dispatch)
+- `bun scripts/append-loop-result.ts "<slug>" --artifact <path> --metric <k> --value <v> --baseline <v> --status <keep|discard|watch|blocked> --description <one-sentence>` — append row (validated; never hand-edit the TSV)
+- `bun scripts/update-quality-dashboard.ts --loop <slug> --latest-cycle <N> ...` — when Quality Feedback Protocol threshold is met
 
 ## Pre-Dispatch
 
-Read `.agents/manifest.json` first if present. If missing or stale, run:
+Follow [`meta-skills/references/pre-dispatch-protocol.md`](../../references/pre-dispatch-protocol.md) for framing. Skill-specific entry:
 
-```bash
-bun scripts/manifest-sync.ts
-```
+1. Read `.agents/manifest.json`. If missing/stale: `bun scripts/manifest-sync.ts`.
+2. Inspect existing loops: `find skills-resources/loops -maxdepth 2 -type f 2>/dev/null | sort`.
 
-Then inspect existing loop folders:
-
-```bash
-find .agents/skill-artifacts/mkt/loops .agents/skill-artifacts/product/loops .agents/skill-artifacts/research/loops -maxdepth 2 -type f 2>/dev/null | sort
-```
-
-### Warm Start
-
-If a matching loop exists, summarize:
+### Warm Start (matching loop found)
 
 ```text
 Found:
-- loop: .agents/skill-artifacts/[domain]/loops/[slug]/
+- loop: skills-resources/loops/[slug]/
 - program status: [status]
-- latest strategy artifact: [path or none]
-- latest execution artifact: [path or none]
-- latest eval artifact: [path or none]
+- latest strategy / execution / eval: [paths or none]
 - latest result row: [status + metric or none]
 
 Proceeding to resume this loop. Anything to override?
 ```
 
-Then dispatch the needed agent(s) based on the user's ask: setup, context refresh, next-cycle planning, loop audit, or evaluator routing.
+Then dispatch based on the ask: setup, context refresh, next-cycle planning, loop audit, or evaluator routing.
 
-### Cold Start
+### Cold Start (no loop / missing dimensions)
 
-Ask one bundled question set:
+Ask one bundled set:
 
 1. What measurable surface does this loop own? (page / campaign / ad set / email sequence / social series / other)
-2. What is the primary metric and source? (e.g. conversion rate from GA, CTR from Meta, replies from CRM)
-3. Which domain owns the measurable surface? (`marketing` for pages/campaigns/ads/email/social, `product` for in-product UX/activation/retention surfaces, `research` for recurring research motions)
+2. Primary metric and source? (e.g. conversion rate from GA, CTR from Meta, replies from CRM)
+3. Which domain? (default-infer from the surface — ask only if ambiguous: `marketing` for pages/campaigns/ads/email/social, `product` for in-product UX/activation/retention, `research` for recurring research motions)
 4. What can change between cycles? (copy / offer / CTA / targeting / creative angle / sequence / format / UX surface)
-5. What must stay fixed? (brand constraints, audience, budget, channel, product facts, compliance)
-6. What baseline or first measurement window should the loop use? ("unknown yet" is allowed if source is known)
+5. What must stay fixed? (brand, audience, budget, channel, product facts, compliance)
+6. Baseline or first measurement window? ("unknown yet" allowed if source is known)
 
-After the user answers, write the answers to `context.md`, update `program.md`, and dispatch agents.
+Write answers to `context.md`, update `program.md`, then dispatch.
 
 ## Agent Manifest
 
@@ -227,7 +169,7 @@ After the user answers, write the answers to `context.md`, update `program.md`, 
 4. Layer 2 sequential: Scope Guard -> Critic.
 5. If Critic FAIL, revise only the named failing sections once.
 6. Write final `program.md` and `context.md` with required frontmatter.
-7. Apply the Quality Feedback Protocol: promote only high-confidence `keep` learnings to `.agents/experience/`, log critic overrides when present, create or update the quality dashboard with `update-quality-dashboard.ts` when the protocol threshold is met, and flag any research artifact that now needs downstream evaluation.
+7. Apply the Quality Feedback Protocol per `references/_shared/quality-feedback-protocol.md` (promote `keep` learnings, log critic overrides, update dashboard at threshold, flag research artifacts needing downstream eval).
 8. Run `manifest-sync` once after the final files are written.
 9. Return the loop path, the next recommended strategy/execution/eval skill, quality-feedback action, and status.
 
