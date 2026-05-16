@@ -10,6 +10,13 @@ metadata:
   version: "1.0.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
+  refactor_history:
+    - refactored_at: 2026-05-16
+      refactored_for: implementation-roadmap v6 Phase 1E+ (router body-diet + playbook ref + chain hardening)
+      body_before: 297
+      body_after: 128
+      body_delta_pct: -56.9
+      note: body-only line counts (frontmatter excluded). Total file 399 → 225.
 promptSignals:
   phrases:
     - "where do i start"
@@ -91,46 +98,49 @@ routing:
   estimated-complexity: low
 ---
 
-# Orchestrate Meta
+# Orchestrate Meta — Router
 
-*Meta — Cross-stack orchestrator. The top-level entry point when you don't know where to start.*
-
-**Core Job:** read project state, parse your ask, route to the right stack-orchestrator OR the right meta-skill.
+*Meta — Cross-stack router. Reads project state, parses your ask, points at the right next skill. Does NOT execute work; that's the skill it routes you to.*
 
 **Core Question:** "Is this a domain task (research / marketing / product) or a process task (scope / debate / decompose / review)?"
 
-This skill does NOT execute work. It is a router. The actual work is done by the skill it routes you to (which may itself be a router, like `/orchestrate-research`).
-
----
+[Read `references/playbook.md` [PLAYBOOK] to understand why this skill does what it does — methodology, principles, when NOT to use.]
 
 ## When To Use
 
-- You just installed the full agent-skills stack and don't know what to type.
-- Your ask doesn't clearly belong to one domain ("I want to launch a new product feature" — could be research, product, marketing, or all three).
-- You need a process skill: scope something with `discover`, create a measurable loop with `eval-loop`, debate a decision with `agents-panel`, decompose work with `task-breakdown`, review work with `fresh-eyes`.
-- You want a quick read of "what's been done across the whole project."
+- Just installed the stack; don't know what to type.
+- Ask doesn't clearly belong to one domain ("I want to launch a new product feature" — could be research, product, marketing, or all three).
+- Need a process skill: scope (`discover`), measurable loop (`eval-loop`), debate (`agents-panel`), decompose (`task-breakdown`), review (`fresh-eyes`).
 
 ## When NOT To Use
 
 - You already know your domain — go straight to `/orchestrate-research`, `/orchestrate-marketing`, or `/orchestrate-product`.
 - You already know your skill — invoke it directly.
 
----
+## Before Starting
 
-## How It Works
+Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
-**Tier note (`metadata.budget: fast`):** This is a pure router — no sub-agent dispatch, no critic gate. The body below runs in-line: read state, parse intent, propose next skill, await user confirmation. No `agents/` directory, no L1/L2 layers, no rewrite cycles. The premium-orchestration substrate (multi-agent + critic) lives in the skills this router proposes; running it here would be theater.
+0. **Mode declaration** — this skill is `budget: fast` with no escalation path (no sub-agents, no critic gate, no `--apply`-style modes). The mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) resolves to `fast` and runs. No emit-and-wait prompt — there's no meaningful mode to escalate to. The resolver's load-bearing job here is enforcing "safety gates don't skip under `--fast`": state snapshot still runs; routing still produces a hand-off; no auto-invoke regardless.
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify this skill's output path matches the canonical inventory.
+2. Read `.agents/manifest.json` + `.agents/artifact-index.md` (meta-skill foundation files).
+3. `skills-resources/experience/*.md` files are read as **state input** (per `routing.consumes`) — not as cold-start dimension resolution. This skill IS the entry point that produces `skills-resources/experience/meta-workflow.md`, so Pre-Dispatch's experience-dimension read doesn't apply.
+4. If `.agents/manifest.json` is missing AND no filesystem fallback paths exist (fresh project) → use the empty-ask fallback in [`references/output-formats.md`](references/output-formats.md) [PROCEDURE] Format 4 to scope.
 
-1. **Cross-stack state detection** — silently read `research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`, and `skills-resources/experience/*.md` to build a picture of the whole project.
-2. **Domain classification** — parse the user's ask. Classify as: research / marketing / product / cross-stack / process.
-3. **Routing decision** — either defer to a stack-orchestrator (`/start-X`) or propose a specific meta-skill.
-4. **User confirmation** — print hand-off command. Never auto-invoke.
+## Artifact Contract
 
----
+- **Path:** `skills-resources/experience/meta-workflow.md` (append-only breadcrumb log)
+- **Lifecycle:** `pipeline` (⚠️ canonical-paths.md flags this as a lifecycle violation — orchestrate-* workflow state should move to `meta/orchestrator-state/` per Phase 2 cleanup; current behavior preserved verbatim for backwards-compat)
+- **Frontmatter fields:** none required on the file itself; each append is timestamped + decision-tagged
+- **Required sections per append:** `## Session YYYY-MM-DD` heading + bullet list (Read state / User intent / Recommended / User confirmed)
+- **Consumed by:** future `/orchestrate-meta` invocations (precedent), operator (breadcrumb history). No machine consumer parses this today.
+- **Side effect:** appends one block; no overwrite, no delete.
 
-## Step 1: Cross-Stack State Detection
+## Decision Tree (the routing core)
 
-**Disk snapshot** (rendered inline when `/orchestrate-meta` is invoked — see this skill's generated support notes for the inline-shell-interpolation convention):
+### Step 1 — Cross-stack state snapshot
+
+Render the disk snapshot inline. Shell-bang interpolation fires at slash-command invocation per `meta-skills/CLAUDE.md` §"Inline shell interpolation":
 
 ```
 Artifacts by domain:
@@ -142,93 +152,15 @@ Evidence loops:
 Top-level canonical folders present:
 ! `found=0; for d in research brand architecture; do [ -d "$d" ] && { echo "  $d/ ✓"; found=1; }; done; [ $found -eq 0 ] && echo "  (none yet)" || true`
 
-Last 5 commits in this repo:
+Last 5 commits:
 ! `git log --oneline -5 2>/dev/null | grep . || echo "no git history"`
 ```
 
-The `! \`...\`` lines run at slash-command invocation time and substitute the command output — so the orchestrator starts from concrete state instead of speculating about what's on disk.
+Then read `.agents/manifest.json` (canonical). If missing or stale (>24h per `updated_at`), run `bun scripts/manifest-sync.ts` first. Build the structured state map per [`references/state-map-template.md`](references/state-map-template.md) [PROCEDURE] (manifest signal interpretation, filesystem fallback paths, project-fit check all live there).
 
-Then read `.agents/manifest.json` for the structured detail — it's the canonical state index, single file, all artifact metadata in one parse. If missing or clearly stale (check `updated_at`), regenerate it:
+### Step 2 — Classify the ask
 
-```bash
-bun scripts/manifest-sync.ts
-```
-
-**Status-aware lookup:** for each artifact entry in `manifest.artifacts`, read `status` and `stale` to qualify the state map:
-
-| Manifest signal | State map value |
-|---|---|
-| `status: done`, `stale: false` | ✅ done |
-| `status: done_with_concerns` | ⚠️ done-with-concerns — surface the concern in routing output |
-| `status: blocked` or `needs_context` | treat as missing |
-| `stale: true` | ✅ done (stale) — propose refresh as an option, don't block |
-| `frontmatter_present: false` | ✅ done (legacy, no frontmatter) — quality unknown, suggest refresh |
-
-**Experience block:** `manifest.experience` tracks `skills-resources/experience/{domain}.md` files separately. The `entries` count per domain is a heuristic for "how much context has been gathered" — a domain with 7 entries is well-covered; one with 1 entry barely is.
-
-See [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md) for the full contract.
-
-**Path reference / filesystem fallback** — used only when `.agents/manifest.json` doesn't exist (fresh project) or sync hasn't been run:
-
-| Path | What it tells you |
-|---|---|
-| `CLAUDE.md` (project) | Project name, stack, conventions. |
-| `research/product-context.md` | Cross-stack foundation exists. |
-| `research/icp-research.md`, `research/market-research.md` | Research stack progress. |
-| `brand/BRAND.md`, `brand/DESIGN.md` | Marketing stack foundation. |
-| `architecture/system-architecture.md` | Product stack architecture done. |
-| `.agents/skill-artifacts/product/flow/index.md` + flow files | Product flows mapped. |
-| `.agents/skill-artifacts/meta/specs/*.md` | Spec exists from `discover`. |
-| `.agents/skill-artifacts/meta/tasks.md` | Tasks decomposed from `task-breakdown`. |
-| `.agents/skill-artifacts/meta/records/diagnose-*.md`, `.agents/skill-artifacts/meta/sketches/prioritize-*.md`, `.agents/skill-artifacts/meta/records/targets-*.md` | Research mid-pipeline outputs. |
-| `.agents/skill-artifacts/mkt/campaign-plan.md` + `.agents/skill-artifacts/mkt/content/`, `.agents/skill-artifacts/mkt/lp-brief/`, etc. | Marketing artifacts. |
-| `.agents/skill-artifacts/meta/records/cleanup-*.md`, `.agents/skill-artifacts/meta/records/machine-cleanup-*.md` | Cleanup audits. |
-| `.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/[date]-fresh-eyes-*.md` | Meta-skill artifacts (dated, immutable — lifecycle: decision / snapshot). |
-| `skills-resources/experience/*.md` | All cold-start answers across stacks. |
-| `skills-resources/experience/meta-workflow.md` | Prior `/orchestrate-meta` breadcrumb. |
-| `.agents/skill-artifacts/meta/records/learned-rules.md` | Behavior corrections from prior sessions. |
-
-Build a cross-stack state map:
-
-```
-research:
-  product-context: done | partial | missing
-  icp:             done | partial | missing
-  market:          done | partial | missing
-  diagnose:        done | not run
-  prioritize:      done | partial | missing
-  targets:         done | partial | missing
-
-marketing:
-  brand:           done | partial | missing
-  campaign:        done | partial | missing
-  content:         [list of slugs]
-  lp:              [audit / brief / both / neither]
-  seo:             [list of modes]
-  short-form:      [list of slugs]
-  outreach:        [list of slugs]
-
-product:
-  spec:            done | partial | missing
-  flows:           [list]
-  architecture:    done | partial | missing
-  tasks:           done | partial | missing
-  code-cleanup:    done | not run
-  docs:            [skim]
-
-meta:
-  panel-reports:   [count, latest mtime]
-  fresh-eyes:      [count, latest mtime]
-  learned-rules:   [count]
-```
-
-**Project-fit check:** if `CLAUDE.md` describes a B2B SaaS but `research/icp-research.md` describes a consumer app, flag the mismatch. State may be from a different project.
-
----
-
-## Step 2: Domain Classification
-
-Parse the user's argument. Classify into one of these:
+Parse the user's argument into one of these:
 
 | User says | Classification | Route to |
 |---|---|---|
@@ -236,164 +168,60 @@ Parse the user's argument. Classify into one of these:
 | "brand", "campaign", "copy", "headline", "landing page", "LP", "SEO", "video", "TikTok", "cold email", "outreach", "humanize", "VN tone" | marketing | `/orchestrate-marketing` |
 | "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | `/orchestrate-product` |
 | "scope this", "clarify", "what should we build", "requirements" | process | `/discover` |
-| "debate this", "multiple perspectives", "poll", "consensus", "what do experts think" | process | `/agents-panel` |
-| "decompose", "task list", "break down", "implementation order", "tasks" | process | `/task-breakdown` |
-| "review my work", "second opinion", "did I miss anything", "post-implementation review" | process | `/fresh-eyes` |
-| Ambiguous, multi-domain, or "I want to launch a new product" | cross-stack | propose 2–3 stack orchestrators in sequence |
-| Empty | unknown | ask scoping question |
+| "debate this", "multiple perspectives", "poll", "consensus" | process | `/agents-panel` |
+| "decompose", "task list", "break down", "implementation order" | process | `/task-breakdown` |
+| "review my work", "second opinion", "did I miss anything" | process | `/fresh-eyes` |
+| "improvement loop", "track metric", "experiment ledger" | process | `/eval-loop` |
+| Ambiguous, multi-domain, or "I want to launch a new product feature" | cross-stack | propose 2–3 stack orchestrators in sequence |
+| Empty | unknown | emit Format 4 scoping prompt |
 
-**If empty**, ask:
+### Step 3 — Apply routing rules
 
-> "What are you trying to do? Pick the closest match:
->
-> 1. Understand my customers / market / problem (research)
-> 2. Build brand / campaigns / content (marketing)
-> 3. Design a feature / system / flow (product)
-> 4. Scope something vague (`discover`)
-> 5. Debate a decision (`agents-panel`)
-> 6. Decompose work into tasks (`task-breakdown`)
-> 7. Review work I just did (`fresh-eyes`)
-> 8. I'm not sure — show me what's been done so far"
+- **Single-domain** → defer to the stack orchestrator. Don't pick the specific skill yourself.
+- **Process intent** → propose the specific meta-skill with one-line rationale.
+- **Cross-stack** → propose a 2-3 step chain (max 3 hops; ≥5 means project too vague → recommend `/discover` first).
+- **`task-breakdown` is hard-gated** — only recommend if `meta/specs/*.md` OR `architecture/system-architecture.md` exists upstream.
+- **Wrap-around:** if the recommendation touches security/auth/data-mutation/critical artifacts, append `(optional /fresh-eyes after)`.
+- **`discover` defensively** is patronizing when intent is clear — only recommend for genuinely unclear scope.
 
-Option 8 prints the cross-stack state map and asks again.
+For the full per-skill catalog + decision rules, see [`references/workflow-graph.md`](references/workflow-graph.md).
 
----
+### Step 4 — Present + confirm
 
-## Step 3: Routing Decision
+Emit one of the four formats in [`references/output-formats.md`](references/output-formats.md) [PROCEDURE]: single-domain (Format 1), cross-stack (Format 2), process-skill (Format 3), or empty-ask scoping fallback (Format 4). Never auto-invoke; always print `→  /skill-name` for the operator to type.
 
-**Domain routing:**
-
-1. **Single-domain intent** → defer to that stack's orchestrator. "Looks like a research task — run `/orchestrate-research`." Don't try to do `/orchestrate-research`'s job here.
-2. **Process intent** → propose the specific meta-skill (`/discover`, `/agents-panel`, `/task-breakdown`, `/fresh-eyes`) with rationale.
-3. **Cross-stack intent** ("launch a new product feature") → propose a 2-3 step path:
-   - Step 1: `/orchestrate-research` (verify ICP exists; if no, run icp-research)
-   - Step 2: `/orchestrate-product` (design feature: flows + architecture)
-   - Step 3: `/orchestrate-marketing` (positioning + LP + content for launch)
-   - Optional terminal: `/fresh-eyes` after each.
-
-**Process-skill rules:**
-
-4. **`discover`** — recommend when scope is genuinely unclear. Don't recommend if user has clear intent — they'll find it patronizing.
-5. **`agents-panel`** — recommend when user explicitly wants debate, OR when multiple equally-valid options surface in routing and user wants help deciding.
-6. **`task-breakdown`** — recommend when spec.md OR system-architecture.md exists AND user is about to build. Hard-gated on at least one upstream artifact.
-7. **`fresh-eyes`** — recommend when user is finishing implementation OR has just produced a critical artifact (e.g., system-architecture, brand-system, lp-brief).
-
-**Wrap-around suggestions:**
-- After ANY recommendation that touches security-sensitive code, data-mutation code, or critical artifacts, mention `/fresh-eyes` as a terminal step.
-- Before any non-trivial build, mention `/discover` as upstream if scope is unclear.
-
----
-
-## Step 4: Present + Confirm
-
-Output format for **single-domain**:
-
-```
-## Where you are (cross-stack snapshot)
-
-Research:   icp ✅ · market ❌ · prioritize ❌
-Marketing:  brand ❌ · campaign ❌ · content (none)
-Product:    spec ❌ · flows (none) · architecture ❌
-Meta:       no reports yet
-
-## What you asked
-
-"I want to figure out who my customers are" → research domain.
-
-## Recommended: route to /orchestrate-research
-
-Why: this is a research-domain task. /orchestrate-research will read the
-research-stack state and propose the next skill (likely icp-research).
-
-→  /orchestrate-research
-```
-
-Output format for **cross-stack**:
-
-```
-## What you asked
-
-"I want to launch a new product feature" → cross-stack (research + product + marketing).
-
-## Recommended path
-
-1. /orchestrate-research        → verify audience clarity for the feature
-2. /orchestrate-product         → design flows + architecture
-3. /orchestrate-marketing       → positioning, LP, content for launch
-   (optional /fresh-eyes after each artifact)
-
-Each /orchestrate-X is its own router; you'll get sub-recommendations from each.
-
-→  Run /orchestrate-research first.
-```
-
-Output format for **process skill**:
-
-```
-## What you asked
-
-"I just finished implementing the auth migration — can you review it?"
-→ process intent: post-implementation review.
-
-## Recommended: /fresh-eyes
-
-Why: post-implementation independent review. Runs an independent
-agent against your changes, returns issues + severity.
-
-Cost: ~$0.15-0.50 · Duration: ~3 min · Produces: .agents/skill-artifacts/meta/records/[date]-fresh-eyes-<slug>.md
-
-→  /fresh-eyes
-```
-
----
-
-## Step 5: Persist + Hand Off
+### Step 5 — Persist + hand off
 
 Append to `skills-resources/experience/meta-workflow.md`:
 
 ```markdown
-## Session 2026-05-06
-
-- Read state: cross-stack snapshot
-- User intent: research-domain (audience clarity)
-- Recommended: /orchestrate-research
-- User confirmed: yes
+## Session YYYY-MM-DD
+- Read state: <one-line summary>
+- User intent: <classification>
+- Recommended: /<skill>
+- User confirmed: <yes / pending / redirected>
 ```
 
-Print:
-
-> Run `/orchestrate-research` next. Re-run `/orchestrate-meta` if your task shifts to a different domain.
-
-Exit.
-
----
-
-## Pipeline Reference
-
-For the canonical cross-stack pipeline, decision rules, and per-skill catalog, see [`./references/workflow-graph.md`](./references/workflow-graph.md).
-
----
+Then print the hand-off line and exit. Operator types the next slash command.
 
 ## Anti-Patterns
 
-- **Don't ignore the manifest** — always read `.agents/manifest.json` first; per-path filesystem scans are a fallback, not the default.
-- **Don't duplicate work of /orchestrate-research, /orchestrate-marketing, /orchestrate-product.** When intent is single-domain, route there. Don't pick the specific skill yourself.
-- **Don't lecture about all 24 skills.** Show only what's relevant to the user's ask + state.
-- **Don't auto-invoke.** Always print `/skill-name` for the user to type.
-- **Don't recommend `discover` defensively** when the user has clear intent. That's patronizing.
-- **Don't recommend `task-breakdown` without a spec or architecture upstream.** It's hard-gated.
-- **Don't recommend more than 3 hops** in a cross-stack path. If it needs 5+, surface that the project is too vague and recommend `discover` first.
+Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before emitting any recommendation that smells off — long cross-stack chain, defensive `/discover`, picking a specific skill instead of routing to the orchestrator.
 
----
+## Completion Status
 
-## Output
+- **DONE** — recommendation given, hand-off printed, breadcrumb appended.
+- **BLOCKED** — couldn't read project state (manifest missing AND no fallback paths AND fresh-project bootstrap unclear).
+- **NEEDS_CONTEXT** — empty ask + state too sparse to infer. Emit Format 4 scoping prompt and exit (operator re-runs with answer).
 
-- **Inline only.**
-- **Side effect:** appends one entry to `skills-resources/experience/meta-workflow.md`.
+## References
 
-## Status
-
-Ends with one of:
-- `DONE` — recommendation given, hand-off printed.
-- `BLOCKED` — couldn't read project state.
-- `NEEDS_CONTEXT` — empty ask + state too sparse to infer. Ask scoping question.
+- [`references/playbook.md`](references/playbook.md) [PLAYBOOK] — why this skill exists, methodology, principles, when NOT to use
+- [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) [PLAYBOOK] — pre-Pre-Dispatch read pattern (canonical at `meta-skills/references/`, synced)
+- [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE] — `--fast` behavior contract
+- [`references/state-map-template.md`](references/state-map-template.md) [PROCEDURE] — manifest signals + filesystem fallback paths + state map structure
+- [`references/output-formats.md`](references/output-formats.md) [PROCEDURE] — the 4 output shapes (single-domain, cross-stack, process-skill, scoping fallback)
+- [`references/workflow-graph.md`](references/workflow-graph.md) — full cross-stack pipeline + per-skill catalog
+- [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — failure modes
+- [`references/_shared/manifest-spec.md`](references/_shared/manifest-spec.md) — manifest contract Step 1 reads
+- [`agent-skills/CLAUDE.md` §"Artifact Placement"](../../../CLAUDE.md) — lifecycle taxonomy this skill writes against (umbrella dependency). Under `npx skills add --skill orchestrate-meta` standalone install, this cite dangles — the full taxonomy lives umbrella-only. The lifecycle this skill emits (`pipeline`, with the ⚠️ flag noted in Artifact Contract) is documented inline above; consult the umbrella for the full 11-row table.
