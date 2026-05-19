@@ -50,11 +50,23 @@ provenance:
 ## Verdict: {PASS | FIXED | CRITICAL}
 
 ## Issues Found
-| # | Severity | Confidence | Location | Problem | Status |
-|---|----------|------------|----------|---------|--------|
-| 1 | major | 9/10 | file.ts:42 | Off-by-one in loop | Fixed |
-| 2 | minor | 8/10 | file.ts:15 | Unused import | Fixed |
-| 3 | nit | 6/10 | file.ts:8 | Naming convention | Declined (uncertain) |
+
+Per the 3-category noise-filter (`references/noise-filter.md`): Accepted = real + actionable + fixed; Rejected = filtered as noise (low-confidence / preference / equivalent); Deferred = real but out-of-scope for this pass (follow-up logged).
+
+### Accepted (fixed)
+| # | Severity | Confidence | Location | Problem | Fix | Verified |
+|---|----------|------------|----------|---------|-----|----------|
+| 1 | major | 9/10 | file.ts:42 | Off-by-one in loop | Boundary corrected; loop now `< n` instead of `<= n` | tests pass + type-check ✓ |
+| 2 | minor | 8/10 | file.ts:15 | Unused import | Removed | type-check ✓ |
+
+### Rejected (filtered as noise)
+One-line each with suppression reason. Empty section reads "_None._"
+- **Naming convention on `parseRequest()`** — _suppressed: 6/10 confidence on preference; existing code follows project convention._
+- **Comment density on utility module** — _suppressed: pure preference, no falsifiable cost._
+
+### Deferred (real but out-of-scope for this pass)
+One-line each with rationale + follow-up pointer. Empty section reads "_None._"
+- [major] **Stale ARCHITECTURE.md in unrelated `payments/` module** — **Defer rationale:** unrelated to this auth-handler review; would expand scope. **Follow-up:** `clean-artifacts` pass or a separate doc-review cycle.
 
 ## Input Quality Assessment
 | Input | Rating | Evidence |

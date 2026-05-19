@@ -161,6 +161,51 @@ Return a single markdown document with exactly these sections:
 - Is the geographic/market scope appropriate?
 - Are the personas relevant to the stated decisions (messaging, channels, positioning)?
 
+#### Gate 8: Confidence Labels Complete
+**Criterion:** Every finding carries an inline `[Confidence: H | M | L | sources: N]` tag, and no unresolved `L` findings ship. See [`references/confidence-and-bias.md`](../references/confidence-and-bias.md) § 1.
+
+**Check:**
+- Every pain in Pain Profile has a confidence tag.
+- Every key bias, objection, trust signal, and distrust trigger in Decision Psychology has a confidence tag.
+- Every Top 3 Emotional Driver has a confidence tag.
+- Confidence Summary line is present in the artifact header with H/M/L counts.
+- No finding is labeled `L` without one of three resolutions: promoted to M (more sources collected), moved to Red Flags as a hypothesis, or dropped.
+- Source independence rules per `confidence-and-bias.md` § 1 are respected: count of quotes ≠ count of sources; same thread ≠ multiple sources.
+
+**Auto-FAIL conditions:**
+- Confidence tag missing on any required finding.
+- An `L` finding shipped without explicit hypothesis labeling in Red Flags.
+- Source counts inflated by counting quotes from the same thread as independent sources.
+
+#### Gate 9: Sample Bias Acknowledged
+**Criterion:** Sample Bias section is present, specific to this dataset, and not a generic disclaimer. See [`references/confidence-and-bias.md`](../references/confidence-and-bias.md) § 2.
+
+**Check:**
+- Section exists at the required position (after Red Flags, before Next Step).
+- Source-type mix subsection lists each source type with independent-source counts and date ranges.
+- Known skews subsection names skews specific to this dataset (per the skew table in confidence-and-bias.md § 2) — not generic "selection bias may exist" filler.
+- Mitigations subsection names what was done to counteract each skew, or admits no mitigation was possible.
+- Known gaps subsection lists explicit caveats for downstream skills.
+
+**Auto-FAIL conditions:**
+- Sample Bias section missing entirely.
+- Sources listed but no skews named.
+- Skews named generically ("selection bias may exist") without binding to specific findings in this dataset.
+- Mitigations and known gaps subsections both empty.
+
+#### Gate 10: ≥5 Sources per Persona
+**Criterion:** Each persona meets the ≥5-independent-sources floor across pains + biases + objections + trust signals combined. See [`references/confidence-and-bias.md`](../references/confidence-and-bias.md) § 3.
+
+**Check:**
+- Count independent sources contributing to each persona (using the source-independence rules from § 1).
+- If <5 for any persona: return NEEDS_CONTEXT, instruct voc-collector-agent to gather more.
+- Exception: if operator invoked `--hypothesis-mode`, accept the artifact with all personas labeled `Hypothesis Mode` and `Confidence: L` on every finding. Override must be logged via `scripts/eval/log-critic-override.ts` with dimension `≥5 rule` and reason `early-stage hypothesis research`.
+
+**Auto-FAIL conditions:**
+- Any persona has <5 independent sources AND `--hypothesis-mode` was not invoked.
+- `--hypothesis-mode` invoked but Hypothesis Mode label missing from persona header.
+- Override flagged but `log-critic-override.ts` was not called.
+
 ### Rewrite Routing Table
 
 When a gate fails, route the fix to the responsible agent:
@@ -174,13 +219,16 @@ When a gate fails, route the fix to the responsible agent:
 | Quote Volume (fewer than 15) | **voc-collector-agent** | They own quote collection |
 | Persona Constraint (too many personas) | **persona-agent** | They own persona scoping |
 | Brief Alignment (wrong audience/product) | **persona-agent** + **orchestrator** | Fundamental scope error — may need full re-dispatch |
+| Confidence Labels Complete (missing tags / unresolved L) | **synthesis-agent** | They own the artifact assembly + per-finding confidence judgment |
+| Sample Bias Acknowledged (missing / generic / un-mitigated) | **synthesis-agent** + **voc-collector-agent** | Synthesis writes the section; voc-collector supplies the source-type mix |
+| ≥5 Sources per Persona (under-sampled) | **voc-collector-agent** | They own source collection; need more independent platforms |
 
 **Multiple failures:** If 3+ gates fail, recommend the orchestrator re-run from the failing layer rather than patching individual agents.
 
 ### Evaluation Process
 
 1. **Read the full artifact** — understand the overall narrative before checking individual gates.
-2. **Check each gate systematically** — go through all 7, even if early ones fail.
+2. **Check each gate systematically** — go through all 10, even if early ones fail.
 3. **Document specific failures** — quote the exact line or section that fails.
 4. **Write fix instructions** — specific enough that one rewrite cycle should resolve the issue.
 5. **Determine verdict** — ALL gates must pass for PASS. Any single failure = FAIL.

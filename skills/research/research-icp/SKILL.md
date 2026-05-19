@@ -92,6 +92,9 @@ Non-negotiable constraints before dispatching any agent:
 2. **Don't skip habitat mapping.** IMC planning needs specific community names with density and engagement type. "They're on LinkedIn" is not actionable.
 3. **Max 2 personas.** More dilutes focus for 13+ downstream skills. If research reveals 4+ segments, force-rank by revenue potential.
 4. **Stale product context (>30 days) → recommend re-running.** If `research/product-context.md` `Date` field is older than 30 days, warn and recommend re-run. If user proceeds, note "stale product context" in artifact header.
+5. **≥5 independent sources per persona.** Per [`references/confidence-and-bias.md`](references/confidence-and-bias.md) § 3 — total count of independent sources contributing to a persona across pains + biases + objections + trust signals must be ≥5. Below 5 → persona is `Hypothesis Mode` with `Confidence: L`, critic returns NEEDS_CONTEXT, voc-collector gathers more (or operator invokes `--hypothesis-mode` with override logged).
+6. **Every finding carries a confidence label.** Pains, biases, objections, trust/distrust signals, and emotional drivers all carry inline `[Confidence: H | M | L | sources: N]` tags per [`references/confidence-and-bias.md`](references/confidence-and-bias.md) § 1. Findings labeled `L` MUST be promoted (collect more sources), moved to Red Flags as hypotheses, or dropped — never shipped as findings.
+7. **Sample Bias section is mandatory.** Per [`references/confidence-and-bias.md`](references/confidence-and-bias.md) § 2 — artifact must name source-type mix, known skews specific to this dataset (not generic disclaimers), mitigations applied, and known gaps. Critic Gate 9 enforces specificity.
 
 ---
 
@@ -108,13 +111,16 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Quality Gate
 
-Critic agent verifies before delivery — body checklist below is the 6-bullet operator reminder for gates 1-6; Gate 7 (Brief Alignment) is critic-agent-only. Full 7-gate rubric in `agents/critic-agent.md`:
+Critic agent verifies before delivery — body checklist below is the 9-bullet operator reminder for gates 1-9; Gate 10 (Brief Alignment, renumbered) is critic-agent-only. Full 10-gate rubric in `agents/critic-agent.md`:
 - [ ] Every VoC quote includes platform name and traces to a real source (not agent-generated)
 - [ ] Each persona has a habitat map with specific channels and supporting evidence. Aim for 3+; document why if fewer.
 - [ ] Each emotional driver traces to at least 2 specific quotes
 - [ ] Decision psychology names specific cognitive biases and objections (not generic "they need trust")
 - [ ] At least 15 VoC quotes across categories
 - [ ] Maximum 2 personas
+- [ ] Every finding (pain / bias / objection / trust signal / driver) carries `[Confidence: H | M | L | sources: N]` tag per [`references/confidence-and-bias.md`](references/confidence-and-bias.md). No unresolved `L` findings shipped.
+- [ ] Sample Bias section present and specific to this dataset (source-type mix, named skews, mitigations applied, known gaps). Generic disclaimers FAIL.
+- [ ] Each persona meets the ≥5 independent-sources floor per [`references/confidence-and-bias.md`](references/confidence-and-bias.md) § 3. Below 5 → NEEDS_CONTEXT (or `--hypothesis-mode` with logged override).
 
 ---
 
