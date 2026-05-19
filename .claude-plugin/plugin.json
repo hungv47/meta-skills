@@ -15,6 +15,7 @@
     "user-flow", "system-architecture", "code-cleanup", "machine-cleanup", "docs-writing"
   ],
   "skills": [
+    "./skills/meta/forsvn/",
     "./skills/meta/orchestrate-meta/",
     "./skills/meta/discover/",
     "./skills/meta/agents-panel/",
