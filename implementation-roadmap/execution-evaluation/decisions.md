@@ -839,3 +839,142 @@ Pairs cleanly with D8: write-ad already emits generation-provenance per the D8 c
 ### Status
 
 DONE — built 2026-05-19. 11 new files under `skills/marketing/evaluate-ad/` (SKILL.md + 4 agents + 6 references including `rubric.md` with 7-dim 0-10 bands + Hard Fails + revision triggers). 5 files under `.forsvn/loops/ad-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-19-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic cold-traffic ROAS cycle. `plugin.json` registered (skills list + keywords, 2 hits). CHANGELOG `[Unreleased]` entry written (skill count 34 → 35). Acceptance checks pass: verb-first frontmatter ✓, 7 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-landing-page ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 + revision triggers ✓, generation-provenance per D8 contract wired ✓, ad-demo loop scaffolded ✓. User owns version bump + git commit + push.
+
+---
+
+## D16 — Workstream C slice 3a (LOCKED 2026-05-19: publish-social MVP, integration-aware, export + Typefully draft)
+
+Locked via interview round 10 (2026-05-19, post-D15). User picked publish-social over evaluate-content / sync-hygiene / plan-campaign platform-intel wiring. Push-back round (10b) sliced the original "export+draft+publish, 9 platforms, browser-automation" scope into 3 sub-slices to preserve the one-session-per-D-slice cadence; D16 ships slice 3a only.
+
+### Why this slice
+
+Closes the third gap in brief 04's production trio (produce-asset shipped in D11, produce-video in D14). Without publish-social, `write-social` output goes nowhere — operators copy-paste into schedulers manually. publish-social automates the per-platform formatting + scheduler-handoff, and adds **Typefully API draft** as the one clean API integration (X/Twitter's scheduler ecosystem is the most consolidated; LinkedIn / IG / FB drafts require browser-automation, which is D17). User's "if it's just export there's nothing different from write-copy" complaint (round 10b) is answered by: D16 emits **scheduler-import-ready files** (Typefully JSON / Buffer CSV / Hootsuite CSV / generic CSV) plus Typefully API drafts — the operator pastes one file into their scheduler or finds drafts already in Typefully. That's execution, not text emission.
+
+**Integration-aware design** (user-locked, round 10c): skill probes for credentials at invocation, picks the highest mode available without operator-mode-selection friction. No credentials → scheduler-import export for all 9 platforms. Typefully API key present → X-platform goes draft route via Typefully Draft API; other 8 platforms still export. Auto-detect never picks `publish` even with all credentials; `--mode=publish` is opt-in only and BLOCKED in D16 (D18).
+
+Pairs cleanly with D8: publish-social emits generation-provenance (`input_artifacts` includes the write-social path + optional produce-asset + produce-video manifests + brand/BRAND.md) so a downstream `evaluate-content` skill (backlog) can score the published output against the brief's hypothesis.
+
+### Scope (v1 — slice 3a only)
+
+**New skill:** `skills/marketing/publish-social/`
+- `SKILL.md` — verb-first per D1; budget `standard`; consumes write-social artifact + optional produce-asset manifest + optional produce-video manifest; produces `.forsvn/artifacts/mkt/published-social/[slug]/...`
+- `agents/formatter-agent.md` — per-platform formatting + scheduler-import file emission + Typefully API draft when credentials present
+- `agents/critic-agent.md` — 6-dim sequential rubric
+- `references/format-conventions.md` — output bundle schema (manifest + per-platform + scheduler-imports + README)
+- `references/anti-patterns.md` — publish-social-specific (credential leakage, shadowban triggers, mass-tagging, link-in-bio bait, broken Unicode, silent character truncation, scheduler-CSV column drift) + cross-cutting marketing-stack rows
+- `references/scheduler-formats.md` — Typefully JSON / Buffer CSV / Hootsuite CSV / generic CSV schemas (covers Hushuy / Later / Publer / Sprout long tail)
+- `references/platform-credentials.md` — env-var contract + `.forsvn/credentials/platforms.json` fallback + auto-detect rules + setup instructions + safety constraints
+- `references/rubric.md` — 6 dims × 0-10 + pass gate + auto-fail conditions
+- `references/playbook.md` — methodology, when not to use, integration-aware mode resolution narrative
+- `references/platforms/{x,linkedin,instagram,youtube,tiktok,facebook,bluesky,threads,reddit}.md` — 9 platform refs with char caps, hashtag rules, media specs, CTA conventions, algorithm-truncation points
+
+**Plugin registration:** `.claude-plugin/plugin.json` — append `./skills/marketing/publish-social/` to skills list + `publish-social` to keywords.
+
+**Output bundle layout:**
+
+```
+.forsvn/artifacts/mkt/published-social/[slug]/
+├── manifest.md                       # canonical bundle contract (always emitted)
+├── platforms/
+│   ├── x.md
+│   ├── linkedin.md
+│   ├── instagram.md
+│   ├── youtube.md
+│   ├── tiktok.md
+│   ├── facebook.md
+│   ├── bluesky.md
+│   ├── threads.md
+│   └── reddit.md                     # per-platform native-formatted draft (Markdown)
+├── scheduler-imports/
+│   ├── typefully.json                # paste-ready Typefully import OR drafted IDs if API used
+│   ├── buffer.csv
+│   ├── hootsuite.csv
+│   └── generic.csv                   # Hushuy / Later / Publer / Sprout long tail
+└── README.md                         # how to paste into each scheduler + Typefully draft URLs (if API used)
+```
+
+**Not in v1 (explicit deferrals):**
+- No browser-automation drafts (LinkedIn / IG / FB / TikTok / etc.). D17 (slice 3b).
+- No `--publish` mode for any platform. D18 (slice 3c) — requires current-session confirmation gate + rollback + dry-run.
+- No Typefully *publish* endpoint — D16 uses Typefully *Draft* API only.
+- No agent-browser dependency.
+- No multi-platform draft beyond Typefully.
+- No scheduling-time selection (the scheduler-import file carries the post body; operator picks the schedule inside their scheduler tool).
+- No D8 critic-override-log wiring (production skill, not eval skill — production critic FAILs trigger re-dispatch per D11 pattern).
+- No `playbook.md` worked-example walkthrough; deferred to first real publish-social run in a project.
+
+### Locked sub-decisions
+
+1. **Integration-aware auto-detect.** Skill probes for credentials at invocation:
+   - `TYPEFULLY_API_KEY` env var OR `.forsvn/credentials/platforms.json` with `typefully.api_key` set → X-platform output goes draft route via Typefully Draft API; bundle includes `typefully.json` carrying drafted IDs + URLs.
+   - No credentials → all 9 platforms emit as scheduler-import files (4 schedulers) + per-platform native drafts for operator manual paste.
+   - `--mode=export` forces export-only regardless of credentials.
+   - `--mode=publish` returns BLOCKED with "deferred to D18 — explicit confirmation gate not yet implemented".
+   - `--mode=draft` for non-X platforms returns BLOCKED with "deferred to D17 — browser-automation route not yet implemented".
+2. **Platforms (9):** x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit. The 6 in platform-intelligence catalog (D13: x, linkedin, reels-as-instagram, shorts-as-youtube, tiktok, plus the _template) get richer treatment via `references/_shared/platform-intelligence/` mirror citations (Hook Taxonomy / Format Constraints / Algorithm Signals / Anti-Patterns). The 4 platforms not in the catalog (facebook, bluesky, threads, reddit) ship template-only — char caps + media specs + hashtag rules — with "algorithm signals deferred until platform-intelligence catalog expansion" notes.
+3. **Scheduler formats (4):**
+   - **Typefully JSON** — `{ "posts": [{ "platform": "twitter", "body": "...", "media": [...], "tags": [...] }] }`. Doubles as the API draft body when credentials present.
+   - **Buffer CSV** — `platform,scheduled_at,body,media_url,tags,link`. Industry-standard 6-col format.
+   - **Hootsuite CSV** — `Date,Time,Platform,Message,Link,Image,Approver`. 7-col Hootsuite-bulk-import schema.
+   - **Generic CSV** — `platform,datetime,body,media_urls,hashtags,link`. Long-tail catch (Hushuy / Later / Publer / Sprout); operator hand-tunes if their scheduler has a stricter schema.
+4. **Credentials:**
+   - Primary: env vars (`TYPEFULLY_API_KEY` etc., per-platform names documented in `references/platform-credentials.md`).
+   - Fallback: `.forsvn/credentials/platforms.json` (gitignored — D16 ensures `.gitignore` has `.forsvn/credentials/` entry).
+   - Schema: `{ "typefully": { "api_key": "..." }, "buffer": { "access_token": "..." }, ... }` (future-extensible for D17).
+   - Never log credential values; never echo them in skill output; never include them in CHANGELOG / manifest / README; redacted-by-default rule applies in error messages.
+   - Setup helper: if `.forsvn/credentials/` doesn't exist when a draft-capable platform is requested, formatter-agent creates the directory + a stub `.gitignore` + an example `platforms.json.example` so operator can fill it in offline.
+5. **Input contract (chained per round 10 answer):**
+   - **Primary:** write-social artifact path (required). Skill reads platform + variants + media references from the artifact.
+   - **Optional:** produce-asset manifest path (carousel / image media for IG / FB / X carousels).
+   - **Optional:** produce-video manifest path (video media for IG Reels / TikTok / Shorts / Threads video).
+   - Skill validates all inputs against their respective schemas before dispatch; fails fast with NEEDS_CONTEXT if write-social artifact missing.
+6. **Agent shape:** 2 agents, sequential — formatter-agent (per-platform formatting + scheduler-import file emission + Typefully API draft when credentials present) → critic-agent (6 dims, single pass). Mirrors D11/D14.
+7. **Critic rubric (6 dims at 0-10, lives in `references/rubric.md`):**
+   - **Platform Char-Cap Compliance** — every platform variant within hard limit (X 280 / Threads 500 / Bluesky 300 / LinkedIn 3000 / IG 2200 / Facebook 63206 / YouTube description 5000 / TikTok 2200 / Reddit title 300 + body 40000). Hard fail if any platform variant exceeds limit by >0 chars.
+   - **Media Spec Compliance** — aspect, file size, format per platform (e.g., IG square 1080×1080 / IG portrait 1080×1350 / X image 1200×675 / LinkedIn 1200×627 / etc.). Cross-checks media URLs against produce-asset / produce-video manifests when provided.
+   - **CTA Visibility** — CTA copy present where algorithm-truncation lands (e.g., X CTA in first 280 chars / LinkedIn CTA above-the-fold before "see more" cutoff at ~210 chars / IG CTA above the "more" cutoff at ~125 chars / etc.).
+   - **Hashtag-Rules Per Platform** — IG up to 30 / LinkedIn 3-5 / X 1-2 / TikTok 3-5 / Threads 1-3 / Bluesky 1-3 / FB 1-2 / YouTube description 3-5 / Reddit 0 (subreddit ≠ hashtag). Positioned per platform convention.
+   - **Scheduler-Format Validation** — Typefully JSON parses cleanly + matches API draft contract / Buffer CSV columns correct + UTF-8 + escaped commas / Hootsuite CSV columns correct + datetime format correct / generic CSV columns correct.
+   - **Anti-Pattern Compliance** — no shadowban triggers (mass-tagging, excessive hashtags above platform threshold, link-in-bio bait, banned-word per-platform list), no platform-policy-violating copy, no broken Unicode, no credential leakage in any output file (anti-pattern dim explicitly greps for `_KEY` / `_TOKEN` / `_SECRET` patterns in emitted files).
+   - **Pass gate:** aggregate ≥ 42/60 AND every per-dim ≥ 6. Per-dim <6 = FAIL even on passing aggregate (catches single-platform contamination).
+8. **Critical Gates (6 in SKILL.md):**
+   - Gate 1: Export-mode floor — auto-detect never picks `publish`; `--mode=publish` always BLOCKED with explicit deferral message.
+   - Gate 2: D17 deferral — non-X `--mode=draft` always BLOCKED with explicit deferral message; only Typefully (X) draft is in scope.
+   - Gate 3: Credential safety — credential values never logged, echoed, or written to any artifact; `.forsvn/credentials/` enforces gitignore.
+   - Gate 4: Char-cap enforcement — every platform variant within hard limit (critic dim 1 hard fail).
+   - Gate 5: Scheduler-format validation — JSON parses, CSV columns correct (critic dim 5).
+   - Gate 6: Generation provenance per D8 — `input_artifacts` lists write-social + optional produce-asset + produce-video manifests + brand/BRAND.md.
+9. **Generation provenance per D8:** required. `input_artifacts: [write-social_artifact_path, ...optional produce-asset/video manifests, brand/BRAND.md]`. `output_eval: null` until a future `evaluate-content` cycle scores the published-social output.
+10. **Budget tier:** `standard`. `--fast` collapses to single formatter pass + light critic (3-dim spot check); `--deep` available but not default.
+11. **Routing:** `position: production`. `lifecycle: pipeline`. `defers-to`: `write-social` (no copy yet) / `produce-asset` (carousel media missing) / `produce-video` (video media missing) / `create-brand` (brand tokens missing).
+12. **No new top-level folder.** Published-social bundles land under `.forsvn/artifacts/mkt/published-social/` per canonical Artifact Placement contract — pipeline-lifecycle, not canonical source of truth.
+13. **No D8 critic-override-log wiring.** publish-social is a production skill, not an eval skill — critic-override is for eval-skill operator overrides. Production critic FAILs trigger re-dispatch (max 2 cycles) per D11/D14 pattern.
+
+### Acceptance
+
+- `skills/marketing/publish-social/SKILL.md` exists with verb-first frontmatter, 6 Critical Gates, 2-agent manifest, generation-provenance pattern, budget `standard`.
+- 2 agent files exist with role/input/output contracts; critic-agent enumerates the 6 rubric dims.
+- `references/rubric.md` exists with 6 dims × 0-10 bands + auto-fail conditions + pass gate.
+- `references/format-conventions.md` defines the manifest + per-platform draft + scheduler-imports + README schemas.
+- `references/anti-patterns.md` covers publish-social-specific + cross-cutting rows.
+- `references/scheduler-formats.md` defines 4 scheduler import schemas (Typefully JSON, Buffer CSV, Hootsuite CSV, generic CSV).
+- `references/platform-credentials.md` defines env-var + `.forsvn/credentials/` contract + setup helper rules.
+- `references/playbook.md` exists.
+- `references/platforms/` contains 9 platform refs (x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit).
+- `.claude-plugin/plugin.json` updated; `grep "publish-social" .claude-plugin/plugin.json` returns ≥ 2 hits (skill path + keyword).
+- CHANGELOG `[Unreleased]` entry written. 35 → 36 skills.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Typefully API contract may change; D16 hard-codes the current draft endpoint | Short-term churn is acceptable; Typefully has been stable; future slice abstracts API client behind shared scheduler-client ref if other APIs follow |
+| Scheduler-import schemas (Buffer, Hootsuite, generic) may drift from those tools' actual import expectations | Generic CSV is documented as hand-tunable; `references/scheduler-formats.md` notes "schema as of 2026-05-19; verify against each scheduler's current import spec on first use" |
+| 4 of 9 platforms (FB, Bluesky, Threads, Reddit) ship without platform-intelligence catalog backing | Template-only is honest; future slice promotes these into the platform-intelligence catalog when real demand surfaces. Per-platform refs include placeholder "algorithm signals: TBD" sections to be filled later |
+| Auto-detect of Typefully credentials only — other API drafts (LinkedIn API draft via developer app) not supported | LinkedIn API draft requires OAuth flow; out of scope for D16. D17 absorbs browser-automation route (simpler — uses operator's existing browser session) |
+| Credential leakage risk via inadvertent logging | Critical Gate 3 + critic anti-pattern dim explicit greps for `_KEY`/`_TOKEN`/`_SECRET` patterns; `.forsvn/credentials/` gitignored; never echoed in output |
+| Auto-detect picks API draft mode without operator awareness | Manifest README explicitly states which mode ran (export vs Typefully API draft) + which credentials were detected; operator can audit. `--mode=export` overrides for opt-out |
+
+### Status
+
+DONE — built 2026-05-19. 20 new files under `skills/marketing/publish-social/`: 1 SKILL.md + 2 agents (formatter + critic) + 6 cross-cutting references (format-conventions, anti-patterns, scheduler-formats, platform-credentials, rubric, playbook) + 9 platform refs (x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit) + 2 procedure docs (pre-dispatch, dispatch-mechanics). `plugin.json` registered (skills list + keywords, 2 hits; description updated to 36 skills). CHANGELOG `[Unreleased]` entry written (skill count 35 → 36). Acceptance checks pass: verb-first frontmatter ✓, 6 Critical Gates ✓, 2-agent sequential shape ✓, 6-dim rubric with auto-fail conditions ✓, 4 scheduler-format schemas ✓, 9 platform refs ✓, generation-provenance per D8 contract wired ✓, credential safety (binary detection, gitignored fallback, setup helper) documented ✓. **Sliced delivery confirmed:** D17 (browser-automation drafts) + D18 (--mode=publish with confirmation gate) explicitly scoped in playbook.md § History as follow-ups. User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
