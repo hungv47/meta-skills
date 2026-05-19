@@ -11,7 +11,7 @@
     "forsvn", "discover", "debate-panel", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "evaluate-landing-page", "plan-campaign", "brief-graphic", "optimize-seo", "humanize", "polish-vn",
+    "brief-landing-page", "evaluate-landing-page", "plan-campaign", "brief-graphic", "produce-asset", "optimize-seo", "humanize", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs"
   ],
   "skills": [
@@ -41,6 +41,7 @@
     "./skills/marketing/evaluate-landing-page/",
     "./skills/marketing/plan-campaign/",
     "./skills/marketing/brief-graphic/",
+    "./skills/marketing/produce-asset/",
     "./skills/marketing/optimize-seo/",
     "./skills/marketing/humanize/",
     "./skills/marketing/polish-vn/",

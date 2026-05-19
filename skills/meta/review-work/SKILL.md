@@ -82,6 +82,7 @@ routing:
 3. **Max 2 loops** — if code isn't clean after 2 review cycles, flag to the user. There may be a deeper design problem that review can't fix.
 4. **Auto-trigger for critical code** — security, auth, crypto, data mutations, money, PII. Don't wait to be asked.
 5. **Quality feedback applies** — repeated reviewer misses, critic overrides, and post-humanize regressions feed the shared quality system instead of staying trapped in one report.
+6. **Noise-filter pass before report-write.** Every reviewer finding goes through the two-layer filter from [`references/noise-filter.md`](references/noise-filter.md): Layer 1 (real-vs-fake per `procedures/reviewer.md § Verification rules`), then Layer 2 (actionable-vs-not — Accepted / Rejected / Deferred categories). The final report has 3 subsections matching the categories. Brief 06 § Review Workflow calls this "the highest-leverage part" — without it, reviewers either drown the operator in nits or silently drop real findings. Accepted findings MUST clear the fix-then-rerun protocol (`noise-filter.md § Fix-then-rerun protocol`) before being marked Verified.
 
 ## Before Starting
 
