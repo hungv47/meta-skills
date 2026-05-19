@@ -34,4 +34,4 @@ This directory is the single source of truth for everything a skill needs to res
 
 ## Relationship to Prior Conventions
 
-This root replaces the previously planned `skills-resources/` and `.agents/skill-artifacts/` for user-facing artifacts. Those paths were never materialized in the repo. See `implementation-roadmap/execution-evaluation/decisions.md` D2.
+This root replaces the previously planned `.forsvn/` and `.forsvn/artifacts/` for user-facing artifacts. Those paths were never materialized in the repo. See `implementation-roadmap/execution-evaluation/decisions.md` D2.

@@ -160,7 +160,7 @@ If the full orchestration is unnecessary (single clear metric, hypothesis alread
 
 ## Post-write side effects
 
-After the artifact is written to `.agents/skill-artifacts/meta/records/diagnose-[date].md`:
+After the artifact is written to `.forsvn/artifacts/meta/records/diagnose-[date].md`:
 
 1. **Re-name** any prior `diagnose-*.md` for the same metric to `diagnose.v[N].md` (increment N). Never overwrite silently.
 2. **Goals write-back** per `procedures/pre-dispatch.md` Write-back map — Q1 (Metric), Q2 (Current), Q3 (Target) append to `experience/goals.md`. Q4 (Tried) is NOT persisted — diagnostic-specific.
@@ -189,8 +189,8 @@ Both side effects are mandatory on PASS or `done_with_concerns`. Skip on `BLOCKE
 |---|---|
 | Scope a feature or idea | `discover` (product-skills) |
 | Generate initiatives against a known root cause | `prioritize` |
-| Market sizing or competitive landscape | `market-research` |
-| Code-level bug | `code-cleanup` (product-skills) |
+| Market sizing or competitive landscape | `research-market` |
+| Code-level bug | `clean-code` (product-skills) |
 
 ---
 

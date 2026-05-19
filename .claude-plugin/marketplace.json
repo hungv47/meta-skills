@@ -5,20 +5,20 @@
     "url": "https://github.com/hungv47"
   },
   "metadata": {
-    "description": "Agent Skills 2.0 — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 35 skills, single install. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
+    "description": "Agent Skills 2.0 — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 32 skills, single install. Verb-first naming with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
     "version": "2.0.0"
   },
   "plugins": [
     {
       "name": "meta-skills",
       "source": "./",
-      "description": "All 35 skills across meta (process), research, marketing, and product. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now consolidated.",
+      "description": "All 32 skills across meta (process), research, marketing, and product. /forsvn is the single front door. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now consolidated.",
       "category": "skills",
       "tags": [
-        "multi-agent", "orchestration", "discover", "agents-panel", "eval-loop",
-        "icp-research", "market-research", "diagnose", "prioritize", "funnel-planner",
-        "brand", "copywriting", "ad-copy", "lp-brief", "lp-eval", "design-brief", "seo", "humanize", "cold-outreach", "short-form", "social-copy",
-        "user-flow", "architecture", "code-cleanup", "machine-cleanup", "docs-writing"
+        "multi-agent", "orchestration", "forsvn", "discover", "debate-panel", "run-eval-loop",
+        "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
+        "create-brand", "write-copy", "write-ad", "brief-landing-page", "evaluate-landing-page", "brief-graphic", "optimize-seo", "humanize", "write-outreach", "brief-shortform", "write-social",
+        "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs"
       ]
     }
   ]

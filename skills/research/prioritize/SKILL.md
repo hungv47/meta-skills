@@ -1,6 +1,6 @@
 ---
 name: prioritize
-description: "Brainstorms and prioritizes strategic solutions when the problem or goal is already clear — generates options, scores trade-offs, and recommends a path forward. Produces `.agents/skill-artifacts/meta/sketches/prioritize-*.md`. Not for diagnosing what the problem is (use diagnose) or engineering task lists (use task-breakdown). For setting numeric targets after prioritizing, see funnel-planner. For technical architecture of chosen initiatives, see system-architecture."
+description: "Brainstorms and prioritizes strategic solutions when the problem or goal is already clear — generates options, scores trade-offs, and recommends a path forward. Produces `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Not for diagnosing what the problem is (use diagnose) or engineering task lists (use breakdown-tasks). For setting numeric targets after prioritizing, see plan-funnel. For technical architecture of chosen initiatives, see architect-system."
 argument-hint: "[problem or goal to solve]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 license: MIT
@@ -89,16 +89,16 @@ routing:
   position: pipeline
   lifecycle: sketch
   produces:
-    - .agents/skill-artifacts/meta/sketches/prioritize-*.md
+    - .forsvn/artifacts/meta/sketches/prioritize-*.md
   consumes:
     - product-context.md
     - market-research.md
-    - .agents/skill-artifacts/meta/records/diagnose-*.md
+    - .forsvn/artifacts/meta/records/diagnose-*.md
   requires: []
   defers-to:
     - skill: discover
       when: "need to clarify HOW to build, not WHAT to pursue"
-    - skill: system-architecture
+    - skill: architect-system
       when: "need technical design, not strategic prioritization"
   parallel-with: []
   interactive: false
@@ -129,7 +129,7 @@ routing:
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` forces Route B (skip unconventional-agent) with critic gate collapsed to single pass. **Hard gate (Critical Gates above) STILL enforced under `--fast`** — safety gates supersede mode-resolver downgrade.
-1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.agents/skill-artifacts/meta/sketches/prioritize-*.md`) and Out-of-Scope path (`.agents/skill-artifacts/meta/out-of-scope/`).
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) and Out-of-Scope path (`.forsvn/artifacts/meta/out-of-scope/`).
 2. Read `.agents/manifest.json` — find the matching `diagnose-*.md` (required) and prior `prioritize-*.md` (if any). Check freshness (>30 days surfaces a warning).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — hard-gate enforcement, read order, Cold/Warm Start prompts, staleness check, constraint interview, Out-of-Scope persistence on write all there.
 
@@ -137,16 +137,16 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.agents/skill-artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md` (one per root cause; re-run renames prior to `prioritize.v[N].md` and increments)
+- **Path:** `.forsvn/artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md` (one per root cause; re-run renames prior to `prioritize.v[N].md` and increments)
 - **Lifecycle:** `sketch` (per `agent-skills/CLAUDE.md` taxonomy)
 - **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below)
 - **Required body sections (in order — cross-stack contract):** Phase 1 (Initiatives, 5-10 + 2-4 unconventional) · Phase 2 (Forced Ranking, ICE Scoring table, Decisions table) · Cut line declaration · Next Step block (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
 - **Optional sections (append only when applicable):** Known Issues · Revisited Out-of-Scope · Change Log
 - **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
-  - Write one file per Kill to `.agents/skill-artifacts/meta/out-of-scope/[kebab-name].md` (format: Decided / Context / Decision / Revisit if — preserved verbatim from original SKILL.md)
+  - Write one file per Kill to `.forsvn/artifacts/meta/out-of-scope/[kebab-name].md` (format: Decided / Context / Decision / Revisit if — preserved verbatim from original SKILL.md)
   - Rename any prior `prioritize-*.md` for the same root cause to `prioritize.v[N].md`
   - **Experience write-back: NONE.** Original SKILL.md explicitly states "prioritize doesn't seed dimensions to experience/ — initiatives are project-specific tactics, not stable user-profile state." Preserved here verbatim.
-- **Consumed by:** `funnel-planner` (Target Metric per Proceed initiative feeds Target Table baselines); `campaign-plan` (Decision = Proceed filters which initiatives need campaign briefs); `system-architecture` (Mechanic per Proceed feeds technical scoping); future `prioritize` re-runs (revisited Out-of-Scope detection)
+- **Consumed by:** `plan-funnel` (Target Metric per Proceed initiative feeds Target Table baselines); `plan-campaign` (Decision = Proceed filters which initiatives need campaign briefs); `architect-system` (Mechanic per Proceed feeds technical scoping); future `prioritize` re-runs (revisited Out-of-Scope detection)
 - **Cross-stack OUTPUT contract:** Phase 1 initiative format + ICE Scoring table schema + Decisions table schema + Cut line statement + Next Step block + Out-of-Scope file format are all load-bearing — schema changes require atomic update of consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---
@@ -190,8 +190,8 @@ Every run ends with explicit status:
 
 - **DONE** — initiatives generated, ICE-scored, ranked, cut-line drawn (≤3 above), kill criteria attached, critic PASS
 - **DONE_WITH_CONCERNS** — ranking complete but with sizing/impact uncertainty flagged at item level (e.g., effort estimates speculative, ICE inputs from interview not data); OR critic loop cap reached with surfaceable gate failures (pinned at top as Known Issues)
-- **BLOCKED** — `.agents/skill-artifacts/meta/records/diagnose-*.md` missing AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute)
-- **NEEDS_CONTEXT** — diagnose available but `research/product-context.md` missing for impact estimation; recommend `icp-research`
+- **BLOCKED** — `.forsvn/artifacts/meta/records/diagnose-*.md` missing AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute)
+- **NEEDS_CONTEXT** — diagnose available but `research/product-context.md` missing for impact estimation; recommend `research-icp`
 
 ---
 

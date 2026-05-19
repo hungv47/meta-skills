@@ -6,11 +6,11 @@
 
 Three failure modes this spec prevents:
 
-1. **Skills re-derive state every invocation** — every consumer re-globs `.agents/skill-artifacts/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
+1. **Skills re-derive state every invocation** — every consumer re-globs `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.agents/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.agents/skill-artifacts/{meta,mkt,product,research}/`, measurable loop workspaces under `skills-resources/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
+Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.agents/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/{meta,mkt,product,research}/`, measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
@@ -46,7 +46,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "size_bytes": 18432,
       "frontmatter_present": true
     },
-    "skills-resources/loops/pricing-page/program.md": {
+    ".forsvn/loops/pricing-page/program.md": {
       "produced_by": "eval-loop",
       "produced_at": "2026-05-13",
       "status": "done",
@@ -67,7 +67,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "size_bytes": 7342,
       "frontmatter_present": true
     },
-    ".agents/skill-artifacts/meta/records/diagnose-*.md": {
+    ".forsvn/artifacts/meta/records/diagnose-*.md": {
       "produced_by": "diagnose",
       "produced_at": "2026-05-01",
       "status": "done_with_concerns",
@@ -81,7 +81,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
   },
   "experience": {
     "audience.md": {
-      "path": "skills-resources/experience/audience.md",
+      "path": ".forsvn/experience/audience.md",
       "last_written_by": "icp-research",
       "last_written_at": "2026-05-06T09:11:00.000Z",
       "entries": 7,
@@ -96,7 +96,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 **Top level:**
 - `version` — manifest schema version. Currently `1`. Bump only on breaking shape changes.
 - `updated_at` — ISO timestamp of last sync run. Consumers can use this to detect drift.
-- `artifacts` — map of path → artifact entry. Paths may come from `.agents/skill-artifacts/`, `research/`, `brand/`, or `architecture/`.
+- `artifacts` — map of path → artifact entry. Paths may come from `.forsvn/artifacts/`, `research/`, `brand/`, or `architecture/`.
 - `experience` — map of `<domain>.md` filename → experience entry. Separate because experience files are append-only multi-skill, not single-producer.
 
 **Artifact entry:**
@@ -135,7 +135,7 @@ Every skill that produces an artifact writes a YAML frontmatter block at the top
 
 ```yaml
 ---
-skill: icp-research
+skill: research-icp
 version: 1
 date: 2026-05-07
 status: done
@@ -191,10 +191,10 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 `meta-skills/scripts/manifest-sync.ts` — Bun TypeScript, ~100 lines, no dependencies.
 
 What it does:
-1. Walk `.agents/skill-artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
+1. Walk `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
 2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`).
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields.
-4. For experience files (`skills-resources/experience/*.md`): count entries, find last writer.
+4. For experience files (`.forsvn/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
 6. Write `.agents/manifest.json` (pretty-printed JSON, trailing newline).
 7. Write `.agents/artifact-index.md` (human-readable selection index derived from the manifest).
@@ -209,10 +209,10 @@ The index groups active artifacts separately from archived/historical artifacts.
 
 ### Eval loop workspaces
 
-Measurable initiatives use `skills-resources/loops/[slug]/`:
+Measurable initiatives use `.forsvn/loops/[slug]/`:
 
 ```text
-.agents/skill-artifacts/
+.forsvn/artifacts/
 └── loops/
     └── pricing-page/
         ├── program.md      # lifecycle: loop
@@ -313,21 +313,21 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 
 | Artifact category | Default `stale_after_days` |
 |---|---|
-| Audience / market research (`icp-research`, `market-research`) | 90 |
+| Audience / market research (`research-icp`, `research-market`) | 90 |
 | Brand identity (`brand/BRAND.md`, `brand/DESIGN.md`) | 365 |
 | Architecture (`architecture/system-architecture.md`) | 180 |
-| Diagnosis (`.agents/skill-artifacts/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
-| Prioritization (`.agents/skill-artifacts/meta/sketches/prioritize-*.md`) | 60 |
-| Funnel targets (`.agents/skill-artifacts/meta/records/targets-*.md`) | 60 |
-| Tasks (`.agents/skill-artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
-| Cleanup reports (`.agents/skill-artifacts/meta/records/cleanup-*.md`) | 30 |
-| Spec from `discover` (`.agents/skill-artifacts/meta/specs/*.md`) | 60 |
-| Marketing artifacts (`.agents/skill-artifacts/mkt/**`) | 30 |
-| Loop programs (`skills-resources/loops/*/program.md`) | 90 |
-| Loop context (`skills-resources/loops/*/context.md`) | 60 |
-| Loop evals (`skills-resources/loops/*/evals/*.md`) | 90 |
-| Loop learnings (`skills-resources/loops/*/learnings.md`) | 180 |
-| Meta reports (`.agents/skill-artifacts/meta/decisions/[date]-*.md`, `.agents/skill-artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
+| Diagnosis (`.forsvn/artifacts/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
+| Prioritization (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) | 60 |
+| Funnel targets (`.forsvn/artifacts/meta/records/targets-*.md`) | 60 |
+| Tasks (`.forsvn/artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
+| Cleanup reports (`.forsvn/artifacts/meta/records/cleanup-*.md`) | 30 |
+| Spec from `discover` (`.forsvn/artifacts/meta/specs/*.md`) | 60 |
+| Marketing artifacts (`.forsvn/artifacts/mkt/**`) | 30 |
+| Loop programs (`.forsvn/loops/*/program.md`) | 90 |
+| Loop context (`.forsvn/loops/*/context.md`) | 60 |
+| Loop evals (`.forsvn/loops/*/evals/*.md`) | 90 |
+| Loop learnings (`.forsvn/loops/*/learnings.md`) | 180 |
+| Meta reports (`.forsvn/artifacts/meta/decisions/[date]-*.md`, `.forsvn/artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
 
 These are defaults. A producer can override per-artifact if context warrants (e.g., a campaign-plan locked to a 90-day campaign sets `stale_after_days: 90`).
 
@@ -337,7 +337,7 @@ Consumers should respect `stale: true` as a warning signal, not a hard block. Th
 
 ## Experience Domain Handling
 
-`skills-resources/experience/{domain}.md` files are different from regular artifacts:
+`.forsvn/experience/{domain}.md` files are different from regular artifacts:
 - **Multi-producer** — many skills append to the same file.
 - **Append-only** — never overwritten, only added to.
 - **No single status** — each Q+A block is independently valid.
@@ -351,10 +351,10 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 ## Anti-Patterns
 
 1. **Writing to `.agents/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
-2. **Reading the filesystem when the manifest would do.** Per-skill `glob('.agents/skill-artifacts/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
+2. **Reading the filesystem when the manifest would do.** Per-skill `glob('.forsvn/artifacts/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
-5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `skills-resources/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
+5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `.forsvn/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
 6. **Hand-editing `.agents/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
 7. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
 8. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.
@@ -377,7 +377,7 @@ These are recorded so future-us doesn't accidentally rebuild them ad-hoc:
 ## Migration & Compatibility
 
 **Existing artifacts without frontmatter** — sync handles gracefully:
-- `produced_by` inferred from path (e.g., `research/icp-research.md` → `icp-research`).
+- `produced_by` inferred from path (e.g., `research/icp-research.md` → `research-icp`).
 - `produced_at` falls back to file mtime.
 - `status` defaults to `done`.
 - `schema_version` defaults to `1`.

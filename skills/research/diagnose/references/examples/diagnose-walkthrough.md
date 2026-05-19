@@ -150,7 +150,7 @@ Gap percentages sum to ~100% (55 + 35 + 10) — Critic Gate 10 passes.
 
 ## Final Artifact
 
-`.agents/skill-artifacts/meta/records/diagnose-2026-05-18.md`:
+`.forsvn/artifacts/meta/records/diagnose-2026-05-18.md`:
 
 ```markdown
 ---

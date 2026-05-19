@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
-// bootstrap-experience — create the local skills-resources/experience substrate.
+// bootstrap-experience — create the local .forsvn/experience substrate.
 // See references/_shared/pre-dispatch-protocol.md.
 
 import { existsSync, lstatSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
@@ -21,7 +21,7 @@ writeIfMissing(
 
 This folder is the local, append-only memory substrate for skills.
 
-Skills read \`skills-resources/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
+Skills read \`.forsvn/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
 
 Suggested domains:
 

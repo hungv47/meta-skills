@@ -74,7 +74,7 @@ Output quality should be equivalent — multi-agent pattern optimizes for parall
 
 ## Route C — Called by Another Skill
 
-**When:** Invoked by `copywriting`, `lp-brief`, `ad-copy`, `cold-outreach`, `brand-system`, `design-brief`, `campaign-plan`, `short-form-brief`, or another marketing-skill for inline humanization.
+**When:** Invoked by `write-copy`, `brief-landing-page`, `write-ad`, `write-outreach`, `create-brand`, `brief-graphic`, `plan-campaign`, `brief-shortform`, or another marketing-skill for inline humanization.
 
 ```
 1. Pre-Dispatch: Read context from calling skill's artifacts (voice, content type, protected_tokens, detector_mode)
@@ -166,11 +166,11 @@ Run when `detector_mode != none`:
 
 ## Chain Position
 
-Horizontal — works on output from any skill. If content passed the `copywriting` skill, humanize focuses on compression + residual patterns. For external or AI-generated content, full pipeline applies.
+Horizontal — works on output from any skill. If content passed the `write-copy` skill, humanize focuses on compression + residual patterns. For external or AI-generated content, full pipeline applies.
 
-humanize is the polish-chain endpoint for English; it does NOT route back to any other skill (no `defers-to` chain after polish), sibling to `vn-tone` for Vietnamese.
+humanize is the polish-chain endpoint for English; it does NOT route back to any other skill (no `defers-to` chain after polish), sibling to `polish-vn` for Vietnamese.
 
-**Typical upstream callers (Route C):** `copywriting`, `ad-copy`, `cold-outreach`, `lp-brief`, `brand-system`, `design-brief`, `campaign-plan`, `short-form-brief` — any marketing-skill that produces EN prose and auto-routes to humanize for AI-pattern cleanup.
+**Typical upstream callers (Route C):** `write-copy`, `write-ad`, `write-outreach`, `brief-landing-page`, `create-brand`, `brief-graphic`, `plan-campaign`, `brief-shortform` — any marketing-skill that produces EN prose and auto-routes to humanize for AI-pattern cleanup.
 
 **Typical upstream callers (Route A/B):** external content (AI-generated drafts, MT output, non-native EN writers), manually piped through humanize via slash command.
 
@@ -183,7 +183,7 @@ humanize is the polish-chain endpoint for English; it does NOT route back to any
 
 **Skill deference:**
 
-- Need new copy from scratch → `copywriting` (humanize cleans existing content, not creates new)
-- Conversion-focused landing page → `lp-brief` (page architecture, not text polish)
-- Vietnamese source text → `vn-tone` (sibling polish-chain for VN; humanize is EN-only)
+- Need new copy from scratch → `write-copy` (humanize cleans existing content, not creates new)
+- Conversion-focused landing page → `brief-landing-page` (page architecture, not text polish)
+- Vietnamese source text → `polish-vn` (sibling polish-chain for VN; humanize is EN-only)
 - Content already passed copywriting's Seven-Sweeps → Route C path (skip pattern-scanner)

@@ -6,7 +6,7 @@
 
 ## Artifact path
 
-`.agents/skill-artifacts/meta/records/diagnose-[YYYY-MM-DD].md`
+`.forsvn/artifacts/meta/records/diagnose-[YYYY-MM-DD].md`
 
 On re-run: rename existing artifact to `diagnose.v[N].md` (increment N from the highest existing version) and create new at incremented version. Never overwrite.
 
@@ -195,7 +195,7 @@ Run `prioritize` targeting:
 2. [Root cause 2 — specific aspect to solve]
 ```
 
-This block is **verbatim** — downstream `orchestrate-research` and `prioritize` grep the literal `"Run "` + backtick + `"prioritize"` + backtick + `" targeting:"` phrase for chain handoff detection.
+This block is **verbatim** — downstream `forsvn` and `prioritize` grep the literal `"Run "` + backtick + `"prioritize"` + backtick + `" targeting:"` phrase for chain handoff detection.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: discover
-description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use agents-panel). Not for decomposing work (use task-breakdown). Not for diagnosing a known metric decline or root-causing a problem (use diagnose)."
+description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use debate-panel). Not for decomposing work (use breakdown-tasks). Not for diagnosing a known metric decline or root-causing a problem (use diagnose)."
 argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
@@ -60,18 +60,18 @@ routing:
   position: horizontal
   lifecycle: spec
   produces:
-    - .agents/skill-artifacts/meta/specs/*.md
+    - .forsvn/artifacts/meta/specs/*.md
   consumes:
     - product-context.md
-    - .agents/skill-artifacts/product/flow/*.md
+    - .forsvn/artifacts/product/flow/*.md
     - references/operator-playbooks/*.md
   requires: []
   defers-to:
     - skill: diagnose
       when: "diagnosing a metric decline, not clarifying a build spec"
-    - skill: system-architecture
+    - skill: architect-system
       when: "spec is clear, need technical design"
-    - skill: agents-panel
+    - skill: debate-panel
       when: "complex decision needs multi-perspective debate, not interview"
   parallel-with: []
   interactive: true
@@ -104,16 +104,16 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** — load [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. `budget: fast` default; Adaptive Depth below auto-calibrates between Light (fast) / Medium (standard) / Deep multi-round. Operator overrides: "quick scope" / "deep interview" / "just ask 3 questions". `--fast` collapses to Light depth — skips operator-craft stance load (per context-gathering.md trivial-scoping rule), skips idea-critic gate (per Step 2.7 trivial-scoping skip condition), skips 5 mandatory spec sections on save (per output-formats.md `light_spec: true`). Mode declared (not emit-and-wait) when adaptive depth is unambiguous from input signals; emit-and-wait only when depth signals conflict.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches inventory.
-2. Run Step 1 Context Gathering per [`references/procedures/context-gathering.md`](references/procedures/context-gathering.md) [PROCEDURE] — scan codebase + `.agents/skill-artifacts/` + experience docs + learned rules + out-of-scope + project CLAUDE.md. Anything found = question you don't ask.
+2. Run Step 1 Context Gathering per [`references/procedures/context-gathering.md`](references/procedures/context-gathering.md) [PROCEDURE] — scan codebase + `.forsvn/artifacts/` + experience docs + learned rules + out-of-scope + project CLAUDE.md. Anything found = question you don't ask.
 3. Load operator-craft stance (3 playbooks: ceo-cognitive-patterns + yc-six-forcing-questions + minimalist-entrepreneur) for non-trivial work. Match founder-domain frames against product-context per the matrix in context-gathering.md.
 
 ## Artifact Contract
 
-- **Path:** `.agents/skill-artifacts/meta/specs/<slug>.md` (per-spec slug, working drafts — created only when user asks to save)
+- **Path:** `.forsvn/artifacts/meta/specs/<slug>.md` (per-spec slug, working drafts — created only when user asks to save)
 - **Lifecycle:** `spec` (working draft, edited iteratively until promoted to task-breakdown or system-architecture)
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `mode` (idea-stage / plan-review), `plan-review-mode` (when mode=plan-review), `light_spec` (true for compact format). Full template: [`references/procedures/output-formats.md`](references/procedures/output-formats.md) [PROCEDURE].
 - **Required sections (Medium/Deep depth):** Premise Challenge / Dream State Mapping / Decided Approach / Implementation Alternatives (min 2-3) / Temporal Interrogation / Key Decisions / Edge Cases / Failure Conditions / Out of Scope / Open Questions / Open Branches (operator-overridden, only if status=done_with_concerns) / Implementation Notes / Verdict. **Light-depth saves skip the 5 mandatory sections** (Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict don't apply); use compact format with frontmatter `light_spec: true`.
-- **Consumed by:** operator (decision audit trail); `task-breakdown` (decomposes the Decided Approach + Key Decisions); `system-architecture` (designs the technical surface); `fresh-eyes` (scope-drift detection against MISSING/UNPLANNED changes).
+- **Consumed by:** operator (decision audit trail); `breakdown-tasks` (decomposes the Decided Approach + Key Decisions); `architect-system` (designs the technical surface); `review-work` (scope-drift detection against MISSING/UNPLANNED changes).
 - **Side effect (idea-stage only):** spawns `agents/idea-critic.md` once at Step 2.7 per [`references/procedures/idea-critic-dispatch.md`](references/procedures/idea-critic-dispatch.md) [PROCEDURE].
 - **Eval workspace:** none — discover produces a spec, not a measurable initiative.
 
@@ -207,7 +207,7 @@ For domain-specific extended probing questions (data/state, errors, UX, security
 
 ### Step 5: Complex Decision Points → Agent Room
 
-When a decision genuinely needs more than one perspective — architecture choice, strategic direction, design tradeoff with no clear winner — invoke `agents-panel` as a sub-routine.
+When a decision genuinely needs more than one perspective — architecture choice, strategic direction, design tradeoff with no clear winner — invoke `debate-panel` as a sub-routine.
 
 **When to invoke:** Two+ viable approaches with non-obvious tradeoffs; decision is expensive to reverse; you're uncertain and want to pressure-test your thinking. **How:** Frame the specific decision ("WebSocket push or polling for this use case?"), include context. Panel debates, returns recommendation, conversation continues. **When NOT to invoke:** clear best answer from context; user already has a strong preference; choice is easily reversible.
 
@@ -239,7 +239,7 @@ When clarity is sufficient to build:
 
 **Default: conversation context.** Decisions live in chat. Save only when: user explicitly asks, session is ending and decisions would be lost, output is needed by someone outside this conversation, OR natural milestone reached and user confirms saving.
 
-Full output formats (operator-grade spec template with 5 mandatory sections, Light-depth compact format, Contract format with Writing good clauses + Verification template, out-of-scope persistence to `.agents/skill-artifacts/meta/out-of-scope/`, experience doc append to `skills-resources/experience/{domain}.md`): [`references/procedures/output-formats.md`](references/procedures/output-formats.md) [PROCEDURE].
+Full output formats (operator-grade spec template with 5 mandatory sections, Light-depth compact format, Contract format with Writing good clauses + Verification template, out-of-scope persistence to `.forsvn/artifacts/meta/out-of-scope/`, experience doc append to `.forsvn/experience/{domain}.md`): [`references/procedures/output-formats.md`](references/procedures/output-formats.md) [PROCEDURE].
 
 ## Context Resolution Order
 
@@ -270,21 +270,21 @@ Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.
 
 - **FEATURE or TASK to clarify?** → this skill
 - **Declining METRIC to diagnose?** → `diagnose`
-- **Multi-perspective debate on a decision?** → `agents-panel` (or invoke as sub-routine here at Step 5)
-- **Know what to build, need technical design?** → `system-architecture`
-- **Decompose into tasks?** → `task-breakdown`
+- **Multi-perspective debate on a decision?** → `debate-panel` (or invoke as sub-routine here at Step 5)
+- **Know what to build, need technical design?** → `architect-system`
+- **Decompose into tasks?** → `breakdown-tasks`
 
 ## Chain Position
 
 **Previous:** none (or any skill that surfaces a need for clarification)
-**Next:** `system-architecture`, `task-breakdown`, or direct implementation
+**Next:** `architect-system`, `breakdown-tasks`, or direct implementation
 **Re-run triggers:** requirements change significantly, new constraints emerge, or implementation reveals the spec was wrong.
 
 ## Completion Status
 
 Every run ends with explicit status:
 
-- **DONE** — discovery converged, decision is clear (optionally saved as `.agents/skill-artifacts/meta/specs/*.md` if user asked)
+- **DONE** — discovery converged, decision is clear (optionally saved as `.forsvn/artifacts/meta/specs/*.md` if user asked)
 - **DONE_WITH_CONCERNS** — decision made but with non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved). Also fires when operator overrides resolution-exit (Open Branches section non-empty).
 - **BLOCKED** — irreconcilable conflict in user inputs or scope; needs human resolution before any path forward
 - **NEEDS_CONTEXT** — user cannot answer key questions; recommend upstream skill (icp-research, market-research, diagnose) or external consultation

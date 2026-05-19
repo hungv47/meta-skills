@@ -14,7 +14,7 @@ load_class: PLAYBOOK
 
 **A single 12-section context file at `research/product-context.md` that every marketing and product skill reads before asking any questions. Eliminates redundant cold starts across skills.**
 
-This is the schema spec. The producer is `icp-research` (per [canonical-paths.md](../../implementation-roadmap/canonical-paths.md)). The Phase 2 icp-research refactor will adopt this schema; until then, the existing partial context file is the source.
+This is the schema spec. The producer is `research-icp` (per [canonical-paths.md](../../implementation-roadmap/canonical-paths.md)). The Phase 2 icp-research refactor will adopt this schema; until then, the existing partial context file is the source.
 
 **Per-project caveat:** `research/product-context.md` materializes per-project where the stack is installed, not in the agent-skills repo itself. When skills run from the agent-skills repo (maintainer context, no host project), absent product-context.md is expected — treat as fresh-project bootstrap, do not short-circuit. See [before-starting-check.md](before-starting-check.md) § "Short-circuit conditions" for the full caveat.
 
@@ -43,7 +43,7 @@ This is the schema spec. The producer is `icp-research` (per [canonical-paths.md
 
 ```yaml
 ---
-skill: icp-research
+skill: research-icp
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | needs_context
@@ -270,8 +270,8 @@ The Phase 2 icp-research refactor will include an acquisition script that auto-d
 | Landing page URL (via web scrape) | 2, 6, 11 (Target Audience, Differentiation, Proof Points) |
 | `research/market-research.md` | 4, 5 (Problems, Competitive Landscape) |
 | `brand/BRAND.md` | 10 (Brand Voice) |
-| `skills-resources/experience/audience.md` | 3, 9 (Personas, Customer Language) |
-| `skills-resources/experience/business.md` | 1 (Pricing), 12 (Goals) |
+| `.forsvn/experience/audience.md` | 3, 9 (Personas, Customer Language) |
+| `.forsvn/experience/business.md` | 1 (Pricing), 12 (Goals) |
 
 Sections 3, 7, 8, 9 require operator/customer interviews — auto-draft can only stub them.
 
@@ -285,7 +285,7 @@ Every marketing and product skill applies the [before-starting-check pattern](be
 1. Read research/product-context.md.
 2. Check frontmatter `sections_completed` for the sections this skill needs.
 3. If required sections are missing OR confidence is low → NEEDS_CONTEXT.
-   Don't proceed with assumed values. Surface the gap; route to icp-research.
+   Don't proceed with assumed values. Surface the gap; route to research-icp.
 4. If sections are present → use them; do not re-ask the operator.
 ```
 

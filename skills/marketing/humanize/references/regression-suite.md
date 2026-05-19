@@ -6,7 +6,7 @@
 
 Use a regression fixture for:
 
-- `short-outbound` content from `cold-outreach` or `ad-copy`,
+- `short-outbound` content from `write-outreach` or `write-ad`,
 - high-stakes public pages,
 - repeated brand voice work,
 - any content that previously triggered AI detection.

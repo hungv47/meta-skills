@@ -1,6 +1,6 @@
 ---
 name: humanize
-description: "Strips AI patterns, injects brand voice, and compresses existing text so it reads human-written. Targets 15%+ word reduction with zero idea loss. Produces `.agents/skill-artifacts/mkt/content/[slug].humanized.md`. Not for writing new copy (use copywriting). For brand voice reference, see brand-system. For SEO compliance, see seo."
+description: "Strips AI patterns, injects brand voice, and compresses existing text so it reads human-written. Targets 15%+ word reduction with zero idea loss. Produces `.forsvn/artifacts/mkt/content/[slug].humanized.md`. Not for writing new copy (use write-copy). For brand voice reference, see create-brand. For SEO compliance, see seo."
 argument-hint: "[content file or text]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 license: MIT
@@ -45,13 +45,13 @@ routing:
   position: horizontal
   lifecycle: pipeline
   produces:
-    - .agents/skill-artifacts/mkt/content/[slug].humanized.md
+    - .forsvn/artifacts/mkt/content/[slug].humanized.md
   consumes:
     - product-context.md
-    - .agents/skill-artifacts/mkt/content/[slug].md
+    - .forsvn/artifacts/mkt/content/[slug].md
   requires: []
   defers-to:
-    - skill: copywriting
+    - skill: write-copy
       when: "need to write new copy from scratch"
   parallel-with: []
   interactive: false
@@ -103,14 +103,14 @@ These patterns are so strongly associated with AI that a single instance ruins c
 
 ## Before Starting
 
-Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voice + content type, identify any prior humanize artifact for the same slug, check freshness windows on voice adjectives (>30d → recommend `icp-research` re-run).
+Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voice + content type, identify any prior humanize artifact for the same slug, check freshness windows on voice adjectives (>30d → recommend `research-icp` re-run).
 
 | Artifact | Source | Required? |
 |---|---|---|
 | `brand/BRAND.md` | brand-system | Recommended — voice rules + lexicon |
 | `research/product-context.md` | icp-research | Recommended — voice adjectives + audience register |
-| `.agents/skill-artifacts/mkt/content/[slug].md` | upstream | Optional — if polishing a prior artifact, extract source skill from frontmatter |
-| `skills-resources/experience/brand.md` | (any skill) | Optional — `Voice — adjectives` key if user previously persisted |
+| `.forsvn/artifacts/mkt/content/[slug].md` | upstream | Optional — if polishing a prior artifact, extract source skill from frontmatter |
+| `.forsvn/experience/brand.md` | (any skill) | Optional — `Voice — adjectives` key if user previously persisted |
 
 ## Pre-Dispatch
 
@@ -187,7 +187,7 @@ This skill's examples are marketing-focused, but it works on any content type. A
 
 **Key principle:** The further from marketing, the lighter the touch. Documentation that sounds like a blog post is worse than documentation with a few AI tells. Short outbound (cold email, DM, Upwork proposal) is a special case: it's typically 4-6 sentences with a named entity + number doing heavy lifting — compress further and you strip the thing that earns the reply.
 
-**Protected tokens (short-outbound only):** When called by `cold-outreach` or `ad-copy`, the caller passes a `protected_tokens` list of named entities and numbers that must appear verbatim in the final output. Do not paraphrase, round, or remove these.
+**Protected tokens (short-outbound only):** When called by `write-outreach` or `write-ad`, the caller passes a `protected_tokens` list of named entities and numbers that must appear verbatim in the final output. Do not paraphrase, round, or remove these.
 
 **Detector-sensitive content:** If content is public, high-stakes, or previously flagged by a detector, set `detector_mode: proxy` unless a real detector integration is available. If `PANGRAM_API_KEY` or an operator-configured detector command exists, set `detector_mode: pangram`, apply the threshold table in `references/detector-resistance.md`, and record the actual result plus threshold. If neither exists, run the proxy checklist and record `detector_status: proxy_pass` or `proxy_fail`; use `not_run` only when detector mode is explicitly disabled or the content is low-stakes internal material.
 
@@ -197,7 +197,7 @@ This skill's examples are marketing-focused, but it works on any content type. A
 
 ## Artifact Contract
 
-- **Path (Route A/B):** `.agents/skill-artifacts/mkt/content/[slug].humanized.md`
+- **Path (Route A/B):** `.forsvn/artifacts/mkt/content/[slug].humanized.md`
 - **Path (Route C):** no standalone artifact — polished text + metadata embedded in calling skill's artifact
 - **Lifecycle:** `pipeline` — one artifact per (slug, run); re-run renames to `[slug].humanized.v[N].md` and creates new with incremented version
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `compression` (%), `detector_status` (not_run / proxy_pass / proxy_fail / pangram_pass / pangram_fail), `protected_tokens_preserved` (true / false / N/A)
@@ -266,7 +266,7 @@ Every run ends with explicit status:
 - **DONE** — patterns stripped, voice injected (Route B), compression applied, critic 5-dimension PASS
 - **DONE_WITH_CONCERNS** — humanized but critic flagged a dimension under threshold (voice consistency, specificity, or rhythm); annotations preserved in artifact
 - **BLOCKED** — original text contains structural problems beyond pattern removal (factual errors, broken logic, missing claims); humanize cannot fix what isn't there
-- **NEEDS_CONTEXT** — voice reference unavailable for Route B (no brand voice file or sample, user can't describe target voice); recommend `brand-system` or supply samples
+- **NEEDS_CONTEXT** — voice reference unavailable for Route B (no brand voice file or sample, user can't describe target voice); recommend `create-brand` or supply samples
 
 ---
 

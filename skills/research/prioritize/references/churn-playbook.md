@@ -9,7 +9,7 @@
 - OR: User describes their churn situation
 
 ## Output
-- `.agents/skill-artifacts/meta/records/churn-prevention.md`
+- `.forsvn/artifacts/meta/records/churn-prevention.md`
 
 ## Quality Gate
 Before delivering, verify:
@@ -21,7 +21,7 @@ Before delivering, verify:
 - [ ] Benchmarks cited for context (what "good" looks like for their segment)
 
 ## Chain Position
-Previous: `diagnose` (when churn is identified as root cause) | Next: `funnel-planner` (set targets for retention interventions)
+Previous: `diagnose` (when churn is identified as root cause) | Next: `plan-funnel` (set targets for retention interventions)
 
 ---
 
@@ -256,7 +256,7 @@ Frame each hypothesis from Step 1 in the predictive form:
 If [intervention], then [metric] from [baseline] to [target], because [reason].
 ```
 
-Then ship the highest-impact, lowest-effort interventions first and measure against baselines from `funnel-planner`:
+Then ship the highest-impact, lowest-effort interventions first and measure against baselines from `plan-funnel`:
 1. Cancel flow save offers (usually highest leverage)
 2. Dunning sequence optimization (often low-effort, high-impact)
 3. Health score-triggered outreach (requires more infrastructure)
@@ -337,7 +337,7 @@ Trigger → Survey → Dynamic Offer → Confirmation → Post-Cancel
 
 ## Next Step
 
-Pass top hypotheses to `funnel-planner` to set numeric targets, then ship the highest-impact, lowest-effort interventions first.
+Pass top hypotheses to `plan-funnel` to set numeric targets, then ship the highest-impact, lowest-effort interventions first.
 
 > On re-run: rename existing artifact to `churn-prevention.v[N].md` and create new with incremented version.
 ```
