@@ -52,9 +52,9 @@ The cost is real but small (sonnet, ~$0.03-0.10 per session). The asymmetry vs s
 ## When NOT to use this skill
 
 - **Metric decline or root-cause** → `diagnose`. Different rubric — diagnose is hypothesis-driven causal analysis on a known-bad metric; discover is forward-looking scope/idea clarification.
-- **Multi-perspective debate on a decision** → `agents-panel`. Discover INVOKES agents-panel as sub-routine (Step 5) when a single decision needs multiple perspectives; the broader conversation stays in discover.
-- **Decompose a known scope into tasks** → `task-breakdown`. Discover ends when scope is clear; task-breakdown takes it from there.
-- **Technical design when scope is locked** → `system-architecture`. Discover doesn't design; it scopes.
+- **Multi-perspective debate on a decision** → `debate-panel`. Discover INVOKES agents-panel as sub-routine (Step 5) when a single decision needs multiple perspectives; the broader conversation stays in discover.
+- **Decompose a known scope into tasks** → `breakdown-tasks`. Discover ends when scope is clear; task-breakdown takes it from there.
+- **Technical design when scope is locked** → `architect-system`. Discover doesn't design; it scopes.
 - **Trivial work** (typo, log line, config tweak) — discovery overhead exceeds value. Just do it.
 - **You already know what to build** — skip discover; go to system-architecture or task-breakdown directly.
 

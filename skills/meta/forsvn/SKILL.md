@@ -14,6 +14,8 @@ promptSignals:
   phrases:
     - "where do i start"
     - "what should i do"
+    - "which skill should i use"
+    - "what skill should i use"
     - "i don't know"
     - "help me"
     - "continue"
@@ -25,6 +27,8 @@ promptSignals:
     - "/forsvn"
   anyOf:
     - "where do i start"
+    - "which skill"
+    - "what skill"
     - "guide me"
     - "i'm new"
     - "help me launch"
@@ -60,16 +64,18 @@ routing:
     - CLAUDE.md
     - README.md
   defers-to:
-    - skill: orchestrate-meta
-      when: "intent is clearly cross-stack and user wants the deep router, not the front door"
-    - skill: orchestrate-research
-      when: "intent is single-domain research"
-    - skill: orchestrate-marketing
-      when: "intent is single-domain marketing"
-    - skill: orchestrate-product
-      when: "intent is single-domain product"
     - skill: discover
       when: "scope is genuinely unclear and needs a full discovery conversation"
+    - skill: debate-panel
+      when: "complex decision needs multiple perspectives"
+    - skill: breakdown-tasks
+      when: "spec or architecture exists and needs decomposition"
+    - skill: review-work
+      when: "implementation is done and needs an independent review"
+    - skill: run-eval-loop
+      when: "measurable initiative needs a strategy/execution/eval workspace"
+    - skill: clean-artifacts
+      when: ".forsvn/artifacts/ needs grooming"
   interactive: true
   estimated-complexity: low
 ---
@@ -88,8 +94,8 @@ routing:
 ## When NOT To Use
 
 - You already know the skill — call it directly. `/forsvn` is the discovery surface, not a gate.
-- You want a deep multi-perspective debate — use `agents-panel`.
-- You want a full scoping conversation — use `discover`.
+- You want a deep multi-perspective debate — use `/debate-panel`.
+- You want a full scoping conversation — use `/discover`.
 
 ## Operating Contract
 
@@ -136,26 +142,26 @@ Default to resume if the current ask is empty or "continue"/"resume". Otherwise 
 
 ### Step 3 — Classify intent
 
-Parse the user's ask against the taxonomy. Pick exactly one of these intent classes:
+Parse the user's ask against the taxonomy. Pick exactly one of these intent classes. Domain-leaf routing rules live in [`references/chains/<domain>.md`](references/chains/) — read the relevant chain file before dispatching.
 
 | User says | Intent class | Route |
 |---|---|---|
-| "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "funnel", "targets" | research | `/orchestrate-research` |
-| "brand", "campaign", "copy", "headline", "landing page", "LP", "ad", "SEO", "video", "TikTok", "reel", "short", "cold email", "outreach", "humanize", "VN tone" | marketing | `/orchestrate-marketing` |
-| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | `/orchestrate-product` |
+| "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "funnel", "targets" | research | leaf via [`references/chains/research.md`](references/chains/research.md) |
+| "brand", "campaign", "copy", "headline", "landing page", "LP", "ad", "SEO", "video", "TikTok", "reel", "short", "cold email", "outreach", "humanize", "VN tone" | marketing | leaf via [`references/chains/marketing.md`](references/chains/marketing.md) |
+| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | leaf via [`references/chains/product.md`](references/chains/product.md) |
 | "scope this", "clarify", "what should we build", "requirements unclear" | scope | `/discover` |
-| "debate this", "multiple perspectives", "poll", "consensus" | debate | `/agents-panel` |
-| "decompose", "task list", "break down", "implementation order" | decompose | `/task-breakdown` |
-| "review my work", "second opinion", "did I miss anything" | review | `/fresh-eyes` |
-| "improvement loop", "track metric", "experiment ledger" | loop | `/eval-loop` |
+| "debate this", "multiple perspectives", "poll", "consensus" | debate | `/debate-panel` |
+| "decompose", "task list", "break down", "implementation order" | decompose | `/breakdown-tasks` |
+| "review my work", "second opinion", "did I miss anything" | review | `/review-work` |
+| "improvement loop", "track metric", "experiment ledger" | loop | `/run-eval-loop` |
 | Empty + no resume offer | summary | print state summary, exit |
 | Ambiguous, multi-domain, "launch this", "ship this" | multi | propose 2-3 step chain |
 
 **Rules:**
-- Single-domain → dispatch to the stack orchestrator (not the leaf skill — let the orchestrator pick).
-- Multi-domain → propose the chain, ask user to confirm before dispatching the first step.
+- Single-domain → read the matching `references/chains/<domain>.md` and dispatch to the leaf skill it points at. There is no longer an `orchestrate-<domain>` middle layer (collapsed into this skill in 2.0.0 per D6).
+- Multi-domain → propose the chain across `references/chains/*.md`, ask user to confirm before dispatching the first step.
 - Genuinely unclear → ask ≤2 clarifying questions. **Two questions is a hard cap.** If still unclear, hand off to `/discover`.
-- Brand proving workflow (D5): if intent is marketing/launch AND `brand/BRAND.md` is missing → route to `brand-system` first (will be renamed `create-brand` in Workstream B).
+- Brand proving workflow (D5): if intent is marketing/launch AND `brand/BRAND.md` is missing → route to `/create-brand` first.
 
 ### Step 4 — Load context + dispatch
 
@@ -222,19 +228,20 @@ Then proceed with the normal 5-step flow.
 - ❌ Auto-invoking the routed skill. Always print the hand-off; let the operator dispatch.
 - ❌ Skipping the routing record write. Resume depends on it.
 - ❌ Treating `/forsvn` as a brainstorming chat. Every invocation produces a route, a dispatch, or a written artifact. No exceptions.
-- ❌ Routing to a leaf skill when a stack orchestrator exists. The orchestrator knows its domain better.
+- ❌ Dispatching domain work without first reading the relevant `references/chains/<domain>.md`. The chain file owns the per-domain decision rules; don't reinvent them inline.
 - ❌ Re-asking a question already answered in `.forsvn/experience/`. Always grep first.
-- ❌ Bypassing the brand check on marketing dispatch. If `brand/BRAND.md` is missing, route through `brand-system` first.
+- ❌ Bypassing the brand check on marketing dispatch. If `brand/BRAND.md` is missing, route through `/create-brand` first.
 
-## Acceptance Checks (Workstream A)
+## Acceptance Checks (Workstream A + B)
 
-This skill is acceptance-tested against brief 01 § Acceptance Checks:
+This skill is acceptance-tested against brief 01 § Acceptance Checks plus decisions.md § D6:
 
 1. ✅ Vague request → ≤2 clarifying questions → concrete route.
 2. ✅ Second invocation finds prior state, offers resume.
 3. ✅ Product context read before marketing/product/research dispatch.
 4. ✅ New artifacts land under `.forsvn/` only.
 5. ✅ Direct skill calls still work (this skill does not gate; only suggests).
+6. ✅ Domain dispatch reads `references/chains/<domain>.md` and routes to a leaf skill (no `orchestrate-*` middle layer).
 
 ## Completion Status
 
@@ -246,6 +253,9 @@ This skill is acceptance-tested against brief 01 § Acceptance Checks:
 ## References
 
 - `.forsvn/README.md` — state root contract
-- `implementation-roadmap/execution-evaluation/decisions.md` — Workstream A decisions (D1-D5)
+- `implementation-roadmap/execution-evaluation/decisions.md` — Workstream A + B decisions (D1-D7)
 - `implementation-roadmap/execution-evaluation/brief-pack/01-foundation-forsvn-state.md` — full brief
-- `skills/meta/orchestrate-meta/SKILL.md` — the deep cross-stack router this skill defers to
+- [`references/chains/research.md`](references/chains/research.md) — research dispatch chain (absorbed from deleted `forsvn`)
+- [`references/chains/marketing.md`](references/chains/marketing.md) — marketing dispatch chain (absorbed from deleted `forsvn`)
+- [`references/chains/product.md`](references/chains/product.md) — product dispatch chain (absorbed from deleted `forsvn`)
+- [`references/chains/meta.md`](references/chains/meta.md) — process-skill dispatch (absorbed from deleted `forsvn`)

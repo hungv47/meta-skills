@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Structured diagnosis of business and strategic problems — builds logic trees, forms testable hypotheses, and identifies root causes with evidence. Produces `.agents/skill-artifacts/meta/records/diagnose-*.md`. Not for code bugs (use code-cleanup) or brainstorming solutions to a known problem (use prioritize). Not for clarifying what to build or scoping an idea from scratch (use discover). For market-level trends and competitive context, see market-research."
+description: "Structured diagnosis of business and strategic problems — builds logic trees, forms testable hypotheses, and identifies root causes with evidence. Produces `.forsvn/artifacts/meta/records/diagnose-*.md`. Not for code bugs (use clean-code) or brainstorming solutions to a known problem (use prioritize). Not for clarifying what to build or scoping an idea from scratch (use discover). For market-level trends and competitive context, see research-market."
 argument-hint: "[metric or problem to diagnose]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 license: MIT
@@ -91,12 +91,12 @@ routing:
   position: pipeline
   lifecycle: snapshot
   produces:
-    - .agents/skill-artifacts/meta/records/diagnose-*.md
+    - .forsvn/artifacts/meta/records/diagnose-*.md
   consumes:
     - product-context.md
   requires: []
   defers-to:
-    - skill: market-research
+    - skill: research-market
       when: "need market landscape, not root cause diagnosis"
     - skill: prioritize
       when: "already know the problem, need solutions"
@@ -130,7 +130,7 @@ routing:
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` collapses the critic gate to a single pass within the chosen route — it does NOT auto-trigger Route A. Route A is a user-confirmation gate (operator must explicitly confirm skipping the external-factor scan per original semantics, preserving Critical Gate 2). **Cold Start STILL fires under `--fast`** (diagnose ALWAYS cold-starts — the 4 questions ARE the work; safety gates supersede mode-resolver downgrade).
-1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.agents/skill-artifacts/meta/records/diagnose-*.md`).
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/diagnose-*.md`).
 2. Read `.agents/manifest.json` — find any prior `diagnose-*.md` for the same metric (re-run signal). Original SKILL.md "Re-run triggers" (metric shifts significantly, new data surfaces, prioritize initiative killed) are operator-judgment — do not auto-emit staleness warnings.
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — always-cold-start contract, 4-question Cold Start prompt, read order, staleness check, Write-back map (Q1-Q4 → goals.md, verbatim from original — Q1-Q3 persist, Q4 does NOT) all there.
 
@@ -138,7 +138,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.agents/skill-artifacts/meta/records/diagnose-[YYYY-MM-DD].md` (one per metric; re-run renames prior to `diagnose.v[N].md` and increments)
+- **Path:** `.forsvn/artifacts/meta/records/diagnose-[YYYY-MM-DD].md` (one per metric; re-run renames prior to `diagnose.v[N].md` and increments)
 - **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy)
 - **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below)
 - **Required body sections (in order — cross-stack contract):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
@@ -146,7 +146,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 - **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
   - Goals write-back per `procedures/pre-dispatch.md` Write-back map: Q1 (Metric), Q2 (Current), Q3 (Target) append to `experience/goals.md`. **Q4 (Tried) is NOT persisted** — diagnostic-specific, lives in diagnose.md snapshot only. Preserved verbatim from original SKILL.md.
   - Rename any prior `diagnose-*.md` for the same metric to `diagnose.v[N].md`
-- **Consumed by:** `prioritize` (Root Cause Statement feeds Initiative hypothesis "because" clauses — hard-gated upstream); `funnel-planner` (Root Cause Statement baselines feed Target Table); `campaign-plan` (Root Cause + Verdicts filter which initiatives need channel-level execution); future `diagnose` re-runs (prior tree as context, not replacement)
+- **Consumed by:** `prioritize` (Root Cause Statement feeds Initiative hypothesis "because" clauses — hard-gated upstream); `plan-funnel` (Root Cause Statement baselines feed Target Table); `plan-campaign` (Root Cause + Verdicts filter which initiatives need channel-level execution); future `diagnose` re-runs (prior tree as context, not replacement)
 - **Cross-stack OUTPUT contract:** Phase 1/2/3 schemas + Verdict Table column schema + Next Step block + Logic Tree code-fence are all load-bearing — schema changes require atomic update of consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---

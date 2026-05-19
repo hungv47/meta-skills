@@ -39,7 +39,7 @@ When the user overrides a critic's verdict ("ship it anyway"), the override is l
 
 ## Fresh-Eyes Reports
 
-Independent post-implementation reviews triggered by the `fresh-eyes` skill. Distinct from inline critic runs because they happen *after* code/artifact is committed and merged.
+Independent post-implementation reviews triggered by the `review-work` skill. Distinct from inline critic runs because they happen *after* code/artifact is committed and merged.
 
 ## Dashboard Aggregation
 

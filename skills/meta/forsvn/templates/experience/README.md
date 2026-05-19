@@ -9,7 +9,7 @@ written-by: every skill after answering a cold-start dimension
 
 Append-only knowledge layer. When a skill asks a cold-start question and the user answers, the skill appends the dimension key + answer here. Future skills read before asking.
 
-Replaces the previously planned `skills-resources/experience/`. Same contract, new home.
+Replaces the previously planned `.forsvn/experience/`. Same contract, new home.
 
 ## Files
 

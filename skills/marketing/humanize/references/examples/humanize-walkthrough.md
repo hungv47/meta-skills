@@ -34,8 +34,8 @@ Orchestrator reads in order:
 
 1. `brand/BRAND.md` → voice rules, but voice adjectives also live in product-context.md
 2. `research/product-context.md` → voice adjectives "direct, warm, technical" + audience register
-3. `skills-resources/experience/brand.md` → no `Voice — adjectives` entry (not persisted yet)
-4. No upstream artifact at `.agents/skill-artifacts/mkt/content/[slug].md`
+3. `.forsvn/experience/brand.md` → no `Voice — adjectives` entry (not persisted yet)
+4. No upstream artifact at `.forsvn/artifacts/mkt/content/[slug].md`
 
 Emit warm-start summary:
 
@@ -179,7 +179,7 @@ Less coverage, more precision. Guide users to one aha-moment fast, then expand.
 
 Returns inline to operator:
 ```
-✓ Humanized artifact at .agents/skill-artifacts/mkt/content/saas-onboarding.humanized.md
+✓ Humanized artifact at .forsvn/artifacts/mkt/content/saas-onboarding.humanized.md
 178 → 91 words (49% compression). Quality 40/50 PASS cycle 1. Zero Hard Tells.
 DONE.
 ```
@@ -227,9 +227,9 @@ Same scenario, operator invokes `/humanize --fast`:
 
 ## Route C variant (called by another skill)
 
-Same scenario, but `/cold-outreach` produces an EN cold email draft and auto-routes through humanize before delivery:
+Same scenario, but `/write-outreach` produces an EN cold email draft and auto-routes through humanize before delivery:
 
-- Pre-Dispatch trusts cold-outreach's pre-resolved: voice ("blunt, specific, dry" from cold-outreach's brief), content_type `short-outbound`, compression `0-10%` (per Content Type Calibration short-outbound row), `protected_tokens: ["Acme Corp", "$2.3M ARR", "https://acme.com/case-study"]`, `detector_mode: proxy`
+- Pre-Dispatch trusts cold-outreach's pre-resolved: voice ("blunt, specific, dry" from write-outreach's brief), content_type `short-outbound`, compression `0-10%` (per Content Type Calibration short-outbound row), `protected_tokens: ["Acme Corp", "$2.3M ARR", "https://acme.com/case-study"]`, `detector_mode: proxy`
 - No Cold Start (calling skill passed everything)
 - Layer 1: pattern-scanner only (voice-extractor skipped — cold-outreach already extracted)
 - Layer 2: strip → compression (light, 0-10% per short-outbound calibration) → critic → Detector-Resistance Verification (proxy mode + protected-token regression)

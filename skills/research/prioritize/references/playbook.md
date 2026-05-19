@@ -8,7 +8,7 @@
 
 > **"What's the highest-impact thing we can do about this?"**
 
-Prioritize is Strategy Step 2 of 4. It sits between `diagnose` (the validated root cause) and `funnel-planner` (the numeric targets). Its single job: generate initiatives anchored to the root cause, rank them with evidence-backed ICE scoring, and draw a defensible cut line so the team can ship ≤3 things instead of debating 10.
+Prioritize is Strategy Step 2 of 4. It sits between `diagnose` (the validated root cause) and `plan-funnel` (the numeric targets). Its single job: generate initiatives anchored to the root cause, rank them with evidence-backed ICE scoring, and draw a defensible cut line so the team can ship ≤3 things instead of debating 10.
 
 ---
 
@@ -41,10 +41,10 @@ Scores without one-sentence evidence in the **Key Evidence** column are politica
 
 - **No validated root cause.** Run `diagnose` first. Hard gate enforced — skill returns NEEDS_CONTEXT. Initiative ranking against an unvalidated hypothesis is theatre.
 - **HOW to build, not WHAT to pursue.** That's `discover`. Prioritize chooses *which* initiative; discover scopes *how* to deliver it.
-- **Technical architecture for a chosen initiative.** That's `system-architecture` (product-skills). Prioritize doesn't design the build.
-- **Numeric target-setting on prioritized initiatives.** That's `funnel-planner`. Prioritize is upstream — it produces the ranked list that funnel-planner sets targets against.
+- **Technical architecture for a chosen initiative.** That's `architect-system` (product-skills). Prioritize doesn't design the build.
+- **Numeric target-setting on prioritized initiatives.** That's `plan-funnel`. Prioritize is upstream — it produces the ranked list that funnel-planner sets targets against.
 - **"Help me decide between two options."** Use inline judgment + the ICE rubric. Don't dispatch the full orchestration for a 2-option decision.
-- **Backlog grooming.** Backlog management is `task-breakdown` territory. Prioritize is for strategy-level option selection, not engineering ticket triage.
+- **Backlog grooming.** Backlog management is `breakdown-tasks` territory. Prioritize is for strategy-level option selection, not engineering ticket triage.
 
 ---
 
@@ -66,7 +66,7 @@ More than 3 active initiatives means none get full attention. The cut-line-agent
 
 - **Proceed** — top initiatives by ICE, capped at 3 (or fewer if team capacity is tight). Each gets owner + target metric + kill criteria.
 - **Park** — high-scoring initiatives that can wait until current batch ships. Revisit explicit.
-- **Kill** — low ICE OR redundant with a Proceed initiative OR fails effort/capacity. Written to `.agents/skill-artifacts/meta/out-of-scope/` so future sessions don't re-debate.
+- **Kill** — low ICE OR redundant with a Proceed initiative OR fails effort/capacity. Written to `.forsvn/artifacts/meta/out-of-scope/` so future sessions don't re-debate.
 
 The cut-line is where Strategy turns into Execution. Don't dilute it.
 
@@ -99,7 +99,7 @@ Default behavior is "always include unconventional" because the cost is low (one
 
 ## Out-of-scope persistence — why kills are written to disk
 
-After every run, the cut-line-agent's Kill decisions are persisted to `.agents/skill-artifacts/meta/out-of-scope/[kebab-name].md`. Each file carries:
+After every run, the cut-line-agent's Kill decisions are persisted to `.forsvn/artifacts/meta/out-of-scope/[kebab-name].md`. Each file carries:
 
 - **Decided:** date
 - **Context:** root cause + goal that prompted this analysis
@@ -116,9 +116,9 @@ This prevents future sessions from re-debating settled decisions. `discover` and
 |---|---|
 | diagnose-*.md missing | `diagnose` (hard gate) |
 | User wants HOW to build a chosen initiative | `discover` |
-| User wants technical architecture for a Proceed initiative | `system-architecture` (product-skills) |
-| User wants numeric targets on Proceed initiatives | `funnel-planner` (Next Step in artifact) |
-| User wants execution task list | `task-breakdown` |
+| User wants technical architecture for a Proceed initiative | `architect-system` (product-skills) |
+| User wants numeric targets on Proceed initiatives | `plan-funnel` (Next Step in artifact) |
+| User wants execution task list | `breakdown-tasks` |
 
 ---
 

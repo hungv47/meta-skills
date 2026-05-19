@@ -11,7 +11,7 @@ Two failure modes this protocol prevents:
 1. **Skill fabricates from thin context** — user gives a one-liner, skill doesn't ask, output reflects assumptions instead of intent. Quality fails silently.
 2. **Skill grills the user** — every invocation feels like a tax form; user disengages or works around the skill. Friction fails loudly.
 
-Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `skills-resources/experience/` so the next skill never re-asks).
+Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `.forsvn/experience/` so the next skill never re-asks).
 
 ---
 
@@ -20,7 +20,7 @@ Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3
 Every skill invocation routes to exactly one of these:
 
 ### Cold Start
-*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `.agents/skill-artifacts/`) OR `skills-resources/experience/`.
+*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `.forsvn/artifacts/`) OR `.forsvn/experience/`.
 
 The skill emits a **single bundled prompt** with:
 
@@ -42,7 +42,7 @@ If the user says proceed (or stays silent past one beat), dispatch.
 
 ---
 
-## The Substrate: `skills-resources/experience/`
+## The Substrate: `.forsvn/experience/`
 
 The growing source of truth. Skills **read before asking**, **write after the user answers**.
 
@@ -52,7 +52,7 @@ If the folder is missing in a project, bootstrap it before cold-start write-back
 bun scripts/bootstrap-experience.ts
 ```
 
-The helper creates `skills-resources/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
+The helper creates `.forsvn/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
 
 ### Format
 
@@ -145,7 +145,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
 ```
 1. Skill resolves needed dimensions:
    a) Pipeline artifacts (research/, brand/, etc.) — existing behavior
-   b) skills-resources/experience/*.md — read most-recent entries
+   b) .forsvn/experience/*.md — read most-recent entries
 2. Compute (needed) - (found) = missing dimensions
 3. Choose flow:
    - missing == 0          → Warm start (summary, optional probe)
@@ -156,7 +156,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
    - Then dispatch agents
 ```
 
-The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `skills-resources/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
+The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `.forsvn/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
 
 ---
 
@@ -196,9 +196,9 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 3. Target value + deadline. → `goals`
 4. What you've tried (1-2 things). → `goals`
 
-**prioritize** — *no cold start. Hard-gated on `.agents/skill-artifacts/meta/records/diagnose-*.md`. Cold path: recommend `diagnose` first.*
+**prioritize** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/records/diagnose-*.md`. Cold path: recommend `diagnose` first.*
 
-**funnel-planner** — *no cold start. Hard-gated on `.agents/skill-artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
+**funnel-planner** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
 
 ### marketing-skills
 
@@ -211,7 +211,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 **copywriting**
 1. Surface — landing page / email / social post / headline / CTA / etc. → routing only
-2. Audience (or "use icp-research.md"). → `audience` if novel
+2. Audience (or "use research-icp.md"). → `audience` if novel
 3. The one shift — what should the reader believe after reading? → `goals` (campaign-specific)
 4. Unique proof — what can you say nobody else can? → `product`
 5. Unique Mechanism — proprietary "how" that makes the offer different and better. → `product`
@@ -230,7 +230,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 **campaign-plan**
 1. Campaign goal — acquire leads / drive trial / launch / revenue / awareness. → `goals`
-2. Audience (or "use icp-research.md"). → `audience` if novel
+2. Audience (or "use research-icp.md"). → `audience` if novel
 3. Growth motion — PLG / SLG / Hybrid. → `business`
 4. Duration + cadence — 30/60/90 days, posts per week. → `goals`
 5. Constraints — team size, budget tier, channels you can't use. → `business`
@@ -256,7 +256,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 **seo**
 1. Mode — audit / ai / programmatic / competitor / aso. → routing
 2. Site or property — domain or app store listing. → input
-3. Audience (or "use icp-research.md"). → `audience` if novel
+3. Audience (or "use research-icp.md"). → `audience` if novel
 4. Geographic + language scope. → `audience`
 
 **cold-outreach**
@@ -341,4 +341,4 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 ## Telemetry / Self-Correction
 
-Per the existing learned-rules system (`.agents/skill-artifacts/meta/records/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.
+Per the existing learned-rules system (`.forsvn/artifacts/meta/records/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.

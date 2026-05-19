@@ -19,18 +19,18 @@ load_class: PROCEDURE
 - **Compression target** — light (10-15%) / moderate (20-30%, default) / heavy (30%+, aggressive) — decides compression-agent's lever
 - **Register preservation** — keep formal vs neutralize toward conversational baseline (decides strip-agent's intensity)
 - **Detector mode** — `none | proxy | pangram` (decides whether Detector-Resistance Verification runs after critic PASS)
-- **Protected tokens** (Route C only) — list of named entities + numbers + URLs + proof points that MUST appear verbatim in final output (typically passed by `cold-outreach` or `ad-copy`)
+- **Protected tokens** (Route C only) — list of named entities + numbers + URLs + proof points that MUST appear verbatim in final output (typically passed by `write-outreach` or `write-ad`)
 
 ## Read order (warm-start scan)
 
 1. **Pipeline artifacts:**
    - `brand/BRAND.md` → voice rules + lexicon + voice adjectives
    - `research/product-context.md` → voice adjectives (Voice — adjectives field if present)
-   - `.agents/skill-artifacts/mkt/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
-2. **Experience:** `skills-resources/experience/brand.md` → voice notes from prior runs (`Voice — adjectives` key)
+   - `.forsvn/artifacts/mkt/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
+2. **Experience:** `.forsvn/experience/brand.md` → voice notes from prior runs (`Voice — adjectives` key)
 3. **Conversation context:** brief from upstream skill (e.g., copywriting handed text directly with voice context)
 
-If `research/product-context.md` `date:` is >30 days, warn and recommend re-running `icp-research` for fresh voice adjectives — brand voice evolves.
+If `research/product-context.md` `date:` is >30 days, warn and recommend re-running `research-icp` for fresh voice adjectives — brand voice evolves.
 
 ## Warm Start (most dimensions resolvable)
 
@@ -70,11 +70,11 @@ After cold-start answers, append to experience/:
 
 | Question | File | Key | When to write |
 |---|---|---|---|
-| 1. Target voice | `skills-resources/experience/brand.md` | `Voice — adjectives` | ONLY if 3-adjective form (not when pointing at BRAND.md — that's already canonical, no point duplicating) |
+| 1. Target voice | `.forsvn/experience/brand.md` | `Voice — adjectives` | ONLY if 3-adjective form (not when pointing at BRAND.md — that's already canonical, no point duplicating) |
 | 2. Register preserve | (routing only — content-specific) | — | Do NOT write-back. Register varies by source. |
 | 3. Compression target | (routing only — content-specific) | — | Do NOT write-back. Compression varies by content type per Content Type Calibration. |
 
-**Note on upstream callers (Route C):** when humanize is invoked by another skill (e.g., `copywriting` or `cold-outreach` auto-routing for EN polish), the calling skill passes voice + register + compression + protected_tokens in `pre-writing`. humanize trusts those values; the Cold Start question bundle does NOT fire under Route C unless the calling skill explicitly delegates voice resolution.
+**Note on upstream callers (Route C):** when humanize is invoked by another skill (e.g., `write-copy` or `write-outreach` auto-routing for EN polish), the calling skill passes voice + register + compression + protected_tokens in `pre-writing`. humanize trusts those values; the Cold Start question bundle does NOT fire under Route C unless the calling skill explicitly delegates voice resolution.
 
 ## Pre-Writing Assembly
 

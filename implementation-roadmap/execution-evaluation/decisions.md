@@ -77,6 +77,55 @@ Pre-release checklist (gates the version bump — user owns the bump itself):
 - [ ] `MEMORY.md`, `references/`, `hooks/user-prompt-submit-skill-router.mjs` all reference new names.
 - [ ] `CHANGELOG.md` 2.0.0 entry includes full rename map.
 
+### D7 — Locked rename map (Workstream B)
+
+35 skills audited. Of those: 4 deleted (orchestrate-*), 1 kept as branded exception (`forsvn`), 30 renamed to verb-first. Hard cut, no aliases.
+
+| Stack | Old | New | Source / Note |
+|---|---|---|---|
+| meta | `agents-panel` | `debate-panel` | verb-first; primary action is the debate |
+| meta | `cleanup-artifacts` | `clean-artifacts` | matches `code-cleanup → clean-code` form |
+| meta | `discover` | `discover` | already verb; unchanged |
+| meta | `eval-loop` | `run-eval-loop` | verb-first; the skill *runs* the loop |
+| meta | `forsvn` | `forsvn` | **branded exception (D1)** — only one |
+| meta | `fresh-eyes` | `review-work` | brief 02:29 |
+| meta | `orchestrate-meta` | **DELETE** | D6 |
+| meta | `task-breakdown` | `breakdown-tasks` | verb-first compound; user-locked over `decompose-tasks` |
+| research | `diagnose` | `diagnose` | already verb; unchanged |
+| research | `funnel-planner` | `plan-funnel` | matches `campaign-plan → plan-campaign` |
+| research | `icp-research` | `research-icp` | brief 02:18 |
+| research | `market-research` | `research-market` | brief 02:17 |
+| research | `orchestrate-research` | **DELETE** | D6 |
+| research | `prioritize` | `prioritize` | already verb; unchanged |
+| research | `short-form-eval` | `evaluate-shortform` | matches `ad-eval → evaluate-ad` form |
+| research | `short-form-research` | `research-shortform` | matches `market-research → research-market` |
+| marketing | `ad-copy` | `write-ad` | brief 02:19 |
+| marketing | `brand-system` | `create-brand` | brief 02:13 |
+| marketing | `campaign-plan` | `plan-campaign` | brief 02:16 |
+| marketing | `cold-outreach` | `write-outreach` | brief 02:22 |
+| marketing | `copywriting` | `write-copy` | brief 02:20 |
+| marketing | `design-brief` | `brief-graphic` | brief 02:14 |
+| marketing | `humanize` | `humanize` | already verb; Humanmaxxing upgrade per brief 03 lands as content change, not rename |
+| marketing | `lp-brief` | `brief-landing-page` | brief 02:15 |
+| marketing | `lp-eval` | `evaluate-landing-page` | matches `ad-eval → evaluate-ad` |
+| marketing | `orchestrate-marketing` | **DELETE** | D6 |
+| marketing | `seo` | `optimize-seo` | verb-first; covers audit + plan + optimization scope |
+| marketing | `short-form-brief` | `brief-shortform` | brief 02:15 |
+| marketing | `social-copy` | `write-social` | brief 02:21 |
+| marketing | `vn-tone` | `polish-vn` | verb-first; "polish Vietnamese text" |
+| product | `code-cleanup` | `clean-code` | brief 02:30 |
+| product | `docs-writing` | `write-docs` | matches `copywriting → write-copy` |
+| product | `machine-cleanup` | `clean-machine` | matches `code-cleanup → clean-code` |
+| product | `orchestrate-product` | **DELETE** | D6 |
+| product | `system-architecture` | `architect-system` | verb-first; primary action is "Designs technical blueprints" |
+| product | `user-flow` | `map-user-flow` | verb-first; primary action is "Maps multi-step in-product flows" |
+
+**Dissents resolved 2026-05-19 (user veto round):** `debate-panel`, `run-eval-loop`, `optimize-seo`, `polish-vn`, `architect-system`, `breakdown-tasks`. D1 holds — `/forsvn` is the sole branded exception.
+
+**Sweep policy (locked):** Full grep sweep of every old name across the repo. Any hit outside `CHANGELOG.md` or migration commit messages blocks the 2.0.0 release.
+
+**Future skills mentioned in brief 02 but not yet created** (backlog, no rename needed): `produce-asset`, `produce-video`, `publish-social`, `evaluate-content`, `evaluate-campaign`, `extract-service`.
+
 ### D6 — Collapse orchestrate-* skills into `/forsvn`
 
 `/forsvn` is the single front door. The four orchestrate-* skills (`orchestrate-meta`, `orchestrate-research`, `orchestrate-marketing`, `orchestrate-product`) are redundant routing layers and get **deleted in Workstream B**.
@@ -135,4 +184,4 @@ Carry to the next interview when Workstream B is ready to start:
 
 ## Status
 
-DONE — decisions locked, ready for Workstream A kickoff interview.
+DONE — Workstream A + B shipped 2026-05-19. `/forsvn` + `.forsvn/` live; 27 renames + 4 deletions executed; full grep sweep clean; router tests 25/25; registry regenerated to 32 skills; CHANGELOG 2.0.0 entry written. User owns the version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, and GitHub release.

@@ -19,10 +19,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 
 const SKILL_DIRS = [
-  "research-skills/skills",
-  "marketing-skills/skills",
-  "product-skills/skills",
-  "meta-skills/skills",
+  "skills/meta",
+  "skills/research",
+  "skills/marketing",
+  "skills/product",
 ];
 
 /**

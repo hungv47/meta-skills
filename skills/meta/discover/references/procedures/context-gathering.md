@@ -15,10 +15,10 @@ load_class: PROCEDURE
 ## Scan targets
 
 - **Codebase**: `package.json`, schemas, entry points, relevant existing implementations (Glob/Grep/Read — not a separate agent)
-- **Artifacts**: `.agents/skill-artifacts/` for existing specs, architecture docs, product context
-- **Experience docs**: `skills-resources/experience/{domain}.md` for answers from prior sessions
-- **Learned rules**: `.agents/skill-artifacts/meta/records/learned-rules.md` for behavior corrections
-- **Out-of-scope decisions**: `.agents/skill-artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
+- **Artifacts**: `.forsvn/artifacts/` for existing specs, architecture docs, product context
+- **Experience docs**: `.forsvn/experience/{domain}.md` for answers from prior sessions
+- **Learned rules**: `.forsvn/artifacts/meta/records/learned-rules.md` for behavior corrections
+- **Out-of-scope decisions**: `.forsvn/artifacts/meta/out-of-scope/` — don't re-ask about rejected approaches unless user raises them
 - **Project conventions**: skim `CLAUDE.md`
 
 **Rule:** anything found here is a question you don't ask. Step 1 EARNS the user's time by not wasting it on already-answered questions.

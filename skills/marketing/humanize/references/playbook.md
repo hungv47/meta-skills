@@ -14,7 +14,7 @@ AI-generated content fails in three predictable ways that no amount of "better p
 
 Classifier-era detectors (Pangram, GPTZero, and successors) add a fourth failure mode: text can look clean to a human but still preserve the semantic + structural fingerprint of LLM output. Humanize therefore changes argument shape, rhythm, specificity, and register when the content type warrants it. It does not try to "evade" detectors through tricks; it makes the text genuinely more authored, more specific, and less template-shaped.
 
-This skill is the polish-chain endpoint for English output across the marketing stack. Upstream skills that produce EN prose (`copywriting`, `ad-copy`, `cold-outreach`, `lp-brief`, `brand-system`, `design-brief`, `campaign-plan`, `short-form-brief`) auto-route to humanize when their pipelines call for AI-pattern cleanup. humanize itself does NOT route back — it's the terminus, sibling to `vn-tone` for Vietnamese.
+This skill is the polish-chain endpoint for English output across the marketing stack. Upstream skills that produce EN prose (`write-copy`, `write-ad`, `write-outreach`, `brief-landing-page`, `create-brand`, `brief-graphic`, `plan-campaign`, `brief-shortform`) auto-route to humanize when their pipelines call for AI-pattern cleanup. humanize itself does NOT route back — it's the terminus, sibling to `polish-vn` for Vietnamese.
 
 ## Why this skill exists at all
 
@@ -54,7 +54,7 @@ Strip-agent only subtracts. Soul-injection-agent only adds. Compression-agent on
 - **Absolute Prohibitions are binary.** 9 patterns so strongly AI-associated that a single instance auto-FAILs critic Pass 1. No exceptions, no judgment calls. Em dashes, "it's not just X, it's Y," rhetorical question hooks, colons in prose, "actually" as emphasis, filler context phrases, emojis, unsourced 47/73, staccato taglines.
 - **15% word reduction floor (Route B).** Quality Gate enforces "At least 15% word reduction from original" — bloat is part of the AI fingerprint and compression IS the fix.
 - **Zero idea loss.** Compression cuts filler, not facts. Every paragraph contains at least one concrete fact, number, or named example. Critic dimension Density scores this directly.
-- **Protected tokens are verbatim.** When called by `cold-outreach` or `ad-copy` with `protected_tokens`, every named entity + number + URL + proof point must appear verbatim in final output. Protected-token regression runs in Detector-Resistance Verification.
+- **Protected tokens are verbatim.** When called by `write-outreach` or `write-ad` with `protected_tokens`, every named entity + number + URL + proof point must appear verbatim in final output. Protected-token regression runs in Detector-Resistance Verification.
 - **Content Type Calibration is the lever.** Marketing copy gets full treatment (20-30% compression). Documentation gets light touch (10-15%, accuracy over personality). Short outbound gets near-zero compression (0-10%, specificity is already load-bearing). Academic gets formal-register preservation (5-10%, Hard Tells only). The further from marketing, the lighter the touch.
 - **Strip first, voice second, compress third, critic fourth.** Pipeline order is load-bearing. Voice injection on AI-patterned text = polishing AI-generated prose. Compression before voice = killing the rhythm the soul-injection agent wanted to install.
 - **Critic dimensions cite a re-dispatch target.** Directness FAIL → strip-agent. Rhythm/Authenticity FAIL → soul-injection-agent. Trust FAIL → soul-injection or strip (depending on cause). Density FAIL → soul-injection (add specificity) or revert compression. Each failure routes to the agent that owns that dimension.
@@ -62,9 +62,9 @@ Strip-agent only subtracts. Soul-injection-agent only adds. Compression-agent on
 
 ## When NOT to use this skill
 
-- **Need new copy from scratch.** Use `copywriting` with voice directives. humanize polishes existing text; it does not generate.
-- **Source text is Vietnamese.** Use `vn-tone` (sibling polish-chain for VN). humanize is English-only — its AI-pattern catalog is EN-specific (em dashes, rhetorical question hooks in English, "actually" as English emphasis, etc.).
-- **Conversion-focused landing page.** Use `lp-brief` — that's page architecture, not text polish. humanize can run on individual sections after lp-brief produces them.
+- **Need new copy from scratch.** Use `write-copy` with voice directives. humanize polishes existing text; it does not generate.
+- **Source text is Vietnamese.** Use `polish-vn` (sibling polish-chain for VN). humanize is English-only — its AI-pattern catalog is EN-specific (em dashes, rhetorical question hooks in English, "actually" as English emphasis, etc.).
+- **Conversion-focused landing page.** Use `brief-landing-page` — that's page architecture, not text polish. humanize can run on individual sections after brief-landing-page produces them.
 - **Content already passed copywriting's Seven-Sweeps.** Use Route C (skip pattern-scanner, dispatch compression + critic only). Full Route B would re-process patterns that copywriting already cleaned.
 - **Audio/video transcripts as content type.** Edge case — transcripts have native disfluencies that look like "voice" but actually are speech-to-text artifacts. Transcript polishing is a different skill (currently parked); humanize would over-clean.
 - **Academic / research papers needing peer review.** Use the lightest Content Type Calibration (5-10% compression, Hard Tells only). Heavy stripping kills the precision academic readers expect.
