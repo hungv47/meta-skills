@@ -240,5 +240,5 @@ Skill returns one of:
 - [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 15 failure modes
 - [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE] — date/URL/citation patterns, rubric score format, pattern-log entry shape, cycle index agreement
 - [`references/rubric.md`](references/rubric.md) — the v0.1 provisional rubric (4 dimensions + author-discretion)
-- [`references/platform-intelligence/`](references/platform-intelligence/) — per-platform eval references
+- [`references/_shared/platform-intelligence/`](references/_shared/platform-intelligence/) — per-platform eval references. Canonical at top-level `references/platform-intelligence/` (D13)
 - `research-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

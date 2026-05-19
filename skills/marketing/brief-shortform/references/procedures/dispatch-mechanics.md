@@ -32,7 +32,7 @@ Spawn **IN PARALLEL** (multiple Agent tool calls in one message).
 
 | Agent | Instruction File | Pass These Inputs | Reference Files to Resolve |
 |-------|-----------------|-------------------|---------------------------|
-| Format Agent | `agents/format-agent.md` | `{ platforms, research_artifact_excerpt }` | `references/platform-intelligence/[platform].md` per platform |
+| Format Agent | `agents/format-agent.md` | `{ platforms, research_artifact_excerpt }` | `references/_shared/platform-intelligence/[platform].md` per platform |
 | VoC Extraction Agent | `agents/voc-extraction-agent.md` | `{ icp_excerpt, product_context_excerpt, audience_hint }` | — |
 | Production Mode Agent | `agents/production-mode-agent.md` | `{ brand_mode, production_mode, angle }` | `references/production-modes.md` |
 
@@ -51,7 +51,7 @@ Spawn **IN PARALLEL** after Layer 1 completes. Each Layer 1.5 agent receives all
 
 | Agent | Instruction File | Pass These Inputs | Reference Files |
 |-------|-----------------|-------------------|-----------------|
-| Platform Tailor Agent | `agents/platform-tailor-agent.md` | Hero brief + research catalog per variant platform | `references/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/platform-intelligence/[variant-platform].md` |
+| Platform Tailor Agent | `agents/platform-tailor-agent.md` | Hero brief + research catalog per variant platform | `references/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/_shared/platform-intelligence/[variant-platform].md` |
 | Critic Agent | `agents/critic-agent.md` | Hero + variants | `references/anti-patterns.md`, `references/success-criteria-templates.md` |
 
 **Conditional dispatch:** `platform-tailor-agent` runs only when `len(platforms) >= 2`. Otherwise Layer 2 starts at critic.
