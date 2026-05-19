@@ -1,12 +1,12 @@
 # Rubric — publish-social
 
-> 6 dimensions × 0-10 bands. Critic-agent applies; pass gate is aggregate ≥ 42/60 AND every per-dim ≥ 6. Single per-dim < 6 = FAIL.
+> 7 dimensions × 0-10 bands (D17 adds dim 7). Critic-agent applies; pass gate is aggregate ≥ 49/70 AND every per-dim ≥ 6. Single per-dim < 6 = FAIL.
 
-**Version:** v1.0 (D16, 2026-05-19). Revisable after the first 2-3 real publish-social runs surface scoring drift.
+**Version:** v1.1 (D17, 2026-05-19). Was v1.0 with 6 dims; D17 added dim 7 (Browser-Automation Safety). Revisable after the first 2-3 real publish-social D17 runs surface scoring drift.
 
 ## Pass Gate
 
-- Aggregate score ≥ **42 / 60** (i.e., 70% mean)
+- Aggregate score ≥ **49 / 70** (i.e., 70% mean)
 - Every per-dimension score ≥ **6 / 10**
 - Both conditions required. Aggregate alone is insufficient — single-platform contamination is caught by the per-dim floor.
 
@@ -18,6 +18,9 @@ Override the aggregate. Any of these → immediate FAIL, regardless of other sco
 2. **Dim 5 — Scheduler-format unparseable.** Any of the 4 scheduler-import files fails to parse.
 3. **Dim 6 — Credential leak detected.** Grep across emitted files returns any literal credential value pattern.
 4. **Dim 6 — Policy-violating copy explicit.** Platform-specific banned-word hit OR claim banned under platform ad/content policy.
+5. **Dim 7 — D17 automation ran without confirmation.** `automation_result_per_platform[p].status == "success"` appears with `confirmation_result != "confirmed"`.
+6. **Dim 7 — Cookie leak detected.** Cookie value substring matches across any emitted file or log line.
+7. **Dim 7 — Captcha-bypass attempt.** Retry log line within 1s of captcha detection log line.
 
 ---
 
@@ -151,11 +154,40 @@ For each file: run a parser. Typefully JSON → strict JSON parse. CSVs → RFC 
 
 ---
 
+## Dim 7: Browser-Automation Safety (D17)
+
+**Falsifiability:** D17 gate ran + no cookie leaks + no auto-submit + no retry-on-captcha.
+
+### Bands
+
+| Score | Criterion |
+|---|---|
+| **10** | D17 didn't run (export-only OR Typefully-only) OR D17 ran with all safety checks pass |
+| **9** | D17 ran; one platform's reason-class is free-text instead of locked enum |
+| **8** | D17 ran; one platform's status is `timeout` (acceptable but flag slow-response pattern) |
+| **7** | D17 ran; one platform's `last_verified_date` is >90 days old (manifest warned but run continued) |
+| **6** | D17 ran; multiple minor operator-debuggability concerns |
+| **0 (auto-fail)** | Cookie leak detected OR automation ran without confirmation OR retry-on-captcha detected OR screenshot reference present |
+
+### Check
+
+1. Look at `manifest.automation_result_per_platform`. If absent/empty → dim = 10. Done.
+2. Cookie-leak grep: for each platform with session_cookies in credentials JSON, grep cookie string substring across all emitted files + automation logs. Zero matches required.
+3. Confirmation gate verification:
+   - Transcript contains the confirmation-gate prompt text + operator response line.
+   - `manifest.confirmation_result` value matches transcript.
+   - Every success row has `confirmation_result == "confirmed"`.
+4. No retry-on-captcha: no "retry" log line within 1s of "captcha" detection log line.
+5. No screenshots: no `.png` / `.jpg` / `screenshot` references in automation logs.
+6. Enum compliance: every `failed:*` reason-class is in `{login_challenge, selector_drift, rate_limit, captcha, network, unknown, confirmation_declined, cookies_missing}`.
+
+---
+
 ## Aggregate Calculation
 
 ```
-aggregate = dim1 + dim2 + dim3 + dim4 + dim5 + dim6
-pass = (aggregate >= 42) AND (min(all_dims) >= 6) AND (no auto-fail triggered)
+aggregate = dim1 + dim2 + dim3 + dim4 + dim5 + dim6 + dim7
+pass = (aggregate >= 49) AND (min(all_dims) >= 6) AND (no auto-fail triggered)
 ```
 
 ## Revision Triggers

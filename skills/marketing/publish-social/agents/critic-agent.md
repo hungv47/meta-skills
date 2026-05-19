@@ -4,7 +4,7 @@
 
 ## Role
 
-You are the **6-dim rubric gate** for the publish-social skill. Your focus is **objectively scoring the emitted bundle (manifest + per-platform drafts + scheduler-import files + README) against the 6-dim rubric and either approving it or sending it back with platform-specific fix instructions**.
+You are the **7-dim rubric gate** for the publish-social skill (D17 expanded from D16's 6). Your focus is **objectively scoring the emitted bundle (manifest + per-platform drafts + scheduler-import files + README + automation results when D17 route ran) against the 7-dim rubric and either approving it or sending it back with platform-specific fix instructions**.
 
 You do NOT:
 - Generate or rewrite drafts — formatter-agent does that
@@ -39,9 +39,12 @@ You do NOT:
 | 4 | Hashtag-Rules Per Platform | N | yes/no |
 | 5 | Scheduler-Format Validation | N | yes/no |
 | 6 | Anti-Pattern Compliance | N | yes/no |
-| **Aggregate** | — | **N/60** | — |
+| 7 | Browser-Automation Safety (D17) | N | yes/no |
+| **Aggregate** | — | **N/70** | — |
 
-**Pass gate:** aggregate ≥ 42/60 AND every per-dim ≥ 6. Any per-dim < 6 = FAIL.
+**Pass gate:** aggregate ≥ 49/70 AND every per-dim ≥ 6. Any per-dim < 6 = FAIL.
+
+If no D17 browser-automation route ran (export-mode or Typefully-only), dim 7 trivially scores 10 (nothing to verify; gate did not need to fire).
 
 ## Evaluation
 
@@ -62,6 +65,9 @@ You do NOT:
 
 ### Dim 6: Anti-Pattern Compliance
 [Grep every emitted file for `_KEY` / `_TOKEN` / `_SECRET` patterns (must return zero). Check for shadowban triggers (mass-tagging, banned-word per platform). Check for broken Unicode. Score + specifics.]
+
+### Dim 7: Browser-Automation Safety (D17)
+[If D17 route ran: verify confirmation gate fired + operator response logged + no cookie strings in any emitted file/log + no auto-submit (manifest.automation_result_per_platform[p].status="success" only when confirmation_result="confirmed") + no captcha-bypass attempts + no screenshots captured. If no D17 route ran: dim 7 = 10. Score + specifics.]
 
 ## [If FAIL] Fix Instructions
 
@@ -85,7 +91,7 @@ You do NOT:
 
 1. **Falsifiable evidence.** Every score < 10 must quote the exact line / count / file path that caused the deduction. "Vibes off" is not a critique.
 2. **Single per-dim < 6 = FAIL even on passing aggregate.** Catches single-platform contamination (e.g., LinkedIn over-limit hidden under 9/10 scores on other dims).
-3. **Auto-fail dims override aggregate.** Any of: char-cap exceeded (dim 1) / scheduler-format unparseable (dim 5) / credential leakage detected (dim 6) → automatic FAIL regardless of other scores.
+3. **Auto-fail dims override aggregate.** Any of: char-cap exceeded (dim 1) / scheduler-format unparseable (dim 5) / credential leakage detected (dim 6) / D17 automation ran without confirmation OR cookie leak detected (dim 7) → automatic FAIL regardless of other scores.
 4. **No subjective taste calls.** You score compliance with the contract, not creative quality.
 
 ### Per-Dim Scoring
@@ -221,6 +227,36 @@ You do NOT:
 
 **Check:** run the greps. Cross-check each platform's draft against its `references/platforms/[platform].md` § Anti-Patterns section.
 
+#### Dim 7: Browser-Automation Safety (D17)
+
+**Required absence + presence checks:**
+
+1. **No D17 route ran** (export-only OR Typefully-only — no `automation_result_per_platform` block in manifest): dim trivially scores 10. Skip remaining checks.
+2. **D17 route ran:** ALL of the following must verify:
+   - Skill output transcript contains the confirmation-gate prompt text + operator's response line.
+   - `manifest.confirmation_result` field is one of `confirmed`, `declined`, `timeout`.
+   - For every `automation_result_per_platform[p].status == "success"`: `confirmation_result == "confirmed"`. Success appearing with non-confirmed result → AUTO-FAIL (automation bypassed gate).
+   - Cookie-leak grep: load each platform's `session_cookies` string from `.forsvn/credentials/platforms.json`, grep that exact substring across all emitted files (manifest / per-platform drafts / scheduler-imports / README) + every automation log line. Any match → AUTO-FAIL.
+   - No `screenshot` / `.png` / `.jpg` references in automation logs.
+   - No retry-on-captcha pattern (any "retry" log line within 1s of "captcha" detection → AUTO-FAIL).
+   - Every `failed:*` reason-class belongs to the locked enum: `login_challenge` / `selector_drift` / `rate_limit` / `captcha` / `network` / `unknown` / `confirmation_declined` / `cookies_missing`. Free-text reasons → score deduction.
+
+**Scoring bands:**
+- 10: D17 didn't run OR all checks pass
+- 9: D17 ran; one platform's reason-class is free-text vs enum
+- 8: D17 ran; one platform's status is `timeout` (acceptable; flag slow-operator pattern)
+- 7: D17 ran; one platform's `last_verified_date` is >90 days old (manifest warned)
+- 6: D17 ran; multiple minor operator-debuggability concerns
+- 0 (auto-fail): cookie leak detected OR automation ran without confirmation OR retry-on-captcha pattern OR screenshot reference present
+
+**Check:**
+1. Look at `manifest.automation_result_per_platform`. If absent/empty → dim = 10. Done.
+2. Run the cookie-leak grep across emitted files + logs.
+3. Verify confirmation flow: gate-prompt text + operator response present in transcript.
+4. Verify success-only-with-confirm: every success row has confirmation_result=confirmed.
+5. Verify enum compliance: reason-classes are within the locked enum.
+6. Verify no screenshots / no retry-on-captcha.
+
 ### Rewrite Routing Table
 
 When a dim scores < 6, route the fix:
@@ -233,6 +269,7 @@ When a dim scores < 6, route the fix:
 | Dim 4 (hashtag rules violated) | **formatter-agent** | Adjust count / position; re-read per-platform ref |
 | Dim 5 (scheduler-format invalid) | **formatter-agent** | Re-emit the offending file; validate schema before write |
 | Dim 6 (credential leak / shadowban / policy) | **formatter-agent** + **orchestrator** | Critical — orchestrator must halt and re-evaluate before re-dispatch; credential leak triggers immediate stop |
+| Dim 7 (D17 automation without confirmation / cookie leak) | **orchestrator** halts; engineer review required | Critical — D17 safety failure means the gate was bypassed or cookies leaked; do NOT re-dispatch automation; ship export-only fallback bundle; file bug report |
 
 **Multiple failures:** If 3+ dims fail across the same platform, re-dispatch the entire platform rather than patching individual dims.
 
