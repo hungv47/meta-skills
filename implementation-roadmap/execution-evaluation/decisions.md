@@ -568,3 +568,113 @@ Brief 06 calls the noise-filter "the highest-leverage part" of the review workfl
 ### Status
 
 LOCKED — building now.
+
+---
+
+## D13 — D9.C slice (PROPOSED 2026-05-19: platform-intelligence cross-skill canonicalization)
+
+Locked via interview round 7 (2026-05-19, post-D12): user picked D9.C — Platform briefs cross-skill, plan-first.
+
+### Why this slice
+
+Brief 03 § Platform-Specific Strategy lists 5 consumers of platform briefs: `write-social`, `brief-shortform`, "SEO/AI SEO where platform search matters", research-shortform-style intelligence gathering, and `evaluate-content` (future). Today only the short-form production trio (`brief-shortform`, `write-social`, `evaluate-shortform`) consume the catalog, and they do so via a stale generated-copy pattern that survived the 2.0 consolidation. Two real problems:
+
+1. **Source-of-truth lives inside `brief-shortform`** (`skills/marketing/brief-shortform/references/platform-intelligence/{7 files}`). Conceptually wrong — TikTok / Reels / Shorts / X / LinkedIn / YouTube taxonomies are cross-skill resources, not a brief-shortform-internal concern.
+2. **`scripts/sync-skill-support.mjs` is fundamentally broken for 2.0 layout** (hardcoded `STACKS = ["research-skills", "marketing-skills", ...]` from the 4-plugin world). Generated `_shared/` copies are stale-but-in-sync today only because nobody has changed the source since the rename pass. The pattern is **obsolete by design** post-consolidation: single-repo skills can reference top-level `references/` directly with no portability cost.
+3. **`optimize-seo` has zero platform-intelligence wiring** despite brief 03 explicitly calling it out ("SEO/AI SEO where platform search matters"). Substantive gap, not cosmetic.
+
+### Verification pass findings (2026-05-19)
+
+| Catalog | Location today | Files | Consumer skills | Notes |
+|---|---|---|---|---|
+| `platform-intelligence/` (**production lens** — Hook Taxonomy / Format Constraints / Algorithm Signals / Anti-Patterns) | `skills/marketing/brief-shortform/references/platform-intelligence/` (source) + 2 generated copies | tiktok, linkedin, reels, shorts, x, youtube, _template (7) | `brief-shortform` (source), `write-social` (`_shared/` copy), `evaluate-shortform` (`_shared/` copy) | All copies in sync with source (verified diff = only the `<!-- GENERATED -->` header line) |
+| `platforms/` (**research/scout lens** — discovery protocol, distinct filenames like `twitter-video.md`, `instagram-reels.md`) | `skills/research/research-shortform/references/platforms/` | tiktok, instagram-reels, linkedin-video, youtube-shorts, twitter-video, _template (6) | `research-shortform` only | Different schema, different lens. **NOT in scope for D13** — leave untouched |
+| sync-script footprint | `scripts/sync-skill-support.mjs` | hardcoded for 4-stack repos that no longer exist | 5 active `.generated-support` markers across the repo | Broken since `df44a92` consolidation; D8 finding flagged it as deferred |
+| `optimize-seo` 16-agent surface (`ai-presence-agent`, `programmatic-template-agent`, `aso-*`, `comparison-page-agent`) | No platform-intelligence references | — | — | Substantive gap per brief 03 § Platform-Specific Strategy |
+
+**Implication:** the original D9 § D9.C plan (decisions.md ~330–378) called for promoting + wiring write-social, optimize-seo, plan-campaign. D13 narrows scope based on read-pass evidence:
+- `write-social` already consumes the catalog → path-update only, no new wiring.
+- `optimize-seo` is the substantive new consumer (brief 03 mandate).
+- `plan-campaign` is **deferred to D13.next** — brief 03 doesn't list it; channel-strategy.md already covers high-level platform-by-platform; substantive case is weaker than the optimize-seo gap.
+- sync-script deletion is **also deferred** — touches 5+ `_shared/` dirs beyond platform-intelligence (`ad-intelligence`, `design-brief`, `brand-system`, etc.); it's its own hygiene slice (D14 candidate).
+
+### Scope (D13.A — platform-intelligence canonicalization, one new consumer)
+
+**Move source-of-truth to top-level `references/`:**
+- Move `skills/marketing/brief-shortform/references/platform-intelligence/{tiktok,linkedin,reels,shorts,x,youtube,_template}.md` → `references/platform-intelligence/`.
+- Update `brief-shortform/SKILL.md`, `playbook.md`, `procedures/dispatch-mechanics.md` to reference the top-level path.
+
+**Delete generated copies + repoint consumers:**
+- Delete `skills/marketing/write-social/references/_shared/platform-intelligence/` (8 files including `.generated-support`).
+- Delete `skills/research/evaluate-shortform/references/_shared/platform-intelligence/` (8 files including `.generated-support`).
+- Update each consumer's SKILL.md + every agent file + every reference file that mentions `_shared/platform-intelligence/[platform].md` → repoint at `references/platform-intelligence/[platform].md` (relative to repo root). Affected files (grep): `write-social/SKILL.md`, `write-social/references/{playbook,rubric,format-conventions,anti-patterns}.md`, `write-social/references/procedures/{pre-dispatch,dispatch-mechanics}.md`, `write-social/agents/{copywriter-agent,format-checker-agent,critic-agent}.md`, `evaluate-shortform/SKILL.md`, `evaluate-shortform/references/playbook.md`.
+
+**Wire optimize-seo as new consumer (substantive new capability):**
+- New ref: `skills/marketing/optimize-seo/references/platform-search.md` (~80 lines) — names which agents consume which platform-intelligence sections and why. Map: `ai-presence-agent` reads §3 Algorithm Signals (LinkedIn, X for AI-SERP citations) + §4 Anti-Patterns. `aso-*` agents read TikTok/Reels §1 Hook Taxonomy + §2 Format Constraints (App Store screenshot/preview-video naming and copy conventions translate cleanly). `programmatic-template-agent` reads YouTube §2 Format Constraints for description+tags templating. `comparison-page-agent` reads §3 Algorithm Signals for platform-native distribution surfaces. Cross-links to top-level `references/platform-intelligence/`.
+- Edit `optimize-seo/SKILL.md` § Manifest or "References" section to enumerate `references/platform-search.md` as a body-loaded ref. Add 1 line to the Quality Gate referencing platform-search compliance when the mode is `ai` or `aso`.
+- No new agent file — wiring is reference-only; existing agents read the new ref via orchestrator.
+
+**CHANGELOG:**
+- Append `[Unreleased]` entry under `### Added` (one bullet per: canonicalization, optimize-seo wiring) + one `### Removed` bullet for the 2 generated `_shared/` copies.
+
+### Acceptance
+
+- `references/platform-intelligence/` exists at repo root with 7 files (tiktok, linkedin, reels, shorts, x, youtube, _template) — no `<!-- GENERATED -->` headers.
+- `grep -rn "_shared/platform-intelligence" skills/` returns zero hits.
+- `grep -rn "references/platform-intelligence" skills/marketing/{brief-shortform,write-social,optimize-seo}/ skills/research/evaluate-shortform/` returns ≥1 hit per skill.
+- `skills/marketing/optimize-seo/references/platform-search.md` exists with ≥4 named agent-to-section mappings.
+- CHANGELOG `[Unreleased]` entry committed (no version bump — user owns).
+
+### Locked sub-decisions
+
+1. **Path convention for cross-skill refs:** top-level `references/platform-intelligence/[platform].md` referenced verbatim (no `_shared/` mirror). Skills cite the top-level path directly. Matches how `references/pre-dispatch-protocol.md`, `references/mode-resolver.md`, `references/eval-loop-spec.md` etc. are cited today (those still have `_shared/` mirrors via the broken sync script, but the canonical path is what gets cited in narrative — D13 closes the gap for platform-intelligence by ditching the mirror entirely).
+2. **research-shortform `platforms/` directory untouched.** Different catalog (research/scout lens), different filenames, different consumer. Merging the two catalogs is a separate decision (D13.C candidate, deferred). Risk of conflating them rejected.
+3. **`plan-campaign` deferred** to D13.B. Channel-strategy.md already covers high-level platform-by-platform; substantive gap is smaller than optimize-seo. Skip in v1.
+4. **sync-skill-support.mjs deletion deferred** to D14 (hygiene slice). D13 only deletes the 2 `_shared/platform-intelligence/` mirror dirs. The other 3 `_shared/` dirs (`ad-intelligence`, `design-brief`, `brand-system`) keep their now-orphaned `.generated-support` markers until D14 resolves the broader pattern. Acceptable temporary drift — sync was already broken; nothing gets worse.
+5. **optimize-seo new ref is ≤100 lines.** If it grows beyond that, split per-mode (`platform-search.md` + `platform-aso.md`) — not in v1.
+6. **Backward-compatibility shim NOT shipped.** No symlinks from `_shared/platform-intelligence/` to top-level; no transition period. Hard cut matches D1's no-aliases policy applied at the reference layer.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Repointing breaks any in-flight uncommitted work that references `_shared/platform-intelligence/` | Working tree is clean (verified `git status`); no in-flight risk |
+| sync-skill-support.mjs stays half-broken (3 of 5 `_shared/` mirrors orphaned after D13) | Already broken; D14 hygiene slice closes it cleanly. Not worse than today |
+| optimize-seo's new platform-search.md may overlap with existing `ai-seo.md` and `aso.md` | Cross-links rather than restates; treats existing refs as canonical for non-platform aspects |
+| Future portable-skill install (`npx skills add ... --skill <one>`) would break for write-social / evaluate-shortform / optimize-seo | Portable single-skill install isn't a real install vector today (post-consolidation users get the whole bundle via `/plugin marketplace add hungv47/meta-skills`). D14 can rebuild the sync pattern if/when the use case returns |
+
+### Status
+
+LOCKED — building now.
+
+### D13 build-time finding (2026-05-19, citation-convention pass)
+
+Inspecting `references/dispatch-mechanics.md` and current citation patterns across the stack revealed sub-decision #1 ("skills cite the top-level path directly, no `_shared/` mirror") doesn't have a clean implementation. The orchestrator resolves relative paths against the **skill's** directory (per dispatch-mechanics line 13: `references/X.md → /path/to/<skill>/references/X.md`). There's no native convention for "this string resolves from repo root, not skill root."
+
+Three options considered:
+
+| Option | Cost | Cleanliness |
+|---|---|---|
+| **A. Skills cite `../../../references/platform-intelligence/...`** | Fragile — `..` count depends on each file's depth (SKILL.md vs references/X.md vs agents/X.md vs procedures/X.md). 4 different prefixes for the same logical pointer. | Worst — invites copy-paste bugs. |
+| **B. Skills cite `references/platform-intelligence/...` with implicit "top-level fallback"** | Requires orchestrator-side convention change. Implicit behavior risks regressions. | Cleanest end-state but requires architectural decision out of scope for D13. |
+| **C. Keep `_shared/` mirror convention; move source-of-truth to top-level; populate mirror in every consumer** | 4 consumers × 7 files = 28 mirror files. Matches existing pattern (`_shared/pre-dispatch-protocol.md`, `_shared/mode-resolver.md`, etc.). Sync-script broken — manual maintenance until D14. | Preserves existing convention exactly; no surprise behavior. |
+
+**Sub-decision #1 revised to Option C.** Reasons:
+1. Matches existing convention used by 13 other cross-cutting refs (`pre-dispatch-protocol`, `mode-resolver`, `eval-loop-spec`, etc.) — they're top-level canonical with `_shared/` mirrors in every consumer. D13 doesn't invent a new pattern.
+2. write-social and evaluate-shortform citations don't change at all (they already cite `references/_shared/platform-intelligence/`).
+3. Only brief-shortform's citations change (from `references/platform-intelligence/` skill-local → `references/_shared/platform-intelligence/` mirror, since brief-shortform downgrades from owner to consumer).
+4. Sync-script architectural decision properly punts to D14 hygiene slice.
+
+**Net D13 deliverables (revised from Option B → Option C):**
+1. Move 7 files: `skills/marketing/brief-shortform/references/platform-intelligence/*` → `references/platform-intelligence/*` (top-level canonical).
+2. Recreate `_shared/platform-intelligence/` mirror in `brief-shortform/references/_shared/` (7 files + `.generated-support` marker).
+3. Update brief-shortform citations from `references/platform-intelligence/` → `references/_shared/platform-intelligence/` (SKILL.md + playbook.md + dispatch-mechanics.md + examples walkthrough = ~5 hits).
+4. Update `.generated-support` markers in write-social + evaluate-shortform to point source at top-level (was `marketing-skills/skills/short-form-brief/...`).
+5. Create `_shared/platform-intelligence/` mirror in `optimize-seo/references/_shared/` (7 files + `.generated-support` marker).
+6. New `skills/marketing/optimize-seo/references/platform-search.md` (~80 lines) — agent-to-section map.
+7. Edit `optimize-seo/SKILL.md` to add platform-search.md to ref list + Quality Gate line.
+8. CHANGELOG `[Unreleased]` entry.
+
+**File-count delta:** 21 today (7 source + 14 mirror) → 35 after D13 (7 canonical + 28 mirror). The increase is honest accounting: brief-shortform pretended to own a cross-skill resource; D13 admits it's cross-skill by making it top-level AND giving brief-shortform a mirror like every consumer.
+
+**Manual-sync drift risk** until D14 hygiene slice ships. Accepted: same drift risk that exists for the 13 other shared refs already mirrored this way. D14 unblocks all of them together.

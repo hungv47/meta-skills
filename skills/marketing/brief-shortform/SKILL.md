@@ -245,7 +245,7 @@ Two condensed reference briefs in different (market, brand_mode, platform) combi
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/short-form-brief-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by craft agents at dispatch, not orchestrator): `references/{hook-archetypes, storyboard-grammar, caption-cta-rules, production-modes, success-criteria-templates, polish-chain}.md`
-- **Platform intelligence** (loaded by format-agent + platform-tailor-agent): `references/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md`
+- **Platform intelligence** (loaded by format-agent + platform-tailor-agent): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13)
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 4-sub-critic gate + 13-row Rewrite Routing Table.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

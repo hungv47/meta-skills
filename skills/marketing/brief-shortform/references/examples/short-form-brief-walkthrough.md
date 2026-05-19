@@ -62,7 +62,7 @@ Operator confirms angle + platforms. No further questions.
 
 Orchestrator spawns 3 agents in one message:
 
-- **Format Agent** — reads `references/platform-intelligence/tiktok.md` + `reels.md`; outputs aspect (9:16), length sweet spot (15–60s for TikTok, 30–90s for Reels), safe zones, caption format, watermark rules, audio rules.
+- **Format Agent** — reads `references/_shared/platform-intelligence/tiktok.md` + `reels.md`; outputs aspect (9:16), length sweet spot (15–60s for TikTok, 30–90s for Reels), safe zones, caption format, watermark rules, audio rules.
 - **VoC Extraction Agent** — reads `icp-research.md` excerpt; extracts 3 buyer phrases ("Standup là họp lại để báo cáo lại", "Mỗi sáng làm việc thật thì không có thời gian", "Output đo bằng commit chứ không phải họp"), register (semi-casual VN), sensitivity flags (none — not a regulated niche).
 - **Production Mode Agent** — reads `references/production-modes.md` for live-action template; outputs talent/gear/location notes scaffold.
 
