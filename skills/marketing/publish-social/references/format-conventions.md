@@ -21,12 +21,12 @@
 
 ## Manifest Schema (`manifest.md`)
 
-### Frontmatter (12 fields, all required)
+### Frontmatter (14 fields, all required — D17 adds 2 new)
 
 ```yaml
 ---
 skill: publish-social
-version: "1.0.0"
+version: "1.1.0"   # bumped at D17
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
 slug: <kebab-case>
@@ -37,15 +37,29 @@ source_artifacts:
 target_platforms: [x, linkedin, ...]   # subset of 9
 mode_per_platform:
   x: typefully-draft | export | blocked
-  linkedin: export | blocked
+  linkedin: browser-automation-draft | export | blocked   # D17 adds browser-automation-draft value
   # ... one entry per platform in target_platforms
 credentials_detected:
   typefully: true | false
-  buffer: true | false
-  hootsuite: true | false
-  # one entry per credential probed; binary only, no values
+  linkedin: true | false   # D17: session_cookies for each platform
+  instagram: true | false
+  facebook: true | false
+  tiktok: true | false
+  youtube: true | false
+  threads: true | false
+  bluesky: true | false
+  reddit: true | false
+  # binary only, no values
 scheduler_imports_emitted: [typefully.json, buffer.csv, hootsuite.csv, generic.csv]
 bundle_file_count: <integer — total file count in bundle>
+confirmation_result: confirmed | declined | timeout | not_required   # D17 new field — not_required when no D17 route resolved
+automation_result_per_platform:   # D17 new field — populated only if ≥1 D17 route ran; empty/absent otherwise
+  linkedin:
+    status: success | failed:<reason-class> | fallback-export
+    draft_url: <URL or null>
+    failed_at_step: <step name or null>
+    last_verified_date: YYYY-MM-DD
+  # one entry per platform in target_platforms with D17 route attempted
 provenance:
   skill: publish-social
   run_date: YYYY-MM-DD
@@ -102,18 +116,20 @@ provenance:
 
 ## Per-Platform Draft Schema (`platforms/[platform].md`)
 
-### Frontmatter (7 fields, all required)
+### Frontmatter (9 fields — D17 adds 2)
 
 ```yaml
 ---
 skill: publish-social
-version: "1.0.0"
+version: "1.1.0"
 date: YYYY-MM-DD
 platform: x | linkedin | instagram | youtube | tiktok | facebook | bluesky | threads | reddit
 char_count: <integer — total chars of body; for X thread, sum across posts>
 media_refs:
   - <path to produce-asset slot OR produce-video shot OR "MEDIA REQUIRED" placeholder>
-mode: typefully-draft | export | blocked
+mode: typefully-draft | browser-automation-draft | export | blocked   # D17 adds browser-automation-draft
+draft_url: <URL or null>   # D17 new — populated when automation succeeded; null for export-mode and fallback-export
+automation_result: success | failed:<reason-class> | fallback-export | n/a   # D17 new — n/a when D16 routes (X-Typefully) used; cross-reference manifest.automation_result_per_platform for non-X drafts
 ---
 ```
 

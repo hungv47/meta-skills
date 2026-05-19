@@ -58,16 +58,18 @@ Per-platform frontmatter must carry the 7 fields defined in `references/format-c
 
 ### Mode Resolution
 
-Run this exact resolution before any formatting:
+Per-platform resolution (D17 — replaces D16's global mode logic). Run this exact resolution before any formatting:
 
 1. If `mode_override == "publish"` → return `BLOCKED` with message: `"--mode=publish deferred to D18 — requires explicit current-session confirmation gate not yet implemented."` Do NOT write any files.
-2. If `mode_override == "draft"` AND any non-X platform is targeted → return `BLOCKED` with message: `"--mode=draft for [platforms] deferred to D17 — browser-automation route not yet implemented. X is the only platform with API draft in D16."` Do NOT write any files.
-3. If `mode_override == "export"` → run all platforms in export-mode regardless of credentials.
-4. If `mode_override == null` (auto-detect):
-   - If `credentials_state.typefully == true` AND X is in target_platforms → X goes Typefully Draft API route; other 8 platforms in export-mode.
-   - Else → all platforms in export-mode.
+2. If `mode_override == "export"` → all platforms run in export-mode regardless of credentials. SKIP confirmation gate. SKIP automation-agent dispatch.
+3. If `mode_override == "draft"` (per-platform forced-draft) OR `mode_override == null` (auto-detect):
+   - **X:** if `credentials_state.typefully == true` → Typefully Draft API route (D16). Else → export-mode for X.
+   - **LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit (8 platforms):** if `credentials_state[platform] == true` (session_cookies present) AND the per-platform flow's `last_verified_date` is within reasonable freshness window → browser-automation draft route (D17). Else → export-mode for that platform.
+4. If ANY platform resolves to D17 browser-automation route → confirmation gate fires before automation-agent dispatch. If gate declined → those platforms fall back to export-mode; X-Typefully-draft (if resolved) still runs because it's an API call already approved by credential presence.
 
 **Auto-detect never picks publish.** Explicit opt-in via `--mode=publish` is required, and v1 BLOCKs it. This is intentional — brief 04's "never publish live without explicit current-session confirmation" rule lands here.
+
+**Auto-detect picks browser-automation draft when cookies present, but gate runs.** Drafts in the operator's platform UI are still operator-visible state — the confirmation gate is brief 04's "current-session confirmation" applied to the draft tier.
 
 ### Per-Platform Formatting
 
@@ -99,6 +101,29 @@ Always emit all 4 scheduler-import files, regardless of which scheduler the oper
 4. **`scheduler-imports/generic.csv`** — long-tail catch (Hushuy / Later / Publer / Sprout). 6 columns: `platform, datetime, body, media_urls, hashtags, link`. Hand-tunable; README notes which columns each long-tail scheduler maps to.
 
 Every CSV must be UTF-8, commas inside body fields properly escaped (double-quote the field), no BOM.
+
+### Browser-Automation Draft Dispatch (D17, Route C)
+
+When ≥1 platform resolves to D17 browser-automation route:
+
+1. Format all per-platform drafts in memory FIRST (including the ones going to automation).
+2. Write export-mode bundle to disk as fallback — manifest will be updated post-automation with results.
+3. Trigger confirmation gate (see `references/confirmation-gate.md`):
+   - Emit per-platform 80-char preview + cookies-status + last-verified-date line.
+   - Prompt: `"Submit drafts to N platforms via browser-automation? [y/N]"`
+   - Wait for operator response (5-minute timeout → treat as `no`).
+4. On `confirmation_result == "confirmed"`:
+   - Dispatch automation-agent with `drafts_by_platform`, `credentials_state`, `session_cookies_by_platform` (resolved at this step from env/file; agent never logs values), target subset of platforms with cookies present, and the loaded `flow_specs`.
+   - automation-agent runs sequentially with 3s pacing per platform.
+   - Return `automation_result_per_platform` object.
+5. On `confirmation_result != "confirmed"`:
+   - All D17 draft-route platforms fall back to export-mode.
+   - manifest's `automation_result_per_platform[plat] = "fallback-export"` with reason `confirmation_declined`.
+   - Do NOT dispatch automation-agent.
+6. Update manifest with `automation_result_per_platform` results + draft URLs.
+7. Update per-platform draft frontmatter: `draft_url` field populated for `success` platforms; `mode: browser-automation-draft` (vs `export`); `automation_result` field reflects per-platform outcome.
+
+**Never write session_cookies into manifest, per-platform drafts, scheduler-imports, or README.** Critical Gate 3 + Critic dim 7 enforce.
 
 ### Typefully API Draft (Route B only)
 

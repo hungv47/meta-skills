@@ -978,3 +978,136 @@ Pairs cleanly with D8: publish-social emits generation-provenance (`input_artifa
 ### Status
 
 DONE — built 2026-05-19. 20 new files under `skills/marketing/publish-social/`: 1 SKILL.md + 2 agents (formatter + critic) + 6 cross-cutting references (format-conventions, anti-patterns, scheduler-formats, platform-credentials, rubric, playbook) + 9 platform refs (x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit) + 2 procedure docs (pre-dispatch, dispatch-mechanics). `plugin.json` registered (skills list + keywords, 2 hits; description updated to 36 skills). CHANGELOG `[Unreleased]` entry written (skill count 35 → 36). Acceptance checks pass: verb-first frontmatter ✓, 6 Critical Gates ✓, 2-agent sequential shape ✓, 6-dim rubric with auto-fail conditions ✓, 4 scheduler-format schemas ✓, 9 platform refs ✓, generation-provenance per D8 contract wired ✓, credential safety (binary detection, gitignored fallback, setup helper) documented ✓. **Sliced delivery confirmed:** D17 (browser-automation drafts) + D18 (--mode=publish with confirmation gate) explicitly scoped in playbook.md § History as follow-ups. User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
+
+---
+
+## D17 — Workstream C slice 3b (LOCKED 2026-05-19: publish-social browser-automation drafts, 8 platforms, session-cookie auth)
+
+Locked via interview round 11 (2026-05-19, post-D16). User picked publish-social slice 3b over D18 / evaluate-content / sync-hygiene. Round 11b: 8 platforms ("ideally we want for all, but worst-case create a draft on the platform, users hit send manually" → fallback chain locked) / session cookies / show-all-drafts + single confirm.
+
+### Why this slice
+
+Brief 04 names `--mode=draft` as a first-class mode but D16 only shipped it for X via Typefully API. The other 8 platforms (LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit) have no API draft endpoints that are operationally clean (LinkedIn requires business verification + OAuth app; IG/FB require Meta Business Suite app review; TikTok / YT have draft APIs locked behind business-app approval). Browser-automation via session cookies is the only operator-controllable draft route across all 8 — operator already has a logged-in browser session; cookies replicate that session into automated draft submission.
+
+User's exact framing (round 11b): *"the worst-case scenario would be to create a draft on the platform, and then the users will hit send manually."* That's the success path, not the failure path — D17's value IS landing the draft IN the platform (visible in operator's Drafts folder), where the operator hits Send manually. The fallback when automation fails is to D16's export-mode emission for that platform (Markdown draft + scheduler-import row); operator copies into platform UI manually.
+
+### Scope (v1 — slice 3b)
+
+**Extends publish-social skill (no new skill registration):**
+
+**New files:**
+- `agents/automation-agent.md` — runs browser-automation flows via `agent-browser` skill; called by formatter-agent in Layer 2 when draft route resolves
+- `references/automation-flows/{linkedin,instagram,facebook,tiktok,youtube,threads,bluesky,reddit}.md` — 8 platform-specific navigation + fill + save-draft flow specs (selector lists, page-state checkpoints, failure-detection patterns)
+- `references/session-cookie-export.md` — operator's guide for exporting session cookies per platform (browser-extension method per platform; cookies.txt format spec)
+- `references/confirmation-gate.md` — show-all-drafts + single-confirm protocol; defines the operator prompt + skill behavior on yes/no/edit
+
+**Modified files (in publish-social):**
+- `SKILL.md` — adds Critical Gate 7 (confirmation gate before any submit); updates Mode Resolution narrative for per-platform draft routes; expands routing block for Route C (per-platform automation)
+- `agents/formatter-agent.md` — extends mode resolution: per-platform check for session_cookies presence; dispatches automation-agent when cookies present + draft mode resolves; handles per-platform automation result (success / failed / fallback-to-export)
+- `agents/critic-agent.md` — adds dim 7 (Browser-Automation Safety): no auto-submit / confirmation gate ran / no cookie leak in logs / no captcha-bypass attempts. Rubric becomes 7 dims × 0-10 (aggregate ≥ 49/70, every dim ≥ 6).
+- `references/platform-credentials.md` — extends schema with `session_cookies` field per platform; documents cookie-export workflow with link to session-cookie-export.md
+- `references/format-conventions.md` — manifest schema gains `automation_result_per_platform` field (`success | failed:<reason-class> | fallback-export`); per-platform draft frontmatter gains `draft_url` field (populated when automation succeeded)
+- `references/anti-patterns.md` — adds 3 browser-automation patterns: silent auto-submit (publishing without confirmation) / cookie leakage in logs/screenshots / captcha-bypass-attempt (any retry on captcha = fallback to export)
+- `references/rubric.md` — adds dim 7 (Browser-Automation Safety) with 0-10 bands + auto-fail conditions
+- `references/playbook.md` § History — append D17 entry; bumps v1.x narrative to "shipped 2026-05-19"
+
+**Plugin registration:** no change (skill already registered in D16).
+
+**Confirmation-gate flow:**
+
+```
+1. Formatter creates per-platform drafts in memory (per D16 flow).
+2. Bundle preview emitted: one line per platform.
+   "Drafts ready:
+    - LinkedIn: [first 80 chars]...
+    - Instagram: [first 80 chars]...
+    - ..."
+3. Single operator prompt: "Submit drafts to N platforms via browser-automation? [y/N]"
+4. On YES → automation-agent runs each platform's flow sequentially.
+5. On NO → roll back to D16 export-mode for all platforms; bundle still emits Markdown drafts + scheduler-imports.
+6. After automation runs: manifest reports per-platform result + draft URLs (when available).
+```
+
+**Per-platform failure handling:**
+
+```
+For each platform:
+  1. automation-agent invokes agent-browser with platform's flow spec.
+  2. agent-browser navigates → loads cookies → fills draft fields → saves draft.
+  3. On any failure (selector drift, captcha, login challenge, rate-limit, network):
+     - manifest.automation_result_per_platform[plat] = "failed: <reason-class>"
+     - That platform falls back to D16 export-mode (Markdown draft + scheduler row already emitted).
+     - Other platforms continue.
+  4. Single attempt only. No retry-with-backoff (storm risk).
+  5. No captcha solving. Any captcha → fallback to export.
+  6. No screenshot-on-failure (cookies could leak). Logs are text-only with reason-class only.
+```
+
+**Not in v1 (explicit deferrals):**
+- No `--mode=publish` (D18 — confirmation gate for live posts requires per-platform confirmation, not the single-prompt this slice uses)
+- No retry-with-backoff (single attempt; rollback to export)
+- No captcha solving / 2FA / MFA handling
+- No screenshot logging (cookies could leak)
+- No parallel automation flows (sequential keeps log readable + rate-limit-safe)
+- No API-route enhancement for Bluesky / Reddit (consistency wins v1; Bluesky AT Protocol + Reddit OAuth candidate for D17.next)
+- No automated cookie-refresh (operator re-exports when manifest flags "session expired")
+- No worked-example walkthroughs in flow refs (v1 ships scaffolds; examples land on first real run)
+
+### Locked sub-decisions
+
+1. **8 platforms attempted via browser-automation.** LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit. X stays on D16's Typefully API route — no change.
+2. **Authentication: session cookies.** New schema in `.forsvn/credentials/platforms.json`:
+   ```json
+   {
+     "typefully": { "api_key": "..." },
+     "linkedin": { "session_cookies": "<cookie-string>", "expires_hint": "YYYY-MM-DD" },
+     "instagram": { "session_cookies": "...", "expires_hint": "..." },
+     ...
+   }
+   ```
+   Cookie string is gitignored (same `.forsvn/credentials/` directory; same .gitignore from D16 setup helper). Never logged. `expires_hint` is operator-supplied (typical: 30 days from export); manifest flags re-export needed when 7 days within hint.
+3. **Confirmation gate: show-all-drafts + single confirm.** Skill formats all drafts → emits one-line preview per platform → single prompt → on YES runs automation sequentially. On NO rolls back to export-mode for all. No silent submit.
+4. **Failure handling: per-platform fallback.** Automation failure on platform X = manifest flags X as `failed:<reason>` + falls back to D16 export emission for X. Other platforms continue. Single attempt only.
+5. **Tool: `agent-browser` skill (referenced via defers-to).** publish-social emits the navigation flow spec; `agent-browser` runs the browser. Coupling is loose — automation-agent calls agent-browser as an MCP/CLI invocation; flow specs in `references/automation-flows/` are tool-agnostic enough that a future Playwright / Puppeteer route could implement the same specs.
+6. **Critic dim 7: Browser-Automation Safety.** New rubric dim, 0-10 bands:
+   - Verifies confirmation gate ran (skill output shows operator's response)
+   - Greps every emitted file + log for cookie patterns (must be zero)
+   - Verifies no auto-publish attempted (manifest never has `submitted: true` without confirmation evidence)
+   - Verifies no captcha-bypass attempt logged (any captcha → fallback, not retry)
+   - Aggregate becomes 7 dims × 0-10, pass gate ≥ 49/70 + every dim ≥ 6
+7. **No screenshots in logs.** Even debug screenshots could include cookies / session tokens / draft content. Logs are text-only; failure logs reference URL pattern + error class (e.g., `"failed: login_challenge"`, `"failed: selector_drift"`, `"failed: rate_limit"`, `"failed: captcha"`, `"failed: network"`), never page state.
+8. **No automatic cookie refresh.** Operator manually re-exports cookies when manifest flags session expired (within 7 days of `expires_hint`). Automated refresh would require storing operator's login credentials — out of v1 scope.
+9. **Sequential automation only.** Per-platform flows run one at a time. Parallel adds: (a) rate-limit risk across platforms running same browser-automation pattern simultaneously; (b) log interleaving / debug complexity; (c) failure-cascade risk. Sequential is the safer v1 default.
+10. **D17 modifies existing files; no new skill.** publish-social's plugin.json registration unchanged. CHANGELOG entry goes under `### Changed` (capability extension), not `### Added` (no new skill).
+
+### Acceptance
+
+- `agents/automation-agent.md` exists with role/input/output contract; references agent-browser; documents per-flow dispatch + failure handling.
+- 8 automation-flow refs exist under `references/automation-flows/`: linkedin / instagram / facebook / tiktok / youtube / threads / bluesky / reddit. Each carries: login state assumed, navigation sequence, selector list, draft-save action, failure-detection patterns, version + last-verified date.
+- `references/session-cookie-export.md` documents per-platform cookie-export workflow (browser extension + manual export options).
+- `references/confirmation-gate.md` defines the single-confirm protocol + operator prompt format.
+- `SKILL.md` Critical Gates list contains Gate 7 (Confirmation gate before any submit).
+- `agents/formatter-agent.md` § Mode Resolution updated to handle per-platform draft routes.
+- `agents/critic-agent.md` enumerates 7 rubric dims (was 6); dim 7 = Browser-Automation Safety.
+- `references/rubric.md` has 7 dims × 0-10; pass gate ≥ 49/70 + every dim ≥ 6.
+- `references/platform-credentials.md` schema extended with `session_cookies` field.
+- `references/format-conventions.md` manifest schema gains `automation_result_per_platform` field.
+- `references/anti-patterns.md` adds 3 browser-automation patterns (silent auto-submit / cookie leakage / captcha-bypass-attempt).
+- `references/playbook.md` § History bumps v1.x to "shipped 2026-05-19" with D17 entry.
+- CHANGELOG `[Unreleased]` entry written under `### Changed`.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Session cookies expire (typically 30d on most platforms) | Manifest flags "session expired" clearly when within 7d of expires_hint; operator re-exports; export-mode fallback works in interim. Auto-refresh requires storing login creds — out of scope |
+| Selector drift on platform UI updates | Flow refs versioned + dated; failures fall back to export-mode automatically; D17.next absorbs selector-sync work when drift surfaces |
+| Aggressive bot-detection on Meta / TikTok / YT | Single-attempt + sequential + no retry-storms avoids account-suspension patterns; any captcha = immediate fallback; operator's normal session pattern (their cookies) less detectable than synthetic-account automation |
+| Cookie leakage via debug logs / screenshots | No screenshots; logs text-only with reason-class only; critic dim 7 greps for cookie patterns; .forsvn/credentials/ already gitignored from D16 |
+| User cookies stale, automation succeeds without confirmation | Confirmation gate (Critical Gate 7) prevents — operator confirms before any submit; stale cookies fail at auth step → fallback to export |
+| 8 platform flows have varying robustness (LinkedIn cleaner than TikTok) | Per-platform fallback isolates risk; LinkedIn working doesn't depend on TikTok working; operator can disable per-platform via `--exclude=tiktok` flag (future) |
+| Selectors in flow refs become stale fast | Each flow ref carries `last_verified_date`; manifest warns when running a flow >90d old; operator decides whether to retry |
+
+### Status
+
+DONE — built 2026-05-19. 11 new files added to `skills/marketing/publish-social/`: 1 agent (automation-agent), 8 platform automation-flow refs (linkedin, instagram, facebook, tiktok, youtube, threads, bluesky, reddit), 2 cross-cutting refs (session-cookie-export, confirmation-gate). 8 existing files modified: SKILL.md (Critical Gate 7 added; Gate 2 updated for D17; routing Routes A/B/C/D; agent manifest now 3 agents; refs section enumerated), formatter-agent (mode resolution per-platform; D17 dispatch path with confirmation gate), critic-agent (Dim 7 added; pass gate now 49/70), platform-credentials (session_cookies field per platform; expires_hint; detection rules; file path alternative; safety rules extended), format-conventions (manifest frontmatter 14 fields incl. confirmation_result + automation_result_per_platform; per-platform draft frontmatter 9 fields incl. draft_url + automation_result), anti-patterns (#12 silent auto-submit, #13 cookie leakage, #14 captcha-bypass; quick-ref card updated), rubric (7 dims × 0-10 with auto-fail extended; pass gate 49/70), playbook (§ History v1.1 entry). publish-social directory: 31 total files (was 20 after D16). plugin.json unchanged. CHANGELOG `[Unreleased]` entry written under `### Changed` (capability extension, not new skill). Acceptance checks pass: 7 Critical Gates ✓, 3 agents ✓, 7-dim rubric ✓, 8 automation-flow refs ✓, session-cookie-export.md ✓, confirmation-gate.md ✓, manifest schema gains automation_result_per_platform ✓, 3 new anti-patterns ✓. User owns version bump + git commit + push.
