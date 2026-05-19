@@ -12,7 +12,7 @@ load_class: EXAMPLE
 
 ---
 
-**Operator:** "groom .agents/skill-artifacts — it's a junk drawer. Apply."
+**Operator:** "groom .forsvn/artifacts — it's a junk drawer. Apply."
 
 **Pre-Dispatch (warm):**
 

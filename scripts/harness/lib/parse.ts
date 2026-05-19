@@ -36,7 +36,7 @@ export function skillBodyStats(skillMdPath: string) {
 // Classify a Read tool call by what it touched.
 // "skill-internal-ref" = file under the skill's own folder
 // "skill-external-ref" = file under another skill's folder
-// "artifact-read" = file under .agents/ or skills-resources/ or research/ or brand/ or architecture/
+// "artifact-read" = file under .agents/ or .forsvn/ or research/ or brand/ or architecture/
 // "user-file" = anywhere else the user explicitly referenced
 export type ReadCategory = "skill-internal-ref" | "skill-external-ref" | "artifact-read" | "user-file";
 
@@ -48,7 +48,7 @@ export function categorizeRead(filePath: string, skillFolder: string): ReadCateg
   if (abs.includes("/skills/")) return "skill-external-ref";
   if (
     abs.includes("/.agents/") ||
-    abs.includes("/skills-resources/") ||
+    abs.includes("/.forsvn/") ||
     abs.startsWith(join(ROOT, "research") + "/") ||
     abs.startsWith(join(ROOT, "brand") + "/") ||
     abs.startsWith(join(ROOT, "architecture") + "/")

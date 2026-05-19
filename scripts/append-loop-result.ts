@@ -133,28 +133,28 @@ function resolveLoopDir(projectRoot: string, value: string): string {
   if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(slug)) {
     fail(`Loop argument must resolve to a valid slug (got ${JSON.stringify(value)}).`);
   }
-  const skillsResources = resolve(projectRoot, "skills-resources");
-  assertSafeDirectory(skillsResources, "skills-resources");
+  const skillsResources = resolve(projectRoot, ".forsvn");
+  assertSafeDirectory(skillsResources, ".forsvn");
   const realSkillsResources = realpathSync(skillsResources);
   const loopRoot = resolve(skillsResources, "loops");
-  assertSafeDirectory(loopRoot, "skills-resources/loops");
+  assertSafeDirectory(loopRoot, ".forsvn/loops");
   const realLoopRoot = realpathSync(loopRoot);
   if (realLoopRoot !== realSkillsResources && !realLoopRoot.startsWith(`${realSkillsResources}${sep}`)) {
-    fail("Loop root escapes skills-resources: skills-resources/loops");
+    fail("Loop root escapes .forsvn: .forsvn/loops");
   }
   const candidate = resolve(loopRoot, slug);
   if (candidate !== loopRoot && !candidate.startsWith(`${loopRoot}${sep}`)) {
-    fail("Loop path escaped skills-resources/loops.");
+    fail("Loop path escaped .forsvn/loops.");
   }
   if (!existsSync(candidate)) {
-    fail(`No loop folder found for slug ${JSON.stringify(slug)} under skills-resources/loops/. Run scaffold-eval-loop first.`);
+    fail(`No loop folder found for slug ${JSON.stringify(slug)} under .forsvn/loops/. Run scaffold-eval-loop first.`);
   }
   if (lstatSync(candidate).isSymbolicLink()) {
     fail(`Refusing to use symlinked loop folder: ${relative(projectRoot, candidate)}`);
   }
   const realCandidate = realpathSync(candidate);
   if (realCandidate !== realLoopRoot && !realCandidate.startsWith(`${realLoopRoot}${sep}`)) {
-    fail(`Loop folder escapes skills-resources/loops: ${relative(projectRoot, candidate)}`);
+    fail(`Loop folder escapes .forsvn/loops: ${relative(projectRoot, candidate)}`);
   }
   return candidate;
 }

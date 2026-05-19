@@ -1,14 +1,13 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // bootstrap-experience — create the local .forsvn/experience substrate.
-// See references/_shared/pre-dispatch-protocol.md.
+// See meta-skills/references/pre-dispatch-protocol.md.
 
 import { existsSync, lstatSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 
 const args = process.argv.slice(2);
 const root = realpathSync(resolve(args[0] ?? process.cwd()));
-const resourcesDir = join(root, "skills-resources");
+const resourcesDir = join(root, ".forsvn");
 const experienceDir = join(resourcesDir, "experience");
 const starterDomains = ["audience", "brand", "business", "content", "goals", "patterns", "product", "technical"];
 
