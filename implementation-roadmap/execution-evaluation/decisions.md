@@ -761,4 +761,81 @@ Always emit all four (HyperFrames scaffold + Remotion scaffold + generic manifes
 
 ### Status
 
-LOCKED — building now. On finish: write CHANGELOG `[Unreleased]` entry (no version bump — user owns) and surface the build for review before commit.
+DONE — built 2026-05-19. 5 files under `skills/marketing/produce-video/` (SKILL.md, 2 agents, 3 references); `plugin.json` registered (skills list + keywords, 2 hits); CHANGELOG `[Unreleased]` entry written. Acceptance checks pass: verb-first frontmatter ✓, 4 Critical Gates ✓, generation-provenance wired ✓, critic enumerates 4 dimensions ✓, brief-shortform field map ✓. User owns version bump + git commit + push.
+
+---
+
+## D15 — Workstream D slice 2 (LOCKED 2026-05-19: evaluate-ad MVP, synthetic ad-demo loop)
+
+Locked via interview round 9 (2026-05-19, post-D14). User picked evaluate-ad over publish-social / sync-hygiene / extract-service.
+
+### Why this slice
+
+Brief 05 § Eval Skills explicitly lists `evaluate-ad` as one of four eval surfaces (alongside `evaluate-content`, `evaluate-campaign`, and the already-shipped landing-page + short-form pair). write-ad has been live since the 2.0 rename with a 7-dim brief-time critic rubric but **zero post-launch eval feedback path**. Operators run Meta ads from write-ad's output and have no canonical place to score CTR / CPA / ROAS / frequency / fatigue against the original brief's hypothesis. evaluate-ad closes the loop.
+
+Pairs cleanly with D8: write-ad already emits generation-provenance per the D8 contract; evaluate-ad consumes that provenance to ground scoring against `input_artifacts` (the brief), and emits its own provenance pointing at the eval cycle.
+
+### Scope (v1)
+
+**New skill:** `skills/marketing/evaluate-ad/`
+- `SKILL.md` — verb-first; budget `standard`; mirrors `evaluate-landing-page`'s 4-agent shape, 8-section body, 10-field frontmatter, 8-col results.tsv.
+- `agents/metric-ingest-agent.md` — normalizes operator-supplied metrics (CTR, CPA, ROAS, spend, conversions, frequency, sample size, window, source caveats). Audience-temperature aware.
+- `agents/diagnosis-agent.md` — connects observed metrics to write-ad artifact's hypothesis (hook, anchor, audience-temp framing, CTA), creative-fatigue signals, audience-match signals.
+- `agents/recommendation-agent.md` — keep/discard/watch/blocked verdict + next-cycle action (rotate creative / refresh hook / shift budget / kill / route back to write-ad with revised brief).
+- `agents/critic-agent.md` — 7-dim rubric enforcement; routes critic-override to `scripts/eval/log-critic-override.ts`.
+- `references/playbook.md` — why this skill exists, methodology, when NOT to use, history.
+- `references/rubric.md` — 7 dims at 0-10 (per locked sub-decision #1): Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Audience-Temp Fidelity / Creative-Fatigue Awareness / Ledger Correctness. Falsifiability rules + revision protocol per brief 05.
+- `references/format-conventions.md` — evaluation artifact template (10-field frontmatter + 8-section body + Evidence 6-col + Results Row 8-col) byte-aligned with evaluate-landing-page where possible; ad-specific Evidence columns (Signal / Current / Baseline / Window / Source / Caveat — same shape).
+- `references/anti-patterns.md` — ad-eval-specific (fabricated attribution, conflating cold-audience CTR with retargeting CTR, confidence inflation on low-spend windows, scope drift to redesigning the LP under the ad, etc.) + cross-cutting marketing-stack rows.
+- `references/procedures/pre-dispatch.md` — read order, Cold Start 5-question bundle, hard-block conditions, audience-temp validation.
+- `references/procedures/dispatch-mechanics.md` — Layer 1 parallel (Metric Ingest + Diagnosis) → Layer 2 Recommendation → Layer 3 Critic + override protocol.
+
+**Synthetic demo loop:** `.forsvn/loops/ad-demo/`
+- `program.md` — loop operating contract; primary metric: ROAS (operator-pick-per-cycle proven via this synthetic example).
+- `context.md` — synthetic product + audience + baseline.
+- `results.tsv` — header row + one synthetic cycle row.
+- `evals/2026-05-19-cycle-1.md` — one synthetic cycle artifact proving the skill end-to-end.
+- `learnings.md` — empty seed.
+
+**Plugin registration:** `.claude-plugin/plugin.json` — append `./skills/marketing/evaluate-ad/` + keyword.
+
+**CHANGELOG:** `[Unreleased]` entry.
+
+### Locked sub-decisions
+
+1. **Rubric:** 7 dims at 0-10 — Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Audience-Temp Fidelity (ad-specific, replaces evaluate-landing-page's Boundary Control) / Creative-Fatigue Awareness (ad-specific, brief 05 explicitly calls frequency/fatigue) / Ledger Correctness. Pass gate: aggregate ≥ 49/70 AND every per-dim ≥ 6. Lives in `references/rubric.md` per brief 05 § Rubrics nudge. Version `v0.1` — provisional, mandatory revision after cycles 2-3 per brief 05's revision trigger.
+2. **Agent shape:** 4 agents byte-aligned with evaluate-landing-page (Metric Ingest + Diagnosis + Recommendation + Critic). Layer 1 parallel, Layer 2 sequential, Layer 3 critic.
+3. **Primary metric:** operator-picks-per-cycle via loop's `program.md`. evaluate-ad does not hard-code CTR / CPA / ROAS as the singular primary metric — different cycles may prioritize different metrics (cold-traffic prospecting → CTR + CPA; retargeting → ROAS + frequency; awareness → reach + frequency).
+4. **Audience-temperature handling:** one cycle per audience-temp. Mirrors write-ad's pattern (one artifact per audience-temp). Operator runs evaluate-ad twice for campaigns spanning both. critic-agent's "Audience-Temp Fidelity" dim catches contaminated metric ingest (e.g., warm-audience signals scored against a cold creative).
+5. **Demo loop scope:** synthetic `.forsvn/loops/ad-demo/` with a single Cycle 1 artifact. Pairs with D8's `lp-demo` precedent — proves infra end-to-end, no real campaign required.
+6. **Results.tsv schema:** 8 columns (cycle / date / artifact / primary_metric / value / baseline / status / description) — byte-identical to evaluate-landing-page. status ∈ `{keep, discard, watch, blocked}` enforced by critic Hard Fail.
+7. **Critic override protocol:** mirrors evaluate-landing-page — `scripts/eval/log-critic-override.ts` invocation with `--skill evaluate-ad` + failed dim + operator reason. Three valid overrides on same dim triggers rubric revision (D8 contract).
+8. **Generation provenance (per D8):** required. `input_artifacts` includes the write-ad artifact + `brand/BRAND.md` + relevant `research/icp-research.md` (for audience-temp validation).
+9. **Append helper:** reuse existing `scripts/append-loop-result.ts` — no new script. evaluate-landing-page already proved this works.
+10. **Routing:** `routing.position: evaluation` + `routing.lifecycle: evaluation`. `defers-to: run-eval-loop` (loop missing), `write-ad` (need next-cycle creative), `plan-campaign` (channel-strategy issue not creative).
+
+### Acceptance
+
+- `skills/marketing/evaluate-ad/SKILL.md` exists with verb-first frontmatter, 6 Critical Gates, 4-agent manifest, generation-provenance pattern, budget `standard`.
+- 4 agent files exist with role/input/output contracts; critic-agent enumerates the 7 rubric dims.
+- `references/rubric.md` exists with 7 dimensions × 0-10 bands + auto-fail conditions + revision protocol.
+- `references/format-conventions.md` defines the 10-field frontmatter + 8-section body + 6-col Evidence table + 8-col Results Row.
+- `references/anti-patterns.md` covers ad-eval-specific + cross-cutting rows.
+- `references/procedures/{pre-dispatch,dispatch-mechanics}.md` exist.
+- `references/playbook.md` exists.
+- `.forsvn/loops/ad-demo/` exists with program.md + context.md + results.tsv (header + 1 row) + evals/2026-05-19-cycle-1.md + learnings.md.
+- `.claude-plugin/plugin.json` updated; `grep "evaluate-ad" .claude-plugin/plugin.json` returns ≥2 hits (skill path + keyword).
+- CHANGELOG `[Unreleased]` entry written.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Rubric v0.1 will need calibration after first 2-3 real cycles | Brief 05 explicitly designs rubrics as provisional + revision-triggered. v0.1 signals this to operators. |
+| Synthetic demo loop doesn't validate against real ad performance | Same precedent as D8's `lp-demo` — infra proof, not ad-strategy proof. Real-ad cycle is operator follow-up. |
+| 7-dim rubric is heavier than 6-dim — more critic rewrite cycles | Brief 05 explicitly calls frequency/fatigue; burying it under Metric Integrity loses the signal. Tradeoff accepted. |
+| Audience-Temp Fidelity dim has subjective scoring on contaminated metric ingest | Falsifiability rules in rubric.md include explicit checks (was the audience targeting in metrics source actually the cold-traffic stack? Was retargeting frequency capped correctly?). |
+
+### Status
+
+DONE — built 2026-05-19. 11 new files under `skills/marketing/evaluate-ad/` (SKILL.md + 4 agents + 6 references including `rubric.md` with 7-dim 0-10 bands + Hard Fails + revision triggers). 5 files under `.forsvn/loops/ad-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-19-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic cold-traffic ROAS cycle. `plugin.json` registered (skills list + keywords, 2 hits). CHANGELOG `[Unreleased]` entry written (skill count 34 → 35). Acceptance checks pass: verb-first frontmatter ✓, 7 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-landing-page ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 + revision triggers ✓, generation-provenance per D8 contract wired ✓, ad-demo loop scaffolded ✓. User owns version bump + git commit + push.

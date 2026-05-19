@@ -1,0 +1,2 @@
+cycle	date	artifact	primary_metric	value	baseline	status	description
+1	2026-05-19	evals/2026-05-19-cycle-1.md	roas	2.4x	1.8x	keep	cold-traffic ROAS 2.4x over 14d vs 1.8x baseline; concrete-noun hook drove +33% lift, keep hook+offer, refresh hero next cycle per borderline fatigue
