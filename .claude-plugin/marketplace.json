@@ -1,0 +1,25 @@
+{
+  "name": "meta-skills",
+  "owner": {
+    "name": "hungv47",
+    "url": "https://github.com/hungv47"
+  },
+  "metadata": {
+    "description": "Agent Skills 2.0 — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 35 skills, single install. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
+    "version": "2.0.0"
+  },
+  "plugins": [
+    {
+      "name": "meta-skills",
+      "source": "./",
+      "description": "All 35 skills across meta (process), research, marketing, and product. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now consolidated.",
+      "category": "skills",
+      "tags": [
+        "multi-agent", "orchestration", "discover", "agents-panel", "eval-loop",
+        "icp-research", "market-research", "diagnose", "prioritize", "funnel-planner",
+        "brand", "copywriting", "ad-copy", "lp-brief", "lp-eval", "design-brief", "seo", "humanize", "cold-outreach", "short-form", "social-copy",
+        "user-flow", "architecture", "code-cleanup", "machine-cleanup", "docs-writing"
+      ]
+    }
+  ]
+}
