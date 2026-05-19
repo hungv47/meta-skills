@@ -1,7 +1,6 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // scaffold-eval-loop — create a loop-centered workspace for measurable work.
-// See references/_shared/eval-loop-spec.md for the full contract.
+// See meta-skills/references/eval-loop-spec.md for the full contract.
 //
 // Usage:
 //   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]
@@ -97,7 +96,7 @@ if (!slug) {
 }
 
 const title = titleize(name);
-const skillsResources = join(ROOT, "skills-resources");
+const skillsResources = join(ROOT, ".forsvn");
 assertExistingDirectorySafe(skillsResources);
 mkdirSync(skillsResources, { recursive: true });
 const loopRoot = join(skillsResources, "loops");

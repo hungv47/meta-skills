@@ -52,10 +52,10 @@ meta-skills/scripts/harness/
     └── parse.ts      # SKILL.md / plugin.json / ULID
 ```
 
-Run data goes to `.agents/skill-artifacts/meta/records/harness/`:
+Run data goes to `.forsvn/artifacts/meta/records/harness/`:
 
 ```
-.agents/skill-artifacts/meta/records/harness/
+.forsvn/artifacts/meta/records/harness/
 ├── .active                                # marker file — present iff a run is active
 ├── .events/<run-id>.jsonl                 # raw per-tool-call event log
 ├── .harness.log                           # debug log (hook errors etc.)
@@ -76,10 +76,10 @@ bun meta-skills/scripts/harness/record.ts --skill eval-loop --fixture standard
 #    or use /eval-loop. The hook records every tool call.
 
 # 3. Stop recording — pass --artifact for each output the skill produced
-bun meta-skills/scripts/harness/stop.ts --artifact skills-resources/loops/test-loop/program.md
+bun meta-skills/scripts/harness/stop.ts --artifact .forsvn/loops/test-loop/program.md
 
 # 4. After 3+ runs (minimal, standard, stretch), generate the report
-bun meta-skills/scripts/harness/report.ts --skill eval-loop --out .agents/skill-artifacts/meta/records/harness/baseline/eval-loop-report.md
+bun meta-skills/scripts/harness/report.ts --skill eval-loop --out .forsvn/artifacts/meta/records/harness/baseline/eval-loop-report.md
 
 # 5. After refactoring, compare baseline vs new runs
 bun meta-skills/scripts/harness/diff.ts --skill eval-loop --pre-before 2026-05-20 --post-from 2026-05-20
@@ -107,7 +107,7 @@ bun meta-skills/scripts/harness/stop.ts
   [--artifact <path>]...
 ```
 
-Pass `--artifact` once per output file the skill produced. If omitted, the harness infers from any Write/Edit calls that landed inside `.agents/`, `skills-resources/`, `research/`, `brand/`, or `architecture/`.
+Pass `--artifact` once per output file the skill produced. If omitted, the harness infers from any Write/Edit calls that landed inside `.agents/`, `.forsvn/`, `research/`, `brand/`, or `architecture/`.
 
 Writes `<date>-<skill>-<run-id>.json` and removes the marker.
 
@@ -163,7 +163,7 @@ The `hook` shell wrapper checks for the marker file before doing anything — wh
 
 If you ever want to disable the hook temporarily, delete the marker file:
 ```bash
-rm /Users/hungvio/Desktop/biz/agent-skills/.agents/skill-artifacts/meta/records/harness/.active
+rm /Users/hungvio/Desktop/biz/agent-skills/.forsvn/artifacts/meta/records/harness/.active
 ```
 
 The hook is safe-by-construction: any internal error logs to `.harness.log` and exits 0 — it will never block a tool call.

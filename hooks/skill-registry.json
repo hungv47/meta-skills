@@ -41,13 +41,13 @@
     },
     "clean-artifacts": {
       "phrases": [
-        "clean up .agents/skill-artifacts",
+        "clean up .forsvn/artifacts",
         "clean up the artifacts",
         "groom the artifact tree",
         "archive stale artifacts",
-        "prune .agents/skill-artifacts",
+        "prune .forsvn/artifacts",
         "tidy skill outputs",
-        ".agents/skill-artifacts is a junk drawer",
+        ".forsvn/artifacts is a junk drawer",
         "artifacts piling up"
       ],
       "allOf": [
@@ -57,7 +57,7 @@
         ],
         [
           "prune",
-          ".agents/skill-artifacts"
+          ".forsvn/artifacts"
         ],
         [
           "archive",
@@ -65,11 +65,11 @@
         ]
       ],
       "anyOf": [
-        "cleanup-artifacts",
+        "clean-artifacts",
         "groom artifacts",
         "stale artifacts",
         "archive artifacts",
-        ".agents/skill-artifacts cleanup"
+        ".forsvn/artifacts cleanup"
       ],
       "noneOf": [
         "code review",

@@ -1,7 +1,6 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // manifest-sync — derive `.agents/manifest.json` from artifact frontmatter.
-// See references/_shared/manifest-spec.md for the full contract.
+// See meta-skills/references/manifest-spec.md for the full contract.
 //
 // Usage:
 //   bun /path/to/manifest-sync.ts [project-root]
@@ -14,7 +13,7 @@ import { join, relative, basename } from "node:path";
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
 const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-archive") ?? process.cwd();
 const ROOT = realpathSync(ROOT_ARG);
-const ARTIFACT_ROOTS = [".agents/skill-artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
+const ARTIFACT_ROOTS = [".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = ".forsvn/experience";
 const MANIFEST_PATH = join(ROOT, ".agents", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, ".agents", "artifact-index.md");
@@ -91,42 +90,42 @@ function walkMd(dir: string, files: string[] = []): string[] {
 // Falls back to "unknown" for paths the spec doesn't recognize.
 function inferProducer(rel: string): string {
   const map: Array<[RegExp, string]> = [
-    [/^research\/research-icp/, "icp-research"],
-    [/^research\/research-market/, "market-research"],
-    [/^research\/product-context/, "icp-research"],
-    [/^brand\/(BRAND|DESIGN|ASSETS)/, "brand-system"],
-    [/^architecture\/architect-system/, "system-architecture"],
-    [/^\.agents\/skill-artifacts\/meta\/roadmap/, "agents-panel"],
-    [/^\.agents\/skill-artifacts\/meta\/tasks/, "task-breakdown"],
-    [/^\.agents\/skill-artifacts\/meta\/specs\//, "discover"],
-    [/^\.agents\/skill-artifacts\/meta\/sketches\/prioritize/, "prioritize"],
-    [/^\.agents\/skill-artifacts\/meta\/sketches\//, "discover"],
-    [/^\.agents\/skill-artifacts\/meta\/decisions\//, "agents-panel"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts/, "meta-system"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*fresh-eyes/, "fresh-eyes"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*cleanup-artifacts/, "cleanup-artifacts"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*diagnose/, "diagnose"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*targets/, "funnel-planner"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*cleanup-report/, "code-cleanup"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/.*machine-cleanup/, "machine-cleanup"],
-    [/^\.agents\/skill-artifacts\/meta\/records\/learned-rules/, "meta-system"],
-    [/^\.agents\/skill-artifacts\/meta\/out-of-scope/, "discover"],
-    [/^\.agents\/skill-artifacts\/mkt\/write-ad\//, "ad-copy"],
-    [/^\.agents\/skill-artifacts\/mkt\/copy\//, "copywriting"],
-    [/^\.agents\/skill-artifacts\/mkt\/content\//, "copywriting"],
-    [/^\.agents\/skill-artifacts\/mkt\/plan-campaign/, "campaign-plan"],
-    [/^\.agents\/skill-artifacts\/mkt\/brief-landing-page\//, "lp-brief"],
-    [/^\.agents\/skill-artifacts\/mkt\/optimize-seo/, "seo"],
-    [/^\.agents\/skill-artifacts\/mkt\/write-outreach\//, "cold-outreach"],
-    [/^\.agents\/skill-artifacts\/mkt\/design-briefs\//, "design-brief"],
-    [/^\.agents\/skill-artifacts\/mkt\/brief-shortform\//, "short-form-brief"],
-    [/^\.agents\/skill-artifacts\/mkt\/write-social\//, "social-copy"],
-    [/^\.agents\/skill-artifacts\/product\/flow\//, "user-flow"],
-    [/^\.agents\/skill-artifacts\/research\/research-shortform/, "short-form-research"],
-    [/^\.agents\/skill-artifacts\/research\/evaluate-shortform/, "short-form-eval"],
-    [/^skills-resources\/loops\/[^/]+\/program\.md$/, "eval-loop"],
-    [/^skills-resources\/loops\/[^/]+\/context\.md$/, "eval-loop"],
-    [/^skills-resources\/loops\/[^/]+\/learnings\.md$/, "eval-loop"],
+    [/^research\/icp-research/, "research-icp"],
+    [/^research\/market-research/, "research-market"],
+    [/^research\/product-context/, "research-icp"],
+    [/^brand\/(BRAND|DESIGN|ASSETS)/, "create-brand"],
+    [/^architecture\/system-architecture/, "architect-system"],
+    [/^\.forsvn\/artifacts\/meta\/roadmap/, "forsvn"],
+    [/^\.forsvn\/artifacts\/meta\/tasks/, "breakdown-tasks"],
+    [/^\.forsvn\/artifacts\/meta\/specs\//, "discover"],
+    [/^\.forsvn\/artifacts\/meta\/sketches\/prioritize/, "prioritize"],
+    [/^\.forsvn\/artifacts\/meta\/sketches\//, "discover"],
+    [/^\.forsvn\/artifacts\/meta\/decisions\//, "debate-panel"],
+    [/^\.forsvn\/artifacts\/meta\/records\/skill-contracts/, "meta-system"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*review-work/, "review-work"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*clean-artifacts/, "clean-artifacts"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*diagnose/, "diagnose"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*targets/, "plan-funnel"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*cleanup-report/, "clean-code"],
+    [/^\.forsvn\/artifacts\/meta\/records\/.*clean-machine/, "clean-machine"],
+    [/^\.forsvn\/artifacts\/meta\/records\/learned-rules/, "meta-system"],
+    [/^\.forsvn\/artifacts\/meta\/out-of-scope/, "discover"],
+    [/^\.forsvn\/artifacts\/mkt\/write-ad\//, "write-ad"],
+    [/^\.forsvn\/artifacts\/mkt\/write-copy\//, "write-copy"],
+    [/^\.forsvn\/artifacts\/mkt\/content\//, "write-copy"],
+    [/^\.forsvn\/artifacts\/mkt\/plan-campaign/, "plan-campaign"],
+    [/^\.forsvn\/artifacts\/mkt\/brief-landing-page\//, "brief-landing-page"],
+    [/^\.forsvn\/artifacts\/mkt\/optimize-seo/, "optimize-seo"],
+    [/^\.forsvn\/artifacts\/mkt\/write-outreach\//, "write-outreach"],
+    [/^\.forsvn\/artifacts\/mkt\/brief-graphic\//, "brief-graphic"],
+    [/^\.forsvn\/artifacts\/mkt\/brief-shortform\//, "brief-shortform"],
+    [/^\.forsvn\/artifacts\/mkt\/write-social\//, "write-social"],
+    [/^\.forsvn\/artifacts\/product\/flow\//, "map-user-flow"],
+    [/^\.forsvn\/artifacts\/research\/research-shortform/, "research-shortform"],
+    [/^\.forsvn\/artifacts\/research\/evaluate-shortform/, "evaluate-shortform"],
+    [/^\.forsvn\/loops\/[^/]+\/program\.md$/, "run-eval-loop"],
+    [/^\.forsvn\/loops\/[^/]+\/context\.md$/, "run-eval-loop"],
+    [/^\.forsvn\/loops\/[^/]+\/learnings\.md$/, "run-eval-loop"],
   ];
   for (const [re, skill] of map) if (re.test(rel)) return skill;
   return "unknown";
@@ -168,12 +167,12 @@ function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   const explicit = textField(fm, "lifecycle");
   if (explicit) return explicit;
   if (/^brand\//.test(rel) || /^research\/(product-context|icp-research|market-research)/.test(rel) || /^architecture\//.test(rel)) return "canonical";
-  if (/^skills-resources\/loops\/[^/]+\/program\.md$/.test(rel)) return "loop";
-  if (/^skills-resources\/loops\/[^/]+\/context\.md$/.test(rel)) return "loop-context";
-  if (/^skills-resources\/loops\/[^/]+\/learnings\.md$/.test(rel)) return "learning";
-  if (/^skills-resources\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
-  if (/^skills-resources\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
-  if (/^skills-resources\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
+  if (/^\.forsvn\/loops\/[^/]+\/program\.md$/.test(rel)) return "loop";
+  if (/^\.forsvn\/loops\/[^/]+\/context\.md$/.test(rel)) return "loop-context";
+  if (/^\.forsvn\/loops\/[^/]+\/learnings\.md$/.test(rel)) return "learning";
+  if (/^\.forsvn\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
+  if (/^\.forsvn\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
+  if (/^\.forsvn\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
   if (/^\.agents\/skill-artifacts\/meta\/decisions\//.test(rel)) return "decision";
   if (/^\.agents\/skill-artifacts\/meta\/specs\//.test(rel)) return "spec";
   if (/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
@@ -232,7 +231,7 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
 
   return `# Artifact Index
 
-Generated from artifact frontmatter by \`scripts/manifest-sync.ts\`.
+Generated from artifact frontmatter by \`meta-skills/scripts/manifest-sync.ts\`.
 
 - Updated: ${manifest.updated_at}
 - Artifacts indexed: ${entries.length}

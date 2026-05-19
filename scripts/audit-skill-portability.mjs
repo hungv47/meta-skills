@@ -31,7 +31,7 @@ const BLOCKED_PATTERNS = [
 ];
 
 const ALLOW_PATTERNS = [
-  /skills-resources\//,
+  /.forsvn\//,
   /research\/product-context\.md/,
   /research\/icp-research\.md/,
   /research\/market-research\.md/,

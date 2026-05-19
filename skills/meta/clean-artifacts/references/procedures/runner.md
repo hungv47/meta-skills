@@ -72,12 +72,12 @@ Canonicalize and validate the audit scope before walking it. Refuse `..` path se
 
 ```bash
 case "<scope>" in *..*) exit_with_status BLOCKED "Scope <scope> contains '..' and cannot be cleaned." ;; esac
-test ! -L .agents/skill-artifacts || exit_with_status BLOCKED ".forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
+test ! -L .forsvn/artifacts || exit_with_status BLOCKED ".forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
 case "<scope>" in
-  .agents/skill-artifacts|.forsvn/artifacts/*) ;;
+  .forsvn/artifacts|.forsvn/artifacts/*) ;;
   *) exit_with_status BLOCKED "Scope <scope> must be .forsvn/artifacts/ or a subpath under it." ;;
 esac
-SKILLS_RESOURCES_REAL="$(realpath .agents/skill-artifacts)"
+SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
 SCOPE_REAL="$(realpath "<scope>")" || exit_with_status BLOCKED "Scope <scope> cannot be resolved."
 case "$SCOPE_REAL" in
   "$SKILLS_RESOURCES_REAL"|"$SKILLS_RESOURCES_REAL"/*) ;;
@@ -247,11 +247,11 @@ For each confirmed candidate, MOVE to the dated archive. Mirror source path insi
 ARCHIVE_ROOT=".forsvn/artifacts/.archive/$(date +%Y-%m-%d)"
 SRC="<candidate-path>"
 DST="$ARCHIVE_ROOT/${SRC#./}"   # mirror full source path under archive root
-test ! -L .agents/skill-artifacts || { echo "refusing symlinked .agents/skill-artifacts root"; exit 1; }
+test ! -L .forsvn/artifacts || { echo "refusing symlinked .forsvn/artifacts root"; exit 1; }
 mkdir -p "$ARCHIVE_ROOT"
 test ! -L .forsvn/artifacts/.archive || { echo "refusing symlinked archive root"; exit 1; }
 SRC_REAL="$(realpath "$SRC")"
-SKILLS_RESOURCES_REAL="$(realpath .agents/skill-artifacts)"
+SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
 case "$SRC_REAL" in "$SKILLS_RESOURCES_REAL"/*) ;; *) echo "refusing outside-scope source $SRC"; exit 1 ;; esac
 test ! -L "$SRC" || { echo "refusing symlink source $SRC"; exit 1; }
 mkdir -p "$(dirname "$DST")"

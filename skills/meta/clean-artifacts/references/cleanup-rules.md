@@ -158,19 +158,19 @@ For every non-KEEP candidate, the runner greps for live references across `.fors
  ```bash
  grep -rl --include='*.md' --include='*.json' --include='*.ts' \
  --include='*.mjs' --include='*.yml' --include='*.yaml' \
- "<full-path>".agents/skill-artifacts brand research architecture 2>/dev/null
+ "<full-path>".forsvn/artifacts brand research architecture 2>/dev/null
  ```
 2. **Basename without extension** — catches references that name the file without its full path:
  ```bash
  grep -rl --include='*.md' --include='*.json' --include='*.ts' \
  --include='*.mjs' --include='*.yml' --include='*.yaml' \
- "<basename-no-ext>".agents/skill-artifacts brand research architecture 2>/dev/null
+ "<basename-no-ext>".forsvn/artifacts brand research architecture 2>/dev/null
  ```
 3. **Slug-only** — the kebab-case slug after the date prefix (for `YYYY-MM-DD-slug.md` files, this is the slug). Catches references that drop the date:
  ```bash
  grep -rl --include='*.md' --include='*.json' --include='*.ts' \
  --include='*.mjs' --include='*.yml' --include='*.yaml' \
- "<slug-only>".agents/skill-artifacts brand research architecture 2>/dev/null
+ "<slug-only>".forsvn/artifacts brand research architecture 2>/dev/null
  ```
 
 **Self-matches to exclude:**

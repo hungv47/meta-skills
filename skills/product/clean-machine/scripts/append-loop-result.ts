@@ -1,7 +1,6 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // append-loop-result — validate and append one row to a loop results.tsv.
-// See references/_shared/eval-loop-spec.md for the ledger contract.
+// See meta-skills/references/eval-loop-spec.md for the ledger contract.
 //
 // Usage:
 //   bun append-loop-result.ts <loop-slug> \
@@ -134,14 +133,14 @@ function resolveLoopDir(projectRoot: string, value: string): string {
   if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(slug)) {
     fail(`Loop argument must resolve to a valid slug (got ${JSON.stringify(value)}).`);
   }
-  const skillsResources = resolve(projectRoot, "skills-resources");
-  assertSafeDirectory(skillsResources, "skills-resources");
+  const skillsResources = resolve(projectRoot, ".forsvn");
+  assertSafeDirectory(skillsResources, ".forsvn");
   const realSkillsResources = realpathSync(skillsResources);
   const loopRoot = resolve(skillsResources, "loops");
   assertSafeDirectory(loopRoot, ".forsvn/loops");
   const realLoopRoot = realpathSync(loopRoot);
   if (realLoopRoot !== realSkillsResources && !realLoopRoot.startsWith(`${realSkillsResources}${sep}`)) {
-    fail("Loop root escapes skills-resources: .forsvn/loops");
+    fail("Loop root escapes .forsvn: .forsvn/loops");
   }
   const candidate = resolve(loopRoot, slug);
   if (candidate !== loopRoot && !candidate.startsWith(`${loopRoot}${sep}`)) {
