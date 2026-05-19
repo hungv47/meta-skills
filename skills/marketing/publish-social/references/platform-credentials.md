@@ -13,7 +13,7 @@ If neither source provides a value, `credentials_state.<service> = false`. If en
 
 **Never read the value into any output.** Detection is binary. The value is used only by the API call itself (and dropped immediately after).
 
-## v1 Credentials (Typefully only)
+## v1 Credentials (Typefully — D16)
 
 ### Typefully API key
 
@@ -23,7 +23,64 @@ If neither source provides a value, `credentials_state.<service> = false`. If en
 - **Where to get:** typefully.com → Settings → API → "Generate API key" (free tier available)
 - **Scope used:** `POST /v1/drafts/` (draft creation only — no publish endpoint called by D16)
 
-## v2+ Credentials (Stubs — Not Used in D16)
+## D17 Credentials (Session Cookies — 8 platforms)
+
+D17 introduces `session_cookies` field for browser-automation draft route. One entry per supported platform:
+
+| Platform | File path | Field name |
+|---|---|---|
+| LinkedIn | `linkedin.session_cookies` | string (semicolon-separated cookie name=value pairs) |
+| Instagram | `instagram.session_cookies` | string |
+| Facebook | `facebook.session_cookies` | string |
+| TikTok | `tiktok.session_cookies` | string |
+| YouTube | `youtube.session_cookies` | string |
+| Threads | `threads.session_cookies` | string |
+| Bluesky | `bluesky.session_cookies` | string |
+| Reddit | `reddit.session_cookies` | string |
+
+Plus an optional `expires_hint` field per platform (operator-supplied YYYY-MM-DD; publish-social warns within 7 days of hint).
+
+Plus an optional `session_cookies_file` field (alternative to inline string — path to a cookies.txt file inside `.forsvn/credentials/`).
+
+### Schema with D17 additions
+
+```json
+{
+  "typefully": { "api_key": "..." },
+  "linkedin": { "session_cookies": "li_at=...; JSESSIONID=...; bcookie=...;", "expires_hint": "2026-06-19" },
+  "instagram": { "session_cookies": "sessionid=...; csrftoken=...;", "expires_hint": "2026-06-19" },
+  "facebook": { "session_cookies": "c_user=...; xs=...;", "expires_hint": "2026-06-19" },
+  "tiktok": { "session_cookies": "sessionid=...; tt_csrf_token=...;", "expires_hint": "2026-06-19" },
+  "youtube": { "session_cookies": "SAPISID=...; HSID=...; SSID=...;", "expires_hint": "2026-06-19" },
+  "threads": { "session_cookies": "sessionid=...;", "expires_hint": "2026-06-19" },
+  "bluesky": { "session_cookies": "<bsky session token>", "expires_hint": "2026-06-19" },
+  "reddit": { "session_cookies": "reddit_session=...; token_v2=...;", "expires_hint": "2026-06-19" }
+}
+```
+
+### Detection rule for D17 (per platform)
+
+- Probe env var: `<PLATFORM>_SESSION_COOKIES` (e.g., `LINKEDIN_SESSION_COOKIES`). If non-empty → `credentials_state[platform] = true`.
+- Else probe `.forsvn/credentials/platforms.json` → `<platform>.session_cookies` non-empty OR `<platform>.session_cookies_file` exists → `credentials_state[platform] = true`.
+- Else → `credentials_state[platform] = false`.
+
+`credentials_state` is binary; value never logged.
+
+### Per-platform freshness
+
+Operator-supplied `expires_hint` is a YYYY-MM-DD string. publish-social warns "session may expire soon" when current date is within 7 days of hint. Doesn't enforce — operator decides whether to re-export.
+
+### Cookie value handling
+
+- Value passed to automation-agent at dispatch time only (never logged, never written to bundle).
+- Value passed to `agent-browser` invocation as cookie payload (agent-browser handles cookie injection; assumed not to log).
+- Critic dim 7 enforces: greps all emitted files + logs for substring matches of cookie values; any match = auto-fail.
+
+### Session-cookie export workflow
+
+See [`session-cookie-export.md`](session-cookie-export.md) for the per-platform operator guide (browser-extension method, DevTools manual extract, cURL-style export).
+
+## v2+ Credentials (Stubs — Not Used in D16/D17)
 
 The `.forsvn/credentials/platforms.json` schema reserves slots for D17 / D18 expansions. Stubs below are for documentation only — D16 never reads these fields.
 

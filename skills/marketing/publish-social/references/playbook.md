@@ -92,8 +92,8 @@ Return bundle root path + Mode Summary line + next-step instruction matched to d
 ## History
 
 - **v1.0 (D16, 2026-05-19)** — initial slice. Export + Typefully API draft. 9 platforms. 4 scheduler formats. Auto-detect.
-- **v1.x (D17, planned)** — browser-automation drafts for LinkedIn / IG / FB / TikTok via agent-browser MCP. Credential schema extends (OAuth tokens). `--mode=draft` becomes available for all 9 platforms.
-- **v1.y (D18, planned)** — `--mode=publish` with explicit current-session confirmation gate. Includes dry-run + rollback path. Highest-risk surface; isolated slice.
+- **v1.1 (D17, 2026-05-19)** — browser-automation drafts for 8 non-X platforms (LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit) via session-cookie auth + agent-browser. Adds: automation-agent + 8 platform-flow refs + session-cookie-export.md + confirmation-gate.md. Adds Critical Gate 7 (confirmation gate). Adds critic dim 7 (Browser-Automation Safety; rubric becomes 7 dims × 0-10). Adds 3 anti-patterns (silent auto-submit / cookie leakage / captcha-bypass attempts). Schema in `.forsvn/credentials/platforms.json` extends with `session_cookies` field per platform. Per-platform fallback to D16 export-mode on automation failure (single attempt; no retries; no captcha solve). Manifest gains `confirmation_result` + `automation_result_per_platform` fields. Per-platform draft frontmatter gains `draft_url` + `automation_result` fields.
+- **v1.2 (D18, planned)** — `--mode=publish` with explicit current-session confirmation gate. Includes dry-run + rollback path. Highest-risk surface; isolated slice.
 
 ## Related skills
 

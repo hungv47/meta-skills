@@ -60,6 +60,32 @@
 
 **Fix:** `references/scheduler-formats.md` carries vintage date + per-scheduler hand-tune notes. README's scheduler-import file map warns "verify against your scheduler's current import spec." When a scheduler changes its spec, update `scheduler-formats.md` and bump publish-social version.
 
+## D17 Browser-Automation Patterns (3)
+
+### 12. Silent auto-submit (D17)
+
+**Pattern:** publish-social proceeds with browser-automation drafts without showing the operator a preview or asking for confirmation. The 8 drafts land in platform UIs before operator can review.
+
+**Why it hurts:** Even drafts are visible state. A buggy formatter creating 8 garbage drafts in LinkedIn / IG / FB / TikTok / etc. is hours of manual cleanup + reputational risk if drafts are seen before deletion.
+
+**Fix:** Critical Gate 7 enforces. confirmation-gate.md defines the single-confirm protocol; gate fires after formatter completes and before automation-agent dispatch. Critic dim 7 verifies: gate-prompt text in transcript + operator response logged + `confirmation_result` field matches transcript + no success rows without `confirmation_result == "confirmed"`.
+
+### 13. Cookie leakage (D17)
+
+**Pattern:** A session cookie value (LinkedIn `li_at`, Instagram `sessionid`, etc.) appears in any emitted file (manifest / per-platform drafts / scheduler-imports / README) OR in an automation log line OR in an error message.
+
+**Why it hurts:** Cookies are credential-equivalent. If `.forsvn/` is ever shared (manual paste, screen share, accidental git push), the cookie leak = account compromise. Worse than D16's credential leak because cookies grant full session access (not just draft API).
+
+**Fix:** Critical Gate 3 (extends from D16) + Critic dim 7 auto-fail. Cookie values passed to automation-agent at dispatch only; never logged; never written to bundle. Critic dim 7 greps every emitted file + log for substring matches of each platform's cookie string; any match = auto-fail. Error messages reference cookie file path or env var name only.
+
+### 14. Captcha-bypass attempts (D17)
+
+**Pattern:** automation-agent encounters a captcha on a platform; retries the automation, attempts to solve the captcha, or pings the operator to solve interactively.
+
+**Why it hurts:** (a) Retry-on-captcha = account-suspension risk — platforms log retry patterns as bot signatures. (b) Solving captcha via UI inspection / image recognition = TOS violation on most platforms. (c) Pinging operator interactively = synthetic-action signature; operator's normal browser session wouldn't produce that pattern.
+
+**Fix:** Any captcha detection → IMMEDIATE fallback to export-mode for that platform; no retry; no solve attempt; no operator-prompt. automation-agent's flow specs include captcha-element selectors for detection; flow exits with `failed:captcha` reason-class. Critic dim 7 auto-fails if "retry" log line appears within 1s of "captcha" detection log line.
+
 ## Cross-Cutting Marketing-Stack Rows (4)
 
 ### 8. Cross-stack contract drift
@@ -115,3 +141,6 @@
 | 9 | Brand-system absent → fabrication | Yes (pre-dispatch) | — |
 | 10 | Skill-deference miss | — | — (soft prompt only) |
 | 11 | Artifact schema drift | Yes (format-conventions) | — |
+| 12 | Silent auto-submit (D17) | Yes (Gate 7) | Yes (dim 7 auto-fail) |
+| 13 | Cookie leakage (D17) | Yes (Gate 3 extends) | Yes (dim 7 auto-fail) |
+| 14 | Captcha-bypass attempts (D17) | — | Yes (dim 7 auto-fail) |
