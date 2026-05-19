@@ -678,3 +678,87 @@ Three options considered:
 **File-count delta:** 21 today (7 source + 14 mirror) → 35 after D13 (7 canonical + 28 mirror). The increase is honest accounting: brief-shortform pretended to own a cross-skill resource; D13 admits it's cross-skill by making it top-level AND giving brief-shortform a mirror like every consumer.
 
 **Manual-sync drift risk** until D14 hygiene slice ships. Accepted: same drift risk that exists for the 13 other shared refs already mirrored this way. D14 unblocks all of them together.
+
+---
+
+## D14 — Workstream C slice 2 (LOCKED 2026-05-19: produce-video MVP, export-mode, multi-runtime)
+
+Locked via interview round 8 (2026-05-19, post-D13). User picked produce-video over publish-social / evaluate-ad / sync-hygiene. Note: the D13 build-time finding tentatively reserved "D14" for sync-skill-support.mjs cleanup. This decision re-uses the D14 label for produce-video; the sync-hygiene slice is now D15 candidate. No file references to a sync-flavored D14 exist yet, so the rename is cost-free.
+
+### Why this slice
+
+Brief 04 mandates three production skills (`produce-asset`, `produce-video`, `publish-social`). D11 landed `produce-asset` as MVP. produce-video is the natural next slice — it pairs with the existing `brief-shortform` skill (already emits shot lists + on-screen text + audio plan + caption + CTA + aspect + length), inherits the D11 export-mode discipline ("No first version should require external APIs to be useful" — brief 04:16), and proves the multi-runtime export pattern the user wants for the production layer.
+
+Pairs cleanly with D8: produce-video emits generation-provenance (`input_artifacts` includes the brief-shortform path + `brand/BRAND.md` + `brand/DESIGN.md`) so a downstream `evaluate-video` skill (backlog) can score the produced video against the brief's spec.
+
+### Scope (v1 — export-mode only, multi-runtime)
+
+**New skill:** `skills/marketing/produce-video/`
+- `SKILL.md` — verb-first naming per D1; budget: `standard`; consumes brief-shortform artifact OR generic video-brief schema; produces a multi-runtime export bundle.
+- `agents/prompt-author-agent.md` — emits per-shot prompts (visual + on-screen text + voice/TTS spec) and the runtime scaffolds (HyperFrames .html + Remotion .tsx), with platform-aware specs from the brief.
+- `agents/critic-agent.md` — sequential critic pass (mirrors D11's single-critic model) with 4 dimensions: Schema-Compliance-and-CTA-Visibility / Brand-Mark-Fidelity / Caption-Pace / Narrative-Arc.
+- `references/format-conventions.md` — manifest schema + scenes/ per-shot template + scaffold-file conventions + directory layout.
+- `references/anti-patterns.md` — brief 04 § Anti-patterns: don't hallucinate logos, don't override aspect ratio silently, don't strip EXIF on referenced assets, don't generate every variant unbidden. Plus video-specific: don't pad shot durations to hit length targets, don't invent CTAs the brief didn't specify, don't recommend stock-video terms when brand assets exist.
+- `references/video-brief-schema.md` — canonical schema doc (per locked sub-decision #3). Defined as a **superset of brief-shortform's existing output**, so brief-shortform requires no patch. Documents required vs optional fields, validation rules, and the brief-shortform-to-schema field map.
+
+**Plugin registration:** `.claude-plugin/plugin.json` — append `./skills/marketing/produce-video/` to skills list + `produce-video` to keywords.
+
+**Output bundle (per locked sub-decision #2 — per-runtime subdirs):**
+
+```
+.forsvn/artifacts/mkt/produced-videos/[slug]/
+├── manifest.md                  # canonical runtime-agnostic contract (always emitted)
+├── scenes/
+│   └── [shot-id].md             # per-shot prompt files (visual + OST + voice spec)
+├── hyperframes/
+│   └── scaffold.html            # HyperFrames composition scaffold + scenes JSON inlined
+├── remotion/
+│   └── scaffold.tsx             # Remotion composition scaffold
+└── vercel-ai-cli.md             # README showing how to pipe scenes/ through `npx ai` / `vercel ai`
+```
+
+Always emit all four (HyperFrames scaffold + Remotion scaffold + generic manifest + Vercel AI CLI README) per locked sub-decision #1. Operator picks the downstream runtime — skill never invokes one.
+
+**Not in v1 (explicit deferrals):**
+- No actual rendering. No `hyperframes render`, no `npx remotion render`, no Vercel AI CLI execution. Export only.
+- No audio file generation. TTS spec only — operator pipes through their own TTS tool. No SRT/VTT in v1.
+- No browser-recording route (brief 04 lists it; deferred).
+- No publish step / no draft-to-platform. That's `publish-social` (separate D-slice).
+- No `playbook.md`, no `procedures/` subdir, no critic-override-log wiring (D8 wires that; produce-video benefits when evaluate-video lands, not in v1).
+- No multi-agent parallel-shot prompt-author (sub-decision #4 locked sequential).
+
+### Locked sub-decisions
+
+1. **Scaffolds (always emit all 4):** HyperFrames .html, Remotion .tsx, generic `manifest.md`, Vercel AI CLI README. Per-shot prompt files always emitted under `scenes/`.
+2. **Output layout:** per-runtime subdirs (`hyperframes/`, `remotion/`) + top-level `manifest.md`, `scenes/`, `vercel-ai-cli.md`. Cleaner isolation if either runtime grows supporting files later.
+3. **Schema home:** `produce-video/references/video-brief-schema.md` — skill-local, not top-level. Re-promotion to `references/` (top-level) is deferred to D15+ if/when a second consumer (evaluate-video) lands.
+4. **Critic shape:** sequential prompt-author → single critic-agent pass with 4 dimensions: Schema-Compliance-and-CTA-Visibility (manifest validates + CTA copy present in final shot's on-screen text AND manifest cta field) / Brand-Mark-Fidelity (per-shot prompts cite brand/DESIGN.md only — no invented logos) / Caption-Pace (on-screen-text words ÷ shot duration in target 2-3 words/sec) / Narrative-Arc (hook → body → CTA arc across shots; soft check).
+5. **Input contract:** primary input is brief-shortform artifact path. Operator may also pass a hand-written video-brief artifact matching the schema. Skill validates against `video-brief-schema.md` before dispatch — fails fast with NEEDS_CONTEXT if required fields missing.
+6. **TTS handling:** export-mode emits per-shot voice spec (`voice: {gender, tone, pace_wpm, accent, sample_line}`) and narration text. No audio file. No SRT in v1.
+7. **Generation provenance (per D8 contract):** required. `input_artifacts` includes the brief-shortform path + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until a downstream evaluate-video cycle scores the produced video.
+8. **Budget tier:** `standard` per D11 produce-asset pattern. `--fast` collapses to single prompt-author pass + light critic; `--deep` available but not default.
+9. **No new top-level folder.** Produced videos land under `.forsvn/artifacts/mkt/produced-videos/` per the canonical Artifact Placement contract — pipeline-lifecycle, not canonical sources of truth.
+10. **D14 label re-use:** the D13 build-time finding mentioned "D14 hygiene slice" for sync-skill-support.mjs cleanup. That sync-hygiene work is renumbered to D15 candidate. No code references to the prior D14 reservation exist, so the rename is cost-free.
+
+### Acceptance
+
+- `skills/marketing/produce-video/SKILL.md` exists with verb-first frontmatter, generation-provenance pattern wired in, brief 04's 4 Critical Gates (export-mode-only floor, schema-and-CTA, brand-mark fidelity, caption-pace), and budget `standard`.
+- `agents/prompt-author-agent.md` + `agents/critic-agent.md` exist with role/input/output contracts; critic-agent enumerates the 4 dimensions from sub-decision #4.
+- `references/format-conventions.md` defines the manifest schema + scenes/ per-shot template + scaffolds/ file conventions.
+- `references/anti-patterns.md` covers brief 04's anti-patterns + video-specific anti-patterns from the scope section above.
+- `references/video-brief-schema.md` exists with required-vs-optional fields + brief-shortform-to-schema field map.
+- `.claude-plugin/plugin.json` updated; `grep "produce-video" .claude-plugin/plugin.json` returns ≥2 hits (skill path + keyword).
+- CHANGELOG `[Unreleased]` entry written.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Multi-runtime scaffolds (HyperFrames + Remotion + Vercel AI CLI) may rot independently | All three are recommendations + operator choice, not invocations. If a runtime's API changes, the scaffold becomes stale but the canonical manifest survives — operator can regenerate scaffolds from manifest. |
+| Sequential single-critic may miss narrative arc on long videos (8+ shots) | brief-shortform's target is short-form (≤60s, typically 3-6 shots). Long-form is parked per brief 04 scope. Multi-critic adds cost without v1 benefit. |
+| Schema-local-to-skill means evaluate-video (future) has to import or duplicate it | D15+ can promote the schema to top-level `references/` when a second consumer lands. Premature promotion now adds drift risk. |
+| TTS spec without audio means operator has more downstream work | Matches brief 04 export-mode principle ("complete render script and asset manifest when runtime unavailable"). Audio-generation API is v2 surface. |
+
+### Status
+
+LOCKED — building now. On finish: write CHANGELOG `[Unreleased]` entry (no version bump — user owns) and surface the build for review before commit.
