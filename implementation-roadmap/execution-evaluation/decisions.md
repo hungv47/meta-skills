@@ -10,6 +10,10 @@ authority: implementation contract — overrides brief-pack/ where they conflict
 
 One-page decision memo from the brief-pack interview (00-executive-brief.md § "First Move"). Authoritative for the workstreams below. Brief-pack files remain as expanded rationale.
 
+## Program Rules (apply to every workstream)
+
+**PR1 — Interview before implementing.** For any work tied to this folder, the implementing agent MUST: (1) read every relevant brief-pack file end-to-end, (2) read this `decisions.md`, (3) read any source IDEAs that fed the brief, (4) run `AskUserQuestion` rounds until every load-bearing decision is locked or explicitly punted, and (5) only then start writing or moving code. "The task seems clear" has been wrong before on this program. Multi-round interviews are expected and welcomed. Set 2026-05-19 by hungv47 after Workstream A kickoff went well *because* the interview was run first.
+
 ## Locked Scope (in order)
 
 1. **Workstream A — `/forsvn` router + `.forsvn/` state root.** Ship first. Proves orchestration backbone before any rename or capability work.
@@ -66,9 +70,33 @@ Pre-release checklist (gates the version bump — user owns the bump itself):
 - [ ] Every skill directory renamed; frontmatter `name:` matches directory.
 - [ ] Every cross-skill `[[wikilink]]` updated.
 - [ ] `marketplace.json` + `plugin.json` skill paths updated (user owns version field).
+- [ ] D6 — 4 orchestrate-* skills deleted; pipeline chains extracted to `skills/meta/forsvn/references/chains/`.
+- [ ] D6 — `grep -r "orchestrate-meta\|orchestrate-research\|orchestrate-marketing\|orchestrate-product"` returns zero hits outside CHANGELOG.md.
+- [ ] D6 — Every leaf skill that previously had `defers-to: orchestrate-*` now points at `/forsvn` or directly at the relevant leaf.
 - [ ] `README.md` skill catalog rewritten.
 - [ ] `MEMORY.md`, `references/`, `hooks/user-prompt-submit-skill-router.mjs` all reference new names.
-- [ ] `CHANGELOG.md` 3.0.0 entry includes full rename map.
+- [ ] `CHANGELOG.md` 2.0.0 entry includes full rename map.
+
+### D6 — Collapse orchestrate-* skills into `/forsvn`
+
+`/forsvn` is the single front door. The four orchestrate-* skills (`orchestrate-meta`, `orchestrate-research`, `orchestrate-marketing`, `orchestrate-product`) are redundant routing layers and get **deleted in Workstream B**.
+
+**What dies:**
+- `skills/meta/orchestrate-meta/` — pure duplication of `/forsvn`'s cross-stack taxonomy. Both classify intent and route. Two front doors = "which one?" ambiguity the brief was trying to fix.
+- `skills/research/orchestrate-research/`, `skills/marketing/orchestrate-marketing/`, `skills/product/orchestrate-product/` — these encoded per-domain dispatch chains (brand → copy → LP → eval, etc.), but the chains are *data*, not behavior worth a skill layer.
+
+**What survives:** the pipeline knowledge from each orchestrate-* SKILL.md moves to `skills/meta/forsvn/references/chains/{research,marketing,product,meta}.md`. `/forsvn` reads the relevant chain file when dispatching domain work and proposes the next step (e.g., "you just finished brand — copy is the typical next step. /copywriting?").
+
+**Migration shape (lives in Workstream B):**
+1. Extract each orchestrate-*'s pipeline chain + decision rules into `skills/meta/forsvn/references/chains/<domain>.md`.
+2. Delete the 4 skill directories.
+3. Remove their entries from `.claude-plugin/plugin.json` `skills:`.
+4. Sweep every `defers-to:` and `routing.*` reference across the stack — every leaf skill that referenced an orchestrate-* must point at `/forsvn` or directly at the relevant leaf.
+5. CHANGELOG 2.0.0 entry must call out the 4 deletions explicitly with "use /forsvn instead" guidance.
+
+**Why this fits Workstream B and not its own workstream:** the verb-first rename already touches every `defers-to:` and cross-skill `[[link]]`. Doing the orchestrate-* collapse in the same pass means one cross-stack sweep instead of two. Workstream B's pre-release checklist (D4) absorbs the deletions.
+
+**Acceptance:** `grep -r "orchestrate-meta\|orchestrate-research\|orchestrate-marketing\|orchestrate-product"` returns zero hits outside CHANGELOG.md and migration commit messages.
 
 ### D5 — First proving workflow
 
@@ -98,10 +126,11 @@ Brand → first-content path (brief 01:32 asked which workflow proves the system
 
 ## What Is NOT Decided
 
-Carry to the next interview when Workstream A is ready to start:
+Carry to the next interview when Workstream B is ready to start:
 - Per-skill rename map sign-off (D1 lists the source; user must confirm exact new names).
 - `/forsvn` UX details: question-asking format, dispatch confirmation prompts, resume-vs-fresh defaults.
 - Whether `create-brand` runs autonomously inside the proving workflow or pauses for user confirmation.
+- D6 chain-extraction: how much per-domain knowledge from each orchestrate-* SKILL.md actually moves to `references/chains/` vs. gets dropped as cruft. Needs read-pass of each orchestrate-* body first.
 - Workstream C–F sequencing.
 
 ## Status
