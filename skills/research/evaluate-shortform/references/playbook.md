@@ -56,6 +56,6 @@ The signal that matters is the **delta** between predicted and observed — not 
 - [`anti-patterns.md`](anti-patterns.md) [ANTI-PATTERN] — failure modes
 - [`format-conventions.md`](format-conventions.md) — date format, URL handling, citation pattern, rubric score format, pattern-log entry shape
 - [`rubric.md`](rubric.md) — the v0.1 provisional rubric (4 dimensions + author-discretion)
-- [`platform-intelligence/`](platform-intelligence/) — per-platform eval references (hook archetypes, completion-rate baselines, signal-decay rules)
+- [`_shared/platform-intelligence/`](_shared/platform-intelligence/) — per-platform eval references (hook archetypes, completion-rate baselines, signal-decay rules). Canonical at top-level `references/platform-intelligence/` (D13)
 - [`_shared/pre-dispatch-protocol.md`](_shared/pre-dispatch-protocol.md) — canonical Pre-Dispatch spec
 - [`_shared/mode-resolver.md`](_shared/mode-resolver.md) — `--fast` behavior (this skill is `budget: standard`; `--fast` collapses to single-pass eval-runner, but Critical Gates still enforced)

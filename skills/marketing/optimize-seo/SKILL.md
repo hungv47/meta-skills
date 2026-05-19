@@ -93,6 +93,7 @@ Before delivering, all must hold:
 2. **AI SEO is additive, not alternative.** No point optimizing for AI citations if crawlers can't reach content.
 3. **Source recency.** AI platform behavior shifts fast — verify no deprecated practices, outdated crawlers, stale metrics.
 4. **Mode is diagnosis-driven**, not a generic "do SEO" deliverable.
+5. **Platform-native modes cite platform-intelligence.** When mode is AI SEO, Programmatic, Competitor Pages, or ASO, recommendations affecting platform-native search surfaces (TikTok / YouTube / LinkedIn / X / Reels / App Store) cite the relevant §§ from `references/_shared/platform-intelligence/[platform].md` (mapped per agent in `references/platform-search.md`). Generic "post on LinkedIn" is not sufficient — recommendation references §1/§2/§3/§4 of the platform-intelligence catalog by section.
 
 ---
 
@@ -232,6 +233,7 @@ End-to-end Route A walkthrough (Pre-Dispatch → parallel Layer 1 → merge → 
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/seo-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, ai-seo, programmatic-seo, competitor-pages, schema-reference, aso}.md`
+- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, ai-seo, programmatic-seo, competitor-pages, schema-reference, aso, platform-search}.md`
+- **Platform intelligence** (loaded by ai-presence-agent, programmatic-template-agent, comparison-page-agent, aso-keyword-agent, aso-listing-agent when their mode is active): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13). Agent-to-section map in `references/platform-search.md`.
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
 - **Agents:** 15 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 10-item quality gate + 11-row Rewrite Routing Table.
