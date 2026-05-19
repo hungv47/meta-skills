@@ -1,0 +1,16 @@
+.DS_Store
+node_modules/
+dist/
+.env
+.env.*
+
+# Local artifact-tree state — created per-project at runtime
+.agents/
+
+# User-specific loops + experience substrate — not distributable plugin content
+skills-resources/
+
+# Local-only IDE / agent state
+.scion/
+.claude/settings.local.json
+IDEA.md
