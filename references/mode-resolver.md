@@ -22,9 +22,9 @@ Every skill declares a `budget` tier in its frontmatter. This file defines what 
 
 | Budget | Execution | Skills at this tier |
 |--------|-----------|---------------------|
-| **fast** | Single-agent, no sub-agent spawning, no critic gate. Respond directly. | `discover`, all `orchestrate-*` (meta, research, marketing, product) |
-| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanize`, `vn-tone`, `design-brief`, `user-flow`, `docs-writing`, `agents-panel`, `task-breakdown`, `fresh-eyes`, `cleanup-artifacts`, `social-copy`, `short-form-eval`, `funnel-planner` |
-| **deep** | Full orchestration as documented. All layers, all agents, full critic gate. | `copywriting`, `ad-copy`, `campaign-plan`, `brand-system`, `seo`, `lp-brief`, `lp-optimization`, `cold-outreach`, `short-form-brief`, `system-architecture`, `code-cleanup`, `machine-cleanup`, `diagnose`, `icp-research`, `market-research`, `prioritize`, `short-form-research` |
+| **fast** | Single-agent, no sub-agent spawning, no critic gate. Respond directly. | `forsvn`, `discover` |
+| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanize`, `polish-vn`, `brief-graphic`, `map-user-flow`, `write-docs`, `debate-panel`, `breakdown-tasks`, `review-work`, `clean-artifacts`, `write-social`, `evaluate-shortform`, `plan-funnel`, `run-eval-loop` |
+| **deep** | Full orchestration as documented. All layers, all agents, full critic gate. | `write-copy`, `write-ad`, `plan-campaign`, `create-brand`, `optimize-seo`, `brief-landing-page`, `evaluate-landing-page`, `write-outreach`, `brief-shortform`, `architect-system`, `clean-code`, `clean-machine`, `diagnose`, `research-icp`, `research-market`, `prioritize`, `research-shortform` |
 
 A skill's `budget:` field is its **default tier** — never a ceiling, never a floor. Auto-downgrade heuristics and operator overrides shift the resolved mode at invocation.
 
@@ -59,13 +59,13 @@ Use `--fast` when you want a first pass and accept reduced rigor (no critic, no 
 
 `--fast` skips orchestration weight, not correctness floor. Two contracts are inviolable:
 
-**1. Cold Start.** When no context is resolvable from artifacts or `skills-resources/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing audience / business / brand decisions.
+**1. Cold Start.** When no context is resolvable from artifacts or `.forsvn/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing audience / business / brand decisions.
 
 **2. Safety gates.** Hard-gated skills enforce gates regardless of `--fast`. Examples of hard gates that supersede the flag:
-- `design-brief` / `lp-brief` → brief-without-brand-system block
-- `ad-copy` → policy + claim-substantiation format-checker
-- `user-flow` → platforms + surfaces required
-- `code-cleanup` → 5 golden rules
+- `brief-graphic` / `brief-landing-page` → brief-without-brand-system block
+- `write-ad` → policy + claim-substantiation format-checker
+- `map-user-flow` → platforms + surfaces required
+- `clean-code` → 5 golden rules
 
 The contract is **"skip the heavy lift, not the guardrails."** A skill that quietly drops its safety gate when `--fast` fires is broken — file it as a bug.
 
@@ -120,7 +120,7 @@ skip Layer-2 dispatch but still run Cold Start questions if context isn't resolv
 
 1. **Silent mode flip.** Skill resolves to `fast` and dispatches differently but never tells the operator. Always echo the resolved mode in the first response line when it differs from the skill's default budget.
 2. **Safety-gate erosion.** `--fast` branch quietly skips a hard gate "because it's faster." Hard gates are non-negotiable — `--fast` doesn't authorize bypass.
-3. **Cold Start skipped in warm-start illusion.** Skill assumes context is present because the operator's prompt is long. Length ≠ resolved context. Run the cold-start check against `skills-resources/experience/` and artifacts, not against prompt verbosity.
+3. **Cold Start skipped in warm-start illusion.** Skill assumes context is present because the operator's prompt is long. Length ≠ resolved context. Run the cold-start check against `.forsvn/experience/` and artifacts, not against prompt verbosity.
 4. **Auto-downgrade applied after dispatch.** Heuristics are pre-dispatch only. Once agents are spawned, the resolved mode is locked.
 5. **Re-litigating tier on every invocation.** The skill's `budget:` frontmatter is the default. Heuristics + flags shift it per-invocation. Don't change the frontmatter to "fix" misroutes — fix the heuristic application instead.
 

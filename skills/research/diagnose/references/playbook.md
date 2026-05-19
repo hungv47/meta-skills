@@ -45,10 +45,10 @@ Pick by problem shape. Math beats issue when a formula exists; issue beats math 
 
 ## When NOT to use this skill
 
-- **Code bugs.** That's `code-cleanup` (product-skills). Diagnose is for business and strategic problems, not stack traces.
+- **Code bugs.** That's `clean-code` (product-skills). Diagnose is for business and strategic problems, not stack traces.
 - **Brainstorming solutions to a known problem.** That's `prioritize`. Diagnose stops at "here's the root cause"; prioritize continues with "here are the initiatives to address it."
 - **Clarifying what to build / scoping an idea.** That's `discover`. Diagnose presumes a metric exists and is underperforming; if you don't yet know what the metric should be, discover first.
-- **Market-level trends and competitive context.** That's `market-research`. The external-check-agent inside diagnose scans for external causes, but it doesn't size markets or profile competitors.
+- **Market-level trends and competitive context.** That's `research-market`. The external-check-agent inside diagnose scans for external causes, but it doesn't size markets or profile competitors.
 - **"Things aren't going well"** without numbers. Cold Start interview will refuse to dispatch without metric + current + target.
 
 ---
@@ -119,8 +119,8 @@ When external factors confirm, downstream prioritize gets routed to "adapt" init
 |---|---|
 | Want to scope an idea, not diagnose a metric | `discover` (product-skills) |
 | Already have a validated root cause; want initiatives | `prioritize` |
-| Want market sizing / competitive landscape | `market-research` |
-| Code-level bug | `code-cleanup` (product-skills) |
+| Want market sizing / competitive landscape | `research-market` |
+| Code-level bug | `clean-code` (product-skills) |
 
 ---
 

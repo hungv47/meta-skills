@@ -52,7 +52,7 @@ Read: brand/BRAND.md (creative marketing skills) or architecture/system-architec
 
 **Meta skills:** Read `.agents/manifest.json` + `.agents/artifact-index.md` for state.
 
-### Step 3 — Read skills-resources/experience/{relevant-dim}.md
+### Step 3 — Read .forsvn/experience/{relevant-dim}.md
 
 Per the skill's domain, read the matching experience dimension file. Skill-to-dimension mapping:
 
@@ -120,7 +120,7 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 1. Read canonical-paths.md.
 2. Read research/product-context.md + brand/BRAND.md.
-3. Read skills-resources/experience/{audience,brand,content}.md.
+3. Read .forsvn/experience/{audience,brand,content}.md.
 4. If any required foundation is missing → NEEDS_CONTEXT.
 5. Otherwise route to Pre-Dispatch per pre-dispatch-protocol.md.
 

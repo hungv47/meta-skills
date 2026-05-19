@@ -7,7 +7,7 @@ status: stable
 produced_by: meta-skills (authored once; consumed by every skill that critiques, debates, or interrogates)
 provenance:
   echoes: global ~/.claude/CLAUDE.md § "Push back — don't agree by default" (operator-private; mirrored here for stack portability)
-  extracts_from: skills/meta/agents-panel/SKILL.md (debate-mode lines), skills/meta/discover/SKILL.md (banned phrases + take-a-position pattern)
+  extracts_from: skills/meta/debate-panel/SKILL.md (debate-mode lines), skills/meta/discover/SKILL.md (banned phrases + take-a-position pattern)
   extracted_at: 2026-05-16
 consumers: every skill with a critic agent, debate room, discovery flow, or rubric gate
 load_class: PLAYBOOK

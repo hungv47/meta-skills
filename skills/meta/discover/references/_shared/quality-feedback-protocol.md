@@ -16,7 +16,7 @@ Apply this protocol after:
 
 ## Learning Promotion To Experience
 
-Promote a loop learning into `skills-resources/experience/` only when the evidence is strong enough to reuse across sessions.
+Promote a loop learning into `.forsvn/experience/` only when the evidence is strong enough to reuse across sessions.
 
 Promotion criteria:
 
@@ -31,11 +31,11 @@ Domain routing:
 
 | Learning Type | Experience File |
 |---|---|
-| Audience behavior, objections, language | `skills-resources/experience/audience.md` |
-| Offer economics, pricing, buying trigger | `skills-resources/experience/business.md` |
-| Product mechanism, claim boundary, feature proof | `skills-resources/experience/product.md` |
-| Brand voice, trust pattern, taboo | `skills-resources/experience/brand.md` |
-| Goal, metric, channel result, campaign rule | `skills-resources/experience/goals.md` |
+| Audience behavior, objections, language | `.forsvn/experience/audience.md` |
+| Offer economics, pricing, buying trigger | `.forsvn/experience/business.md` |
+| Product mechanism, claim boundary, feature proof | `.forsvn/experience/product.md` |
+| Brand voice, trust pattern, taboo | `.forsvn/experience/brand.md` |
+| Goal, metric, channel result, campaign rule | `.forsvn/experience/goals.md` |
 
 Append format:
 
@@ -56,7 +56,7 @@ Do not promote weak, confounded, or single-anecdote findings. Keep them in the l
 Maintain a living dashboard when a project has repeated evals or reviewer findings. Full schema and helper usage live in `references/_shared/quality-dashboard-spec.md`.
 
 ```text
-.agents/skill-artifacts/meta/records/quality-dashboard.json
+.forsvn/artifacts/meta/records/quality-dashboard.json
 ```
 
 Suggested shape:
@@ -115,11 +115,11 @@ bun scripts/update-quality-dashboard.ts --skill ad-copy --invocations 1 --critic
 When an evaluator repeatedly finds an upstream construction issue, preserve the signal in the smallest durable place:
 
 1. **One loop only:** keep it in that loop's `learnings.md`.
-2. **Reusable audience/offer/product truth:** promote to `skills-resources/experience/`.
+2. **Reusable audience/offer/product truth:** promote to `.forsvn/experience/`.
 3. **Rubric gap shared across skills:** update or create a shared rubric in `references/_shared/shared-critic-rubrics.md`.
 4. **Skill-specific construction flaw:** propose a targeted SKILL.md or agent edit for the producing skill; do not silently mutate the skill during an eval run.
 
-Example: if `lp-eval` repeatedly finds that `lp-brief` produces weak proof placement, log the pattern in the loop, promote the reusable proof rule to experience if evidence is strong, and open a skill-improvement note for `lp-brief` rather than burying the issue in the evaluator output.
+Example: if `evaluate-landing-page` repeatedly finds that `brief-landing-page` produces weak proof placement, log the pattern in the loop, promote the reusable proof rule to experience if evidence is strong, and open a skill-improvement note for `brief-landing-page` rather than burying the issue in the evaluator output.
 
 ## Post-Humanize Regression Check
 
@@ -149,7 +149,7 @@ Trigger a research artifact review when any of these happen:
 Review output belongs in:
 
 - The relevant loop's `evals/` folder when the evidence comes from one measurable initiative.
-- `.agents/skill-artifacts/research/evals/` when the evaluation spans multiple loops or canonical research artifacts.
+- `.forsvn/artifacts/research/evals/` when the evaluation spans multiple loops or canonical research artifacts.
 
 Update canonical `research/` only as a separate, explicit revision after the evidence is accepted.
 
@@ -158,7 +158,7 @@ Update canonical `research/` only as a separate, explicit revision after the evi
 When the operator overrides a critic or asks to ship despite a failed dimension, log it here if the project has repeated quality work:
 
 ```text
-.agents/skill-artifacts/meta/records/critic-overrides.md
+.forsvn/artifacts/meta/records/critic-overrides.md
 ```
 
 Entry format:

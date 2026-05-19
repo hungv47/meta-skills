@@ -14,9 +14,9 @@ The only "warm" path is **re-run after metric shift** — when a prior `diagnose
 
 ## Read order (in order)
 
-1. **Pipeline (optional):** prior `.agents/skill-artifacts/meta/records/diagnose-*.md` if re-running. Carries the prior tree structure + verdicts as context for the new run; doesn't replace the new Cold Start.
+1. **Pipeline (optional):** prior `.forsvn/artifacts/meta/records/diagnose-*.md` if re-running. Carries the prior tree structure + verdicts as context for the new run; doesn't replace the new Cold Start.
 2. **Pipeline (optional):** `research/product-context.md` — business profile (type, stage, sales cycle). Improves logic-tree calibration (tree-builder-agent picks tree type informed by business model).
-3. **Experience (read, don't ask):** `skills-resources/experience/goals.md` for prior metric history (does this metric have a baseline already? prior target?).
+3. **Experience (read, don't ask):** `.forsvn/experience/goals.md` for prior metric history (does this metric have a baseline already? prior target?).
 
 (Note: original SKILL.md read order is just these 3 items. `research/market-research.md` is NOT in the original read order; if competitive context is needed for the external-check-agent, the agent fetches it during its own dispatch — not pre-loaded here. Adding it as a pre-load step would be net-new behavior.)
 

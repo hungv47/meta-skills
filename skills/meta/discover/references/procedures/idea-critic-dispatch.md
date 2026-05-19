@@ -27,7 +27,7 @@ Call the agent via the `Agent` tool, passing all three Input Contract fields the
 | Field | Content |
 |---|---|
 | **`idea-statement`** | The user's substantive description of what they want to build, post-Premise Check. A one-paragraph summary of the user's first turn after the framing checkpoint, paraphrased faithfully — NOT the user's whole transcript. |
-| **`context-gathered`** | The orchestrator's serialized findings from Step 1: codebase signals worth flagging, relevant `skills-resources/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any. |
+| **`context-gathered`** | The orchestrator's serialized findings from Step 1: codebase signals worth flagging, relevant `.forsvn/experience/{domain}.md` Q&A, prior specs/sketches on the same idea if any, the operator-craft stance load already loaded by Step 1, and the founder-domain frame match if any. |
 | **`mode`** | Literal string `idea-stage`. |
 
 The agent is single-shot — do not re-invoke per turn. Output is structured:

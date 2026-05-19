@@ -6,7 +6,7 @@
 
 ## Artifact path
 
-`.agents/skill-artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md`
+`.forsvn/artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md`
 
 On re-run: rename existing artifact to `prioritize.v[N].md` (increment N from the highest existing version) and create new at incremented version. Never overwrite.
 
@@ -144,11 +144,11 @@ One line per initiative, ranked 1-through-N. The #1 entry must include a reason;
 ```markdown
 ## Next Step
 
-Run `funnel-planner` to set numeric targets for the proceeding initiatives.
-If any "Proceed" initiative requires a technical build, also run `system-architecture` (from `hungv47/product-skills`) with these initiatives as context.
+Run `plan-funnel` to set numeric targets for the proceeding initiatives.
+If any "Proceed" initiative requires a technical build, also run `architect-system` (from `hungv47/product-skills`) with these initiatives as context.
 ```
 
-This block is **verbatim** — downstream `orchestrate-research` and `funnel-planner` grep these phrases to detect chain handoff.
+This block is **verbatim** — downstream `forsvn` and `plan-funnel` grep these phrases to detect chain handoff.
 
 ---
 
@@ -182,7 +182,7 @@ This block is **verbatim** — downstream `orchestrate-research` and `funnel-pla
 
 ## Out-of-Scope file format (per Kill, separate file)
 
-Each Kill decision in the Decisions table produces one file at `.agents/skill-artifacts/meta/out-of-scope/[kebab-case-name].md`:
+Each Kill decision in the Decisions table produces one file at `.forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
 
 ```markdown
 # [Initiative Name]
@@ -226,5 +226,5 @@ Cite source where possible: Wayback Machine for historical evidence, vendor case
 - **Missing Anti-generic check on any initiative.** Critical Gate 3 fails the artifact.
 - **Decimals in ICE scores.** Integers only; "7.5" is not a valid score.
 - **Kill rows without Reason: prefix in Kill Criteria column.** Out-of-Scope file write parses the Reason; missing it breaks the persistence.
-- **Verbatim Next Step block paraphrased.** Downstream chain detection greps the literal "Run `funnel-planner`" phrase.
+- **Verbatim Next Step block paraphrased.** Downstream chain detection greps the literal "Run `plan-funnel`" phrase.
 - **Skipping Out-of-Scope file writes for Kills.** The Decisions table marks the decision; the per-Kill file IS the long-lived record. Both are required.

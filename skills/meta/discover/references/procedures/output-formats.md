@@ -242,7 +242,7 @@ NOT IN SCOPE:
 
 ## Out-of-scope persistence (institutional memory)
 
-When features are explicitly scoped out, write to `.agents/skill-artifacts/meta/out-of-scope/[kebab-case-name].md`:
+When features are explicitly scoped out, write to `.forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
 
 ```markdown
 # [Feature/Approach Name]
@@ -256,7 +256,7 @@ Create the directory if missing. Prevents future sessions from re-asking decided
 
 ## Experience doc append (learning flywheel)
 
-Append Q&A to `skills-resources/experience/{domain}.md` after each session:
+Append Q&A to `.forsvn/experience/{domain}.md` after each session:
 
 ```markdown
 ## {Task Name} — Decisions ({date})

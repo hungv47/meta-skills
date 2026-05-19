@@ -2,13 +2,17 @@
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning is [SemVer](https://semver.org/spec/v2.0.0.html) — major.minor.patch.
 
-This file tracks releases of the consolidated `meta-skills` plugin (35 skills across meta / research / marketing / product). SKILL.md files describe current behavior; this file documents what changed and when.
+This file tracks releases of the consolidated `meta-skills` plugin (32 skills across meta / research / marketing / product). SKILL.md files describe current behavior; this file documents what changed and when.
 
 ---
 
 ## [2.0.0] - 2026-05-19
 
-**Agent Skills 2.0 — single-plugin consolidation.** The four previously-separate plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) collapse into a single `meta-skills` plugin distributed from `github.com/hungv47/meta-skills`. The umbrella repo `agent-skills` and the three sibling plugin repos are archived; install via:
+**Agent Skills 2.0 — single-plugin consolidation + front door + verb-first rename.** Three changes ship together:
+
+1. **Consolidation.** Four previously-separate plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) collapse into a single `meta-skills` plugin at `github.com/hungv47/meta-skills`. Umbrella `agent-skills` repo + three sibling repos archived.
+2. **Front door + state root** (Workstream A). New `/forsvn` skill is the single discovery surface; new `.forsvn/` is the canonical user-facing state root (replaces planned `.agents/skill-artifacts/` + `skills-resources/`).
+3. **Verb-first rename + orchestrate-* collapse** (Workstream B). 27 skills renamed action-first (hard cut, no aliases). 4 `orchestrate-*` routers deleted; their dispatch knowledge absorbed into `skills/meta/forsvn/references/chains/`.
 
 ```bash
 npx skills add hungv47/meta-skills
@@ -17,66 +21,84 @@ npx skills add hungv47/meta-skills
 /plugin add meta-skills
 ```
 
-Users on any of the four legacy plugins should remove them and install the consolidated one. All 35 skills are present.
+Users on any 1.x plugin (or any of the four legacy plugins) must remove them and reinstall the consolidated one. **No alias layer** — old skill names hard-fail.
 
-### Consolidation
+### Breaking changes (read before upgrading)
 
-- Single repo, single CHANGELOG, single version. No more per-stack release dance.
+- **27 skill renames + 4 skill deletions.** Full map below. Old slash-commands will not resolve; replace them by hand.
+- **`.forsvn/` is canonical.** `.agents/skill-artifacts/` and `skills-resources/` were never materialized in this repo; new installs write only to `.forsvn/`. If you carried over either layout from a 1.x install, copy what matters into `.forsvn/artifacts/`, `.forsvn/loops/`, `.forsvn/experience/` and delete the rest.
+- **The 4 `orchestrate-*` routers are gone.** Use `/forsvn` as the front door; it reads `.forsvn/` state and routes directly to a leaf skill via the appropriate `chains/<domain>.md` reference.
+
+### Skill rename map (Workstream B)
+
+| Stack | Old | New |
+|---|---|---|
+| meta | `agents-panel` | `debate-panel` |
+| meta | `cleanup-artifacts` | `clean-artifacts` |
+| meta | `eval-loop` | `run-eval-loop` |
+| meta | `fresh-eyes` | `review-work` |
+| meta | `orchestrate-meta` | **deleted** — use `/forsvn` |
+| meta | `task-breakdown` | `breakdown-tasks` |
+| research | `funnel-planner` | `plan-funnel` |
+| research | `icp-research` | `research-icp` |
+| research | `market-research` | `research-market` |
+| research | `orchestrate-research` | **deleted** — use `/forsvn` |
+| research | `short-form-eval` | `evaluate-shortform` |
+| research | `short-form-research` | `research-shortform` |
+| marketing | `ad-copy` | `write-ad` |
+| marketing | `brand-system` | `create-brand` |
+| marketing | `campaign-plan` | `plan-campaign` |
+| marketing | `cold-outreach` | `write-outreach` |
+| marketing | `copywriting` | `write-copy` |
+| marketing | `design-brief` | `brief-graphic` |
+| marketing | `lp-brief` | `brief-landing-page` |
+| marketing | `lp-eval` | `evaluate-landing-page` |
+| marketing | `orchestrate-marketing` | **deleted** — use `/forsvn` |
+| marketing | `seo` | `optimize-seo` |
+| marketing | `short-form-brief` | `brief-shortform` |
+| marketing | `social-copy` | `write-social` |
+| marketing | `vn-tone` | `polish-vn` |
+| product | `code-cleanup` | `clean-code` |
+| product | `docs-writing` | `write-docs` |
+| product | `machine-cleanup` | `clean-machine` |
+| product | `orchestrate-product` | **deleted** — use `/forsvn` |
+| product | `system-architecture` | `architect-system` |
+| product | `user-flow` | `map-user-flow` |
+
+Unchanged: `forsvn` (branded exception per D1), `discover`, `diagnose`, `prioritize`, `humanize`.
+
+### Added
+
+- **`/forsvn`** — front-door skill. Classifies intent, loads `.forsvn/` state, asks ≤2 clarifying questions only when truly ambiguous, dispatches to a leaf skill (via `references/chains/<domain>.md`) or resumes a prior initiative. Bootstraps `.forsvn/` on first run.
+- **`.forsvn/` canonical state root.** `context/`, `experience/`, `artifacts/`, `loops/`, `evals/`, `routing/`, `dashboard/`. See `.forsvn/README.md` for the layout contract.
+- **`skills/meta/forsvn/references/chains/{meta,research,marketing,product}.md`** — domain dispatch chains absorbed from the deleted orchestrate-* SKILL bodies.
+- **PR1 program rule** (decisions.md): "interview before implementing" — any agent working under `implementation-roadmap/execution-evaluation/` must read every relevant brief + run `AskUserQuestion` rounds until decisions lock, before writing or moving code.
+
+### Removed
+
+- `orchestrate-meta`, `orchestrate-research`, `orchestrate-marketing`, `orchestrate-product` — collapsed into `/forsvn` + per-domain chain files (D6).
+- Legacy per-plugin marketplaces (`research-skills`, `marketing-skills`, `product-skills`).
+
+### Consolidation details
+
+- Single repo, single CHANGELOG, single version. No per-stack release dance.
 - Internal taxonomy preserved as `skills/{meta,research,marketing,product}/` folders.
-- Cross-stack references (`pre-dispatch-protocol`, `mode-resolver`, `manifest-spec`, `eval-loop-spec`, etc.) now resolve to a single `references/` folder at repo root.
-- `skills-resources/` (loops + experience substrate) travels with the skills.
-- The `hooks/skill-router` and umbrella `scripts/` (audit, marketplace bump, portability) now ship with the plugin.
+- Cross-stack references (`pre-dispatch-protocol`, `mode-resolver`, `manifest-spec`, `eval-loop-spec`, etc.) resolve to a single `references/` folder at repo root.
+- The `hooks/skill-router` and umbrella `scripts/` (audit, marketplace bump, portability) ship with the plugin.
 
-### [meta] Skills (7)
+### Skill catalog (32 skills)
 
-- `orchestrate-meta` — cross-stack router that scans state and proposes the right next skill
-- `discover` — conversational discovery (adaptive depth: quick scoping to multi-round interview)
-- `agents-panel` — multi-perspective debate or consensus polling
-- `eval-loop` — measurable strategy → execution → evaluation workspaces
-- `task-breakdown` — buildable task decomposition with acceptance criteria
-- `fresh-eyes` — independent post-implementation review with critic + resolver
-- `cleanup-artifacts` — artifact tree audit + grooming (move-not-delete, per-category confirmation)
+**[meta] (7):** `forsvn` (front door) · `discover` · `debate-panel` (was `agents-panel`) · `run-eval-loop` (was `eval-loop`) · `breakdown-tasks` (was `task-breakdown`) · `review-work` (was `fresh-eyes`) · `clean-artifacts` (was `cleanup-artifacts`).
 
-### [research] Skills (8)
+**[research] (7):** `research-icp` (was `icp-research`) · `research-market` (was `market-research`) · `diagnose` · `prioritize` · `plan-funnel` (was `funnel-planner`) · `research-shortform` (was `short-form-research`) · `evaluate-shortform` (was `short-form-eval`).
 
-- `orchestrate-research` — router that reads project state and proposes the next skill with rationale
-- `icp-research` — audience research (personas, VoC, habitat, pain analysis) → `research/icp-research.md` + `research/product-context.md`
-- `market-research` — market landscape, competitive dynamics, TAM/SAM/SOM → `research/market-research.md`
-- `diagnose` — problem-tree diagnosis (5-why + external check + hypothesis + verdict)
-- `prioritize` — initiative generation + ICE scoring + cut-line + unconventional alternatives
-- `funnel-planner` — funnel modeling + target setting + sanity check + stress test
-- `short-form-research` — per-platform short-form video best-practice catalog (TikTok / Reels / Shorts default; +X / +LinkedIn opt-in)
-- `short-form-eval` — post-publish short-form video evaluation (loop-native)
+**[marketing] (13):** `create-brand` (was `brand-system`) · `write-copy` (was `copywriting`) · `write-ad` (was `ad-copy`) · `write-outreach` (was `cold-outreach`) · `write-social` (was `social-copy`) · `brief-shortform` (was `short-form-brief`) · `brief-landing-page` (was `lp-brief`) · `evaluate-landing-page` (was `lp-eval`) · `plan-campaign` (was `campaign-plan`) · `brief-graphic` (was `design-brief`) · `optimize-seo` (was `seo`) · `humanize` · `polish-vn` (was `vn-tone`).
 
-### [marketing] Skills (14)
-
-- `orchestrate-marketing` — router that reads brand/research state and proposes the next skill with rationale + cost + duration
-- `brand-system` — brand identity (BRAND.md + DESIGN.md + ASSETS.md)
-- `copywriting` — persuasive copy with V/F/U rubric scoring + Competitor Swap Test
-- `ad-copy` — Meta paid-ad copy (retargeting + cold-traffic)
-- `cold-outreach` — email / LinkedIn / Twitter / iMessage / proposals
-- `social-copy` — platform-native social copy (tiktok / reels / shorts / x / linkedin)
-- `short-form-brief` — production-ready short-form video briefs (live-action + motion-graphic)
-- `lp-brief` — campaign-grade landing-page or redesign brief
-- `lp-eval` — post-launch landing-page evaluation (loop-native)
-- `campaign-plan` — cross-channel campaign briefs + calendars
-- `design-brief` — per-asset graphic-design briefs (social, thumbnails, banners, OG, hero)
-- `seo` — search visibility (technical / AI / programmatic / competitor / aso modes)
-- `humanize` — strip AI patterns, inject brand voice, compress
-- `vn-tone` — Vietnamese register polish (báo chí / semi-casual / bro / pop-marketing)
-
-### [product] Skills (6)
-
-- `orchestrate-product` — router that reads project state (spec, flows, architecture) and proposes the next skill
-- `user-flow` — multi-step in-product flow mapping (screens, decisions, transitions, edge cases)
-- `system-architecture` — technical blueprint (stack, schema, API, deployment) → `architecture/system-architecture.md`
-- `code-cleanup` — refactor existing code for readability + dead-code removal (5 golden rules: preserve behavior, small steps, conventions, test after each change, rollback awareness)
-- `machine-cleanup` — developer-machine audit + cleanup (dotfolders, caches, toolchains, package-manager globals)
-- `docs-writing` — generate docs from a codebase (README, API ref, runbook, ship log, release notes)
+**[product] (5):** `map-user-flow` (was `user-flow`) · `architect-system` (was `system-architecture`) · `clean-code` (was `code-cleanup`) · `clean-machine` (was `machine-cleanup`) · `write-docs` (was `docs-writing`).
 
 ### Recommended starting point
 
-Run `icp-research` first to create `research/product-context.md` — the canonical cross-stack record consumed by 13+ downstream skills.
+Run `/forsvn` on any new project — it bootstraps `.forsvn/`, classifies your ask, and routes. The proving workflow (D5): a fresh repo with no `brand/BRAND.md` will get routed through `/create-brand` first.
 
 ### Retired
 

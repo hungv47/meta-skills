@@ -6,7 +6,7 @@
 
 ## Inputs
 
-**Hard gate:** `.agents/skill-artifacts/meta/records/diagnose-2026-05-10.md` exists → PASS, dispatch proceeds.
+**Hard gate:** `.forsvn/artifacts/meta/records/diagnose-2026-05-10.md` exists → PASS, dispatch proceeds.
 
 **Root cause from diagnose:**
 - (1) Ad targeting brought low-intent visitors after Q1 targeting change (~55% of gap)
@@ -129,7 +129,7 @@ Validates owners + target metrics + kill criteria for each Proceed.
 
 ## Final Artifact
 
-`.agents/skill-artifacts/meta/sketches/prioritize-2026-05-18.md`:
+`.forsvn/artifacts/meta/sketches/prioritize-2026-05-18.md`:
 
 ```markdown
 ---
@@ -199,15 +199,15 @@ status: done
 
 ## Next Step
 
-Run `funnel-planner` to set numeric targets for the proceeding initiatives.
-If any "Proceed" initiative requires a technical build, also run `system-architecture` (from `hungv47/product-skills`) with these initiatives as context.
+Run `plan-funnel` to set numeric targets for the proceeding initiatives.
+If any "Proceed" initiative requires a technical build, also run `architect-system` (from `hungv47/product-skills`) with these initiatives as context.
 ```
 
 ---
 
 ## Out-of-Scope files written (3, one per Kill)
 
-`.agents/skill-artifacts/meta/out-of-scope/intent-qualifying-ad-creative.md`:
+`.forsvn/artifacts/meta/out-of-scope/intent-qualifying-ad-creative.md`:
 
 ```markdown
 # Intent-Qualifying Ad Creative
@@ -217,7 +217,7 @@ If any "Proceed" initiative requires a technical build, also run `system-archite
 **Revisit if:** Paid targeting fix lands at <2.5% conversion AND root cause persists.
 ```
 
-`.agents/skill-artifacts/meta/out-of-scope/pixel-sharing.md`:
+`.forsvn/artifacts/meta/out-of-scope/pixel-sharing.md`:
 
 ```markdown
 # Pixel Sharing
@@ -227,7 +227,7 @@ If any "Proceed" initiative requires a technical build, also run `system-archite
 **Revisit if:** Standard initiatives ship but conversion stays below 2.5% AND a complementary SaaS partner becomes available.
 ```
 
-`.agents/skill-artifacts/meta/out-of-scope/dedicated-onboarding-for-paid-visitors.md`:
+`.forsvn/artifacts/meta/out-of-scope/dedicated-onboarding-for-paid-visitors.md`:
 
 ```markdown
 # Dedicated Onboarding for Paid Visitors
@@ -241,7 +241,7 @@ If any "Proceed" initiative requires a technical build, also run `system-archite
 
 ## Post-write side effects
 
-1. **Out-of-Scope persistence:** 3 files written per above. `discover` and `orchestrate-research` will see these on their next run.
+1. **Out-of-Scope persistence:** 3 files written per above. `discover` and `forsvn` will see these on their next run.
 2. **Prior artifact rename:** none this run (version 1, no prior `prioritize-*.md`). On a re-run, the prior file would be renamed to `prioritize.v1.md`.
 
 **No experience write-back.** Original SKILL.md is explicit: prioritize doesn't seed dimensions to experience/ — initiatives are project-specific tactics, not stable user-profile state. Constraint Interview answers feed dispatch as in-context input only.

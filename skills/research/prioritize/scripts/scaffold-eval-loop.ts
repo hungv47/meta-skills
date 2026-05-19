@@ -7,7 +7,7 @@
 //   bun /path/to/scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]
 //
 // --domain is accepted for backward-compatible command lines but loops now live
-// in a domain-neutral workspace: skills-resources/loops/<slug>.
+// in a domain-neutral workspace: .forsvn/loops/<slug>.
 
 import { existsSync, mkdirSync, writeFileSync, lstatSync, realpathSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
@@ -108,7 +108,7 @@ assertNotSymlink(loopDir);
 const realLoopRoot = realpathSync(loopRoot);
 const projectedLoopDir = resolve(loopRoot, slug);
 if (projectedLoopDir !== realLoopRoot && !projectedLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
-  console.error("Refusing to create loop outside skills-resources/loops.");
+  console.error("Refusing to create loop outside .forsvn/loops.");
   process.exit(1);
 }
 const created: string[] = [];
@@ -118,7 +118,7 @@ mkdirSync(loopDir, { recursive: true });
 assertNotSymlink(loopDir);
 const realLoopDir = realpathSync(loopDir);
 if (realLoopDir !== realLoopRoot && !realLoopDir.startsWith(`${realLoopRoot}${sep}`)) {
-  console.error("Refusing to create loop outside skills-resources/loops.");
+  console.error("Refusing to create loop outside .forsvn/loops.");
   process.exit(1);
 }
 for (const subdir of ["strategy", "execution", "evals"]) {
@@ -127,21 +127,21 @@ for (const subdir of ["strategy", "execution", "evals"]) {
 
 writeIfMissing(
   join(loopDir, "program.md"),
-  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`${title} measurable improvement loop`)}\npurpose: "Operating program for a measurable strategy -> execution -> evaluation loop"\nlifecycle: loop\nuse_when: "Coordinating repeated strategy, content/marketing execution, evaluation, and keep/discard decisions for this initiative"\ndo_not_use_when: "The work has no observable metric or the metric cannot be attributed to this loop"\nupstream: "operator intent, prior artifacts, metric baseline"\ndownstream: "strategy skills, marketing/content execution skills, evaluation skills"\n---\n\n# ${title} Program\n\n## Goal\n\nTBD.\n\n## Measurable Surface\n\nTBD. Name the asset, campaign, channel, page, sequence, or content series this loop owns.\n\n## Primary Metric\n\nTBD. Choose one decision metric. Examples: conversion rate, CTR, qualified replies, completion rate, saves, signups, revenue.\n\n## Guardrail Metrics\n\n- TBD.\n\n## Mutable Surface\n\nTBD. Name what agents may change between cycles: copy, offer, targeting, creative angle, sequence order, CTA, post format, etc.\n\n## Frozen Context\n\n- Canonical brand/research constraints stay authoritative unless explicitly refreshed.\n- External execution systems remain outside this folder; this loop stores strategy, produced marketing/content assets, evals, and learning decisions.\n\n## Cycle Protocol\n\n1. Read \`context.md\`, \`learnings.md\`, prior \`results.tsv\`, and the latest artifacts in \`strategy/\`, \`execution/\`, and \`evals/\`.\n2. Produce or revise one bounded strategy or execution artifact.\n3. Run or ingest an evaluation snapshot after the measurement window closes.\n4. Record the cycle in \`results.tsv\` with status \`keep\`, \`discard\`, \`watch\`, or \`blocked\`.\n5. Promote only reusable, evidence-backed lessons to \`learnings.md\`.\n\n## Promotion Rule\n\n- \`keep\` — clear metric improvement, useful simplification, or strong qualitative signal with adequate sample.\n- \`discard\` — worse result, confounded test, or added complexity without measurable upside.\n- \`watch\` — promising but underpowered; needs another cycle before changing defaults.\n- \`blocked\` — missing data, attribution, execution proof, or measurement window.\n`,
+  `---\nskill: run-eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`${title} measurable improvement loop`)}\npurpose: "Operating program for a measurable strategy -> execution -> evaluation loop"\nlifecycle: loop\nuse_when: "Coordinating repeated strategy, content/marketing execution, evaluation, and keep/discard decisions for this initiative"\ndo_not_use_when: "The work has no observable metric or the metric cannot be attributed to this loop"\nupstream: "operator intent, prior artifacts, metric baseline"\ndownstream: "strategy skills, marketing/content execution skills, evaluation skills"\n---\n\n# ${title} Program\n\n## Goal\n\nTBD.\n\n## Measurable Surface\n\nTBD. Name the asset, campaign, channel, page, sequence, or content series this loop owns.\n\n## Primary Metric\n\nTBD. Choose one decision metric. Examples: conversion rate, CTR, qualified replies, completion rate, saves, signups, revenue.\n\n## Guardrail Metrics\n\n- TBD.\n\n## Mutable Surface\n\nTBD. Name what agents may change between cycles: copy, offer, targeting, creative angle, sequence order, CTA, post format, etc.\n\n## Frozen Context\n\n- Canonical brand/research constraints stay authoritative unless explicitly refreshed.\n- External execution systems remain outside this folder; this loop stores strategy, produced marketing/content assets, evals, and learning decisions.\n\n## Cycle Protocol\n\n1. Read \`context.md\`, \`learnings.md\`, prior \`results.tsv\`, and the latest artifacts in \`strategy/\`, \`execution/\`, and \`evals/\`.\n2. Produce or revise one bounded strategy or execution artifact.\n3. Run or ingest an evaluation snapshot after the measurement window closes.\n4. Record the cycle in \`results.tsv\` with status \`keep\`, \`discard\`, \`watch\`, or \`blocked\`.\n5. Promote only reusable, evidence-backed lessons to \`learnings.md\`.\n\n## Promotion Rule\n\n- \`keep\` — clear metric improvement, useful simplification, or strong qualitative signal with adequate sample.\n- \`discard\` — worse result, confounded test, or added complexity without measurable upside.\n- \`watch\` — promising but underpowered; needs another cycle before changing defaults.\n- \`blocked\` — missing data, attribution, execution proof, or measurement window.\n`,
   created,
   skipped
 );
 
 writeIfMissing(
   join(loopDir, "context.md"),
-  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Context substrate for ${title}`)}\npurpose: "Loop-local assumptions, constraints, baselines, and links to canonical artifacts"\nlifecycle: loop-context\nuse_when: "Before any strategy, execution, or evaluation step inside this loop"\ndo_not_use_when: "Canonical brand, research, or architecture artifacts conflict; refresh this context first"\nupstream: "research/, brand/, architecture/, skills-resources/experience/"\ndownstream: "program.md, strategy artifacts, execution artifacts, eval artifacts"\n---\n\n# ${title} Context\n\n## Canonical Inputs\n\n| Source | What to use | Freshness / caveat |\n|---|---|---|\n| TBD | TBD | TBD |\n\n## Baseline\n\n| Metric | Value | Window | Source |\n|---|---:|---|---|\n| TBD | TBD | TBD | TBD |\n\n## Audience / Segment\n\nTBD.\n\n## Offer / Message Hypothesis\n\nTBD.\n\n## Constraints\n\n- TBD.\n\n## Open Questions\n\n- TBD.\n`,
+  `---\nskill: run-eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Context substrate for ${title}`)}\npurpose: "Loop-local assumptions, constraints, baselines, and links to canonical artifacts"\nlifecycle: loop-context\nuse_when: "Before any strategy, execution, or evaluation step inside this loop"\ndo_not_use_when: "Canonical brand, research, or architecture artifacts conflict; refresh this context first"\nupstream: "research/, brand/, architecture/, .forsvn/experience/"\ndownstream: "program.md, strategy artifacts, execution artifacts, eval artifacts"\n---\n\n# ${title} Context\n\n## Canonical Inputs\n\n| Source | What to use | Freshness / caveat |\n|---|---|---|\n| TBD | TBD | TBD |\n\n## Baseline\n\n| Metric | Value | Window | Source |\n|---|---:|---|---|\n| TBD | TBD | TBD | TBD |\n\n## Audience / Segment\n\nTBD.\n\n## Offer / Message Hypothesis\n\nTBD.\n\n## Constraints\n\n- TBD.\n\n## Open Questions\n\n- TBD.\n`,
   created,
   skipped
 );
 
 writeIfMissing(
   join(loopDir, "learnings.md"),
-  `---\nskill: eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Promoted learnings for ${title}`)}\npurpose: "Reusable evidence-backed lessons from completed loop cycles"\nlifecycle: learning\nuse_when: "Before creating new strategy or execution artifacts for this loop or adjacent loops"\ndo_not_use_when: "A lesson is contradicted by newer evidence or marked expired"\nupstream: "evals/, results.tsv"\ndownstream: "future strategy, execution, and evaluation cycles"\n---\n\n# ${title} Learnings\n\nPromote lessons here only after an eval artifact and \`results.tsv\` row support them.\n\n## Active Lessons\n\n_None yet._\n\n## Expired / Refuted Lessons\n\n_None yet._\n`,
+  `---\nskill: run-eval-loop\nversion: 1\ndate: ${TODAY}\nstatus: needs_context\nsummary: ${yamlString(`Promoted learnings for ${title}`)}\npurpose: "Reusable evidence-backed lessons from completed loop cycles"\nlifecycle: learning\nuse_when: "Before creating new strategy or execution artifacts for this loop or adjacent loops"\ndo_not_use_when: "A lesson is contradicted by newer evidence or marked expired"\nupstream: "evals/, results.tsv"\ndownstream: "future strategy, execution, and evaluation cycles"\n---\n\n# ${title} Learnings\n\nPromote lessons here only after an eval artifact and \`results.tsv\` row support them.\n\n## Active Lessons\n\n_None yet._\n\n## Expired / Refuted Lessons\n\n_None yet._\n`,
   created,
   skipped
 );

@@ -9,7 +9,7 @@ written-by: eval-loop (scaffold), generative + evaluation skills (per-cycle)
 
 Each measurable initiative gets a folder. Inside, the loop is the unit of iteration — not the skill.
 
-Replaces the previously planned `skills-resources/loops/`. Same contract per `references/eval-loop-spec.md`, new home.
+Replaces the previously planned `.forsvn/loops/`. Same contract per `references/eval-loop-spec.md`, new home.
 
 ## Layout
 

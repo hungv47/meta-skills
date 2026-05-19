@@ -50,18 +50,18 @@ Read: brand/BRAND.md (creative marketing skills) or architecture/system-architec
 
 **Meta skills:** Read `.agents/manifest.json` + `.agents/artifact-index.md` for state.
 
-### Step 3 — Read skills-resources/experience/{relevant-dim}.md
+### Step 3 — Read .forsvn/experience/{relevant-dim}.md
 
 Per the skill's domain, read the matching experience dimension file. Skill-to-dimension mapping:
 
 | Skill domain | Reads experience dimension(s) |
 |---|---|
-| Marketing creative (copywriting, ad-copy, cold-outreach, social-copy, vn-tone, humanize) | `audience.md`, `brand.md`, `content.md`, `business.md` |
-| Marketing brief/system (brand-system, lp-brief, design-brief, short-form-brief, campaign-plan) | `audience.md`, `brand.md`, `business.md`, `goals.md` |
-| Marketing eval (lp-eval, seo) | `audience.md`, `content.md`, `goals.md` |
-| Product (system-architecture, user-flow, code-cleanup, machine-cleanup, docs-writing) | `product.md`, `technical.md`, `patterns.md` |
-| Research (icp-research, market-research, diagnose, prioritize, funnel-planner, short-form-research, short-form-eval) | `audience.md`, `business.md`, `goals.md`, `patterns.md` |
-| Meta (eval-loop, agents-panel, task-breakdown, discover, fresh-eyes, cleanup-artifacts, orchestrate-*) | depends per-invocation; typically `patterns.md` + domain-specific |
+| Marketing creative (write-copy, write-ad, write-outreach, write-social, polish-vn, humanize) | `audience.md`, `brand.md`, `content.md`, `business.md` |
+| Marketing brief/system (create-brand, brief-landing-page, brief-graphic, brief-shortform, plan-campaign) | `audience.md`, `brand.md`, `business.md`, `goals.md` |
+| Marketing eval (evaluate-landing-page, optimize-seo) | `audience.md`, `content.md`, `goals.md` |
+| Product (architect-system, map-user-flow, clean-code, clean-machine, write-docs) | `product.md`, `technical.md`, `patterns.md` |
+| Research (research-icp, research-market, diagnose, prioritize, plan-funnel, research-shortform, evaluate-shortform) | `audience.md`, `business.md`, `goals.md`, `patterns.md` |
+| Meta (forsvn, run-eval-loop, debate-panel, breakdown-tasks, discover, review-work, clean-artifacts) | depends per-invocation; typically `patterns.md` + domain-specific |
 
 Read **only** the dimensions the skill needs. Reading all 8 every time bloats Pre-Dispatch.
 
@@ -118,7 +118,7 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 1. Read canonical-paths.md.
 2. Read research/product-context.md + brand/BRAND.md.
-3. Read skills-resources/experience/{audience,brand,content}.md.
+3. Read .forsvn/experience/{audience,brand,content}.md.
 4. If any required foundation is missing → NEEDS_CONTEXT.
 5. Otherwise route to Pre-Dispatch per pre-dispatch-protocol.md.
 
