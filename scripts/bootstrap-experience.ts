@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// bootstrap-experience — create the local skills-resources/experience substrate.
+// bootstrap-experience — create the local .forsvn/experience substrate.
 // See meta-skills/references/pre-dispatch-protocol.md.
 
 import { existsSync, lstatSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
@@ -7,7 +7,7 @@ import { join, relative, resolve } from "node:path";
 
 const args = process.argv.slice(2);
 const root = realpathSync(resolve(args[0] ?? process.cwd()));
-const resourcesDir = join(root, "skills-resources");
+const resourcesDir = join(root, ".forsvn");
 const experienceDir = join(resourcesDir, "experience");
 const starterDomains = ["audience", "brand", "business", "content", "goals", "patterns", "product", "technical"];
 
@@ -20,7 +20,7 @@ writeIfMissing(
 
 This folder is the local, append-only memory substrate for skills.
 
-Skills read \`skills-resources/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
+Skills read \`.forsvn/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
 
 Suggested domains:
 

@@ -21,11 +21,11 @@ import type { AgentSpawn, OutputArtifact, RefLoad, RunMarker, RunResult, ToolEve
 // Paths under these prefixes are runtime scratch, not contract artifacts.
 // Inference must skip them to avoid polluting contract-stability checks.
 const ARTIFACT_INFER_EXCLUDES = [
-  "/.agents/skill-artifacts/.archive/",
-  "/.agents/skill-artifacts/meta/records/harness/",
+  "/.forsvn/artifacts/.archive/",
+  "/.forsvn/artifacts/meta/records/harness/",
   "/.agents/manifest.json",
   "/.agents/artifact-index.md",
-  "/skills-resources/loops/.harness/",
+  "/.forsvn/loops/.harness/",
 ];
 
 function main() {
@@ -106,7 +106,7 @@ function main() {
         return Array.from(writtenPaths).filter((p) => {
           const inArtifactRegion =
             p.includes("/.agents/") ||
-            p.includes("/skills-resources/") ||
+            p.includes("/.forsvn/") ||
             p.startsWith(join(ROOT, "research") + "/") ||
             p.startsWith(join(ROOT, "brand") + "/") ||
             p.startsWith(join(ROOT, "architecture") + "/");
