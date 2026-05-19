@@ -54,7 +54,7 @@ Format (verbatim from brief template):
 > Decide before execution: ship as-is, revise manually, or kill.
 ```
 
-## Frontmatter schema (12 fields)
+## Frontmatter schema (13 fields)
 
 ```yaml
 ---
@@ -76,8 +76,17 @@ critic_scores:
   conversion: [N/M]
   brand_voice: [N/M]
 shared_skill_chain: [path to project's _prompts.md if referenced]
+provenance:
+  skill: brief-landing-page
+  run_date: [today]
+  input_artifacts:
+    - [brand/BRAND.md, brand/DESIGN.md, research/icp-research.md as relevant]
+    - [.forsvn/loops/<slug>/context.md if scoped to a loop, otherwise omit]
+  output_eval: null  # set by downstream evaluate-landing-page when a cycle scores this brief
 ---
 ```
+
+`provenance:` is the **generation-provenance** variant per `references/_shared/artifact-contract-template.md § provenance: — two variants`. Required because `evaluate-landing-page` reads `provenance.input_artifacts` to ground scoring and the promotion script walks `output_eval` to verify the artifact → eval → learning chain.
 
 Date format: ISO `YYYY-MM-DD`. `target_handoff` accepts a single value, list, or `null` — null skips the optional Hand-Off (Specialty Targets) section entirely; the implementation prompt companion is the universal default and always emitted regardless.
 
@@ -124,6 +133,13 @@ critic_scores:
   conversion: [N/M]
   brand_voice: [N/M]
 shared_skill_chain: [path to project's _prompts.md if referenced]
+provenance:
+  skill: brief-landing-page
+  run_date: [today]
+  input_artifacts:
+    - [brand/BRAND.md, brand/DESIGN.md, research/icp-research.md as relevant]
+    - [.forsvn/loops/<slug>/context.md if scoped to a loop, otherwise omit]
+  output_eval: null
 ---
 
 # Landing-Page Brief: [Title]

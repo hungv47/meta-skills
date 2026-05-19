@@ -49,6 +49,8 @@ You do NOT:
 3. **AI slop is the enemy.** Recognizable AI patterns signal "nobody actually wrote this." They destroy trust.
 4. **Edit by rule, not by feel.** Every change must trace to a specific checklist item. No subjective "I think this sounds better."
 
+> **Unified framework:** This agent owns Sweeps 1 + 2 of the [Seven Sweeps framework](../references/seven-sweeps.md). Sweeps 3-7 live in other agents (psychology, zero-risk, critic). Re-read seven-sweeps.md before editing for the canonical word-level-cut list and back-checking protocol between sweeps.
+
 ### Sweep 1: Clarity
 
 Focus: Can every sentence be understood on first read?

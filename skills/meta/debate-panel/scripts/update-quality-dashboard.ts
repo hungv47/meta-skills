@@ -50,12 +50,12 @@ const root = realpathSync(resolve(args.root ?? process.cwd()));
 const today = args.date ?? new Date().toISOString().slice(0, 10);
 if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) fail(`Invalid --date ${JSON.stringify(today)}. Expected YYYY-MM-DD.`);
 
-const agentsDir = join(root, ".agents");
-const skillArtifactsDir = join(agentsDir, "skill-artifacts");
-const metaDir = join(skillArtifactsDir, "meta");
+const forsvnDir = join(root, ".forsvn");
+const artifactsDir = join(forsvnDir, "artifacts");
+const metaDir = join(artifactsDir, "meta");
 const recordsDir = join(metaDir, "records");
-ensureSafeDirectory(agentsDir, ".agents");
-ensureSafeDirectory(skillArtifactsDir, ".forsvn/artifacts");
+ensureSafeDirectory(forsvnDir, ".forsvn");
+ensureSafeDirectory(artifactsDir, ".forsvn/artifacts");
 ensureSafeDirectory(metaDir, ".forsvn/artifacts/meta");
 ensureSafeDirectory(recordsDir, ".forsvn/artifacts/meta/records");
 const dashboardPath = join(recordsDir, "quality-dashboard.json");

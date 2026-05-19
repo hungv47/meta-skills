@@ -99,6 +99,15 @@ Before reporting any issue, verify it is SIGNAL not NOISE:
 Issues that survive verification are signal. Issues that fail any check are noise —
 suppress them entirely. Do not pad the report with noise to appear thorough.
 
+**Layer 2 — actionable-vs-not (after signal-vs-noise passes):** Issues that survive
+the verification rules above are REAL but may or may not be ACTIONABLE in this pass.
+Hand off to the noise-filter at [`../noise-filter.md`](../noise-filter.md) for the
+3-category triage: **Accepted** (real + actionable in scope), **Rejected** (real but
+not worth fixing — preference, opinion, low-confidence, scope-disproportionate), or
+**Deferred** (real + actionable but out of scope for THIS pass — flag a follow-up).
+Report all three categories in the final body; don't silently drop Deferred findings
+and don't pad the main narrative with Rejected ones (keep Rejected one-line each).
+
 Be ruthless. Better to flag a false positive than miss a real bug.
 But don't invent problems that don't exist — if the code is clean, say PASS.
 

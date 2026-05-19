@@ -124,6 +124,8 @@ Full read-order + Warm/Cold Start prompts (7-question Cold Start) + write-back (
 
 Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag collapses Layer 1 parallel (hook + body + cta + social-proof) to sequential dispatch, skips variant-agent, and skips Layer 2's psychology-agent + zero-risk-agent (keeps voice-agent + critic only). **`--fast` does NOT skip Cold Start or Critical Gates 1-5** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
 
+`--seven-sweeps` / `--high-stakes` upward flag turns on the optional Seven Sweeps completion critic dim and the Expert Panel Scoring pass — see [`references/seven-sweeps.md`](references/seven-sweeps.md). Default invocations skip both; standard Layer-2 sequential (voice → psychology → zero-risk → critic) already runs the 7 passes distributed across agents.
+
 ---
 
 ## Agent Manifest
@@ -142,7 +144,7 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget:
 
 ### Shared References (read by multiple agents)
 
-- **Frameworks** (`references/`): `headline-formulas.md` (hook), `page-sections.md` (body + social-proof), `emotional-triggers.md` (psychology + hook + critic), `belief-disruption.md` (psychology + hook, TOF only), `lead-magnet-stack.md` (hook + social-proof + cta, lead-magnet posts), `research-workflow.md` (Pre-Dispatch step 1), `discovery-story.md` (social-proof mechanism-led trust)
+- **Frameworks** (`references/`): `headline-formulas.md` (hook), `page-sections.md` (body + social-proof), `emotional-triggers.md` (psychology + hook + critic), `belief-disruption.md` (psychology + hook, TOF only), `lead-magnet-stack.md` (hook + social-proof + cta, lead-magnet posts), `research-workflow.md` (Pre-Dispatch step 1), `discovery-story.md` (social-proof mechanism-led trust), `seven-sweeps.md` (unified 7-pass editing framework — names which agents own each sweep, defines back-checking protocol between sweeps, canonical word-level-cut list, optional Expert Panel Scoring high-stakes mode, optional critic dim when `--seven-sweeps`/`--high-stakes` mode is requested)
 
 ---
 
@@ -256,7 +258,7 @@ Every run ends with explicit status:
 
 ## Next Step
 
-Run `humanize` to refine voice and compress.
+Run `humanize` to refine voice and compress. Seven Sweeps (Layer 2 cumulative) runs BEFORE humanize — humanize is the terminal polish pass, not a replacement for the sweeps. See [`references/seven-sweeps.md`](references/seven-sweeps.md) § "When NOT to run Seven Sweeps" for cases where the full pass is skipped.
 
 ---
 

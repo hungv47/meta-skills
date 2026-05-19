@@ -94,47 +94,68 @@ status: done | done_with_concerns | blocked | needs_context
 **Date:** [today]
 **Skill:** icp-research
 **Product:** [from product-context.md]
+**Confidence Summary:** H findings: [N] | M findings: [N] | L findings: [N] (each L resolved or dropped — see Red Flags / Sample Bias)
 
 ## Persona 1: [Name/Archetype]
 
 **Demographics:** [Age, role, industry, company size]
+**Independent sources for this persona:** [N total across pains + biases + objections + trust signals — must be ≥5 unless `Hypothesis Mode` label applied]
 
 ### Pain Profile
-1. **[Pain name]** — [description]
+1. **[Pain name]** — [description] [Confidence: H | M | L | sources: N]
    - Trigger: [what causes acute pain]
    - Impact: [daily/financial/professional]
    - Quote: "[exact quote]" — [Platform, context]
    - Quote: "[exact quote]" — [Platform, context]
 
-2. **[Pain name]** — [description]
+2. **[Pain name]** — [description] [Confidence: H | M | L | sources: N]
    [Same format]
 
-3. **[Pain name]** — [description]
+3. **[Pain name]** — [description] [Confidence: H | M | L | sources: N]
    [Same format]
 
 ### Decision Psychology
-- **Trigger:** [what event starts their search]
+- **Trigger:** [what event starts their search] [Confidence: H | M | L | sources: N]
 - **Research path:** [where they go 1st → 2nd → 3rd]
-- **Key biases:** [which cognitive biases are strongest]
-- **Objections:** (1) [objection] — root: [psychological reason]. (2) [objection] — root: [reason]. (3) [objection] — root: [reason].
-- **Trust signals:** [what they trust]
-- **Distrust triggers:** [what kills credibility]
+- **Key biases:** [which cognitive biases are strongest] [Confidence: H | M | L | sources: N]
+- **Objections:** (1) [objection] — root: [psychological reason] [Confidence: H | M | L | sources: N]. (2) [objection] — root: [reason] [Confidence: H | M | L | sources: N]. (3) [objection] — root: [reason] [Confidence: H | M | L | sources: N].
+- **Trust signals:** [what they trust] [Confidence: H | M | L | sources: N]
+- **Distrust triggers:** [what kills credibility] [Confidence: H | M | L | sources: N]
 
 ### Habitat Map
 | Platform | Community | Density | Engagement | Role |
 |----------|-----------|---------|-----------|------|
 | [Specific] | [Specific] | H/M/L | [Type] | [Role] |
 
+> Note: Habitat Map `Density: H/M/L` measures **audience concentration in the channel** — distinct from finding `Confidence: H/M/L` which measures **epistemic certainty of a claim**. See [`references/confidence-and-bias.md`](confidence-and-bias.md) § 1.
+
 ## Persona 2: [Name/Archetype]
 [Same format]
 
 ## Top 3 Emotional Drivers
-1. **[Driver]** — [explanation]. Quotes: "[quote 1]" ([source]), "[quote 2]" ([source])
-2. **[Driver]** — [explanation]. Quotes: ...
-3. **[Driver]** — [explanation]. Quotes: ...
+1. **[Driver]** — [explanation]. Quotes: "[quote 1]" ([source]), "[quote 2]" ([source]) [Confidence: H | M | L | sources: N]
+2. **[Driver]** — [explanation]. Quotes: ... [Confidence: H | M | L | sources: N]
+3. **[Driver]** — [explanation]. Quotes: ... [Confidence: H | M | L | sources: N]
 
 ## Red Flags
 - [Language/positioning that triggers skepticism and why]
+- [Unresolved hypothesis-mode findings, if any: "Persona 1 may dismiss social proof — single-source, needs validation"]
+
+## Sample Bias Acknowledged
+
+### Source-type mix
+- [Source type 1] (N=[count]): [communities/sources, date range]
+- [Source type 2] (N=[count]): [communities/sources, date range]
+
+### Known skews in this dataset
+- [Skew 1]: [how it could distort findings — be specific to this dataset, not generic]
+- [Skew 2]: [...]
+
+### Mitigations applied
+- [What you did to counteract each skew]
+
+### Known gaps (validation candidates)
+- [Skews you couldn't mitigate — explicit caveats for downstream skills]
 
 ## Next Step
 Run `plan-campaign` to turn these insights into a communication plan.
@@ -148,13 +169,15 @@ Run `plan-campaign` to turn these insights into a communication plan.
 
 In order. Renaming or reordering breaks 7+ downstream consumers.
 
-1. **Persona 1** — Demographics + Pain Profile (1-3 pains, each with Trigger/Impact/Quote×2) + Decision Psychology (Trigger/Research path/Key biases/Objections/Trust signals/Distrust triggers) + Habitat Map (5-column table)
-2. **Persona 2** (if applicable — max 2 personas per Critical Gate 3) — same format
-3. **Top 3 Emotional Drivers** — exactly 3, each traced to 2+ quotes
-4. **Red Flags** — bullet list of language/positioning that triggers skepticism
-5. **Next Step** — verbatim block: `Run \`campaign-plan\` to turn these insights into a communication plan.`
+1. **Confidence Summary line** (in header block) — H/M/L finding counts per [`confidence-and-bias.md`](confidence-and-bias.md) § 1
+2. **Persona 1** — Demographics + Independent sources count (≥5 floor per Critical Gate 5) + Pain Profile (1-3 pains, each with Trigger/Impact/Quote×2 + inline `[Confidence: H|M|L | sources: N]`) + Decision Psychology (Trigger/Research path/Key biases/Objections/Trust signals/Distrust triggers, each tagged) + Habitat Map (5-column table)
+3. **Persona 2** (if applicable — max 2 personas per Critical Gate 3) — same format
+4. **Top 3 Emotional Drivers** — exactly 3, each traced to 2+ quotes, each tagged with confidence label
+5. **Red Flags** — bullet list of language/positioning that triggers skepticism + unresolved hypothesis-mode findings (if any)
+6. **Sample Bias Acknowledged** — Source-type mix + Known skews specific to this dataset + Mitigations applied + Known gaps. Generic disclaimers FAIL Critic Gate 9. See [`confidence-and-bias.md`](confidence-and-bias.md) § 2.
+7. **Next Step** — verbatim block: `Run \`campaign-plan\` to turn these insights into a communication plan.`
 
-**Optional sections (append only when applicable):** Segment Rationale (if 3+ segments surfaced and 2 were cut per Critical Gate 3 — document who was cut and why), Known Issues (when critic FAILed twice and artifact ships with annotations).
+**Optional sections (append only when applicable):** Segment Rationale (if 3+ segments surfaced and 2 were cut per Critical Gate 3 — document who was cut and why), Known Issues (when critic FAILed twice and artifact ships with annotations), Hypothesis Mode note (if any persona ships with N<5 sources via operator override).
 
 ---
 
