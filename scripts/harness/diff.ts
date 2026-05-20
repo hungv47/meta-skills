@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 // Compare pre-refactor vs post-refactor harness runs for a single skill.
-// Applies Gate-1 acceptance criteria from implementation-roadmap/refactor/05-acceptance.md.
+// Applies the Gate-1 acceptance criteria: ≥30% default-load reduction + contract hashes preserved.
 //
 // Usage:
-//   bun meta-skills/scripts/harness/diff.ts --skill <name> --pre-before YYYY-MM-DD --post-from YYYY-MM-DD
-//   bun meta-skills/scripts/harness/diff.ts --skill <name> --by-notes
+//   bun scripts/harness/diff.ts --skill <name> --pre-before YYYY-MM-DD --post-from YYYY-MM-DD
+//   bun scripts/harness/diff.ts --skill <name> --by-notes
 //
 // --by-notes partitions on the run's `notes` field — splits on whitespace and matches
 // the exact tokens `pre` / `post`. Substring matching is intentionally NOT used (it would
@@ -55,7 +55,7 @@ function avg(nums: number[]): number {
 
 // Identify refs loaded in ≥95% of runs in a bucket. Add their avg chars to body chars
 // to get "true" default token load — the number the operator pays on every standard run.
-// Per spec (03-harness.md schema): total_default_chars = SKILL.md body + always-loaded refs.
+// Per the harness schema: total_default_chars = SKILL.md body + always-loaded refs.
 // Single-run can't classify always-vs-sometimes (need ≥2 runs); compute at partition time.
 function bucketDefaultLoad(runs: RunResult[]): { body_chars_avg: number; always_loaded_chars: number; total_default_chars: number; always_loaded_paths: string[] } {
   if (runs.length === 0) return { body_chars_avg: 0, always_loaded_chars: 0, total_default_chars: 0, always_loaded_paths: [] };
@@ -157,7 +157,7 @@ function diff(skill: string, pre: RunResult[], post: RunResult[]): DiffReport {
     contractDiff.push({ path, pre: pre0, post: post0, preserved });
   }
 
-  // Gate 1 per 05-acceptance.md
+  // Gate 1 — machine-verifiable acceptance criteria
   const failures: string[] = [];
   if (loadDelta > -30) failures.push(`Default token load reduction is only ${(-loadDelta).toFixed(1)}% — target ≥30%.`);
   for (const c of contractDiff) {
@@ -165,7 +165,7 @@ function diff(skill: string, pre: RunResult[], post: RunResult[]): DiffReport {
   }
 
   const notes: string[] = [];
-  notes.push(`Body lines: ${preBody} → ${postBody} (${bodyDelta > 0 ? "+" : ""}${bodyDelta}%). Compare against classification target in stacks/*.md.`);
+  notes.push(`Body lines: ${preBody} → ${postBody} (${bodyDelta > 0 ? "+" : ""}${bodyDelta}%). Compare against the body-size classification target.`);
   notes.push(`Pre always-loaded refs (${preLoad.always_loaded_paths.length}): ${preLoad.always_loaded_paths.join(", ") || "(none)"}`);
   notes.push(`Post always-loaded refs (${postLoad.always_loaded_paths.length}): ${postLoad.always_loaded_paths.join(", ") || "(none)"}`);
   notes.push(`Pre default load: body ${preLoad.body_chars_avg.toLocaleString()} + always-loaded refs ${preLoad.always_loaded_chars.toLocaleString()} = ${preLoad.total_default_chars.toLocaleString()} chars.`);
@@ -228,7 +228,7 @@ function format(d: DiffReport): string {
     for (const n of d.notes) lines.push(`- ${n}`);
     lines.push("");
   }
-  lines.push(`_Next: complete Gates 2-6 from \`implementation-roadmap/refactor/05-acceptance.md\` — blind operator diff is the hard quality gate._`);
+  lines.push(`_Gate 1 here is machine-verifiable only — a blind operator diff is the hard quality gate._`);
   return lines.join("\n");
 }
 

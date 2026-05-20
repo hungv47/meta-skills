@@ -52,7 +52,7 @@ Two files must move together for `/plugin marketplace update meta-skills` to nud
 - **`CHANGELOG.md`** — add a Keep a Changelog entry for the version, with `[meta]` / `[research]` / `[marketing]` / `[product]` stack prefixes where changes are stack-scoped.
 - **GitHub Release** — publish at `github.com/hungv47/meta-skills/releases`. Body should mirror the CHANGELOG entry and include `/plugin marketplace update meta-skills` instructions.
 
-Use the helper to keep marketplace version + README dated line in sync:
+Use the helper to bump the marketplace catalog version:
 
 ```bash
 bun scripts/bump-marketplace.ts <patch|minor|major> "<one-line summary>"

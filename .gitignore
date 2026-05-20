@@ -7,6 +7,9 @@ dist/
 # Local artifact-tree state — created per-project at runtime
 .agents/
 
+# Harness measurement scratch — per-operator run data, not distributable
+.forsvn/artifacts/meta/records/harness/
+
 # User-specific loops + experience substrate — not distributable plugin content
 skills-resources/
 
