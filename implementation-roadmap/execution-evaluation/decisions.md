@@ -1294,3 +1294,72 @@ The build mirrored `evaluate-ad` byte-aligned (read-pass confirmed evaluate-ad i
 ### Status
 
 DONE — built 2026-05-19. 11 new files under `skills/marketing/evaluate-content/` (SKILL.md + 4 agents + 6 references: rubric, format-conventions, playbook, anti-patterns, procedures/pre-dispatch, procedures/dispatch-mechanics) — mirrors evaluate-ad byte-aligned. 5 files under `.forsvn/loops/content-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-19-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic LinkedIn-carousel cycle (job-title slide-1 hook → +158% save-rate lift, meaningful engagement carrying it, Instagram cross-post held as Cross-Platform Context). `plugin.json` registered (skills list + keyword; description 36 → 37 skills). CHANGELOG `[Unreleased]` `### Added` entry written (skill count 36 → 37). Acceptance checks pass: verb-first frontmatter ✓, 8 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-ad ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 (Engagement-Quality Discrimination + Platform-Fit as the content-specific pair) + revision triggers ✓, generation-provenance per D8 contract wired ✓, lane split from evaluate-shortform enforced via Critical Gate 2 + Critic Hard Fail #3 ✓, primary-platform-per-cycle with Cross-Platform Context subsection ✓, content-demo loop scaffolded ✓, `grep "evaluate-content" plugin.json` = 2 hits ✓. User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
+
+---
+
+## D20 — Workstream D slice 4 (LOCKED 2026-05-20: evaluate-campaign MVP, aggregate-only campaign eval, synthetic campaign-demo loop)
+
+Locked via interview round 14 (2026-05-20, post-D19). User picked evaluate-campaign over extract-service / sync-hygiene / review-work upgrades. Three load-bearing forks locked: scope (aggregate-only) / cycle granularity (whole-campaign, all-channels) / campaign-specific rubric dims (Channel-Mix Discrimination + Unit-Economics Discipline).
+
+### Why this slice
+
+Brief 05 § Eval Skills names four eval surfaces: `evaluate-ad` (D15), `evaluate-content` (D19), the already-shipped landing-page + short-form pair, and **`evaluate-campaign`** — the last one unbuilt. `plan-campaign` has been live since the 2.0 rename and produces multi-channel campaign plans, but there is no canonical place to score a launched campaign's outcomes (reach, leads, revenue, CAC, channel breakdown) against the plan's hypothesis. evaluate-campaign closes Workstream D's eval-skill quartet.
+
+Pairs with D8: plan-campaign's artifact is the hypothesis source; evaluate-campaign consumes it via `provenance.input_artifacts` and emits its own provenance.
+
+### Scope (v1)
+
+**New skill:** `skills/marketing/evaluate-campaign/` — mirrors `evaluate-content` / `evaluate-ad` byte-aligned (4-agent shape, 8-section body, 10-field frontmatter, 8-col results.tsv, 7-dim rubric). 11 files: SKILL.md + 4 agents (metric-ingest / diagnosis / recommendation / critic) + 6 references (playbook / rubric / format-conventions / anti-patterns / procedures/pre-dispatch / procedures/dispatch-mechanics).
+
+**Synthetic demo loop:** `.forsvn/loops/campaign-demo/` — program.md + context.md + results.tsv (header + 1 cycle row) + evals/2026-05-20-cycle-1.md + learnings.md. Mirrors D8 lp-demo / D15 ad-demo / D19 content-demo.
+
+**Plugin registration:** `.claude-plugin/plugin.json` — append `./skills/marketing/evaluate-campaign/` + keyword. 37 → 38 skills.
+
+**CHANGELOG:** `[Unreleased]` under `### Added`.
+
+### Locked sub-decisions
+
+1. **Scope — aggregate-only (interview Q1).** evaluate-campaign scores campaign-level outcomes from operator-supplied channel-rollup metrics. It does NOT re-score individual ads / posts / landing pages — those are evaluate-ad / evaluate-content / evaluate-landing-page / evaluate-shortform. Per-asset eval artifacts, if present in the loop, are cited as optional context but never re-scored and never drive the verdict. A single-asset scoring request routes to the asset-level sibling. Enforced by Critical Gate 2 + Critic Hard Fail #3.
+2. **Cycle granularity — whole campaign, all channels (interview Q2).** One cycle = the entire campaign across every channel, with a per-channel breakdown table inside Diagnosis § Channel-Mix Signals. NOT one cycle per channel — splitting per channel destroys the cross-channel mix analysis that is a campaign's whole point. Replaces evaluate-content's "one primary platform per cycle" / evaluate-ad's "one audience-temp per cycle." The ledger description carries the campaign tag.
+3. **Rubric — 7 dims, 5 generic + 2 campaign-specific (interview Q3).** Generic (carried from evaluate-ad / evaluate-content): Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Ledger Correctness. Campaign-specific: **Channel-Mix Discrimination** (separates channels that drove results from channels that rode along — correlation vs causation across the mix; channel-breakdown completeness — every channel that received spend or effort appears in the breakdown) + **Unit-Economics Discipline** (CAC computed honestly — fully-loaded cost ÷ net-new customers; blended vs paid CAC not conflated; payback period / LTV:CAC sane; revenue attribution honest). Maps directly to brief 05's named focus, "CAC, channel breakdown." Pass gate aggregate ≥ 49/70, every dim ≥ 6. Version v0.1 — mandatory revision after cycles 2-3 per brief 05.
+4. **Agent shape:** 4 agents byte-aligned with evaluate-content / evaluate-ad (Metric Ingest + Diagnosis + Recommendation + Critic). Layer 1 parallel, Layer 2 sequential, Layer 3 critic.
+5. **Input contract:** primary source artifact = the `plan-campaign` artifact (`.forsvn/artifacts/mkt/campaign-plan.md` — the campaign hypothesis being scored). Operator-supplied channel-rollup metrics required. Manual metric entry is the default (brief 05).
+6. **Diagnosis subsections:** Likely Drivers / Channel-Mix Signals / Unit-Economics Signals / Confounders. The per-channel breakdown table lives in Channel-Mix Signals (structurally where evaluate-content put Cross-Platform Context); 8 body sections held — no 9th section, byte-alignment with evaluate-ad preserved.
+7. **Results.tsv schema:** 8 columns (cycle / date / artifact / primary_metric / value / baseline / status / description) — byte-identical to evaluate-ad / evaluate-content. `status ∈ {keep, discard, watch, blocked}`. Reuse `scripts/append-loop-result.ts` — no new script.
+8. **Existing loop required.** Critical Gate 1 — no `.forsvn/loops/[slug]/program.md` → NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-campaign does not scaffold loops.
+9. **Generation provenance per D8:** `input_artifacts` lists the plan-campaign artifact + `brand/BRAND.md` + `research/icp-research.md`. `output_eval: null`.
+10. **Stack placement:** `skills/marketing/evaluate-campaign/` (sibling of evaluate-ad, evaluate-content, evaluate-landing-page).
+11. **Routing:** `position: evaluation`, `lifecycle: evaluation`. `defers-to`: run-eval-loop (loop missing), plan-campaign (need next-cycle channel-mix / campaign plan), evaluate-ad / evaluate-content / evaluate-landing-page / evaluate-shortform (operator wants a single asset scored — wrong lane).
+12. **8 Critical Gates** (evaluate-content has 8; evaluate-campaign keeps 8): existing loop / aggregate-only campaign scope / measurement evidence / one primary metric / whole-campaign all-channels scope / no fabricated analytics / explicit attribution confidence / does-not-generate-strategy.
+
+### Acceptance
+
+- `skills/marketing/evaluate-campaign/SKILL.md` exists with verb-first frontmatter, 8 Critical Gates, 4-agent manifest, generation-provenance pattern, budget `standard`.
+- 4 agent files with role / input / output contracts; critic-agent enumerates the 7 rubric dims.
+- `references/rubric.md` — 7 dims × 0-10 + auto-fail conditions + revision protocol; v0.1.
+- `references/format-conventions.md` — 10-field frontmatter + 8-section body + 6-col Evidence + 8-col Results Row, byte-aligned with evaluate-content; per-channel breakdown table in Diagnosis § Channel-Mix Signals.
+- `references/anti-patterns.md` / `playbook.md` / `procedures/{pre-dispatch,dispatch-mechanics}.md` exist.
+- `.forsvn/loops/campaign-demo/` exists with program.md + context.md + results.tsv (header + 1 row) + evals/2026-05-20-cycle-1.md + learnings.md.
+- `.claude-plugin/plugin.json` updated; `grep "evaluate-campaign" .claude-plugin/plugin.json` returns ≥ 2 hits.
+- CHANGELOG `[Unreleased]` entry written; 37 → 38 skills.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Rubric v0.1 needs calibration after first 2-3 real cycles | Brief 05 designs rubrics as provisional + revision-triggered; v0.1 signals this. |
+| Synthetic demo loop doesn't validate against real campaign data | Same precedent as D8 lp-demo / D15 ad-demo / D19 content-demo — infra proof, not campaign-strategy proof. |
+| Aggregate-only means a campaign with broken per-asset creative still passes when channel rollups look fine | Honest lane split — per-asset scoring is the asset-level eval skills' job; evaluate-campaign cites their artifacts as context and routes single-asset requests to them. |
+| A whole-campaign cycle can let a weak channel hide inside a strong blended number | The Channel-Mix Discrimination dim exists precisely to force the per-channel breakdown and name rider channels; the blended number cannot stand alone. |
+
+### D20 build-time notes (2026-05-20)
+
+The build mirrored `evaluate-content` byte-aligned (read-pass confirmed evaluate-content is the right template — same 4-agent shape, 8-section body, 10-field frontmatter, 8-col results.tsv, 7-dim rubric). Three notes surfaced during the build:
+
+1. **The per-channel breakdown is a table inside Diagnosis § Channel-Mix Signals, not a 9th body section.** Sub-decision 6 anticipated this; confirmed correct at build — it is structurally where evaluate-content put its `Cross-Platform Context` subsection. 8 body sections held; cross-eval byte-alignment with evaluate-ad / evaluate-content preserved. The Evidence table carries campaign-level aggregates (incl. blended CAC and paid CAC as distinct rows); the breakdown table carries per-channel rows.
+2. **Learning promotion in the demo follows the D19 precedent, not the strict rule.** `format-conventions.md`'s promotion rule keys a `yes` on `confidence: high` in the cycle verdict. The synthetic `campaign-demo` cycle 1 verdict is `confidence: medium` (a single 4-week synthetic cycle). To exercise the promotion mechanism end-to-end in the infra proof — exactly as D19's `content-demo` did with its own medium-confidence cycle — the cycle promotes a lesson flagged "Provisional learning — D20 infrastructure proof." Real campaign loops follow the strict high-confidence gate.
+3. **`learnings.md` uses `status: stable` frontmatter.** `manifest-sync` normalizes that to `done_with_concerns` with a warning. This is byte-identical to `content-demo` and `ad-demo` learnings.md — a pre-existing pattern across all three demo loops, not a D20 regression. Left as-is for consistency.
+
+### Status
+
+DONE — built 2026-05-20. 11 new files under `skills/marketing/evaluate-campaign/` (SKILL.md + 4 agents + 6 references: rubric, format-conventions, playbook, anti-patterns, procedures/pre-dispatch, procedures/dispatch-mechanics) — mirrors evaluate-content byte-aligned. 5 files under `.forsvn/loops/campaign-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-20-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic 4-channel spring-launch cycle (164 campaign-driven net-new subscribers vs 120 baseline; organic-linkedin + content-seo the genuine drivers at ~1–1.6mo payback; warm-list email classified a rider with its 70 conversions excluded; paid-social a driver-but-underwater channel at $92 CAC → verdict `keep` / `done_with_concerns`, routed to plan-campaign --rev=2). `plugin.json` registered (skills list + keyword; description 37 → 38 skills). CHANGELOG `[Unreleased]` `### Added` entry written (skill count 37 → 38). Acceptance checks pass: verb-first frontmatter ✓, budget `standard` ✓, 8 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-content ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 (Channel-Mix Discrimination + Unit-Economics Discipline as the campaign-specific pair) + revision triggers ✓, generation-provenance per D8 contract wired ✓, aggregate-only scope enforced via Critical Gate 2 + Critic Hard Fail #3 ✓, whole-campaign-all-channels per cycle with the per-channel breakdown table ✓, campaign-demo loop scaffolded (results.tsv 8 columns, manifest-sync clean) ✓, `grep "evaluate-campaign" plugin.json` = 2 hits ✓. **Workstream D complete** (evaluate-landing-page + evaluate-shortform pre-roadmap, evaluate-ad D15, evaluate-content D19, evaluate-campaign D20). User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
