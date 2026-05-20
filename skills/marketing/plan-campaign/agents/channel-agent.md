@@ -19,7 +19,7 @@ You do NOT:
 | **brief** | string | Campaign goal and available channels |
 | **context** | object | ICP research (habitat maps, platform density, engagement types) |
 | **upstream** | markdown | Angle bank from angle-agent |
-| **references** | file paths[] | Path to `references/channel-strategy.md` and (conditionally) `references/distribution-models/clipping-and-live.md` when target demo skews male 21–30 or habitat data flags H-density live-streaming presence |
+| **references** | file paths[] | Path to `references/channel-strategy.md`; (conditionally) `references/platform-channels.md` + the relevant `references/_shared/platform-intelligence/[platform].md` sections when **Social media** is a selected channel; (conditionally) `references/distribution-models/clipping-and-live.md` when target demo skews male 21–30 or habitat data flags H-density live-streaming presence |
 | **feedback** | string \| null | Rewrite instructions from critic agent |
 
 ## Output Contract
@@ -85,6 +85,17 @@ You do NOT:
 | Community/belonging | Slack, Discord, Reddit |
 | Social proof/case study | Email, LinkedIn, Website |
 
+### Platform-Intelligence Grounding (Social media channel)
+
+When **Social media** (channel #6 of the 9-channel map) is a selected channel, read `references/platform-channels.md` and the relevant `references/_shared/platform-intelligence/[platform].md` sections before writing the Social-media rows. Consume only the **strategy subset** — §2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms. Do NOT pull §1 Hook Taxonomy or §5 Retention Curve into a campaign plan; that is `brief-shortform`'s production-layer concern.
+
+- **§3 → Role + Rationale.** Each Social-media row's `Role` (Awareness/Trust/Conversion) and `Rationale` traces to a named §3 algorithm signal — e.g., "LinkedIn = Trust: a contrarian angle engineers the indirect-comment signal LinkedIn rewards (~2.4× reach)," not "LinkedIn is good for B2B."
+- **§2 → Cadence feasibility.** Before committing a platform to a `Cadence` in Content Mix, check §2 against team capacity (TikTok's 21–34s vs 60–180s tiers are different cost structures; LinkedIn's burned-in-caption requirement is a real production cost).
+- **§6 → Conversion eligibility.** A Social-media channel may own a Conversion `Role` only if §6 supports a CTA path (LinkedIn's post-body link costs an 18–40% reach tax → spec link-in-comment). If the §6 path is weak, assign Awareness/Trust and route conversion to an owned channel.
+- **Staleness is soft.** If a `platform-intelligence/[platform].md` file's `last_verified` exceeds 90 days, note it in the Change Log — the critic flags `DONE_WITH_CONCERNS`, it does not FAIL the plan.
+
+If Social media is NOT a selected channel, skip this — `platform-channels.md` is not loaded. Platform→file map: Instagram → `reels.md`, YouTube → `youtube.md` + `shorts.md`.
+
 ### Anti-Patterns
 
 - **Channel-first planning** — Starting with "we need TikTok content" instead of "where does our ICP live?" INSTEAD: Start with habitat maps, then assign channels.
@@ -103,3 +114,4 @@ Before returning:
 - [ ] Content mix (Searchable vs. Shareable) specified per channel
 - [ ] Cadence specified per channel
 - [ ] Every assignment has a rationale connecting habitat data to the angle
+- [ ] If Social media is a selected channel: each Social-media row's Role + Rationale traces to a platform-intelligence §3 signal; cadence checked against §2; a Conversion role assigned only where §6 supports a CTA path. Stale (>90-day) catalog file noted in the Change Log.
