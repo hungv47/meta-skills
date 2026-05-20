@@ -1,6 +1,6 @@
-# Harness — Measurement Tool for the Skill-Stack Refactor
+# Harness — Skill-Stack Measurement Tool
 
-Built per [`implementation-roadmap/refactor/03-harness.md`](../../../implementation-roadmap/refactor/03-harness.md). The harness instruments skill invocations so refactor decisions are data-driven instead of vibes-driven.
+The harness instruments skill invocations so refactoring decisions are data-driven instead of vibes-driven — it measures default context load, lazy ref loads, sub-agent spawns, and artifact contract stability per run.
 
 ---
 
@@ -37,7 +37,7 @@ The harness ships as a **`PostToolUse` hook** plus `record` / `stop` CLI command
 ## File layout
 
 ```
-meta-skills/scripts/harness/
+scripts/harness/
 ├── README.md         # this file
 ├── schema.ts         # typed JSON output schema (single source of truth)
 ├── record.ts         # CLI: start a harness run
@@ -70,19 +70,19 @@ Run data goes to `.forsvn/artifacts/meta/records/harness/`:
 
 ```bash
 # 1. Start recording
-bun meta-skills/scripts/harness/record.ts --skill eval-loop --fixture standard
+bun scripts/harness/record.ts --skill eval-loop --fixture standard
 
 # 2. Invoke the skill in your Claude Code session — talk to Claude naturally,
 #    or use /eval-loop. The hook records every tool call.
 
 # 3. Stop recording — pass --artifact for each output the skill produced
-bun meta-skills/scripts/harness/stop.ts --artifact .forsvn/loops/test-loop/program.md
+bun scripts/harness/stop.ts --artifact .forsvn/loops/test-loop/program.md
 
 # 4. After 3+ runs (minimal, standard, stretch), generate the report
-bun meta-skills/scripts/harness/report.ts --skill eval-loop --out .forsvn/artifacts/meta/records/harness/baseline/eval-loop-report.md
+bun scripts/harness/report.ts --skill eval-loop --out .forsvn/artifacts/meta/records/harness/baseline/eval-loop-report.md
 
 # 5. After refactoring, compare baseline vs new runs
-bun meta-skills/scripts/harness/diff.ts --skill eval-loop --pre-before 2026-05-20 --post-from 2026-05-20
+bun scripts/harness/diff.ts --skill eval-loop --pre-before 2026-05-20 --post-from 2026-05-20
 ```
 
 ---
@@ -92,7 +92,7 @@ bun meta-skills/scripts/harness/diff.ts --skill eval-loop --pre-before 2026-05-2
 ### `record.ts` — start a run
 
 ```
-bun meta-skills/scripts/harness/record.ts --skill <name>
+bun scripts/harness/record.ts --skill <name>
   [--fixture <minimal|standard|stretch>]
   [--mode <fast|standard|deep>]
   [--notes "<any string>"]
@@ -103,7 +103,7 @@ Refuses to start if a run is already active. If `--fixture` is set and the fixtu
 ### `stop.ts` — finalize the active run
 
 ```
-bun meta-skills/scripts/harness/stop.ts
+bun scripts/harness/stop.ts
   [--artifact <path>]...
 ```
 
@@ -114,7 +114,7 @@ Writes `<date>-<skill>-<run-id>.json` and removes the marker.
 ### `report.ts` — aggregate runs
 
 ```
-bun meta-skills/scripts/harness/report.ts --skill <name>
+bun scripts/harness/report.ts --skill <name>
   [--since YYYY-MM-DD]
   [--out <path>]
 ```
@@ -124,12 +124,12 @@ Reads all `*-<skill>-*.json` records (optionally since a date), aggregates, prin
 ### `diff.ts` — pre/post comparison
 
 ```
-bun meta-skills/scripts/harness/diff.ts --skill <name>
+bun scripts/harness/diff.ts --skill <name>
   (--pre-before YYYY-MM-DD --post-from YYYY-MM-DD | --by-notes)
   [--out <path>]
 ```
 
-Partitions runs into pre/post buckets either by date or by the `--notes` field (entries containing "pre" → pre; "post" → post). Applies Gate-1 acceptance criteria from [`05-acceptance.md`](../../../implementation-roadmap/refactor/05-acceptance.md):
+Partitions runs into pre/post buckets either by date or by the `--notes` field (entries containing "pre" → pre; "post" → post). Applies the Gate-1 acceptance criteria:
 
 - ≥30% default-load reduction
 - Contract hashes preserved on all output artifacts
@@ -140,7 +140,7 @@ Exits 0 on PASS, 1 on FAIL.
 
 ## Hook installation
 
-The hook is installed in `agent-skills/.claude/settings.json` (project scope — fires only when working in this repo). Installation is one-time:
+The hook is installed in `.claude/settings.local.json` (gitignored, per-operator — fires only when working in this repo). Installation is one-time:
 
 ```json
 {
@@ -149,7 +149,7 @@ The hook is installed in `agent-skills/.claude/settings.json` (project scope —
       {
         "matcher": ".*",
         "hooks": [
-          { "type": "command", "command": "/Users/hungvio/Desktop/biz/agent-skills/meta-skills/scripts/harness/hook" }
+          { "type": "command", "command": "/Users/hungvio/Desktop/biz/skills/scripts/harness/hook" }
         ]
       }
     ]
@@ -157,13 +157,13 @@ The hook is installed in `agent-skills/.claude/settings.json` (project scope —
 }
 ```
 
-**Note: the `command` path above is operator-specific** (absolute path to your local clone). For v0.1 this lives in `settings.local.json` (gitignored, per-operator). If you want to share the install across teammates via tracked `settings.json`, replace the absolute path with a portable form (e.g., Claude Code's `$CLAUDE_PROJECT_DIR` env var, if supported by your CC version) — verify it expands inside hook commands before committing.
+**Note: the `command` path above is operator-specific** (absolute path to your local clone). It lives in `settings.local.json` because that file is gitignored — each operator points it at their own checkout. If you want to share the install across teammates via tracked `settings.json`, replace the absolute path with a portable form (e.g., Claude Code's `$CLAUDE_PROJECT_DIR` env var, if supported by your CC version) — verify it expands inside hook commands before committing.
 
 The `hook` shell wrapper checks for the marker file before doing anything — when no run is active, it exits in <5ms with no work done. It also bails silently if `bun` is not on PATH (never blocks a tool call). Active runs add ~30-50ms per tool call (Bun cold start).
 
 If you ever want to disable the hook temporarily, delete the marker file:
 ```bash
-rm /Users/hungvio/Desktop/biz/agent-skills/.forsvn/artifacts/meta/records/harness/.active
+rm /Users/hungvio/Desktop/biz/skills/.forsvn/artifacts/meta/records/harness/.active
 ```
 
 The hook is safe-by-construction: any internal error logs to `.harness.log` and exits 0 — it will never block a tool call.

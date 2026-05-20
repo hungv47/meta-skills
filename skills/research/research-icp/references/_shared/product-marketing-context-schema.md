@@ -261,21 +261,26 @@ When `brand/BRAND.md` exists, this section cites it rather than duplicating. Whe
 
 ---
 
-## Auto-draft sources (Phase 2 implementation)
+## Auto-draft sources
 
-The Phase 2 icp-research refactor will include an acquisition script that auto-drafts as much of the schema as possible from common sources:
+`scripts/draft-product-context.ts` mechanically scaffolds this file and fills what is extractable from local sources without reasoning. Run it from a host project's root:
 
-| Source | Sections it fills (or stubs) |
-|---|---|
-| `README.md` | 1 (Product Overview), 12 (Goals) |
-| `package.json` | 1 (name, description, version) |
-| Landing page URL (via web scrape) | 2, 6, 11 (Target Audience, Differentiation, Proof Points) |
-| `research/market-research.md` | 4, 5 (Problems, Competitive Landscape) |
-| `brand/BRAND.md` | 10 (Brand Voice) |
-| `.forsvn/experience/audience.md` | 3, 9 (Personas, Customer Language) |
-| `.forsvn/experience/business.md` | 1 (Pricing), 12 (Goals) |
+```bash
+bun scripts/draft-product-context.ts [--force]
+```
 
-Sections 3, 7, 8, 9 require operator/customer interviews — auto-draft can only stub them.
+It writes a scaffold to `research/product-context.md` with `status: needs_context`, `confidence: low`, and an honest `sections_completed` list — then `research-icp` synthesizes the stubbed sections.
+
+| Source | Sections | Auto-drafted by the script? |
+|---|---|---|
+| `package.json` | 1 (name, description, version) | ✅ extracted |
+| `README.md` | 1 (title, one-liner), 12 (Goals/Roadmap heading) | ✅ extracted |
+| `brand/BRAND.md` | 10 (Brand Voice) | ✅ cited when present |
+| `research/market-research.md` | 4, 5 (Problems, Competitive Landscape) | ⚠️ pointer only — `research-icp` extracts |
+| `.forsvn/experience/{audience,business}.md` | 3, 9 / 1, 12 | ⚠️ noted as available — `research-icp` mines |
+| Landing page URL | 2, 6, 11 (Target Audience, Differentiation, Proof Points) | ❌ not fetched (script is local-files-only) — `research-icp` / operator fills |
+
+The script is mechanical: it extracts and scaffolds, it does not reason. Sections 2–9 and 11 need synthesis or interviews — the script stubs them with a `[TBD]` source hint; `research-icp` fills them.
 
 ---
 

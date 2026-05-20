@@ -2,7 +2,7 @@
 // Aggregate all harness runs for a single skill and emit a markdown report.
 //
 // Usage:
-//   bun meta-skills/scripts/harness/report.ts --skill <name> [--since YYYY-MM-DD] [--out <path>]
+//   bun scripts/harness/report.ts --skill <name> [--since YYYY-MM-DD] [--out <path>]
 //
 // Writes to stdout by default; use --out to save to a file.
 
@@ -60,10 +60,10 @@ function aggregate(skill: string, runs: RunResult[]): SkillReport {
     }
   }
 
-  // Sub-agent USE rate per name. NOT ROI — ROI per 04-protocol.md is "did the agent's
-  // output change the main thread", which requires transcript diffing (v0.2). We surface
-  // USE rate here under neutral labels so an operator doesn't mistake fire-rate for ROI.
-  // Convert to KEEP/REVIEW/DROP only after a blind operator diff per 05-acceptance.md Gate 3.
+  // Sub-agent USE rate per name. NOT ROI — ROI is "did the agent's output change the
+  // main thread", which requires transcript diffing (v0.2). We surface USE rate here
+  // under neutral labels so an operator doesn't mistake fire-rate for ROI.
+  // Convert to KEEP/REVIEW/DROP only after a blind operator diff.
   const agentStats = new Map<string, number>();
   for (const r of runs) for (const a of r.agents_spawned) agentStats.set(a.name, (agentStats.get(a.name) ?? 0) + 1);
   const agentRoi: SkillReport["agent_roi"] = [];
@@ -167,7 +167,7 @@ function format(report: SkillReport): string {
     lines.push("|---|---|---|");
     for (const a of report.agent_roi) lines.push(`| ${a.name} | ${Math.round(a.fire_rate * 100)}% | ${a.verdict} |`);
     lines.push("");
-    lines.push("_USE ≠ ROI. Buckets are HIGH_USE / MED_USE / LOW_USE based on fire rate only. The protocol's KEEP/REVIEW/DROP verdict requires the changed-output-rate metric (per 04-protocol.md Step 6), which is v0.2. Confirm with a blind diff per 05-acceptance.md Gate 3 before removing any agent._");
+    lines.push("_USE ≠ ROI. Buckets are HIGH_USE / MED_USE / LOW_USE based on fire rate only. The KEEP/REVIEW/DROP verdict requires the changed-output-rate metric, which is v0.2. Confirm with a blind operator diff before removing any agent._");
     lines.push("");
   }
   if (report.artifact_contract_stability.length > 0) {
@@ -180,7 +180,7 @@ function format(report: SkillReport): string {
   lines.push(`## Recommendations`);
   for (const r of report.recommendations) lines.push(`- ${r}`);
   lines.push("");
-  lines.push(`_Harness v0.1.0 — see \`implementation-roadmap/refactor/03-harness.md\`._`);
+  lines.push(`_Harness v0.1.0 — see \`scripts/harness/README.md\`._`);
   return lines.join("\n");
 }
 

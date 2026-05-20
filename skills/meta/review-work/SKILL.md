@@ -7,7 +7,7 @@ user-invocable: true
 license: MIT
 metadata:
   author: hungv47
-  version: "1.0.0"
+  version: "1.1.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
   refactor_history:
@@ -114,13 +114,14 @@ Run the Pre-Dispatch protocol ([`references/_shared/pre-dispatch-protocol.md`](r
 **Warm Start** (invoked at end of build session, spec known):
 
 ```
-Diff range against main:
-! `git log --oneline main..HEAD 2>/dev/null | head -10 | grep . || echo "no diff against main (or main branch missing)"`
+Git state:
+! `git status --short 2>/dev/null | head -10 | grep . || echo "(working tree clean)"`
 
-Files changed (stat):
-! `git diff --stat main...HEAD 2>/dev/null | tail -10 | grep . || echo "(none)"`
+Branch / recent commits:
+! `{ git branch --show-current; git log --oneline -5; } 2>/dev/null | grep . || echo "(no git history)"`
 
-Reviewing the above against [spec.md / tasks.md / inline requirements].
+Target auto-detected per review-setup.md § Target detection (working-tree vs branch-vs-base vs last-commit) — confirm or adjust below.
+Reviewing against [spec.md / tasks.md / inline requirements].
 Risk class: [auto-detected: security touched, money/PII flag, etc.] — adjust?
 ```
 
@@ -151,6 +152,8 @@ Runtime-defined agents (reviewer, resolver), NOT static agent roster. Agent prom
 
 ### 1. Identify what to verify
 
+**Detect the target from git state first** — run [`references/procedures/review-setup.md`](references/procedures/review-setup.md) [PROCEDURE] § Target detection: classify working-tree changes vs branch-vs-base vs last-commit, then confirm with the operator. Don't assume `main...HEAD`.
+
 What needs review:
 - **Code just written** — most common case. You just implemented something, verify it.
 - **Architecture/design decision** — verify a plan before implementing (per [`reviewer.md`](references/procedures/reviewer.md) §"Architecture/design-review variant").
@@ -160,6 +163,8 @@ What needs review:
 Gather: the artifact itself + original requirements + relevant context (surrounding files, API contracts, tests).
 
 ### 2. Spawn the Reviewer (or Specialists if deep mode)
+
+**Launch tests concurrently** — per [`references/procedures/review-setup.md`](references/procedures/review-setup.md) § Concurrent test execution: detect the project's test command and start it in the background as the reviewer is spawned, so the suite runs in parallel with the review. Fold any failures into the finding set when the reviewer returns.
 
 - **Generalist (fast/standard):** spawn one reviewer per [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE]. Prompt template + pre-construction reads (learned-rules, quality-feedback-protocol, shared-critic-rubrics) live in the ref.
 - **Specialist (deep, --thorough, or auto-escalated):** spawn 3 specialists in parallel per [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE] — security + performance + correctness. Merge findings; aggregate verdict (any CRITICAL → CRITICAL; any ISSUES_FOUND → ISSUES_FOUND; all PASS → PASS).
@@ -261,6 +266,7 @@ Every run ends with explicit status:
 - [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE] — fast/standard/deep semantics for this skill
 - [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE] — full reviewer agent prompt template + confidence rules + signal-vs-noise verification
 - [`references/procedures/resolver.md`](references/procedures/resolver.md) [PROCEDURE] — full resolver agent prompt template + FIXED/DECLINED structure
+- [`references/procedures/review-setup.md`](references/procedures/review-setup.md) [PROCEDURE] — target detection from git state + concurrent test execution (pre-review setup)
 - [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE] — 3-specialist parallel dispatch + auto-escalation triggers
 - [`references/procedures/critic-consensus.md`](references/procedures/critic-consensus.md) [PROCEDURE] — high-stakes non-code (compliance copy, paid media, launches)
 - [`references/procedures/scope-drift.md`](references/procedures/scope-drift.md) [PROCEDURE] — MISSING + UNPLANNED detection when tasks.md or spec.md exists

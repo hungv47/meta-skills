@@ -1,25 +1,26 @@
 // Shared IO helpers — single source for paths the harness uses.
-// Resolves paths relative to the agent-skills umbrella root (where .agents/ lives).
+// Resolves paths relative to the meta-skills repo root (where .claude-plugin/ lives).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, appendFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 
-// Walk up from this file until we find the umbrella root (the dir that contains .agents/).
-// Falls back to cwd if nothing matches — that case is operator error and logged loudly.
-export function umbrellaRoot(): string {
+// Walk up from this file until we find the repo root — the dir holding
+// .claude-plugin/marketplace.json (the definitive single-repo signature; tracked,
+// unlike the gitignored .agents/). Falls back to cwd if nothing matches.
+export function repoRoot(): string {
   let dir = dirname(new URL(import.meta.url).pathname);
   for (let i = 0; i < 8; i++) {
-    if (existsSync(join(dir, ".agents")) || existsSync(join(dir, ".gitmodules"))) return dir;
+    if (existsSync(join(dir, ".claude-plugin", "marketplace.json"))) return dir;
     dir = dirname(dir);
   }
-  // Couldn't locate umbrella root from script path — fall back to cwd but tell the operator.
-  // Silent fallback would cause hard-to-debug failures downstream (paths resolve wrong).
-  console.error(`[harness] WARNING: could not locate umbrella root from ${dirname(new URL(import.meta.url).pathname)}; falling back to cwd ${process.cwd()}.`);
+  // Couldn't locate the repo root from the script path — fall back to cwd but tell the
+  // operator. Silent fallback would cause hard-to-debug failures (paths resolve wrong).
+  console.error(`[harness] WARNING: could not locate the meta-skills repo root from ${dirname(new URL(import.meta.url).pathname)}; falling back to cwd ${process.cwd()}.`);
   return process.cwd();
 }
 
-export const ROOT = umbrellaRoot();
-export const HARNESS_DIR = join(ROOT, ".agents", "skill-artifacts", "meta", "records", "harness");
+export const ROOT = repoRoot();
+export const HARNESS_DIR = join(ROOT, ".forsvn", "artifacts", "meta", "records", "harness");
 export const EVENTS_DIR = join(HARNESS_DIR, ".events");
 export const INPUTS_DIR = join(HARNESS_DIR, "inputs");
 export const BASELINE_DIR = join(HARNESS_DIR, "baseline");

@@ -6,8 +6,8 @@
 # If bun is not on PATH, exit 0 silently — never block a tool call.
 
 HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
-# meta-skills/scripts/harness  →  umbrella root is three levels up
-ROOT="$(cd "$HOOK_DIR/../../.." && pwd)"
+# scripts/harness  →  repo root is two levels up
+ROOT="$(cd "$HOOK_DIR/../.." && pwd)"
 MARKER="$ROOT/.forsvn/artifacts/meta/records/harness/.active"
 
 [ -f "$MARKER" ] || exit 0

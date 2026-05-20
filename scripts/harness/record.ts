@@ -4,7 +4,7 @@
 // until `stop.ts` finalizes the run.
 //
 // Usage:
-//   bun meta-skills/scripts/harness/record.ts --skill <name> --fixture <minimal|standard|stretch> [--mode <fast|standard|deep>] [--notes "..."]
+//   bun scripts/harness/record.ts --skill <name> --fixture <minimal|standard|stretch> [--mode <fast|standard|deep>] [--notes "..."]
 //
 // Exits non-zero if a run is already active (prevents accidental overlap).
 
@@ -22,7 +22,7 @@ function main() {
   if (existsSync(MARKER_PATH)) {
     console.error("A harness run is already active.");
     console.error(`  Marker: ${MARKER_PATH}`);
-    console.error("  Run `bun meta-skills/scripts/harness/stop.ts` to finalize it, or delete the marker manually if stale.");
+    console.error("  Run `bun scripts/harness/stop.ts` to finalize it, or delete the marker manually if stale.");
     process.exit(2);
   }
 
@@ -90,7 +90,7 @@ function main() {
   console.log(`  body:     ${stats.lines} lines / ${stats.chars} chars (${HARNESS_DIR})`);
   console.log("");
   console.log("Invoke the skill now. When the skill's work completes, run:");
-  console.log("  bun meta-skills/scripts/harness/stop.ts");
+  console.log("  bun scripts/harness/stop.ts");
 }
 
 main();

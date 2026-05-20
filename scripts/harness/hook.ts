@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // PostToolUse hook — logs every tool call to the active harness run, if any.
-// Installed in agent-skills/.claude/settings.json — fires inside this repo only.
+// Installed in .claude/settings.local.json — fires inside this repo only.
 //
 // Contract:
 //   - NEVER throws, NEVER blocks. Exit 0 always, no matter what fails.

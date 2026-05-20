@@ -15,6 +15,11 @@
  * four-plugin STACKS constant ("research-skills" etc.) walked directories the
  * consolidation deleted, so this script crashed on startup for months.
  *
+ * Single-file `_shared/*.md` mirrors are pruned when a skill no longer triggers
+ * them (roadmap D26). Before that the sync was additive-only for single files, so
+ * a citation dropped in a refactor left the mirror behind — orphans accumulated
+ * and `--check` never caught them. `pruneOrphanRefs` closes that gap.
+ *
  * Mirror dir names are stable across the 2.0 skill renames: `_shared/design-brief/`
  * is sourced from `brief-graphic`, `_shared/brand-system/` from `create-brand`,
  * `_shared/ad-intelligence/` from `write-ad`. The source path tracks each rename;
@@ -240,33 +245,57 @@ function copyGeneratedTree(srcRel, destDir) {
   writeFileSync(join(destDir, GENERATED_MARKER), `${GENERATED_LINE}\nsource: ${srcRel}\n`);
 }
 
+// Remove single-file `_shared/*.md` mirrors a skill no longer triggers. The sync is
+// otherwise additive for single files: a citation dropped during a refactor would
+// leave the stale mirror forever (whole-tree mirrors are already pruned by
+// copyGeneratedTree's wholesale rebuild). Only SUPPORT_REFS-managed names are
+// touched — a skill's own hand-authored `_shared/` content and the tree-mirror
+// subdirs are never deleted. In --check mode an orphan is recorded as drift, so
+// `--check` is a true fixpoint guard.
+function pruneOrphanRefs(dir, wantRefs) {
+  const sharedDir = join(dir, "references", "_shared");
+  if (!existsSync(sharedDir)) return;
+  for (const entry of readdirSync(sharedDir, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    if (!(entry.name in SUPPORT_REFS) || wantRefs.has(entry.name)) continue;
+    const orphan = join(sharedDir, entry.name);
+    if (CHECK) drift.push(`orphan   ${relative(ROOT, orphan)}`);
+    else rmSync(orphan);
+  }
+}
+
 function syncSkill(dir) {
   const corpus = textCorpus(dir);
+  const wantRefs = new Set();
+  const addRef = (name) => {
+    wantRefs.add(name);
+    ensureReference(dir, name);
+  };
 
   if (/pre-dispatch-protocol/.test(corpus)) {
-    ensureReference(dir, "pre-dispatch-protocol.md");
+    addRef("pre-dispatch-protocol.md");
     ensureScript(dir, "bootstrap-experience.ts");
   }
   if (/manifest-spec|manifest-sync/.test(corpus)) {
-    ensureReference(dir, "manifest-spec.md");
+    addRef("manifest-spec.md");
     ensureScript(dir, "manifest-sync.ts");
   }
-  if (/eval-loop-spec/.test(corpus)) ensureReference(dir, "eval-loop-spec.md");
-  if (/quality-feedback-protocol/.test(corpus)) ensureReference(dir, "quality-feedback-protocol.md");
-  if (/quality-dashboard-spec/.test(corpus)) ensureReference(dir, "quality-dashboard-spec.md");
-  if (/shared-critic-rubrics/.test(corpus)) ensureReference(dir, "shared-critic-rubrics.md");
-  if (/mode-resolver/.test(corpus)) ensureReference(dir, "mode-resolver.md");
-  if (/anti-sycophancy/.test(corpus)) ensureReference(dir, "anti-sycophancy.md");
-  if (/artifact-contract-template/.test(corpus)) ensureReference(dir, "artifact-contract-template.md");
-  if (/thin-critic-rubric/.test(corpus)) ensureReference(dir, "thin-critic-rubric.md");
-  if (/playbook-ref-template/.test(corpus)) ensureReference(dir, "playbook-ref-template.md");
-  if (/product-marketing-context-schema/.test(corpus)) ensureReference(dir, "product-marketing-context-schema.md");
-  if (/before-starting-check/.test(corpus)) ensureReference(dir, "before-starting-check.md");
-  if (/hypothesis-framework/.test(corpus)) ensureReference(dir, "hypothesis-framework.md");
+  if (/eval-loop-spec/.test(corpus)) addRef("eval-loop-spec.md");
+  if (/quality-feedback-protocol/.test(corpus)) addRef("quality-feedback-protocol.md");
+  if (/quality-dashboard-spec/.test(corpus)) addRef("quality-dashboard-spec.md");
+  if (/shared-critic-rubrics/.test(corpus)) addRef("shared-critic-rubrics.md");
+  if (/mode-resolver/.test(corpus)) addRef("mode-resolver.md");
+  if (/anti-sycophancy/.test(corpus)) addRef("anti-sycophancy.md");
+  if (/artifact-contract-template/.test(corpus)) addRef("artifact-contract-template.md");
+  if (/thin-critic-rubric/.test(corpus)) addRef("thin-critic-rubric.md");
+  if (/playbook-ref-template/.test(corpus)) addRef("playbook-ref-template.md");
+  if (/product-marketing-context-schema/.test(corpus)) addRef("product-marketing-context-schema.md");
+  if (/before-starting-check/.test(corpus)) addRef("before-starting-check.md");
+  if (/hypothesis-framework/.test(corpus)) addRef("hypothesis-framework.md");
   if (/copywriting\/references\/research-workflow|copywriting-research-workflow/.test(corpus)) {
-    ensureReference(dir, "copywriting-research-workflow.md");
+    addRef("copywriting-research-workflow.md");
   }
-  if (/clipping-and-live|CLIP-DENSITY/.test(corpus)) ensureReference(dir, "clipping-and-live.md");
+  if (/clipping-and-live|CLIP-DENSITY/.test(corpus)) addRef("clipping-and-live.md");
 
   if (/append-loop-result/.test(corpus)) ensureScript(dir, "append-loop-result.ts");
   if (/scaffold-eval-loop/.test(corpus)) ensureScript(dir, "scaffold-eval-loop.ts");
@@ -285,6 +314,7 @@ function syncSkill(dir) {
     copyGeneratedTree(SUPPORT_TREES["ad-intelligence"], join(dir, "references", "_shared", "ad-intelligence"));
   }
 
+  pruneOrphanRefs(dir, wantRefs);
   return relative(ROOT, dir);
 }
 
