@@ -4,7 +4,7 @@
 // writes the run JSON, and clears the marker.
 //
 // Usage:
-//   bun meta-skills/scripts/harness/stop.ts [--artifact <path>...]
+//   bun scripts/harness/stop.ts [--artifact <path>...]
 //
 // --artifact may be passed multiple times to declare the output artifacts that this run
 // produced. If omitted, the harness infers them from Write/Edit events in the log.
@@ -33,7 +33,7 @@ function main() {
 
   if (!existsSync(MARKER_PATH)) {
     console.error("No active harness run.");
-    console.error("  Start one with: bun meta-skills/scripts/harness/record.ts --skill <name> --fixture <kind>");
+    console.error("  Start one with: bun scripts/harness/record.ts --skill <name> --fixture <kind>");
     process.exit(2);
   }
 

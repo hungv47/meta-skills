@@ -1,25 +1,27 @@
-// SKILL.md and stack metadata parsing.
-// Reads skill version from the stack's .claude-plugin/plugin.json.
+// SKILL.md and plugin metadata parsing.
+// Reads the skill version from the repo's single .claude-plugin/plugin.json.
 
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { ROOT, fileStats } from "./io";
 
-const STACKS = ["meta-skills", "product-skills", "research-skills", "marketing-skills"] as const;
+// Post-2.0 single-repo layout: skills live under skills/<stack>/<name>/.
+const STACKS = ["meta", "research", "marketing", "product"] as const;
 export type StackName = (typeof STACKS)[number];
 
 export function locateSkill(name: string): { path: string; stack: StackName; version: string | null } | null {
   for (const stack of STACKS) {
-    const skillPath = join(ROOT, stack, "skills", name, "SKILL.md");
+    const skillPath = join(ROOT, "skills", stack, name, "SKILL.md");
     if (existsSync(skillPath)) {
-      return { path: skillPath, stack, version: stackVersion(stack) };
+      return { path: skillPath, stack, version: pluginVersion() };
     }
   }
   return null;
 }
 
-export function stackVersion(stack: StackName): string | null {
-  const pluginPath = join(ROOT, stack, ".claude-plugin", "plugin.json");
+// The consolidated plugin carries a single version for all skills.
+export function pluginVersion(): string | null {
+  const pluginPath = join(ROOT, ".claude-plugin", "plugin.json");
   if (!existsSync(pluginPath)) return null;
   try {
     const plugin = JSON.parse(readFileSync(pluginPath, "utf8"));

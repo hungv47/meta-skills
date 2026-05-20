@@ -1,5 +1,4 @@
 // Harness output schema — single source of truth for what each invocation logs.
-// Matches the format documented in implementation-roadmap/refactor/03-harness.md.
 
 export const HARNESS_VERSION = "0.1.0";
 
