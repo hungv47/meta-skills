@@ -14,3 +14,7 @@ skills-resources/
 .scion/
 .claude/settings.local.json
 IDEA.md
+
+# Internal development artifacts — not user-facing, not distributable
+implementation-roadmap/
+autoresearch/
