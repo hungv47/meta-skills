@@ -21,12 +21,12 @@
 
 ## Manifest Schema (`manifest.md`)
 
-### Frontmatter (14 fields, all required — D17 adds 2 new)
+### Frontmatter (16 fields, all required — D18 adds 2 new)
 
 ```yaml
 ---
 skill: publish-social
-version: "1.1.0"   # bumped at D17
+version: "1.2.0"   # bumped at D18
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
 slug: <kebab-case>
@@ -36,8 +36,8 @@ source_artifacts:
   produce_video: <path | null>
 target_platforms: [x, linkedin, ...]   # subset of 9
 mode_per_platform:
-  x: typefully-draft | export | blocked
-  linkedin: browser-automation-draft | export | blocked   # D17 adds browser-automation-draft value
+  x: typefully-draft | typefully-publish | export | blocked   # D18 adds typefully-publish
+  linkedin: browser-automation-draft | browser-automation-publish | export | blocked   # D17 adds -draft; D18 adds -publish
   # ... one entry per platform in target_platforms
 credentials_detected:
   typefully: true | false
@@ -52,14 +52,27 @@ credentials_detected:
   # binary only, no values
 scheduler_imports_emitted: [typefully.json, buffer.csv, hootsuite.csv, generic.csv]
 bundle_file_count: <integer — total file count in bundle>
-confirmation_result: confirmed | declined | timeout | not_required   # D17 new field — not_required when no D17 route resolved
-automation_result_per_platform:   # D17 new field — populated only if ≥1 D17 route ran; empty/absent otherwise
+dry_run: true | false   # D18 new field — true when --mode=publish --dry-run; no posting occurred
+confirmation_result: confirmed | declined | timeout | not_required | aborted_stage1 | aborted_stage2 | dry_run   # D17: confirmed/declined/timeout/not_required (draft gate). D18 adds aborted_stage1/aborted_stage2 (publish gate) + dry_run
+automation_result_per_platform:   # D17 new field — populated only if ≥1 D17 draft route ran; empty/absent otherwise
   linkedin:
     status: success | failed:<reason-class> | fallback-export
     draft_url: <URL or null>
     failed_at_step: <step name or null>
     last_verified_date: YYYY-MM-DD
-  # one entry per platform in target_platforms with D17 route attempted
+  # one entry per platform in target_platforms with D17 draft route attempted
+publish_result_per_platform:   # D18 new field — populated only on --mode=publish runs after a confirmed gate; empty/absent otherwise
+  x:
+    status: published | failed:<reason-class> | fallback-draft | fallback-export | not_attempted
+    post_url: <live post URL or null>
+    failed_at_step: <step name or null>
+    route: typefully-publish | browser-automation-publish
+  linkedin:
+    status: published | failed:<reason-class> | fallback-draft | fallback-export | not_attempted
+    post_url: <live post URL or null>
+    failed_at_step: <step name or null>
+    route: browser-automation-publish
+  # one entry per platform in target_platforms when --mode=publish ran
 provenance:
   skill: publish-social
   run_date: YYYY-MM-DD
@@ -116,20 +129,21 @@ provenance:
 
 ## Per-Platform Draft Schema (`platforms/[platform].md`)
 
-### Frontmatter (9 fields — D17 adds 2)
+### Frontmatter (10 fields — D18 adds 1)
 
 ```yaml
 ---
 skill: publish-social
-version: "1.1.0"
+version: "1.2.0"
 date: YYYY-MM-DD
 platform: x | linkedin | instagram | youtube | tiktok | facebook | bluesky | threads | reddit
 char_count: <integer — total chars of body; for X thread, sum across posts>
 media_refs:
   - <path to produce-asset slot OR produce-video shot OR "MEDIA REQUIRED" placeholder>
-mode: typefully-draft | browser-automation-draft | export | blocked   # D17 adds browser-automation-draft
-draft_url: <URL or null>   # D17 new — populated when automation succeeded; null for export-mode and fallback-export
-automation_result: success | failed:<reason-class> | fallback-export | n/a   # D17 new — n/a when D16 routes (X-Typefully) used; cross-reference manifest.automation_result_per_platform for non-X drafts
+mode: typefully-draft | typefully-publish | browser-automation-draft | browser-automation-publish | export | published | blocked   # D17 adds -draft routes; D18 adds -publish routes + published
+draft_url: <URL or null>   # D17 — populated when automation draft succeeded; null for export-mode and fallback-export
+post_url: <URL or null>    # D18 new — populated when --mode=publish posted live; null otherwise
+automation_result: success | failed:<reason-class> | fallback-export | fallback-draft | n/a   # D17; D18 adds fallback-draft. n/a when D16 X-Typefully route used; cross-reference manifest.automation_result_per_platform / publish_result_per_platform
 ---
 ```
 
@@ -200,7 +214,7 @@ Schemas live in [`scheduler-formats.md`](scheduler-formats.md). Each scheduler-i
 
 ## Frontmatter Validation Rules
 
-- All required fields present (12 on manifest, 7 on per-platform draft).
+- All required fields present (16 on manifest, 10 on per-platform draft).
 - `date` matches `YYYY-MM-DD` format.
 - `slug` is kebab-case, lowercase, ≤50 chars.
 - `target_platforms` is a non-empty subset of the 9 supported platforms.

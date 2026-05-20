@@ -1111,3 +1111,186 @@ For each platform:
 ### Status
 
 DONE — built 2026-05-19. 11 new files added to `skills/marketing/publish-social/`: 1 agent (automation-agent), 8 platform automation-flow refs (linkedin, instagram, facebook, tiktok, youtube, threads, bluesky, reddit), 2 cross-cutting refs (session-cookie-export, confirmation-gate). 8 existing files modified: SKILL.md (Critical Gate 7 added; Gate 2 updated for D17; routing Routes A/B/C/D; agent manifest now 3 agents; refs section enumerated), formatter-agent (mode resolution per-platform; D17 dispatch path with confirmation gate), critic-agent (Dim 7 added; pass gate now 49/70), platform-credentials (session_cookies field per platform; expires_hint; detection rules; file path alternative; safety rules extended), format-conventions (manifest frontmatter 14 fields incl. confirmation_result + automation_result_per_platform; per-platform draft frontmatter 9 fields incl. draft_url + automation_result), anti-patterns (#12 silent auto-submit, #13 cookie leakage, #14 captcha-bypass; quick-ref card updated), rubric (7 dims × 0-10 with auto-fail extended; pass gate 49/70), playbook (§ History v1.1 entry). publish-social directory: 31 total files (was 20 after D16). plugin.json unchanged. CHANGELOG `[Unreleased]` entry written under `### Changed` (capability extension, not new skill). Acceptance checks pass: 7 Critical Gates ✓, 3 agents ✓, 7-dim rubric ✓, 8 automation-flow refs ✓, session-cookie-export.md ✓, confirmation-gate.md ✓, manifest schema gains automation_result_per_platform ✓, 3 new anti-patterns ✓. User owns version bump + git commit + push.
+
+---
+
+## D18 — Workstream C slice 3c (LOCKED 2026-05-19: publish-social `--mode=publish`, live posting, 9 platforms, two-stage confirmation gate)
+
+Locked via interview round 12 (2026-05-19, post-D17). User picked publish-social slice 3c over evaluate-content / extract-service / sync-hygiene. Three load-bearing forks locked: 9-platform scope / two-stage confirmation gate / abort-gate-is-rollback + delete instructions.
+
+### Why this slice
+
+Closes Workstream C. Brief 04 names three modes for publish-social — `export` / `draft` / `publish` — and a hard rule: *"never publish live without explicit current-session confirmation."* D16 shipped `export` + Typefully-X `draft`; D17 shipped browser-automation `draft` for 8 platforms. `publish` is the last mode and the last brief-04 production gap. D16 and D17 both explicitly scoped it as D18, naming three requirements: **current-session confirmation gate, rollback, dry-run**.
+
+`--mode=publish` makes posts live. It is the only mutating, outward-facing path in the whole stack — every safety affordance in this slice exists to honor brief 04's hard rule.
+
+### Scope (v1 — slice 3c)
+
+**Extends publish-social skill (no new skill registration).**
+
+publish goes live on **all 9 platforms**: X via Typefully's schedule-immediate API; the other 8 (LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit) via browser-automation Send — extending D17's 8 automation-flow specs from save-draft to publish.
+
+**New file:**
+- `references/publish-confirmation-gate.md` — the two-stage live-publish gate protocol. Distinct from D17's `confirmation-gate.md` (which gates drafts with a single y/N). Stage 1: review every full post body → `[y/N]`. Stage 2: final gate — `type PUBLISH to confirm`. Defines prompt format, operator responses, timeout = abort, dry-run interaction.
+
+**Modified files (in publish-social):**
+- `SKILL.md` — Critical Gate 1 + 2 rewritten (publish is now a supported mode via `--mode=publish`, not "always BLOCKED"); new Critical Gate 8 (two-stage live-publish gate + critic-before-publish ordering); Route E (publish) added to Routing; mode resolution + Inputs table updated; Quality Gate → 8 dims; manifest field count updated; version `1.1.0 → 1.2.0`. Also fixes accumulated D16→D17 drift (stale "6 Critical Gates" / "7 publish-social-specific patterns" lines).
+- `agents/formatter-agent.md` — mode resolution: `publish` no longer returns BLOCKED; documents publish-mode behavior + the critic-before-publish ordering.
+- `agents/automation-agent.md` — publish-mode behavior: final step is Send/Post (reads each flow's Publish Variant section), not Save-draft; `publish_result_per_platform` output; X via Typefully schedule-immediate.
+- `agents/critic-agent.md` — Dim 8 (Live-Publish Safety); critic runs BEFORE publish (re-ordering note); fixes stale 6-dim / `≥ 42/60` references → 8-dim / `≥ 56/80`.
+- `references/rubric.md` — Dim 8 added; pass gate → aggregate ≥ 56/80, every dim ≥ 6; version `v1.1 → v1.2`.
+- `references/format-conventions.md` — manifest frontmatter gains `publish_result_per_platform` + `dry_run`; `confirmation_result` enum extended; per-platform `mode` enum gains `published`; per-platform gains `post_url`; version refs → 1.2.0.
+- `references/anti-patterns.md` — 3 live-publish anti-patterns: publish without two-stage confirm / publish on critic FAIL / dry-run that actually posts.
+- `references/platform-credentials.md` — publish uses the same `session_cookies` + Typefully key; no new credential type; publish-specific safety note added.
+- `references/playbook.md` § History — D18 entry; v1.2 narrative.
+- 8 `references/automation-flows/{linkedin,instagram,facebook,tiktok,youtube,threads,bluesky,reddit}.md` — each gains a `## Publish Variant (D18)` section: the Send/Post selector + success indicator. Steps 1-5 (navigate / compose / fill) are shared with the draft flow; only the final action differs.
+
+**Plugin registration:** unchanged (skill already registered in D16).
+
+**Layer order (changed for publish — critic gates the irreversible action):**
+
+```
+Pre-Dispatch → Formatter (format all posts) → Critic (8-dim, full) → Two-stage gate → Publish → Manifest
+```
+
+For export / draft modes the D16/D17 order is unchanged (critic after automation). Only `--mode=publish` moves critic before the action — a live post cannot be fixed after the fact.
+
+**Dry-run:** `--mode=publish --dry-run` prints the exact publish plan (every post body, target account, route per platform: Typefully API vs browser-automation) and exits. No confirmation gate, no posting, no bundle mutation. D16 named dry-run a D18 requirement.
+
+**Rollback:** the two-stage gate IS the rollback — it aborts cleanly before anything posts. Once posts are live, the manifest records every live `post_url` + per-platform manual delete instructions. No automated `--unpublish` (deletion is itself destructive — operator-owned).
+
+**Not in v1 (explicit deferrals):**
+- No automated `--unpublish` / delete flow.
+- No scheduled publish — `publish` posts immediately; scheduling stays in the scheduler-import path.
+- No retry on publish failure (single attempt; per-platform fallback to draft/export).
+- No per-platform selective publish inside the gate (two-stage is all-or-nothing for the confirmed set; Stage 1 review can still abort).
+- No X browser-automation Send (X stays on Typefully — no X flow file exists).
+- No new platforms beyond the 9.
+
+### Locked sub-decisions
+
+1. **Platform scope: all 9** (interview Q1). X via Typefully schedule-immediate API; 8 via browser-automation Send.
+2. **Confirmation gate: two-stage** (interview Q2). Stage 1 — show every full post body + target account → `[y/N]`. Stage 2 — `type PUBLISH to confirm`. Anything other than the literal `PUBLISH` at Stage 2 → abort. Timeout (5 min) at either stage → abort. Brief 04's "explicit current-session confirmation."
+3. **Rollback: abort-gate + delete instructions** (interview Q3). The gate is the rollback. Live posts get `post_url` + per-platform delete instructions in the manifest. No automated un-publish.
+4. **Critic runs BEFORE publish.** Forced by irreversibility. Critic FAIL → re-dispatch formatter (max 2 cycles); still failing → `BLOCKED`, gate never reached. Export / draft modes keep D16/D17 critic-after ordering.
+5. **Dim 8 — Live-Publish Safety.** Rubric → 8 dims × 0-10, pass gate ≥ 56/80, every dim ≥ 6. Dim 8 verifies: two-stage gate ran + literal `PUBLISH` recorded + critic passed before publish + no `publish_result.status=published` without `confirmation_result=confirmed` + dry-run never posted. Auto-fails: published-without-confirm / published-on-critic-FAIL / dry-run-that-posted.
+6. **Critical Gate 8.** SKILL.md gains Gate 8 (two-stage gate + critic-before-publish). Gate 1 (auto-detect never picks publish) stays — `publish` is `--mode=publish` opt-in ONLY.
+7. **X publish route: Typefully schedule-immediate.** Reuses D16's Typefully API client; create-draft with `schedule-date` = immediate / next-free-slot. Typefully API error → X falls back to D16 export-mode (not browser-automation — no X flow).
+8. **Publish-failure handling.** A platform that fails to publish (selector drift / captcha / login challenge / rate-limit / network) falls back to its D17 draft route when cookies are present, else D16 export. Single attempt, no retry. Other platforms continue. Manifest records `publish_result_per_platform`.
+9. **Automation-flow extension, not new files.** Each of the 8 existing flow specs gains a `## Publish Variant` section — steps 1-5 shared, only the final action (Send vs Save-draft) differs. No 8 new flow files.
+10. **publish = immediate.** No schedule-time selection in publish mode.
+11. **CHANGELOG** `[Unreleased]` under `### Changed` (capability extension, no new skill — like D17). Skill count unchanged at 36.
+12. **D16→D17 drift cleanup** folded in: SKILL.md's stale "6 Critical Gates" / "7 publish-social-specific patterns" lines and critic-agent.md's stale `≥ 42/60` references are corrected while those files are open for D18.
+
+### Acceptance
+
+- `references/publish-confirmation-gate.md` exists with the two-stage protocol (Stage 1 review + Stage 2 typed `PUBLISH`) + timeout=abort + dry-run interaction.
+- `SKILL.md` Critical Gates list contains Gate 8; Gate 1 + 2 updated; Route E (publish) in Routing; version `1.2.0`.
+- `agents/automation-agent.md` documents publish-mode (Send) behavior + `publish_result_per_platform`.
+- `agents/critic-agent.md` enumerates 8 rubric dims; dim 8 = Live-Publish Safety; stale 42/60 numbers corrected to 56/80.
+- `references/rubric.md` has 8 dims × 0-10; pass gate ≥ 56/80; version `v1.2`.
+- `references/format-conventions.md` manifest schema gains `publish_result_per_platform` + `dry_run`; per-platform schema gains `post_url` + `published` mode value.
+- `references/anti-patterns.md` adds 3 live-publish patterns.
+- 8 automation-flow refs each have a `## Publish Variant (D18)` section with the Send selector + success indicator.
+- `references/playbook.md` § History has a D18 entry.
+- `grep -n "mode=publish" skills/marketing/publish-social/SKILL.md` shows publish as a supported mode (no longer "always BLOCKED").
+- CHANGELOG `[Unreleased]` entry written under `### Changed`.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Live publishing is irreversible — a bad post is public immediately | Two-stage gate + critic-before-publish + dry-run are the mitigations brief 04 mandates. The skill never auto-publishes; `--mode=publish` is explicit opt-in and auto-detect cannot reach it. |
+| Typefully schedule-immediate is not a true "publish now" endpoint | Documented honestly; `schedule-date` = now / next-free-slot is the closest API affordance; Typefully error → X falls back to export. |
+| Browser-automation Send is higher-stakes than D17's Save-draft (a misfire is a live post, not a cleanable draft) | Same per-platform single-attempt + sequential pacing + no-captcha-retry discipline as D17; critic runs before any Send; the gate shows full bodies. |
+| No automated rollback means a bad post must be deleted by hand | A live post cannot be cleanly un-posted regardless (it may already have impressions); automated delete is a second destructive path not worth v1 surface. Manifest gives per-platform delete instructions. |
+| Selector drift on a publish flow Sends via the wrong UI element | Publish Variant selectors are versioned + dated like D17's; failure → fallback to draft/export, never a blind retry. |
+
+### D18 build-time finding (2026-05-19, read-pass on publish-social)
+
+The read-pass before building surfaced three things that refined the plan:
+
+1. **Dim 8 cannot be scored in the critic's pre-gate pass.** Sub-decisions 4–5 said "Critic (8-dim, full)" runs before the gate. But Dim 8 (Live-Publish Safety) checks post-publish facts — confirmation logged, posted rows confirmation-backed, dry-run posted nothing — which do not exist when the critic runs pre-gate. **Resolution:** the critic-agent scores **dims 1–7** as the pre-gate content gate (its verdict gates on those, ≥ 49/70); the **orchestrator's Self-Check Before Delivery applies dim 8** mechanically post-publish and computes the full 8-dim gate (≥ 56/80). One critic invocation, no second pass. `rubric.md`, `critic-agent.md`, `dispatch-mechanics.md`, and `publish-confirmation-gate.md` all state this split. The "critic gates publish" intent of sub-decision 4 holds — the *content* gate (dims 1–7) runs before the operator is ever asked to confirm.
+
+2. **Accumulated D16→D17 drift, corrected in passing.** The D17 pass did not fully sweep its own changes: SKILL.md frontmatter `metadata.version` was still `1.0.0` (never bumped at D17 despite `rubric.md`/`format-conventions.md` going to 1.1); SKILL.md carried stale "6 Critical Gates" / "7 publish-social-specific patterns" counts; `critic-agent.md` still had D16's `≥ 42/60` pass-gate in its Evaluation Process + Self-Check; and `dispatch-mechanics.md`, `pre-dispatch.md`, `playbook.md`'s mode-narrative were left D16-era ("6 dims", "draft deferred to D17"). D18 touches all these files anyway — leaving "6 dims" beside new "8-dim" content would be incoherent — so the drift was corrected in the same pass. `metadata.version` set to `1.2.0`.
+
+3. **Route label.** The decision text mentioned adding "Route E (publish)". SKILL.md already had a **Route D** placeholder (`--mode=publish` → BLOCKED). D18 rewrote that existing Route D into the live publish flow rather than adding a separate Route E — no stale BLOCKED route left behind, no renumbering of A/B/C.
+
+Sub-decision 9 (extend the 8 existing automation-flow files with a `## Publish Variant` section rather than ship 8 new files) was confirmed correct at build — steps 1–5 are genuinely shared with the draft flow; only the final action differs.
+
+### Status
+
+DONE — built 2026-05-19. 1 new file (`references/publish-confirmation-gate.md` — two-stage gate protocol) + 20 modified files under `skills/marketing/publish-social/`: SKILL.md (Critical Gates 1+2 rewritten, Gate 8 added, Route D rewritten as the publish flow, Quality Gate → 8 dims, manifest 16-field / per-platform 10-field counts, agent manifest publish ordering, version `1.0.0`→`1.2.0`); 3 agents (formatter — publish mode resolution + Live-Publish Dispatch; automation — publish-mode Send behavior + `publish_result_per_platform`; critic — dim 8 framing as orchestrator-applied, stale `42/60`→`56/80` fixed); 6 references (rubric — dim 8 + v1.2 + gate ≥ 56/80; format-conventions — `dry_run` + `publish_result_per_platform` + `post_url` + enum extensions; anti-patterns — #15/#16/#17; platform-credentials — D18 publish-mode note; playbook — mode narrative + § History v1.2; confirmation-gate — dim-count line); 2 procedures (dispatch-mechanics — Publish Layer + orchestrator dim-8 Self-Check + drift fixes; pre-dispatch — publish mode resolution); 8 automation-flow refs (each gains a `## Publish Variant (D18)` section). `plugin.json` unchanged (no new skill; skill count stays 36). CHANGELOG `[Unreleased]` entry written under `### Changed`. Acceptance checks pass: `publish-confirmation-gate.md` two-stage protocol ✓, SKILL.md Gate 8 + Route D publish flow + version 1.2.0 ✓, automation-agent publish-mode + `publish_result_per_platform` ✓, critic-agent 8 dims (dim 8 orchestrator-applied) ✓, rubric 8 dims × 0-10 + ≥ 56/80 ✓, format-conventions `publish_result_per_platform` + `dry_run` + `post_url` ✓, 3 new anti-patterns ✓, 8 automation-flow Publish Variant sections ✓, playbook § History D18 ✓, `grep "mode=publish" SKILL.md` shows publish as supported ✓. **Workstream C complete** (produce-asset D11 + produce-video D14 + publish-social D16/D17/D18). User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
+
+---
+
+## D19 — Workstream D slice 3 (LOCKED 2026-05-19: evaluate-content MVP, organic-content eval, synthetic content-demo loop)
+
+Locked via interview round 13 (2026-05-19, post-D18). User picked evaluate-content over evaluate-campaign / extract-service / sync-hygiene. Three load-bearing forks locked: lane vs evaluate-shortform / cycle granularity / content-specific rubric dims.
+
+### Why this slice
+
+Brief 05 § Eval Skills lists `evaluate-content` alongside `evaluate-ad` (shipped D15), `evaluate-campaign`, and the already-shipped landing-page + short-form pair. Workstream C just shipped the full production trio (`produce-asset` / `produce-video` / `publish-social`) — content now goes live, but there is no canonical place to score organic-content performance (engagement, scroll/dwell, click-through, conversion, qualitative feedback) against the original brief's hypothesis. evaluate-content closes that loop for the `write-social` → `publish-social` → performance → next-content cycle.
+
+Pairs with D8: write-social already emits generation-provenance; evaluate-content consumes it to ground scoring against `input_artifacts`, and emits its own provenance.
+
+### Scope (v1)
+
+**New skill:** `skills/marketing/evaluate-content/` — mirrors `evaluate-ad`'s structure byte-aligned (4-agent shape, 8-section body, 10-field frontmatter, 8-col results.tsv, 7-dim rubric) for cross-eval consistency. 11 files:
+- `SKILL.md` — verb-first; budget `standard`; 7 Critical Gates.
+- `agents/metric-ingest-agent.md` — normalizes operator-supplied content metrics (engagement breakdown, scroll/dwell, CTR, conversions, sample size, window, source caveats). Primary-platform-scoped.
+- `agents/diagnosis-agent.md` — connects metrics to the write-social artifact's hypothesis (hook, format, CTA, platform framing); cross-platform context signals; engagement-quality signals.
+- `agents/recommendation-agent.md` — keep/discard/watch/blocked verdict + next-cycle action (revise hook / reformat for platform / shift platform mix / route back to write-social with a revised brief).
+- `agents/critic-agent.md` — 7-dim rubric enforcement; routes critic-override to `scripts/eval/log-critic-override.ts`.
+- `references/playbook.md` / `rubric.md` / `format-conventions.md` / `anti-patterns.md` / `procedures/pre-dispatch.md` / `procedures/dispatch-mechanics.md`.
+
+**Synthetic demo loop:** `.forsvn/loops/content-demo/` — `program.md` + `context.md` + `results.tsv` (header + 1 cycle row) + `evals/2026-05-19-cycle-1.md` + `learnings.md`. Mirrors D8 `lp-demo` / D15 `ad-demo` — proves the infra on one synthetic cycle.
+
+**Plugin registration:** `.claude-plugin/plugin.json` — append `./skills/marketing/evaluate-content/` + keyword. 36 → 37 skills.
+
+**CHANGELOG:** `[Unreleased]` under `### Added`.
+
+### Locked sub-decisions
+
+1. **Lane (interview Q1): organic text / image / carousel only.** evaluate-content scores non-video organic content (write-social / publish-social / produce-asset output). Short-form video is **out of scope — defers to `evaluate-shortform`** (a Critical Gate + a `defers-to` entry). Clean lane split, zero overlap; each eval skill owns one content type.
+2. **Cycle granularity (interview Q2): one primary platform per cycle, others as context.** One cycle is scoped to an operator-designated **primary platform**; the Evidence table covers that platform's signals; secondary platforms appear in a `Cross-Platform Context` subsection that informs diagnosis but does NOT drive the keep/discard verdict. Replaces evaluate-ad's "one audience-temp per cycle." The ledger description carries the primary-platform tag.
+3. **Rubric (interview Q3): 7 dims — 5 generic + 2 content-specific.** Generic (carried from evaluate-ad): Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Ledger Correctness. Content-specific: **Engagement-Quality Discrimination** (meaningful engagement — saves / shares / comments / CTR / conversion — vs vanity — likes / impressions / views; a vanity spike must not read as success) + **Platform-Fit** (was the content native to the primary platform's format + algorithm, and were the metrics read against platform-appropriate benchmarks). Pass gate aggregate ≥ 49/70, every dim ≥ 6. Version `v0.1` provisional — mandatory revision after cycles 2-3 per brief 05.
+4. **Agent shape:** 4 agents byte-aligned with evaluate-ad (Metric Ingest + Diagnosis + Recommendation + Critic). Layer 1 parallel, Layer 2 sequential, Layer 3 critic.
+5. **Input contract:** primary source artifact = the `write-social` artifact (the content hypothesis being scored). Optional: the `publish-social` bundle manifest (post URLs + provenance). Operator-supplied metrics required. Manual metric entry is the default (brief 05).
+6. **Results.tsv schema:** 8 columns (cycle / date / artifact / primary_metric / value / baseline / status / description) — byte-identical to evaluate-ad / evaluate-landing-page. `status ∈ {keep, discard, watch, blocked}`. Reuse `scripts/append-loop-result.ts`.
+7. **Existing loop required.** Critical Gate 1 — no `.forsvn/loops/[slug]/program.md` → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. evaluate-content does not scaffold loops.
+8. **Generation provenance per D8:** `input_artifacts` lists the write-social artifact + `brand/BRAND.md` + relevant `research/icp-research.md`. `output_eval: null`.
+9. **Stack placement:** `skills/marketing/evaluate-content/` (organic marketing content; sibling of evaluate-ad, evaluate-landing-page).
+10. **Routing:** `position: evaluation`, `lifecycle: evaluation`. `defers-to`: `run-eval-loop` (loop missing), `write-social` (need next-cycle copy), `evaluate-shortform` (the content is short-form video), `publish-social` (re-distribution issue, not content).
+
+### Acceptance
+
+- `skills/marketing/evaluate-content/SKILL.md` exists with verb-first frontmatter, 7 Critical Gates, 4-agent manifest, generation-provenance pattern, budget `standard`.
+- 4 agent files with role / input / output contracts; critic-agent enumerates the 7 rubric dims.
+- `references/rubric.md` — 7 dims × 0-10 + auto-fail conditions + revision protocol; v0.1.
+- `references/format-conventions.md` — 10-field frontmatter + 8-section body + 6-col Evidence + 8-col Results Row, byte-aligned with evaluate-ad; the `Cross-Platform Context` subsection added.
+- `references/anti-patterns.md` / `playbook.md` / `procedures/{pre-dispatch,dispatch-mechanics}.md` exist.
+- `.forsvn/loops/content-demo/` exists with program.md + context.md + results.tsv (header + 1 row) + evals/2026-05-19-cycle-1.md + learnings.md.
+- `.claude-plugin/plugin.json` updated; `grep "evaluate-content" .claude-plugin/plugin.json` returns ≥ 2 hits.
+- CHANGELOG `[Unreleased]` entry written; 36 → 37 skills.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Rubric v0.1 needs calibration after first 2-3 real cycles | Brief 05 designs rubrics as provisional + revision-triggered; v0.1 signals this. |
+| Synthetic demo loop doesn't validate against real engagement data | Same precedent as D8 `lp-demo` / D15 `ad-demo` — infra proof, not content-strategy proof. |
+| "Primary platform, others as context" can let a weak secondary platform hide | Accepted over per-platform cycles (9× cycles) and pure aggregate (signal loss); the operator can run a fresh cycle with a different primary platform. Diagnosis still surfaces weak secondaries. |
+| Lane split with evaluate-shortform leaves a publish-social bundle's video posts to a second skill | Honest — video genuinely needs the short-form-research catalog lens; one bundle → two eval skills is acceptable. Critical Gate routes cleanly. |
+
+### D19 build-time notes (2026-05-19, read-pass on evaluate-ad)
+
+The build mirrored `evaluate-ad` byte-aligned (read-pass confirmed evaluate-ad is the right template — same 4-agent shape, 8-section body, 10-field frontmatter, 8-col results.tsv). Three small refinements surfaced during the build:
+
+1. **8 Critical Gates, not 7.** evaluate-ad has 7. evaluate-content adds the lane gate (Gate 2 — organic non-video only; video → evaluate-shortform, paid → evaluate-ad) as a distinct gate rather than folding it, because the interview made lane discipline load-bearing. Net 8.
+2. **Cross-Platform Context is a 4th Diagnosis subsection.** evaluate-ad's Diagnosis has 4 subsections (Likely Drivers / Confounders / Creative-Fatigue / Audience-Match). evaluate-content's are Likely Drivers / Engagement-Quality Signals / Cross-Platform Context / Confounders — the `Cross-Platform Context` subsection is where secondary-platform metrics live, structurally walled off from the verdict per interview Q2.
+3. **`_shared/` refs cited, not materialized.** evaluate-content cites `references/_shared/{eval-loop-spec,...}.md` in its References section exactly as evaluate-ad (D15) does — neither skill physically carries the `_shared/` dir (the sync script is broken; D8/D13 finding). evaluate-content matches its sibling; the sync-hygiene slice (backlog) fixes all eval skills' `_shared/` together.
+
+### Status
+
+DONE — built 2026-05-19. 11 new files under `skills/marketing/evaluate-content/` (SKILL.md + 4 agents + 6 references: rubric, format-conventions, playbook, anti-patterns, procedures/pre-dispatch, procedures/dispatch-mechanics) — mirrors evaluate-ad byte-aligned. 5 files under `.forsvn/loops/content-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-19-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic LinkedIn-carousel cycle (job-title slide-1 hook → +158% save-rate lift, meaningful engagement carrying it, Instagram cross-post held as Cross-Platform Context). `plugin.json` registered (skills list + keyword; description 36 → 37 skills). CHANGELOG `[Unreleased]` `### Added` entry written (skill count 36 → 37). Acceptance checks pass: verb-first frontmatter ✓, 8 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-ad ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 (Engagement-Quality Discrimination + Platform-Fit as the content-specific pair) + revision triggers ✓, generation-provenance per D8 contract wired ✓, lane split from evaluate-shortform enforced via Critical Gate 2 + Critic Hard Fail #3 ✓, primary-platform-per-cycle with Cross-Platform Context subsection ✓, content-demo loop scaffolded ✓, `grep "evaluate-content" plugin.json` = 2 hits ✓. User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.

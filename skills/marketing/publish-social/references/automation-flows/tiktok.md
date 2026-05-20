@@ -50,6 +50,21 @@ TikTok Studio updates the UI roughly bi-monthly. Selectors above verified 2026-0
 - **No upload-and-publish in same flow.** v1 only saves to drafts. Operator hits Post manually after review.
 - **No simultaneous multi-account.** If operator has multiple TikTok accounts, only the cookie-resolved one is targeted.
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–5 above unchanged, then takes the **Post** action instead of Save-to-drafts. The video goes live. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 6′ (replaces draft step 6) | Click **"Post"** | `button` with text "Post" at the bottom of the upload form | "Your video is being posted" → posted state | `selector_drift` |
+| 7′ | Capture live post URL | Read the published video URL from TikTok Studio content list | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.tiktok.com/@<username>/video/<video_id>`
+
+**On Send failure:** video is uploaded + caption filled but unposted → automation-agent takes the single Save-to-drafts fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Slider captcha at any point → `fallback-export`.
+
+**Publish-specific note:** TikTok is the riskiest automation surface (LOW-MEDIUM maturity; ~30% fallback rate). For `--mode=publish` expect a higher fallback-to-draft rate than draft mode — the post-upload Post step is where bot-detection most often triggers. Video upload completing does not guarantee the Post action succeeds.
+
 ## Confidence Notes
 
 v1 confidence: LOW-MEDIUM. TikTok is the riskiest automation surface in scope. Operator should expect ~30% fallback-to-export rate on TikTok in v1. Selector spec sync is critical.

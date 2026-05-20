@@ -11,6 +11,7 @@
 5. `references/anti-patterns.md` — patterns to flag
 6. `references/rubric.md` — what critic will score
 7. `references/playbook.md` — methodology + when not to use
+7b. `references/confirmation-gate.md` + `references/publish-confirmation-gate.md` — the D17 draft gate + the D18 two-stage publish gate (read the latter when `--mode=publish`)
 8. `references/platforms/[platform].md` — per-platform rules (only those in `target_platforms`)
 9. `references/_shared/before-starting-check.md` — common pre-dispatch (when sync repaired)
 10. `references/_shared/pre-dispatch-protocol.md` — experience write/read loop (when sync repaired)
@@ -33,7 +34,7 @@ If write-social artifact missing OR target platforms not derivable, ask up to 5 
 2. **Source artifact:** is there an existing write-social artifact? (path or "no — please dispatch write-social")
 3. **Target platforms:** which of the 9 supported? (default: all platforms in the write-social artifact's `target_platforms` field)
 4. **Media:** is there a produce-asset / produce-video manifest? (path or "no — emit placeholder")
-5. **Mode:** auto-detect (default) / export (force export-mode) / draft (X-only via Typefully)
+5. **Mode:** auto-detect (default) / export (force export-mode) / draft (per-platform draft — Typefully for X, browser-automation for the 8) / publish (live posting behind the two-stage confirmation gate; add `--dry-run` to rehearse)
 
 Skip the bundle if all required inputs are present.
 
@@ -50,12 +51,12 @@ Run before formatter-agent starts. See `references/platform-credentials.md` § D
 
 Before dispatching formatter, run the mode resolution from `agents/formatter-agent.md` § Mode Resolution:
 
-- `--mode=publish` → return BLOCKED immediately (deferred to D18).
-- `--mode=draft` for non-X platforms → return BLOCKED immediately (deferred to D17).
+- `--mode=publish` → publish route (D18). Resolve per-platform publish routes; the publish layer runs the critic content gate → two-stage confirmation gate → live posting (`references/procedures/dispatch-mechanics.md` § Publish Layer). `--dry-run` may be combined — prints the publish plan, posts nothing.
+- `--mode=draft` → per-platform draft route (D17). X → Typefully draft if creds; the 8 non-X → browser-automation draft if session cookies present; else export per platform.
 - `--mode=export` → all platforms in export-mode.
-- `--mode=auto` (default) → X goes Typefully-draft if creds present; else all export.
+- `--mode=auto` (default) → per-platform: X → Typefully-draft if creds; the 8 → browser-automation-draft if cookies; else export. **Auto-detect never resolves to publish.**
 
-If BLOCKED, do NOT proceed to formatter dispatch. Return BLOCKED with explicit deferral message + which slice will absorb (D17 / D18).
+A run returns BLOCKED at this stage only when `--mode=publish` is requested with no credentials for any platform. Otherwise publish proceeds into the publish layer — where the critic content gate (FAIL after 2 cycles → BLOCKED) or the operator's two-stage gate decision (abort → export-mode bundle) may still stop it.
 
 ## Setup Helper Activation
 
@@ -101,4 +102,4 @@ Pre-dispatch completes with one of:
 
 - **PROCEED** → all checks passed; formatter-agent dispatches with `credentials_state` + resolved mode + validated inputs.
 - **NEEDS_CONTEXT** → required input missing; defer to upstream skill with explicit reason.
-- **BLOCKED** → mode resolution returned BLOCKED (`--mode=publish` or non-X `--mode=draft`).
+- **BLOCKED** → `--mode=publish` requested with no credentials for any platform, OR the publish critic content gate FAILed after 2 cycles.
