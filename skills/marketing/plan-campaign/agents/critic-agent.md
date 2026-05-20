@@ -107,6 +107,12 @@ Beyond individual component quality, verify cross-component alignment:
 3. **Channel → Timeline trace:** Every channel in the timeline appears in channel assignments. No timeline entries without a channel strategy.
 4. **Awareness progression:** Pre-launch content is Problem/Educational, launch is Transformation/Trust, sustain is Trust/Social. Not reversed.
 
+### Soft Checks (flag as DONE_WITH_CONCERNS — never FAIL)
+
+These do **not** affect the binary PASS/FAIL verdict and never trigger a rewrite cycle. When a soft check is unmet, the verdict can still be PASS — record it in the `### Notes` block and the orchestrator ships the artifact as `done_with_concerns` (D23 sub-decision 3).
+
+- **Platform-intelligence grounding (Social-media channel).** When **Social media** is a selected channel, its Channel Hierarchy rows and Channel Execution Brief should be grounded in `references/platform-channels.md` → the `references/platform-intelligence/` catalog (§2 Format Constraints / §3 Algorithm Signals / §6 CTA Placement Norms): each social row's Role + Rationale traces to a named §3 signal, cadence is checked against §2, and a Conversion role appears only where §6 supports a CTA path. An ungrounded social brief — or one grounded in a stale (`last_verified` >90 days) catalog file — is a DONE_WITH_CONCERNS flag, not a failure. N/A when Social media is not a selected channel.
+
 ### Anti-Patterns
 
 - **Passing a generic plan** — "Post content on LinkedIn about productivity." That's a direction, not a plan. Every field must be specific.
@@ -123,3 +129,4 @@ Before returning:
 - [ ] FAIL: every failure has specific fix + named re-dispatch agent
 - [ ] FAIL: strengths acknowledged alongside failures
 - [ ] Verdict is binary — PASS or FAIL
+- [ ] Soft checks: any unmet soft check recorded in `### Notes` (does not change the verdict)
