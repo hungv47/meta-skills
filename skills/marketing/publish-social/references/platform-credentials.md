@@ -80,7 +80,18 @@ Operator-supplied `expires_hint` is a YYYY-MM-DD string. publish-social warns "s
 
 See [`session-cookie-export.md`](session-cookie-export.md) for the per-platform operator guide (browser-extension method, DevTools manual extract, cURL-style export).
 
-## v2+ Credentials (Stubs — Not Used in D16/D17)
+## D18 Credentials (Publish Mode — No New Credential Type)
+
+`--mode=publish` (D18) reuses the **exact same credentials** as D17 draft mode — no new key, token, or cookie type is introduced:
+
+- **X:** the same `TYPEFULLY_API_KEY`. D16 called Typefully's draft endpoint; D18 calls Typefully's create-draft endpoint with `schedule-date` set to immediate / next-free-slot (schedule-immediate publish). Same key, same scope tier.
+- **The other 8 platforms:** the same per-platform `session_cookies`. D17's automation flow saved a draft; D18's Publish Variant of the same flow clicks Send. Same cookie string, same `expires_hint`.
+
+**Credentials do not authorize publish — the gate does.** Possessing a valid cookie or API key is necessary but not sufficient. A publish run still requires the two-stage confirmation gate (`references/publish-confirmation-gate.md`): credential presence routes a platform to the publish path; only the operator's typed `PUBLISH` actually sends. Auto-detect never resolves to publish regardless of which credentials are present (Critical Gate 1).
+
+All D17 cookie-safety rules apply unchanged: values passed to automation-agent at dispatch only, never logged, never written to the bundle, critic dim 6 + 7 grep enforced.
+
+## v2+ Credentials (Stubs — Not Used in D16/D17/D18)
 
 The `.forsvn/credentials/platforms.json` schema reserves slots for D17 / D18 expansions. Stubs below are for documentation only — D16 never reads these fields.
 

@@ -51,6 +51,21 @@ https://www.threads.net/
 ```
 Then clicks compose to see "Resume draft" prompt. README explicitly instructs.
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–4 above unchanged, then takes the **Post** action instead of the close-compose → Save-draft path. The post goes live. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 5′ (replaces draft step 5) | Click **"Post"** | `div[role="button"]` with text "Post" in the compose modal footer | Compose modal closes; post appears in feed | `selector_drift` |
+| 6′ | Capture live post URL | Open the new post from the user's profile; read URL | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.threads.net/@<username>/post/<post_id>`
+
+**On Send failure:** body is composed but unsent → automation-agent takes the single "close compose → Save draft" fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** Threads shares auth with Instagram — an expired IG session fails the Threads publish at the auth step (`failed:login_challenge`), not mid-post. Single posts only; multi-post chains require multiple invocations (unchanged from draft flow).
+
 ## Confidence Notes
 
 v1 confidence: MEDIUM. Threads is friendlier than IG; selectors more stable; bot-detection lighter (Meta hasn't yet deployed IG-level defenses on Threads).

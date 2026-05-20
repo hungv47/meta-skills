@@ -54,6 +54,21 @@ https://www.linkedin.com/posts/<userid>_<slug>-activity-<id>
 
 If URL can't be captured, set `draft_url: null`; manifest README tells operator: "Open LinkedIn → click your profile → click Drafts → find the most recent."
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–5 above unchanged, then takes the **Post** action instead of Save-draft. The post goes live. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 6′ (replaces draft step 6) | Click **"Post"** | `button.share-actions__primary-action` OR `button[aria-label="Post"]` | "Post successful" toast; share modal closes | `selector_drift` |
+| 7′ | Capture live post URL | Read the new activity URL from the feed-update element OR profile recent-activity | `post_url` captured | `unknown` (log step name only) |
+
+**post_url pattern:** `https://www.linkedin.com/feed/update/urn:li:activity:<id>/`
+
+**On Send failure:** body is composed but unsent → automation-agent takes the single draft-Save fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** LinkedIn's "Post" button is the share-modal primary action — visually distinct from the "Save as draft" menu item. Do not confuse the two; the publish flow targets the primary button, never the overflow menu.
+
 ## Confidence Notes
 
 LinkedIn is the most-automation-friendly of the 8 platforms in scope. v1 confidence: HIGH for non-media drafts; MEDIUM for media drafts (image/video upload steps have more failure modes — file chooser dialogs can vary by OS).

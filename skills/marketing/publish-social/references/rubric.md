@@ -1,12 +1,12 @@
 # Rubric — publish-social
 
-> 7 dimensions × 0-10 bands (D17 adds dim 7). Critic-agent applies; pass gate is aggregate ≥ 49/70 AND every per-dim ≥ 6. Single per-dim < 6 = FAIL.
+> 8 dimensions × 0-10 bands (D18 adds dim 8). Critic-agent scores dims 1–7; the orchestrator applies dim 8 post-publish. Pass gate is aggregate ≥ 56/80 AND every per-dim ≥ 6. Single per-dim < 6 = FAIL.
 
-**Version:** v1.1 (D17, 2026-05-19). Was v1.0 with 6 dims; D17 added dim 7 (Browser-Automation Safety). Revisable after the first 2-3 real publish-social D17 runs surface scoring drift.
+**Version:** v1.2 (D18, 2026-05-19). Was v1.1 with 7 dims; D18 added dim 8 (Live-Publish Safety) for `--mode=publish`. Revisable after the first 2-3 real publish-social D18 runs surface scoring drift.
 
 ## Pass Gate
 
-- Aggregate score ≥ **49 / 70** (i.e., 70% mean)
+- Aggregate score ≥ **56 / 80** (i.e., 70% mean)
 - Every per-dimension score ≥ **6 / 10**
 - Both conditions required. Aggregate alone is insufficient — single-platform contamination is caught by the per-dim floor.
 
@@ -21,6 +21,9 @@ Override the aggregate. Any of these → immediate FAIL, regardless of other sco
 5. **Dim 7 — D17 automation ran without confirmation.** `automation_result_per_platform[p].status == "success"` appears with `confirmation_result != "confirmed"`.
 6. **Dim 7 — Cookie leak detected.** Cookie value substring matches across any emitted file or log line.
 7. **Dim 7 — Captcha-bypass attempt.** Retry log line within 1s of captcha detection log line.
+8. **Dim 8 — Live publish without confirmation.** `publish_result_per_platform[p].status == "published"` appears with `confirmation_result != "confirmed"`.
+9. **Dim 8 — Critic ran after publish.** Transcript shows a publish action before the critic PASS verdict (publish must be critic-gated).
+10. **Dim 8 — Dry-run posted.** `dry_run: true` AND any `publish_result_per_platform[p].status == "published"`.
 
 ---
 
@@ -183,21 +186,50 @@ For each file: run a parser. Typefully JSON → strict JSON parse. CSVs → RFC 
 
 ---
 
+## Dim 8: Live-Publish Safety (D18)
+
+**Falsifiability:** for `--mode=publish` runs only — two-stage gate ran + critic ran before publish + no `published` row without `confirmation_result=confirmed` + dry-run never posted. Scoped to publish; export / draft runs trivially score 10.
+
+**Applied by the orchestrator's post-publish Self-Check Before Delivery** (`procedures/dispatch-mechanics.md` § Publish Layer), not the critic-agent's pre-gate pass — dim 8's checks are post-publish. The critic-agent scores dims 1–7; the orchestrator writes dim 8 into the manifest's 8-dim table and computes the final `/80` aggregate.
+
+### Bands
+
+| Score | Criterion |
+|---|---|
+| **10** | Not a publish run (export / draft only) OR `--mode=publish` ran with every safety check pass: critic-before-gate, two-stage gate logged, typed `PUBLISH` recorded, every `published` row confirmation-backed |
+| **9** | Publish run; one platform's `publish_result` reason-class is free-text instead of the locked enum |
+| **8** | Publish run; one platform `failed:*` then fell back cleanly (draft / export) — fallback worked but flag the platform's flow-spec freshness |
+| **7** | Publish run; one platform's flow-spec `last_verified_date` is >90 days old (manifest warned, run continued) |
+| **6** | Publish run; multiple minor operator-debuggability concerns (free-text reasons + stale flow specs) |
+| **0 (auto-fail)** | A `published` row exists with `confirmation_result != confirmed` OR the transcript shows publish before the critic PASS verdict OR a `dry_run: true` run has any `published` row |
+
+### Check
+
+1. Read `manifest.confirmation_result`. If it is absent or `not_required` (export / draft run) → dim = 10. Done.
+2. **Critic-before-publish order:** in the transcript, the critic PASS verdict must appear before the Stage-1 gate prompt, which must appear before any publish/Send log line. Any inversion → auto-fail.
+3. **Two-stage gate logged:** transcript contains the Stage-1 review prompt + operator `y/N` response AND the Stage-2 prompt + the literal token the operator typed. `confirmation_result` matches: `confirmed` only when Stage 2 received the exact string `PUBLISH`.
+4. **Confirmation-backed publishes:** every `publish_result_per_platform[p].status == "published"` row has `confirmation_result == "confirmed"`. Any `published` row otherwise → auto-fail.
+5. **Dry-run did not post:** if `dry_run: true`, zero `published` rows. Any → auto-fail.
+6. **Reason-class enum:** every `publish_result` `failed:*` is in `{login_challenge, selector_drift, rate_limit, captcha, network, unknown}`; fallbacks are `fallback-draft` / `fallback-export`. Free-text → score deduction.
+7. **No captcha-bypass:** no "retry" log line within 1s of a "captcha" detection line (carries over from dim 7).
+
+---
+
 ## Aggregate Calculation
 
 ```
-aggregate = dim1 + dim2 + dim3 + dim4 + dim5 + dim6 + dim7
-pass = (aggregate >= 49) AND (min(all_dims) >= 6) AND (no auto-fail triggered)
+aggregate = dim1 + dim2 + dim3 + dim4 + dim5 + dim6 + dim7 + dim8
+pass = (aggregate >= 56) AND (min(all_dims) >= 6) AND (no auto-fail triggered)
 ```
 
 ## Revision Triggers
 
-Rubric v1.0 is provisional. Mandatory revision when ANY of:
+Rubric v1.2 is provisional. Mandatory revision when ANY of:
 
 - 3 consecutive critic runs score within 1 point of each other on the same dim → recalibrate bands
 - 3 operator overrides on the same dim → likely false-positive pattern; loosen the band OR add an exception
 - Platform spec changes (e.g., X raises char limit; IG changes hashtag policy) → update the underlying table in per-platform refs AND in critic-agent
-- A new platform is added to the supported set → add band coverage for that platform across all 6 dims
+- A new platform is added to the supported set → add band coverage for that platform across all 8 dims
 
 Revision protocol: log the change in CHANGELOG `[Unreleased]` under `### Changed`; bump rubric version in this file's frontmatter; cross-link from critic-agent.
 

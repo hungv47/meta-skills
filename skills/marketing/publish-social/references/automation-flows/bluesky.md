@@ -58,6 +58,21 @@ v1 chose option 3 as the closest to the "draft" semantic that other platforms pr
 
 N/A. Compose modal lives at `https://bsky.app/` (no per-draft URL). Manifest tells operator: "Your Bluesky compose modal is open with the post filled. Click Post to publish."
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–4 above unchanged, then **clicks Post** — the step the draft "flow" deliberately stops short of. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 5′ (replaces draft step 5 "STOP before Post") | Click **"Post"** | the compose modal's primary "Post" button | Compose modal closes; post appears in feed | `selector_drift` |
+| 6′ | Capture live post URL | Open the new post from the user's profile; read URL | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://bsky.app/profile/<handle>/post/<rkey>`
+
+**On Send failure:** body is composed but unsent → because Bluesky has no native drafts, there is no draft-Save fallback action; the failure goes straight to `fallback-export` (operator composes from `platforms/bluesky.md`). No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** publish is the *natural* action for Bluesky — the draft flow's "fill and STOP" is the awkward case, not this one. D18 publish mode resolves Bluesky cleanly: the flow composes and Posts in one pass, no half-finished modal left for the operator. Alt-text-required-for-media still holds (`failed:unknown`, reason `alt_text_missing`, if media has no alt-text).
+
 ## Confidence Notes
 
 v1 confidence: MEDIUM-HIGH. Selectors stable; bot-detection minimal. Main risk: operator forgets to return to the modal in time.

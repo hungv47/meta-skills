@@ -4,22 +4,35 @@
 
 ## Layer Sequence
 
+The layer order depends on the resolved mode. **Export / draft** modes (D16 / D17) keep the critic-after-emission order; **publish** mode (D18) moves the critic before the action — a live post cannot be fixed afterward.
+
+### Export / draft modes (D16 / D17)
+
 ```
-Layer 1 (Pre-Dispatch):  orchestrator reads inputs + probes credentials + resolves mode
-                          │
-                          ▼
-Layer 2 (Formatter):     formatter-agent emits bundle (manifest + per-platform drafts + 4 scheduler-imports + README)
-                          │
-                          ▼
-Layer 3 (Critic):        critic-agent scores 6 dims; PASS / FAIL verdict
-                          │
-                       PASS │ FAIL
-                          │   └─→ re-dispatch formatter with specific feedback (max 2 cycles)
-                          ▼
-Layer 4 (Delivery):      return bundle root + mode summary + next-step instruction
+Layer 1 (Pre-Dispatch):   read inputs + probe credentials + resolve mode
+Layer 2 (Formatter):      formatter-agent emits bundle
+Layer 2.5 (Confirm gate): D17 single-confirm gate — only if a browser-automation draft route resolved
+Layer 2.6 (Automation):   automation-agent draft route — only if gate confirmed
+Layer 3 (Critic):         critic-agent scores dims 1–7; PASS / FAIL  (FAIL → re-dispatch formatter, max 2)
+Layer 4 (Delivery):       return bundle root + mode summary + next-step instruction
 ```
 
-Sequential, single-pass per layer. No parallel agents. Mirrors D11 produce-asset + D14 produce-video.
+### Publish mode (D18) — see § Publish Layer
+
+```
+Layer 1 (Pre-Dispatch):   resolve --mode=publish + dry_run flag
+Layer 2 (Formatter):      format every post + write export-mode bundle as the abort fallback
+Layer 3 (Critic):         critic-agent scores dims 1–7 — CONTENT GATE before any live action
+                           FAIL → re-dispatch formatter (max 2); persistent FAIL → BLOCKED
+Layer 3.5 (Publish gate): two-stage confirmation gate (publish-confirmation-gate.md)
+                           aborted → export-mode bundle, nothing posted
+Layer 3.6 (Publish):      Typefully schedule-immediate for X + automation-agent publish for the 8
+Layer 4 (Delivery):       orchestrator Self-Check applies dim 8 → finalize manifest → deliver
+```
+
+`--mode=publish --dry-run` stops after Layer 3 and prints the publish plan — Layers 3.5 / 3.6 never run.
+
+Sequential, single-pass per layer. No parallel agents. Mirrors D11 produce-asset + D14 produce-video, with the D17 automation layer and D18 publish layer inserted.
 
 ## Layer 1: Pre-Dispatch
 
@@ -75,10 +88,10 @@ Critic:
 1. Parses all 4 scheduler-import files (dim 5 auto-fail check first).
 2. Greps every emitted file for credential patterns (dim 6 auto-fail check).
 3. Counts chars per platform vs hard caps (dim 1 auto-fail check).
-4. Scores each of 6 dims with falsifiable evidence.
+4. Scores dims 1–7 with falsifiable evidence. (Dim 8 is orchestrator-applied post-publish — see § Publish Layer.)
 5. Returns verdict (PASS / FAIL) + scores + fix instructions if FAIL.
 
-Output: verdict + scores object + fix-instructions array (empty if PASS).
+Output: verdict + scores object (dims 1–7) + fix-instructions array (empty if PASS).
 
 ## Critic-Loop (FAIL handling)
 
@@ -107,6 +120,33 @@ On FAIL after 2 cycles:
 1. Update manifest status: `blocked` OR `done_with_concerns` (if operator overrides).
 2. Return critic feedback + bundle path (partial bundle is still on disk).
 3. Surface log-critic-override option to operator.
+
+## Publish Layer (D18)
+
+`--mode=publish` is the only mutating mode. The orchestrator owns the publish layer — the formatter only formats and returns (it never dispatches publish), because the critic content gate must run between formatting and any live action.
+
+### Order
+
+1. **Pre-Dispatch** resolves `--mode=publish` (+ `dry_run` flag). Auto-detect never reaches publish — `--mode=publish` is explicit opt-in.
+2. **Formatter** formats every post, resolves per-platform publish routes (X → `typefully-publish`; 8 → `browser-automation-publish`; uncredentialed → export), writes the **export-mode bundle to disk as the abort fallback**, returns.
+3. **Critic content gate** — critic-agent scores dims 1–7. FAIL → re-dispatch formatter (max 2 cycles); persistent FAIL → return `BLOCKED`, the gate never fires. The operator is never asked to confirm copy that did not pass the rubric.
+4. **If `dry_run`** → print the publish plan (every post body, target account, per-platform route) and exit. Layers 3.5 / 3.6 do not run; manifest carries `dry_run: true`, `confirmation_result: dry_run`, all `publish_result_per_platform` = `not_attempted`.
+5. **Two-stage confirmation gate** (`publish-confirmation-gate.md`) — Stage 1 review → Stage 2 typed `PUBLISH`. Abort at either stage (or timeout) → fall back to the export-mode bundle from step 2; nothing posts; `confirmation_result` = `aborted_stage1` / `aborted_stage2` / `timeout`.
+6. **Publish** — Typefully schedule-immediate for X; automation-agent in `mode=publish` (Send) for the credentialed non-X platforms, sequential, 3s pacing. Per-platform failure → `fallback-draft` (Send-step failure, content composed) or `fallback-export` (earlier failure / captcha). Other platforms continue.
+7. **Delivery** — orchestrator runs the dim-8 Self-Check (below), writes `publish_result_per_platform` + `post_url`s + the final 8-dim score into the manifest, and emits per-platform delete instructions for every `published` row.
+
+### Orchestrator dim-8 Self-Check (post-publish, before delivery)
+
+The critic-agent does not score dim 8 (its checks are post-publish). The orchestrator applies them mechanically and writes the dim-8 score into the manifest's 8-dim table:
+
+- [ ] Transcript order: critic PASS verdict precedes the Stage-1 gate prompt precedes any publish/Send log line. Inversion → dim 8 auto-fail.
+- [ ] Two-stage gate logged: Stage-1 `y/N` + Stage-2 typed token both present; `confirmation_result == "confirmed"` only when Stage 2 received the literal `PUBLISH`.
+- [ ] Every `publish_result_per_platform[p].status == "published"` has `confirmation_result == "confirmed"`. Otherwise → dim 8 auto-fail.
+- [ ] `dry_run: true` runs have zero `published` rows. Otherwise → dim 8 auto-fail.
+- [ ] Reason-class enum compliance on every `failed:*`.
+- [ ] Compute the final aggregate `/80`; full gate = aggregate ≥ 56/80 AND every dim ≥ 6.
+
+A dim-8 auto-fail means posts went live un-gated or un-vetted — the posts are already public. Record `status: done_with_concerns`, keep every `post_url` + delete instructions in the manifest, and file a bug report. Do not re-dispatch (nothing to fix — it already happened).
 
 ## Parallel Considerations (v1: none)
 
@@ -138,8 +178,9 @@ Common error patterns:
 |---|---|---|
 | `NEEDS_CONTEXT: write-social artifact missing` | Pre-dispatch hard-block | Run write-social first |
 | `NEEDS_CONTEXT: brand/BRAND.md missing` | Pre-dispatch hard-block | Run create-brand first |
-| `BLOCKED: --mode=publish deferred to D18` | Pre-dispatch mode check | Wait for D18 OR omit `--mode=publish` |
-| `BLOCKED: --mode=draft for [linkedin] deferred to D17` | Pre-dispatch mode check | Wait for D17 OR use export mode |
+| `BLOCKED: --mode=publish critic FAIL after 2 cycles` | Critic content gate failed twice on a publish run | Operator edits write-social upstream + re-runs; the gate never fired, nothing posted |
+| `BLOCKED: --mode=publish — no credentials for any platform` | Publish requested but neither Typefully key nor any session cookie present | Configure credentials (see `platform-credentials.md`) OR run `--mode=export` |
+| publish aborted at the confirmation gate | Operator declined Stage 1 or Stage 2 (or timeout) | Export-mode bundle shipped; re-run `--mode=publish` when ready, or `--mode=draft` for drafts |
 | `FAIL: critic dim 1 char-cap exceeded on X` | Formatter didn't thread-split | Re-dispatch (auto, max 2) or operator edits |
 | `FAIL: critic dim 5 scheduler-format unparseable` | Bug in formatter; CSV malformed | Re-dispatch with fix instructions |
 | `FAIL: critic dim 6 credential leak detected` | Formatter wrote a credential value into an emitted file | Critical bug; orchestrator halts immediately; no re-dispatch |
@@ -150,7 +191,7 @@ Common error patterns:
 
 Orchestrator verifies before Layer 4:
 
-- [ ] Manifest exists with 12-field frontmatter
+- [ ] Manifest exists with 16-field frontmatter
 - [ ] Per-platform draft exists for every target platform
 - [ ] All 4 scheduler-import files exist
 - [ ] README exists with per-platform instructions
@@ -160,3 +201,4 @@ Orchestrator verifies before Layer 4:
 - [ ] Generation provenance per D8 contract written into manifest frontmatter
 - [ ] No credential value greppable in any emitted file
 - [ ] All emitted files UTF-8 without BOM
+- [ ] (publish runs) dim-8 Self-Check applied — see § Publish Layer; `publish_result_per_platform` + `post_url`s written; per-platform delete instructions present for every `published` row
