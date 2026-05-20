@@ -97,6 +97,8 @@ Before delivering, the **critic agent** verifies:
 
 Full 11-row Quality Gate Checklist + 4 Internal Consistency Checks + 9-row Rewrite Routing: [`agents/critic-agent.md`](agents/critic-agent.md). Max 2 rewrite cycles per critic verdict.
 
+**Soft check (DONE_WITH_CONCERNS, not FAIL):** when **Social media** is a selected channel, its Channel Execution Brief should be grounded in `references/platform-channels.md` → the `references/platform-intelligence/` catalog (§2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms). An ungrounded Social-media brief — or one grounded in a stale (>90-day) catalog file — ships `done_with_concerns`, flagged in the artifact. It never blocks the plan.
+
 ---
 
 ## Before Starting
@@ -139,7 +141,7 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget:
 
 ### Shared References
 
-- **Domain catalogs** (loaded by agents at dispatch): `references/3d-angle-framework.md` (angle-agent), `references/channel-strategy.md` (channel-agent), `references/distribution-models/clipping-and-live.md` (channel-agent — conditional), `references/examples.md` (5 worked examples across verticals)
+- **Domain catalogs** (loaded by agents at dispatch): `references/3d-angle-framework.md` (angle-agent), `references/channel-strategy.md` (channel-agent), `references/platform-channels.md` (channel-agent — conditional, when Social media is a selected channel), `references/distribution-models/clipping-and-live.md` (channel-agent — conditional), `references/examples.md` (5 worked examples across verticals)
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver}.md`
 
 ---
@@ -294,7 +296,7 @@ End-to-end Route B walkthrough (B2B SaaS async-first PM tool — PLG, 60 days, 5
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/campaign-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch): `references/{3d-angle-framework, channel-strategy, examples}.md`, `references/distribution-models/clipping-and-live.md`
+- **Domain catalogs** (loaded by agents at dispatch): `references/{3d-angle-framework, channel-strategy, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `platform-channels.md` maps channel-agent to the `references/platform-intelligence/` catalog (§2/§3/§6) for Social-media channel execution briefs — D13.B.
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, clipping-and-live}.md`
 - **Agents:** 6 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 11-row Quality Gate Checklist + 9-row Rewrite Routing + 4 Internal Consistency Checks.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

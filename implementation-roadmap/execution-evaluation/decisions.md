@@ -1479,3 +1479,65 @@ Note: stale `meta-skills/...` strings remain in the canonical `scripts/*.ts` com
 ### Status
 
 DONE — built 2026-05-20. `scripts/sync-skill-support.mjs` rebuilt for the 2.0 single-repo layout with a `--check` drift-guard mode; verified idempotent (single-pass fixpoint) and `--check`-clean after regeneration. Mirror regeneration: ~169 tracked files updated, 26 mirror-of-a-mirror files dropped, 27 created — repairing 9 skills whose `_shared/` citations had no on-disk target. `rewrite-skill-portability.mjs`, `audit-skill-portability.mjs`, `audit-reference-hygiene.mjs`, `sanitize-public-references.mjs` retired (obsolete post-2.0). `bump-marketplace.ts` (6th script, same root cause) fixed and verified. `RELEASING.md` gains a pre-release `sync-skill-support --check` gate. CHANGELOG `[Unreleased]` `### Fixed` + `### Removed` entries written (no version bump — user owns). `scripts/` release-tooling family: 6 broken → 2 working (`sync-skill-support`, `bump-marketplace`); 4 retired. **Workstream F now has 3 slices: D12 (review-work noise-filter) + D21 (extract-service) + D22 (release-tooling repair).** User owns version bump + git commit + push.
+
+---
+
+## D23 — D13.B slice (LOCKED 2026-05-20: plan-campaign platform-intelligence wiring — closes Workstream E)
+
+Locked via interview rounds 1–2 (2026-05-20, post-D22). Round 1: next slice = D13.B — close Workstream E (picked over research-artifact eval / Pangram API integration / harness-tooling follow-ups). Round 2: three load-bearing forks locked — consumer scope (channel-agent only) / section depth (strategy subset §2/§3/§6) / gate strength (soft DONE_WITH_CONCERNS).
+
+### Why this slice
+
+D13 sub-decision 3 deferred `plan-campaign` platform-intelligence wiring to a named "D13.B" slice ("channel-strategy.md already covers high-level platform-by-platform; substantive gap is smaller than optimize-seo. Skip in v1"). D13.B is the last named-deferred Workstream E slice — D9.A (Seven Sweeps), D10 (research-icp rigor), D13.A (platform-intelligence canonicalization + optimize-seo wiring) shipped. With Workstreams A/B/C/D/F already complete, wiring `plan-campaign` closes Workstream E and marks all six workstreams done.
+
+The substantive gap: `plan-campaign`'s channel-agent produces Channel Execution Briefs for the Social-media channel (channel #6 of the 9-channel map) grounded only in `channel-strategy.md`'s loose platform-by-platform tables (Angle-to-Channel Fit Matrix, growth-motion priority). It never reads the real format / algorithm / CTA signals in the canonical `references/platform-intelligence/` catalog. A LinkedIn channel brief blind to the 18–40% external-link reach tax, or a TikTok brief that ignores the 21–34s completion-rate sweet spot, ships generic platform advice. D13.B grounds the Social-media channel brief in real signals — the same upgrade D13.A gave optimize-seo.
+
+Verified pre-build (2026-05-20): `grep -rln platform-intelligence skills/marketing/plan-campaign/` → zero hits. plan-campaign has no platform-intelligence wiring today.
+
+### Scope (D13.B)
+
+**New ref:** `skills/marketing/plan-campaign/references/platform-channels.md` (~90 lines) — parallels D13.A's `optimize-seo/references/platform-search.md`. Maps the channel-agent to the strategy-relevant sections of `references/platform-intelligence/` (§2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms) for the 6 social platforms (linkedin, x, tiktok, reels, shorts, youtube). Cross-links to `channel-strategy.md`, which stays canonical for the 9-channel framework + habitat translation + Angle-to-Channel Fit Matrix — `platform-channels.md` does NOT restate it. Explicitly excludes §1 Hook Taxonomy / §5 Retention Curve as brief-shortform production-layer concern.
+
+**Edit `plan-campaign/SKILL.md`:** add `platform-channels.md` to the References § domain-catalog list (annotated "channel-agent") + the Shared References block under Agent Manifest; add one soft Quality Gate line (Social-media channel briefs grounded in platform-intelligence when Social media is selected → DONE_WITH_CONCERNS if absent, never FAIL).
+
+**Edit `plan-campaign/agents/channel-agent.md`:** add `platform-channels.md` to the Input Contract `references` field (conditional — loaded when Social media is a selected channel); add a Domain Instruction subsection on platform-intelligence grounding; add a Self-Check item.
+
+**Edit `plan-campaign/agents/critic-agent.md`:** add a Soft Checks subsection — a selected Social-media channel brief not grounded in platform-intelligence is flagged DONE_WITH_CONCERNS, never a FAIL (sub-decision 3). The 11-row hard-FAIL Quality Gate Checklist is unchanged.
+
+**Generated mirror:** run `bun scripts/sync-skill-support.mjs` → the D22-fixed script auto-detects the new `platform-intelligence` citation in plan-campaign's authored corpus and generates `plan-campaign/references/_shared/platform-intelligence/` (7 files + `.generated-support`). Verify with `--check`.
+
+**CHANGELOG:** `[Unreleased]` `### Changed` — one `[marketing]` bullet. No new skill; skill count stays 39.
+
+### Locked sub-decisions
+
+1. **Consumer = channel-agent only (round 2 Q1).** timeline-agent and angle-agent are NOT wired. platform-intelligence has no strong posting-cadence section, so timeline-agent's gain is thin; angle-to-channel fit is already covered by `channel-strategy.md`'s matrix. Mirrors D13.A's single-consumer scope.
+2. **Section depth = strategy subset: §2 Format Constraints + §3 Algorithm Signals + §6 CTA Placement Norms (round 2 Q2).** §1 Hook Taxonomy / §5 Hook Window + Retention Curve are production-layer detail — brief-shortform's lane, not a strategy skill's. §4 Anti-Patterns / §7 Open Questions / §8 Changelog not consumed. Keeps plan-campaign in the strategy lane; zero overlap with the short-form production trio.
+3. **Gate strength = soft (round 2 Q3).** The critic flags DONE_WITH_CONCERNS — never FAIL — when a selected Social-media channel's execution brief is not grounded in platform-intelligence. Consistent with platform-intelligence's own staleness posture (each catalog file self-flags DONE_WITH_CONCERNS when `last_verified` exceeds 90 days). A dated reference must not block an otherwise-sound plan.
+4. **New ref name `platform-channels.md`** — parallels D13.A's `platform-search.md` (optimize-seo's domain is search → platform-search; plan-campaign's domain is channels → platform-channels).
+5. **`_shared/` mirror generated by `sync-skill-support.mjs`, not hand-created.** D13.A hand-built its mirror because the sync script was broken pre-D22. D22 fixed it; the script now auto-detects the `platform-intelligence` citation in any skill's authored corpus (line 281–282) and generates the mirror. D13.B runs the script — also a first live exercise of the D22 machinery picking up a fresh consumer.
+6. **`channel-strategy.md` stays canonical** for the 9-channel framework, growth-motion priority table, habitat translation, content classification, and the Angle-to-Channel Fit Matrix. `platform-channels.md` does NOT restate any of it — it is purely the platform-intelligence section-map for the 6 social platforms. Cross-link, don't duplicate (D13 flagged this overlap risk explicitly).
+7. **channel-agent.md IS edited** (Input Contract + Domain Instruction + Self-Check) — a divergence from D13.A, which wired optimize-seo reference-only with no agent-file edit. Justified: channel-agent.md carries an explicit Input Contract `references` field enumerating its domain catalogs; the wiring only functions if the new ref is added there.
+
+### Acceptance
+
+- `skills/marketing/plan-campaign/references/platform-channels.md` exists with ≥3 section-to-output mappings (§2/§3/§6 → channel-agent output) and concrete cited signals.
+- `grep -rln platform-intelligence skills/marketing/plan-campaign/` returns ≥3 authored-file hits (SKILL.md + channel-agent.md + platform-channels.md).
+- `plan-campaign/references/_shared/platform-intelligence/` exists with 7 files after sync.
+- `bun scripts/sync-skill-support.mjs --check` exits 0.
+- `channel-agent.md` Input Contract names `platform-channels.md`; Self-Check has a platform-intelligence item.
+- `critic-agent.md` has the soft DONE_WITH_CONCERNS check; the 11-row Quality Gate Checklist (hard FAIL conditions) is unchanged.
+- CHANGELOG `[Unreleased]` `### Changed` entry written; skill count stays 39.
+- **Workstream E complete** — D9.A + D10 + D13.A + D13.B.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| `channel-strategy.md` + `platform-channels.md` could drift as both are edited over time | Mitigated by cross-link-not-restate (sub-decision 6); same drift risk every cross-ref in the stack carries. |
+| platform-intelligence `last_verified` dates go stale (LinkedIn file dated 2026-05-08) | Soft gate (sub-decision 3) surfaces staleness as DONE_WITH_CONCERNS; each catalog file self-flags at 90 days. |
+| Generated `_shared/` mirror adds 8 files to plan-campaign | Consistent with every other platform-intelligence consumer (brief-shortform, write-social, evaluate-shortform, optimize-seo); `--check` guards drift (D22). |
+| brief 03 § Platform-Specific Strategy does not name plan-campaign as a consumer | D13 itself created the D13.B label and deferred plan-campaign to it; the gap (Social-media channel briefs grounded only in loose tables) is real and substantive. |
+
+### Status
+
+DONE — built 2026-05-20. 1 new ref (`skills/marketing/plan-campaign/references/platform-channels.md`, ~90 lines) + 3 modified files (`SKILL.md`, `agents/channel-agent.md`, `agents/critic-agent.md`). `platform-channels.md` maps channel-agent to the strategy subset (§2 Format Constraints / §3 Algorithm Signals / §6 CTA Placement Norms) of the 6-platform `references/platform-intelligence/` catalog; cross-links `channel-strategy.md` without restating it. channel-agent.md: Input Contract conditional ref + Platform-Intelligence Grounding domain subsection + Self-Check item. critic-agent.md: Soft Checks subsection (DONE_WITH_CONCERNS, never FAIL) + Self-Check item; 11-row hard Quality Gate unchanged. SKILL.md: ref added to both domain-catalog lists + one soft Quality Gate line. `references/_shared/platform-intelligence/` mirror (7 files + `.generated-support`) generated by the D22-fixed `sync-skill-support.mjs` — first live exercise of that machinery picking up a fresh consumer; `--check` clean across 39 skills. Acceptance checks pass: `platform-channels.md` exists with §2/§3/§6 section-to-output mappings ✓, `grep platform-intelligence skills/marketing/plan-campaign/` = 4 authored hits (SKILL.md + platform-channels.md + channel-agent.md + critic-agent.md) ✓, mirror = 7 files ✓, `--check` exit 0 ✓, channel-agent Input Contract + Self-Check wired ✓, critic soft check present + hard checklist unchanged ✓, CHANGELOG `[Unreleased]` `### Changed` entry written (no new skill, count stays 39) ✓. **Workstream E complete** — D9.A (Seven Sweeps) + D10 (research-icp rigor) + D13.A (platform-intelligence canonicalization + optimize-seo) + D13.B (plan-campaign). **All six workstreams (A–F) of the execution-evaluation program are now complete.** User owns the version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
