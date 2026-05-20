@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // manifest-sync — derive `.agents/manifest.json` from artifact frontmatter.
-// See meta-skills/references/manifest-spec.md for the full contract.
+// See references/_shared/manifest-spec.md for the full contract.
 //
 // Usage:
 //   bun /path/to/manifest-sync.ts [project-root]
@@ -231,7 +232,7 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
 
   return `# Artifact Index
 
-Generated from artifact frontmatter by \`meta-skills/scripts/manifest-sync.ts\`.
+Generated from artifact frontmatter by \`scripts/manifest-sync.ts\`.
 
 - Updated: ${manifest.updated_at}
 - Artifacts indexed: ${entries.length}

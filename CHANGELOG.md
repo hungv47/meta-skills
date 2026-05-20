@@ -46,6 +46,12 @@ This file tracks releases of the consolidated `meta-skills` plugin (36 skills ac
 ### Fixed
 
 - **[meta] `scripts/update-quality-dashboard.ts` writes to `.forsvn/artifacts/meta/records/` (was `.agents/skill-artifacts/meta/records/`)**. Path-drift bug introduced during the 2.0 `.forsvn/` migration: the script's log message + `references/quality-dashboard-spec.md` both already said `.forsvn/...`, but the runtime path remained on `.agents/...`. Fix propagated to all 30 per-skill copies under `skills/*/*/scripts/update-quality-dashboard.ts` (regenerable via `scripts/sync-skill-support.mjs` when it is updated for the consolidated layout).
+- **[meta] `scripts/sync-skill-support.mjs` rebuilt for the consolidated repo layout.** It had crashed on startup since the 2.0 consolidation (it walked the deleted four-plugin directory layout), leaving every skill's `references/_shared/` support capsules frozen and unsyncable. Rebuilt for `skills/{stack}/`; regenerating resynced all shared-reference mirrors with their canonical sources and repaired 9 skills whose `_shared/` citations had no file on disk. A new `--check` mode fails on drift and gates releases (see `RELEASING.md`).
+- **[meta] `scripts/bump-marketplace.ts` no longer crashes on release.** It read four deleted pre-2.0 per-stack `plugin.json` files and threw before bumping anything; now reads the single consolidated `.claude-plugin/plugin.json`.
+
+### Removed
+
+- **[meta] Retired 4 obsolete release scripts** — `rewrite-skill-portability`, `audit-skill-portability`, `audit-reference-hygiene`, `sanitize-public-references`. They enforced single-skill-install portability and a private→public source scrub, both made obsolete by the 2.0 consolidation; against the current repo they produced only false positives.
 
 ### Changed
 

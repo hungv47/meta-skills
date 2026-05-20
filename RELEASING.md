@@ -70,6 +70,20 @@ The GitHub Release body should mirror the CHANGELOG entry verbatim, plus a one-l
 
 ---
 
+## Pre-release checks
+
+Run before any version bump:
+
+```bash
+node scripts/sync-skill-support.mjs --check
+```
+
+Each skill carries generated copies of shared references and script capsules under `references/_shared/` and `scripts/`, produced by `sync-skill-support.mjs`. An edit to a canonical `references/*.md` does not reach those copies until the script is re-run. `--check` regenerates in memory and exits non-zero — listing every out-of-sync file — if any mirror has drifted.
+
+On failure: run `node scripts/sync-skill-support.mjs` (no flag) to regenerate, then commit the result in the release commit. A green `--check` is a release gate.
+
+---
+
 ## Tooling
 
 The `docs-writing` skill (at `skills/product/docs-writing/`) has a `--release-notes` mode that consumes a git range + this convention and emits a compliant CHANGELOG entry. Invoke as `/docs-writing --release-notes <version>`. The mode's critic-agent enforces every anti-pattern listed above; outputs that violate the convention FAIL the critic and re-dispatch the writer.

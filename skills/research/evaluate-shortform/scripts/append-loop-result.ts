@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // append-loop-result — validate and append one row to a loop results.tsv.
-// See meta-skills/references/eval-loop-spec.md for the ledger contract.
+// See references/_shared/eval-loop-spec.md for the ledger contract.
 //
 // Usage:
 //   bun append-loop-result.ts <loop-slug> \

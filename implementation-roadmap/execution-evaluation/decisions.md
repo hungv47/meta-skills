@@ -1363,3 +1363,119 @@ The build mirrored `evaluate-content` byte-aligned (read-pass confirmed evaluate
 ### Status
 
 DONE — built 2026-05-20. 11 new files under `skills/marketing/evaluate-campaign/` (SKILL.md + 4 agents + 6 references: rubric, format-conventions, playbook, anti-patterns, procedures/pre-dispatch, procedures/dispatch-mechanics) — mirrors evaluate-content byte-aligned. 5 files under `.forsvn/loops/campaign-demo/` (program.md, context.md, results.tsv with 1 cycle row, evals/2026-05-20-cycle-1.md, learnings.md) prove the infra end-to-end on a synthetic 4-channel spring-launch cycle (164 campaign-driven net-new subscribers vs 120 baseline; organic-linkedin + content-seo the genuine drivers at ~1–1.6mo payback; warm-list email classified a rider with its 70 conversions excluded; paid-social a driver-but-underwater channel at $92 CAC → verdict `keep` / `done_with_concerns`, routed to plan-campaign --rev=2). `plugin.json` registered (skills list + keyword; description 37 → 38 skills). CHANGELOG `[Unreleased]` `### Added` entry written (skill count 37 → 38). Acceptance checks pass: verb-first frontmatter ✓, budget `standard` ✓, 8 Critical Gates ✓, 4-agent shape byte-aligned with evaluate-content ✓, critic enumerates 7 dimensions ✓, `references/rubric.md` 7 dims × 0-10 (Channel-Mix Discrimination + Unit-Economics Discipline as the campaign-specific pair) + revision triggers ✓, generation-provenance per D8 contract wired ✓, aggregate-only scope enforced via Critical Gate 2 + Critic Hard Fail #3 ✓, whole-campaign-all-channels per cycle with the per-channel breakdown table ✓, campaign-demo loop scaffolded (results.tsv 8 columns, manifest-sync clean) ✓, `grep "evaluate-campaign" plugin.json` = 2 hits ✓. **Workstream D complete** (evaluate-landing-page + evaluate-shortform pre-roadmap, evaluate-ad D15, evaluate-content D19, evaluate-campaign D20). User owns version bump (`bun scripts/bump-marketplace.ts ...`), git commit, push, GitHub release.
+
+---
+
+## D21 — Workstream F slice 2 (extract-service skill — BACKFILLED 2026-05-20)
+
+**Backfill note.** D21 was built and committed (`15800a2`) without a `decisions.md` entry — a PR1 step-5 gap. This entry is reconstructed retroactively from the shipped skill + commit history so `decisions.md` stays the authoritative program record. No decisions are re-litigated; the skill is already on disk and released. Confirmed with the user 2026-05-20.
+
+### What shipped
+
+`skills/product/extract-service/` — new product skill. Brief 06 § "Code Cleanup and Service Extraction" / IDEA-3 §1 (the michaelshimeles `code-structure` pattern). Extracts repeated operational mechanics (SDK / API / file-system / network logic copy-pasted across handlers or actions) into a shared service layer: produces a stepwise migration plan, then applies it caller-by-caller with verification at each step. Two-layer separation — Actions keep the why/when, the service layer holds the how.
+
+- 11 files: `SKILL.md` + 4 agents (scanner / planner / migration / critic) + 6 references (playbook, service-layer-pattern, migration-checklist, anti-patterns, report-template, examples/).
+- `budget: standard`; verb-first name per D1; artifact at `.forsvn/artifacts/product/extract-service/[date]-[slug].md`.
+- Registered in `.claude-plugin/plugin.json`; skill count 38 → 39.
+- CHANGELOG `[Unreleased]` `### Added` entry.
+
+Brief 06 offered two shapes — a standalone `extract-service` skill OR a structural-extraction mode inside `clean-code`. D21 shipped the standalone skill (D7's rename map had reserved `extract-service-layer → extract-service` as a "future skill ... not yet created"). The commit message's loose phrase "structured data extraction from web/app sources" mis-describes it; the skill itself is code-mechanics service extraction per brief 06.
+
+### Status
+
+DONE — shipped in commit `15800a2`. Workstream F now has 2 slices: D12 (review-work noise-filter) + D21 (extract-service).
+
+---
+
+## D22 — Workstream F slice 3 (LOCKED 2026-05-20: release-tooling repair — fix the STACKS-orphaned script family)
+
+Locked via interview rounds 1–3 (2026-05-20, post-D20/D21). Round 1: next slice = sync-script hygiene (over plan-campaign platform wiring / research-artifact eval / Pangram API). Round 2: approach = **fix the script** (over kill-mirrors-to-symlinks / kill-mirrors-to-relative-paths / retire-and-freeze) **+ add an audit guard**. Round 3: scope = **fix the whole family** — the dead-`STACKS` bug orphaned 5 scripts, not 1.
+
+### Why this slice
+
+Workstreams A+B (2.0 consolidation) collapsed four plugin repos (`research-skills/`, `marketing-skills/`, `product-skills/`, `meta-skills/`) into one `skills/{meta,research,marketing,product}/` tree. Five `scripts/` tools still hardcode `const STACKS = ["research-skills", "marketing-skills", "product-skills", "meta-skills"]` and walk `join(ROOT, stack, "skills")` — directories that no longer exist. Every one crashes on startup. The whole release-tooling family has been dead since the consolidation; nothing caught it because nothing ran it (no CI, no `package.json`).
+
+Concrete damage:
+- `sync-skill-support.mjs` can't regenerate the `references/_shared/` mirrors. 35 mirror dirs / 525 files / 1032 citations across 405 files are frozen; any edit to a canonical `references/` file silently desyncs every mirror.
+- `evaluate-ad`, `evaluate-content`, `evaluate-campaign` (D15/D19/D20) cite `references/_shared/*` files that were never generated — 15 broken citations live in the repo right now.
+- `audit-skill-portability.mjs` (the existing guard for stale/broken `_shared/` citations) and `audit-reference-hygiene.mjs` (the source-residue release gate) silently never run.
+
+### Build-time finding folded into the plan (read-pass, rounds 2–3)
+
+Round-2's framing assumed one broken script + a new guard. The read-pass found: (a) `audit-skill-portability.mjs` already IS the guard — it checks "missing local support path" (stale `_shared/` citations) and skill self-containment; per the Quality Standard ("check if we already have it under a different name"), D22 fixes it rather than building a redundant new `audit-shared-refs` script; (b) the identical dead-`STACKS` bug breaks 5 scripts. Round 3 locked the scope to the whole family.
+
+### Scope (fix 4, retire 1)
+
+**Fix — `sync-skill-support.mjs`:**
+- `STACKS` / `skillDirs()` → walk `skills/{meta,research,marketing,product}/*/`.
+- Rebuild `SUPPORT_REFS`: 13 `meta-skills/references/*` → top-level `references/*`; `hypothesis-framework.md` → `skills/research/_shared/hypothesis-framework.md`; `copywriting-research-workflow.md` → `skills/marketing/write-copy/references/research-workflow.md`; `clipping-and-live.md` → `skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md`.
+- Rebuild tree-copy sources for renamed skills: `design-brief`→`brief-graphic`, `brand-system`→`create-brand`, `ad-copy`→`write-ad`; `short-form-brief`'s platform-intelligence → top-level `references/platform-intelligence/` (already moved by D13).
+- Mirror dir NAMES unchanged (`_shared/design-brief/`, `_shared/brand-system/`, `_shared/ad-intelligence/`, `_shared/platform-intelligence/`) so the 1032 existing citations stay valid — the source path changes, the dest label is stable. Documented in a script comment.
+- Add `--check` mode: regenerate every mirror in memory, diff against the committed file, exit non-zero listing drift (the `prettier --check` pattern). This is the drift half of the guard.
+
+**Fix — `audit-skill-portability.mjs`** (the guard, locked round 2): `STACKS` → 2.0 layout. Keeps its cross-stack-residue `BLOCKED_PATTERNS` (a `research-skills/` path inside a skill file post-2.0 is itself a stale-reference bug worth catching).
+
+**Fix — `audit-reference-hygiene.mjs`:** `STACKS` → 2.0 layout. Source-residue release gate, still meaningful.
+
+**Fix — `sanitize-public-references.mjs`:** `STACKS` → 2.0 layout. The remediation companion to `audit-reference-hygiene`; keeping the detector without its fixer is half a tool.
+
+**Retire — `rewrite-skill-portability.mjs`:** DELETE. It was a one-time migration tool ("run after sync-skill-support.mjs") that flipped authored canonical-path citations (`meta-skills/references/X`, `marketing-skills/skills/design-brief/...`) to `_shared/` paths. Post-2.0 those source paths no longer occur in any skill file — the 2.0 rename + D13 already eliminated them, and skills are now authored citing `_shared/` directly. Running it today rewrites nothing. Its job is done; `audit-skill-portability.mjs` catches any future regression for hand-fix.
+
+**Regenerate mirrors:** run the fixed `sync-skill-support.mjs` → all 35 `_shared/` dirs back in sync; the 15 missing eval-skill citations repaired.
+
+**Wire the guard into RELEASING.md:** add a pre-release checklist step — `sync-skill-support.mjs --check` + `audit-skill-portability.mjs` + `audit-reference-hygiene.mjs` must pass before a version bump. The original bug existed because nothing ever checked the tooling still worked.
+
+### Locked sub-decisions
+
+1. **Fix the script, keep the `_shared/` mirror pattern** (round 2). Citations unchanged — zero risk to 405 files. The mirror duplication is an accepted tradeoff; `--check` + the portability audit close the silent-drift weakness. Kill-to-symlinks rejected (Windows plugin-install fragility); kill-to-relative-paths rejected (405-file rewrite, 1032 `..`-paths as a permanent smell).
+2. **Fix the whole 5-script family** (round 3), not just the sync script — one root cause, one coherent slice. No half-fixed release tooling left behind.
+3. **`audit-skill-portability.mjs` is the guard** — fixed, not duplicated by a new script.
+4. **Mirror dir names stay** (`design-brief` etc.) despite source-skill renames, to keep 1032 citations valid. Cosmetic mismatch accepted; documented in-script.
+5. **`rewrite-skill-portability.mjs` retired**, not fixed — obsolete post-2.0.
+6. **No shared-module refactor.** Each script stays self-contained per the existing convention; D22 fixes the bug, it does not restructure the tooling.
+7. **No CI added.** Solo-operator stack, no CI today; the guard is a manual pre-release checklist step in RELEASING.md, consistent with how `bump-marketplace.ts` is already invoked.
+
+### Acceptance
+
+- `bun scripts/sync-skill-support.mjs` runs clean and regenerates all `_shared/` mirrors; `--check` exits 0 immediately after.
+- `node scripts/audit-skill-portability.mjs` runs and exits 0 (all `_shared/` citations resolve, incl. the 3 eval skills repaired).
+- `node scripts/audit-reference-hygiene.mjs` and `node scripts/sanitize-public-references.mjs` run without crashing.
+- `scripts/rewrite-skill-portability.mjs` deleted.
+- `grep -rl '"research-skills"' scripts/` returns zero hits (dead `STACKS` constant gone).
+- RELEASING.md has a pre-release tooling-check step.
+- CHANGELOG `[Unreleased]` entry written.
+
+### Risks accepted
+
+| Risk | Accepted because |
+|---|---|
+| Regenerating mirrors produces a large diff (≈525 files) | Mechanical + content-identical-to-canonical; `--check` verifies it. Reviewable as "regenerated", not 525 hand-edits. |
+| `_shared/` duplication persists | Round-2 decision. The pattern's self-containment value + zero citation-rewrite risk outweighed killing it; `--check` guards drift. |
+| Mirror dirs named after pre-2.0 skill names | Renaming = rewriting citations = the thing round 2 explicitly avoided. In-script comment documents the mapping. |
+| Manual pre-release check can be skipped | No CI on this stack; consistent with every other release step. RELEASING.md makes it explicit. |
+
+### D22 build-time finding (2026-05-20, deep read-pass on the 5 scripts)
+
+Round 3 locked "fix the whole family — fix or honestly retire each." The build read-pass found the fix/retire split far more lopsided than the round-2 framing assumed, and a 6th script with the same root cause. **Net: 2 scripts fixed, 4 retired.**
+
+**`sync-skill-support.mjs` — FIXED.** Rebuilt for the 2.0 layout + `--check` mode. Two build-time corrections surfaced:
+1. The trigger corpus must exclude generated `references/_shared/` + `scripts/` capsules. If a generated mirror's internal cross-references counted, generation cascades and never reaches a fixpoint (a mirror that mentions another shared file pulls that file in too). Fixed → trigger on authored content only.
+2. Tree mirrors must exclude the source skill's own `_shared/` subtree. Copying it makes the mirror order-dependent (a mirror-of-a-mirror, correct only if the source skill synced first) — and nothing cites the nested files. Fixed → `treeSourceFiles()` filters `/_shared/`.
+
+With both, sync is a true single-pass fixpoint; verified idempotent; `--check` passes immediately after a regen. The regeneration repaired **9 skills** whose `_shared/` citations had no file on disk — created after the sync broke: `forsvn`, `evaluate-ad`, `evaluate-content`, `evaluate-campaign`, `evaluate-landing-page`, `produce-asset`, `produce-video`, `publish-social`, `extract-service`.
+
+**`rewrite-skill-portability.mjs` — RETIRED** (per the locked plan: obsolete one-time migration tool).
+
+**`audit-skill-portability.mjs` + `audit-reference-hygiene.mjs` + `sanitize-public-references.mjs` — RETIRED (interview round 4, 2026-05-20).** Round 2's read-pass claimed `audit-skill-portability` "is the guard." The deep read disproved that: it audits **single-skill install portability** — the requirement D13 explicitly declared dead ("portable single-skill install isn't a real install vector today"). Against the 2.0 repo it emits 243 findings, ~95 % false positives — every `_shared/` citation, every top-level `references/` reference, every intentional cross-skill `[[link]]` flagged as a violation of the abandoned constraint. `audit-reference-hygiene` is the same shape: 1,477 findings, ~1,240 are its anti-residue rule colliding with the repo's own `[[wikilink]]` convention; the private→public scrub it gated already happened (the stack is public). `sanitize-public-references` is that audit's companion fixer. All three audit requirements the 2.0 consolidation made obsolete — un-breaking them resurrects ~1,700 noise findings, not a working gate. Round 3's "fix or retire each" branch resolved to retire, alongside `rewrite-skill-portability`.
+
+**`bump-marketplace.ts` — FIXED (6th script, build-time finding).** The release-version helper was not in round 3's enumerated 5 — interview prep mis-assessed its `"research-skills"` hit as "probably a CHANGELOG-prefix list." It carried the identical bug: it `readFileSync`'d four per-stack `plugin.json` files (`research-skills/.claude-plugin/plugin.json`, …) the consolidation deleted, throwing before it could bump anything — the tool needed to *ship* D22 was itself broken. The per-stack version report was vestigial four-plugin-umbrella code; replaced with a read of the single consolidated `.claude-plugin/plugin.json`. Core logic (the marketplace.json version bump) was always sound — verified end-to-end (2.0.0 → 2.0.1, reverted). Folded into D22 under round 3's "fix the whole family / one root cause" mandate. Its optional README "Per-stack release notes" dated-line update now no-ops with a clear warning — that line was dropped from the consolidated README; minor, out of D22 scope, flagged as a follow-up.
+
+The drift guard the slice set out to add is therefore **`sync-skill-support --check`** — a genuine generated-vs-canonical check, wired into `RELEASING.md` as a pre-release gate. The original Acceptance bullets that named the three audit scripts are void (superseded by this finding); the sync-script and RELEASING.md bullets stand.
+
+Out of scope, flagged: `scripts/harness/lib/parse.ts` (the skill-test harness) carries the same dead `join(ROOT, stack, "skills")` pattern — a separate subsystem, not release tooling; left for a follow-up.
+
+Note: stale `meta-skills/...` strings remain in the canonical `scripts/*.ts` comment headers — deliberately left. `sync-skill-support`'s `normalizeSupportContent` rewrites them to `references/_shared/...` in the generated capsules (correct there); "fixing" the canonical comment would break that rewrite. Nothing flags them now that the audits are retired; they are harmless doc comments.
+
+### Status
+
+DONE — built 2026-05-20. `scripts/sync-skill-support.mjs` rebuilt for the 2.0 single-repo layout with a `--check` drift-guard mode; verified idempotent (single-pass fixpoint) and `--check`-clean after regeneration. Mirror regeneration: ~169 tracked files updated, 26 mirror-of-a-mirror files dropped, 27 created — repairing 9 skills whose `_shared/` citations had no on-disk target. `rewrite-skill-portability.mjs`, `audit-skill-portability.mjs`, `audit-reference-hygiene.mjs`, `sanitize-public-references.mjs` retired (obsolete post-2.0). `bump-marketplace.ts` (6th script, same root cause) fixed and verified. `RELEASING.md` gains a pre-release `sync-skill-support --check` gate. CHANGELOG `[Unreleased]` `### Fixed` + `### Removed` entries written (no version bump — user owns). `scripts/` release-tooling family: 6 broken → 2 working (`sync-skill-support`, `bump-marketplace`); 4 retired. **Workstream F now has 3 slices: D12 (review-work noise-filter) + D21 (extract-service) + D22 (release-tooling repair).** User owns version bump + git commit + push.
