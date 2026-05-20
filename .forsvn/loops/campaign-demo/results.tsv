@@ -1,0 +1,2 @@
+cycle	date	artifact	primary_metric	value	baseline	status	description
+1	2026-05-20	evals/2026-05-20-cycle-1.md	net_new_subscribers	164	120	keep	spring-launch campaign 164 campaign-driven net-new subscribers over 4 weeks vs 120 baseline; organic-linkedin + content-seo drove it at ~1-1.6mo payback, email excluded as a rider (70 warm-list conversions not campaign-driven), paid-social a driver but underwater at $92 CAC — keep the campaign, reallocate paid budget next cycle
