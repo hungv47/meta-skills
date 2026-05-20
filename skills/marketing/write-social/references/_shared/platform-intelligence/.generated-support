@@ -1,5 +1,2 @@
-GENERATED SUPPORT DIRECTORY.
-source: references/platform-intelligence/
-sync_helper: deferred to D14 (sync-skill-support.mjs broken since 2.0 consolidation)
-sync_method: manual cp from canonical to each consumer's _shared/platform-intelligence/
-last_synced: 2026-05-19 (D13)
+GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+source: references/platform-intelligence

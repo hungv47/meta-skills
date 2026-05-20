@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Canonical lives at references/platform-intelligence/x.md (repo root). Sync helper deferred to D14 — edit canonical first, then re-copy here. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
 
 ---
 type: platform-intelligence

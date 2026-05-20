@@ -1,2 +1,2 @@
 GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
-source: marketing-skills/skills/ad-copy/references/ad-intelligence
+source: skills/marketing/write-ad/references/ad-intelligence

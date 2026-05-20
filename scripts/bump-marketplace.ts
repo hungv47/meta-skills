@@ -2,9 +2,9 @@
 // Bump .claude-plugin/marketplace.json metadata.version and rewrite the README
 // "Per-stack release notes" line with today's date + the provided summary.
 //
-// Run in the same umbrella commit that bumps submodule pointers, so the
-// catalog version, README, and pointers move together. Per-stack plugin.json
-// versions and CHANGELOG entries are bumped inside each submodule separately.
+// Run in the same commit that ships the release, so the catalog version and
+// the README dated line move together. `plugin.json` `version` and
+// `CHANGELOG.md` entries are updated separately (see CLAUDE.md § Releasing).
 //
 // The version edit is a surgical regex replace — does not reformat the rest
 // of marketplace.json.
@@ -66,18 +66,12 @@ const readmeIdx = lines.findIndex((l) =>
   l.startsWith("Per-stack release notes"),
 );
 
-const stacks = [
-  "research-skills",
-  "marketing-skills",
-  "product-skills",
-  "meta-skills",
-];
-const stackVersions = stacks.map((s) => {
-  const p = JSON.parse(
-    readFileSync(resolve(root, s, ".claude-plugin/plugin.json"), "utf8"),
-  );
-  return `  ${s.padEnd(18)} ${p.version}`;
-});
+// Report the consolidated plugin's own version alongside the catalog bump.
+// (Pre-2.0 this read four per-stack plugin.json files; the consolidation left
+// a single .claude-plugin/plugin.json.)
+const pluginVersion = JSON.parse(
+  readFileSync(resolve(root, ".claude-plugin/plugin.json"), "utf8"),
+).version;
 
 // All reads succeeded — now write.
 writeFileSync(mfPath, mfRaw.replace(versionRe, `${prefix}${next}${suffix}`));
@@ -92,5 +86,5 @@ if (readmeIdx === -1) {
 }
 
 console.log(`marketplace  ${current} → ${next}`);
-console.log(stackVersions.join("\n"));
+console.log(`  plugin.json  ${pluginVersion}`);
 console.log(`README updated for ${today}: ${summary}`);

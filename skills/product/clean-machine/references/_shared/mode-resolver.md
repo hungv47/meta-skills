@@ -24,9 +24,9 @@ Every skill declares a `budget` tier in its frontmatter. This file defines what 
 
 | Budget | Execution | Skills at this tier |
 |--------|-----------|---------------------|
-| **fast** | Single-agent, no sub-agent spawning, no critic gate. Respond directly. | `discover`, all `orchestrate-*` (meta, research, marketing, product) |
-| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanize`, `polish-vn`, `brief-graphic`, `map-user-flow`, `write-docs`, `debate-panel`, `breakdown-tasks`, `review-work`, `clean-artifacts`, `write-social`, `evaluate-shortform`, `plan-funnel` |
-| **deep** | Full orchestration as documented. All layers, all agents, full critic gate. | `write-copy`, `write-ad`, `plan-campaign`, `create-brand`, `optimize-seo`, `brief-landing-page`, `lp-optimization`, `write-outreach`, `brief-shortform`, `architect-system`, `clean-code`, `clean-machine`, `diagnose`, `research-icp`, `research-market`, `prioritize`, `research-shortform` |
+| **fast** | Single-agent, no sub-agent spawning, no critic gate. Respond directly. | `forsvn`, `discover` |
+| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanize`, `polish-vn`, `brief-graphic`, `map-user-flow`, `write-docs`, `debate-panel`, `breakdown-tasks`, `review-work`, `clean-artifacts`, `write-social`, `evaluate-shortform`, `plan-funnel`, `run-eval-loop` |
+| **deep** | Full orchestration as documented. All layers, all agents, full critic gate. | `write-copy`, `write-ad`, `plan-campaign`, `create-brand`, `optimize-seo`, `brief-landing-page`, `evaluate-landing-page`, `write-outreach`, `brief-shortform`, `architect-system`, `clean-code`, `clean-machine`, `diagnose`, `research-icp`, `research-market`, `prioritize`, `research-shortform` |
 
 A skill's `budget:` field is its **default tier** — never a ceiling, never a floor. Auto-downgrade heuristics and operator overrides shift the resolved mode at invocation.
 
