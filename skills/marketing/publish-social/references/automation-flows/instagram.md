@@ -55,6 +55,21 @@ https://www.instagram.com/your_profile/saved/all-posts/
 
 When draft saves, capture this profile-drafts URL; README tells operator to navigate manually.
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–5 above unchanged, then takes the **Share** action instead of Save-draft. The post goes live. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 6′ (replaces draft step 6) | Click **"Share"** | `button` / `div[role="button"]` with text "Share" on the caption step | "Your post has been shared" state; modal closes; post on profile grid | `selector_drift` |
+| 7′ | Capture live post URL | Open the new post from the profile grid; read URL | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.instagram.com/p/<shortcode>/`
+
+**On Send failure:** caption + media are composed but unsent → automation-agent takes the single Save-draft fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** if `hashtag_position == "first_comment"`, the publish flow still cannot post the first comment (that needs a second submit) — it publishes the post; the README instructs the operator to add the first comment manually. First-comment hashtags are NOT lost, just deferred to the operator.
+
 ## Confidence Notes
 
 v1 confidence: MEDIUM. IG selector drift is the most common failure mode. Captcha rare on Business accounts; common on Personal accounts.

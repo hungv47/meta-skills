@@ -17,10 +17,11 @@ The skill picks the highest non-publish mode available at invocation without ope
 | No credentials configured | All 9 platforms in export-mode | Imports the matching scheduler-import file (Buffer CSV / Hootsuite CSV / Typefully JSON / generic CSV) into their scheduler tool; sets schedule inside the scheduler |
 | `TYPEFULLY_API_KEY` set | X goes Typefully Draft API (drafts created in Typefully account); other 8 platforms in export-mode | Reviews X drafts at Typefully URLs in `typefully.json`; imports scheduler-import file for the other 8 |
 | `--mode=export` forced | All 9 platforms in export-mode regardless of credentials | Same as no-credentials path |
-| `--mode=draft` for non-X | BLOCKED | Wait for D17 (browser-automation slice) |
-| `--mode=publish` | BLOCKED | Wait for D18 (confirmation-gate slice) |
+| `--mode=draft` | Per-platform draft: X → Typefully API; the 8 non-X → browser-automation draft if session cookies present (D17); else export | Reviews drafts in each platform's UI; hits Send manually; export-mode platforms imported via scheduler file |
+| `--mode=publish` (D18) | Live posting for all 9, behind the two-stage confirmation gate | Reviews every full post body at the gate → types `PUBLISH` → posts go live; manifest records each `post_url` |
+| `--mode=publish --dry-run` (D18) | Prints the publish plan; posts nothing | Reviews the plan; re-runs without `--dry-run` when ready |
 
-**Why auto-detect never picks publish:** brief 04 § publish-social Hard Rule states "never publish live without explicit current-session confirmation." Auto-detect cannot satisfy "current-session confirmation" — that requires an interactive prompt that the operator answers in the same session. D18 builds that gate; D16/D17 ship without it.
+**Why auto-detect never picks publish:** brief 04 § publish-social Hard Rule states "never publish live without explicit current-session confirmation." Auto-detect cannot satisfy "current-session confirmation" — that requires an interactive prompt the operator answers in the same session. D18 built that gate (the two-stage confirmation gate); auto-detect still never resolves to publish — `--mode=publish` is explicit opt-in only.
 
 ## When to use
 
@@ -33,8 +34,7 @@ The skill picks the highest non-publish mode available at invocation without ope
 
 - Single-platform single-post (just paste it manually — overhead of skill > value)
 - When write-social hasn't run yet (defer to write-social first)
-- When `--publish` is the requested mode (deferred to D18)
-- When the operator needs draft for LinkedIn / IG / FB specifically (deferred to D17 — currently only Typefully API draft for X)
+- When the operator wants to publish live but hasn't reviewed the copy — run `--mode=publish --dry-run` first, or `--mode=draft` to stage drafts for review
 - When media is in a non-standard format the produce-* skills don't emit (skill expects produce-asset / produce-video manifest schemas; hand-curated media works but cross-check is weakened)
 
 ## Methodology
@@ -83,7 +83,7 @@ README carries per-platform instructions + scheduler-import file map + setup poi
 
 ### Step 7: Critic-agent dispatch
 
-Single critic pass on 6 dims. FAIL → re-dispatch formatter for failing platform(s) (max 2 cycles). PASS twice with operator override → log via `scripts/eval/log-critic-override.ts` (per D8 contract; production skill but uses eval-skill logging mechanism for override audit trail).
+Critic pass scores dims 1–7. For export / draft the critic runs after emission; for `--mode=publish` it runs **before** the two-stage confirmation gate as the content gate (a live post cannot be fixed afterward). Dim 8 (Live-Publish Safety) is applied by the orchestrator's post-publish Self-Check, not the critic. FAIL → re-dispatch formatter for failing platform(s) (max 2 cycles); persistent publish-run FAIL → BLOCKED. PASS twice with operator override → log via `scripts/eval/log-critic-override.ts` (per D8 contract; production skill but uses eval-skill logging mechanism for override audit trail).
 
 ### Step 8: Delivery
 
@@ -93,7 +93,7 @@ Return bundle root path + Mode Summary line + next-step instruction matched to d
 
 - **v1.0 (D16, 2026-05-19)** — initial slice. Export + Typefully API draft. 9 platforms. 4 scheduler formats. Auto-detect.
 - **v1.1 (D17, 2026-05-19)** — browser-automation drafts for 8 non-X platforms (LinkedIn / IG / FB / TikTok / YT / Threads / Bluesky / Reddit) via session-cookie auth + agent-browser. Adds: automation-agent + 8 platform-flow refs + session-cookie-export.md + confirmation-gate.md. Adds Critical Gate 7 (confirmation gate). Adds critic dim 7 (Browser-Automation Safety; rubric becomes 7 dims × 0-10). Adds 3 anti-patterns (silent auto-submit / cookie leakage / captcha-bypass attempts). Schema in `.forsvn/credentials/platforms.json` extends with `session_cookies` field per platform. Per-platform fallback to D16 export-mode on automation failure (single attempt; no retries; no captcha solve). Manifest gains `confirmation_result` + `automation_result_per_platform` fields. Per-platform draft frontmatter gains `draft_url` + `automation_result` fields.
-- **v1.2 (D18, planned)** — `--mode=publish` with explicit current-session confirmation gate. Includes dry-run + rollback path. Highest-risk surface; isolated slice.
+- **v1.2 (D18, 2026-05-19)** — `--mode=publish` live posting for all 9 platforms (X via Typefully schedule-immediate; the 8 non-X via browser-automation Send — each automation-flow ref gains a `## Publish Variant`). Two-stage current-session confirmation gate (`references/publish-confirmation-gate.md`): Stage 1 reviews every full post body → Stage 2 requires the typed word `PUBLISH`. For publish the critic runs BEFORE the gate (content cannot be fixed once live); rubric extends to 8 dims (dim 8 = Live-Publish Safety, orchestrator-applied post-publish; pass gate ≥ 56/80). `--dry-run` prints the publish plan and posts nothing. Rollback = the gate aborts cleanly before anything posts; once live, the manifest records each `post_url` + per-platform delete instructions (no automated un-publish). Per-platform publish failure → fallback to draft (cookies present) or export. 3 anti-patterns added (#15 publish without two-stage confirm / #16 publish on critic FAIL / #17 dry-run that posts). 1 new ref + 8 modified files; no new skill (plugin.json unchanged). Closes D18 + Workstream C.
 
 ## Related skills
 

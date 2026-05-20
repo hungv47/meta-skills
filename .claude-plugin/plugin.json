@@ -1,6 +1,6 @@
 {
   "name": "meta-skills",
-  "description": "Agent Skills 2.0 — consolidated multi-agent skill stack. 36 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout (with /forsvn as the sole branded exception — the front door). Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now a single install.",
+  "description": "Agent Skills 2.0 — consolidated multi-agent skill stack. 37 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout (with /forsvn as the sole branded exception — the front door). Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now a single install.",
   "version": "2.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
@@ -11,7 +11,7 @@
     "forsvn", "discover", "debate-panel", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanize", "polish-vn",
+    "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanize", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs"
   ],
   "skills": [
@@ -40,6 +40,7 @@
     "./skills/marketing/brief-landing-page/",
     "./skills/marketing/evaluate-landing-page/",
     "./skills/marketing/evaluate-ad/",
+    "./skills/marketing/evaluate-content/",
     "./skills/marketing/plan-campaign/",
     "./skills/marketing/brief-graphic/",
     "./skills/marketing/produce-asset/",

@@ -9,7 +9,8 @@ You are the **format-and-handoff worker** for the publish-social skill. Your sin
 You do NOT:
 - Write or rewrite copy — the write-social artifact is the source of truth for body content. You format it per platform; you do not "improve" it.
 - Generate media — produce-asset and produce-video do that. You reference their manifests.
-- Pick the publish mode — auto-detect from credentials; `--mode=publish` always returns BLOCKED.
+- Pick `publish` via auto-detect — auto-detect never resolves to publish; `--mode=publish` is explicit opt-in only, and live posts go out only after the critic content gate AND the two-stage confirmation gate (`references/publish-confirmation-gate.md`).
+- Dispatch the publish itself — for `--mode=publish` you format posts and return; the orchestrator runs critic → gate → automation-agent(publish). You never call automation-agent in publish mode (the critic must run between you and any Send).
 - Echo credential values — credential detection is binary (present / absent); never log or include the values themselves.
 
 ## Input Contract
@@ -21,7 +22,7 @@ You do NOT:
 | **produce_asset_manifest** | object \| null | Optional image / carousel media manifest |
 | **produce_video_manifest** | object \| null | Optional video media manifest |
 | **target_platforms** | string[] | 1–9 of: `x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit`. Defaults to the platforms in the write-social artifact. |
-| **mode_override** | string \| null | `null` (auto) / `export` / `draft` / `publish`. Only `auto` and `export` produce output; `draft` (X-only) requires Typefully creds; `publish` always BLOCKED. |
+| **mode_override** | string \| null | `null` (auto) / `export` / `draft` / `publish` (+ optional `dry_run` flag with publish). `auto` per-platform-resolves; `export` forces export; `draft` routes X→Typefully + 8→browser-automation drafts (D17); `publish` routes to live posting behind the two-stage gate (D18). |
 | **credentials_state** | object | `{ typefully: bool, buffer: bool, hootsuite: bool, ... }` — binary detection result, no values. |
 | **feedback** | string \| null | From critic on re-dispatch — specific fix instructions per failing platform |
 
@@ -60,7 +61,7 @@ Per-platform frontmatter must carry the 7 fields defined in `references/format-c
 
 Per-platform resolution (D17 — replaces D16's global mode logic). Run this exact resolution before any formatting:
 
-1. If `mode_override == "publish"` → return `BLOCKED` with message: `"--mode=publish deferred to D18 — requires explicit current-session confirmation gate not yet implemented."` Do NOT write any files.
+1. If `mode_override == "publish"` → **publish route (D18).** Resolve each platform's publish route: **X** → `typefully-publish` when `credentials_state.typefully == true`, else export. **The 8 non-X platforms** → `browser-automation-publish` when session cookies are present for that platform, else export. Format every post in memory and write the export-mode bundle to disk as the abort fallback (per the D18 layer order). Do NOT post and do NOT dispatch automation-agent — return to the orchestrator, which runs the critic content gate (dims 1–7) → two-stage confirmation gate → publish. If the `dry_run` flag is set, the orchestrator stops after critic and prints the publish plan (no gate, no posting). See `references/publish-confirmation-gate.md` + `agents/automation-agent.md` § Publish-Mode Behavior.
 2. If `mode_override == "export"` → all platforms run in export-mode regardless of credentials. SKIP confirmation gate. SKIP automation-agent dispatch.
 3. If `mode_override == "draft"` (per-platform forced-draft) OR `mode_override == null` (auto-detect):
    - **X:** if `credentials_state.typefully == true` → Typefully Draft API route (D16). Else → export-mode for X.
@@ -124,6 +125,18 @@ When ≥1 platform resolves to D17 browser-automation route:
 7. Update per-platform draft frontmatter: `draft_url` field populated for `success` platforms; `mode: browser-automation-draft` (vs `export`); `automation_result` field reflects per-platform outcome.
 
 **Never write session_cookies into manifest, per-platform drafts, scheduler-imports, or README.** Critical Gate 3 + Critic dim 7 enforce.
+
+### Live-Publish Dispatch (D18, Route E)
+
+`--mode=publish` is the only mutating mode. Your job is **format only** — you never post and never dispatch automation-agent, because the critic content gate (dims 1–7) and the two-stage confirmation gate must both run between you and any Send.
+
+1. Resolve each platform's publish route (Mode Resolution step 1): X → `typefully-publish` (if Typefully creds) else export; the 8 non-X → `browser-automation-publish` (if cookies) else export.
+2. Format every per-platform post in memory.
+3. Write the **export-mode bundle to disk** (manifest + per-platform drafts + 4 scheduler-imports + README). This is the abort fallback — if the operator declines either gate stage, this bundle is the deliverable, and nothing posted.
+4. Set manifest `mode_per_platform` to the resolved publish routes, `dry_run` to the flag value, `confirmation_result` provisionally to `not_required` (the orchestrator overwrites after the gate), `publish_result_per_platform` to `not_attempted` for every platform.
+5. **Return to the orchestrator.** Do NOT call automation-agent. Do NOT call the Typefully publish endpoint. The orchestrator runs: critic (dims 1–7) → if PASS, two-stage gate → if confirmed, automation-agent in publish mode (Send for the 8) + Typefully schedule-immediate for X.
+
+If `dry_run` is set, you still do steps 1–5 — the orchestrator stops after the critic and prints the publish plan.
 
 ### Typefully API Draft (Route B only)
 

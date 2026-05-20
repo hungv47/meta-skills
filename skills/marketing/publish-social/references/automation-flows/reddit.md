@@ -59,6 +59,21 @@ https://www.reddit.com/drafts/<draft-id>
 
 Capture per-draft URL when available (Reddit's URL changes during/after save).
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–5 above unchanged, then takes the **Post** action instead of Save-Draft. The submission goes live in the target subreddit. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 6′ (replaces draft step 6) | Click **"Post"** | `button` with text "Post" (top-right of the submit form) | Redirect to the submitted post page | `selector_drift` |
+| 7′ | Capture live post URL | Read the post URL after the redirect | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.reddit.com/r/<subreddit>/comments/<post_id>/<slug>/`
+
+**On Send failure:** title + body are composed but unposted → automation-agent takes the single Save-Draft fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** subreddit rules are enforced by Reddit **at Post time** — a `--mode=publish` run can fail at the Post step because the subreddit rejects the submission (missing flair, self-promotion ratio, karma/age gate). Classify a rules-rejection as `failed:unknown` (reason `subreddit_rules`) → `fallback-draft` so the operator can resolve the rule and Post manually. Never retry past a rules-rejection.
+
 ## Confidence Notes
 
 v1 confidence: MEDIUM. Reddit's draft feature works; subreddit-rules-check is the operator's responsibility.

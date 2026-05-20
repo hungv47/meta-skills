@@ -22,7 +22,7 @@ Layer 1 (Pre-Dispatch)
   → Layer 2 (Formatter: format all drafts, write bundle)
     → Layer 2.5 (Confirmation Gate)  ← HERE
       → Layer 2.6 (Automation, if confirmed and cookies present)
-        → Layer 3 (Critic: 7-dim review)
+        → Layer 3 (Critic: rubric review, dims 1–7)
           → Layer 4 (Delivery)
 ```
 

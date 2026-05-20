@@ -1,6 +1,6 @@
 # Anti-Patterns — publish-social
 
-> 7 publish-social-specific anti-patterns + 4 cross-cutting marketing-stack rows. Critic-agent dim 6 enforces; orchestrator re-reads before each bundle ships.
+> 17 patterns: 7 publish-social-specific + 3 D17 browser-automation + 3 D18 live-publish + 4 cross-cutting marketing-stack rows. Critic-agent dims 6 / 7 / 8 enforce; orchestrator re-reads before each bundle ships.
 
 ## publish-social-Specific (7)
 
@@ -86,6 +86,32 @@
 
 **Fix:** Any captcha detection → IMMEDIATE fallback to export-mode for that platform; no retry; no solve attempt; no operator-prompt. automation-agent's flow specs include captcha-element selectors for detection; flow exits with `failed:captcha` reason-class. Critic dim 7 auto-fails if "retry" log line appears within 1s of "captcha" detection log line.
 
+## D18 Live-Publish Patterns (3)
+
+### 15. Publish without two-stage confirmation (D18)
+
+**Pattern:** `--mode=publish` posts live after a single `[y/N]` (D17's draft-tier gate) — or worse, posts with no gate at all.
+
+**Why it hurts:** A live post is public the instant it lands. A reflexive `y` should never be able to publish to 9 accounts. The draft gate's single prompt was calibrated for cleanable drafts, not irreversible posts.
+
+**Fix:** Critical Gate 8 + `references/publish-confirmation-gate.md`. publish requires the **two-stage** gate: Stage 1 review (every full post body shown) → Stage 2 typed `PUBLISH` (the literal word — not `y`, not `yes`). Critic dim 8 auto-fails any `published` row whose `confirmation_result != "confirmed"`.
+
+### 16. Publish on critic FAIL (D18)
+
+**Pattern:** For `--mode=publish`, the skill runs the confirmation gate and posts before (or instead of) the critic pass — a live post that never cleared the 8-dim rubric.
+
+**Why it hurts:** Export / draft modes can run critic *after* emission because a draft is fixable. A live post is not — char-cap overflow, a credential leak, a shadowban-trigger word goes public uncorrected. The D16/D17 critic-after ordering is unsafe for publish.
+
+**Fix:** Critical Gate 8 reorders publish runs: Formatter → **Critic (full 8-dim)** → two-stage gate → Publish. Critic FAIL → re-dispatch formatter (max 2 cycles); still failing → `BLOCKED`, the gate never fires. Critic dim 8 auto-fails if the transcript shows a publish action before the critic PASS verdict.
+
+### 17. Dry-run that posts (D18)
+
+**Pattern:** `--mode=publish --dry-run` is meant to print the publish plan and exit — but a bug fires the gate or the Send path and something goes live.
+
+**Why it hurts:** Dry-run is the safe rehearsal operators are told to run first. If dry-run can post, the one affordance built to be consequence-free becomes the most dangerous.
+
+**Fix:** Dry-run runs Pre-Dispatch → Formatter → Critic, then prints the plan and exits — it never reaches the gate or the publish layer. Manifest carries `dry_run: true`. Critic dim 8 auto-fails if a `dry_run: true` run has any `published` row.
+
 ## Cross-Cutting Marketing-Stack Rows (4)
 
 ### 8. Cross-stack contract drift
@@ -144,3 +170,6 @@
 | 12 | Silent auto-submit (D17) | Yes (Gate 7) | Yes (dim 7 auto-fail) |
 | 13 | Cookie leakage (D17) | Yes (Gate 3 extends) | Yes (dim 7 auto-fail) |
 | 14 | Captcha-bypass attempts (D17) | — | Yes (dim 7 auto-fail) |
+| 15 | Publish without two-stage confirm (D18) | Yes (Gate 8) | Yes (dim 8 auto-fail) |
+| 16 | Publish on critic FAIL (D18) | Yes (Gate 8) | Yes (dim 8 auto-fail) |
+| 17 | Dry-run that posts (D18) | Yes (Gate 8) | Yes (dim 8 auto-fail) |

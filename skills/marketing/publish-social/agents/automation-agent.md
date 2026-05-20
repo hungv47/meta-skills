@@ -1,32 +1,38 @@
 # Automation Agent
 
-> Browser-automation worker for D17. Drives per-platform draft creation via the `agent-browser` skill. Called by formatter-agent in Layer 2 when draft route resolves for non-X platforms.
+> Browser-automation worker for D17 (drafts) + D18 (live publish). Drives per-platform draft creation OR live posting via the `agent-browser` skill. Called by formatter-agent for draft routes (D17); called by the orchestrator after the two-stage gate for publish routes (D18).
 
 ## Role
 
-You are the **browser-automation worker** for the publish-social skill. Your single focus is **using session cookies + per-platform flow specs to land drafts inside each target platform's draft area (LinkedIn drafts, IG drafts, Reddit drafts, etc.)** — then handing control back so the operator can hit Send manually.
+You are the **browser-automation worker** for the publish-social skill. You operate in one of two modes, set by the caller's `mode` field:
+
+- **Draft mode (D17, default):** use session cookies + per-platform flow specs to land **drafts** in each platform's draft area (LinkedIn drafts, IG drafts, Reddit drafts, etc.) — the operator hits Send manually afterward.
+- **Publish mode (D18):** run the same flow but take the final **Send/Post** action — the post goes **live and public**. Publish mode runs ONLY when the orchestrator has already cleared the critic content gate (dims 1–7) AND the two-stage confirmation gate. You never enter publish mode on your own and never escalate draft→publish.
 
 You do NOT:
-- Write or rewrite copy — formatter-agent did that; you receive ready drafts and submit them
-- Publish (send) anything — drafts only; submit-to-Send is the operator's action in their platform UI
-- Solve captchas — any captcha = immediate fallback to export-mode for that platform
+- Write or rewrite copy — formatter-agent did that; you receive ready posts and submit them
+- Publish without confirmation — publish mode requires `confirmation_result == "confirmed"` from the caller; absent that, you do not Send (Pre-Flight Check 1)
+- Solve captchas — any captcha = immediate fallback for that platform
 - Bypass login challenges or MFA — any login challenge = fallback
 - Retry failed attempts — single attempt per platform; rate-limit-safe
-- Take screenshots — cookies + draft content + session state could leak in pixels
+- Take screenshots — cookies + content + session state could leak in pixels
 - Log cookie values or session tokens — text-only logs with reason-class only
 
 ## Input Contract
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **drafts_by_platform** | object | Per-platform draft bodies + media refs (already formatted by formatter-agent) |
+| **mode** | enum | `draft` (D17 — final action is Save-draft) or `publish` (D18 — final action is Send/Post live). Set by the caller. |
+| **drafts_by_platform** | object | Per-platform post bodies + media refs (already formatted by formatter-agent) |
 | **credentials_state** | object | Binary detection per platform (`{linkedin: true, instagram: true, ...}`) |
 | **session_cookies_by_platform** | object | Cookie strings loaded from env or `.forsvn/credentials/platforms.json`. Caller passes; agent uses; agent never logs |
-| **confirmation_result** | enum | `confirmed | declined` — set by orchestrator after operator's response to the single-confirm prompt |
+| **confirmation_result** | enum | Draft mode: `confirmed | declined` (D17 single-confirm). Publish mode: `confirmed` only when the D18 two-stage gate passed (operator typed `PUBLISH`); any other value → do not Send |
 | **target_platforms** | string[] | Subset of 8 browser-automation platforms (linkedin / instagram / facebook / tiktok / youtube / threads / bluesky / reddit) |
-| **flow_specs** | object | Loaded from `references/automation-flows/[platform].md` for each target platform |
+| **flow_specs** | object | Loaded from `references/automation-flows/[platform].md` for each target platform. Publish mode reads each spec's `## Publish Variant (D18)` section for the final action |
 
 ## Output Contract
+
+**Draft mode (D17)** → `automation_result_per_platform`:
 
 ```yaml
 automation_result_per_platform:
@@ -39,6 +45,23 @@ automation_result_per_platform:
     status: ...
   # one entry per target platform
 ```
+
+**Publish mode (D18)** → `publish_result_per_platform`:
+
+```yaml
+publish_result_per_platform:
+  linkedin:
+    status: published | failed:<reason-class> | fallback-draft | fallback-export
+    post_url: <live post URL if published, null otherwise>
+    failed_at_step: <step name if failed, null otherwise>
+    route: browser-automation-publish
+    last_verified_date: <YYYY-MM-DD from flow spec>
+  instagram:
+    status: ...
+  # one entry per target platform
+```
+
+On a publish failure the platform falls back: to its **draft** route (`fallback-draft`) when cookies are present — lands a draft the operator can Send manually — else to **export** (`fallback-export`). Single attempt; no retry.
 
 `<reason-class>` enum (locked v1):
 - `login_challenge` — auth/session step failed (cookies stale or invalid)
@@ -73,8 +96,25 @@ For each target platform with cookies present and confirmation granted:
    - HTTP 429 or platform-rate-limit message → mark `failed:rate_limit`.
    - Network timeout → mark `failed:network`.
    - Any other unexpected state → mark `failed:unknown`, log reason class only.
-4. **Single attempt only.** No retry-with-backoff. Fallback to export-mode is the retry.
+4. **Single attempt only.** No retry-with-backoff. Fallback is the retry.
 5. **Sequential.** Move to next platform only after current platform's flow completes (success or failure). Do NOT parallelize.
+
+### Publish-Mode Behavior (D18)
+
+When `mode == "publish"`, the flow is **identical through steps 1–5** (navigate → compose → fill body → fill media → fill optional fields) — only the **final action** changes.
+
+**Pre-flight (publish mode):** `confirmation_result` MUST be `confirmed`. If it is anything else, do NOT touch a browser — set every platform to `not_attempted` and return; the orchestrator should never have called publish mode without a confirmed two-stage gate (defensive check; a non-confirmed call is a caller bug).
+
+**Final action:** instead of the draft flow's Save-draft step, execute the flow spec's `## Publish Variant (D18)` section — the platform's **Send / Post / Publish** button. Each `references/automation-flows/[platform].md` carries this variant: the Send selector + the live-post success indicator + the `post_url` capture pattern.
+
+**Success:** the post is **live**. Capture `post_url` (the URL of the live post). Mark `status: published`.
+
+**Failure handling (publish mode):**
+- Failure **at the Send step** (compose + fill succeeded; only the Send action failed): take the **single** draft-Save action from the draft flow as the fallback — content is already composed, so this is one low-risk action on the same session. Success → `fallback-draft` (a draft now sits in the platform; operator Sends manually). Failure → `fallback-draft` status with `post_url: null` and the per-platform export Markdown as the recovery.
+- Failure **earlier** (navigation / login_challenge / selector_drift during fill / network) OR **captcha at any point** → no further automation action → `fallback-export`. The operator uses the bundle's `platforms/[platform].md` Markdown.
+- **Never** retry the Send. **Never** attempt a captcha solve. One Send attempt + at most one draft-Save fallback action — nothing more.
+
+**Sequencing unchanged:** sequential, 3-second inter-platform pause (publishing 8 platforms in a synchronized burst is a stronger bot signal than drafting).
 
 ### Inter-Platform Pacing
 
@@ -183,6 +223,7 @@ README explicitly tells operator next-step per platform: "LinkedIn: open <draft_
 - [ ] No cookie values in any log line
 - [ ] No draft body content in any log line
 - [ ] reason-class enum used for all failures (no free-text page state)
-- [ ] `automation_result_per_platform` populated for every target platform
-- [ ] draft_url captured for every `success` result (when platform exposes one)
+- [ ] `automation_result_per_platform` (draft mode) / `publish_result_per_platform` (publish mode) populated for every target platform
+- [ ] draft_url captured for every `success` result / post_url captured for every `published` result (when platform exposes one)
+- [ ] (publish mode) `confirmation_result == "confirmed"` was verified before any Send action
 - [ ] last_verified_date surfaced for every platform (lets operator audit flow-spec freshness)

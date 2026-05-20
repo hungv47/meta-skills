@@ -58,6 +58,22 @@ https://studio.youtube.com/video/<videoId>/edit
 
 Where `<videoId>` is the 11-char YT video ID assigned during upload. Capture this URL on success.
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–7 above unchanged, then sets visibility to **Public** and **Publishes** instead of closing the dialog as a draft. The video goes live. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 8′ (replaces draft step 8) | Advance to the Visibility step; select **"Public"** | `tp-yt-paper-radio-button[name="PUBLIC"]` | Public radio selected | `selector_drift` |
+| 9′ | Click **"Publish"** | `ytcp-button[id="done-button"]` (label "Publish") | "Video published" dialog with the share link | `selector_drift` |
+| 10′ | Capture live post URL | Read the share link from the published dialog | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.youtube.com/watch?v=<videoId>` (long-form) OR `https://www.youtube.com/shorts/<videoId>` (9:16 ≤60s)
+
+**On Send failure:** video uploaded + metadata filled but unpublished → automation-agent takes the single "close dialog = save draft" fallback action (`fallback-draft`); if that also fails, `fallback-export`. No publish retry. Captcha / 2FA re-prompt at any point → `fallback-export`.
+
+**Publish-specific note:** the visibility step must explicitly select **Public** before Publish — never leave it at the default. If the video is flagged at upload (copyright / content policy), abort with `failed:unknown` (reason `video_rejected`) and do not attempt to publish a flagged video.
+
 ## Confidence Notes
 
 v1 confidence: LOW-MEDIUM. Google's auth layer is the most aggressive; expect 20-40% fallback-to-export rate due to 2FA re-prompts and bot-detection. Selector drift moderate.

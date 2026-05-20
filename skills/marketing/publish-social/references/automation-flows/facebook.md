@@ -55,6 +55,21 @@ https://business.facebook.com/latest/posts/?asset_id=<page_id>&filter=PUBLISHED_
 
 Direct per-draft URL may not be exposed; capture drafts-list URL.
 
+## Publish Variant (D18)
+
+> `--mode=publish` runs steps 1–5 above unchanged, then takes the **Publish** action instead of Save-draft. The post goes live on the Page. Reached only after the orchestrator's two-stage confirmation gate returns `confirmed`.
+
+| Step | Action | Selector | Success indicator | Failure → reason-class |
+|---|---|---|---|---|
+| 6′ (replaces draft step 6) | Click **"Publish"** | `div[role="button"]` / `button` with text "Publish" (composer primary action) | "Post published" toast; composer closes; post on Page timeline | `selector_drift` |
+| 7′ | Capture live post URL | Read the new post URL from the Page timeline | `post_url` captured | `unknown` |
+
+**post_url pattern:** `https://www.facebook.com/<page_id>/posts/<post_id>`
+
+**On Send failure:** body is composed but unsent → automation-agent takes the single Save-draft fallback action (`fallback-draft`); if that also fails, `fallback-export`. No Send retry. Captcha at any point → `fallback-export`.
+
+**Publish-specific note:** Page-only — publish targets the Page resolved by `page_id` (Critical hard-block if `page_id` missing carries over). Verify the navigated URL's `asset_id` matches `page_id` before publishing; a Page mismatch → `failed:unknown` (reason `page_id_mismatch`), never publish to the wrong Page.
+
 ## Confidence Notes
 
 v1 confidence: MEDIUM-LOW. FB Pages automation works but has more failure modes than LinkedIn. Selector drift expected on monthly cadence.
