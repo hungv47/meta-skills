@@ -1,6 +1,6 @@
-# meta-skills — Agent Guide
+# forsvn-skills — Agent Guide
 
-This repo is the `meta-skills` plugin: 39 composable skills for AI agents across meta, research, marketing, and product domains. This file tells an agent **how to use the stack** and **the bar for extending it**.
+This repo is the `forsvn-skills` plugin, distributed from `github.com/hungv47/meta-skills` for URL continuity: 39 composable skills for AI agents across meta, research, marketing, and product domains. This file tells an agent **how to use the stack** and **the bar for extending it**.
 
 ## Scope — In-Repo Skills Only
 

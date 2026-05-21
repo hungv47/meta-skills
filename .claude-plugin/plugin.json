@@ -1,13 +1,13 @@
 {
-  "name": "meta-skills",
-  "description": "Agent Skills 2.0 — consolidated multi-agent skill stack. 39 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout (with /forsvn as the sole branded exception — the front door). Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now a single install.",
-  "version": "2.0.0",
+  "name": "forsvn-skills",
+  "description": "FORSVN Skills — consolidated multi-agent skill stack. 39 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
+  "version": "2.0.1",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",
   "license": "MIT",
   "keywords": [
-    "skills", "multi-agent", "orchestration",
+    "skills", "forsvn-skills", "multi-agent", "orchestration",
     "forsvn", "discover", "debate-panel", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",

@@ -2,9 +2,18 @@
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning is [SemVer](https://semver.org/spec/v2.0.0.html) — major.minor.patch.
 
-This file tracks releases of the consolidated `meta-skills` plugin (39 skills across meta / research / marketing / product). SKILL.md files describe current behavior; this file documents what changed and when.
+This file tracks releases of the consolidated `forsvn-skills` plugin (39 skills across meta / research / marketing / product), distributed from `github.com/hungv47/meta-skills` for URL continuity. SKILL.md files describe current behavior; this file documents what changed and when.
 
 ---
+
+## [2.0.1] - 2026-05-21
+
+Renames the Claude plugin to `forsvn-skills` while keeping the repository and install URL at `github.com/hungv47/meta-skills`.
+
+### Changed
+
+- **[all] Plugin metadata now publishes as `forsvn-skills`; `/plugin marketplace add hungv47/meta-skills` remains the install URL.**
+- **[docs] Install, update, and release instructions now use `/plugin install forsvn-skills` and `/plugin update forsvn-skills`.**
 
 ## [2.0.0] - 2026-05-21
 
