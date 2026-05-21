@@ -6,7 +6,9 @@ This file tracks releases of the consolidated `meta-skills` plugin (39 skills ac
 
 ---
 
-## [Unreleased]
+## [2.0.0] - 2026-05-21
+
+**Agent Skills 2.0 — the consolidated AI-agent skill stack.** 2.0.0 bundles three programs into one release: the **single-plugin consolidation** — four separate plugins collapse into one `meta-skills` install — with the `/forsvn` front door and the verb-first rename; the **execution-evaluation program** (D8–D25 — the production layer, the evaluation + learning loop, and capability upgrades, adding 7 skills); and the **v2.0-launch hardening** (the frontmatter sweep, skill-count reconciliation, and 3 shared-reference extractions). The consolidation shipped first as a 2.0.0 pre-cut on 2026-05-19; this entry is the complete 2.0.0. **39 skills** — meta 7 · research 7 · marketing 19 · product 6. Supersedes v1, the four-plugin era (see [1.0.0] below).
 
 ### Changed
 
@@ -71,19 +73,13 @@ This file tracks releases of the consolidated `meta-skills` plugin (39 skills ac
 
 - **[meta] Retired 4 obsolete release scripts** — `rewrite-skill-portability`, `audit-skill-portability`, `audit-reference-hygiene`, `sanitize-public-references`. They enforced single-skill-install portability and a private→public source scrub, both made obsolete by the 2.0 consolidation; against the current repo they produced only false positives.
 
-### Changed
+### Program context
 
-- **[meta] `references/quality-feedback-protocol.md`** is now the canonical home for the critic-override-log spec (no separate ref file). Brief 05's TSV suggestion is superseded by the existing Markdown-block spec — keeps eval narratives readable. CHANGELOG flag retained for traceability.
+2.0.0 ships three programs end-to-end: the **single-plugin consolidation** (front door + verb-first rename — detailed below); the **execution-evaluation program** (D8–D25 — production layer, evaluation + learning loop, capability upgrades, with full source-idea coverage audited at D25); and the **v2.0-launch hardening** (frontmatter sweep, count reconciliation, the 3 shared-reference extractions). `references/quality-feedback-protocol.md` is the canonical home for the critic-override-log spec — brief 05's TSV suggestion is superseded by the existing Markdown-block format. All `implementation-roadmap/` program records are internal (gitignored).
 
-### Roadmap context
+### The 2.0 consolidation — single-plugin merge, front door & verb-first rename (shipped 2026-05-19)
 
-This release closes **Workstream D demo slice (D8)** from `implementation-roadmap/execution-evaluation/decisions.md`. Demonstrates brief 05's full artifact → eval → learning loop on the `brief-landing-page` → `evaluate-landing-page` pair, using existing references where possible (`quality-dashboard-spec.md`, `quality-feedback-protocol.md`, `eval-loop-spec.md`, `artifact-contract-template.md`) and adding only the missing pieces. New eval skills (`evaluate-ad`, `evaluate-content`, `evaluate-campaign`) remain backlog; provenance retrofit on pre-D8 artifacts is forward-only.
-
----
-
-## [2.0.0] - 2026-05-19
-
-**Agent Skills 2.0 — single-plugin consolidation + front door + verb-first rename.** Three changes ship together:
+The consolidation was the first slice of 2.0.0, cut on 2026-05-19. Three changes shipped together:
 
 1. **Consolidation.** Four previously-separate plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) collapse into a single `meta-skills` plugin at `github.com/hungv47/meta-skills`. Umbrella `agent-skills` repo + three sibling repos archived.
 2. **Front door + state root** (Workstream A). New `/forsvn` skill is the single discovery surface; new `.forsvn/` is the canonical user-facing state root (replaces planned `.agents/skill-artifacts/` + `skills-resources/`).
@@ -98,13 +94,13 @@ npx skills add hungv47/meta-skills
 
 Users on any 1.x plugin (or any of the four legacy plugins) must remove them and reinstall the consolidated one. **No alias layer** — old skill names hard-fail.
 
-### Breaking changes (read before upgrading)
+#### Breaking changes (read before upgrading)
 
 - **27 skill renames + 4 skill deletions.** Full map below. Old slash-commands will not resolve; replace them by hand.
 - **`.forsvn/` is canonical.** `.agents/skill-artifacts/` and `skills-resources/` were never materialized in this repo; new installs write only to `.forsvn/`. If you carried over either layout from a 1.x install, copy what matters into `.forsvn/artifacts/`, `.forsvn/loops/`, `.forsvn/experience/` and delete the rest.
 - **The 4 `orchestrate-*` routers are gone.** Use `/forsvn` as the front door; it reads `.forsvn/` state and routes directly to a leaf skill via the appropriate `chains/<domain>.md` reference.
 
-### Skill rename map (Workstream B)
+#### Skill rename map (Workstream B)
 
 | Stack | Old | New |
 |---|---|---|
@@ -142,45 +138,52 @@ Users on any 1.x plugin (or any of the four legacy plugins) must remove them and
 
 Unchanged: `forsvn` (branded exception per D1), `discover`, `diagnose`, `prioritize`, `humanize`.
 
-### Added
+#### Added
 
 - **`/forsvn`** — front-door skill. Classifies intent, loads `.forsvn/` state, asks ≤2 clarifying questions only when truly ambiguous, dispatches to a leaf skill (via `references/chains/<domain>.md`) or resumes a prior initiative. Bootstraps `.forsvn/` on first run.
 - **`.forsvn/` canonical state root.** `context/`, `experience/`, `artifacts/`, `loops/`, `evals/`, `routing/`, `dashboard/`. See `.forsvn/README.md` for the layout contract.
 - **`skills/meta/forsvn/references/chains/{meta,research,marketing,product}.md`** — domain dispatch chains absorbed from the deleted orchestrate-* SKILL bodies.
 - **PR1 program rule** (decisions.md): "interview before implementing" — any agent working under `implementation-roadmap/execution-evaluation/` must read every relevant brief + run `AskUserQuestion` rounds until decisions lock, before writing or moving code.
 
-### Removed
+#### Removed
 
 - `orchestrate-meta`, `orchestrate-research`, `orchestrate-marketing`, `orchestrate-product` — collapsed into `/forsvn` + per-domain chain files (D6).
 - Legacy per-plugin marketplaces (`research-skills`, `marketing-skills`, `product-skills`).
 
-### Consolidation details
+#### Consolidation details
 
 - Single repo, single CHANGELOG, single version. No per-stack release dance.
 - Internal taxonomy preserved as `skills/{meta,research,marketing,product}/` folders.
 - Cross-stack references (`pre-dispatch-protocol`, `mode-resolver`, `manifest-spec`, `eval-loop-spec`, etc.) resolve to a single `references/` folder at repo root.
 - The `hooks/skill-router` and umbrella `scripts/` (audit, marketplace bump, portability) ship with the plugin.
 
-### Skill catalog (32 skills)
+#### Skill catalog
 
-**[meta] (7):** `forsvn` (front door) · `discover` · `debate-panel` (was `agents-panel`) · `run-eval-loop` (was `eval-loop`) · `breakdown-tasks` (was `task-breakdown`) · `review-work` (was `fresh-eyes`) · `clean-artifacts` (was `cleanup-artifacts`).
+39 skills at 2.0.0 — meta 7 · research 7 · marketing 19 · product 6. The consolidation shipped 32; the execution-evaluation program added 7 — `produce-asset`, `produce-video`, `evaluate-ad`, `publish-social`, `evaluate-content`, `evaluate-campaign`, `extract-service`. Full catalog in the [README](./README.md).
 
-**[research] (7):** `research-icp` (was `icp-research`) · `research-market` (was `market-research`) · `diagnose` · `prioritize` · `plan-funnel` (was `funnel-planner`) · `research-shortform` (was `short-form-research`) · `evaluate-shortform` (was `short-form-eval`).
-
-**[marketing] (13):** `create-brand` (was `brand-system`) · `write-copy` (was `copywriting`) · `write-ad` (was `ad-copy`) · `write-outreach` (was `cold-outreach`) · `write-social` (was `social-copy`) · `brief-shortform` (was `short-form-brief`) · `brief-landing-page` (was `lp-brief`) · `evaluate-landing-page` (was `lp-eval`) · `plan-campaign` (was `campaign-plan`) · `brief-graphic` (was `design-brief`) · `optimize-seo` (was `seo`) · `humanize` · `polish-vn` (was `vn-tone`).
-
-**[product] (5):** `map-user-flow` (was `user-flow`) · `architect-system` (was `system-architecture`) · `clean-code` (was `code-cleanup`) · `clean-machine` (was `machine-cleanup`) · `write-docs` (was `docs-writing`).
-
-### Recommended starting point
+#### Recommended starting point
 
 Run `/forsvn` on any new project — it bootstraps `.forsvn/`, classifies your ask, and routes. The proving workflow (D5): a fresh repo with no `brand/BRAND.md` will get routed through `/create-brand` first.
 
-### Retired
+#### Retired
 
 - `github.com/hungv47/research-skills` — archived, install from `meta-skills` instead
 - `github.com/hungv47/marketing-skills` — archived, install from `meta-skills` instead
 - `github.com/hungv47/product-skills` — archived, install from `meta-skills` instead
 - `github.com/hungv47/agent-skills` (umbrella marketplace) — archived; `meta-skills` is now self-hosting via its own `.claude-plugin/marketplace.json`
+
+---
+
+## [1.0.0] - 2026-05-18
+
+**Agent Skills v1 — the four-plugin era.** Before consolidation, the stack shipped as four separate Claude Code plugins under the `agent-skills` umbrella marketplace:
+
+- **`research-skills`** — problem diagnosis, ICP + market research, experimentation (archived at v6.0.0).
+- **`marketing-skills`** — brand, copywriting, campaigns, attribution, landing-page optimization (archived at v7.0.0).
+- **`product-skills`** — code cleanup, system architecture, technical docs (archived at v6.0.0).
+- **`meta-skills`** — process-layer orchestration: preflight, planning, task breakdown, multi-lens review (pre-consolidation `main`, archived at v6.2.1).
+
+~30 skills and ~150 sub-agents, distributed via npm and the Claude Code plugin marketplace, coordinated through the `agent-skills` umbrella marketplace (archived at v3.0.0). Each plugin had its own repo, release cadence, and CHANGELOG. v1 is closed: all four repos are archived and superseded by the consolidated `meta-skills` 2.0.0. Per-stack pre-consolidation history is preserved in the archived repos — see Legacy per-stack history below.
 
 ---
 
