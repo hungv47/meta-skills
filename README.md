@@ -15,7 +15,9 @@ Skills chain. Each one reads what earlier skills left behind — in conversation
 
 **Install — one plugin, all 39 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
 
-> **New in 2.0** — the four former plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) are now one `meta-skills` install. Verb-first skill names, `/forsvn` as the single front door, `.forsvn/` as the canonical state root. Upgrading from a 4-plugin install? See [Migrating from pre-2.0](#migrating-from-pre-20-4-plugin-install).
+> **Plugin name:** the Claude plugin is `forsvn-skills`; the repository URL remains `github.com/hungv47/meta-skills` so existing links keep working.
+>
+> **New in 2.0** — the four former plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) are now one `forsvn-skills` install. Verb-first skill names, `/forsvn` as the single front door, `.forsvn/` as the canonical state root. Upgrading from a 4-plugin install? See [Migrating from pre-2.0](#migrating-from-pre-20-4-plugin-install).
 
 ## Install
 
@@ -25,7 +27,7 @@ Single plugin, all 39 skills. Works with Claude Code's plugin system, or the edi
 
 ```
 /plugin marketplace add hungv47/meta-skills
-/plugin install meta-skills
+/plugin install forsvn-skills
 ```
 
 ### Via `skills` CLI (recommended for non-Claude editors)
@@ -101,7 +103,7 @@ Or for Claude Code plugin marketplace users:
 ```
 /plugin marketplace remove agent-skills
 /plugin marketplace add hungv47/meta-skills
-/plugin install meta-skills
+/plugin install forsvn-skills
 ```
 
 The 4 source repos (`research-skills`, `marketing-skills`, `product-skills`, `agent-skills` umbrella) are archived on GitHub.
@@ -427,7 +429,7 @@ Each downstream skill produces richer output because it inherits upstream contex
 
 **Override skill recommendations when you have context.** Skills auto-detect the right path (e.g., `brief-graphic` auto-routes to image-gen vs. vector-tool). If you know better, override with flags or correct in the conversation.
 
-**Install globally.** Meta-skills (`/forsvn`, `/discover`, `/run-eval-loop`, `/debate-panel`, `/breakdown-tasks`, `/review-work`) are domain-agnostic and useful in every project on your machine — `npx skills add hungv47/meta-skills -g` is the install most people regret skipping.
+**Install globally.** The meta-layer skills (`/forsvn`, `/discover`, `/run-eval-loop`, `/debate-panel`, `/breakdown-tasks`, `/review-work`) are domain-agnostic and useful in every project on your machine — `npx skills add hungv47/meta-skills -g` is the install most people regret skipping.
 
 ## How Skills Communicate
 
@@ -486,7 +488,7 @@ Update an existing install:
 ```bash
 npx skills update                                  # via skills CLI
 # or
-/plugin marketplace update meta-skills && /plugin update meta-skills    # via Claude Code
+/plugin marketplace update forsvn-skills && /plugin update forsvn-skills    # via Claude Code
 ```
 
 Fresh install (full stack):
@@ -494,7 +496,7 @@ Fresh install (full stack):
 ```bash
 npx skills add hungv47/meta-skills
 # or
-/plugin marketplace add hungv47/meta-skills && /plugin install meta-skills
+/plugin marketplace add hungv47/meta-skills && /plugin install forsvn-skills
 ```
 
 Cherry-pick a single skill:
@@ -509,7 +511,7 @@ Pre-2.0 history lives in the archived repos: [research-skills](https://github.co
 
 ## Changelog
 
-- [meta-skills/CHANGELOG.md](./CHANGELOG.md) — consolidated changelog from v2.0 onward
+- [CHANGELOG.md](./CHANGELOG.md) — consolidated changelog from v2.0 onward
 - [GitHub releases](https://github.com/hungv47/meta-skills/releases) — full release history
 
 ## License
