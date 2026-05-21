@@ -1,0 +1,25 @@
+# Routing signals for architect-system. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "system design"
+    - "tech stack"
+    - "database schema"
+    - "api design"
+    - "architecture design"
+    - "infrastructure plan"
+  allOf:
+    - [system, architecture]
+    - [tech, stack]
+  anyOf:
+    - "architecture"
+    - "schema"
+    - "api"
+    - "database"
+    - "infrastructure"
+    - "deployment"
+  noneOf:
+    - "user flow"
+    - "brand identity"
+    - "wireframe"
+  minScore: 6

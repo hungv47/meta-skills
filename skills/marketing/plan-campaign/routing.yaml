@@ -1,0 +1,26 @@
+# Routing signals for plan-campaign. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "marketing plan"
+    - "campaign plan"
+    - "go to market"
+    - "channel strategy"
+    - "content calendar"
+    - "growth motion"
+    - "marketing strategy"
+  allOf:
+    - [marketing, plan]
+    - [channel, strategy]
+  anyOf:
+    - "campaign"
+    - "channel"
+    - "calendar"
+    - "gtm"
+    - "plg"
+    - "slg"
+  noneOf:
+    - "write copy"
+    - "headline"
+    - "tagline"
+  minScore: 6

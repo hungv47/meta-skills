@@ -100,27 +100,27 @@ A healthy content mix needs both. Searchable builds slow but compounds. Shareabl
 How marketing skills connect — each skill's output feeds the next:
 
 ```
-icp-research (research-skills)
+research-icp (research stack)
   └─ product-context.md → consumed by ALL skills below
-  └─ icp-research.md → consumed by campaign-plan, copywriting, content-research
+  └─ icp-research.md → consumed by plan-campaign, write-copy, research-shortform
 
-brand-system → BRAND.md + DESIGN.md → consumed by copywriting, humanize, design-brief, lp-brief
+create-brand → BRAND.md + DESIGN.md → consumed by write-copy, humanize, brief-graphic, brief-landing-page
 
-content-research (research-skills)
-  └─ content-research.md → consumed by campaign-plan, copywriting, lp-brief
+research-shortform (research stack)
+  └─ per-platform catalog → consumed by brief-shortform, write-social, evaluate-shortform
 
-campaign-plan → campaign-plan.md → consumed by lp-brief, cold-outreach, seo
+plan-campaign → .forsvn/artifacts/mkt/plan-campaign/[slug].md → consumed by brief-landing-page, write-outreach, optimize-seo
 
-copywriting → content/[slug].copy.md → consumed by humanize, vn-tone
-humanize → content/[slug].humanized.md → final-stage polish
-vn-tone → content/[slug].vn-tone.md → Vietnamese register polish
+write-copy → .forsvn/artifacts/mkt/write-copy/[slug].md → consumed by humanize, polish-vn
+humanize → .forsvn/artifacts/mkt/humanize/[slug].md → final-stage polish
+polish-vn → .forsvn/artifacts/mkt/polish-vn/[slug].md → Vietnamese register polish
 
-lp-brief → .forsvn/artifacts/mkt/lp-brief/[slug]/brief.md → owns landing-page construction + conversion-principles gate; consumed by design-brief (per asset slot) and external designer/image-gen
-lp-eval → .forsvn/loops/[slug]/evals/[date]-cycle-N.md → owns post-launch landing-page evidence scoring; consumes eval-loop workspace and appends results.tsv
-design-brief → .forsvn/artifacts/mkt/design-briefs/[slug].md → consumed by external designer or image-gen tool
-seo → seo-[mode].md → consumed by copywriting (SEO content), campaign-plan
+brief-landing-page → .forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md → owns landing-page construction + conversion-principles gate; consumed by brief-graphic (per asset slot) and external designer/image-gen
+evaluate-landing-page → .forsvn/loops/[slug]/evals/[date]-cycle-N.md → owns post-launch landing-page evidence scoring; consumes the eval-loop workspace and appends results.tsv
+brief-graphic → .forsvn/artifacts/mkt/brief-graphic/[slug].md → consumed by external designer or image-gen tool
+optimize-seo → .forsvn/artifacts/mkt/optimize-seo/[mode].md → consumed by write-copy (SEO content), plan-campaign
 
-cold-outreach → .forsvn/artifacts/mkt/cold-outreach/[slug].md → standalone outbound execution
+write-outreach → .forsvn/artifacts/mkt/write-outreach/[slug].md → standalone outbound execution
 ```
 
 ---
@@ -139,11 +139,11 @@ All marketing skills follow the same re-run protocol:
 
 | Term | Definition | Used By |
 |------|-----------|---------|
-| **Pillar** | A core messaging theme (3-5 per brand) | campaign-plan |
-| **Angle** | A specific perspective within a pillar (3D: hook × trigger × stage) | campaign-plan, copywriting |
-| **Hook** | The opening line/visual that captures attention | copywriting, cold-outreach |
-| **CTA** | Call-to-action: specific next step for the audience | copywriting, lp-brief |
-| **VoC** | Voice of Customer: authentic audience language | icp-research, copywriting |
-| **3Q Test** | Visual + Falsifiable + Uniquely Ours quality gate | copywriting |
-| **Route** | Execution path within a skill (A/B/C/D) | seo, copywriting, lp-brief |
+| **Pillar** | A core messaging theme (3-5 per brand) | plan-campaign |
+| **Angle** | A specific perspective within a pillar (3D: hook × trigger × stage) | plan-campaign, write-copy |
+| **Hook** | The opening line/visual that captures attention | write-copy, write-outreach, write-social |
+| **CTA** | Call-to-action: specific next step for the audience | write-copy, brief-landing-page |
+| **VoC** | Voice of Customer: authentic audience language | research-icp, write-copy |
+| **3Q Test** | Visual + Falsifiable + Uniquely Ours quality gate | write-copy |
+| **Route** | Execution path within a skill (A/B/C/D) | optimize-seo, write-copy, brief-landing-page |
 | **Critic gate** | Quality checkpoint: PASS/FAIL with max 2 rewrite cycles | All skills |

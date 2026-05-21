@@ -63,6 +63,7 @@ const SUPPORT_REFS = {
   "product-marketing-context-schema.md": "references/product-marketing-context-schema.md",
   "before-starting-check.md": "references/before-starting-check.md",
   "hypothesis-framework.md": "skills/research/_shared/hypothesis-framework.md",
+  "marketing-foundations.md": "skills/marketing/_shared/marketing-foundations.md",
   "copywriting-research-workflow.md": "skills/marketing/write-copy/references/research-workflow.md",
   "clipping-and-live.md": "skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md",
 };
@@ -292,6 +293,7 @@ function syncSkill(dir) {
   if (/product-marketing-context-schema/.test(corpus)) addRef("product-marketing-context-schema.md");
   if (/before-starting-check/.test(corpus)) addRef("before-starting-check.md");
   if (/hypothesis-framework/.test(corpus)) addRef("hypothesis-framework.md");
+  if (/marketing-foundations/.test(corpus)) addRef("marketing-foundations.md");
   if (/copywriting\/references\/research-workflow|copywriting-research-workflow/.test(corpus)) {
     addRef("copywriting-research-workflow.md");
   }

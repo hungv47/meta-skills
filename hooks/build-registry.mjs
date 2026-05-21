@@ -11,7 +11,7 @@
  * Run this after editing any skill's promptSignals block.
  */
 
-import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -135,26 +135,38 @@ function buildRegistry() {
     }
 
     for (const entry of entries) {
-      const skillPath = join(dirPath, entry, "SKILL.md");
+      const skillDir = join(dirPath, entry);
+      const skillPath = join(skillDir, "SKILL.md");
       try {
         statSync(skillPath);
       } catch {
         continue; // Not a skill directory
       }
 
-      const content = readFileSync(skillPath, "utf-8");
-      const frontmatter = extractFrontmatter(content);
-      if (!frontmatter) {
-        console.warn(`[build-registry] ${entry}: no frontmatter found`);
-        continue;
+      // promptSignals source: prefer the routing.yaml sidecar (the L3
+      // "Compact + sidecar" layout) and fall back to SKILL.md frontmatter
+      // for any skill not yet migrated. Both feed the same parser, so the
+      // sweep is safe to run domain-by-domain.
+      const routingPath = join(skillDir, "routing.yaml");
+      let signalSource;
+      if (existsSync(routingPath)) {
+        signalSource = readFileSync(routingPath, "utf-8");
+      } else {
+        const content = readFileSync(skillPath, "utf-8");
+        const frontmatter = extractFrontmatter(content);
+        if (!frontmatter) {
+          console.warn(`[build-registry] ${entry}: no frontmatter found`);
+          continue;
+        }
+        signalSource = frontmatter;
       }
 
-      if (!frontmatter.includes("promptSignals:")) {
+      if (!signalSource.includes("promptSignals:")) {
         console.warn(`[build-registry] ${entry}: no promptSignals — skipping`);
         continue;
       }
 
-      const signals = parsePromptSignals(frontmatter);
+      const signals = parsePromptSignals(signalSource);
 
       // Validate: at least one phrase or allOf group
       if (signals.phrases.length === 0 && signals.allOf.length === 0) {

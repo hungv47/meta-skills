@@ -1,0 +1,30 @@
+# Routing signals for discover. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "what should we build"
+    - "help me think through"
+    - "i have an idea"
+    - "scope this"
+    - "what do we need"
+    - "clarify requirements"
+  allOf:
+    - [scope, definition]
+    - [clarify, requirements]
+  anyOf:
+    - "requirements"
+    - "idea"
+    - "scope"
+    - "clarify"
+    - "spec"
+    - "preflight"
+    - "assumptions"
+  noneOf:
+    - "market research"
+    - "competitive analysis"
+    - "competitor"
+    - "root cause"
+    - "metric decline"
+    - "why is"
+    - "diagnose"
+  minScore: 6

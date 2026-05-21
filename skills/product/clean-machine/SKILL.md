@@ -3,69 +3,10 @@ name: clean-machine
 description: "Audits and cleans a developer's machine — dotfolders, caches, language toolchains, and package-manager globals — with per-target classification, risk surfacing (auth, running processes, side effects), and explicit user confirmation before each deletion. Produces `.forsvn/artifacts/meta/records/machine-cleanup-*.md`. Not for cleaning code (use clean-code) or for triaging user files in Documents/Downloads (those need human review)."
 argument-hint: "[target: home | caches | runtimes | packages | all]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (slot 4 — structural; 6 golden rules + multi-agent architecture preserved in body per safety contract)
-      body_before: 368
-      body_after: 186
-      body_delta_pct: -49.5
-      note: body-only line counts (frontmatter excluded). 7 new refs (playbook, pre-dispatch-prompts, classification-vocabulary, tool-ownership-heuristics, anti-patterns, report-template, examples/full-machine-walkthrough). Triage body deleted (duplicate of Routing Rules). Classification Vocabulary + Tool Ownership Heuristics tables extracted to refs.
-promptSignals:
-  phrases:
-    - "clean up my machine"
-    - "clean my home directory"
-    - "free up disk space"
-    - "fresh start dev machine"
-    - "what's taking up space"
-    - "review every folder"
-    - "remove abandoned tools"
-    - "audit my dotfolders"
-    - "uninstall what i don't use"
-  allOf:
-    - [clean, home]
-    - [free, disk]
-    - [audit, machine]
-  anyOf:
-    - "home directory"
-    - "dotfolder"
-    - "dotfile"
-    - "disk space"
-    - "uninstall"
-    - "abandoned tools"
-    - "fresh start"
-    - "machine cleanup"
-  noneOf:
-    - "code review"
-    - "refactor"
-    - "documentation"
-  minScore: 6
-routing:
-  intent-tags:
-    - machine-cleanup
-    - dotfolder-audit
-    - cache-purge
-    - package-prune
-    - toolchain-removal
-    - disk-reclaim
-    - dev-machine-hygiene
-  position: horizontal
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/meta/records/machine-cleanup-*.md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: clean-code
-      when: "cleaning source code, not machine state"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: heavy
 ---
 
 # Machine Cleanup — Orchestrator

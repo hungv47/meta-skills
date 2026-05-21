@@ -3,67 +3,10 @@ name: clean-code
 description: "Audits and refactors existing code for readability, maintainability, and dead code removal without changing behavior. Produces `.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md` and applies fixes in-place. Not for diagnosing business problems (use diagnose) or writing documentation (use write-docs). For writing missing docs after cleanup, see write-docs."
 argument-hint: "[file or directory to clean]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "3.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (slot 2 — structural, 5 golden rules preserved in body per safety contract)
-      body_before: 296
-      body_after: 180
-      body_delta_pct: -39.1
-      note: body-only line counts (frontmatter excluded). 5 new refs (playbook, pre-dispatch-prompts, anti-patterns, report-template, examples/cleanup-walkthrough). Triage section deleted (triple-duplicate with Dispatch Protocol + Routing Rules). AI Slop Patterns body section deleted (already in references/ai-slop-patterns.md).
-promptSignals:
-  phrases:
-    - "dead code"
-    - "code audit"
-    - "refactor this"
-    - "clean up the code"
-    - "remove unused"
-    - "ai slop in code"
-  allOf:
-    - [code, cleanup]
-    - [dead, code]
-  anyOf:
-    - "refactor"
-    - "cleanup"
-    - "dead code"
-    - "unused"
-    - "bloat"
-  noneOf:
-    - "system design"
-    - "write documentation"
-  minScore: 6
-routing:
-  intent-tags:
-    - code-audit
-    - dead-code
-    - refactoring
-    - cleanup
-    - code-quality
-    - ai-slop-removal
-    - unused-assets
-    - production-waste
-    - shipping-bloat
-    - dead-assets
-  position: horizontal
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/meta/records/[date]-cleanup-[slug].md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: breakdown-tasks
-      when: "planning new features, not cleaning existing code"
-    - skill: write-docs
-      when: "need documentation, not code cleanup"
-  parallel-with:
-    - docs-writing
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Code Cleanup — Orchestrator

@@ -5,14 +5,14 @@
     "url": "https://github.com/hungv47"
   },
   "metadata": {
-    "description": "Agent Skills 2.0 — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 32 skills, single install. Verb-first naming with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
+    "description": "Agent Skills 2.0 — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 39 skills, single install. Verb-first naming with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
     "version": "2.0.0"
   },
   "plugins": [
     {
       "name": "meta-skills",
       "source": "./",
-      "description": "All 32 skills across meta (process), research, marketing, and product. /forsvn is the single front door. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now consolidated.",
+      "description": "All 39 skills across meta (process), research, marketing, and product. /forsvn is the single front door. Previously distributed as 4 separate plugins (research-skills, marketing-skills, product-skills, meta-skills) — now consolidated.",
       "category": "skills",
       "tags": [
         "multi-agent", "orchestration", "forsvn", "discover", "debate-panel", "run-eval-loop",

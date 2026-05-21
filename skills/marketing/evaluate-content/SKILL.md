@@ -1,92 +1,12 @@
 ---
 name: evaluate-content
-description: "Evaluates published organic content performance from real metrics (engagement breakdown, scroll/dwell, click-through, conversion, qualitative feedback) inside an existing eval loop. Scores text / image / carousel posts against the source write-social brief's hypothesis — one primary platform per cycle, secondary platforms as context. Produces `.forsvn/loops/[slug]/evals/[date]-cycle-N.md` and appends `results.tsv`. Requires an existing `/run-eval-loop` workspace; does not scaffold loops, generate copy, or run best-practice audits without measurement evidence. Short-form video is out of scope — defers to `evaluate-shortform`. Paid-ad performance is out of scope — use `evaluate-ad`."
+description: "Scores published organic content (text / image / carousel posts) from real performance metrics inside an existing eval loop — one primary platform per cycle. Use for post-publish review of an organic post against its write-social brief's hypothesis (engagement, save rate, dwell, click-through, conversion). Not for short-form video (use evaluate-shortform), paid-ad performance (use evaluate-ad), writing next-cycle copy (use write-social), or scaffolding the loop itself (use run-eval-loop)."
 argument-hint: "[loop slug or path] [primary-platform] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
-promptSignals:
-  phrases:
-    - "content eval"
-    - "evaluate content performance"
-    - "evaluate the post"
-    - "post performance"
-    - "did the content work"
-    - "engagement results"
-    - "score this post"
-    - "organic post results"
-    - "content cycle results"
-    - "save rate"
-    - "did the carousel land"
-    - "post-publish review"
-  allOf:
-    - [content, results]
-    - [post, performance]
-    - [engagement, score]
-    - [content, not, working]
-  anyOf:
-    - "engagement rate"
-    - "save rate"
-    - "share rate"
-    - "click-through"
-    - "dwell time"
-    - "qualitative feedback"
-    - "comments sentiment"
-    - "did the post land"
-  noneOf:
-    - "new social copy"
-    - "write a post"
-    - "content brief"
-    - "ad performance"
-    - "short-form video"
-  minScore: 6
-routing:
-  intent-tags:
-    - content-evaluation
-    - post-publish-content
-    - eval-loop-cycle
-    - engagement-quality-scoring
-    - primary-platform-scoring
-  position: evaluation
-  lifecycle: evaluation
-  produces:
-    - .forsvn/loops/[slug]/evals/[date]-cycle-N.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/strategy/*.md
-    - .forsvn/loops/[slug]/execution/*.md
-    - .forsvn/artifacts/mkt/copy/*.md
-    - .forsvn/artifacts/mkt/published-social/*/manifest.md
-    - brand/BRAND.md
-    - research/icp-research.md
-    - research/product-context.md
-  requires:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - measurement evidence for the current cycle
-    - primary-platform tag on the cycle
-  defers-to:
-    - skill: run-eval-loop
-      when: "no existing measurable loop workspace exists"
-    - skill: evaluate-shortform
-      when: "the content under evaluation is short-form video — that lane belongs to evaluate-shortform"
-    - skill: evaluate-ad
-      when: "the content is a paid ad placement, not organic content"
-    - skill: write-social
-      when: "the user needs new copy for next cycle (revised hook, reformatted post) rather than post-publish scoring"
-    - skill: publish-social
-      when: "the issue is distribution / scheduling / platform mix rather than content performance"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Content Eval — Orchestrator

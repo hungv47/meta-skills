@@ -1,70 +1,13 @@
 ---
 name: review-work
-description: "Post-implementation quality check via review-work review. Chain: Implement → Review (independent agent) → Resolve (if issues). Max 2 rounds. Auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use clean-code). Not for decision analysis (use debate-panel)."
+description: "Independent post-implementation review — an agent with no sunk-cost bias checks just-written code or an artifact against its requirements, then resolves the issues found (max 2 rounds). Use to verify a change before shipping, get a second opinion, or check what you missed; auto-triggers for security-sensitive and data-mutation code. Not for code refactoring (use clean-code) or decision analysis (use debate-panel)."
 argument-hint: "[code or artifact to verify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
-license: MIT
 metadata:
-  author: hungv47
   version: "1.1.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
-  refactor_history:
-    - refactored_at: 2026-05-16
-      refactored_for: implementation-roadmap v6 Phase 1E+ (body-diet + playbook + procedures extraction + chain hardening)
-      body_before: 436
-      body_after: 202
-      body_delta_pct: -53.7
-      note: body-only line counts (frontmatter excluded). Total file 503 → 270. Body slightly over the ≤200 soft target (202) — Step 4.5 locked decision #9 allows soft targets when load-bearing safety content (5 Critical Gates + auto-trigger + max-2-loops + self-regulation gate + Path A/B/C classification + 8-step execution skeleton) must stay verbatim in body.
-promptSignals:
-  phrases:
-    - "review this"
-    - "code review"
-    - "fresh eyes"
-    - "quality check"
-    - "check my work"
-    - "review my code"
-    - "review the code"
-  allOf:
-    - [review, code]
-    - [quality, check]
-  anyOf:
-    - "review"
-    - "verify"
-    - "fresh eyes"
-    - "post-implementation"
-    - "independent review"
-  noneOf:
-    - "debate"
-    - "discuss"
-    - "perspectives"
-    - "review the plan"
-    - "review the spec"
-    - "review the brief"
-    - "design review"
-    - "scope review"
-  minScore: 6
-routing:
-  intent-tags:
-    - verify
-    - review
-    - quality
-    - fresh-eyes
-  position: horizontal
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/meta/records/fresh-eyes-*.md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: clean-code
-      when: "user wants structural refactoring, not quality verification"
-    - skill: debate-panel
-      when: "user wants multi-perspective analysis of a decision, not code review"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Review Chain — Fresh-Eyes Post-Implementation Quality

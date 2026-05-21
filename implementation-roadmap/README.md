@@ -1,12 +1,24 @@
 ---
 title: Implementation Roadmap
-date: 2026-05-19
-status: complete
+date: 2026-05-20
+status: active
 ---
 
 # Implementation Roadmap
 
-No active program. Both planned programs are complete and archived under [`done/`](./done/).
+## v2.0-launch (active — drafted 2026-05-20)
+
+Final pre-launch pass: skill audit, frontmatter optimization, repo consolidation.
+Lives in [`v2.0-launch-2026-05-20/`](./v2.0-launch-2026-05-20/).
+
+- [`plan.md`](./v2.0-launch-2026-05-20/plan.md) — 3 workstreams, sequencing, acceptance
+- [`skill-audit.md`](./v2.0-launch-2026-05-20/skill-audit.md) — locked per-skill verdicts (39 skills)
+- [`ws2-frontmatter-spec.md`](./v2.0-launch-2026-05-20/ws2-frontmatter-spec.md) — executable "Compact + sidecar" frontmatter sweep
+- [`byo-engine.md`](./v2.0-launch-2026-05-20/byo-engine.md) — tool-agnostic production (Part A → WS2; Part B → v2.1)
+- [`vercel-adoptions.md`](./v2.0-launch-2026-05-20/vercel-adoptions.md) — 4 ideas from the Vercel deep-dive (Part A → v2.0; Part B → v2.1)
+- [`vercel-plugin-deep-dive-2026-05-21.md`](./vercel-plugin-deep-dive-2026-05-21.md) — source research on `vercel/vercel-plugin`
+
+Status: **WS2 complete + validated** (2026-05-21). All 39 skills swept to "Compact + sidecar" — `SKILL.md` frontmatter ~55→~10 lines, `promptSignals` relocated to per-skill `routing.yaml` sidecars, `routing.*` dropped, descriptions rewritten to spec shape (`publish-social` un-truncated 1494→631). `hooks/skill-registry.json` byte-identical pre/post, `test-router` 25/25, `sync-skill-support --check` green. Vercel Part A scripts shipped (`scripts/explain-skill-route.ts`, `scripts/verify-counts.ts` + shared `hooks/skill-router-core.mjs`); BYO Part A applied (`produce-*` apology-language reframe); router hook stale-path bug fixed; WS3 count-drift reconciled across `plugin.json`/`marketplace.json`/`CLAUDE.md`/`README.md` (all → 39); `marketing-foundations.md` wired into its 9 consumer skills. CHANGELOG entries added under `[Unreleased]`. **Remaining:** the 3 shared-ref content extractions (`confidence-labeling`, `evaluation-loop-rubric`, `production-pattern`) — deliberately deferred, executable spec preserved in `v2.0-launch-2026-05-20/skill-audit.md § execution mechanics`; and the WS3 release cut (CHANGELOG `[Unreleased]`→`[2.0.0]`, version bump, GitHub release, retire the 4 old repos) — operator-owned.
 
 ## execution-evaluation (completed + archived 2026-05-20)
 

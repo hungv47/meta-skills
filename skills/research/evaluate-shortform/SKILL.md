@@ -1,91 +1,12 @@
 ---
 name: evaluate-shortform
-description: "Closes the feedback loop for short-form video — scores published posts against the original brief and platform-intelligence references inside an existing marketing eval loop. Reads `<loop-slug>` + `<post-url>` + `<brief-path>` + the matching short-form-research catalog, runs a 4-dimension provisional rubric (v0.1, mandatory revision after cycle 2-3), writes a cycle report to `.forsvn/loops/[slug]/evals/[date]-cycle-N.md`, and appends `results.tsv`. Not for pre-publish brief authoring (use brief-shortform in marketing-skills). Not for catalog discovery (use research-shortform). Cycle 1 weights observation 70 / scoring 30 to avoid overfitting on a single calibration pair."
+description: "Closes the feedback loop for short-form video — scores a published post against its original brief and the matching short-form platform-intelligence catalog on a 4-dimension rubric, then logs a falsifiable pattern entry to the eval loop. Use to review a post after publishing, check whether a brief survived contact with the platform, or run an eval cycle inside an existing loop. Not for pre-publish brief authoring (use brief-shortform) or catalog discovery (use research-shortform). Needs an existing loop workspace — for that, see run-eval-loop."
 argument-hint: "<loop-slug> <post-url> <brief-path>"
 allowed-tools: Read Grep Glob Bash WebFetch Write
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.50-1.50"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, mixed-classification eval skill)
-      body_before: 293
-      body_after: 154
-      body_delta_pct: -47.4
-      note: |
-        Body-only line counts (frontmatter excluded). Cross-stack contract preserved
-        BYTE-IDENTICAL (consumed by future short-form-research re-runs + gap-gate analysis):
-          - 5 Critical Gates
-          - 4 Quality Gate rubrics
-          - Output Artifact Structure (frontmatter spec + 7 body sections)
-          - Completion Status verdicts
-        Agent Manifest + Layer 1/2 dispatch tables semantics unchanged.
-        references/rubric.md (the v0.1 provisional rubric) + platform-intelligence/
-        unchanged. Post-write side effects (append-loop-result.ts + manifest-sync.ts)
-        preserved.
-        Bulk movement to refs:
-          - Philosophy → playbook
-          - Cold/Warm prompts → procedures/pre-dispatch
-          - Layer 1/2 spawn tables + Dispatch Protocol + Critic Routing + Chain Position
-            + Skill Deference + post-write side effects → procedures/dispatch-mechanics
-          - Format Conventions (date/URL/citation/score/pattern-block) → ref
-          - Anti-Patterns → ref (expanded from 7 bullets to 15-row table)
-promptSignals:
-  phrases:
-    - "score this post"
-    - "evaluate the post"
-    - "post-publish review"
-    - "did the brief work"
-    - "short-form eval"
-    - "eval cycle"
-    - "feedback loop"
-  allOf:
-    - [eval, post]
-    - [score, brief]
-  anyOf:
-    - "post vs brief"
-    - "did it land"
-    - "eval cycle"
-    - "feedback loop"
-    - "post-publish"
-  noneOf:
-    - "long-form"
-    - "blog post"
-    - "podcast"
-  minScore: 5
-routing:
-  intent-tags:
-    - eval
-    - feedback
-    - post-publish
-    - short-form
-  position: feedback-loop
-  lifecycle: evaluation
-  produces:
-    - .forsvn/loops/[slug]/evals/[date]-cycle-N.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - short-form-brief output (the per-asset brief that produced the post)
-    - .forsvn/artifacts/research/short-form-research/[slug].md (platform-intelligence references)
-    - published post URL or saved post data
-  requires: []
-  defers-to:
-    - skill: research-shortform
-      when: "no platform-intel catalog exists for the topic+market — eval against missing reference is meaningless"
-    - skill: brief-shortform
-      when: "user wants pre-publish brief authoring, not post-publish scoring"
-    - skill: run-eval-loop
-      when: "no existing marketing loop workspace exists for this short-form initiative"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Short-Form Eval — Orchestrator

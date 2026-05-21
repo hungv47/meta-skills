@@ -1,85 +1,12 @@
 ---
 name: research-market
-description: "Analyzes market landscapes, competitive dynamics, TAM/SAM/SOM sizing, and whitespace opportunities for a product or category. Produces `research/market-research.md`. Not for building customer personas (use research-icp) or planning marketing campaigns (use plan-campaign). For diagnosing a specific business problem, see diagnose. For prioritizing what to build from market data, see prioritize."
+description: "Analyzes market landscapes, competitive dynamics, TAM/SAM/SOM sizing, and whitespace opportunities for a product or category — every claim sourced, adjacent competitors checked, sizing shown with methodology. Use to position a product, survey a competitive field, scope a new market, or build the market section of a fundraising deck. Not for building customer personas (use research-icp) or planning marketing campaigns (use plan-campaign). For diagnosing a specific business problem, see diagnose; for prioritizing what to build from market data, see prioritize."
 argument-hint: "[market or product category]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-18
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, structural Strategy-entry skill — slot 8/8 research-stack FINAL; RESEARCH-STACK COMPLETE)
-      body_before: 523
-      body_after: 160
-      body_delta_pct: -69.4
-      note: |
-        Body-only line counts (frontmatter excluded). Cross-stack contract
-        preserved BYTE-IDENTICAL (full inventory in `references/playbook.md
-        § Refactor history`); consumed by prioritize (Top 3 Opportunities feed
-        Initiative evidence), system-architecture (competitive context informs
-        build-vs-buy), campaign-plan (positioning anchors), fundraising-deck
-        readers (sizing + landscape). Write-back 5-row map preserved verbatim
-        from original SKILL.md lines 131-139 (Q1 → product.md category;
-        Q2 → business.md geo+horizon; Q3 → goals.md trigger; Q4 → business.md
-        competitors; Q5 → audience.md B2B/B2C). NO canonical mirror (unlike
-        icp-research which mirrors Q1 to research/product-context.md;
-        market-research's cross-stack artifact is research/market-research.md
-        itself, produced by the dispatch arc — not Pre-Dispatch write-back).
-        Existing 3 data-catalog refs (competitor-analysis-framework,
-        gap-analysis-template, market-sizing-guide) untouched. 7 sub-agents
-        untouched — incl. canonical 11-item quality gate in critic-agent.md.
-        6 new refs: playbook + procedures/{pre-dispatch, dispatch-mechanics}
-        + format-conventions + anti-patterns + examples/market-walkthrough.
-        RESEARCH-STACK COMPLETE (8/8 — orchestrate-research, short-form-research,
-        short-form-eval, funnel-planner, prioritize, diagnose, icp-research,
-        market-research).
-promptSignals:
-  phrases:
-    - "market research"
-    - "competitive analysis"
-    - "market size"
-    - "tam sam som"
-    - "competitor analysis"
-    - "market landscape"
-  allOf:
-    - [market, landscape]
-    - [competitive, dynamics]
-  anyOf:
-    - "competitor"
-    - "market"
-    - "whitespace"
-    - "sizing"
-    - "tam"
-  noneOf:
-    - "customer persona"
-    - "buyer persona"
-  minScore: 6
-routing:
-  intent-tags:
-    - market-research
-    - competitive-analysis
-    - market-sizing
-    - tam-sam-som
-    - whitespace-analysis
-  position: pipeline
-  lifecycle: canonical
-  produces:
-    - research/market-research.md
-  consumes:
-    - research/product-context.md
-  requires: []
-  defers-to:
-    - skill: research-icp
-      when: "need audience personas, not market landscape"
-    - skill: diagnose
-      when: "diagnosing a specific metric decline, not surveying the market"
-  parallel-with:
-    - diagnose
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Market Research — Orchestrator

@@ -1,91 +1,12 @@
 ---
 name: evaluate-ad
-description: "Evaluates launched Meta ad performance from real metrics (CTR, CPA, ROAS, frequency, fatigue, spend, conversions) inside an existing eval loop. Audience-temperature-aware — one cycle per audience-temp (cold-traffic OR retargeting; never both in one cycle). Produces `.forsvn/loops/[slug]/evals/[date]-cycle-N.md` and appends `results.tsv`. Requires an existing `/run-eval-loop` workspace; does not scaffold loops, generate creative, or perform best-practice audits without measurement evidence. Meta-only at v1 (Google RSA / LinkedIn / TikTok Ads reserved for future expansion — same surface as write-ad)."
+description: "Scores launched Meta ad performance from real metrics (CTR, CPA, ROAS, frequency, fatigue, spend) as one cycle inside an existing eval loop — keep/discard/watch/blocked verdict, diagnosis, and a results-ledger row. Audience-temperature-aware: one cycle per audience-temp. Requires an eval-loop workspace; Meta-only at v1. Not for scaffolding loops (use run-eval-loop), writing new creative (use write-ad), channel-mix retrospectives (use plan-campaign), or campaign-level scoring (use evaluate-campaign)."
 argument-hint: "[loop slug or path] [audience-temp: cold-traffic|retargeting] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
-promptSignals:
-  phrases:
-    - "ad eval"
-    - "evaluate ad performance"
-    - "evaluate meta ad"
-    - "evaluate facebook ad"
-    - "ad results"
-    - "post-launch ad"
-    - "creative fatigue"
-    - "ad frequency"
-    - "ROAS dropped"
-    - "CPA going up"
-    - "CTR is low"
-    - "should we kill this ad"
-    - "should we keep this creative"
-    - "cycle results for the ad"
-    - "ad campaign performance"
-  allOf:
-    - [ad, results]
-    - [ad, performance]
-    - [creative, fatigue]
-    - [ad, not, working]
-  anyOf:
-    - "CTR"
-    - "CPA"
-    - "ROAS"
-    - "frequency"
-    - "ad spend"
-    - "conversions"
-    - "ad fatigue"
-    - "creative fatigue"
-  noneOf:
-    - "new ad copy"
-    - "ad brief"
-    - "write an ad"
-    - "ad creative brief"
-  minScore: 6
-routing:
-  intent-tags:
-    - ad-evaluation
-    - post-launch-ad
-    - eval-loop-cycle
-    - creative-fatigue-analysis
-    - audience-temp-scoring
-  position: evaluation
-  lifecycle: evaluation
-  produces:
-    - .forsvn/loops/[slug]/evals/[date]-cycle-N.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/strategy/*.md
-    - .forsvn/loops/[slug]/execution/*.md
-    - .forsvn/artifacts/mkt/ad-copy/*.md
-    - brand/BRAND.md
-    - research/icp-research.md
-    - research/product-context.md
-  requires:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - measurement evidence for the current cycle
-    - audience-temp tag (cold-traffic OR retargeting) on the cycle
-  defers-to:
-    - skill: run-eval-loop
-      when: "no existing measurable loop workspace exists"
-    - skill: write-ad
-      when: "the user needs new creative for next cycle (revised hook, refreshed hero, new audience-temp framing) rather than post-launch scoring"
-    - skill: plan-campaign
-      when: "the issue is channel mix / budget allocation across paid+owned+earned rather than ad creative performance"
-    - skill: brief-landing-page
-      when: "low LP conversion is dragging ROAS down — the bottleneck is the page, not the ad"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Ad Eval — Orchestrator

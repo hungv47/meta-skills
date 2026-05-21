@@ -1,74 +1,13 @@
 ---
 name: clean-artifacts
-description: "Audits and grooms the .forsvn/artifacts/ artifact tree — classifies every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surfaces references and risk, and (in --apply mode) MOVES candidates to .forsvn/artifacts/.archive/[date]/ behind explicit per-category confirmation. Never deletes. Use when .forsvn/artifacts/ has gone junk-drawer, before a release, or when artifacts feel stale. Not for cleaning code (use clean-code) or machine state (use clean-machine)."
+description: "Audits and grooms the `.forsvn/artifacts/` tree — classifies every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surfaces references and risk, and on `--apply` archives candidates behind explicit per-category confirmation (moves to a dated archive, never deletes). Use when `.forsvn/artifacts/` has gone junk-drawer, before a release, or when artifacts feel stale. Not for cleaning code (use clean-code) or machine state (use clean-machine)."
 argument-hint: "[scope path | --dry-run | --apply | --threshold-days N]"
 allowed-tools: Read Grep Glob Bash Edit
 user-invocable: true
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.05-0.20"
-  refactor_history:
-    - refactored_at: 2026-05-16
-      refactored_for: implementation-roadmap v6 Phase 1E (body-diet + playbook ref + chain hardening)
-      body_before: 360
-      body_after: 161
-      body_delta_pct: -55.2
-      note: body-only line counts (frontmatter excluded). Total file 441 → 231.
-promptSignals:
-  phrases:
-    - "clean up .forsvn/artifacts"
-    - "clean up the artifacts"
-    - "groom the artifact tree"
-    - "archive stale artifacts"
-    - "prune .forsvn/artifacts"
-    - "tidy skill outputs"
-    - ".forsvn/artifacts is a junk drawer"
-    - "artifacts piling up"
-  allOf:
-    - [clean, artifacts]
-    - [prune, .forsvn/artifacts]
-    - [archive, stale]
-  anyOf:
-    - "clean-artifacts"
-    - "groom artifacts"
-    - "stale artifacts"
-    - "archive artifacts"
-    - ".forsvn/artifacts cleanup"
-  noneOf:
-    - "code review"
-    - "refactor"
-    - "machine cleanup"
-    - "free up disk"
-    - "uninstall"
-    - "dotfolder"
-  minScore: 6
-routing:
-  intent-tags:
-    - cleanup
-    - artifact-hygiene
-    - archive
-    - prune
-    - groom
-  position: horizontal
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/meta/records/[date]-cleanup-artifacts-*.md
-  consumes:
-    - .agents/manifest.json
-  requires: []
-  defers-to:
-    - skill: clean-machine
-      when: "user wants to clean dotfolders, caches, or package globals — not the project artifact tree"
-    - skill: clean-code
-      when: "user wants to refactor source code, not groom artifact files"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
-  side-effects:
-    - manifest-sync
 ---
 
 # Cleanup Artifacts — Orchestrator

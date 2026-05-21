@@ -1,67 +1,12 @@
 ---
 name: plan-campaign
-description: "Creates integrated marketing plans — channel strategy, positioning, content calendar, budget allocation, and go-to-market timelines. Produces `.forsvn/artifacts/mkt/campaign-plan.md`. Not for setting numeric targets (use plan-funnel). For SEO strategy, see seo. For landing-page architecture, see brief-landing-page."
+description: "Builds an integrated marketing plan — growth motion, messaging pillars, per-channel angles across all 9 channels, content calendar, budget allocation, and a phased go-to-market timeline. Use when you need a campaign strategy or GTM plan grounded in ICP research. Not for setting numeric funnel targets (use plan-funnel), search-channel strategy (use optimize-seo), or landing-page architecture (use brief-landing-page)."
 argument-hint: "[product or campaign to plan]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "8.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - version: "8.0.0 → 8.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 10/14"
-      note: "Body 470→~210 (-55%) + 5 new refs (playbook + format-conventions + procedures/pre-dispatch + procedures/dispatch-mechanics + examples/campaign-walkthrough) + new anti-patterns.md (5 from body + 4 cross-cutting marketing-stack rows). Structural: nested `### Artifact Template` under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches ad-copy slot 9 + copywriting slot 8 + cold-outreach slot 7 + humanize slot 6 + vn-tone slot 5 + short-form-brief slot 4 + seo slot 3). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "marketing plan"
-    - "campaign plan"
-    - "go to market"
-    - "channel strategy"
-    - "content calendar"
-    - "growth motion"
-    - "marketing strategy"
-  allOf:
-    - [marketing, plan]
-    - [channel, strategy]
-  anyOf:
-    - "campaign"
-    - "channel"
-    - "calendar"
-    - "gtm"
-    - "plg"
-    - "slg"
-  noneOf:
-    - "write copy"
-    - "headline"
-    - "tagline"
-  minScore: 6
-routing:
-  intent-tags:
-    - campaign-planning
-    - channel-strategy
-    - content-calendar
-    - go-to-market
-    - plg-channels
-    - slg-channels
-    - growth-motion
-    - 9-channel-map
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  consumes:
-    - product-context.md
-    - icp-research.md
-    - .forsvn/artifacts/meta/sketches/prioritize-*.md
-  requires: []
-  defers-to: []
-  parallel-with:
-    - brand-system
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # IMC Plan — Orchestrator
@@ -298,5 +243,6 @@ End-to-end Route B walkthrough (B2B SaaS async-first PM tool — PLG, 60 days, 5
 - **Example:** `references/examples/campaign-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{3d-angle-framework, channel-strategy, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `platform-channels.md` maps channel-agent to the `references/platform-intelligence/` catalog (§2/§3/§6) for Social-media channel execution briefs — D13.B.
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, clipping-and-live}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 6 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 11-row Quality Gate Checklist + 9-row Rewrite Routing + 4 Internal Consistency Checks.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

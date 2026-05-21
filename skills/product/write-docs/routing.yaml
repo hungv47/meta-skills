@@ -1,0 +1,31 @@
+# Routing signals for write-docs. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "write documentation"
+    - "write a readme"
+    - "api reference"
+    - "setup guide"
+    - "runbook"
+    - "document this"
+    - "release notes"
+    - "changelog entry"
+    - "what changed in this version"
+    - "write the release"
+  allOf:
+    - [write, documentation]
+    - [api, reference]
+  anyOf:
+    - "documentation"
+    - "readme"
+    - "docs"
+    - "guide"
+    - "runbook"
+    - "reference"
+    - "release notes"
+    - "changelog"
+  noneOf:
+    - "code cleanup"
+    - "refactor"
+    - "dead code"
+  minScore: 6

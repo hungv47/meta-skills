@@ -1,0 +1,25 @@
+# Routing signals for evaluate-shortform. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "score this post"
+    - "evaluate the post"
+    - "post-publish review"
+    - "did the brief work"
+    - "short-form eval"
+    - "eval cycle"
+    - "feedback loop"
+  allOf:
+    - [eval, post]
+    - [score, brief]
+  anyOf:
+    - "post vs brief"
+    - "did it land"
+    - "eval cycle"
+    - "feedback loop"
+    - "post-publish"
+  noneOf:
+    - "long-form"
+    - "blog post"
+    - "podcast"
+  minScore: 5

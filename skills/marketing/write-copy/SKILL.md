@@ -1,70 +1,12 @@
 ---
 name: write-copy
-description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and full-page section copy with rubric scoring, annotations, and ranked alternatives. Produces inline annotations or `.forsvn/artifacts/mkt/content/[slug].copy.md`. Not for editing AI-sounding text (use humanize). For brand voice guidelines, see create-brand. For landing-page architecture, see brief-landing-page."
+description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and full-page section copy — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Use to draft or critique landing-page and direct-response copy. Not for AI-sounding cleanup (use humanize), search/AI-citation optimization (use optimize-seo), brand voice guidelines (use create-brand), landing-page architecture (use brief-landing-page), social posts (use write-social), or paid-ad copy (use write-ad)."
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - version: "2.0.0 → 2.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 8/14"
-      note: "Body 538→211 (-61%) + 5 new refs (playbook + format-conventions + procedures/pre-dispatch + procedures/dispatch-mechanics + examples/copywriting-walkthrough) + new anti-patterns.md (5 orchestrator-level + 4 pipeline-level + 4 cross-cutting marketing-stack rows — baseline had only 5 trailing one-liners). Structural: `## Artifact Template` nested as `### Artifact Template` under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches cold-outreach slot 7 + humanize slot 6 + vn-tone slot 5 + short-form-brief slot 4 + seo slot 3). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "write copy"
-    - "headline"
-    - "tagline"
-    - "call to action"
-    - "write a headline"
-    - "hook line"
-    - "write a cta"
-  allOf:
-    - [write, copy]
-    - [craft, headline]
-  anyOf:
-    - "headline"
-    - "cta"
-    - "tagline"
-    - "hook"
-    - "persuasive"
-    - "ad copy"
-    - "long-form copy"
-  noneOf:
-    - "social media post"
-    - "blog post"
-    - "email campaign"
-    - "carousel"
-  minScore: 6
-routing:
-  intent-tags:
-    - write-copy
-    - evaluate-copy
-    - headline
-    - cta
-    - tagline
-    - landing-page-copy
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/content/[slug].copy.md
-  consumes:
-    - product-context.md
-    - icp-research.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  requires: []
-  defers-to:
-    - skill: humanize
-      when: "AI-sounding text needs cleanup"
-    - skill: optimize-seo
-      when: "optimizing for search/AI citations"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Copywriting — Orchestrator
@@ -277,5 +219,6 @@ End-to-end Route B walkthrough (StatusZero landing page — async standup replac
 - **Example:** `references/examples/copywriting-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{headline-formulas, page-sections, emotional-triggers, belief-disruption, lead-magnet-stack, research-workflow, discovery-story}.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical V/F/U rubric + trigger-density gate + Authenticity filter + re-dispatch routing table.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

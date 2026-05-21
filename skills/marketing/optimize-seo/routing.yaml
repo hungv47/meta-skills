@@ -1,0 +1,25 @@
+# Routing signals for optimize-seo. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "seo audit"
+    - "keyword research"
+    - "search ranking"
+    - "search optimization"
+    - "app store optimization"
+    - "aso"
+  allOf:
+    - [seo, audit]
+    - [keyword, research]
+  anyOf:
+    - "seo"
+    - "keyword"
+    - "ranking"
+    - "backlink"
+    - "search"
+    - "aso"
+    - "aeo"
+  noneOf:
+    - "landing page audit"
+    - "cro"
+  minScore: 6

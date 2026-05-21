@@ -1,79 +1,12 @@
 ---
 name: brief-landing-page
-description: "Generates a campaign-grade brief for a high-converting landing page or redesign — hypothesis, surface rhythm, section-by-section spec, asset slots, copy candidates, hand-off prompts, and built-in conversion-principles gate. Produces `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` ready to hand to Claude Design, a designer in Figma, or `brief-graphic` for per-asset spec. Not for post-launch CRO analysis from analytics/experiments (use evaluate-landing-page inside an eval-loop). Not for non-conversion pages like blogs or docs hubs (those use different rubrics). Not for spec'ing a single visual asset in isolation (use brief-graphic)."
+description: "Generates a campaign-grade brief for a high-converting landing page or redesign — hypothesis, surface rhythm, section-by-section spec, asset slots, copy candidates, hand-off prompts, and a built-in conversion-principles gate. Output is ready to hand to Claude Design, a Figma designer, or brief-graphic. Use when planning or redesigning a conversion page. Not for post-launch CRO analysis from analytics (use evaluate-landing-page in an eval-loop), non-conversion pages like blogs or docs hubs, or spec'ing a single visual asset (use brief-graphic)."
 argument-hint: "[page route or campaign name, e.g. '/pricing' or 'q3-launch-lp']"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$2-4"
-  refactor_history:
-    - version: "1.0.0 → 1.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 13/14 (largest in entire stack)"
-      note: "Body 677→338 (-50%, 339 lines saved) + 5 new refs (playbook, format-conventions with full 205-line artifact template byte-identical, anti-patterns NEW with 12 body + 4 cross-cutting, procedures/{pre-dispatch, dispatch-mechanics}). 338 vs ≤300 mixed structural+creative target by 38 — accepted overage for natural floor of 9-agent / 5-layer / 3-approval-gate skill (Approval Gate 1+2+3 presentation blocks ≈56 lines must stay as bullets per design-brief slot 11 byte-identical precedent). 9 existing agents + 7 data-catalog refs + conversion/ subdir UNCHANGED. Cross-stack contract preserved byte-identical (6 Critical Gates / Inputs / Output / dual-critic Quality Gate / Chain Position / 9-agent Manifest / 3-Route step lists / Hard gates / Pre-Dispatch 5 dimensions / 3 Approval Gate presentation blocks / Layer 5 critic verdict logic Cycle 1+Cycle 2 tables / 12-field artifact frontmatter / 14-section body structure / 4-tier Completion Status). Per-layer dispatch tables (Layer 1/1.5/2/3/3.5/4) EXTRACTED to dispatch-mechanics.md (body retains the per-layer description + sequential-not-parallel rule for Layer 3.5). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "page brief"
-    - "landing page brief"
-    - "landing page"
-    - "new landing page"
-    - "redesign brief"
-    - "lp brief"
-    - "campaign brief"
-    - "redesign /[a-z]+"
-  allOf:
-    - [page, brief]
-    - [landing, redesign]
-    - [draft, brief]
-  anyOf:
-    - "redesign"
-    - "page-brief"
-    - "lp-brief"
-    - "hero section"
-    - "page architecture"
-    - "section spec"
-  noneOf:
-    - "blog post"
-    - "docs page"
-    - "single asset"
-    - "audit"
-    - "cro audit"
-    - "analytics"
-    - "experiment results"
-    - "conversion rate"
-  minScore: 6
-routing:
-  intent-tags:
-    - landing-page-brief
-    - page-redesign-brief
-    - campaign-brief
-    - conversion-brief
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/lp-brief/[slug]/brief.md
-  consumes:
-    - brand/BRAND.md
-    - brand/DESIGN.md
-    - research/icp-research.md
-    - research/product-context.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  requires:
-    - brand/BRAND.md
-    - brand/DESIGN.md
-  defers-to:
-    - skill: brief-graphic
-      when: "spec'ing an individual asset slot from this brief in detail (per-asset graphic-design brief)"
-    - skill: create-brand
-      when: "no brand identity defined yet"
-    - skill: write-copy
-      when: "need craft-quality headline variation work in isolation"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: heavy
 ---
 
 # Landing Page Brief — Orchestrator
@@ -411,5 +344,6 @@ Most common in practice: ignoring sacred elements (Critical Gate 3 + Brand-voice
 - **Examples:** `references/examples.md` — Route A + Route B + Route C worked walkthroughs
 - **Domain catalogs** (loaded by agents at dispatch): `references/{conversion-principles, section-templates, surface-rhythm, hypothesis-rubric, handoff-formats, failure-modes}.md` + `references/conversion/` subdir (6 source files: core-principles, advanced-psychology, social-proof-trust, ux-design, testing-optimization, implementation-checklist)
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric, brand-system/*, design-brief/*}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `conversion-critic-agent.md` holds the canonical CP-01 → CP-13 scoring rubric + Cross-Cutting Checks + Scoring Patterns Per CP + Tier Excuses + Cycle Logic. `brand-voice-critic-agent.md` holds the canonical G1-G8b gates + Sacred Element Detection + Voice Forbidden Vocab Detection + Token Discipline + Envelope Math.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

@@ -1,0 +1,43 @@
+# Routing signals for brief-graphic. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "design brief"
+    - "graphic brief"
+    - "asset brief"
+    - "create graphic"
+    - "design asset"
+    - "social graphic"
+    - "ad creative"
+    - "og image"
+    - "hero image"
+    - "banner design"
+    - "carousel design"
+    - "thumbnail"
+    - "illustration brief"
+  allOf:
+    - [design, brief]
+    - [graphic, brief]
+    - [asset, brief]
+    - [create, graphic]
+    - [generate, image]
+  anyOf:
+    - "graphic"
+    - "illustration"
+    - "carousel"
+    - "banner"
+    - "thumbnail"
+    - "midjourney"
+    - "imagen"
+    - "dall-e"
+    - "claude design"
+    - "figma"
+    - "ad creative"
+  noneOf:
+    - "brand identity"
+    - "design system"
+    - "design tokens"
+    - "user flow"
+    - "wireframe"
+    - "landing page redesign"
+  minScore: 6

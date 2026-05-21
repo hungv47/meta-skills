@@ -1,93 +1,12 @@
 ---
 name: evaluate-campaign
-description: "Evaluates a launched multi-channel marketing campaign's performance from real metrics (reach, leads, revenue, CAC, channel breakdown) inside an existing eval loop. Scores the campaign as a whole against the source plan-campaign artifact's hypothesis — one cycle = the whole campaign, all channels, with a per-channel breakdown. Aggregate-only: does not re-score individual ads, posts, or landing pages. Produces `.forsvn/loops/[slug]/evals/[date]-cycle-N.md` and appends `results.tsv`. Requires an existing `/run-eval-loop` workspace; does not scaffold loops, plan campaigns, or run best-practice audits without measurement evidence. Single-ad performance defers to `evaluate-ad`; a single organic post to `evaluate-content`; a landing page to `evaluate-landing-page`; short-form video to `evaluate-shortform`."
+description: "Scores a launched multi-channel campaign from real metrics (reach, leads, revenue, CAC, channel breakdown) as one cycle inside an existing eval loop — graded against the source plan-campaign hypothesis with a keep/discard/watch/blocked verdict and per-channel breakdown. Aggregate-only: covers the whole campaign, all channels, in one cycle. Requires an eval-loop workspace. Not for scaffolding loops (use run-eval-loop), re-planning campaigns (use plan-campaign), or asset-level scoring — a single ad uses evaluate-ad, organic post evaluate-content, landing page evaluate-landing-page, short-form video evaluate-shortform."
 argument-hint: "[loop slug or path] [campaign name] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
-promptSignals:
-  phrases:
-    - "campaign eval"
-    - "evaluate campaign performance"
-    - "evaluate the campaign"
-    - "campaign results"
-    - "did the campaign work"
-    - "score this campaign"
-    - "campaign cycle results"
-    - "channel breakdown"
-    - "campaign CAC"
-    - "campaign retrospective"
-    - "post-launch campaign review"
-    - "did the launch land"
-  allOf:
-    - [campaign, results]
-    - [campaign, performance]
-    - [channel, breakdown]
-    - [campaign, not, working]
-  anyOf:
-    - "cost per acquisition"
-    - "CAC"
-    - "channel mix"
-    - "leads generated"
-    - "campaign revenue"
-    - "campaign ROI"
-    - "blended CAC"
-    - "did the campaign land"
-  noneOf:
-    - "new campaign plan"
-    - "plan a campaign"
-    - "campaign brief"
-    - "single ad performance"
-    - "one post results"
-  minScore: 6
-routing:
-  intent-tags:
-    - campaign-evaluation
-    - post-launch-campaign
-    - eval-loop-cycle
-    - channel-mix-scoring
-    - unit-economics-scoring
-  position: evaluation
-  lifecycle: evaluation
-  produces:
-    - .forsvn/loops/[slug]/evals/[date]-cycle-N.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/strategy/*.md
-    - .forsvn/loops/[slug]/execution/*.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-    - brand/BRAND.md
-    - research/icp-research.md
-    - research/product-context.md
-  requires:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - measurement evidence for the current cycle
-    - channel-rollup metrics for every channel the campaign ran on
-  defers-to:
-    - skill: run-eval-loop
-      when: "no existing measurable loop workspace exists"
-    - skill: plan-campaign
-      when: "the user needs a revised campaign plan or channel-mix strategy for next cycle rather than post-launch scoring"
-    - skill: evaluate-ad
-      when: "the operator wants a single paid ad scored — that is the asset-level lane, not the campaign aggregate"
-    - skill: evaluate-content
-      when: "the operator wants a single organic post scored — asset-level lane"
-    - skill: evaluate-landing-page
-      when: "the operator wants a single landing page scored — asset-level lane"
-    - skill: evaluate-shortform
-      when: "the operator wants a single short-form video scored — asset-level lane"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Campaign Eval — Orchestrator

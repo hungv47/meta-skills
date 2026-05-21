@@ -1,74 +1,12 @@
 ---
 name: run-eval-loop
-description: "Single scaffold and ledger entrypoint for measurable strategy -> execution -> evaluation cycles. Use when the user wants an eval-loop, autoresearch-style improvement loop, experiment ledger, campaign/content iteration system, or asks where to store strategy/execution/eval artifacts for a measurable initiative. Produces `.forsvn/loops/[slug]/program.md`, `context.md`, `results.tsv`, `learnings.md`, and strategy/execution/evals subfolders. Not a universal evaluator: route actual surface scoring to the relevant eval skill (e.g. short-form-eval, lp-eval; future ad-eval/email-eval/campaign-eval). Not for one-shot planning (use discover/task-breakdown) or multi-perspective debate (agents-panel)."
+description: "Scaffolds and maintains the workspace for a measurable strategy → execution → evaluation cycle — creates `.forsvn/loops/[slug]/` with program, context, a results ledger, and learnings. Use for an improvement loop, experiment ledger, or campaign/content iteration system tied to a metric. Routes surface scoring to the matching evaluate-* skill; not a universal evaluator. Not for one-shot planning (use discover or breakdown-tasks) or multi-perspective debate (use debate-panel)."
 argument-hint: "[measurable initiative name, e.g. 'pricing page conversion' or 'founder outbound sequence']"
 allowed-tools: Read Write Edit Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.20-0.80"
-promptSignals:
-  phrases:
-    - "eval loop"
-    - "evaluation scaffold"
-    - "eval scaffold"
-    - "autoresearch style"
-    - "improvement loop"
-    - "experiment ledger"
-    - "strategy execution evaluation"
-    - "loop workspace"
-    - "where should evals live"
-    - "create a loop"
-    - "measurable initiative"
-  allOf:
-    - [strategy, evaluation]
-    - [execution, evaluation]
-    - [measure, iterate]
-  anyOf:
-    - "keep discard"
-    - "results.tsv"
-    - "closed loop"
-    - "feedback loop"
-    - "performance loop"
-    - "campaign iteration"
-  noneOf:
-    - "code benchmark"
-    - "unit test"
-    - "model training"
-  minScore: 5
-routing:
-  intent-tags:
-    - measurable-loop
-    - artifact-system
-    - experiment-ledger
-    - feedback-loop
-  position: meta
-  lifecycle: loop
-  produces:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .agents/manifest.json
-    - .agents/artifact-index.md
-    - research/
-    - brand/
-    - architecture/
-    - .forsvn/experience/
-  requires: []
-  defers-to:
-    - skill: discover
-      when: "the initiative is still vague and no measurable surface can be named"
-    - skill: breakdown-tasks
-      when: "the user needs implementation tasks rather than an eval loop"
-    - skill: debate-panel
-      when: "the main need is a strategic debate, not loop setup"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Eval Loop — Orchestrator

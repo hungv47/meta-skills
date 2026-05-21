@@ -1,0 +1,25 @@
+# Routing signals for research-shortform. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "what's working on tiktok"
+    - "short-form trends"
+    - "reels research"
+    - "shorts research"
+    - "tiktok patterns"
+    - "viral hook research"
+  allOf:
+    - [short-form, research]
+    - [tiktok, hook]
+    - [reels, pattern]
+  anyOf:
+    - "trending sound"
+    - "hook archetype"
+    - "platform research"
+    - "what's hitting"
+  noneOf:
+    - "long-form"
+    - "youtube long"
+    - "podcast"
+    - "blog post"
+  minScore: 6

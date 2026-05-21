@@ -1,108 +1,12 @@
 ---
 name: prioritize
-description: "Brainstorms and prioritizes strategic solutions when the problem or goal is already clear — generates options, scores trade-offs, and recommends a path forward. Produces `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Not for diagnosing what the problem is (use diagnose) or engineering task lists (use breakdown-tasks). For setting numeric targets after prioritizing, see plan-funnel. For technical architecture of chosen initiatives, see architect-system."
+description: "Brainstorms strategic solutions when the problem or goal is already clear — generates initiatives, force-ranks them, scores trade-offs with evidence-backed ICE, and draws a cut line with kill criteria. Use when you know the problem and need to decide what to build or pursue first. Not for diagnosing what the problem is (use diagnose) or engineering task lists (use breakdown-tasks). For numeric targets after prioritizing, see plan-funnel; for technical architecture of chosen initiatives, see architect-system."
 argument-hint: "[problem or goal to solve]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-18
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, structural option-ranking skill)
-      body_before: 435
-      body_after: 112
-      body_delta_pct: -74.3
-      note: |
-        Body-only line counts (frontmatter excluded). Hard-gate semantics preserved
-        verbatim (diagnose-*.md missing → NEEDS_CONTEXT, no INTERVIEW substitute).
-        Cross-stack contract preserved BYTE-IDENTICAL (consumed by funnel-planner +
-        campaign-plan + system-architecture):
-          - 4 Critical Gates
-          - Frontmatter (skill, version, date, status)
-          - Phase 1 initiative format (### N. [Name] — Effort: S/M/L + Hypothesis +
-            Mechanic + Target Metric + Anti-generic check)
-          - Phase 2 Forced Ranking section
-          - ICE Scoring table column schema (Rank | Initiative | I | C | E | ICE |
-            Key Evidence) + differentiation rule
-          - Decisions table column schema (Initiative | Decision | Owner |
-            Target Metric (Baseline) | Kill Criteria)
-          - Cut line declaration mandatory line
-          - Next Step block (verbatim — downstream grep)
-          - Out-of-Scope Persistence file format (Decided / Context / Decision /
-            Revisit if) — preserved verbatim from original SKILL.md
-          - Completion Status verdicts
-        Agent Manifest + Route A/B semantics unchanged; mechanics extracted to ref.
-        6 existing data-catalog refs (ice-scoring-rubric, initiative-planning,
-        initiative-types, churn-playbook, churn-cancel-flow-templates,
-        churn-health-score-guide) untouched. 7 sub-agents (agents/) untouched.
-        Bulk movement to refs:
-          - Philosophy + ICE evidence rules + forced-ranking ceiling + ≤3 cut-line
-            philosophy + churn special case + unconventional-scan rationale +
-            when-NOT-to-use → playbook
-          - Hard-gate prompt + read order + Cold/Warm Start + constraint interview
-            + write-back map + staleness check → procedures/pre-dispatch
-          - Route Selection + Layer 1/1.5/2 spawn details + merge step + user
-            feedback gate + critic FAIL routing + single-agent fallback +
-            Out-of-Scope Persistence write-back + chain position + skill deference
-            → procedures/dispatch-mechanics
-          - Artifact Template (63 lines) + Phase 1 + Phase 2 + Decisions + Next Step
-            schema + Out-of-Scope file format + date/number/citation format →
-            format-conventions
-          - Worked Example (97 lines) → examples/prioritize-walkthrough
-          - Body Anti-Patterns (16 lines, 8 patterns) → anti-patterns (NEW —
-            extracted + expanded with detection + bad/good examples + agent
-            ownership)
-promptSignals:
-  phrases:
-    - "what to build first"
-    - "what should we build next"
-    - "which to build first"
-    - "prioritize initiatives"
-    - "ice score"
-    - "which solution"
-    - "strategic options"
-    - "rank the options"
-  allOf:
-    - [what, build, prioritize]
-    - [solution, prioritize]
-    - [initiative, rank]
-  anyOf:
-    - "prioritize"
-    - "ice"
-    - "initiative"
-    - "solution"
-    - "trade-off"
-  noneOf:
-    - "market research"
-    - "buyer persona"
-  minScore: 6
-routing:
-  intent-tags:
-    - prioritize
-    - prioritization
-    - ice-scoring
-    - initiative-planning
-    - strategic-options
-  position: pipeline
-  lifecycle: sketch
-  produces:
-    - .forsvn/artifacts/meta/sketches/prioritize-*.md
-  consumes:
-    - product-context.md
-    - market-research.md
-    - .forsvn/artifacts/meta/records/diagnose-*.md
-  requires: []
-  defers-to:
-    - skill: discover
-      when: "need to clarify HOW to build, not WHAT to pursue"
-    - skill: architect-system
-      when: "need technical design, not strategic prioritization"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Solution Design — Orchestrator

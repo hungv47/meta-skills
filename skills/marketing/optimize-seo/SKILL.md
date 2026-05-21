@@ -1,74 +1,12 @@
 ---
 name: optimize-seo
-description: "Audits and plans search visibility — keyword research, on-page optimization, technical SEO, link building strategy, and AI search optimization. Produces `.forsvn/artifacts/mkt/seo-[mode].md`. Not for landing-page construction/conversion brief work (use brief-landing-page) or writing copy (use write-copy)."
+description: "Audits and plans search visibility across six modes — technical SEO audit, AI/answer-engine optimization (AEO), programmatic SEO, competitor comparison pages, full SEO strategy, and app store optimization (ASO). Covers keyword research, on-page and technical fixes, link-building strategy, and structured data. Use to diagnose a traffic drop, plan search growth, or get found by AI search. Not for landing-page conversion brief work (use brief-landing-page) or writing the page copy (use write-copy)."
 argument-hint: "[url or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: deep
   estimated-cost: "$2-5"
-  refactor_history:
-    - version: "2.0.0 → 2.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 3/14"
-      note: "Body 558→165 (-70.4%) + 6 new refs. See references/playbook.md 'Refactor history' for full detail."
-promptSignals:
-  phrases:
-    - "seo audit"
-    - "keyword research"
-    - "search ranking"
-    - "search optimization"
-    - "app store optimization"
-    - "aso"
-  allOf:
-    - [seo, audit]
-    - [keyword, research]
-  anyOf:
-    - "seo"
-    - "keyword"
-    - "ranking"
-    - "backlink"
-    - "search"
-    - "aso"
-    - "aeo"
-  noneOf:
-    - "landing page audit"
-    - "cro"
-  minScore: 6
-routing:
-  intent-tags:
-    - seo-audit
-    - ai-seo
-    - programmatic-seo
-    - keyword-research
-    - search-optimization
-    - competitor-seo
-    - aso
-    - app-store-optimization
-    - marketplace-seo
-    - aeo
-    - agent-engine-optimization
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/seo-[mode].md
-    # mode = audit | ai | programmatic | competitor | aso
-  consumes:
-    - product-context.md
-    - icp-research.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  requires: []
-  defers-to:
-    - skill: write-copy
-      when: "need to write headlines/copy for SEO-targeted pages"
-    - skill: brief-landing-page
-      when: "building or evaluating landing pages for conversion, not search"
-  parallel-with:
-    - lp-brief
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # SEO — Orchestrator

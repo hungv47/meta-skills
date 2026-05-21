@@ -1,81 +1,13 @@
 ---
 name: discover
-description: "Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews (multi-round). Talk until we're clear, then build. Produces inline decisions; optionally saves spec.md or scope contract. Not for multi-perspective debate (use debate-panel). Not for decomposing work (use breakdown-tasks). Not for diagnosing a known metric decline or root-causing a problem (use diagnose)."
+description: "Conversational discovery that turns a vague idea, feature, or task into shared clarity — adapts from quick scoping (3-5 questions) to deep multi-round interviews, then produces inline decisions or an optional saved spec. Use to clarify requirements before building. Not for multi-perspective debate (use debate-panel), decomposing work (use breakdown-tasks), or diagnosing a metric decline (use diagnose)."
 argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
-license: MIT
 metadata:
-  author: hungv47
   version: "3.2.1"
   budget: fast
   estimated-cost: "$0.03-0.10"
-  refactor_history:
-    - refactored_at: 2026-05-16
-      refactored_for: implementation-roadmap v6 Phase 1E+ (body-diet + playbook + procedures extraction + chain hardening)
-      body_before: 611
-      body_after: 228
-      body_delta_pct: -62.7
-      note: body-only line counts (frontmatter excluded). Total file 696 → 307. Largest absolute body-line reduction in the v6 program (383 lines). Output formats / interview techniques / communication discipline / idea-critic dispatch / context-gathering / anti-patterns + edge cases all extracted to procedures/. 9 operator-playbooks + question-bank + example-contracts + idea-critic agent UNCHANGED.
-promptSignals:
-  phrases:
-    - "what should we build"
-    - "help me think through"
-    - "i have an idea"
-    - "scope this"
-    - "what do we need"
-    - "clarify requirements"
-  allOf:
-    - [scope, definition]
-    - [clarify, requirements]
-  anyOf:
-    - "requirements"
-    - "idea"
-    - "scope"
-    - "clarify"
-    - "spec"
-    - "preflight"
-    - "assumptions"
-  noneOf:
-    - "market research"
-    - "competitive analysis"
-    - "competitor"
-    - "root cause"
-    - "metric decline"
-    - "why is"
-    - "diagnose"
-  minScore: 6
-routing:
-  intent-tags:
-    - requirements
-    - interview
-    - spec-writing
-    - idea-clarification
-    - scope-definition
-    - clarify
-    - assumptions
-    - contract
-    - scope
-    - preflight
-  position: horizontal
-  lifecycle: spec
-  produces:
-    - .forsvn/artifacts/meta/specs/*.md
-  consumes:
-    - product-context.md
-    - .forsvn/artifacts/product/flow/*.md
-    - references/operator-playbooks/*.md
-  requires: []
-  defers-to:
-    - skill: diagnose
-      when: "diagnosing a metric decline, not clarifying a build spec"
-    - skill: architect-system
-      when: "spec is clear, need technical design"
-    - skill: debate-panel
-      when: "complex decision needs multi-perspective debate, not interview"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Discover — Conversational

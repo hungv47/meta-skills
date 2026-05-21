@@ -1,0 +1,30 @@
+# Routing signals for clean-artifacts. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "clean up .forsvn/artifacts"
+    - "clean up the artifacts"
+    - "groom the artifact tree"
+    - "archive stale artifacts"
+    - "prune .forsvn/artifacts"
+    - "tidy skill outputs"
+    - ".forsvn/artifacts is a junk drawer"
+    - "artifacts piling up"
+  allOf:
+    - [clean, artifacts]
+    - [prune, .forsvn/artifacts]
+    - [archive, stale]
+  anyOf:
+    - "clean-artifacts"
+    - "groom artifacts"
+    - "stale artifacts"
+    - "archive artifacts"
+    - ".forsvn/artifacts cleanup"
+  noneOf:
+    - "code review"
+    - "refactor"
+    - "machine cleanup"
+    - "free up disk"
+    - "uninstall"
+    - "dotfolder"
+  minScore: 6
