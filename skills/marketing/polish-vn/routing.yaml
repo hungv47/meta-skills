@@ -1,0 +1,21 @@
+# Routing signals for polish-vn. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "vietnamese"
+    - "tiếng việt"
+    - "polish vietnamese"
+    - "vn tone"
+    - "dịch sang tiếng việt"
+  allOf:
+    - [vietnamese, tone]
+  anyOf:
+    - "tiếng việt"
+    - "bro tone"
+    - "báo chí"
+    - "localization"
+  noneOf:
+    - "english copy"
+    - "humanize this"
+    - "translate"
+  minScore: 6

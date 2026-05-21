@@ -1,0 +1,28 @@
+# Routing signals for breakdown-tasks. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "break this down"
+    - "task list"
+    - "acceptance criteria"
+    - "sprint planning"
+    - "work breakdown"
+    - "decompose this"
+  allOf:
+    - [break, down, tasks]
+    - [task, list]
+  anyOf:
+    - "acceptance criteria"
+    - "sprint planning"
+    - "implementation order"
+    - "task dependencies"
+    - "decompose"
+  noneOf:
+    - "code review"
+    - "documentation"
+    - "system architecture"
+    - "user flow"
+    - "scope this"
+    - "what should we build"
+    - "fresh eyes"
+  minScore: 6

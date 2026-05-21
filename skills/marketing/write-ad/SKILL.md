@@ -1,81 +1,12 @@
 ---
 name: write-ad
-description: "Writes and evaluates Meta paid-ad copy — retargeting (warm audiences) and cold-traffic (subscription-app primary; cross-vertical with caveats). Audience-temperature-aware framing (warm-objection map vs cold-objection map), hard char-cap enforcement, policy/claim compliance, and 7-dimension rubric scoring. Produces `.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md` (+ `.rationale.md` + `.critic-score.md`). One artifact per audience-temp — run twice for campaigns spanning both. Meta-only at v1 (Google RSA / LinkedIn / TikTok Ads reserved for future expansion). Not for landing-page headlines (use write-copy). Not for cold-outreach DMs (use write-outreach). AI-sounding cleanup: humanize runs as terminal pass."
+description: "Writes and evaluates Meta paid-ad copy for retargeting (warm) and cold-traffic audiences — audience-temperature-aware framing, hard char-cap enforcement, policy/claim compliance, and 7-dimension rubric scoring. Use to draft primary text, headlines, and descriptions for Facebook/Instagram ads. Meta-only at v1. Not for landing-page headlines (use write-copy), cold-outreach DMs (use write-outreach), organic social posts (use write-social), or channel-mix strategy (use plan-campaign)."
 argument-hint: "[audience-temp + offer + creative-format, e.g. 'cold-traffic / 14-day trial / dedicated']"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$1-2"
-  refactor_history:
-    - version: "1.0.0 → 1.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 9/14"
-      note: "Body 516→185 (-64%) + 5 new refs (playbook + format-conventions + procedures/pre-dispatch + procedures/dispatch-mechanics + examples/ad-copy-walkthrough) + anti-patterns.md extended with §9 Orchestrator-Level (13 rows) + §10 Cross-Cutting marketing-stack (4 rows). Structural: `### Artifact Frontmatter (required)` nested as `### Artifact Template` under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches copywriting slot 8 + cold-outreach slot 7 + humanize slot 6 + vn-tone slot 5 + short-form-brief slot 4 + seo slot 3). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "ad copy"
-    - "meta ads"
-    - "facebook ads"
-    - "instagram ads"
-    - "paid social"
-    - "retargeting ads"
-    - "primary text"
-    - "ad headline"
-    - "creative copy"
-    - "ad creative"
-  anyOf:
-    - "meta ads"
-    - "facebook ads"
-    - "instagram ads"
-    - "paid ads"
-    - "retargeting"
-    - "ad copy"
-    - "primary text"
-  allOf:
-    - [write, ad]
-  noneOf:
-    - "google ads"
-    - "linkedin ads"
-    - "tiktok ads"
-    - "search ads"
-    - "youtube ads"
-  minScore: 6
-routing:
-  intent-tags:
-    - paid-ads
-    - meta-ads
-    - facebook-ads
-    - instagram-ads
-    - ad-copy
-    - retargeting-ads
-    - cold-traffic-ads
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md
-    - .forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].rationale.md
-    - .forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].critic-score.md
-  consumes:
-    - product-context.md
-    - icp-research.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-    - brand/BRAND.md
-  requires: []
-  defers-to:
-    - skill: write-copy
-      when: "need landing page headline, section copy, or tagline (not a paid-ad asset)"
-    - skill: plan-campaign
-      when: "need channel mix or campaign-level strategy across paid/owned/earned"
-    - skill: write-outreach
-      when: "outbound DM or email composition (not paid placement)"
-    - skill: brief-landing-page
-      when: "redesigning the landing page the ad clicks to"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Ad Copy — Orchestrator
@@ -260,5 +191,6 @@ End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day
 - **Example:** `references/examples/ad-copy-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{rubric, policy-floor, format-spec, examples, message-transmutation}.md`, `references/ad-intelligence/{meta-retargeting, meta-cold-traffic, creative-cadence}.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, copywriting-research-workflow}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 5 sub-agents in `agents/` — see Agent Manifest above. `critic.md` holds the canonical 7-dimension rubric; `format-checker.md` holds the hard-gate spec.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

@@ -1,92 +1,12 @@
 ---
 name: evaluate-landing-page
-description: "Evaluates a launched landing page from real performance evidence inside an existing eval loop. Use for post-launch CRO cycles with analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Produces `.forsvn/loops/[slug]/evals/[date]-cycle-N.md` and appends `results.tsv`. Requires an existing `/run-eval-loop` workspace; does not scaffold loops, redesign pages, or perform generic best-practice audits without measurement evidence."
+description: "Scores a launched landing page from real performance evidence inside an existing eval loop. Writes a cycle eval snapshot and appends the loop results ledger. Use for post-launch CRO cycles backed by analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Not for designing the next page brief or a redesign (use brief-landing-page), channel-strategy questions (use plan-campaign), generic best-practice audits without measurement evidence, or scaffolding the loop itself (use run-eval-loop)."
 argument-hint: "[loop slug or path] [page URL/route] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "0.1.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
-  refactor_history:
-    - version: "0.1.0 → 0.1.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 14/14 (FINAL marketing slot; v6 program COMPLETE)"
-      note: "Body 217→172 (-21%, 45 lines saved; 172 vs ≤200 structural target — 28 lines under target). 5 new refs (playbook, format-conventions with full evaluation artifact template byte-identical, anti-patterns NEW with 10 body-implicit + 4 cross-cutting incl. sibling-coordination with lp-brief, procedures/{pre-dispatch, dispatch-mechanics}). All 4 agents UNCHANGED. Cross-stack contract preserved byte-identical (6 Critical Gates / Responsibility Split / Inputs / Outputs / 4-agent Manifest / Read Order / Cold Start 5-question bundle / Dispatch 8-step / Evaluation Artifact Template 10-field frontmatter + 8 body sections + Evidence 6-column + Results Row 8-column / Results Row Discipline + append-loop-result.ts invocation / 4-tier Completion). Version stays at v0.1.0 — deliberate provisional-rubric signal. See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "landing page eval"
-    - "lp eval"
-    - "evaluate landing page performance"
-    - "evaluate landing page analytics"
-    - "post-launch cro"
-    - "conversion rate changed"
-    - "analyze landing page analytics"
-    - "landing page results"
-    - "should we keep this page change"
-    - "cycle results for landing page"
-    - "landing page isn't converting"
-    - "landing page is not converting"
-    - "page isn't converting"
-    - "page is not converting"
-    - "landing page performance"
-  allOf:
-    - [landing, analytics]
-    - [landing, conversion, rate]
-    - [page, results]
-    - [landing, not, converting]
-    - [landing, performance]
-  anyOf:
-    - "experiment results"
-    - "conversion data"
-    - "GA4"
-    - "heatmap"
-    - "session recording"
-    - "form funnel"
-    - "A/B test"
-    - "CRO"
-  noneOf:
-    - "new landing page"
-    - "landing page brief"
-    - "design brief"
-    - "single asset"
-  minScore: 6
-routing:
-  intent-tags:
-    - landing-page-evaluation
-    - post-launch-cro
-    - eval-loop-cycle
-    - conversion-analysis
-  position: evaluation
-  lifecycle: evaluation
-  produces:
-    - .forsvn/loops/[slug]/evals/[date]-cycle-N.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/learnings.md
-  consumes:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - .forsvn/loops/[slug]/results.tsv
-    - .forsvn/loops/[slug]/strategy/*.md
-    - .forsvn/loops/[slug]/execution/*.md
-    - brand/BRAND.md
-    - research/icp-research.md
-    - research/product-context.md
-  requires:
-    - .forsvn/loops/[slug]/program.md
-    - .forsvn/loops/[slug]/context.md
-    - measurement evidence for the current cycle
-  defers-to:
-    - skill: run-eval-loop
-      when: "no existing measurable loop workspace exists"
-    - skill: brief-landing-page
-      when: "the user needs the next page brief/redesign, not post-launch scoring"
-    - skill: plan-campaign
-      when: "the issue is channel strategy rather than landing-page evidence"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Landing Page Eval — Orchestrator

@@ -1,0 +1,23 @@
+# Routing signals for clean-code. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "dead code"
+    - "code audit"
+    - "refactor this"
+    - "clean up the code"
+    - "remove unused"
+    - "ai slop in code"
+  allOf:
+    - [code, cleanup]
+    - [dead, code]
+  anyOf:
+    - "refactor"
+    - "cleanup"
+    - "dead code"
+    - "unused"
+    - "bloat"
+  noneOf:
+    - "system design"
+    - "write documentation"
+  minScore: 6

@@ -1,0 +1,37 @@
+# Routing signals for write-social. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "write a tweet"
+    - "write a linkedin post"
+    - "tiktok caption"
+    - "reels caption"
+    - "shorts caption"
+    - "social post"
+    - "social copy"
+    - "social media copy"
+    - "hook variants"
+    - "write a hook"
+    - "post copy"
+    - "caption for"
+  allOf:
+    - [write, post]
+    - [write, caption]
+    - [social, copy]
+    - [social, media, copy]
+  anyOf:
+    - "tiktok"
+    - "reels"
+    - "shorts"
+    - "linkedin post"
+    - "tweet"
+    - "x post"
+    - "hook variant"
+    - "social hook"
+  noneOf:
+    - "ad copy"
+    - "email subject"
+    - "newsletter"
+    - "youtube video"
+    - "blog post"
+  minScore: 5

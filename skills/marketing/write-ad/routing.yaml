@@ -1,0 +1,31 @@
+# Routing signals for write-ad. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "ad copy"
+    - "meta ads"
+    - "facebook ads"
+    - "instagram ads"
+    - "paid social"
+    - "retargeting ads"
+    - "primary text"
+    - "ad headline"
+    - "creative copy"
+    - "ad creative"
+  anyOf:
+    - "meta ads"
+    - "facebook ads"
+    - "instagram ads"
+    - "paid ads"
+    - "retargeting"
+    - "ad copy"
+    - "primary text"
+  allOf:
+    - [write, ad]
+  noneOf:
+    - "google ads"
+    - "linkedin ads"
+    - "tiktok ads"
+    - "search ads"
+    - "youtube ads"
+  minScore: 6

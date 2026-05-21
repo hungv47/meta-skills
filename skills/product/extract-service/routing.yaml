@@ -1,0 +1,27 @@
+# Routing signals for extract-service. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "extract a service"
+    - "service layer"
+    - "repeated logic"
+    - "copy-pasted across handlers"
+    - "duplicated SDK calls"
+    - "shared operational logic"
+    - "extract this into a helper"
+    - "deduplicate the API calls"
+  allOf:
+    - [extract, service]
+    - [repeated, logic]
+    - [duplicated, callers]
+  anyOf:
+    - "extract-service"
+    - "service layer"
+    - "shared mechanics"
+    - "copy-pasted"
+    - "duplicated across"
+  noneOf:
+    - "dead code"
+    - "system design"
+    - "write documentation"
+  minScore: 6

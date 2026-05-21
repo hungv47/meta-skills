@@ -1,0 +1,37 @@
+# Routing signals for evaluate-content. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "content eval"
+    - "evaluate content performance"
+    - "evaluate the post"
+    - "post performance"
+    - "did the content work"
+    - "engagement results"
+    - "score this post"
+    - "organic post results"
+    - "content cycle results"
+    - "save rate"
+    - "did the carousel land"
+    - "post-publish review"
+  allOf:
+    - [content, results]
+    - [post, performance]
+    - [engagement, score]
+    - [content, not, working]
+  anyOf:
+    - "engagement rate"
+    - "save rate"
+    - "share rate"
+    - "click-through"
+    - "dwell time"
+    - "qualitative feedback"
+    - "comments sentiment"
+    - "did the post land"
+  noneOf:
+    - "new social copy"
+    - "write a post"
+    - "content brief"
+    - "ad performance"
+    - "short-form video"
+  minScore: 6

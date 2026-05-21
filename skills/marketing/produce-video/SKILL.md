@@ -1,74 +1,12 @@
 ---
 name: produce-video
-description: "Produces a multi-runtime export bundle for a short-form video from a brief-shortform artifact (or a hand-written video-brief matching the schema). Export-mode v1 — no rendering runtime is invoked. Always emits: a canonical runtime-agnostic `manifest.md`, per-shot prompt files under `scenes/`, a HyperFrames scaffold under `hyperframes/`, a Remotion scaffold under `remotion/`, and a `vercel-ai-cli.md` README for piping per-shot prompts through Vercel AI CLI / Hyx / Freepik / any image-gen tool the operator has installed. The operator picks the downstream runtime. Produces `.forsvn/artifacts/mkt/produced-videos/[slug]/{manifest.md,scenes/,hyperframes/,remotion/,vercel-ai-cli.md}`. Not for writing the brief itself (use brief-shortform). Not for rendering audio (TTS spec only — operator pipes through their own TTS tool). Not for publishing the rendered video (future publish-social)."
+description: "Turns a brief-shortform artifact (or a schema-matching video-brief) into a multi-runtime export bundle for a short-form video — a runtime-agnostic manifest, per-shot prompts, HyperFrames and Remotion scaffolds, and a CLI README. Tool-agnostic by design — emits scaffolds + prompts tuned for your chosen video engine; the stack holds no API keys and runs no render runtime. Use when a short-form brief exists and you need a production-ready bundle. Not for writing the brief itself (use brief-shortform) or publishing the rendered video (use publish-social)."
 argument-hint: "[brief-shortform slug or path] [--platforms tiktok,reels,...]"
 allowed-tools: Read Edit Write Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-2.00"
-promptSignals:
-  phrases:
-    - "produce video"
-    - "render video"
-    - "video manifest"
-    - "video from brief"
-    - "make the video"
-    - "build the video"
-    - "hyperframes scaffold"
-    - "remotion scaffold"
-    - "render-ready video"
-    - "video export bundle"
-  allOf:
-    - [produce, video]
-    - [render, video, brief]
-    - [video, manifest]
-  anyOf:
-    - "produce-video"
-    - "video render"
-    - "hyperframes export"
-    - "remotion export"
-    - "video scaffold"
-  noneOf:
-    - "short-form brief"
-    - "shoot brief"
-    - "publish"
-    - "evaluate"
-  minScore: 6
-routing:
-  intent-tags:
-    - video-production
-    - video-export
-    - render-handoff
-  position: production
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/manifest.md
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/scenes/[shot-id].md
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/hyperframes/scaffold.html
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/remotion/scaffold.tsx
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/vercel-ai-cli.md
-  consumes:
-    - .forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md
-    - .forsvn/artifacts/mkt/short-form-brief/[slug]/variants/[platform].md
-    - brand/BRAND.md
-    - brand/DESIGN.md
-  requires:
-    - brand/BRAND.md
-    - brand/DESIGN.md
-    - upstream brief-shortform artifact OR hand-written video-brief matching the schema
-  defers-to:
-    - skill: brief-shortform
-      when: "no short-form-brief artifact exists yet for the target video"
-    - skill: create-brand
-      when: "no brand tokens defined yet"
-    - skill: write-copy
-      when: "the copy to render on-screen is missing or weak"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Produce Video — Multi-Runtime Export Bundle Orchestrator
@@ -77,13 +15,13 @@ routing:
 
 **Core Question:** "Could any downstream runtime (HyperFrames / Remotion / Vercel AI CLI / Hyx / Freepik / a human editor) produce the right video from this bundle without a single follow-up question?"
 
-> v1 export-mode only — no rendering runtime is invoked. See [`references/format-conventions.md`](references/format-conventions.md) for the manifest + per-shot prompt + scaffold schemas. See [`references/video-brief-schema.md`](references/video-brief-schema.md) for the input contract.
+> Tool-agnostic by design — the stack emits the export bundle and holds no API keys; you run it through your own rendering runtime. See [`references/format-conventions.md`](references/format-conventions.md) for the manifest + per-shot prompt + scaffold schemas. See [`references/video-brief-schema.md`](references/video-brief-schema.md) for the input contract.
 
 ## Critical Gates — Read First
 
 Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns:
 
-1. **Export-mode floor.** v1 does NOT invoke HyperFrames render, `npx remotion render`, Vercel AI CLI, or any other runtime. The output is the bundle (manifest + scenes + scaffolds + README) — the operator runs it through their chosen runtime. If an upstream caller passes `--publish`, `--render`, or `--auto-run`, return `BLOCKED` with a one-line "render/publish modes deferred to v2" message. No silent fall-throughs.
+1. **Tool-agnostic by design.** This stack does not invoke HyperFrames render, `npx remotion render`, Vercel AI CLI, or any other runtime — by design, it holds no API keys. The output is the bundle (manifest + scenes + scaffolds + README) you run through your own runtime. If an upstream caller passes `--publish`, `--render`, or `--auto-run`, return `BLOCKED — this stack emits render-ready prompts; it does not call render engines. Run the emitted prompt through your engine.` No silent fall-throughs.
 2. **Schema-and-CTA compliance.** The canonical `manifest.md` must validate against `references/video-brief-schema.md` (all required fields, valid aspect, shot durations sum to total length). The CTA copy must appear verbatim in the final shot's `on_screen_text` AND the manifest's top-level `cta` field. Critic Gate 1 enforces.
 3. **Brand-mark fidelity.** No hallucinated logos. Every per-shot prompt cites brand assets from `brand/DESIGN.md` only — solid-color placeholder when an asset is missing, NEVER an invented logo. Critic Gate 2 enforces.
 4. **Caption-pace floor.** On-screen text density per shot ≤ 3 words per second of shot duration. Critic Gate 3 enforces. Falsifiable without rendering: `words(on_screen_text) ÷ duration_seconds ≤ 3.0`.
@@ -116,7 +54,7 @@ remotion/
 vercel-ai-cli.md            # README — how to pipe scenes/ through `npx ai` / `vercel ai`
 ```
 
-All 5 outputs always emitted. Operator picks the downstream runtime — skill never invokes one. Full template + field definitions: [`references/format-conventions.md`](references/format-conventions.md).
+All 5 outputs always emitted. You pick the downstream runtime — the stack never invokes one. Full template + field definitions: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Quality Gate
 
@@ -142,11 +80,11 @@ Critic FAIL on Gate 1 / 2 / 3 → re-dispatch prompt-author-agent with specific 
 | Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-shot prompt (visual + OST + voice spec) + HyperFrames scaffold + Remotion scaffold + vercel-ai-cli README; assembles the full bundle |
 | Critic | 2 (final) | `agents/critic-agent.md` | 4 dimensions: Schema-and-CTA / Brand-mark fidelity / Caption-pace / Narrative arc |
 
-v1 is intentionally lean: sequential prompt-author → critic. Mirrors D11 produce-asset pattern. Per-shot parallelism is a v2 surface (decision D14 sub-decision #4); narrative coherence in long videos is parked (brief 04 targets short-form).
+Intentionally lean: sequential prompt-author → critic. Mirrors the produce-asset pattern. Per-shot parallelism and long-video narrative coherence are out of scope — this skill targets short-form.
 
 ## Routing + Dispatch
 
-Single route in v1:
+Single route:
 
 ```
 ROUTE A (export-mode):
@@ -188,7 +126,7 @@ End with one status:
 - `DONE` — manifest + scenes/ + hyperframes/ + remotion/ + vercel-ai-cli.md written, critic PASS on all 4 gates
 - `DONE_WITH_CONCERNS` — bundle written; critic FAILed only on Gate 4 (narrative arc — soft) OR on a single secondary issue. Concerns pinned at top of manifest
 - `NEEDS_CONTEXT` — brief-shortform artifact missing AND no schema-compliant video-brief supplied; OR brand files missing; OR aspect/length not derivable from brief
-- `BLOCKED` — `--publish` / `--render` / `--auto-run` requested (deferred to v2); critic FAILed twice on Gate 1/2/3
+- `BLOCKED` — `--publish` / `--render` / `--auto-run` requested (this stack emits render-ready prompts; it does not call render engines — run the emitted prompt through your engine); critic FAILed twice on Gate 1/2/3
 
 ## Next Step
 

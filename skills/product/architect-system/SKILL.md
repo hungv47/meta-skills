@@ -3,68 +3,10 @@ name: architect-system
 description: "Designs technical blueprints — tech stack selection, database schema, API design, file structure, and deployment plan for a defined product or feature. Produces `architecture/system-architecture.md`. Not for unclear requirements (use discover) or task decomposition (use breakdown-tasks). For user journey mapping, see map-user-flow. For code quality after building, see review-work."
 argument-hint: "[product or feature to architect]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "3.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (slot 3 — structural; tech-decision logic stays in body, examples + templates to refs)
-      body_before: 328
-      body_after: 167
-      body_delta_pct: -49.0
-      note: body-only line counts (frontmatter excluded). 6 new refs (playbook, pre-dispatch-prompts, anti-patterns, report-template, dependency-classification, examples/saas-invoicing-walkthrough). "Two Modes of Operation" body deleted (duplicate of Routing Logic). 12-section Artifact Template extracted to report-template.md.
-promptSignals:
-  phrases:
-    - "system design"
-    - "tech stack"
-    - "database schema"
-    - "api design"
-    - "architecture design"
-    - "infrastructure plan"
-  allOf:
-    - [system, architecture]
-    - [tech, stack]
-  anyOf:
-    - "architecture"
-    - "schema"
-    - "api"
-    - "database"
-    - "infrastructure"
-    - "deployment"
-  noneOf:
-    - "user flow"
-    - "brand identity"
-    - "wireframe"
-  minScore: 6
-routing:
-  intent-tags:
-    - tech-stack
-    - database-schema
-    - api-design
-    - deployment-plan
-    - system-design
-    - infrastructure
-  position: pipeline
-  lifecycle: canonical
-  produces:
-    - system-architecture.md
-  consumes:
-    - product-context.md
-    - .forsvn/artifacts/meta/specs/*.md
-    - .forsvn/artifacts/meta/sketches/prioritize-*.md
-    - .forsvn/artifacts/product/flow/*.md  # reads every flow file in the directory
-  requires: []
-  defers-to:
-    - skill: discover
-      when: "requirements are unclear, need to interview first"
-    - skill: breakdown-tasks
-      when: "architecture is done, need to decompose into tasks"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # System Architecture Designer — Orchestrator

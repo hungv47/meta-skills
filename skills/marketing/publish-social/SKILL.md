@@ -1,85 +1,12 @@
 ---
 name: publish-social
-description: "Closes the third gap in brief 04's production trio. Consumes a write-social artifact (+ optional produce-asset / produce-video manifests) and emits an integration-aware bundle at `.forsvn/artifacts/mkt/published-social/[slug]/` — per-platform native draft + 4 scheduler-import files (Typefully JSON / Buffer CSV / Hootsuite CSV / generic CSV for Hushuy / Later / Publer / Sprout) + README. Auto-detects credentials at invocation: if `TYPEFULLY_API_KEY` (env var or `.forsvn/credentials/platforms.json`) is set, X-platform goes draft route via Typefully Draft API; otherwise all 9 platforms emit as scheduler-import + per-platform Markdown drafts. Operator never selects mode by hand. v1 covers 9 platforms (X / LinkedIn / Instagram / YouTube / TikTok / Facebook / Bluesky / Threads / Reddit) — 6 backed by the canonical platform-intelligence catalog (D13), 4 template-only until catalog expands. `--mode=publish` (D18) posts live to all 9 platforms behind a two-stage current-session confirmation gate (X via Typefully schedule-immediate; the 8 non-X via browser-automation Send); `--mode=draft` stages drafts (Typefully API for X, browser-automation for the 8). Auto-detect never resolves to publish — `--mode=publish` is explicit opt-in; add `--dry-run` to print the publish plan without posting. Not for writing the copy itself (use write-social upstream). Not for video / image generation (use produce-video / produce-asset upstream). Not for landing-page placement (out of brief 04 scope)."
+description: "Turns a write-social artifact (+ optional produce-asset / produce-video media manifests) into an integration-aware publishing bundle — per-platform native drafts plus scheduler-import files (Typefully JSON / Buffer, Hootsuite, generic CSV) and a README. Auto-detects credentials and picks the safest mode per platform; `--mode=publish` posts live behind a two-stage confirmation gate. Covers 9 platforms (X / LinkedIn / Instagram / YouTube / TikTok / Facebook / Bluesky / Threads / Reddit). Use to schedule, draft, or publish finished social copy. Not for writing the copy (use write-social), image or video generation (use produce-asset / produce-video), or landing-page placement."
 argument-hint: "[write-social slug or path]"
 allowed-tools: Read Edit Write Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "1.2.0"
   budget: standard
   estimated-cost: "$0.40-1.20"
-promptSignals:
-  phrases:
-    - "publish social"
-    - "publish to social"
-    - "schedule social"
-    - "post to platform"
-    - "draft tweets"
-    - "draft a thread"
-    - "schedule post"
-    - "publish-ready"
-    - "scheduler import"
-    - "Typefully draft"
-    - "Buffer import"
-    - "Hootsuite import"
-    - "post on X"
-    - "post on LinkedIn"
-    - "post on Instagram"
-  allOf:
-    - [publish, social]
-    - [schedule, post]
-    - [draft, tweet]
-    - [scheduler, import]
-  anyOf:
-    - "publish-social"
-    - "social publish"
-    - "Typefully"
-    - "Buffer"
-    - "Hootsuite"
-    - "schedule on"
-    - "draft on"
-  noneOf:
-    - "design system"
-    - "landing page"
-    - "ad copy"
-    - "image generation"
-  minScore: 6
-routing:
-  intent-tags:
-    - social-publishing
-    - scheduler-handoff
-    - integration-aware-draft
-  position: production
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/published-social/[slug]/manifest.md
-    - .forsvn/artifacts/mkt/published-social/[slug]/platforms/[platform].md
-    - .forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/typefully.json
-    - .forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/buffer.csv
-    - .forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/hootsuite.csv
-    - .forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/generic.csv
-    - .forsvn/artifacts/mkt/published-social/[slug]/README.md
-  consumes:
-    - .forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md
-    - .forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md
-    - .forsvn/artifacts/mkt/produced-videos/[slug]/manifest.md
-    - brand/BRAND.md
-  requires:
-    - upstream write-social artifact
-    - brand/BRAND.md
-  defers-to:
-    - skill: write-social
-      when: "no social copy artifact exists yet for the target platforms"
-    - skill: produce-asset
-      when: "carousel / image media is required but no produce-asset manifest exists"
-    - skill: produce-video
-      when: "video media is required (Reels / TikTok / Shorts / Threads-video) but no produce-video manifest exists"
-    - skill: create-brand
-      when: "brand/BRAND.md missing"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Publish Social — Integration-Aware Bundle Emitter

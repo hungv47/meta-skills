@@ -1,0 +1,31 @@
+# Routing signals for run-eval-loop. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "eval loop"
+    - "evaluation scaffold"
+    - "eval scaffold"
+    - "autoresearch style"
+    - "improvement loop"
+    - "experiment ledger"
+    - "strategy execution evaluation"
+    - "loop workspace"
+    - "where should evals live"
+    - "create a loop"
+    - "measurable initiative"
+  allOf:
+    - [strategy, evaluation]
+    - [execution, evaluation]
+    - [measure, iterate]
+  anyOf:
+    - "keep discard"
+    - "results.tsv"
+    - "closed loop"
+    - "feedback loop"
+    - "performance loop"
+    - "campaign iteration"
+  noneOf:
+    - "code benchmark"
+    - "unit test"
+    - "model training"
+  minScore: 5

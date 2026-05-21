@@ -1,83 +1,13 @@
 ---
 name: forsvn
-description: "The front door for the FORSVN agent stack. Classifies what you're trying to do, loads your shared product context and prior session state, asks ≤2 clarifying questions only when truly ambiguous, and either dispatches to the right skill or resumes a prior initiative. Branded exception to verb-first naming — this is the only skill that is a noun, because it's the operating system. Use when you don't know which skill to call, when you want to continue something you started, or when a vague ask needs to land somewhere concrete. Not a brainstorming chat — always produces a route, a dispatch, or a written artifact. Direct skill calls remain supported; this is the discovery surface, not a gatekeeper."
+description: "Front door for the FORSVN agent stack — classifies the request, loads shared product context and prior session state, then routes to the right skill or resumes a prior initiative. Use when you don't know which skill to call, want to continue something you started, or a vague ask needs to land somewhere concrete (\"where do I start\", \"what should I work on\", \"resume\", \"ship this\")."
 argument-hint: "[free-form ask, or 'resume', or empty for state summary]"
 allowed-tools: Read Grep Glob Bash Write Edit
 user-invocable: true
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: fast
   estimated-cost: "$0.02-0.08"
-promptSignals:
-  phrases:
-    - "where do i start"
-    - "what should i do"
-    - "which skill should i use"
-    - "what skill should i use"
-    - "i don't know"
-    - "help me"
-    - "continue"
-    - "resume"
-    - "pick up where i left off"
-    - "what was i working on"
-    - "launch this"
-    - "ship this"
-    - "/forsvn"
-  anyOf:
-    - "where do i start"
-    - "which skill"
-    - "what skill"
-    - "guide me"
-    - "i'm new"
-    - "help me launch"
-    - "help me ship"
-    - "what should i do next"
-    - "resume"
-    - "continue"
-  minScore: 3
-routing:
-  intent-tags:
-    - front-door
-    - intent-classifier
-    - resume
-    - cross-stack-orchestration
-  position: front-door
-  lifecycle: pipeline
-  produces:
-    - .forsvn/routing/last-session.md
-    - .forsvn/routing/history/*.md
-    - .forsvn/routing/initiatives.md
-    - .forsvn/context/product-context.md (autodraft on first run)
-  consumes:
-    - .forsvn/context/product-context.md
-    - .forsvn/experience/*.md
-    - .forsvn/routing/last-session.md
-    - .forsvn/artifacts/**/*.md
-    - .forsvn/loops/**/program.md
-    - .forsvn/evals/**/*.md
-    - brand/BRAND.md
-    - research/icp-research.md
-    - research/market-research.md
-    - architecture/system-architecture.md
-    - CLAUDE.md
-    - README.md
-  defers-to:
-    - skill: discover
-      when: "scope is genuinely unclear and needs a full discovery conversation"
-    - skill: debate-panel
-      when: "complex decision needs multiple perspectives"
-    - skill: breakdown-tasks
-      when: "spec or architecture exists and needs decomposition"
-    - skill: review-work
-      when: "implementation is done and needs an independent review"
-    - skill: run-eval-loop
-      when: "measurable initiative needs a strategy/execution/eval workspace"
-    - skill: clean-artifacts
-      when: ".forsvn/artifacts/ needs grooming"
-  interactive: true
-  estimated-complexity: low
 ---
 
 # /forsvn — Front Door
@@ -255,7 +185,7 @@ This skill is acceptance-tested against brief 01 § Acceptance Checks plus decis
 - `.forsvn/README.md` — state root contract
 - `implementation-roadmap/execution-evaluation/decisions.md` — Workstream A + B decisions (D1-D7)
 - `implementation-roadmap/execution-evaluation/brief-pack/01-foundation-forsvn-state.md` — full brief
-- [`references/chains/research.md`](references/chains/research.md) — research dispatch chain (absorbed from deleted `forsvn`)
-- [`references/chains/marketing.md`](references/chains/marketing.md) — marketing dispatch chain (absorbed from deleted `forsvn`)
-- [`references/chains/product.md`](references/chains/product.md) — product dispatch chain (absorbed from deleted `forsvn`)
-- [`references/chains/meta.md`](references/chains/meta.md) — process-skill dispatch (absorbed from deleted `forsvn`)
+- [`references/chains/research.md`](references/chains/research.md) — research dispatch chain (absorbed from deleted `orchestrate-*`)
+- [`references/chains/marketing.md`](references/chains/marketing.md) — marketing dispatch chain (absorbed from deleted `orchestrate-*`)
+- [`references/chains/product.md`](references/chains/product.md) — product dispatch chain (absorbed from deleted `orchestrate-*`)
+- [`references/chains/meta.md`](references/chains/meta.md) — process-skill dispatch (absorbed from deleted `orchestrate-*`)

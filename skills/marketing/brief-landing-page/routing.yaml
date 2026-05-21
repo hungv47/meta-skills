@@ -1,0 +1,33 @@
+# Routing signals for brief-landing-page. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "page brief"
+    - "landing page brief"
+    - "landing page"
+    - "new landing page"
+    - "redesign brief"
+    - "lp brief"
+    - "campaign brief"
+    - "redesign /[a-z]+"
+  allOf:
+    - [page, brief]
+    - [landing, redesign]
+    - [draft, brief]
+  anyOf:
+    - "redesign"
+    - "page-brief"
+    - "lp-brief"
+    - "hero section"
+    - "page architecture"
+    - "section spec"
+  noneOf:
+    - "blog post"
+    - "docs page"
+    - "single asset"
+    - "audit"
+    - "cro audit"
+    - "analytics"
+    - "experiment results"
+    - "conversion rate"
+  minScore: 6

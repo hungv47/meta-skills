@@ -1,70 +1,12 @@
 ---
 name: create-brand
-description: "Builds brand identity systems as three artifacts — BRAND.md (story, voice, positioning, archetype), DESIGN.md (AI-readable design system with palettes, tokens, components, motion), and ASSETS.md (per-platform production inventory with auto-scanned checkboxes for what's done vs. still needed). Not for writing marketing copy (use write-copy) or mapping user flows (use map-user-flow). For campaign planning, see plan-campaign. For audience research, see research-icp."
+description: "Builds a brand identity system as up to three artifacts — BRAND.md (story, voice, positioning, archetype), DESIGN.md (AI-readable design system: palettes, tokens, components, motion), and ASSETS.md (per-platform production inventory). Runs Quick Brand (MVP) or full brand-system. Use when defining or rebranding a product's identity, design tokens, or visual system. Not for marketing copy (use write-copy), user flows (use map-user-flow), campaign planning (use plan-campaign), or audience research (use research-icp)."
 argument-hint: "[product or brand to design]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "6.2.0"
   budget: deep
   estimated-cost: "$2-5"
-  refactor_history:
-    - version: "6.2.0 → 6.2.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 12/14"
-      note: "Body 644→~290 (-55%) + 5 new refs (playbook, format-conventions, anti-patterns NEW with 13 body + 4 cross-cutting, procedures/{pre-dispatch, dispatch-mechanics}, examples/brand-system-walkthrough). 18 existing data-catalog refs + 8 agents UNCHANGED. Cross-stack contract preserved byte-identical (Critical Gates / 13 BRAND.md + 13 DESIGN.md + 6 ASSETS.md + 4 cross-file Quality Gate / Agent-to-File Routing / 8-agent Manifest / Route A+B step lists / Pre-Dispatch 7 dimensions + 13-platform catalog / Layer 1+Merge+Layer 2 tables / Step 8.5 7-step projection + Step 9 3-path / 3-file Artifact Templates / 4-tier Completion Status). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "brand identity"
-    - "brand voice"
-    - "design system"
-    - "brand guidelines"
-    - "visual identity"
-    - "brand book"
-  allOf:
-    - [brand, identity]
-    - [design, system]
-  anyOf:
-    - "typography"
-    - "color system"
-    - "design tokens"
-    - "brand voice"
-    - "brand identity"
-    - "visual system"
-    - "design language"
-  noneOf:
-    - "landing page audit"
-    - "conversion rate"
-    - "asset brief"
-    - "single asset"
-  minScore: 6
-routing:
-  intent-tags:
-    - brand-identity
-    - design-tokens
-    - visual-system
-    - color-system
-    - typography-system
-    - brand-voice
-  position: pipeline
-  lifecycle: canonical
-  produces:
-    - brand/BRAND.md
-    - brand/DESIGN.md  # Route B (full) only. Quick Brand (Route A) produces BRAND.md only.
-    - brand/ASSETS.md  # Route B only. Production inventory projected from BRAND.md + DESIGN.md + declared platforms.
-  consumes:
-    - product-context.md
-  requires: []
-  defers-to:
-    - skill: map-user-flow
-      when: "need screen mapping, not brand identity"
-    - skill: write-copy
-      when: "need copy craft, not brand voice definition"
-  parallel-with:
-    - campaign-plan
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Brand Identity & Design System — Orchestrator
@@ -364,5 +306,6 @@ End-to-end Route B walkthrough (FinLit personal finance app, 3 platforms: iOS + 
 - **Domain catalogs** (loaded by agents at dispatch): `references/{brand-archetypes, brand-voice, visual-identity, token-architecture, token-templates, component-tokens, component-patterns, implementation-rules, platform-surfaces, typography-psychology, color-emotion, ai-slop-detection, paper-artboard-templates, artboard-generation, artifact-templates, assets-inventory}.md`
 - **Quality-bar examples:** `references/{example-brand, example-design}.md`
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 8 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 13 BRAND.md + 13 DESIGN.md + 4 cross-file gate checklist + 6-row Cross-Element Coherence Matrix + 7-dimension Scoring Rubric + 8-row Rewrite Routing table.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

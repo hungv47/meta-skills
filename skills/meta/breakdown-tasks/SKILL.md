@@ -1,71 +1,12 @@
 ---
 name: breakdown-tasks
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and implementation order for AI agents or engineers. Produces `.forsvn/artifacts/meta/tasks.md`. Not for clarifying unclear requirements (use discover) or designing architecture (use architect-system). For code quality checks after building, see review-work."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order, for AI agents or human engineers. Produces `.forsvn/artifacts/meta/tasks.md`. Use once requirements are clear and you need an execution plan. Not for clarifying unclear requirements (use discover) or designing architecture (use architect-system). For code review after building, see review-work."
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
-  refactor_history:
-    - refactored_at: 2026-05-16
-      refactored_for: implementation-roadmap v6 Phase 1E+ (body-diet + playbook + task-format extraction + chain hardening)
-      body_before: 398
-      body_after: 173
-      body_delta_pct: -56.5
-      note: body-only line counts (frontmatter excluded). Total file 477 → 242. Task Format schema (~130 lines) extracted to references/task-format.md; Worked Example to references/examples/decompose-walkthrough.md; Anti-Patterns to references/anti-patterns.md; Scope Modes section deleted (duplicated content already in Dispatch Protocol step 1 + Routing Rules table). Multi-Agent Architecture + Critical Gates + Single-Agent Fallback stay in body (load-bearing orchestration). Anti-Patterns body cite trimmed per fresh-eyes Issue 1.
-promptSignals:
-  phrases:
-    - "break this down"
-    - "task list"
-    - "acceptance criteria"
-    - "sprint planning"
-    - "work breakdown"
-    - "decompose this"
-  allOf:
-    - [break, down, tasks]
-    - [task, list]
-  anyOf:
-    - "acceptance criteria"
-    - "sprint planning"
-    - "implementation order"
-    - "task dependencies"
-    - "decompose"
-  noneOf:
-    - "code review"
-    - "documentation"
-    - "system architecture"
-    - "user flow"
-    - "scope this"
-    - "what should we build"
-    - "fresh eyes"
-  minScore: 6
-routing:
-  intent-tags:
-    - task-decomposition
-    - dependency-mapping
-    - acceptance-criteria
-    - sprint-planning
-    - work-breakdown
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/meta/tasks.md
-  consumes:
-    - system-architecture.md
-    - .forsvn/artifacts/meta/specs/*.md
-    - .forsvn/artifacts/product/flow/*.md
-  requires: []
-  defers-to:
-    - skill: discover
-      when: "requirements are unclear, need to clarify first"
-    - skill: architect-system
-      when: "architecture undefined, need technical design first"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Task Breakdown — Orchestrator

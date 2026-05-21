@@ -1,0 +1,26 @@
+# Routing signals for brief-shortform. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "short-form brief"
+    - "tiktok brief"
+    - "reels brief"
+    - "shorts brief"
+    - "video brief"
+    - "shoot brief"
+    - "storyboard"
+  allOf:
+    - [short-form, brief]
+    - [tiktok, plan]
+    - [reels, brief]
+  anyOf:
+    - "shot list"
+    - "hook variations"
+    - "video script"
+    - "production brief"
+  noneOf:
+    - "blog post"
+    - "newsletter"
+    - "long-form"
+    - "podcast"
+  minScore: 6

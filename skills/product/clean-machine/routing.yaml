@@ -1,0 +1,31 @@
+# Routing signals for clean-machine. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "clean up my machine"
+    - "clean my home directory"
+    - "free up disk space"
+    - "fresh start dev machine"
+    - "what's taking up space"
+    - "review every folder"
+    - "remove abandoned tools"
+    - "audit my dotfolders"
+    - "uninstall what i don't use"
+  allOf:
+    - [clean, home]
+    - [free, disk]
+    - [audit, machine]
+  anyOf:
+    - "home directory"
+    - "dotfolder"
+    - "dotfile"
+    - "disk space"
+    - "uninstall"
+    - "abandoned tools"
+    - "fresh start"
+    - "machine cleanup"
+  noneOf:
+    - "code review"
+    - "refactor"
+    - "documentation"
+  minScore: 6

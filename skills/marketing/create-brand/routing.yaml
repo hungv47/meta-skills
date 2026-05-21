@@ -1,0 +1,27 @@
+# Routing signals for create-brand. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "brand identity"
+    - "brand voice"
+    - "design system"
+    - "brand guidelines"
+    - "visual identity"
+    - "brand book"
+  allOf:
+    - [brand, identity]
+    - [design, system]
+  anyOf:
+    - "typography"
+    - "color system"
+    - "design tokens"
+    - "brand voice"
+    - "brand identity"
+    - "visual system"
+    - "design language"
+  noneOf:
+    - "landing page audit"
+    - "conversion rate"
+    - "asset brief"
+    - "single asset"
+  minScore: 6

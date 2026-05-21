@@ -1,62 +1,12 @@
 ---
 name: extract-service
-description: "Extracts repeated operational mechanics (SDK / API / file-system / network logic copy-pasted across handlers or actions) into a shared service layer — produces a stepwise migration plan, then applies it caller-by-caller with verification at each step. Produces `.forsvn/artifacts/product/extract-service/[date]-[slug].md`. Two-layer separation: Actions keep the why/when, the service layer holds the how. Not for behavioral cleanup or dead code (use clean-code) or designing a system from scratch (use architect-system). For a quality review after migrating, see review-work."
+description: "Extracts repeated operational mechanics (SDK, API, file-system, or network logic copy-pasted across handlers or actions) into a shared service layer — produces a stepwise migration plan, then applies it caller-by-caller with verification at each step. Use when the same \"how\" recurs across 2+ callers. Not for behavioral cleanup or dead code (use clean-code) or designing a system from scratch (use architect-system). For a quality review after migrating, see review-work."
 argument-hint: "[file or directory with the repeated logic]"
 allowed-tools: Read Edit Write Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-2"
-promptSignals:
-  phrases:
-    - "extract a service"
-    - "service layer"
-    - "repeated logic"
-    - "copy-pasted across handlers"
-    - "duplicated SDK calls"
-    - "shared operational logic"
-    - "extract this into a helper"
-    - "deduplicate the API calls"
-  allOf:
-    - [extract, service]
-    - [repeated, logic]
-    - [duplicated, callers]
-  anyOf:
-    - "extract-service"
-    - "service layer"
-    - "shared mechanics"
-    - "copy-pasted"
-    - "duplicated across"
-  noneOf:
-    - "dead code"
-    - "system design"
-    - "write documentation"
-  minScore: 6
-routing:
-  intent-tags:
-    - service-extraction
-    - structural-refactor
-    - deduplication
-    - service-layer
-    - caller-migration
-  position: horizontal
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/product/extract-service/[date]-[slug].md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: clean-code
-      when: "the ask is behavioral cleanup, dead code, or AI slop removal — not structural extraction of repeated mechanics"
-    - skill: architect-system
-      when: "designing a system or service from scratch, not refactoring existing code into layers"
-    - skill: review-work
-      when: "the migration is done and the operator wants a fresh-eyes quality review"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Extract Service — Service-Layer Extraction Orchestrator

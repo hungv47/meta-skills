@@ -1,75 +1,12 @@
 ---
 name: write-docs
-description: "Generates documentation from a codebase — READMEs, API references, setup guides, runbooks, architecture docs, ship logs, and release notes (CHANGELOG entries + GitHub Release bodies enforcing the agent-skills CHANGELOG convention) with consistent structure and terminology. Produces documentation files in the project. Ship log mode writes a plain-language product snapshot to research/product-context.md. Release-notes mode appends to CHANGELOG.md and optionally emits a GitHub Release body draft. Not for specifying what to build (use discover) or restructuring code (use clean-code). For task decomposition, see breakdown-tasks."
+description: "Generates documentation from a codebase — READMEs, API references, setup guides, runbooks, architecture docs, ship logs, and release notes (CHANGELOG entries and GitHub Release bodies) with consistent structure and terminology. Use to document an existing project, sync docs after code changes, or write release notes. Not for specifying what to build (use discover), restructuring code (use clean-code), or task decomposition (use breakdown-tasks)."
 argument-hint: "[codebase or project to document]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "3.2.0"
   budget: standard
   estimated-cost: "$0.10-0.40"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (slot 6 — mixed; 6 standard critical gates + multi-agent architecture preserved in body; 4 specialized routes extracted to modes/)
-      body_before: 452
-      body_after: 183
-      body_delta_pct: -59.5
-      note: body-only line counts (frontmatter excluded). 9 new refs (playbook, pre-dispatch-prompts, anti-patterns, report-template, examples/api-readme-walkthrough, modes/{sync,ship-log,release-notes,audit}). Routes C/D/E + audit mode extracted to per-mode refs.
-promptSignals:
-  phrases:
-    - "write documentation"
-    - "write a readme"
-    - "api reference"
-    - "setup guide"
-    - "runbook"
-    - "document this"
-    - "release notes"
-    - "changelog entry"
-    - "what changed in this version"
-    - "write the release"
-  allOf:
-    - [write, documentation]
-    - [api, reference]
-  anyOf:
-    - "documentation"
-    - "readme"
-    - "docs"
-    - "guide"
-    - "runbook"
-    - "reference"
-    - "release notes"
-    - "changelog"
-  noneOf:
-    - "code cleanup"
-    - "refactor"
-    - "dead code"
-  minScore: 6
-routing:
-  intent-tags:
-    - documentation
-    - readme
-    - api-reference
-    - setup-guide
-    - runbook
-    - ship-log
-    - product-context
-  position: horizontal
-  lifecycle: canonical
-  produces:
-    - product-context.md
-  consumes:
-    - product-context.md
-  requires: []
-  defers-to:
-    - skill: discover
-      when: "need a spec for what to build, not docs for what exists"
-    - skill: clean-code
-      when: "need code quality improvements, not documentation"
-  parallel-with:
-    - code-cleanup
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Technical Writer — Orchestrator

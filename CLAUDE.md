@@ -1,6 +1,6 @@
 ## Scope — In-Repo Skills Only
 
-When the user asks about "my skills," "our skills," or where to add a capability, the candidate set is **only the skills in this repo** under `skills/{meta,research,marketing,product}/`. 35 skills total.
+When the user asks about "my skills," "our skills," or where to add a capability, the candidate set is **only the skills in this repo** under `skills/{meta,research,marketing,product}/`. 39 skills total.
 
 Do **not** recommend or route to external skills (Impeccable, Vercel plugins, and other marketplace/plugin skills that appear in the available-skills list). They may be installed locally, but they are not part of this stack and are not the user's to edit. If a gap exists, propose either (a) enriching an existing in-repo skill or (b) a new in-repo skill that clears the Quality Standard bar — never "use the Impeccable `optimize` skill" or similar.
 
@@ -8,18 +8,18 @@ Exception: the user explicitly names an external skill and asks about it.
 
 ## Repository Structure
 
-Single repo. No submodules. All 35 skills live here, organized by domain:
+Single repo. No submodules. All 39 skills live here, organized by domain:
 
 ```
 meta-skills/
 ├── .claude-plugin/
 │   ├── marketplace.json    # single-plugin catalog (this repo IS the marketplace)
-│   └── plugin.json         # lists all 35 skill paths
+│   └── plugin.json         # lists all 39 skill paths
 ├── skills/
-│   ├── meta/         # 7 process-layer skills (discover, agents-panel, eval-loop, …)
-│   ├── research/     # 8 research skills (icp-research, market-research, diagnose, …)
-│   ├── marketing/    # 14 marketing skills (brand-system, copywriting, lp-brief, …)
-│   └── product/      # 6 product skills (user-flow, system-architecture, code-cleanup, …)
+│   ├── meta/         # 7 process-layer skills (forsvn, discover, debate-panel, …)
+│   ├── research/     # 7 research skills (research-icp, research-market, diagnose, …)
+│   ├── marketing/    # 19 marketing skills (create-brand, write-copy, brief-landing-page, …)
+│   └── product/      # 6 product skills (map-user-flow, architect-system, clean-code, …)
 ├── references/       # cross-stack canonical contracts (pre-dispatch, mode-resolver, manifest-spec, …)
 ├── scripts/          # manifest-sync, audit, marketplace-bump, portability, harness
 ├── hooks/            # user-prompt-submit skill-router (suggestion-only)

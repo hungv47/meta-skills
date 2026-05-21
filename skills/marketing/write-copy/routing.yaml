@@ -1,0 +1,28 @@
+# Routing signals for write-copy. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "write copy"
+    - "headline"
+    - "tagline"
+    - "call to action"
+    - "write a headline"
+    - "hook line"
+    - "write a cta"
+  allOf:
+    - [write, copy]
+    - [craft, headline]
+  anyOf:
+    - "headline"
+    - "cta"
+    - "tagline"
+    - "hook"
+    - "persuasive"
+    - "ad copy"
+    - "long-form copy"
+  noneOf:
+    - "social media post"
+    - "blog post"
+    - "email campaign"
+    - "carousel"
+  minScore: 6

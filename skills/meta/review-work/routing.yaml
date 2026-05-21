@@ -1,0 +1,30 @@
+# Routing signals for review-work. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "review this"
+    - "code review"
+    - "fresh eyes"
+    - "quality check"
+    - "check my work"
+    - "review my code"
+    - "review the code"
+  allOf:
+    - [review, code]
+    - [quality, check]
+  anyOf:
+    - "review"
+    - "verify"
+    - "fresh eyes"
+    - "post-implementation"
+    - "independent review"
+  noneOf:
+    - "debate"
+    - "discuss"
+    - "perspectives"
+    - "review the plan"
+    - "review the spec"
+    - "review the brief"
+    - "design review"
+    - "scope review"
+  minScore: 6
