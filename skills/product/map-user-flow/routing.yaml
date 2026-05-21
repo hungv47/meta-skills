@@ -1,0 +1,25 @@
+# Routing signals for map-user-flow. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "user flow"
+    - "screen flow"
+    - "journey map"
+    - "ux flow"
+    - "wireframe flow"
+    - "map the screens"
+  allOf:
+    - [user, flow]
+    - [screen, map]
+  anyOf:
+    - "flow"
+    - "journey"
+    - "wireframe"
+    - "screen"
+    - "ux"
+    - "transition"
+  noneOf:
+    - "brand identity"
+    - "api design"
+    - "database schema"
+  minScore: 6

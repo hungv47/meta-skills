@@ -696,6 +696,167 @@
       ],
       "minScore": 6
     },
+    "evaluate-ad": {
+      "phrases": [
+        "ad eval",
+        "evaluate ad performance",
+        "evaluate meta ad",
+        "evaluate facebook ad",
+        "ad results",
+        "post-launch ad",
+        "creative fatigue",
+        "ad frequency",
+        "ROAS dropped",
+        "CPA going up",
+        "CTR is low",
+        "should we kill this ad",
+        "should we keep this creative",
+        "cycle results for the ad",
+        "ad campaign performance"
+      ],
+      "allOf": [
+        [
+          "ad",
+          "results"
+        ],
+        [
+          "ad",
+          "performance"
+        ],
+        [
+          "creative",
+          "fatigue"
+        ],
+        [
+          "ad",
+          "not",
+          "working"
+        ]
+      ],
+      "anyOf": [
+        "CTR",
+        "CPA",
+        "ROAS",
+        "frequency",
+        "ad spend",
+        "conversions",
+        "ad fatigue",
+        "creative fatigue"
+      ],
+      "noneOf": [
+        "new ad copy",
+        "ad brief",
+        "write an ad",
+        "ad creative brief"
+      ],
+      "minScore": 6
+    },
+    "evaluate-campaign": {
+      "phrases": [
+        "campaign eval",
+        "evaluate campaign performance",
+        "evaluate the campaign",
+        "campaign results",
+        "did the campaign work",
+        "score this campaign",
+        "campaign cycle results",
+        "channel breakdown",
+        "campaign CAC",
+        "campaign retrospective",
+        "post-launch campaign review",
+        "did the launch land"
+      ],
+      "allOf": [
+        [
+          "campaign",
+          "results"
+        ],
+        [
+          "campaign",
+          "performance"
+        ],
+        [
+          "channel",
+          "breakdown"
+        ],
+        [
+          "campaign",
+          "not",
+          "working"
+        ]
+      ],
+      "anyOf": [
+        "cost per acquisition",
+        "CAC",
+        "channel mix",
+        "leads generated",
+        "campaign revenue",
+        "campaign ROI",
+        "blended CAC",
+        "did the campaign land"
+      ],
+      "noneOf": [
+        "new campaign plan",
+        "plan a campaign",
+        "campaign brief",
+        "single ad performance",
+        "one post results"
+      ],
+      "minScore": 6
+    },
+    "evaluate-content": {
+      "phrases": [
+        "content eval",
+        "evaluate content performance",
+        "evaluate the post",
+        "post performance",
+        "did the content work",
+        "engagement results",
+        "score this post",
+        "organic post results",
+        "content cycle results",
+        "save rate",
+        "did the carousel land",
+        "post-publish review"
+      ],
+      "allOf": [
+        [
+          "content",
+          "results"
+        ],
+        [
+          "post",
+          "performance"
+        ],
+        [
+          "engagement",
+          "score"
+        ],
+        [
+          "content",
+          "not",
+          "working"
+        ]
+      ],
+      "anyOf": [
+        "engagement rate",
+        "save rate",
+        "share rate",
+        "click-through",
+        "dwell time",
+        "qualitative feedback",
+        "comments sentiment",
+        "did the post land"
+      ],
+      "noneOf": [
+        "new social copy",
+        "write a post",
+        "content brief",
+        "ad performance",
+        "short-form video"
+      ],
+      "minScore": 6
+    },
     "evaluate-landing-page": {
       "phrases": [
         "landing page eval",
@@ -881,6 +1042,145 @@
         "english copy",
         "humanize this",
         "translate"
+      ],
+      "minScore": 6
+    },
+    "produce-asset": {
+      "phrases": [
+        "produce asset",
+        "render asset",
+        "generate image",
+        "asset from brief",
+        "make the asset",
+        "build the asset",
+        "render-ready prompt",
+        "image-gen prompt",
+        "asset manifest"
+      ],
+      "allOf": [
+        [
+          "produce",
+          "asset"
+        ],
+        [
+          "render",
+          "brief"
+        ],
+        [
+          "generate",
+          "image",
+          "brief"
+        ]
+      ],
+      "anyOf": [
+        "produce-asset",
+        "asset render",
+        "Midjourney prompt",
+        "DALL-E prompt",
+        "Imagen prompt",
+        "image generation prompt"
+      ],
+      "noneOf": [
+        "design brief",
+        "graphic brief",
+        "design system",
+        "publish"
+      ],
+      "minScore": 6
+    },
+    "produce-video": {
+      "phrases": [
+        "produce video",
+        "render video",
+        "video manifest",
+        "video from brief",
+        "make the video",
+        "build the video",
+        "hyperframes scaffold",
+        "remotion scaffold",
+        "render-ready video",
+        "video export bundle"
+      ],
+      "allOf": [
+        [
+          "produce",
+          "video"
+        ],
+        [
+          "render",
+          "video",
+          "brief"
+        ],
+        [
+          "video",
+          "manifest"
+        ]
+      ],
+      "anyOf": [
+        "produce-video",
+        "video render",
+        "hyperframes export",
+        "remotion export",
+        "video scaffold"
+      ],
+      "noneOf": [
+        "short-form brief",
+        "shoot brief",
+        "publish",
+        "evaluate"
+      ],
+      "minScore": 6
+    },
+    "publish-social": {
+      "phrases": [
+        "publish social",
+        "publish to social",
+        "schedule social",
+        "post to platform",
+        "draft tweets",
+        "draft a thread",
+        "schedule post",
+        "publish-ready",
+        "scheduler import",
+        "Typefully draft",
+        "Buffer import",
+        "Hootsuite import",
+        "post on X",
+        "post on LinkedIn",
+        "post on Instagram"
+      ],
+      "allOf": [
+        [
+          "publish",
+          "social"
+        ],
+        [
+          "schedule",
+          "post"
+        ],
+        [
+          "draft",
+          "tweet"
+        ],
+        [
+          "scheduler",
+          "import"
+        ]
+      ],
+      "anyOf": [
+        "publish-social",
+        "social publish",
+        "Typefully",
+        "Buffer",
+        "Hootsuite",
+        "schedule on",
+        "draft on"
+      ],
+      "noneOf": [
+        "design system",
+        "landing page",
+        "ad copy",
+        "image generation"
       ],
       "minScore": 6
     },
@@ -1155,6 +1455,45 @@
         "code review",
         "refactor",
         "documentation"
+      ],
+      "minScore": 6
+    },
+    "extract-service": {
+      "phrases": [
+        "extract a service",
+        "service layer",
+        "repeated logic",
+        "copy-pasted across handlers",
+        "duplicated SDK calls",
+        "shared operational logic",
+        "extract this into a helper",
+        "deduplicate the API calls"
+      ],
+      "allOf": [
+        [
+          "extract",
+          "service"
+        ],
+        [
+          "repeated",
+          "logic"
+        ],
+        [
+          "duplicated",
+          "callers"
+        ]
+      ],
+      "anyOf": [
+        "extract-service",
+        "service layer",
+        "shared mechanics",
+        "copy-pasted",
+        "duplicated across"
+      ],
+      "noneOf": [
+        "dead code",
+        "system design",
+        "write documentation"
       ],
       "minScore": 6
     },

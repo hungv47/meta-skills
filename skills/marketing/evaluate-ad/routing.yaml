@@ -1,0 +1,39 @@
+# Routing signals for evaluate-ad. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "ad eval"
+    - "evaluate ad performance"
+    - "evaluate meta ad"
+    - "evaluate facebook ad"
+    - "ad results"
+    - "post-launch ad"
+    - "creative fatigue"
+    - "ad frequency"
+    - "ROAS dropped"
+    - "CPA going up"
+    - "CTR is low"
+    - "should we kill this ad"
+    - "should we keep this creative"
+    - "cycle results for the ad"
+    - "ad campaign performance"
+  allOf:
+    - [ad, results]
+    - [ad, performance]
+    - [creative, fatigue]
+    - [ad, not, working]
+  anyOf:
+    - "CTR"
+    - "CPA"
+    - "ROAS"
+    - "frequency"
+    - "ad spend"
+    - "conversions"
+    - "ad fatigue"
+    - "creative fatigue"
+  noneOf:
+    - "new ad copy"
+    - "ad brief"
+    - "write an ad"
+    - "ad creative brief"
+  minScore: 6

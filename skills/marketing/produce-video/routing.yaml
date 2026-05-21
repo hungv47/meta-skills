@@ -1,0 +1,30 @@
+# Routing signals for produce-video. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "produce video"
+    - "render video"
+    - "video manifest"
+    - "video from brief"
+    - "make the video"
+    - "build the video"
+    - "hyperframes scaffold"
+    - "remotion scaffold"
+    - "render-ready video"
+    - "video export bundle"
+  allOf:
+    - [produce, video]
+    - [render, video, brief]
+    - [video, manifest]
+  anyOf:
+    - "produce-video"
+    - "video render"
+    - "hyperframes export"
+    - "remotion export"
+    - "video scaffold"
+  noneOf:
+    - "short-form brief"
+    - "shoot brief"
+    - "publish"
+    - "evaluate"
+  minScore: 6

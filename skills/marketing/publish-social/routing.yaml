@@ -1,0 +1,38 @@
+# Routing signals for publish-social. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "publish social"
+    - "publish to social"
+    - "schedule social"
+    - "post to platform"
+    - "draft tweets"
+    - "draft a thread"
+    - "schedule post"
+    - "publish-ready"
+    - "scheduler import"
+    - "Typefully draft"
+    - "Buffer import"
+    - "Hootsuite import"
+    - "post on X"
+    - "post on LinkedIn"
+    - "post on Instagram"
+  allOf:
+    - [publish, social]
+    - [schedule, post]
+    - [draft, tweet]
+    - [scheduler, import]
+  anyOf:
+    - "publish-social"
+    - "social publish"
+    - "Typefully"
+    - "Buffer"
+    - "Hootsuite"
+    - "schedule on"
+    - "draft on"
+  noneOf:
+    - "design system"
+    - "landing page"
+    - "ad copy"
+    - "image generation"
+  minScore: 6

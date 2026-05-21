@@ -1,0 +1,29 @@
+# Routing signals for forsvn. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "where do i start"
+    - "what should i do"
+    - "which skill should i use"
+    - "what skill should i use"
+    - "i don't know"
+    - "help me"
+    - "continue"
+    - "resume"
+    - "pick up where i left off"
+    - "what was i working on"
+    - "launch this"
+    - "ship this"
+    - "/forsvn"
+  anyOf:
+    - "where do i start"
+    - "which skill"
+    - "what skill"
+    - "guide me"
+    - "i'm new"
+    - "help me launch"
+    - "help me ship"
+    - "what should i do next"
+    - "resume"
+    - "continue"
+  minScore: 3

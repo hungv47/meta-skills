@@ -1,68 +1,13 @@
 ---
 name: debate-panel
-description: "Multi-agent discussion rooms — debate or poll a problem from multiple perspectives. Standalone or invoked by other skills as a sub-routine. Mode=debate: N agents argue in rounds, converge. Mode=poll: N agents independently analyze, aggregate by consensus. Not for implementation (use architect-system). Not for verification (use review-work). For clarifying requirements first, see discover. For decomposing work after a decision, see breakdown-tasks."
+description: "Runs a problem through multiple expert perspectives via debate (agents argue in rounds and converge) or poll (agents analyze independently, then aggregate by consensus). Use to pressure-test a decision or trade-off with no clear winner. Standalone, or invoked by another skill as a sub-routine. Not for implementation (use architect-system) or code verification (use review-work)."
 argument-hint: "[problem or decision to analyze]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 user-invocable: true
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
-  refactor_history:
-    - refactored_at: 2026-05-16
-      refactored_for: implementation-roadmap v6 Phase 1E+ (body-diet + playbook + procedures extraction + chain hardening)
-      body_before: 310
-      body_after: 180
-      body_delta_pct: -41.9
-      note: body-only line counts (frontmatter excluded). Total file 382 → 244.
-promptSignals:
-  phrases:
-    - "debate this"
-    - "get perspectives"
-    - "discuss this from multiple angles"
-    - "pros and cons"
-    - "multiple viewpoints"
-  allOf:
-    - [multiple, perspective]
-  anyOf:
-    - "debate"
-    - "perspective"
-    - "consensus"
-    - "viewpoint"
-    - "panel"
-    - "multi-agent debate"
-  noneOf:
-    - "code review"
-    - "quality check"
-    - "task breakdown"
-    - "decompose"
-    - "scope this"
-  minScore: 6
-routing:
-  intent-tags:
-    - debate
-    - consensus
-    - perspectives
-    - multi-agent
-    - agents-panel
-    - discuss
-    - chatroom
-  position: horizontal
-  lifecycle: decision
-  produces:
-    - .forsvn/artifacts/meta/decisions/[date]-*.md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: review-work
-      when: "user wants to verify existing code/output quality, not analyze a decision"
-    - skill: architect-system
-      when: "user wants to design a system, not debate options"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Agent Room — Stochastic Multi-Agent Discussion

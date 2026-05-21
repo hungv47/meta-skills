@@ -1,0 +1,29 @@
+# Routing signals for diagnose. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "root cause"
+    - "why is"
+    - "what went wrong"
+    - "metric decline"
+    - "diagnose the problem"
+    - "what is causing"
+  allOf:
+    - [problem, diagnosis]
+    - [root, cause]
+  anyOf:
+    - "hypothesis"
+    - "logic tree"
+    - "metric decline"
+    - "metric drop"
+    - "performance gap"
+    - "diagnose"
+    - "if/then/because"
+  noneOf:
+    - "market size"
+    - "competitor analysis"
+    - "what should we build"
+    - "scope this"
+    - "clarify requirements"
+    - "i have an idea"
+  minScore: 6

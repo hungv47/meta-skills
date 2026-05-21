@@ -1,0 +1,26 @@
+# Routing signals for prioritize. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "what to build first"
+    - "what should we build next"
+    - "which to build first"
+    - "prioritize initiatives"
+    - "ice score"
+    - "which solution"
+    - "strategic options"
+    - "rank the options"
+  allOf:
+    - [what, build, prioritize]
+    - [solution, prioritize]
+    - [initiative, rank]
+  anyOf:
+    - "prioritize"
+    - "ice"
+    - "initiative"
+    - "solution"
+    - "trade-off"
+  noneOf:
+    - "market research"
+    - "buyer persona"
+  minScore: 6

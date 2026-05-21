@@ -1,0 +1,25 @@
+# Routing signals for research-icp. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "customer profile"
+    - "buyer persona"
+    - "target audience"
+    - "who is my customer"
+    - "ideal customer"
+    - "customer segment"
+  allOf:
+    - [audience, research]
+    - [customer, segment]
+  anyOf:
+    - "persona"
+    - "demographic"
+    - "psychographic"
+    - "jobs-to-be-done"
+    - "jtbd"
+    - "voc"
+  noneOf:
+    - "competitor analysis"
+    - "market size"
+    - "tam"
+  minScore: 6

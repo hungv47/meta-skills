@@ -1,78 +1,12 @@
 ---
 name: research-icp
-description: "Builds ideal customer profiles and buyer personas — analyzes demographics, pain points, jobs-to-be-done, and segmentation for a target market. Produces `research/icp-research.md`. Not for competitive positioning (use prioritize) or campaign planning (use plan-campaign). For brand identity from audience data, see create-brand. For market sizing and competitor landscape, see research-market."
+description: "Builds ideal customer profiles and buyer personas from real voice-of-customer evidence — analyzes demographics, pain points, jobs-to-be-done, decision psychology, and online habitat for a target market. Use to define who you're talking to before messaging, channel, or positioning work. Foundational: its output feeds 13+ downstream skills. Not for competitive positioning (use prioritize) or campaign planning (use plan-campaign). For brand identity from audience data, see create-brand; for market sizing and competitor landscape, see research-market."
 argument-hint: "[product or target market]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "3.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - refactored_at: 2026-05-18
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, creative-leaning audience-research skill — slot 7/8 research-stack)
-      body_before: 485
-      body_after: 162
-      body_delta_pct: -66.5
-      note: |
-        Body-only line counts (frontmatter excluded). Creative-leaning ref pattern
-        applied per stacks/research.md (synthesis side gated strictly, narrative
-        side framed as opinions/examples). Cross-stack contract preserved
-        BYTE-IDENTICAL (full inventory in `references/playbook.md § Refactor
-        history`); consumed by 13+ downstream skills (campaign-plan, brand-system,
-        copywriting, lp-brief, design-brief, ad-copy, cold-outreach,
-        short-form-research, short-form-brief, humanize, seo, social-copy,
-        vn-tone). Write-back 5-row map preserved verbatim — Q1 (Product) mirrors
-        to BOTH `experience/product.md` AND `research/product-context.md`
-        (load-bearing — icp-research IS the canonical producer of the cross-stack
-        product-context record). Existing 4 data-catalog refs + 7 sub-agents
-        untouched. 6 new refs: playbook + procedures/{pre-dispatch,
-        dispatch-mechanics} + format-conventions + anti-patterns + examples/
-        icp-walkthrough.
-promptSignals:
-  phrases:
-    - "customer profile"
-    - "buyer persona"
-    - "target audience"
-    - "who is my customer"
-    - "ideal customer"
-    - "customer segment"
-  allOf:
-    - [audience, research]
-    - [customer, segment]
-  anyOf:
-    - "persona"
-    - "demographic"
-    - "psychographic"
-    - "jobs-to-be-done"
-    - "jtbd"
-    - "voc"
-  noneOf:
-    - "competitor analysis"
-    - "market size"
-    - "tam"
-  minScore: 6
-routing:
-  intent-tags:
-    - audience-research
-    - voc-research
-    - persona-development
-    - customer-profiling
-  position: foundation
-  lifecycle: canonical
-  produces:
-    - research/product-context.md
-    - research/icp-research.md
-  consumes: []
-  requires: []
-  defers-to:
-    - skill: research-market
-      when: "need competitive landscape, not audience research"
-  parallel-with:
-    - market-research
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # ICP Research — Orchestrator

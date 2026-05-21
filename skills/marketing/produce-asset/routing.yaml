@@ -1,0 +1,30 @@
+# Routing signals for produce-asset. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "produce asset"
+    - "render asset"
+    - "generate image"
+    - "asset from brief"
+    - "make the asset"
+    - "build the asset"
+    - "render-ready prompt"
+    - "image-gen prompt"
+    - "asset manifest"
+  allOf:
+    - [produce, asset]
+    - [render, brief]
+    - [generate, image, brief]
+  anyOf:
+    - "produce-asset"
+    - "asset render"
+    - "Midjourney prompt"
+    - "DALL-E prompt"
+    - "Imagen prompt"
+    - "image generation prompt"
+  noneOf:
+    - "design brief"
+    - "graphic brief"
+    - "design system"
+    - "publish"
+  minScore: 6

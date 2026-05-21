@@ -1,61 +1,12 @@
 ---
 name: humanize
-description: "Strips AI patterns, injects brand voice, and compresses existing text so it reads human-written. Targets 15%+ word reduction with zero idea loss. Produces `.forsvn/artifacts/mkt/content/[slug].humanized.md`. Not for writing new copy (use write-copy). For brand voice reference, see create-brand. For SEO compliance, see seo."
+description: "Strips AI tells, injects brand voice, and compresses existing text so it reads human-written — targets 15%+ word reduction with zero idea loss, and can run a detector-resistance pass for high-stakes content. Use as a terminal polish pass on AI-drafted copy that sounds robotic or generic. Not for writing new copy from scratch (use write-copy); for brand voice of record, see create-brand."
 argument-hint: "[content file or text]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: standard
   estimated-cost: "$0.15-0.40"
-  refactor_history:
-    - version: "2.0.0 → 2.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 6/14"
-      note: "Body 545→230 (-57.8%) + 5 new refs (anti-patterns extracted). Structural: `## Artifact Template` nested as `### Artifact Template` under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches vn-tone slot 5; same pattern in short-form-brief slot 4 + seo slot 3). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "sounds like ai"
-    - "too robotic"
-    - "humanize this"
-    - "remove ai patterns"
-    - "make it sound human"
-    - "ai slop"
-  allOf:
-    - [ai, pattern]
-    - [sound, human]
-  anyOf:
-    - "humanize"
-    - "robotic"
-    - "ai-sounding"
-    - "compress"
-    - "voice injection"
-  noneOf:
-    - "brand identity"
-    - "design system"
-  minScore: 6
-routing:
-  intent-tags:
-    - humanize
-    - voice-injection
-    - ai-pattern-removal
-    - compression
-    - text-polish
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/content/[slug].humanized.md
-  consumes:
-    - product-context.md
-    - .forsvn/artifacts/mkt/content/[slug].md
-  requires: []
-  defers-to:
-    - skill: write-copy
-      when: "need to write new copy from scratch"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Humanize & Compress — Orchestrator

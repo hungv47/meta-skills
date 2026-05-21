@@ -1,68 +1,12 @@
 ---
 name: map-user-flow
-description: "Maps multi-step in-product flows — screens, decisions, transitions, platform-native touchpoints (dock, menu bar, widgets, notifications, Live Activity, etc.), edge cases, and error states for features or user journeys. Produces `.forsvn/artifacts/product/flow/<flow-name>.md` (one file per flow) plus an auto-generated `index.md` when ≥2 flows exist. Not for visual brand design (use create-brand) or landing-page architecture (use brief-landing-page). For technical architecture, see architect-system. For task decomposition, see breakdown-tasks."
+description: "Maps multi-step in-product flows — screens, decisions, transitions, platform-native touchpoints (dock, menu bar, widgets, notifications, Live Activity), edge cases, and error states for a feature or user journey. Use when designing or auditing a feature spanning multiple screens, states, or platforms. Not for visual brand design (use create-brand), landing-page architecture (use brief-landing-page), or technical architecture (use architect-system)."
 argument-hint: "[feature or flow to map]"
 allowed-tools: Read Grep Glob Bash
-license: MIT
 metadata:
-  author: hungv47
   version: "4.0.0"
   budget: standard
   estimated-cost: "$0.20-0.50"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (slot 5 — mixed; 7 Critical Gates + mandatory platforms+surfaces gate + multi-agent architecture preserved in body per safety contract)
-      body_before: 457
-      body_after: 195
-      body_delta_pct: -57.3
-      note: body-only line counts (frontmatter excluded). 5 new refs (playbook, pre-dispatch-prompts, anti-patterns, report-template, examples/checkout-walkthrough). Artifact Template (183 lines) was the largest single-section extraction in v6 program.
-promptSignals:
-  phrases:
-    - "user flow"
-    - "screen flow"
-    - "journey map"
-    - "ux flow"
-    - "wireframe flow"
-    - "map the screens"
-  allOf:
-    - [user, flow]
-    - [screen, map]
-  anyOf:
-    - "flow"
-    - "journey"
-    - "wireframe"
-    - "screen"
-    - "ux"
-    - "transition"
-  noneOf:
-    - "brand identity"
-    - "api design"
-    - "database schema"
-  minScore: 6
-routing:
-  intent-tags:
-    - user-flow
-    - screen-mapping
-    - ux-flow
-    - journey-mapping
-    - wireframe-flow
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/product/flow/[flow-name].md
-    - .forsvn/artifacts/product/flow/index.md  # auto-generated when ≥2 flows exist
-  consumes:
-    - product-context.md
-  requires: []
-  # brand/DESIGN.md and brand/BRAND.md are documented as Optional Artifacts in body — read if present, never gated.
-  defers-to:
-    - skill: create-brand
-      when: "need visual identity, not screen flows"
-    - skill: architect-system
-      when: "need technical API design, not user-facing flow"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # User Flow Design — Orchestrator

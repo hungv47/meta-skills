@@ -1,70 +1,12 @@
 ---
 name: brief-shortform
-description: "Produces production-ready briefs for short-form video — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length — covering live-action and motion-graphic production modes. Native cross-platform tailoring (1 hero + max 2 variants per invocation). Reads the matching `.forsvn/artifacts/research/short-form-research/[slug].md` catalog. Not for static visual (use brief-graphic), long-form video (parked), or paid ad creative (parked). For brand voice, see create-brand; for audience, see research-icp."
+description: "Produces production-ready briefs for short-form video — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length — covering live-action and motion-graphic modes, with cross-platform tailoring (1 hero + max 2 variants per run). Reads the matching short-form-research catalog. Use to turn a video angle into a shootable brief. Not for static visual assets (use brief-graphic), organic social copy (use write-social), or paid ad creative. Brand voice: see create-brand. Audience: see research-icp."
 argument-hint: "[angle or topic] [--platforms tiktok,reels,...] [--brand-mode founder|company]"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$2-4 (single platform) / $4-8 (1 hero + 2 variants)"
-  refactor_history:
-    - version: "1.0.0 → 1.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 4/14"
-      note: "Body 371→183 (-50.7%) + 5 new refs + anti-patterns.md extended with cross-cutting. Cross-stack contract preserved byte-identical. See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "short-form brief"
-    - "tiktok brief"
-    - "reels brief"
-    - "shorts brief"
-    - "video brief"
-    - "shoot brief"
-    - "storyboard"
-  allOf:
-    - [short-form, brief]
-    - [tiktok, plan]
-    - [reels, brief]
-  anyOf:
-    - "shot list"
-    - "hook variations"
-    - "video script"
-    - "production brief"
-  noneOf:
-    - "blog post"
-    - "newsletter"
-    - "long-form"
-    - "podcast"
-  minScore: 6
-routing:
-  intent-tags:
-    - short-form-brief
-    - video-brief
-    - production-brief
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md
-    - .forsvn/artifacts/mkt/short-form-brief/[slug]/variants/[platform].md
-  consumes:
-    - .forsvn/artifacts/research/short-form-research/[slug].md
-    - research/icp-research.md
-    - research/product-context.md
-    - brand/BRAND.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  requires: []
-  defers-to:
-    - skill: research-shortform
-      when: "no research artifact OR trend signals >30d stale OR mechanics >180d stale"
-    - skill: create-brand
-      when: "no BRAND.md and brand_mode cannot be inferred"
-    - skill: research-icp
-      when: "no audience context and no audience hint provided"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Short-Form Brief — Orchestrator
@@ -247,5 +189,6 @@ Two condensed reference briefs in different (market, brand_mode, platform) combi
 - **Domain catalogs** (loaded by craft agents at dispatch, not orchestrator): `references/{hook-archetypes, storyboard-grammar, caption-cta-rules, production-modes, success-criteria-templates, polish-chain}.md`
 - **Platform intelligence** (loaded by format-agent + platform-tailor-agent): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13)
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 4-sub-critic gate + 13-row Rewrite Routing Table.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

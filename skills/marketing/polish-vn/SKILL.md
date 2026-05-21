@@ -1,61 +1,12 @@
 ---
 name: polish-vn
-description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing). Fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and corporate translationese. Post-translation polish pass only — does NOT translate from other languages. For tone work on English/other languages, see humanize. Produces `.forsvn/artifacts/mkt/content/[slug].vn-tone.md`."
+description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing) — fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and corporate translationese. Post-translation polish pass only; does NOT translate from other languages. Use on translated Vietnamese copy that reads stiff or foreign. Not for tone work on English or other languages (use humanize), or writing new Vietnamese copy from scratch (use write-copy)."
 argument-hint: "[vietnamese text or file path] [--register bao-chi|semi-casual|bro|pop-marketing]"
 allowed-tools: Read Grep Glob Bash WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.08-0.20"
-  refactor_history:
-    - version: "1.0.0 → 1.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 5/14"
-      note: "Body 508→201 (-60.4%) + 5 new refs (anti-patterns extracted). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "vietnamese"
-    - "tiếng việt"
-    - "polish vietnamese"
-    - "vn tone"
-    - "dịch sang tiếng việt"
-  allOf:
-    - [vietnamese, tone]
-  anyOf:
-    - "tiếng việt"
-    - "bro tone"
-    - "báo chí"
-    - "localization"
-  noneOf:
-    - "english copy"
-    - "humanize this"
-    - "translate"
-  minScore: 6
-routing:
-  intent-tags:
-    - vietnamese-tone
-    - vn-polish
-    - localization-polish
-    - translation-artifact-removal
-    - vietnamese-register
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/content/[slug].vn-tone.md
-  consumes:
-    - .forsvn/artifacts/mkt/content/[slug].humanized.md
-    - .forsvn/artifacts/mkt/content/[slug].md
-  requires: []
-  defers-to:
-    - skill: humanize
-      when: "source text is in English and needs AI-pattern removal or voice injection first"
-    - skill: write-copy
-      when: "need to write new Vietnamese copy from scratch rather than polish translated text"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: low
 ---
 
 # Vietnamese Tone Polish — Orchestrator

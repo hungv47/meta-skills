@@ -1,84 +1,12 @@
 ---
 name: research-shortform
-description: "Discovers what's working right now on short-form video platforms (TikTok, Instagram Reels, YouTube Shorts; X video and LinkedIn video by opt-in) for a given topic and market. Produces a per-platform best-practice catalog at .forsvn/artifacts/research/short-form-research/[slug].md that short-form-brief consumes. Not for long-form video (parked) or static visual (use brief-graphic). For audience research, see research-icp; for campaign planning, see plan-campaign."
+description: "Discovers what's working right now on short-form video platforms (TikTok, Instagram Reels, YouTube Shorts; X and LinkedIn video by opt-in) for a given topic and market — mines hook archetypes, trending audio, and platform mechanics into a sourced per-platform catalog. Use before briefing short-form content, to find current viral patterns, or to refresh stale platform intelligence. Not for long-form video (parked) or static visuals (use brief-graphic). For audience research, see research-icp; for campaign planning, see plan-campaign."
 argument-hint: "[topic or angle]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch Write
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$3-6 (default 3 platforms) / $5-10 (--all)"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, mixed-classification skill)
-      body_before: 274
-      body_after: 145
-      body_delta_pct: -47.1
-      note: |
-        Body-only line counts (frontmatter excluded). Total file 332 → 220.
-        Cross-stack contract preserved BYTE-IDENTICAL (consumed by
-        marketing/short-form-brief + research/short-form-eval):
-          - 5 Critical Gates
-          - 5 Quality Gate rubrics
-          - Output Artifact Structure (frontmatter spec + 8 body sections)
-          - Completion Status verdicts
-        Agent Manifest (compacted Focus column wording but preserved all 6 agents
-        + layer assignments + file paths). Per-platform reference catalogs
-        (platforms/*.md) + scoring-rubrics.md + scout-protocol.md untouched.
-        Bulk movement to refs:
-          - Philosophy → playbook
-          - Cold/Warm prompts → procedures/pre-dispatch
-          - Layer 1/2 spawn tables + Dispatch Protocol mechanics + Critic Routing
-            + Chain Position + Skill Deference → procedures/dispatch-mechanics
-          - Format Conventions → ref
-          - Failure modes → anti-patterns
-promptSignals:
-  phrases:
-    - "what's working on tiktok"
-    - "short-form trends"
-    - "reels research"
-    - "shorts research"
-    - "tiktok patterns"
-    - "viral hook research"
-  allOf:
-    - [short-form, research]
-    - [tiktok, hook]
-    - [reels, pattern]
-  anyOf:
-    - "trending sound"
-    - "hook archetype"
-    - "platform research"
-    - "what's hitting"
-  noneOf:
-    - "long-form"
-    - "youtube long"
-    - "podcast"
-    - "blog post"
-  minScore: 6
-routing:
-  intent-tags:
-    - short-form-research
-    - platform-pattern-mining
-    - hook-research
-    - content-research
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/research/short-form-research/[slug].md
-  consumes:
-    - product-context.md
-    - icp-research.md
-  requires: []
-  defers-to:
-    - skill: research-icp
-      when: "no audience context exists yet — research without ICP underperforms"
-    - skill: research-market
-      when: "user wants competitive landscape, not platform pattern mining"
-  parallel-with:
-    - market-research
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Short-Form Research — Orchestrator

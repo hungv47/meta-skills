@@ -1,92 +1,12 @@
 ---
 name: plan-funnel
-description: "Models business funnels with numeric targets — works backward from revenue goals to required traffic, conversion rates, and unit economics. Produces `.forsvn/artifacts/meta/records/targets-*.md`. For campaign planning, see plan-campaign."
+description: "Models business funnels with numeric targets — works backward from a revenue goal to the required traffic, conversion rates, and unit economics, with every target carrying a baseline and justification. Use to set growth targets, model an LTV:CAC funnel, or check whether the numbers behind a plan actually work. Not for prioritizing what to build (use prioritize) or diagnosing a metric decline (use diagnose). For channel-level campaign planning, see plan-campaign."
 argument-hint: "[revenue target or business goal]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "4.0.0"
   budget: standard
   estimated-cost: "$0.30-0.80"
-  refactor_history:
-    - refactored_at: 2026-05-17
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 2 (body-diet + playbook ref + chain hardening, structural target-setting skill)
-      body_before: 382
-      body_after: 108
-      body_delta_pct: -71.7
-      note: |
-        Body-only line counts (frontmatter excluded). Hard-gate semantics preserved
-        verbatim (prioritize-*.md missing → NEEDS_CONTEXT, no INTERVIEW substitute).
-        Cross-stack contract preserved BYTE-IDENTICAL (consumed by campaign-plan +
-        future eval-loop dashboards):
-          - 6 Critical Gates
-          - Frontmatter (skill, version, date, status)
-          - Target Table column schema (8 columns)
-          - Channel → Funnel Stage Map schema (5 columns + 9-channel reference)
-          - Three-Outcome Validation table (Business/Brand/Community)
-          - Validation block (Anti-Patterns + 70% Test + LTV:CAC Check)
-          - Baselines paragraph (verbatim — downstream skills grep for the phrase)
-          - Completion Status verdicts
-        Agent Manifest + Route A/B/C semantics unchanged; mechanics extracted to ref.
-        5 existing data-catalog refs (benchmarks, funnel-models, stress-tests,
-        unit-economics, anti-patterns) untouched. 6 sub-agents (agents/) untouched.
-        Bulk movement to refs:
-          - Philosophy + improvement-factor table + 9-channel ref + when-NOT-to-use → playbook
-          - Hard-gate prompt + read order + Cold/Warm Start + write-back map + growth-motion ID + staleness check → procedures/pre-dispatch
-          - Route Selection + Layer 1/2 spawn details + merge step + critic gate routing + single-agent fallback + post-write side effects + chain position + skill deference → procedures/dispatch-mechanics
-          - Artifact Template (71 lines) + column schemas + date/number/citation/cycle-index format → format-conventions
-          - Worked Example (42 lines) → examples/funnel-planner-walkthrough
-          - Body Anti-Patterns (16 lines) → DELETED (already in comprehensive references/anti-patterns.md)
-promptSignals:
-  phrases:
-    - "funnel model"
-    - "model the funnel"
-    - "unit economics"
-    - "growth targets"
-    - "ltv cac"
-    - "revenue target"
-    - "how much traffic do we need"
-  allOf:
-    - [funnel, model]
-    - [growth, target]
-  anyOf:
-    - "ltv"
-    - "cac"
-    - "conversion rate"
-    - "revenue target"
-    - "traffic target"
-    - "growth model"
-    - "unit economics"
-  noneOf:
-    - "market size"
-    - "competitor"
-    - "what should we build"
-    - "diagnose"
-  minScore: 6
-routing:
-  intent-tags:
-    - funnel-modeling
-    - target-setting
-    - unit-economics
-    - growth-targets
-    - ltv-cac
-    - plg-funnel
-    - slg-funnel
-    - growth-motion
-  position: pipeline
-  lifecycle: snapshot
-  produces:
-    - .forsvn/artifacts/meta/records/targets-*.md
-  consumes:
-    - product-context.md
-    - .forsvn/artifacts/meta/sketches/prioritize-*.md
-  requires:
-    - .forsvn/artifacts/meta/sketches/prioritize-*.md
-  defers-to: []
-  parallel-with: []
-  interactive: false
-  estimated-complexity: medium
 ---
 
 # Funnel Planner — Orchestrator

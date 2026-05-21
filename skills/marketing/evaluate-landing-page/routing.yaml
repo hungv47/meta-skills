@@ -1,0 +1,40 @@
+# Routing signals for evaluate-landing-page. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "landing page eval"
+    - "lp eval"
+    - "evaluate landing page performance"
+    - "evaluate landing page analytics"
+    - "post-launch cro"
+    - "conversion rate changed"
+    - "analyze landing page analytics"
+    - "landing page results"
+    - "should we keep this page change"
+    - "cycle results for landing page"
+    - "landing page isn't converting"
+    - "landing page is not converting"
+    - "page isn't converting"
+    - "page is not converting"
+    - "landing page performance"
+  allOf:
+    - [landing, analytics]
+    - [landing, conversion, rate]
+    - [page, results]
+    - [landing, not, converting]
+    - [landing, performance]
+  anyOf:
+    - "experiment results"
+    - "conversion data"
+    - "GA4"
+    - "heatmap"
+    - "session recording"
+    - "form funnel"
+    - "A/B test"
+    - "CRO"
+  noneOf:
+    - "new landing page"
+    - "landing page brief"
+    - "design brief"
+    - "single asset"
+  minScore: 6

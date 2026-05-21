@@ -1,89 +1,12 @@
 ---
 name: write-social
-description: "Generates platform-native social copy (hooks, body, CTA, format spec) for tiktok, reels, shorts, x, linkedin. Enforces char/word limits, CTA placement vs algorithm truncation point, and hook archetype compliance. Produces .forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md. Not for ad-copy (paid-platform bidding/compliance), email-copy (subject lines, deliverability), or long-form articles (LinkedIn articles, Substack). For landing page copy use write-copy. For video brief + storyboard use brief-shortform."
+description: "Generates platform-native social copy (hooks, body, CTA, format spec) for tiktok, reels, shorts, x, linkedin. Enforces char/word limits, CTA placement vs algorithm truncation, and hook-archetype compliance. Use to draft organic social posts and hook variants for one platform per run. Not for paid-ad copy (use write-ad), landing-page copy (use write-copy), video briefs with storyboards (use brief-shortform), or long-form articles. Vietnamese polish: see polish-vn. AI-tell cleanup: see humanize."
 argument-hint: "<topic-or-brief-path> <platform> [--variants N] [--polish-chain humanize|vn-tone|none] [--goal awareness|engagement|click|save|share]"
 allowed-tools: Read Write Bash Grep Glob
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: standard
   estimated-cost: "$0.50-1.50"
-  refactor_history:
-    - refactored_at: 2026-05-18
-      refactored_for: implementation-roadmap v6 Phase 2 Wave 1 (marketing-stack slot 1)
-      body_before: 224
-      body_after: 156
-      body_delta_pct: -30.4
-      note: |
-        Creative-leaning ref pattern (stacks/marketing.md). Cross-stack contract
-        preserved byte-identical. Full inventory in `references/playbook.md
-        § Refactor history`.
-promptSignals:
-  phrases:
-    - "write a tweet"
-    - "write a linkedin post"
-    - "tiktok caption"
-    - "reels caption"
-    - "shorts caption"
-    - "social post"
-    - "social copy"
-    - "social media copy"
-    - "hook variants"
-    - "write a hook"
-    - "post copy"
-    - "caption for"
-  allOf:
-    - [write, post]
-    - [write, caption]
-    - [social, copy]
-    - [social, media, copy]
-  anyOf:
-    - "tiktok"
-    - "reels"
-    - "shorts"
-    - "linkedin post"
-    - "tweet"
-    - "x post"
-    - "hook variant"
-    - "social hook"
-  noneOf:
-    - "ad copy"
-    - "email subject"
-    - "newsletter"
-    - "youtube video"
-    - "blog post"
-  minScore: 5
-routing:
-  intent-tags:
-    - marketing
-    - copy
-    - social
-    - hook
-    - platform
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md
-  consumes:
-    - .forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-    - brand/BRAND.md
-    - brand/DESIGN.md
-  requires:
-    - brand/BRAND.md OR brand_mode=founder fallback
-  defers-to:
-    - skill: brief-shortform
-      when: "need a full video brief with storyboard + audio + production spec"
-    - skill: write-copy
-      when: "writing landing page copy, headlines, or CTA text for a non-social surface"
-    - skill: humanize
-      when: "polish_chain=humanize requested or AI-sounding copy detected post-generation"
-    - skill: polish-vn
-      when: "polish_chain=vn-tone requested or Vietnamese-market copy needed"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: standard
 ---
 
 # Social Copy — Orchestrator
@@ -235,6 +158,7 @@ Every run ends with explicit status:
 | [examples.md](references/examples.md) | EXAMPLE | 10 per-platform strong/weak examples (1 strong + 1 weak × 5 platforms) with brief input + generated copy + critic verdict |
 | [anti-patterns.md](references/anti-patterns.md) | ANTI-PATTERN | 14 named anti-patterns (10 from original + 4 cross-cutting failures) with detection rule + platform calibration + agent ownership |
 | [_shared/platform-intelligence/](references/_shared/platform-intelligence/) | data catalog | Per-platform reference catalogs (tiktok, reels, shorts, x, linkedin, youtube template): §1 Hook Taxonomy (Tier 1 / Tier 2), §2 Format Constraints (hard caps + soft window + truncation), §3 Algorithm Signals (top-5), §4 Anti-Patterns (platform-specific bait penalties) |
+| [_shared/marketing-foundations.md](references/_shared/marketing-foundations.md) | data catalog | Canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles |
 | `marketing-skills/CLAUDE.md` | reference | Stack-level conventions (Pre-Dispatch Protocol, Complexity Routing, Multi-Agent Skills) |
 
 ### Sub-Agent Instructions (agents/)

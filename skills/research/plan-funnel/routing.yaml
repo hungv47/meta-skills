@@ -1,0 +1,28 @@
+# Routing signals for plan-funnel. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "funnel model"
+    - "model the funnel"
+    - "unit economics"
+    - "growth targets"
+    - "ltv cac"
+    - "revenue target"
+    - "how much traffic do we need"
+  allOf:
+    - [funnel, model]
+    - [growth, target]
+  anyOf:
+    - "ltv"
+    - "cac"
+    - "conversion rate"
+    - "revenue target"
+    - "traffic target"
+    - "growth model"
+    - "unit economics"
+  noneOf:
+    - "market size"
+    - "competitor"
+    - "what should we build"
+    - "diagnose"
+  minScore: 6

@@ -1,76 +1,12 @@
 ---
 name: write-outreach
-description: "Writes and evaluates cold outreach — email, LinkedIn, Twitter/X, iMessage/SMS, platform proposals — with signal-based personalization, channel-specific craft, and rubric scoring. Produces `.forsvn/artifacts/mkt/cold-outreach/[slug].md` (+ `.rationale.md` + `.critic-score.md`). Handles first-touch compose and reply-to-inbound modes. Not for campaign orchestration or sequence design (compose touches individually, pass prior touches as context). Not for sourcing/list-building (start at 'here's who I'm reaching'). Brand voice: see create-brand. AI-sounding cleanup: humanize runs as terminal pass."
+description: "Writes and evaluates cold outreach — email, LinkedIn, Twitter/X, iMessage/SMS, platform proposals — with signal-based personalization, channel-specific craft, and rubric scoring. Handles first-touch compose and reply-to-inbound modes. Use to draft or critique an individual outbound message. Not for campaign orchestration or sequence design (use plan-campaign), landing-page or headline copy (use write-copy), paid-ad copy (use write-ad), or sourcing/list-building. Brand voice: see create-brand."
 argument-hint: "[target/signal + channel + mode, or reply text to respond to]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
-  refactor_history:
-    - version: "1.0.0 → 1.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 7/14"
-      note: "Body 537→189 (-65%) + 5 new refs (playbook + format-conventions + procedures/pre-dispatch + procedures/dispatch-mechanics + examples/cold-outreach-walkthrough) + anti-patterns.md extended with Orchestrator-Level (9 rows) + Cross-Cutting marketing-stack (4 rows) sections. Structural: `## Artifact Frontmatter (required)` nested as `### Artifact Template` under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches humanize slot 6 + vn-tone slot 5 + short-form-brief slot 4 + seo slot 3). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "cold email"
-    - "cold outreach"
-    - "cold dm"
-    - "linkedin dm"
-    - "linkedin outreach"
-    - "upwork proposal"
-    - "prospect email"
-    - "reply to this prospect"
-    - "first-touch email"
-    - "follow-up email"
-  anyOf:
-    - "cold outreach"
-    - "cold email"
-    - "cold dm"
-    - "prospect"
-    - "outbound"
-    - "upwork proposal"
-    - "fiverr proposal"
-    - "connection request"
-  allOf:
-    - [write, cold]
-  noneOf:
-    - "newsletter"
-    - "lifecycle email"
-    - "drip campaign"
-    - "nurture sequence"
-    - "transactional email"
-  minScore: 6
-routing:
-  intent-tags:
-    - cold-outreach
-    - cold-email
-    - cold-dm
-    - prospect-message
-    - platform-proposal
-    - reply-handling
-  position: horizontal
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/cold-outreach/[slug].md
-    - .forsvn/artifacts/mkt/cold-outreach/[slug].rationale.md
-    - .forsvn/artifacts/mkt/cold-outreach/[slug].critic-score.md
-  consumes:
-    - product-context.md
-    - icp-research.md
-    - .forsvn/artifacts/mkt/campaign-plan.md
-  requires: []
-  defers-to:
-    - skill: write-copy
-      when: "need headline, hook, or landing-page copy (not an outbound message)"
-    - skill: plan-campaign
-      when: "need channel strategy or multi-channel campaign orchestration across paid/owned/earned"
-  parallel-with: []
-  interactive: false
-  estimated-complexity: heavy
 ---
 
 # Cold Outreach — Orchestrator
@@ -259,5 +195,6 @@ End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO targe
 - **Example:** `references/examples/cold-outreach-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/channels/{email, linkedin, twitter, imessage, platform-proposals}.md`, `references/modes/{services, saas, partnership, community}.md`, `references/frameworks/{structures, personalization-signals, ctas, objections, saraev-four-step}.md`, `references/proof-types.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 8 sub-agents in `agents/` — see Agent Manifest above. `critic.md` holds the canonical 5-dimension rubric.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

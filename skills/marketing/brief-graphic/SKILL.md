@@ -1,93 +1,14 @@
 ---
 name: brief-graphic
-description: "Produces graphic-design briefs for individual visual assets — social posts (IG carousel/post/story, LinkedIn doc/single, FB ad), thumbnails (YouTube, X card), banners/display ads, OOH/billboard, OG/share cards, hero illustrations. Pulls brand-system tokens, generates concept directions, and writes a per-asset brief with platform-aware specs (aspect ratio, safe zones, type scale, contrast, file format, anti-patterns) plus an image-gen prompt or designer-handoff spec. Produces `.forsvn/artifacts/mkt/design-briefs/[slug].md`. Does NOT render the asset — rendering happens downstream via image-gen tool, vector tool, or human designer. Not for brand identity definition (use create-brand) or whole-page redesigns (use brief-landing-page). Not for writing the copy that goes IN the asset (use write-copy)."
+description: "Produces a graphic-design brief for a single visual asset — social posts, thumbnails, banners, OOH, OG/share cards, hero illustrations. Pulls brand-system tokens, generates concept directions, and writes platform-aware specs plus an image-gen prompt or designer-handoff spec. Does NOT render the asset — rendering is downstream. Use to spec one asset for production. Not for brand identity (use create-brand), whole-page redesigns (use brief-landing-page), or the copy that goes IN the asset (use write-copy)."
 argument-hint: "[asset description, e.g. 'instagram carousel about pricing tiers']"
 allowed-tools: Read Edit Grep Glob Bash WebSearch WebFetch
-license: MIT
 metadata:
-  author: hungv47
   version: "2.0.0"
   budget: standard
   estimated-cost: "$1-2"
   status: done_with_concerns
   notes: "Re-scoped from design-create (brief-only, no rendering). Platform-aware module content for IG/LinkedIn/FB/YT/X/OOH/banner is skeleton-only — needs a follow-up build pass with practitioner-grade specs (aspect ratios, safe zones, mobile type scales, thumb-stop contrast, file conventions, anti-patterns) per platform."
-  refactor_history:
-    - version: "2.0.0 → 2.0.0"
-      date: 2026-05-18
-      slot: "v6 Phase 2 Wave 1 — marketing-stack slot 11/14"
-      note: "Body 488→~225 (-54%) + 5 new refs (playbook + format-conventions + procedures/pre-dispatch + procedures/dispatch-mechanics + examples/design-brief-walkthrough) + new anti-patterns.md (7 from body + 4 cross-cutting marketing-stack rows). Structural: `### Artifact Template` nested under new `## Artifact Contract` H2 wrapper per marketing-stack sibling-parity convention (matches campaign-plan slot 10 + ad-copy slot 9 + copywriting slot 8 + cold-outreach slot 7 + humanize slot 6 + vn-tone slot 5 + short-form-brief slot 4 + seo slot 3). `status: done_with_concerns` preserved verbatim (platform-modules.md skeleton-only flagged in metadata.notes — deferred to v6.3.0 follow-up build pass, NOT in scope for body-diet refactor). See references/playbook.md 'History / origin' for full detail."
-promptSignals:
-  phrases:
-    - "design brief"
-    - "graphic brief"
-    - "asset brief"
-    - "create graphic"
-    - "design asset"
-    - "social graphic"
-    - "ad creative"
-    - "og image"
-    - "hero image"
-    - "banner design"
-    - "carousel design"
-    - "thumbnail"
-    - "illustration brief"
-  allOf:
-    - [design, brief]
-    - [graphic, brief]
-    - [asset, brief]
-    - [create, graphic]
-    - [generate, image]
-  anyOf:
-    - "graphic"
-    - "illustration"
-    - "carousel"
-    - "banner"
-    - "thumbnail"
-    - "midjourney"
-    - "imagen"
-    - "dall-e"
-    - "claude design"
-    - "figma"
-    - "ad creative"
-  noneOf:
-    - "brand identity"
-    - "design system"
-    - "design tokens"
-    - "user flow"
-    - "wireframe"
-    - "landing page redesign"
-  minScore: 6
-routing:
-  intent-tags:
-    - graphic-design-brief
-    - visual-asset-brief
-    - ad-creative-brief
-    - social-graphic-brief
-    - og-image-brief
-    - thumbnail-brief
-    - generative-prompt
-  position: pipeline
-  lifecycle: pipeline
-  produces:
-    - .forsvn/artifacts/mkt/design-briefs/[slug].md
-  consumes:
-    - brand/BRAND.md
-    - brand/DESIGN.md
-    - brand/ASSETS.md
-    - .forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/*.md
-  requires:
-    - brand/BRAND.md
-    - brand/DESIGN.md
-  defers-to:
-    - skill: create-brand
-      when: "need to define brand identity, logo, palette, or full design system"
-    - skill: write-copy
-      when: "need craft-quality headline / CTA copy that goes IN the asset"
-    - skill: brief-landing-page
-      when: "redesigning a whole page, not a single asset"
-  parallel-with: []
-  interactive: true
-  estimated-complexity: medium
 ---
 
 # Design Brief — Orchestrator
@@ -365,5 +286,6 @@ End-to-end walkthrough (OG image for async-first PM tool launch — image-gen ro
 - **Example:** `references/examples/design-brief-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{asset-types, platform-modules, prompt-patterns, visual-rubric, failure-modes, examples}.md`
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, anti-sycophancy, shared-critic-rubrics, quality-feedback-protocol, quality-dashboard-spec}.md`
+- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 7 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 8-dimension Visual Rubric + 13-pattern Generic-AI-Aesthetic Detector + per-route scoring-mode shifts.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

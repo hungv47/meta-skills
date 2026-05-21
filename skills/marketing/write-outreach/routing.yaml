@@ -1,0 +1,32 @@
+# Routing signals for write-outreach. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "cold email"
+    - "cold outreach"
+    - "cold dm"
+    - "linkedin dm"
+    - "linkedin outreach"
+    - "upwork proposal"
+    - "prospect email"
+    - "reply to this prospect"
+    - "first-touch email"
+    - "follow-up email"
+  anyOf:
+    - "cold outreach"
+    - "cold email"
+    - "cold dm"
+    - "prospect"
+    - "outbound"
+    - "upwork proposal"
+    - "fiverr proposal"
+    - "connection request"
+  allOf:
+    - [write, cold]
+  noneOf:
+    - "newsletter"
+    - "lifecycle email"
+    - "drip campaign"
+    - "nurture sequence"
+    - "transactional email"
+  minScore: 6
