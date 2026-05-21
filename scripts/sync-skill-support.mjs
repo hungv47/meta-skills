@@ -55,6 +55,7 @@ const SUPPORT_REFS = {
   "quality-feedback-protocol.md": "references/quality-feedback-protocol.md",
   "quality-dashboard-spec.md": "references/quality-dashboard-spec.md",
   "shared-critic-rubrics.md": "references/shared-critic-rubrics.md",
+  "evaluation-loop-rubric.md": "references/evaluation-loop-rubric.md",
   "mode-resolver.md": "references/mode-resolver.md",
   "anti-sycophancy.md": "references/anti-sycophancy.md",
   "artifact-contract-template.md": "references/artifact-contract-template.md",
@@ -63,7 +64,9 @@ const SUPPORT_REFS = {
   "product-marketing-context-schema.md": "references/product-marketing-context-schema.md",
   "before-starting-check.md": "references/before-starting-check.md",
   "hypothesis-framework.md": "skills/research/_shared/hypothesis-framework.md",
+  "confidence-labeling.md": "skills/research/_shared/confidence-labeling.md",
   "marketing-foundations.md": "skills/marketing/_shared/marketing-foundations.md",
+  "production-pattern.md": "skills/marketing/_shared/production-pattern.md",
   "copywriting-research-workflow.md": "skills/marketing/write-copy/references/research-workflow.md",
   "clipping-and-live.md": "skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md",
 };
@@ -285,6 +288,7 @@ function syncSkill(dir) {
   if (/quality-feedback-protocol/.test(corpus)) addRef("quality-feedback-protocol.md");
   if (/quality-dashboard-spec/.test(corpus)) addRef("quality-dashboard-spec.md");
   if (/shared-critic-rubrics/.test(corpus)) addRef("shared-critic-rubrics.md");
+  if (/evaluation-loop-rubric/.test(corpus)) addRef("evaluation-loop-rubric.md");
   if (/mode-resolver/.test(corpus)) addRef("mode-resolver.md");
   if (/anti-sycophancy/.test(corpus)) addRef("anti-sycophancy.md");
   if (/artifact-contract-template/.test(corpus)) addRef("artifact-contract-template.md");
@@ -293,7 +297,9 @@ function syncSkill(dir) {
   if (/product-marketing-context-schema/.test(corpus)) addRef("product-marketing-context-schema.md");
   if (/before-starting-check/.test(corpus)) addRef("before-starting-check.md");
   if (/hypothesis-framework/.test(corpus)) addRef("hypothesis-framework.md");
+  if (/confidence-labeling/.test(corpus)) addRef("confidence-labeling.md");
   if (/marketing-foundations/.test(corpus)) addRef("marketing-foundations.md");
+  if (/production-pattern/.test(corpus)) addRef("production-pattern.md");
   if (/copywriting\/references\/research-workflow|copywriting-research-workflow/.test(corpus)) {
     addRef("copywriting-research-workflow.md");
   }

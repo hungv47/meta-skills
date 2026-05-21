@@ -19,7 +19,7 @@ metadata:
 
 ## Critical Gates — Read First
 
-Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns:
+Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns. The shared production-skill contract (tool-agnostic export-mode floor, brand-mark fidelity, lean 2-agent dispatch, pipeline lifecycle) is canonical in [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) [PROCEDURE]:
 
 1. **Tool-agnostic by design.** This stack does not invoke HyperFrames render, `npx remotion render`, Vercel AI CLI, or any other runtime — by design, it holds no API keys. The output is the bundle (manifest + scenes + scaffolds + README) you run through your own runtime. If an upstream caller passes `--publish`, `--render`, or `--auto-run`, return `BLOCKED — this stack emits render-ready prompts; it does not call render engines. Run the emitted prompt through your engine.` No silent fall-throughs.
 2. **Schema-and-CTA compliance.** The canonical `manifest.md` must validate against `references/video-brief-schema.md` (all required fields, valid aspect, shot durations sum to total length). The CTA copy must appear verbatim in the final shot's `on_screen_text` AND the manifest's top-level `cta` field. Critic Gate 1 enforces.
@@ -80,7 +80,7 @@ Critic FAIL on Gate 1 / 2 / 3 → re-dispatch prompt-author-agent with specific 
 | Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-shot prompt (visual + OST + voice spec) + HyperFrames scaffold + Remotion scaffold + vercel-ai-cli README; assembles the full bundle |
 | Critic | 2 (final) | `agents/critic-agent.md` | 4 dimensions: Schema-and-CTA / Brand-mark fidelity / Caption-pace / Narrative arc |
 
-Intentionally lean: sequential prompt-author → critic. Mirrors the produce-asset pattern. Per-shot parallelism and long-video narrative coherence are out of scope — this skill targets short-form.
+Intentionally lean: sequential prompt-author → critic. Mirrors the shared production pattern ([`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4). Per-shot parallelism and long-video narrative coherence are out of scope — this skill targets short-form.
 
 ## Routing + Dispatch
 
@@ -140,7 +140,7 @@ After rendering, operator marks the manifest's verification checklist for each s
 
 ## References
 
-- **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md` (synced via `scripts/sync-skill-support.mjs` — currently broken for 2.0 layout per D8 finding; this skill lists them as expected dependencies for when sync is fixed)
+- **Shared:** `references/_shared/{production-pattern, eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md` (synced via `scripts/sync-skill-support.mjs`)
 - **Frameworks** (`references/`): `format-conventions.md` (manifest + per-shot prompt + scaffold schemas), `video-brief-schema.md` (input contract + brief-shortform field map), `anti-patterns.md` (6 orchestrator + 4 cross-cutting rows)
 - **Agents (`agents/`):** 2 agents — see Agent Manifest above
 - **Upstream:** `skills/marketing/brief-shortform/` (the brief this skill consumes); `skills/marketing/create-brand/` (brand tokens this skill respects)

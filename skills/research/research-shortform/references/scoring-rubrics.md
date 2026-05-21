@@ -80,6 +80,8 @@ This applies to:
 
 **Why 3:** two examples are coincidence; three are the minimum for a claim. This is a craft heuristic — not statistical confidence — but downstream consumers (the brief skill) cannot act on n=2 noise without confusing themselves.
 
+**Sample adequacy vs. confidence labeling.** The Sample-Size Flags and this Pattern Threshold are *sample-adequacy* gates — they decide whether a pattern may be claimed at all. Layered on top, each claimed pattern finding and each trending-audio call carries an H/M/L *confidence label* per [`_shared/confidence-labeling.md`](_shared/confidence-labeling.md) — the claim-level certainty tag (H/M/L by independent corroboration; any `L` resolved or flagged per its § 4). The two are orthogonal: a pattern can clear the n≥3 threshold yet still be `Confidence: M` if its occurrences are not independent (e.g. all from one creator's videos — see that file's § 3 on source independence).
+
 ---
 
 ## Platform Specificity Rule (Critic Rubric #3)
