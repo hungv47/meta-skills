@@ -1,4 +1,0 @@
-cycle	date	artifact	primary_metric	value	baseline	status	description
-1	2026-05-19	evals/2026-05-19-cycle-1.md	trial_start_rate	3.6%	2.8%	keep	Concrete-noun hero outperformed abstract baseline +28% relative
-2	2026-05-19	evals/2026-05-19-cycle-2.md	trial_start_rate	3.9%	3.6%	keep	Subhead concretization extended hero lift +8%
-3	2026-05-19	evals/2026-05-19-cycle-3.md	trial_start_rate	3.8%	3.9%	keep	Replication with swapped proof asset; concrete-noun pattern is the lift driver
