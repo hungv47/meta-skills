@@ -83,7 +83,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## History / origin
 
 - **2026-05-19 — D19 locked.** Workstream D slice 3 in `implementation-roadmap/execution-evaluation/decisions.md`. 7-dim rubric chosen mirroring evaluate-ad's 5 generic dims + 2 content-specific (Engagement-Quality Discrimination + Platform-Fit, replacing evaluate-ad's Audience-Temp Fidelity + Creative-Fatigue Awareness). 4-agent shape chosen byte-aligned with evaluate-ad for cross-eval consistency. Lane split from evaluate-shortform locked: organic text/image/carousel here, short-form video there. Cycle granularity locked: one primary platform per cycle, secondary platforms as context.
-- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. First synthetic cycle scaffolded at `.forsvn/loops/content-demo/` proves the infra end-to-end.
+- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. A synthetic first cycle proved the infra end-to-end during development.
 
 ## Acceptance Reminders (cite SKILL.md, not duplicate)
 

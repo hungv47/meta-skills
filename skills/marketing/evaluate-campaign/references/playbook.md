@@ -84,7 +84,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## History / origin
 
 - **2026-05-20 — D20 locked.** Workstream D slice 4 in `implementation-roadmap/execution-evaluation/decisions.md`. The fourth and final brief-05 eval skill — closes Workstream D's eval quartet. 7-dim rubric chosen mirroring evaluate-ad / evaluate-content's 5 generic dims + 2 campaign-specific (Channel-Mix Discrimination + Unit-Economics Discipline, replacing evaluate-content's Engagement-Quality Discrimination + Platform-Fit). 4-agent shape byte-aligned with evaluate-content for cross-eval consistency. Scope locked aggregate-only (interview Q1): campaign-level outcomes from channel rollups, no re-scoring of individual assets. Cycle granularity locked whole-campaign-all-channels (interview Q2): one cycle = the entire campaign with a per-channel breakdown table, never one cycle per channel.
-- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. First synthetic cycle scaffolded at `.forsvn/loops/campaign-demo/` proves the infra end-to-end.
+- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. A synthetic first cycle proved the infra end-to-end during development.
 
 ## Acceptance Reminders (cite SKILL.md, not duplicate)
 

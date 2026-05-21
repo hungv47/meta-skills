@@ -1,2 +1,0 @@
-cycle	date	artifact	primary_metric	value	baseline	status	description
-1	2026-05-19	evals/2026-05-19-cycle-1.md	save_rate	3.1%	1.2%	keep	linkedin carousel save rate 3.1% over 7d vs 1.2% baseline; job-title slide-1 hook drove the lift with meaningful engagement carrying it (saves+shares+comments up, likes flat), keep hook+format, revise CTA next cycle per low click-through
