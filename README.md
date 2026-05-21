@@ -2,15 +2,20 @@
 
 ![Agent Skills](./assets/banners/forsvn-skills.png)
 
-> **Agent Skills 2.0 — single-plugin consolidation.** The four previously-separate plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) collapse into **one** `meta-skills` install carrying all 39 skills. The umbrella `agent-skills` repo and the three sibling repos are archived.
->
-> **2.0.0 highlights:** verb-first skill naming (hard cut, no aliases). The 4 `orchestrate-*` skills collapsed into `/forsvn`, the single front door. `.forsvn/` is now the canonical user-facing state root (replaces the never-materialized `.agents/skill-artifacts/` + `skills-resources/` layout).
->
-> **Install:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) or `npx skills add hungv47/meta-skills` (other editors).
+**39 skills that turn an AI agent into a product team — from "why did this break?" to shipped code.**
 
-A composable skill stack for [AI agents](https://agentskills.io/home) that chains together — from problem diagnosis to shipped code. 39 skills across meta (process), research, marketing, and product domains.
+A composable skill stack for [AI agents](https://agentskills.io/home), spanning four domains:
 
-Skills pass context through conversation and artifacts under `.forsvn/`. Measurable initiatives live in `.forsvn/loops/[slug]/`. Cross-session knowledge accumulates at `.forsvn/experience/`. Downstream skills read conversation context or artifacts automatically, so output compounds as you move through the stack.
+- **Research** — understand the market and decide what to do
+- **Marketing** — create, optimize, and measure marketing
+- **Product** — design and build software
+- **Meta** — discover, debate, decompose, and verify any of it
+
+Skills chain. Each one reads what earlier skills left behind — in conversation or in `.forsvn/` artifacts — so output compounds as you move through the stack. Not sure where to start? Run `/forsvn`, the single front door.
+
+**Install — one plugin, all 39 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
+
+> **New in 2.0** — the four former plugins (`research-skills`, `marketing-skills`, `product-skills`, `meta-skills`) are now one `meta-skills` install. Verb-first skill names, `/forsvn` as the single front door, `.forsvn/` as the canonical state root. Upgrading from a 4-plugin install? See [Migrating from pre-2.0](#migrating-from-pre-20-4-plugin-install).
 
 ## Install
 
@@ -168,8 +173,6 @@ End-to-end pipeline: meta process wrappers compose with research pipeline skills
 
 ### Research — understand your market and decide what to do
 
-![Research Skills](./assets/banners/research-skills.png)
-
 > 7 skills in [`skills/research/`](./skills/research/)
 
 ```
@@ -188,8 +191,6 @@ research-shortform → .forsvn/artifacts/research/research-shortform/[slug].md (
 | `evaluate-shortform` | Closes the feedback loop — scores published short-form posts against the original brief, logs patterns, flags platform-signal staleness | You've published a video and want to know what the brief got right vs. what surprised you |
 
 ### Marketing — create, optimize, and measure marketing
-
-![Marketing Skills](./assets/banners/marketing-skills.png)
 
 > 19 skills in [`skills/marketing/`](./skills/marketing/)
 
@@ -225,8 +226,6 @@ Horizontal: write-copy, humanize, polish-vn — invoked at any stage.
 
 ### Product — design and build software
 
-![Product Skills](./assets/banners/product-skills.png)
-
 > 6 skills in [`skills/product/`](./skills/product/)
 
 | Skill | What it does | Use when... |
@@ -238,8 +237,6 @@ Horizontal: write-copy, humanize, polish-vn — invoked at any stage.
 | `write-docs` | READMEs, API references, setup guides, runbooks from existing code. Ship log mode writes product context to `research/product-context.md`. Sync mode for post-change doc updates | You have a codebase and need documentation generated or updated after changes |
 
 ### Meta — discover, debate, decompose, verify
-
-![Meta Skills](./assets/banners/meta-skills.png)
 
 > 7 skills in [`skills/meta/`](./skills/meta/), with `/forsvn` as the branded front door
 
