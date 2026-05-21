@@ -118,6 +118,8 @@ status: done | done_with_concerns | blocked | needs_context
 | Aspect | Confidence | Justification |
 |--------|-----------|---------------|
 
+> The Confidence column uses the H/M/L finding-confidence label per [`_shared/confidence-labeling.md`](_shared/confidence-labeling.md) § 1–§ 3 — every cell states its basis (no bare "Medium"; see that file's anti-pattern § 6.3), and any `L` finding is resolved or flagged per § 4. Market *sizing* estimates are scored on a separate top-down/bottom-up triangulation calibration — see [`market-sizing-guide.md`](market-sizing-guide.md) — not this source-count rubric.
+
 **Data gaps:** [What couldn't be found]
 
 ## Next Step

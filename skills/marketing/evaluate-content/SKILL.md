@@ -199,10 +199,10 @@ End with one status:
 ## References
 
 - **Playbook:** `references/playbook.md` [PLAYBOOK]
-- **Rubric:** `references/rubric.md` [RUBRIC] — canonical 7-dim 0-10 Pass/Fail rubric (provisional v0.1; revision-triggered per brief 05)
+- **Rubric:** `references/rubric.md` [RUBRIC] — the domain 7-dim 0-10 Pass/Fail instrument (5 shared dims + 2 content-specific; provisional v0.1, revision-triggered per brief 05). Shared frame — pass gate, scoring scale, universal Hard Fails, falsifiability discipline — in `references/_shared/evaluation-loop-rubric.md`
 - **Format:** `references/format-conventions.md` [PROCEDURE] — full evaluation artifact template byte-identical
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric, quality-feedback-protocol, quality-dashboard-spec}.md`
+- **Shared:** `references/_shared/{eval-loop-spec, evaluation-loop-rubric, before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric, quality-feedback-protocol, quality-dashboard-spec}.md`
 - **Agents:** 4 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` enforces the 7-dim rubric in `references/rubric.md` + 3-tier Verdict + Hard Fails.
 - **Sibling coordination:** `write-social` (construction-time copy; this skill routes recommendations TO write-social but does not produce briefs); `run-eval-loop` (owns loop scaffolding + `program.md` + `context.md` + `results.tsv` schema + durable learning ledger); `evaluate-shortform` (sister skill — short-form video lane); `evaluate-ad` (sister skill — paid-ad lane); `publish-social` (distribution retrospective rather than content scoring).

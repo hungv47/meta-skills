@@ -108,7 +108,7 @@ From scout entries, capture:
 - **Naming a track without external check** when it appears only twice in scout. That's noise.
 - **Mixing TikTok and Reels tracks** in one table. Different mechanics, different decay curves.
 - **Skipping the decay risk** column. The whole point of this agent is decay, not just identification.
-- **Over-confidence on freshness.** If you can't verify peak date, mark as "Medium — peak unverified" not "Low."
+- **Over-confidence on freshness.** If you can't verify peak date, mark as "Medium — peak unverified" not "Low." Use the H/M/L label and the resolution rule per [`../references/_shared/confidence-labeling.md`](../references/_shared/confidence-labeling.md).
 
 ## Self-Check
 

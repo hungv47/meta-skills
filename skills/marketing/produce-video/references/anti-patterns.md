@@ -13,6 +13,8 @@ load_class: ANTI-PATTERN
 
 **Re-read before any bundle ships. The 6 orchestrator-level patterns + 4 cross-cutting marketing-stack rows cover the failure modes brief 04 explicitly named, plus the cross-stack drift risks every production skill carries.**
 
+The shared production-skill anti-pattern catalog — the orchestrator-level set + the 4 cross-cutting rows — is canonical in [`_shared/production-pattern.md`](_shared/production-pattern.md) § 7; the rows below are the produce-video-specific instances (Anti-pattern 6, shot-duration padding, is produce-video-only).
+
 ---
 
 ## Orchestrator-level (produce-video specific)
