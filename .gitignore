@@ -22,3 +22,6 @@ IDEA.md
 # Internal development artifacts — not user-facing, not distributable
 implementation-roadmap/
 autoresearch/
+
+# Internal release guideline — maintainer process, not distributed
+/RELEASING.md
