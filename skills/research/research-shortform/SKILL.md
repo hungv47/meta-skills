@@ -150,6 +150,7 @@ Skill returns one of:
 - [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — failure modes
 - [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE] — date format, URL handling, citation, sample-size flag, per-platform ordering
 - [`references/scoring-rubrics.md`](references/scoring-rubrics.md) — pattern-extractor + critic rubric definitions
+- [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) [PROCEDURE] — canonical H/M/L confidence label + L-resolution rule; the claim-level certainty tag layered on the sample-size flags
 - [`references/scout-protocol.md`](references/scout-protocol.md) — per-platform sourcing protocol
 - [`references/platforms/`](references/platforms/) — per-platform research playbooks (tiktok, instagram-reels, youtube-shorts, twitter-video, linkedin-video, _comparison)
 - `research-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

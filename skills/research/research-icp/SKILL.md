@@ -156,6 +156,7 @@ Every run ends with explicit status:
 | [_shared/before-starting-check.md](references/_shared/before-starting-check.md) | PLAYBOOK | Pre-Pre-Dispatch read pattern (canonical at `references/`, synced) |
 | [_shared/mode-resolver.md](references/_shared/mode-resolver.md) | PROCEDURE | `--fast` / `--deep` behavior contract |
 | [_shared/pre-dispatch-protocol.md](references/_shared/pre-dispatch-protocol.md) | PROCEDURE | Canonical Pre-Dispatch spec |
+| [_shared/confidence-labeling.md](references/_shared/confidence-labeling.md) | PROCEDURE | Canonical H/M/L confidence label, scoring rubric, source-independence + L-resolution rules (this skill's ICP application is in `confidence-and-bias.md`) |
 | [procedures/pre-dispatch.md](references/procedures/pre-dispatch.md) | PROCEDURE | Auto-scan + Warm/Cold Start, 5-question Cold Start prompt, read order, Write-back map (verbatim), Cold-Start-under-`--fast`, staleness check, Route Selection |
 | [procedures/dispatch-mechanics.md](references/procedures/dispatch-mechanics.md) | PROCEDURE | 6-step Dispatch Protocol, single-agent fallback, Layer 1/2 spawn details, Critic Gate FAIL routing, post-write side effects, chain position, skill deference, mode-resolver interaction |
 | [format-conventions.md](references/format-conventions.md) | PROCEDURE | Artifact Template (60+ lines), Step 0 product-context.md 8-section schema + Canonical Terminology, Step 1 Scope Interview, Required/Optional Artifacts tables, Route A annotation, date/number/citation format, 13 cross-stack consumers reference |

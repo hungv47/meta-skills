@@ -19,7 +19,7 @@ metadata:
 
 ## Critical Gates — Read First
 
-Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns:
+Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns. The shared production-skill contract (tool-agnostic export-mode floor, brand-mark fidelity, lean 2-agent dispatch, pipeline lifecycle) is canonical in [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) [PROCEDURE]:
 
 1. **Tool-agnostic by design.** This stack does not call image-gen APIs, Figma MCP, or any external rendering service — by design, it holds no API keys. The output is a prompt + manifest you run through your own engine. If an upstream caller passes `--publish` or `--api-render`, return `BLOCKED — this stack emits render-ready prompts; it does not call render engines. Run the emitted prompt through your engine.` No silent fall-throughs.
 2. **No hallucinated logos or brand marks.** If `brand/BRAND.md` or `brand/DESIGN.md` references a logo asset that doesn't exist on disk, the prompt MUST instruct the renderer to leave the logo slot as a solid-color placeholder, NEVER to generate a stand-in logo. Critic Gate 3 enforces.
@@ -73,7 +73,7 @@ Critic FAIL → re-dispatch prompt-author-agent with specific feedback (max 2 cy
 | Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-slot prompt with platform spec injection, anti-pattern reminders, copy verbatim |
 | Critic | 2 (final) | `agents/critic-agent.md` | Spec compliance: aspect, safe zones, brand-mark fidelity, copy verbatim, EXIF/aspect-override forbiddance |
 
-Intentionally lean: sequential prompt-author → critic. No parallel Layer 1, no merge step, no variant agent. The work IS the prompt + manifest, not multi-perspective synthesis — deeper orchestration is not warranted.
+Intentionally lean: sequential prompt-author → critic. No parallel Layer 1, no merge step, no variant agent. The work IS the prompt + manifest, not multi-perspective synthesis — deeper orchestration is not warranted. This is the shared 2-agent dispatch — see [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
 
 ## Routing + Dispatch
 
@@ -122,7 +122,7 @@ Operator runs the emitted prompts through their chosen renderer (Midjourney / DA
 
 ## References
 
-- **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md` (synced via `scripts/sync-skill-support.mjs` — currently broken for 2.0 layout per D8 finding; this skill lists them as expected dependencies for when sync is fixed)
+- **Shared:** `references/_shared/{production-pattern, eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md` (synced via `scripts/sync-skill-support.mjs`)
 - **Frameworks** (`references/`): `format-conventions.md` (manifest + per-slot prompt schema), `anti-patterns.md` (5 orchestrator + 4 cross-cutting rows)
 - **Agents (`agents/`):** 2 agents — see Agent Manifest above
 - **Upstream:** `skills/marketing/brief-graphic/` (the brief this skill consumes); `skills/marketing/create-brand/` (brand tokens this skill respects)

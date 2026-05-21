@@ -22,6 +22,8 @@ load_class: PROCEDURE
 
 ## 1. Confidence labels — every finding tagged
 
+The label, scoring rubric, source-independence rules, and the L-resolution rule are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) [PROCEDURE]. research-icp uses that default rubric **unchanged** — this section is the ICP-specific application.
+
 ### What gets a confidence label
 
 Apply inline to each:
@@ -37,36 +39,11 @@ Format (inline at end of finding bullet):
 [Confidence: <H | M | L> | sources: <N>]
 ```
 
-Where `<N>` is the count of **independent sources** that triangulate the finding (not the count of quotes — multiple quotes from one Reddit thread is N=1, not N=3).
+`<N>` is the count of **independent sources** that triangulate the finding — not the count of quotes. The H/M/L scoring rubric and the source-independence rules (what counts as an independent source, what does not) are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 2–§ 3; research-icp uses them unchanged. Load-bearing here: multiple quotes from one Reddit thread is N=1, not N=3.
 
-### Scoring rubric
+### Resolving Low-confidence findings
 
-| Label | Sources (N) | Source-type quality | Cross-source agreement |
-|---|---|---|---|
-| **High (H)** | ≥4 independent | Mix: at least 2 different platform types (e.g., Reddit + interview + G2) | All sources point the same direction; no material contradictions |
-| **Medium (M)** | 2–3 independent | All from similar source types (e.g., all Reddit, all G2) | Mostly aligned; minor differences in emphasis |
-| **Low (L)** | 1 source | Single thread, single review, single interview | Cannot be triangulated — single voice |
-
-**Hard rule:** If a finding has `Confidence: L`, the artifact MUST either:
-- Promote it to M by collecting 1-2 more independent sources, OR
-- Mark it explicitly as a hypothesis in the Red Flags section ("Persona 1 may dismiss social proof — single-source, needs validation"), OR
-- Drop it from the artifact entirely.
-
-Never ship a finding labeled `L` without one of these three resolutions.
-
-### Source-type independence
-
-Two sources are independent when:
-- Different platforms (Reddit ≠ G2 ≠ podcast ≠ interview)
-- Different communities within a platform (r/SaaSMarketing ≠ r/Entrepreneur)
-- Different time periods (Reddit thread from 2024 + Reddit thread from 2026 if both fresh-collected)
-
-Two sources are NOT independent when:
-- Same thread, multiple commenters
-- Same review, multiple ratings
-- Same person posting on multiple platforms (echo)
-
-When in doubt, count down. Independence is the load-bearing concept; over-counting destroys the rubric.
+Per [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 4, a finding labeled `Confidence: L` MUST be promoted to M (collect 1-2 more independent sources), moved to the Red Flags section as an explicit hypothesis, or dropped from the artifact — never shipped as a finding. In ICP research a flagged hypothesis reads: "Persona 1 may dismiss social proof — single-source, needs validation."
 
 ### Confidence summary at artifact top
 
@@ -183,17 +160,16 @@ After (with confidence tag):
 
 ## 5. Anti-patterns
 
-1. **Counting quotes as sources.** 3 quotes from one Reddit thread is N=1, not N=3.
-2. **Channel density conflated with finding confidence.** "Reddit density: H" means "audience is concentrated there," not "our finding is high-confidence." Keep them in different columns.
-3. **Sample Bias section as a generic disclaimer.** "Selection bias may exist" without naming WHICH bias on WHICH finding is critic FAIL (Gate 9).
-4. **Skipping the ≥5 floor for a "feel-good" persona.** If sources don't exist yet, the persona is hypothesis. Label it. Don't pretend otherwise.
-5. **Promoting L findings without resolution.** Every L must be promoted to M, moved to Red Flags as a hypothesis, or dropped. No shipping of unresolved L.
-6. **Calling 5 quotes from the same buying-stage "5 independent sources."** Same buying stage = same selection skew = same source effectively. Independence requires different selection mechanisms, not just different quote authors.
+The universal confidence anti-patterns — counting quotes as sources, promoting L findings without resolution, bare confidence labels, same-selection sources counted as independent, conflating channel density with finding confidence — are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 6. ICP-specific additions:
+
+1. **Sample Bias section as a generic disclaimer.** "Selection bias may exist" without naming WHICH bias on WHICH finding is critic FAIL (Gate 9).
+2. **Skipping the ≥5 floor for a "feel-good" persona.** If sources don't exist yet, the persona is hypothesis. Label it. Don't pretend otherwise.
 
 ---
 
 ## 6. Related refs
 
+- [[confidence-labeling]] — canonical H/M/L label, scoring rubric, source-independence + L-resolution rules; this protocol is the ICP-specific application of it
 - [[habitat-mapping]] — Digital Watering Hole methodology; channel-density rubric (orthogonal to finding confidence — see § 1 above for the distinction)
 - [[voice-of-customer]] — VoC quote collection conventions; independent-source rules apply
 - [[customer-interviews]] — interview protocol; interviews count as one independent source per interview (not per quote pulled)

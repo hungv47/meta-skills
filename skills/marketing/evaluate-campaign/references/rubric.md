@@ -10,22 +10,14 @@ revision_status: provisional v0.1
 
 7-dimension rubric for post-launch multi-channel campaign evaluation. Used by `agents/critic-agent.md` to gate the cycle artifact before it writes a ledger row. **Provisional v0.1 — mandatory revision after cycles 2-3 per brief 05 § Rubrics.**
 
-**Pass gate:** aggregate ≥ 49/70 across the 7 dims AND every per-dim score ≥ 6.
-
-Single per-dim score < 6 = FAIL even if aggregate ≥ 49. The asymmetry catches contaminated-but-otherwise-passing cycles (e.g., a 4 on Channel-Mix Discrimination hidden under 8s everywhere else = a keep claim built on a rider channel's borrowed credit).
-
-PASS_WITH_CONCERNS: aggregate 42-48 with all per-dim ≥ 6. Confidence + confounders must be surfaced in the artifact's Verdict block.
+**Pass gate, scoring scale, the < 6 asymmetry, PASS_WITH_CONCERNS, and the universal Hard Fails** are canonical in [`_shared/evaluation-loop-rubric.md`](_shared/evaluation-loop-rubric.md) [PROCEDURE] § 1–§ 3. This file is the domain instrument — the 7 dimensions below (5 shared + 2 campaign-specific) with their domain-specialized band tables and the campaign-specific Hard Fails.
 
 ## Revision Triggers (brief 05 § Rubric revision trigger)
 
-Revise this rubric when ANY of:
+The universal revision triggers and the mandatory-revision-after-cycles-2-3 rule are in [`_shared/evaluation-loop-rubric.md`](_shared/evaluation-loop-rubric.md) § 5. Domain-specific triggers for the campaign-eval rubric:
 
-- More than 3 consecutive cycle scores within 1 point of each other (rubric not discriminating)
-- More than 3 operator overrides on the same dimension (rubric is wrong or out-of-date)
 - Platform behavior changes what is measurable (e.g., an ad platform deprecates a conversion signal, a privacy change breaks cross-channel attribution)
 - A new channel type appears in the campaign mix with metrics the rubric does not anticipate
-
-Mandatory revision pass after cycles 2-3 regardless of trigger state — v0.1 is provisional.
 
 ---
 
@@ -164,7 +156,7 @@ Exactly one valid `results.tsv` row, schema-compliant, campaign-tagged?
 
 ## Falsifiability summary
 
-A dim score is only valid if the evaluator can name **what evidence would have moved the score one band**. Examples:
+A dim score is only valid if the evaluator can name **what evidence would have moved the score one band** — the discipline is canonical in [`_shared/evaluation-loop-rubric.md`](_shared/evaluation-loop-rubric.md) § 6. Per-dimension examples for this rubric:
 
 - Loop Fit 8 → 9: surface latest learnings.md in the read-order log.
 - Metric Integrity 7 → 9: complete the missing channel's row in the rollup table.
@@ -178,7 +170,7 @@ If you can't name the next-band evidence, you're scoring vibes, not the rubric.
 
 ## Score justification format
 
-For each per-dim score in the Critic Verdict, include 1 sentence of rationale tied to the artifact's actual content. Example:
+For each per-dim score in the Critic Verdict, include 1 sentence of rationale tied to the artifact's actual content (the requirement + the "scoreless verdict = Hard Fail" rule are canonical in [`_shared/evaluation-loop-rubric.md`](_shared/evaluation-loop-rubric.md) § 7). Example:
 
 ```
 - loop_fit: 9 — program.md + context.md + results.tsv all read; cycle scoped to the whole campaign across 4 channels
