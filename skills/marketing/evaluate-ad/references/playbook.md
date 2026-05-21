@@ -91,7 +91,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## History / origin
 
 - **2026-05-19 — D15.B locked.** Workstream D slice 2 in `implementation-roadmap/execution-evaluation/decisions.md`. 7-dim rubric chosen over 6 (added Creative-Fatigue Awareness) and 5 (dropped Boundary Control as too LP-specific). 4-agent shape chosen byte-aligned with evaluate-landing-page for cross-eval consistency.
-- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. First synthetic cycle scaffolded at `.forsvn/loops/ad-demo/` proves the infra end-to-end.
+- **Provisional v0.1.** Rubric will be revised after cycles 2-3 per brief 05's revision trigger. A synthetic first cycle proved the infra end-to-end during development.
 
 ## Acceptance Reminders (cite SKILL.md, not duplicate)
 
