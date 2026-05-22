@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="640" height="360" role="img" aria-label="GitHub SVG render and sanitization spike">
+<title>GitHub SVG render + sanitization spike</title>
+<desc>Four test cells: CSS keyframes, SMIL animate, prefers-color-scheme, prefers-reduced-motion. Each cell self-reports whether GitHub rendered the technique.</desc>
+<style>
+  svg { --bg:#0e1c14; --cell:#16271c; --stroke:#2d4736; --ink:#eef3ec; --dim:#9db3a4; --accent:#b7ff6e; }
+  @media (prefers-color-scheme: light) {
+    svg { --bg:#f4f2e8; --cell:#ffffff; --stroke:#dad8c6; --ink:#16271c; --dim:#5d6c60; --accent:#3c7a10; }
+  }
+  .bg { fill:var(--bg); }
+  .cell { fill:var(--cell); stroke:var(--stroke); stroke-width:1.5; }
+  .lab { fill:var(--ink); font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:15px; font-weight:600; }
+  .hint { fill:var(--dim); font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif; font-size:12px; }
+  .ac { fill:var(--accent); }
+  .kf { animation:kf-move 1.8s ease-in-out infinite alternate; }
+  @keyframes kf-move { from { transform:translateX(0); } to { transform:translateX(150px); } }
+  .rm { animation:rm-spin 1.4s linear infinite; transform-origin:475px 285px; }
+  @keyframes rm-spin { to { transform:rotate(360deg); } }
+  .only-light { display:none; }
+  @media (prefers-color-scheme: light) { .only-dark { display:none; } .only-light { display:inline; } }
+  .rm-on { display:none; }
+  @media (prefers-reduced-motion: reduce) {
+    .rm { animation:none; }
+    .rm-off { display:none; }
+    .rm-on { display:inline; }
+  }
+</style>
+<rect class="bg" x="0" y="0" width="640" height="360" rx="14"/>
+
+<!-- A: CSS @keyframes -->
+<rect class="cell" x="10" y="10" width="300" height="160" rx="10"/>
+<text class="lab" x="26" y="38">A · CSS @keyframes</text>
+<text class="hint" x="26" y="58">PASS: the square slides left and right</text>
+<rect class="ac kf" x="30" y="108" width="46" height="38" rx="8"/>
+
+<!-- B: SMIL animate -->
+<rect class="cell" x="330" y="10" width="300" height="160" rx="10"/>
+<text class="lab" x="346" y="38">B · SMIL &lt;animate&gt;</text>
+<text class="hint" x="346" y="58">PASS: the dot pulses in size</text>
+<circle cx="430" cy="122" r="14" class="ac">
+  <animate attributeName="r" values="9;24;9" dur="1.7s" repeatCount="indefinite"/>
+</circle>
+
+<!-- C: prefers-color-scheme -->
+<rect class="cell" x="10" y="190" width="300" height="160" rx="10"/>
+<text class="lab" x="26" y="218">C · prefers-color-scheme</text>
+<rect class="ac" x="26" y="240" width="42" height="42" rx="8"/>
+<text class="lab" x="82" y="266" font-size="18"><tspan class="only-dark">detected: DARK</tspan><tspan class="only-light">detected: LIGHT</tspan></text>
+<text class="hint" x="26" y="322">PASS: matches your OS / GitHub theme</text>
+
+<!-- D: prefers-reduced-motion -->
+<rect class="cell" x="330" y="190" width="300" height="160" rx="10"/>
+<text class="lab" x="346" y="218">D · prefers-reduced-motion</text>
+<rect class="ac rm" x="457" y="267" width="36" height="36" rx="7"/>
+<text class="lab" x="346" y="334" font-size="14"><tspan class="rm-off">motion ON — square spins</tspan><tspan class="rm-on">motion REDUCED — square is still</tspan></text>
+</svg>
