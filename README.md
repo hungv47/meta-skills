@@ -13,6 +13,8 @@ A composable skill stack for [AI agents](https://agentskills.io/home), spanning 
 
 Skills chain. Each one reads what earlier skills left behind — in conversation or in `.forsvn/` artifacts — so output compounds as you move through the stack. Not sure where to start? Run `/forsvn`, the single front door.
 
+![The Agent Skills stack — four skill domains feed a central .forsvn artifact store, which feeds manifest, loops, and review](./assets/banners/forsvn-skills-systemmap.svg)
+
 **Install — one plugin, all 40 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
 
 > **Plugin name:** the Claude plugin is `forsvn-skills`; the repository URL remains `github.com/hungv47/meta-skills` so existing links keep working.
