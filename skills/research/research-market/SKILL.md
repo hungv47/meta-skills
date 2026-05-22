@@ -77,10 +77,10 @@ Critic agent verifies before delivery — body checklist below is the 10-bullet 
 
   | Artifact | Source | Benefit |
   |----------|--------|---------|
-  | `product-context.md` | icp-research | Better competitor selection and gap identification |
+  | `product-context.md` | research-icp | Better competitor selection and gap identification |
   | `diagnose.md` | diagnose | Known root causes focus analysis on relevant dimensions |
 
-- **Consumed by:** prioritize (Top 3 Opportunities feed Initiative evidence + Difficulty informs Effort scoring); icp-research (Underserved Segments inform persona scoping); system-architecture (Competitive Landscape informs build-vs-buy); campaign-plan (Positioning Map + Top 3 anchor messaging; Community & Mindshare informs channel mix); fundraising-deck readers (Market Sizing + Competitive Landscape Overview + Top 3 — the "market" slide source)
+- **Consumed by:** prioritize (Top 3 Opportunities feed Initiative evidence + Difficulty informs Effort scoring); research-icp (Underserved Segments inform persona scoping); architect-system (Competitive Landscape informs build-vs-buy); plan-campaign (Positioning Map + Top 3 anchor messaging; Community & Mindshare informs channel mix); fundraising deck preparation (Market Sizing + Competitive Landscape Overview + Top 3 — the "market" slide source)
 - **Cross-stack OUTPUT contract:** Artifact Template structure + 8 required sections + 6 Competitive Landscape sub-sections + Top 3 Opportunities 6-column schema + Adjacent Competitors 5-column schema + Gap Analysis 4-dimension format + Next Step block are all load-bearing — schema changes require atomic update of 5+ consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---
@@ -89,7 +89,7 @@ Critic agent verifies before delivery — body checklist below is the 10-bullet 
 
 **Previous:** none (Strategy track entry point) | **Next:** `prioritize`, `research-icp` (both downstream).
 
-**Foundational role:** market-research and `diagnose` are the two entry points of the Strategy track (`parallel-with` each other). market-research creates `research/market-research.md` — the canonical market record that prioritize, system-architecture, campaign-plan, and fundraising-deck readers consume.
+**Foundational role:** research-market and `diagnose` are the two entry points of the Strategy track (`parallel-with` each other). research-market creates `research/market-research.md` — the canonical market record that prioritize, architect-system, plan-campaign, and fundraising deck preparation consume.
 
 **Re-run triggers (operator judgment):** New market entry, major competitor launch/pivot, fundraising, or quarterly for fast-moving categories.
 

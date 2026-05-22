@@ -60,7 +60,7 @@ Critic agent verifies before delivery — body checklist below is the 9-bullet o
 
 ## Artifact Contract
 
-- **Path:** `research/icp-research.md` (canonical, top-level) + `research/product-context.md` (canonical foundational record — icp-research IS the producer)
+- **Path:** `research/icp-research.md` (canonical, top-level) + `research/product-context.md` (canonical foundational record — research-icp IS the producer)
 - **Lifecycle:** `canonical` (per `agent-skills/CLAUDE.md` taxonomy — edited in place by humans, kept forever; on re-run rename prior to `research/icp-research.v[N].md` and increment)
 - **Frontmatter fields:** `skill`, `version` (integer artifact version, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below)
 - **Required body sections (in order — cross-stack contract):** Persona 1 (Demographics + Pain Profile + Decision Psychology + Habitat Map) · Persona 2 (if applicable, max 2) · Top 3 Emotional Drivers · Red Flags · Next Step (full schema + 60+ line Artifact Template in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
@@ -74,7 +74,7 @@ Critic agent verifies before delivery — body checklist below is the 9-bullet o
 
   | Artifact | Source | If Missing |
   |----------|--------|------------|
-  | `product-context.md` | icp-research | **INTERVIEW** for 8 product dimensions, save to `research/product-context.md`. |
+  | `product-context.md` | research-icp | **INTERVIEW** for 8 product dimensions, save to `research/product-context.md`. |
 
 - **Optional Artifacts** (per `format-conventions.md`):
 
@@ -82,7 +82,7 @@ Critic agent verifies before delivery — body checklist below is the 9-bullet o
   |----------|--------|---------|
   | `diagnose.md` | diagnose (hungv47/research-skills) | Problem context sharpens audience research |
 
-- **Consumed by:** campaign-plan (personas + habitat for channel mix); brand-system (voice + emotional drivers + red flags); copywriting (target reader + pain + voice + objections); lp-brief (personas + decision psychology); design-brief (personas + red flags); ad-copy (Pain Profile + objections + trust signals); cold-outreach (demographics + decision psychology trigger + research path); short-form-research / short-form-brief (habitat + emotional drivers); humanmaxxing / seo / vn-tone (voice + canonical terminology); social-copy (personas + voice + emotional drivers)
+- **Consumed by:** plan-campaign (personas + habitat for channel mix); create-brand (voice + emotional drivers + red flags); write-copy (target reader + pain + voice + objections); brief-landing-page (personas + decision psychology); brief-graphic (personas + red flags); write-ad (Pain Profile + objections + trust signals); write-outreach (demographics + decision psychology trigger + research path); research-shortform / brief-shortform (habitat + emotional drivers); humanmaxxing / optimize-seo / polish-vn (voice + canonical terminology); write-social (personas + voice + emotional drivers)
 - **Cross-stack OUTPUT contract:** Artifact Template structure + Habitat Map 5-column schema + Top 3 Emotional Drivers section + Next Step block + product-context.md 8-section schema are all load-bearing — schema changes require atomic update of 13 downstream consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---
@@ -125,7 +125,7 @@ Three routes; chosen at Pre-Dispatch (Cold Start Q5 or auto-inferred per `proced
 |---|---|---|
 | **B — Full ICP** (default) | Comprehensive audience research; messaging + channel + positioning decisions | L1 parallel (persona + VoC + habitat) → L2 sequential (pain → psychology → synthesis → critic) |
 | **A — Quick ICP** | Single persona, known audience, time-constrained; OR `--fast` with sufficient Warm Start context | L1 parallel (persona + VoC, skip habitat) → L2 sequential (pain → synthesis → critic, skip decision-psychology) |
-| **C — Called by Another Skill** | Invoked by campaign-plan, brand-system, copywriting, ... | Read context from caller's artifacts; check `research/icp-research.md` freshness — Fresh (<30 days) return existing; Stale (>30 days) warn caller + recommend re-run; Missing → run Route B |
+| **C — Called by Another Skill** | Invoked by plan-campaign, create-brand, write-copy, ... | Read context from caller's artifacts; check `research/icp-research.md` freshness — Fresh (<30 days) return existing; Stale (>30 days) warn caller + recommend re-run; Missing → run Route B |
 
 Mechanics (6-step Dispatch Protocol, single-agent fallback, Layer 1/2 spawn details, critic FAIL routing per Rewrite Routing Table, post-write side effects, chain position, mode-resolver interaction) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 

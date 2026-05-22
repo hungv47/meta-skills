@@ -16,7 +16,7 @@ metadata:
 
 **Core Question:** "What do multiple perspectives converge on — and where do they genuinely disagree?"
 
-This is the centralized multi-perspective analysis capability. When any skill needs debate, consensus, or multiple viewpoints on a decision, it invokes agents-panel.
+This is the centralized multi-perspective analysis capability. When any skill needs debate, consensus, or multiple viewpoints on a decision, it invokes debate-agents.
 
 [Read `references/playbook.md` [PLAYBOOK] to understand methodology, principles, when NOT to use, and the constraint-vs-perspective assignment trade-off.]
 
@@ -35,7 +35,7 @@ Callers (typical: `discover`, `prioritize`, `architect-system`) frame a specific
 ```
 1. Frame the specific decision as a clear problem statement
 2. Include relevant context gathered so far
-3. Invoke agents-panel with mode (debate/poll) and agent count
+3. Invoke debate-agents with mode (debate/poll) and agent count
 4. Receive the report: consensus, disagreements, recommendation
 5. Integrate the recommendation into the ongoing conversation
 6. Result lives in context for this run — skip the disk write unless the user asks
@@ -52,8 +52,8 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
    Resolved mode: <fast|standard|deep> (<reason>). Run as <mode>? [Y / fast / deep]
    ```
 1. Read `implementation-roadmap/canonical-paths.md` if present.
-2. **Sub-routine invocations skip steps 1+2** — the calling skill is responsible for problem framing AND for having read its own foundation files. Agents-panel inherits the caller's context.
-3. No `experience/` dimension read — agents-panel does not carry persistent state across sessions. Each invocation is fresh.
+2. **Sub-routine invocations skip steps 1+2** — the calling skill is responsible for problem framing AND for having read its own foundation files. debate-agents inherits the caller's context.
+3. No `experience/` dimension read — debate-agents does not carry persistent state across sessions. Each invocation is fresh.
 
 ## Critical Gates
 
@@ -86,7 +86,7 @@ Debating "[problem]" with [N] agents over [R] rounds — proceed?
 **Standalone — Cold Start** (problem fuzzy or invocation lacks framing):
 
 ```
-agents-panel runs N specialist perspectives on a decision and synthesizes
+debate-agents runs N specialist perspectives on a decision and synthesizes
 the result. Before I spawn:
 
 1. **Problem** — state the decision in one paragraph. Specific enough that
@@ -102,7 +102,7 @@ the result. Before I spawn:
 Answer 1-4 in one response. I'll spawn.
 ```
 
-**Write-back:** none. agents-panel doesn't persist to `.forsvn/experience/` — decisions are dated immutable records, not running context.
+**Write-back:** none. debate-agents doesn't persist to `.forsvn/experience/` — decisions are dated immutable records, not running context.
 
 ## Mode Routing
 

@@ -216,5 +216,5 @@ Every run ends with explicit status:
 - [`references/report-template.md`](references/report-template.md) [PROCEDURE] — output template + slug convention + status semantics
 - [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — orchestration + reviewer + resolver + specialist + critic-consensus + scope-drift anti-patterns + edge cases
 - [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE] — canonical Pre-Dispatch contract
-- [`references/_shared/quality-feedback-protocol.md`](references/_shared/quality-feedback-protocol.md) — when to log critic overrides / repeated disagreements / post-humanize regressions
+- [`references/_shared/quality-feedback-protocol.md`](references/_shared/quality-feedback-protocol.md) — when to log critic overrides / repeated disagreements / post-humanmaxxing regressions
 - `agent-skills/CLAUDE.md` §"Artifact Placement" — lifecycle taxonomy (umbrella dependency; not shipped under `npx skills add` standalone install; the `snapshot` lifecycle this skill emits is fully documented inline in the Artifact Contract block above)

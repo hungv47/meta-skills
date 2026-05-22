@@ -158,24 +158,9 @@ bun scripts/append-loop-result.ts "<loop slug>" \
 
 ## Critic Override Protocol
 
-When the operator explicitly chooses to ship despite a critic FAIL (or accept a `pass-with-concerns` verdict that the rubric flagged), **log the override before doing anything else.** The override log is the only mechanism that turns repeated operator pushback into a rubric-revision signal (`references/_shared/quality-feedback-protocol.md § Critic Override Log` + `references/_shared/quality-dashboard-spec.md § Rubric Metrics`).
+When the operator ships a cycle despite a critic FAIL — or accepts a flagged `pass-with-concerns` verdict — **log the override before doing anything else**, before writing the artifact or appending the ledger row: `bun scripts/eval/log-critic-override.ts --skill evaluate-ad …`. The override log feeds the shared quality system (`quality-feedback-protocol` § Critic Override Log + `quality-dashboard-spec` § Rubric Metrics), turning repeated pushback into a rubric-revision signal.
 
-```bash
-bun scripts/eval/log-critic-override.ts \
-  --skill evaluate-ad \
-  --dimension "<failed rubric dimension>" \
-  --artifact "<project-relative path to the eval artifact under review>" \
-  --critic-verdict <fail|pass-with-concerns> \
-  --operator-decision <ship|revise|ignore> \
-  --reason "<one sentence — why the override is justified>" \
-  --follow-up "<none|watch metric|revise rubric|extract shared rubric>"
-```
-
-The script appends a dated block to `.forsvn/artifacts/meta/records/critic-overrides.md`. After three valid overrides on the same `skill:dimension` pair, the rubric should be revised (escalation handled by the dashboard's `rubrics[skill:dimension].action` field — see quality-dashboard-spec.md).
-
-Only after the override is logged may the cycle proceed. The ledger row status (`results.tsv`) reflects the actual cycle outcome — operator override does NOT promote a contested cycle to `keep`; pick `watch` or `discard` if the underlying evidence does not support `keep`.
-
-If the operator does NOT override and the critic FAILs, the default rule above stands: return `BLOCKED`, do not append the row.
+Full protocol — the complete `log-critic-override.ts` invocation, the three-override rubric-revision escalation, and the two rules an override never relaxes (it never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`): [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ---
 

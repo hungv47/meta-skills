@@ -58,8 +58,8 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voic
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `brand/BRAND.md` | brand-system | Recommended — voice rules + lexicon |
-| `research/product-context.md` | icp-research | Recommended — voice adjectives + audience register |
+| `brand/BRAND.md` | create-brand | Recommended — voice rules + lexicon |
+| `research/product-context.md` | research-icp | Recommended — voice adjectives + audience register |
 | `.forsvn/artifacts/mkt/content/[slug].md` | upstream | Optional — if polishing a prior artifact, extract source skill from frontmatter |
 | `.forsvn/experience/brand.md` | (any skill) | Optional — `Voice — adjectives` key if user previously persisted |
 
@@ -113,7 +113,7 @@ ROUTE B (text ≥ 200 words, full):
 
 ROUTE C (called by another skill):
   1. Pre-Dispatch: trust calling skill's pre-resolved voice + content_type + protected_tokens + detector_mode
-  2. If content already passed copywriting's Seven-Sweeps: skip pattern-scanner, dispatch compression + critic only
+  2. If content already passed write-copy's Seven-Sweeps: skip pattern-scanner, dispatch compression + critic only
   3. Otherwise: Layer 1 (no user checkpoint) → Layer 2
   4. Return polished text + metadata to calling skill (no standalone artifact file)
   5. Run protected-token regression if `protected_tokens` was passed
@@ -158,49 +158,6 @@ This skill's examples are marketing-focused, but it works on any content type. A
 
 Full template + per-section format rules (date format, typography binary gate, frontmatter + body section headers, Change Log row format, quality_score format, detector_status field values, protected_tokens_preserved field values) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
-### Artifact Template
-
-```markdown
----
-skill: humanmaxxing
-version: 1
-date: [today's date]
-status: done | done_with_concerns | blocked | needs_context
-compression: [X]%
-detector_status: not_run | proxy_pass | proxy_fail | pangram_pass | pangram_fail
-protected_tokens_preserved: true | false
----
-
-# Humanmaxxed: [Original Title]
-
-## Humanization Summary
-
-| Metric | Value |
-|--------|-------|
-| Words (original) | [count] |
-| Words (humanmaxxed) | [count] |
-| Compression | [X]% |
-| AI patterns found | [count] |
-| AI patterns fixed | [count] |
-| Hard Tells remaining | 0 |
-| Soft Tells remaining | [0-2] |
-| Quality score | [X]/50 (Di:[n] R:[n] T:[n] A:[n] De:[n]) |
-| Detector status | [not_run / proxy_pass / proxy_fail / pangram_pass / pangram_fail] |
-| Protected tokens preserved | [yes/no/N/A] |
-
-## Change Log
-
-| Location | Original | Change | Rule |
-|----------|----------|--------|------|
-| [para/section] | "[original text]" | "[new text]" or [deleted] | Pattern #[N] / Compression / Voice |
-
----
-
-[Humanmaxxed content here]
-```
-
-> On re-run: rename existing artifact to `[slug].humanmaxxed.v[N].md` and create new with incremented version.
-
 ---
 
 ## Anti-Patterns
@@ -223,7 +180,7 @@ Every run ends with explicit status:
 
 ## Worked Example
 
-End-to-end Route B walkthrough (AI-generated SaaS onboarding blog post, 178 words → 91 words, 49% compression, 40/50 PASS cycle 1) + FAIL-handling cycle-2 variant + `--fast` variant + Route C variant (called by cold-outreach with protected_tokens): [`references/examples/humanmaxxing-walkthrough.md`](references/examples/humanmaxxing-walkthrough.md) [EXAMPLE].
+End-to-end Route B walkthrough (AI-generated SaaS onboarding blog post, 178 words → 91 words, 49% compression, 40/50 PASS cycle 1) + FAIL-handling cycle-2 variant + `--fast` variant + Route C variant (called by write-outreach with protected_tokens): [`references/examples/humanmaxxing-walkthrough.md`](references/examples/humanmaxxing-walkthrough.md) [EXAMPLE].
 
 ---
 

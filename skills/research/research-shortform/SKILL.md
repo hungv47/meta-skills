@@ -88,44 +88,6 @@ Mechanics (how to spawn agents, parallel/sequential tables, critic routing rules
 
 ---
 
-## Output Artifact Structure
-
-`.forsvn/artifacts/research/short-form-research/[slug].md` (frontmatter shown; full template in §5 of `.forsvn/artifacts/meta/specs/short-form-research-spec.md`):
-
-```yaml
----
-type: short-form-research
-status: done | done_with_concerns | blocked | needs_context
-date: [YYYY-MM-DD]
-topic: [free text]
-market: [region or 'global']
-platforms_analyzed: [list]
-platform_mechanics_date: [YYYY-MM-DD]
-mechanics_sources_verified:
-  - source: [name]
-    url: [url]
-    last_updated: [YYYY-MM-DD]
-trend_signals_date: [YYYY-MM-DD]
-sample_size_per_platform:
-  tiktok: { n: [int], flag: OK | LOW_SAMPLE | INSUFFICIENT_DATA }
-  reels: { ... }
-  shorts: { ... }
-icp_referenced: yes | no — using cold-start audience hint
----
-```
-
-**Body sections (in order):**
-1. TL;DR — top 5 platform-tagged recommendations
-2. Audience Fit
-3. Per-Platform Findings (TikTok → Reels → Shorts → opt-in others)
-4. Cross-Platform Comparison table
-5. Trending Audio (TikTok + Reels only, conditional)
-6. Recommendations for short-form-brief
-7. Open Risks & Caveats
-8. What This Research Doesn't Cover
-
-Format conventions (date format, URL handling, citation pattern, sample-size flag placement, per-platform ordering, frontmatter field order, recommendation format) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
 ## Anti-Patterns
 
 Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — covers orphan claims, multi-market mixing, sample-size dishonesty, stale mechanics, generic recommendations, critic-loop overrun, cross-stack contract drift, and 8 more failure modes.

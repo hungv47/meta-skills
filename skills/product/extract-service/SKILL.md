@@ -170,4 +170,4 @@ Every run ends with explicit status:
 - [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — failure modes + When NOT to extract + When the critic FAILs
 - [`references/report-template.md`](references/report-template.md) [PROCEDURE] — artifact frontmatter + Migration Plan / Applied Migration section template
 - [`references/examples/extraction-walkthrough.md`](references/examples/extraction-walkthrough.md) [EXAMPLE] — TypeScript service extraction end-to-end
-- **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, manifest-spec, anti-sycophancy, artifact-contract-template}.md` — synced via `scripts/sync-skill-support.mjs` (currently broken for the 2.0 layout; listed as expected dependencies for when sync is fixed, per the D13/D19 finding)
+- **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, manifest-spec, anti-sycophancy, artifact-contract-template}.md` — synced via `scripts/sync-skill-support.mjs`

@@ -88,55 +88,6 @@ Mechanics (how to spawn agents, Layer 1/2 spawn tables, critic routing rules, si
 
 ---
 
-## Output Artifact Structure
-
-`.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md`:
-
-```yaml
----
-type: short-form-eval
-status: done | done_with_concerns | blocked | needs_context
-date: [YYYY-MM-DD]
-cycle: [N]
-loop: [slug]
-post_url: [url]
-brief_path: [path]
-catalog_path: [path]
-catalog_freshness: fresh | warn | stale
-topic: [from brief]
-market: [from brief]
-platform: [tiktok | reels | shorts | x | linkedin]
-rubric_version: "0.1"
-rubric_status: provisional
-weighting: cycle-1-70-obs-30-score | cycle-2-plus-balanced
-scores:
-  brief-fidelity: [0-3]
-  hook-strength-vs-platform-intel: [0-3]
-  pattern-log-entry-shape: [0-3]
-  platform-signal-freshness-flag: [0-3]
-  author-discretion: [0-3]
----
-```
-
-**Body sections (in order):**
-
-1. TL;DR — one paragraph: did the brief land, what shifted, what's the pattern-log entry
-2. Observation — what the post actually did on the platform (engagement mix, opening 1-3s, caption, CTA placement, audio choice). Cycle 1: this section is the longest.
-3. Brief vs Observed — side-by-side: what the brief claimed, what the platform did. Each row cites both sides.
-4. Rubric Scores (v0.1, provisional) — per dimension, score + falsifiable justification. Author-discretion at lower weight.
-5. Pattern-Log Entry — exactly one block in the canonical shape:
-   ```
-   ### Pattern: [name]
-   **Claim:** [what this cycle suggests is true]
-   **Evidence:** [URLs, metrics, citations]
-   **Refutability:** [what would prove this wrong]
-   **Expiry:** [conditions or timeframe after which this claim should be re-tested]
-   ```
-6. Open Risks & Caveats — including premature-rubric-lock risk if applicable
-7. Recommendations for next cycle / catalog — does the catalog need a refresh, does the rubric need a revision now (mandatory at cycle 2-3), did a new archetype emerge
-
-Format conventions (date format, URL handling, inline citation pattern, rubric score format, pattern-log entry shape, cycle index agreement) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
 ## Anti-Patterns
 
 Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — covers premature rubric lock, treating cycle 1 as a graded test, fabricated metrics, free-form pattern claims, skipping refutability, author-discretion dominating, missing post-write side effects, cross-stack contract drift, and 7 more failure modes.

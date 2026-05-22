@@ -41,9 +41,9 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load product c
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `icp-research.md` | icp-research | Recommended — audience search behavior drives strategy |
-| `campaign-plan.md` | campaign-plan | Optional — pillars inform topic clusters |
-| `product-context.md` | icp-research | Optional — positioning context |
+| `icp-research.md` | research-icp | Recommended — audience search behavior drives strategy |
+| `campaign-plan.md` | plan-campaign | Optional — pillars inform topic clusters |
+| `product-context.md` | research-icp | Optional — positioning context |
 
 ---
 

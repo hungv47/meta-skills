@@ -72,15 +72,15 @@ Critic agent verifies before delivery against the 5-dimension rubric in [`refere
 
   | Artifact | Source | If Missing |
   |----------|--------|------------|
-  | `brand/BRAND.md` OR `brand_mode=founder` fallback | brand-system | If neither present, ask Q3 explicitly; if user can't answer, return `NEEDS_CONTEXT`. |
+  | `brand/BRAND.md` OR `brand_mode=founder` fallback | create-brand | If neither present, ask Q3 explicitly; if user can't answer, return `NEEDS_CONTEXT`. |
 
 - **Optional Artifacts** (per `format-conventions.md`):
 
   | Artifact | Source | Benefit |
   |----------|--------|---------|
   | `short-form-brief/[slug]/brief.md` | short-form-brief | Locks platform + hook angle + audience + goal; reduces Cold Start to brand_mode + variant_count |
-  | `research/icp-research.md` | icp-research (hungv47/research-skills) | Resolves audience dimension; gives critic richer voice/brand-mode signal |
-  | `research/product-context.md` | icp-research (hungv47/research-skills) | Gives copywriter primary CTA + canonical terminology |
+  | `research/icp-research.md` | research-icp (hungv47/research-skills) | Resolves audience dimension; gives critic richer voice/brand-mode signal |
+  | `research/product-context.md` | research-icp (hungv47/research-skills) | Gives copywriter primary CTA + canonical terminology |
 
 - **Consumed by:** `humanmaxxing` + `polish-vn` (polish chain — read `## Body` + `## CTA`, rewrite in place, preserve Hook variants for A/B comparability, update `polish_chain_applied`); `run-eval-loop` (frontmatter `critic_score` + `critic_verdict` + `goal` + `platform` → `results.tsv`); operator publish workflow (Hook variants + Body + CTA + Format spec + Critic verdict + Anti-patterns triggered)
 - **Cross-stack OUTPUT contract:** 13-field frontmatter schema + 6-section body schema + 5-dimension critic verdict table + Anti-patterns triggered listing convention are all load-bearing — schema changes require atomic update of polish-chain + eval-loop + operator-workflow consumers (per `anti-patterns.md` row "Cross-stack contract drift")
@@ -91,7 +91,7 @@ Critic agent verifies before delivery against the 5-dimension rubric in [`refere
 
 **Previous:** `brief-shortform` (when brief locks platform/hook/audience/goal) OR `plan-campaign` (when campaign declares social cadence) OR none (greenfield with Cold Start) | **Next:** `humanmaxxing` / `polish-vn` (polish chain, optional) OR direct operator publish.
 
-**Horizontal role:** invoked at any stage of the marketing pipeline. NOT foundational (unlike icp-research / brand-system) — it's a leaf-node producer.
+**Horizontal role:** invoked at any stage of the marketing pipeline. NOT foundational (unlike research-icp / create-brand) — it's a leaf-node producer.
 
 **Re-run triggers (operator judgment):** new platform target, brand voice shift, hook A/B variant exploration, post-publish underperformance (re-run with different `variant_count` and/or `goal`).
 
@@ -113,13 +113,13 @@ Critic agent verifies before delivery against the 5-dimension rubric in [`refere
 | Format Checker Agent | 2 (sequential) | `agents/format-checker-agent.md` | Hard caps + soft visible-window + CTA placement vs truncation + format-spec correctness. Hard-cap violations bounce back to copywriter (max 1 revision cycle) |
 | Critic Agent | 3 (final, single-pass) | `agents/critic-agent.md` | Scores against 5-dim rubric. Outputs per-dimension table + verdict + anti-patterns triggered. No rewrite loop (single-pass by design — short-form regenerates fast) |
 
-**Why 3 agents:** Splitting into more (hook-agent + body-agent + CTA-agent separately) introduces collision risk during merge — flagged in copywriting contract `unknowns_pending_observation.layer_1_agent_collision_frequency`. Three is the floor for multi-agent dispatch and the ceiling for short-form-craft skills.
+**Why 3 agents:** Splitting into more (hook-agent + body-agent + CTA-agent separately) introduces collision risk during merge — flagged in write-copy contract `unknowns_pending_observation.layer_1_agent_collision_frequency`. Three is the floor for multi-agent dispatch and the ceiling for short-form-craft skills.
 
 ---
 
 ## Routing + Dispatch
 
-Single sequential graph; no route branching (unlike icp-research's A/B/C). The 3-agent dispatch graph (copywriter → format-checker → critic), single-agent fallback, format-check bounce + FORMAT_FAIL escalation, polish-chain handoff, post-write side effects, and mode-resolver interaction live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at copywriter-agent dispatch entry.
+Single sequential graph; no route branching (unlike research-icp's A/B/C). The 3-agent dispatch graph (copywriter → format-checker → critic), single-agent fallback, format-check bounce + FORMAT_FAIL escalation, polish-chain handoff, post-write side effects, and mode-resolver interaction live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at copywriter-agent dispatch entry.
 
 **Format-check bounce rule (load-bearing summary):** PASS → critic. REVISION_REQUIRED → bounce to copywriter ONCE with named violations under `## Format-Checker Feedback — Address Every Violation` header. Second REVISION_REQUIRED → FORMAT_FAIL escalated to user, artifact ships `status: blocked`, critic NOT dispatched.
 
