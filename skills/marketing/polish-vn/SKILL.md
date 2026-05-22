@@ -56,7 +56,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voic
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/product-context.md` | icp-research | Recommended — brand voice → register inference (Register Resolution priority 2) |
+| `research/product-context.md` | research-icp | Recommended — brand voice → register inference (Register Resolution priority 2) |
 | `.forsvn/artifacts/mkt/content/[slug].md` | upstream | Optional — if polishing a prior artifact, extract register from frontmatter if present |
 | `.forsvn/experience/brand.md` | (any skill) | Optional — `Brand — VN target register` key if user previously persisted a default |
 
@@ -122,55 +122,6 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1 user checkpoint d
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" — never silently drift
 
 Full template + per-section format rules (date format DD/MM/YYYY in content vs ISO 8601 in frontmatter, pronoun-pair table per register, particle density per register, typography rules, Change Log row format) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
-### Artifact Template
-
-```markdown
----
-skill: polish-vn
-version: 1
-date: [today's date]
-status: done | done_with_concerns | blocked | needs_context
-target_register: [bao-chi | semi-casual | bro | pop-marketing]
-subvariant: [if applicable: bro-otofun | bro-voz]
-dialect: [north | south | neutral]
-critic_score: [N]/36
----
-
-# VN Tone Polish: [Original Title or Slug]
-
-## Polish Summary
-
-| Metric | Value |
-|---|---|
-| Original words | [count] |
-| Polished words | [count] |
-| Hard Tells found | [count] |
-| Hard Tells fixed | [count] |
-| Soft Tells fixed | [count] |
-| Pronoun pair | [self ↔ reader] |
-| Particle density | [actual %] (target [range]) |
-| Critic score | [N]/36 |
-| Cycles used | [1 or 2] |
-
-## Change Log
-
-| Location | Before | After | Rule |
-|---|---|---|---|
-| [P-S ref] | "[original]" | "[polished]" | [rule ID] |
-
-## Polished Text
-
-[Full rewritten Vietnamese text here]
-
-## Status
-
-**[DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT]**
-
-[If DONE_WITH_CONCERNS: list the remaining Soft Tells and why they were kept. If BLOCKED: state what's missing. If NEEDS_CONTEXT: state what upstream skill would provide it.]
-```
-
-> On re-run: rename existing artifact to `[slug].vn-tone.v[N].md` and create new with incremented version.
 
 ---
 

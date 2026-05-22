@@ -105,7 +105,7 @@ Full per-layer dispatch tables + critic revision-cycle semantics + side-effects 
 - **Frontmatter:** 10 fields (skill / version / date / status / summary / purpose / lifecycle / use_when / do_not_use_when / upstream / downstream) — see [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]
 - **Body:** 8 sections (Title / Verdict / Evidence 6-col table / What Changed This Cycle / Diagnosis / Next Cycle Recommendation / Results Row 8-col TSV / Learning Promotion)
 - **Results Row schema:** 8 columns (cycle / date / artifact / primary_metric / value / baseline / status / description) — `status` must be `keep | discard | watch | blocked` (Critic Hard Fail #6 otherwise)
-- **Cross-stack contract:** consumed by future lp-eval cycles (trend analysis), by `lp-brief --rev=N+1` (hypothesis seeding), by humans reviewing loop progress. lp-eval does NOT directly consume lp-brief output — sibling coordination is at the eval-loop boundary, not artifact-schema boundary. Schema changes require atomic update across `_shared/eval-loop-spec.md` + downstream callers — never silently drift.
+- **Cross-stack contract:** consumed by future lp-eval cycles (trend analysis), by `brief-landing-page --rev=N+1` (hypothesis seeding), by humans reviewing loop progress. lp-eval does NOT directly consume brief-landing-page output — sibling coordination is at the eval-loop boundary, not artifact-schema boundary. Schema changes require atomic update across `_shared/eval-loop-spec.md` + downstream callers — never silently drift.
 
 Full evaluation artifact template byte-identical + Evidence table format + Results Row format + Learning Promotion rules + `append-loop-result.ts` invocation + known-limitation on custom 10+ column schemas: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
@@ -153,24 +153,9 @@ bun scripts/append-loop-result.ts "<loop slug>" \
 
 ## Critic Override Protocol
 
-When the operator explicitly chooses to ship despite a critic FAIL (or accept a `pass-with-concerns` verdict that the rubric flagged), **log the override before doing anything else.** The override log is the only mechanism that turns repeated operator pushback into a rubric-revision signal (`references/_shared/quality-feedback-protocol.md § Critic Override Log` + `references/_shared/quality-dashboard-spec.md § Rubric Metrics`).
+When the operator ships a cycle despite a critic FAIL — or accepts a flagged `pass-with-concerns` verdict — **log the override before doing anything else**, before writing the artifact or appending the ledger row: `bun scripts/eval/log-critic-override.ts --skill evaluate-landing-page …`. The override log feeds the shared quality system (`quality-feedback-protocol` § Critic Override Log + `quality-dashboard-spec` § Rubric Metrics), turning repeated pushback into a rubric-revision signal.
 
-```bash
-bun scripts/eval/log-critic-override.ts \
-  --skill evaluate-landing-page \
-  --dimension "<failed rubric dimension>" \
-  --artifact "<project-relative path to the eval artifact under review>" \
-  --critic-verdict <fail|pass-with-concerns> \
-  --operator-decision <ship|revise|ignore> \
-  --reason "<one sentence — why the override is justified>" \
-  --follow-up "<none|watch metric|revise rubric|extract shared rubric>"
-```
-
-The script appends a dated block to `.forsvn/artifacts/meta/records/critic-overrides.md`. After three valid overrides on the same `skill:dimension` pair, the rubric should be revised (escalation handled by the dashboard's `rubrics[skill:dimension].action` field — see quality-dashboard-spec.md).
-
-Only after the override is logged may the cycle proceed. The ledger row status (`results.tsv`) reflects the actual cycle outcome — operator override does NOT promote a contested cycle to `keep`; pick `watch` or `discard` if the underlying evidence does not support `keep`.
-
-If the operator does NOT override and the critic FAILs, the default rule above stands: return `BLOCKED`, do not append the row.
+Full protocol — the complete `log-critic-override.ts` invocation, the three-override rubric-revision escalation, and the two rules an override never relaxes (it never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`): [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ---
 
@@ -199,5 +184,5 @@ End with one status:
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric}.md`
 - **Agents:** 4 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 6-dimension 0-10 Pass/Fail Rubric (Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Boundary Control / Ledger Correctness) + 4-tier Verdict + 7 Hard Fails.
-- **Sibling coordination:** `brief-landing-page` (construction-time architecture; this skill routes recommendations TO lp-brief but does not produce briefs); `run-eval-loop` (owns loop scaffolding + `program.md` + `context.md` + `results.tsv` schema + durable learning ledger).
+- **Sibling coordination:** `brief-landing-page` (construction-time architecture; this skill routes recommendations TO brief-landing-page but does not produce briefs); `run-eval-loop` (owns loop scaffolding + `program.md` + `context.md` + `results.tsv` schema + durable learning ledger).
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits

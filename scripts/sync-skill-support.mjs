@@ -65,6 +65,7 @@ const SUPPORT_REFS = {
   "before-starting-check.md": "references/before-starting-check.md",
   "reviewable-artifact-contract.md": "references/reviewable-artifact-contract.md",
   "roughdraft-review-protocol.md": "references/roughdraft-review-protocol.md",
+  "critic-override-protocol.md": "references/critic-override-protocol.md",
   "hypothesis-framework.md": "skills/research/_shared/hypothesis-framework.md",
   "confidence-labeling.md": "skills/research/_shared/confidence-labeling.md",
   "marketing-foundations.md": "skills/marketing/_shared/marketing-foundations.md",
@@ -300,6 +301,7 @@ function syncSkill(dir) {
   if (/before-starting-check/.test(corpus)) addRef("before-starting-check.md");
   if (/reviewable-artifact-contract/.test(corpus)) addRef("reviewable-artifact-contract.md");
   if (/roughdraft-review-protocol/.test(corpus)) addRef("roughdraft-review-protocol.md");
+  if (/critic-override-protocol/.test(corpus)) addRef("critic-override-protocol.md");
   if (/hypothesis-framework/.test(corpus)) addRef("hypothesis-framework.md");
   if (/confidence-labeling/.test(corpus)) addRef("confidence-labeling.md");
   if (/marketing-foundations/.test(corpus)) addRef("marketing-foundations.md");

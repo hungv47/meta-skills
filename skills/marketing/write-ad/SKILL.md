@@ -9,7 +9,7 @@ metadata:
   estimated-cost: "$1-2"
 ---
 
-# Ad Copy — Orchestrator
+# Write Ad — Orchestrator
 
 *Communication — Horizontal. Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic (cold) audiences. Multi-agent strategy → draft → format → voice → critic → humanmaxxing pipeline.*
 
@@ -45,14 +45,14 @@ After critic PASS, `humanmaxxing` is the terminal pass on each variant. Orchestr
 
 ## Before Starting
 
-Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-context.md + icp-research.md + brand/BRAND.md + campaign-plan.md (if Route B), identify any prior ad-copy artifact for the same audience-temp + offer, check freshness windows on ICP / product-context (>30d → recommend `research-icp` re-run with soft gate).
+Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-context.md + icp-research.md + brand/BRAND.md + campaign-plan.md (if Route B), identify any prior write-ad artifact for the same audience-temp + offer, check freshness windows on ICP / product-context (>30d → recommend `research-icp` re-run with soft gate).
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/product-context.md` | icp-research | Recommended — voice adjectives + accuracy constraints + proof points + Unique Mechanism |
-| `research/icp-research.md` | icp-research | Recommended — primary persona + VoC pain language |
-| `brand/BRAND.md` | brand-system | Recommended — voice anchors + banned-language list |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Optional — if ad-copy is part of broader campaign (Route B) |
+| `research/product-context.md` | research-icp | Recommended — voice adjectives + accuracy constraints + proof points + Unique Mechanism |
+| `research/icp-research.md` | research-icp | Recommended — primary persona + VoC pain language |
+| `brand/BRAND.md` | create-brand | Recommended — voice anchors + banned-language list |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — if write-ad output is part of broader campaign (Route B) |
 | `.forsvn/experience/{audience,product,business,brand}.md` | (any skill) | Optional — `Product — current offer` / `Product — proof points` keys if user previously persisted |
 
 ## Pre-Dispatch
@@ -76,7 +76,7 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget:
 | Strategist | 1 (solo) | `agents/strategist.md` | Picks angle archetype, audience-temperature framing (warm-obj-map vs cold-obj-map), CTA verb, creative-format implications, anchor-proof slot per variant. Surfaces spend-ceiling warning if `creative_format=repurposed-ugc`. |
 | Composer | 2 (sequential) | `agents/composer.md` | Drafts hero (primary text + headline + description) + Variant A + Variant B, each with a distinct anchor. Applies Meta-specific char-cap discipline (visible-window economy). |
 | Format Checker | 2 (sequential, hard-gate) | `agents/format-checker.md` | Hard-bounces on Meta char-cap violation, policy banned-phrase hit, missing substantiation on measured claims. PASS / REVISION_REQUIRED / FORMAT_FAIL. |
-| Voice Auditor | 2 (sequential) | `agents/voice-auditor.md` | Peer-voice audit — strips vendor-speak, AI tells, em-dashes, generic "leading provider" language. Same auto-fail discipline as cold-outreach voice-auditor, scoped to ad copy. |
+| Voice Auditor | 2 (sequential) | `agents/voice-auditor.md` | Peer-voice audit — strips vendor-speak, AI tells, em-dashes, generic "leading provider" language. Same auto-fail discipline as write-outreach voice-auditor, scoped to ad copy. |
 | Critic | 2 (sequential, gate) | `agents/critic.md` | Rubric scoring across 7 dimensions, PASS/FAIL with per-variant scorecards. Reads `references/rubric.md` for bands + `references/policy-floor.md` for banned wording + `references/anti-patterns.md` for structural auto-fails. |
 
 ### Shared References
@@ -104,7 +104,7 @@ ROUTE A (compose):
   7. Write 3 artifacts ([slug].md + .rationale.md + .critic-score.md)
   8. Deliver hero + 2 variants + rationale inline
 
-ROUTE B (called by campaign-plan):
+ROUTE B (called by plan-campaign):
   1. Pre-Dispatch: read campaign context from calling skill's artifact
   2. Execute Route A per audience-temperature requested (one invocation per temp — not stacked)
   3. Return annotated hero + 2 variants + rationale to calling skill
@@ -154,7 +154,7 @@ Slug pattern: `retargeting-2026-05-11-trial-app-followers` or `cold-2026-05-11-a
 
 ## Anti-Patterns
 
-Orchestrator + cross-cutting + 8 inherited sections: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 8 inherited sections (vendor-speak, AI-tells, fabrication, ceiling triggers, etc.) + §9 Orchestrator-Level (13 rows: cold-creative reused as retargeting, frequency creep, lookalikes on cold trial app, repurposed UGC at scale, purchase optimization on 3-day trial, banned health/finance/political claim, fabricated stat, paraphrase variants, em-dashes, generic "Quick question?" hooks, multi-CTA, double-humanmaxxing, change-everything-at-once) + §10 Cross-Cutting marketing-stack (4 rows: protected_tokens contract per-variant incl. URL, post-humanmaxxing regression per-variant, campaign-plan Route B context drop, artifact schema drift).
+Orchestrator + cross-cutting + 8 inherited sections: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 8 inherited sections (vendor-speak, AI-tells, fabrication, ceiling triggers, etc.) + §9 Orchestrator-Level (13 rows: cold-creative reused as retargeting, frequency creep, lookalikes on cold trial app, repurposed UGC at scale, purchase optimization on 3-day trial, banned health/finance/political claim, fabricated stat, paraphrase variants, em-dashes, generic "Quick question?" hooks, multi-CTA, double-humanmaxxing, change-everything-at-once) + §10 Cross-Cutting marketing-stack (4 rows: protected_tokens contract per-variant incl. URL, post-humanmaxxing regression per-variant, plan-campaign Route B context drop, artifact schema drift).
 
 ---
 

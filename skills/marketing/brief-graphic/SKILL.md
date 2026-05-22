@@ -52,13 +52,13 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand/BRAN
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `brand/BRAND.md` | brand-system | **REQUIRED** (hard gate) — voice, archetype, sacred elements |
-| `brand/DESIGN.md` | brand-system | **REQUIRED** (hard gate) — palette, typography, surface language, motion |
-| `brand/ASSETS.md` | brand-system Route B | Optional — auto-fill dimensions, tick checkbox on completion |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md` | lp-brief | Optional — slot spec when brief is for an LP asset |
-| `.forsvn/artifacts/mkt/content/[slug].copy.md` | copywriting | Optional — copy to use in the asset |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Optional — campaign context, awareness stage |
-| `research/icp-research.md` | icp-research | Optional — audience visual preferences |
+| `brand/BRAND.md` | create-brand | **REQUIRED** (hard gate) — voice, archetype, sacred elements |
+| `brand/DESIGN.md` | create-brand | **REQUIRED** (hard gate) — palette, typography, surface language, motion |
+| `brand/ASSETS.md` | create-brand Route B | Optional — auto-fill dimensions, tick checkbox on completion |
+| `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — slot spec when brief is for an LP asset |
+| `.forsvn/artifacts/mkt/content/[slug].copy.md` | write-copy | Optional — copy to use in the asset |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — campaign context, awareness stage |
+| `research/icp-research.md` | research-icp | Optional — audience visual preferences |
 
 ## Pre-Dispatch
 
@@ -108,24 +108,7 @@ Every brief carries a **downstream-route** tag identifying its renderer. The tag
 
 Override auto-detection with `--route=image-gen|vector-tool|designer-handoff|template-pack`.
 
-### Auto-detection (asset type → default downstream route)
-
-| Asset Type | Default Route | Why |
-|-----------|--------------|-----|
-| OG image / blog hero / ad photo | image-gen | Generative gives photo/illustration diversity |
-| Instagram carousel (typographic) | vector-tool | Vector + multi-slide layout |
-| Instagram carousel (image-led) | image-gen (per slide) | Generate slides, assemble |
-| Instagram post / story | image-gen or vector-tool | Depends on photo vs typographic |
-| LinkedIn document post | vector-tool | Multi-slide typographic |
-| LinkedIn single-image | image-gen or vector-tool | Depends on photo vs typographic |
-| FB / display banner (text-heavy) | vector-tool | Vector text + crop variants |
-| FB / display banner (visual-led) | image-gen | Generate visual, overlay text |
-| YouTube thumbnail | image-gen | Photo-based + bold text overlay |
-| X/Twitter card | image-gen or vector-tool | Depends on photo vs typographic |
-| OOH / billboard / print | designer-handoff | Print-grade, needs human designer |
-| Email hero | image-gen or vector-tool | Depends on photo vs typographic |
-| Hero illustration (custom) | image-gen or designer-handoff | Generative or human-designer |
-| Spot icon / decoration | vector-tool | Vector |
+Asset-type → default-route auto-detection table: [`references/asset-types.md`](references/asset-types.md) § "Auto-Detection".
 
 Mechanics (how to spawn agents, single-agent fallback, Step 0.5 Route Detection details, Layer 1 parallel + Layer 1.5 brief-synth + Approval Gate 1 with full user-response handling + Layer 2 route-dependent dispatch + Layer 3 critic gate + rewrite loop + Approval Gate 2 with full user-response handling + ASSETS.md auto-tick semantics + chain position + re-run triggers + skill deference): [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 
@@ -134,123 +117,12 @@ Mechanics (how to spawn agents, single-agent fallback, Step 0.5 Route Detection 
 ## Artifact Contract
 
 - **Path:** `.forsvn/artifacts/mkt/design-briefs/[slug].md` (default overwrite on re-run; preserve-history mode renames to `[slug].v[N].md`). Rejected briefs save as `[slug]-rejected.md` (Gate 2 reject); paused-candidate exits save as `[slug]-candidates.md` (Gate 1 stop).
-- **Lifecycle:** `pipeline` — re-run on BRAND.md/DESIGN.md update / new ASSETS.md row / lp-brief slot request / campaign launch / render dissatisfaction
+- **Lifecycle:** `pipeline` — re-run on BRAND.md/DESIGN.md update / new ASSETS.md row / brief-landing-page slot request / campaign launch / render dissatisfaction
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `downstream_route`, `target_tool` (when image-gen), `asset_type`, `platform`, `dimensions`, `brand_anchors` (primary_color + primary_type + motion), `sacred_respected` (list)
 - **Consumed by:** image-gen tools (Claude Design / Midjourney / Imagen / DALL·E / Ideogram / Veo / Suno); vector tools (Pencil / Figma); human designers (Designer-Handoff Spec block); `brief-landing-page` (when invoked from LP asset slot); `brand/ASSETS.md` auto-tick (literal path match)
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter — required fields" + § "Body section order" + § "Downstream Handoff Block schemas" — never silently drift; downstream consumers jump to sections by heading match and route by `downstream_route` field
 
 Full template + per-field format rules (frontmatter rules, body section order, Platform Spec 8-row schema, per-route Downstream Handoff Block schemas, re-run convention, ASSETS.md auto-tick semantics, anti-drift checks): [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
-### Artifact Template
-
-```markdown
----
-skill: brief-graphic
-version: 1
-date: [today]
-status: [done | done_with_concerns | blocked | needs_context]
-downstream_route: [image-gen | vector-tool | designer-handoff | template-pack]
-target_tool: [claude-design | midjourney-v6 | imagen-3 | dall-e-3 | ideogram | pencil | figma | print | ...]
-asset_type: [og-image | ig-carousel | ig-post | ig-story | li-doc | li-single | fb-ad | yt-thumbnail | x-card | ooh | banner | ...]
-platform: [instagram | linkedin | facebook | youtube | x | print | web | email | ...]
-dimensions: [WxH or per-format list]
-brand_anchors:
-  primary_color: [hex]
-  primary_type: [font, weight]
-  motion: [duration token if applicable]
-sacred_respected: [list of sacred elements honored]
----
-
-# Design Brief: [Asset Name]
-
-**Asset:** [type + platform]
-**Purpose:** [announce | educate | convert | recruit | brand-build]
-**Source copy:** [path or "none"]
-**Downstream route:** [image-gen / vector-tool / designer-handoff / template-pack]
-
-## Concept (Approved)
-
-**Name:** [concept name]
-**Visual direction:** [3-5 lines — mood, composition, palette emphasis, type role, motion if applicable]
-**References:** [3 reference URLs or named brands/artworks IF applicable — never copy, only direction]
-
-## Brand Anchors
-
-- **Palette pull:** [3-5 hex values from DESIGN.md, with token name]
-- **Typography:** [primary + secondary from DESIGN.md, sizes for this asset]
-- **Sacred elements respected:** [list — what was preserved]
-- **Lexicon:** [forbidden phrases avoided, preferred phrases used if copy is in asset]
-
-## Platform Spec
-
-| Field | Value | Source (platform module) |
-|-------|-------|--------------------------|
-| Aspect ratio | [X:Y] | [platform module name] |
-| Dimensions | [WxH px] | [platform module] |
-| Safe zone | [px from edges, platform-specific] | [platform module] |
-| Type scale (mobile readability floor) | [min px at 1x] | [platform module] |
-| Contrast (thumb-stop) | [WCAG ratio min for the asset's smallest text on its actual background] | platform module |
-| File format | [PNG / SVG / WebP / MP4 / ...] | [platform module] |
-| File-size cap | [KB/MB] | [platform module] |
-| Color mode | [sRGB / DCI-P3 / CMYK] | [platform module] |
-| Anti-patterns flagged | [list specific to this platform] | [platform module] |
-
-## Hierarchy
-
-1. **Focal point:** [what the eye lands on first]
-2. **Supporting:** [secondary element]
-3. **Tertiary:** [text body, fine detail]
-
-## Asset Slots (compound assets only — e.g., carousel)
-
-| Slot | Dimensions | Format | Fallback |
-|------|-----------|--------|----------|
-| [Slide 1] | [WxH] | [PNG] | [...] |
-| [Slide 2] | [WxH] | [PNG] | [...] |
-
-## Copy Placement (if any)
-
-- **Headline:** "[exact copy]" — [position, type token]
-- **Body:** "[exact copy]" — [position, type token]
-- **CTA:** "[exact copy]" — [position, type token, contrast pair]
-
-## Failure Modes to Avoid
-
-- [Platform-specific traps — from platform module]
-- [Generic-AI smell — from failure-modes.md]
-- [Brand drift — from brand_anchors]
-
-## What NOT to Do
-
-- [Sacred elements: do not propose changing X, Y, Z]
-- [Off-brand defaults to reject]
-
-## Downstream Handoff Block
-
-### When `downstream_route: image-gen`
-- **Primary prompt** ([target_tool]): [full prompt with lens / lighting / mood / era / composition / color cast / aspect-ratio flag]
-- **Variant 1:** [specific deviation]
-- **Variant 2:** [specific deviation]
-- **Post-processing note:** [overlay copy, logo placement, export profile]
-
-### When `downstream_route: vector-tool`
-- **Layout grid:** [columns × rows, gutters, baseline]
-- **Component references:** [DESIGN.md tokens used]
-- **Multi-format crops** (if applicable): [per-format dimensions and reflow rules]
-
-### When `downstream_route: designer-handoff`
-- **Spec sheet** for the designer (Figma file or print shop): [section list, type scale, palette, asset bundle paths]
-- **Open questions for designer:** [decisions deferred to designer judgment]
-
-### When `downstream_route: template-pack`
-- **Per-format prompt blocks:** [one per platform variant]
-
-## Critic Report
-
-[rubric scores, PASS / FAIL, concerns to monitor]
-```
-
-> On re-run with same slug: rename existing artifact to `[slug].v[N].md` and create new with incremented version. Preserves history for A/B comparison.
 
 ---
 

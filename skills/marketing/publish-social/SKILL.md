@@ -91,57 +91,14 @@ Full rubric: [`references/rubric.md`](references/rubric.md).
 
 ## Routing + Dispatch
 
-Per-platform auto-detect probes credentials at invocation:
+Per-platform auto-detect probes credentials at invocation; it resolves only to `export` or `draft`, never `publish` (Critical Gate 1). Every route ends formatter → critic → write bundle:
 
-```
-ROUTE A (no credentials detected): export bundle only
-  1. Pre-Dispatch — read write-social artifact + brand/BRAND.md + optional produce-asset/video manifests
-  2. Probe credentials — none found
-  3. Dispatch formatter-agent in export-mode for all 9 target platforms
-  4. SKIP confirmation gate (no automation route resolved)
-  5. Dispatch critic-agent for rubric review (dims 1–7)
-  6. Critic FAIL → re-dispatch formatter for failing platform(s) (max 2 cycles)
-  7. Critic PASS → write bundle (manifest + per-platform drafts + 4 scheduler imports + README)
-  8. Return bundle path + mode summary ("ran in export-mode; configure credentials for draft routes")
+- **Route A — no credentials:** formatter-agent runs export-mode for all 9 platforms → critic (dims 1-7) → write bundle.
+- **Route B — Typefully key:** X via Typefully Draft API (draft IDs + URLs), other 8 export-mode → critic → write bundle.
+- **Route C — browser-automation cookies (D17):** formatter formats every draft + writes the export-mode fallback → confirmation gate (per-platform 80-char preview + single confirm; decline/timeout → roll back to export for draft-route platforms) → automation-agent (sequential, 3s pacing, per-platform export fallback on failure) → critic (dim 7 = automation safety) → write bundle.
+- **Route D — `--mode=publish` (D18):** no credentials → BLOCKED. Else formatter resolves publish routes + writes export fallback → critic **content gate** (dims 1-7; persistent FAIL → BLOCKED, gate never fires) → `--dry-run` prints the plan and exits → two-stage confirmation gate (Stage 1 review every post body, Stage 2 type `PUBLISH`; abort/timeout → export bundle, nothing posted) → publish (Typefully schedule-immediate for X, automation-agent Send for the 8; per-platform failure → fallback-draft/export) → orchestrator applies dim 8.
 
-ROUTE B (Typefully credentials detected): X via API + others in export
-  1. Pre-Dispatch — same as Route A
-  2. Probe credentials — Typefully API key found
-  3. Dispatch formatter-agent: X via Typefully Draft API (returns draft IDs + URLs); other 8 platforms in export-mode
-  4. SKIP confirmation gate (no browser-automation resolved)
-  5. Dispatch critic-agent for rubric review (dims 1–7)
-  6. PASS → write bundle, return as above
-
-ROUTE C (D17: browser-automation cookies present for ≥1 non-X platform)
-  1. Pre-Dispatch — same as Route A
-  2. Probe credentials — Typefully key (maybe) AND session_cookies for one or more non-X platforms
-  3. Dispatch formatter-agent: format all per-platform drafts in memory + write export-mode bundle as fallback
-  4. CONFIRMATION GATE — show operator per-platform 80-char preview + single confirm prompt
-     - YES → continue to automation
-     - NO / timeout → roll back to export-mode for draft-route platforms; skip to step 6
-  5. Dispatch automation-agent — sequential per-platform with 3s pacing; single attempt; per-platform fallback to export on failure
-  6. Dispatch critic-agent for rubric review (dims 1–7) (dim 7 = browser-automation safety)
-  7. PASS → write bundle with automation_result_per_platform results; return draft URLs + fallback platforms
-
-ROUTE D (--mode=publish, D18): live posting behind the two-stage gate
-  1. Pre-Dispatch — read inputs; resolve --mode=publish + dry_run flag.
-     No credentials for any platform → BLOCKED ("configure credentials or use --mode=export").
-  2. Dispatch formatter-agent: format every post; resolve per-platform publish routes
-     (X → typefully-publish; 8 → browser-automation-publish; uncredentialed → export);
-     write the export-mode bundle to disk as the abort fallback.
-  3. Dispatch critic-agent — CONTENT GATE, dims 1-7. FAIL → re-dispatch formatter
-     (max 2 cycles); persistent FAIL → BLOCKED, gate never fires.
-  4. If --dry-run → print the publish plan (every post body + route) and exit. No gate, no posting.
-  5. TWO-STAGE CONFIRMATION GATE — Stage 1: review every full post body → [y/N].
-     Stage 2: type PUBLISH to confirm. Abort either stage / timeout → export-mode bundle, nothing posted.
-  6. Publish — Typefully schedule-immediate for X; automation-agent in publish mode (Send)
-     for the credentialed non-X platforms, sequential, 3s pacing. Per-platform failure →
-     fallback-draft (cookies present) or fallback-export. Other platforms continue.
-  7. Orchestrator Self-Check applies dim 8; manifest records publish_result_per_platform +
-     post_url + per-platform delete instructions. Return bundle path + live URLs.
-```
-
-Full dispatch logic: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
+Full per-route dispatch logic: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 
 ## Artifact Contract
 
@@ -182,7 +139,7 @@ After the operator publishes, future `evaluate-content` cycles can score the pub
 
 ## References
 
-- **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template, platform-intelligence}.md` (synced via `scripts/sync-skill-support.mjs` — broken for 2.0 layout per D8 finding; listed as expected dependencies for when sync is fixed in D15+ candidate)
+- **Shared:** `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template, platform-intelligence}.md` (synced via `scripts/sync-skill-support.mjs`)
 - **Frameworks (`references/`):** `format-conventions.md` (bundle schema), `anti-patterns.md` (publish-social + cross-cutting + D17 browser-automation + D18 live-publish patterns), `scheduler-formats.md` (4 scheduler schemas), `platform-credentials.md` (auth contract incl. session_cookies field), `rubric.md` (8 dims × 0-10), `playbook.md` (methodology), `session-cookie-export.md` (operator guide D17), `confirmation-gate.md` (D17 single-confirm draft protocol), `publish-confirmation-gate.md` (D18 two-stage publish gate)
 - **Per-platform refs (`references/platforms/`):** `x.md`, `linkedin.md`, `instagram.md`, `youtube.md`, `tiktok.md`, `facebook.md`, `bluesky.md`, `threads.md`, `reddit.md` (9 files)
 - **Automation-flow refs (`references/automation-flows/`, D17):** `linkedin.md`, `instagram.md`, `facebook.md`, `tiktok.md`, `youtube.md`, `threads.md`, `bluesky.md`, `reddit.md` (8 files; X uses D16 Typefully API instead)

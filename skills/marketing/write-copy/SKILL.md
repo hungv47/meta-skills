@@ -9,7 +9,7 @@ metadata:
   estimated-cost: "$1-3"
 ---
 
-# Copywriting — Orchestrator
+# Write Copy — Orchestrator
 
 *Communication — Horizontal. Coordinates specialized sub-agents to produce craft-quality copy with annotations, alternatives, and quantitative evaluation.*
 
@@ -23,7 +23,7 @@ metadata:
 2. **V/F/U is per-line, not per-piece.** Every key line gets scored 1-5 on Visual / Falsifiable / Uniquely-Ours. Average ≥3.5 PASS; below 3.0 on any single dimension FAIL regardless of average.
 3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F scores. Critic auto-fail.
 4. **Trigger density 3-4 for persuasion-heavy copy.** 0-2 = WEAK (FAIL → psychology-agent adds primary lever). 5-6 = GURU-ENERGY (FAIL → psychology-agent cuts lowest-load-bearing trigger).
-5. **Route classification at Step 1.** Single key line → Route A (one agent + critic). Full page → Route B (Layer 1 parallel + Merge + variant + Layer 2 sequential + critic). Called by lp-brief / campaign-plan → Route C (caller picks agents).
+5. **Route classification at Step 1.** Single key line → Route A (one agent + critic). Full page → Route B (Layer 1 parallel + Merge + variant + Layer 2 sequential + critic). Called by brief-landing-page / plan-campaign → Route C (caller picks agents).
 
 ## Quality Gate
 
@@ -42,14 +42,14 @@ Before delivering, the **critic agent** verifies:
 
 ## Before Starting
 
-Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voice + audience + Unique Mechanism, identify any prior copywriting artifact for the same slug, check freshness windows on ICP / product-context (>30d → recommend `research-icp` re-run with soft gate).
+Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voice + audience + Unique Mechanism, identify any prior write-copy artifact for the same slug, check freshness windows on ICP / product-context (>30d → recommend `research-icp` re-run with soft gate).
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/icp-research.md` | icp-research | Recommended — VoC + pain language |
-| `research/product-context.md` | icp-research | Recommended — voice adjectives + Unique Mechanism (if persisted) |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Optional — if copy is part of broader campaign (Route C) |
-| `brand/BRAND.md` | brand-system | Recommended — voice rules + lexicon |
+| `research/icp-research.md` | research-icp | Recommended — VoC + pain language |
+| `research/product-context.md` | research-icp | Recommended — voice adjectives + Unique Mechanism (if persisted) |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — if copy is part of broader campaign (Route C) |
+| `brand/BRAND.md` | create-brand | Recommended — voice rules + lexicon |
 | `.forsvn/experience/{audience,product,goals}.md` | (any skill) | Optional — `Goals — copy shift` / `Product — unique mechanism` keys if user previously persisted |
 
 ## Pre-Dispatch
@@ -111,7 +111,7 @@ ROUTE B (full-page copy):
   6. Critic FAIL → re-dispatch named agent(s) with feedback (max 2 cycles)
   7. Deliver final artifact
 
-ROUTE C (called by lp-brief or campaign-plan):
+ROUTE C (called by brief-landing-page or plan-campaign):
   1. Pre-Dispatch: read context from calling skill's artifacts
   2. Dispatch the Layer 1 agent(s) the caller named
   3. Dispatch: critic-agent
@@ -133,54 +133,6 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1 parallel dispatch
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Pre-Writing block format" + § "Key Lines block format" — never silently drift
 
 Full template + per-section format rules (slug derivation, Pre-Writing block format, Key Lines block format with V/F/U scoring, A/B Variants block format, re-run convention) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
-### Artifact Template
-
-```markdown
----
-skill: write-copy
-version: 1
-date: [today's date]
-status: done | done_with_concerns | blocked | needs_context
----
-
-# Copy: [Title / Brief Description]
-
-**Date:** [today]
-**Skill:** copywriting
-**Audience:** [who]
-**Awareness Stage:** [stage]
-**Traffic Source:** [where they're coming from]
-
-## Pre-Writing
-
-1. **Talking to:** [audience + current belief]
-2. **Shift to:** [desired belief after reading]
-3. **Only we can say:** [unique proof/angle]
-4. **Unique Mechanism:** [proprietary how that makes the offer different and better]
-5. **Traffic context:** [what they already know]
-
-## Key Lines
-
-### [Line Type: Headline / Hook / CTA / Tagline / Subject Line]
-
-**Selected:** "[winning line]"
-  Rule: [which principle]. Score: V:[n] F:[n] U:[n].
-  Cut alternative: "[runner-up]" — [why cut].
-
-**Alternative A:** "[second option]"
-  Rule: [principle]. Score: V:[n] F:[n] U:[n].
-
-**Alternative B:** "[third option]"
-  Rule: [principle]. Score: V:[n] F:[n] U:[n].
-
-## [Additional sections for full-page copy — Hero, Problem, Solution, etc.]
-
-## A/B Variants
-[Variant agent's alternatives with hypotheses and test priority]
-```
-
-> On re-run: rename existing artifact to `[slug].copy.v[N].md` and create new with incremented version.
 
 ---
 
@@ -206,7 +158,7 @@ Run `humanmaxxing` to refine voice and compress. Seven Sweeps (Layer 2 cumulativ
 
 ## Worked Example
 
-End-to-end Route B walkthrough (StatusZero landing page — async standup replacement for engineering managers, LinkedIn ads cold traffic, full Layer 1 parallel + Merge + variant + Layer 2 sequential + critic PASS at 4.4 V/F/U average) + cycle-2 FAIL variant (Competitor Swap Test failure on hero, hook-agent re-anchors on Unique Mechanism, cycle 2 PASS) + Route A single-key-line snippet + Route C called-by-lp-brief snippet: [`references/examples/copywriting-walkthrough.md`](references/examples/copywriting-walkthrough.md) [EXAMPLE].
+End-to-end Route B walkthrough (StatusZero landing page — async standup replacement for engineering managers, LinkedIn ads cold traffic, full Layer 1 parallel + Merge + variant + Layer 2 sequential + critic PASS at 4.4 V/F/U average) + cycle-2 FAIL variant (Competitor Swap Test failure on hero, hook-agent re-anchors on Unique Mechanism, cycle 2 PASS) + Route A single-key-line snippet + Route C called-by-brief-landing-page snippet: [`references/examples/copywriting-walkthrough.md`](references/examples/copywriting-walkthrough.md) [EXAMPLE].
 
 ---
 

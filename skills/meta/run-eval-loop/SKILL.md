@@ -56,9 +56,15 @@ Helpers (full flags + validation rules in `references/_shared/eval-loop-spec.md`
 - `bun scripts/append-loop-result.ts "<slug>" --artifact <path> --metric <k> --value <v> --baseline <v> --status <keep|discard|watch|blocked> --description <one-sentence>` — append row (validated; never hand-edit the TSV)
 - `bun scripts/update-quality-dashboard.ts --loop <slug> --latest-cycle <N> ...` — when Quality Feedback Protocol threshold is met
 
+## Before Starting
+
+Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK] — scan `.forsvn/loops/` for prior loop state and `.forsvn/experience/` before asking anything; anything found is a question not asked.
+
+**Mode resolution** — load [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. This skill is `budget: standard`: `--fast` collapses Layer 1 to single-agent execution and skips the Critic revision cycle on a clean PASS; there is no `deep` tier (loop scaffolding has no deeper mode). **`--fast` does NOT skip** the 5 Critical Gates or the Cold Start when the measurable surface or metric path is unresolved — safety gates supersede the mode downgrade.
+
 ## Pre-Dispatch
 
-Follow [`references/pre-dispatch-protocol.md`](../../../references/pre-dispatch-protocol.md) for framing. Skill-specific entry:
+Follow [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE] for framing. Skill-specific entry:
 
 1. Read `.forsvn/index/manifest.json`. If missing/stale: `bun scripts/manifest-sync.ts`.
 2. Inspect existing loops: `find .forsvn/loops -maxdepth 2 -type f 2>/dev/null | sort`.

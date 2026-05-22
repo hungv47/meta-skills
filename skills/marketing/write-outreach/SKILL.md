@@ -9,7 +9,7 @@ metadata:
   estimated-cost: "$1-3"
 ---
 
-# Cold Outreach — Orchestrator
+# Write Outreach — Orchestrator
 
 *Communication — Horizontal. Ready-to-send outbound across email, LinkedIn, Twitter/X, platform proposals. Multi-agent strategy → draft → voice → critic → humanmaxxing pipeline.*
 
@@ -49,9 +49,9 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-co
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/product-context.md` | icp-research | Recommended — voice adjectives + accuracy constraints + proof points |
-| `research/icp-research.md` | icp-research | Recommended — primary persona + VoC pain language |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Optional — if outbound is part of a broader campaign (Route C) |
+| `research/product-context.md` | research-icp | Recommended — voice adjectives + accuracy constraints + proof points |
+| `research/icp-research.md` | research-icp | Recommended — primary persona + VoC pain language |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — if outbound is part of a broader campaign (Route C) |
 | `.forsvn/experience/product.md` | (any skill) | Optional — `Product — proof points` key if user previously persisted |
 
 ## Pre-Dispatch
@@ -116,7 +116,7 @@ ROUTE B (reply):
   5. TERMINAL: humanmaxxing + Specificity regression (same as Route A)
   6. Write artifacts; deliver inline
 
-ROUTE C (called by campaign-plan):
+ROUTE C (called by plan-campaign):
   1. Pre-Dispatch: read campaign context from calling skill's artifact
   2. Execute Route A per touch requested
   3. Return annotated message + rationale to calling skill

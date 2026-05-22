@@ -36,54 +36,17 @@ metadata:
 ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. Per-section content + which agent populates which section lives in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) § "Merge Step — Brand File Assembly". Per-section format rules + frontmatter schema + checkbox semantics live in [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP artboards (`brand/artboards/`) or a Claude Design handoff — see Step 9.
 
 ## Quality Gate
-Before delivery, the **critic agent** verifies both files:
 
-**BRAND.md checks:**
-- [ ] Origin story and naming have cultural/etymological depth (not just "we named it X")
-- [ ] Values have real tradeoffs (not generic "innovation, quality, integrity")
-- [ ] Voice attributes have Do/Don't examples from real brand contexts
-- [ ] Tone range covers 3 key contexts with clear shift across the range
-- [ ] Tagline scored V/F/U (min 6/9), passes competitor swap test
-- [ ] **Lexicon Rules block present:** `forbidden_vocabulary` (5-15 `term`+`reason` pairs), `preferred_phrases` (5-12 brand-native strings), `casing`, `emoji_policy` — all concrete, not "TBD". Reasons live in YAML keys, not comments.
-- [ ] No copywriting scope creep (no boilerplate, pillars, elevator pitch, tagline variants)
-- [ ] Emotional journey is touchpoint-level with design/interaction triggers (not copy triggers)
-- [ ] Brand mark described in commission/generation-ready detail
-- [ ] Digital touchpoints scoped to visual expression (not verbal)
-- [ ] **Route B platform coverage:** Universal Surfaces table filled + one Digital Touchpoints subsection per declared platform; every surface entry concrete (no blanks/TBDs). Zero undeclared platforms.
-- [ ] **Route A platform coverage:** Digital Touchpoints contains only the `Platforms declared at intake` line + deferral note. Per-platform tables ABSENT.
-- [ ] **Register separation:** Digital Touchpoints rows describe brand expression (mood, motion cue, color role, density) — never geometry. Geometry lives in DESIGN.md Platform Icon Specifications.
-- [ ] Prose quality: reads like a brand book, not fill-in-the-blank templates
+Before delivery the **critic agent** verifies four check-groups against the
+canonical checklist in [`agents/critic-agent.md`](agents/critic-agent.md) (13
+BRAND.md + 13 DESIGN.md + ASSETS.md + 4 cross-file gates):
 
-**DESIGN.md checks:**
-- [ ] AI-readable header summarizes key decisions (archetype, metaphor, fonts, primary color)
-- [ ] **Font Loading & Licensing table:** every font has source, license, status, load method. Unclear licenses flagged `[NEEDS LICENSING]`
-- [ ] **Iconography source library named** (with CDN/npm link), **fallback library named**, **Forbidden Icons YAML emitted** (3-8 entries with reasons, or empty list with explanation)
-- [ ] Complete color palette tables per theme (not just primary + neutrals)
-- [ ] All semantic tokens have values for every theme
-- [ ] Every token pair meets WCAG AA (4.5:1 normal text, 3:1 large/UI)
-- [ ] Bg/fg convention used consistently (`bg-primary text-primary-foreground`)
-- [ ] One global `--radius` — archetype-justified
-- [ ] Surface/material language documented with CSS formulas
-- [ ] Shadow system with multiple elevation levels
-- [ ] Named animations with physics values (spring stiffness, damping, mass)
-- [ ] **Platform Icon Specifications:** one subsection per declared platform with sizes, safe-area rules, state variants (dark/tinted/themed/monochrome as applicable), derivative size list. Zero undeclared platforms.
-- [ ] Do's and Don'ts section with concrete rules
+- **BRAND.md** — origin/naming depth, real-tradeoff values, voice Do/Don't examples, 3-context tone range, tagline V/F/U (min 6/9) + competitor swap, concrete Lexicon Rules block, no copywriting scope creep, touchpoint-level emotional journey, register separation (expression not geometry), route-appropriate platform coverage, brand-book prose quality.
+- **DESIGN.md** — AI-readable header, font Loading & Licensing table, named iconography + fallback + Forbidden Icons YAML, complete per-theme palettes + semantic tokens, WCAG AA on every pair, bg/fg convention, archetype-justified `--radius`, surface/shadow systems, physics-valued animations, per-platform icon specs, concrete Do's/Don'ts.
+- **ASSETS.md** (Route B only) — one section per declared platform, every row spec-ref'd + fully-substituted path, no invented or duplicated rows, legend + summary + `## Orphaned` handled, prior `[~]`/`[!]` markers preserved.
+- **Cross-file coherence** — radius↔archetype, type↔personality, color↔emotion, imagery↔archetype; voice tone ↔ visual atmosphere; ASSETS.md ≡ BRAND.md ≡ DESIGN.md platform sets; AI-slop check via `references/ai-slop-detection.md` (0-1 clean / 2-3 review / 4+ regenerate).
 
-**ASSETS.md checks (Route B only):**
-- [ ] One section per declared platform; zero undeclared platforms
-- [ ] Every row has spec ref (BRAND.md / DESIGN.md / platform-surfaces.md) and **fully-substituted** target path under `brand/` (no unfilled `{host}`/`{count}`/`{token}` placeholders)
-- [ ] No invented assets — every row traces to upstream spec
-- [ ] No duplicated spec (sizes, safe zones) — ASSETS.md cites, doesn't re-define
-- [ ] Legend present; Summary counts present; `## Orphaned` handled (present if platforms dropped, absent otherwise)
-- [ ] Prior `[~]` and `[!]` markers preserved from previous run (verify by diff if re-run)
-
-**Cross-file coherence:**
-- [ ] Cross-element coherence: radius↔archetype, type personality↔archetype, color emotion↔brand personality, imagery direction↔archetype's visual world
-- [ ] Voice tone (BRAND.md) matches visual atmosphere (DESIGN.md)
-- [ ] ASSETS.md platform blocks === BRAND.md Digital Touchpoints platforms === DESIGN.md Platform Icon Specifications platforms (same set, same order)
-- [ ] AI slop check via `references/ai-slop-detection.md` — 0-1 clean, 2-3 review, 4+ regenerate
-
-**Reference quality bar:** Compare against `references/example-brand.md` and `references/example-design.md`. Match "good" patterns, avoid "bad" patterns. Use example-design.md tests (copy-paste, blind build, competitor swap, implementation gap) as final validation.
+**Reference quality bar:** compare against `references/example-brand.md` + `references/example-design.md`; run their copy-paste / blind-build / competitor-swap / implementation-gap tests as final validation.
 
 ## Chain Position
 Previous: `research-icp` (product context) | Next: `plan-campaign`, `write-copy`, `brief-landing-page`, `brief-graphic`
@@ -122,10 +85,10 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — read product/au
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/product-context.md` | icp-research | Strongly recommended — drives strategy + audience grounding |
-| `research/icp-research.md` | icp-research | Strongly recommended — audience archetype + voice register |
-| `brand/BRAND.md` (existing) | prior brand-system run | Optional — triggers versioning (`BRAND.v[N].md`) on re-run |
-| `brand/ASSETS.md` (existing) | prior brand-system run | Optional — Step 8.5 preserves human `[~]`/`[!]` markers across re-runs |
+| `research/product-context.md` | research-icp | Strongly recommended — drives strategy + audience grounding |
+| `research/icp-research.md` | research-icp | Strongly recommended — audience archetype + voice register |
+| `brand/BRAND.md` (existing) | prior create-brand run | Optional — triggers versioning (`BRAND.v[N].md`) on re-run |
+| `brand/ASSETS.md` (existing) | prior create-brand run | Optional — Step 8.5 preserves human `[~]`/`[!]` markers across re-runs |
 | `.forsvn/experience/{product, audience, brand, business, technical}.md` | any skill | Optional — prior persisted answers for the 7 Pre-Dispatch dimensions |
 
 ## Routing Logic
@@ -137,15 +100,7 @@ Ask: *"Full brand system or quick brand for MVP?"*
 ### Route A: Quick Brand (MVP)
 **When:** MVP, early-stage, need to ship fast with basic brand foundations.
 
-```
-1. Pre-dispatch: Gather context (Step 0)
-2. LAYER 1 — Dispatch IN PARALLEL:
-   - strategy-agent (purpose, values, positioning)
-   - visual-agent (color + typography only — logo deferred)
-3. Dispatch: critic-agent (coherence check — strategy-to-visual only)
-4. If FAIL → re-dispatch named agent(s) with feedback (max 2 cycles)
-5. Deliver Quick Brand artifact
-```
+Dispatch: Step 0 pre-dispatch → Layer 1 parallel (strategy-agent + visual-agent — color + typography only, logo deferred) → critic-agent (strategy↔visual coherence only) → re-dispatch on FAIL (max 2 cycles) → deliver Quick Brand artifact. Full mechanics: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE].
 
 **Quick Brand scope:** Purpose/mission/vision, core values, positioning, primary color + neutrals, display + body font, basic type hierarchy. **Target platforms still captured at intake** and recorded in BRAND.md as one line ("Ships on: iOS, macOS, Web") so Route B picks them up later. Defers: archetype analysis, voice/tone system, messaging architecture, full visual identity, token architecture, component tokens, accessibility audit, dark mode, Visual Renderings (Step 9), per-platform Digital Touchpoints surfaces and icon specs.
 
@@ -154,26 +109,7 @@ Ask: *"Full brand system or quick brand for MVP?"*
 ### Route B: Full Brand System
 **When:** Established product, full rebrand, comprehensive guidelines needed.
 
-```
-Step 0    Pre-dispatch: Gather context
-Step 1    LAYER 1 — Dispatch IN PARALLEL:
-          - strategy-agent
-          - personality-agent
-          - voice-agent
-          - visual-agent
-Step 2    MERGE: Assemble Layer 1 outputs into brand identity sections
-Step 3    LAYER 2 — Dispatch SEQUENTIALLY:
-          - token-architect-agent (receives visual-agent + personality-agent output)
-          - component-token-agent (receives token-architect-agent output)
-          - accessibility-agent (receives token-architect + component-token outputs)
-Step 4    Dispatch: critic-agent (receives BRAND.md + DESIGN.md)
-Step 5    If FAIL → re-dispatch named agent(s) with feedback (max 2 cycles)
-Step 8.5  ASSETS.md projection — deterministic, no new agent, always-on auto-scan
-Step 9    Visual Renderings (optional) — Paper MCP / Claude Design / none
-Step 10   Deliver artifacts (BRAND.md + DESIGN.md + ASSETS.md)
-```
-
-*Why 5 → 8.5:* `8.5` is a **section header**, not a sequence index — chosen so ASSETS.md projection slots after the critic gate but before pre-existing Step 9 (Visual Renderings) without renumbering downstream refs. Steps 6/7/8 are intentionally absent (legacy flow used unnumbered "Critic Gate", "re-dispatch", "deliver" labels). Reading order: 0 → 1 → 2 → 3 → 4 → 5 → 8.5 → 9 → 10.
+Dispatch: Step 0 pre-dispatch → Layer 1 parallel (strategy + personality + voice + visual) → Merge → Layer 2 sequential (token-architect → component-token → accessibility) → critic-agent → Step 8.5 ASSETS.md projection (deterministic, always-on auto-scan) → Step 9 Visual Renderings (optional) → Step 10 deliver. Re-dispatch named agents on critic FAIL (max 2 cycles). Layer 1 strictly before Layer 2; full per-step dispatch tables: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. (`8.5`/`9`/`10` are section labels matching the `## Step 8.5` / `## Step 9` headers below — not a contiguous sequence.)
 
 ---
 
@@ -239,7 +175,7 @@ The spec — BRAND.md / DESIGN.md / ASSETS.md — is canonical. Renderings are *
 Summary:
 - **9a. Paper MCP** — render 5 artboards (Color Palette / Typography / Spacing & Tokens / UI Style / Logo) to `brand/artboards/`. Run AI slop detection after generation. See `references/artboard-generation.md`.
 - **9b. Claude Design** — hands off to `claude.ai/design` (no API/MCP dispatch). Pre-flight checks (DESIGN.md complete + Brand Mark commission-grade + `brand/logo/logo-full.svg` exists + `brand/font/` populated). Handoff message instructs user to share `brand/` folder; exports go OUTSIDE `brand/` (presentations/) — re-run brand-system to update source.
-- **9c. None** — spec stands alone. Downstream skills (user-flow, design-brief) consume DESIGN.md directly.
+- **9c. None** — spec stands alone. Downstream skills (map-user-flow, brief-graphic) consume DESIGN.md directly.
 
 ---
 
@@ -250,7 +186,7 @@ Summary:
 - **Lifecycle:** `canonical` — top-level brand-of-record artifacts; consumed by 10+ downstream marketing + product skills
 - **Versioning:** BRAND.md + DESIGN.md rename existing to `BRAND.v[N].md` / `DESIGN.v[N].md` on re-run; ASSETS.md is a **living file** — always updated in place, dropped-platform rows move to `## Orphaned` (preserved), only versioned (`ASSETS.v[N].md`) on explicit fresh-inventory request
 - **Frontmatter:** see [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE] § "Frontmatter schema (all three files)"
-- **Cross-stack contract:** schema changes (frontmatter fields, section headings, table column structures) require atomic update of `format-conventions.md` + every downstream caller (copywriting, ad-copy, cold-outreach, lp-brief, design-brief, campaign-plan, humanmaxxing, vn-tone, short-form-brief, user-flow) — never silently drift
+- **Cross-stack contract:** schema changes (frontmatter fields, section headings, table column structures) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow) — never silently drift
 
 ### Artifact Templates
 
@@ -274,7 +210,7 @@ On re-run: rename existing `BRAND.md`/`DESIGN.md` to `BRAND.v[N].md`/`DESIGN.v[N
 
 ## Anti-Patterns
 
-Pipeline reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any artifact ships. 13 brand-system-specific patterns (aesthetics without strategy, generic values, archetype confusion, voice without examples, token soup, skipping semantic layer, mismatched bg/fg, dark mode as inversion, dispatching all agents for Quick Brand, inventing ASSETS.md rows, overwriting human markers, silently dropping rows on platform drop, round-tripping Claude Design exports) + 4 cross-cutting marketing-stack rows (upstream context skipped → generic archetypes, cross-stack contract drift, polish-chain misroute, undeclared platforms padded).
+Pipeline reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any artifact ships. 13 create-brand-specific patterns (aesthetics without strategy, generic values, archetype confusion, voice without examples, token soup, skipping semantic layer, mismatched bg/fg, dark mode as inversion, dispatching all agents for Quick Brand, inventing ASSETS.md rows, overwriting human markers, silently dropping rows on platform drop, round-tripping Claude Design exports) + 4 cross-cutting marketing-stack rows (upstream context skipped → generic archetypes, cross-stack contract drift, polish-chain misroute, undeclared platforms padded).
 
 Most common in practice: aesthetics-without-strategy (Critical Gate 1 + Scoring Rubric "Strategy-to-visual traceability"), generic values (BRAND.md Quality Gate "Values have real tradeoffs"), inventing ASSETS.md rows (Step 8.5 self-check "No invented rows"), overwriting human markers (Step 8.5 substep 4 enforcement).
 

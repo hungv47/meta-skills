@@ -51,10 +51,10 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load research a
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/artifacts/research/short-form-research/[slug].md` | short-form-research | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
-| `research/icp-research.md` | icp-research | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
-| `brand/BRAND.md` | brand-system | Recommended — brand_mode inference + voice archetype |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Optional — inherits theme/dates/CTAs if `[slug]` matches |
+| `.forsvn/artifacts/research/short-form-research/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
+| `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
+| `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs if `[slug]` matches |
 
 ---
 

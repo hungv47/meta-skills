@@ -63,7 +63,7 @@ Run the Pre-Dispatch protocol ([`references/_shared/pre-dispatch-protocol.md`](r
 - **Path (Audit Mode):** no writes — produces audit report inline.
 - **Lifecycle:** varies by doc-type — see [`references/report-template.md`](references/report-template.md) [PROCEDURE] "Lifecycle by doc-type" table (README/User Guide/Config/Tutorial/Ship Log = canonical; API Reference = pipeline; Release Notes = snapshot).
 - **Frontmatter fields (baseline):** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `audience`, `doc-type`. **Step 7.5 additions** (manifest-sync conformance; backfilled going forward): `lifecycle`, `produced_by`, `provenance`.
-- **Consumed by:** all 12+ downstream skills (Ship Log → `research/product-context.md` feeds create-brand, copywriting, seo, system-architecture, etc.), users on `/plugin update` (Release Notes → CHANGELOG.md), `clean-code` + `review-work` + `architect-system` (read docs for drift detection).
+- **Consumed by:** all 12+ downstream skills (Ship Log → `research/product-context.md` feeds create-brand, write-copy, optimize-seo, architect-system, etc.), users on `/plugin update` (Release Notes → CHANGELOG.md), `clean-code` + `review-work` + `architect-system` (read docs for drift detection).
 - Full templates + filename + version-increment rule: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 
 ## Chain Position

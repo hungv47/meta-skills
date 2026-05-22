@@ -216,3 +216,27 @@ forsvn-hero-web-home-2026-04-26.webp
 ```
 
 If ASSETS.md provides a path, use that path verbatim — it's the source of truth.
+
+---
+
+## Auto-Detection — Asset Type → Default Downstream Route
+
+The orchestrator auto-picks a brief's `downstream_route` from its asset type using
+this table. Override with `--route=image-gen|vector-tool|designer-handoff|template-pack`.
+
+| Asset Type | Default Route | Why |
+|-----------|--------------|-----|
+| OG image / blog hero / ad photo | image-gen | Generative gives photo/illustration diversity |
+| Instagram carousel (typographic) | vector-tool | Vector + multi-slide layout |
+| Instagram carousel (image-led) | image-gen (per slide) | Generate slides, assemble |
+| Instagram post / story | image-gen or vector-tool | Depends on photo vs typographic |
+| LinkedIn document post | vector-tool | Multi-slide typographic |
+| LinkedIn single-image | image-gen or vector-tool | Depends on photo vs typographic |
+| FB / display banner (text-heavy) | vector-tool | Vector text + crop variants |
+| FB / display banner (visual-led) | image-gen | Generate visual, overlay text |
+| YouTube thumbnail | image-gen | Photo-based + bold text overlay |
+| X/Twitter card | image-gen or vector-tool | Depends on photo vs typographic |
+| OOH / billboard / print | designer-handoff | Print-grade, needs human designer |
+| Email hero | image-gen or vector-tool | Depends on photo vs typographic |
+| Hero illustration (custom) | image-gen or designer-handoff | Generative or human-designer |
+| Spot icon / decoration | vector-tool | Vector |

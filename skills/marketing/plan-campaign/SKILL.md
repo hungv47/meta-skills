@@ -52,8 +52,8 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-co
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `research/product-context.md` | icp-research | Recommended — product positioning + accuracy constraints + unique mechanism |
-| `research/icp-research.md` | icp-research | Recommended — primary persona + pains + habitats + VoC + awareness levels |
+| `research/product-context.md` | research-icp | Recommended — product positioning + accuracy constraints + unique mechanism |
+| `research/icp-research.md` | research-icp | Recommended — primary persona + pains + habitats + VoC + awareness levels |
 | `.forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | Optional — alignment with strategic initiatives |
 | `.forsvn/experience/{product,audience,business,goals}.md` | (any skill) | Optional — keys fill dimension gaps from prior runs |
 
@@ -117,7 +117,7 @@ ROUTE B (full plan — ICP research complete, campaign launch):
   5. FAIL → re-dispatch named agent(s) with feedback (max 2 cycles)
   6. Deliver artifact
 
-ROUTE C (called by another skill — lp-brief, cold-outreach, ad-copy):
+ROUTE C (called by another skill — brief-landing-page, write-outreach, write-ad):
   1. Read existing .forsvn/artifacts/mkt/campaign-plan.md if available
   2. If not available OR stale (>30d), run Route B
   3. Return plan to calling skill
@@ -136,75 +136,6 @@ Mechanics (how to spawn agents, single-agent fallback, orchestrator-written sect
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter — required fields" + § "Body section order" — never silently drift; downstream consumers jump to sections by heading match
 
 Full template + per-field format rules (frontmatter rules, body section order, table schemas, slug pattern, re-run convention, anti-drift checks): [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
-### Artifact Template
-
-```markdown
----
-skill: plan-campaign
-version: 1
-date: [today's date]
-status: done | done_with_concerns | blocked | needs_context
----
-
-# IMC Plan: [Campaign / Product Name]
-
-**Date:** [today]
-**Skill:** campaign-plan
-**Goal:** [campaign objective]
-**Audience:** [primary persona]
-
-## Growth Motion
-- **Motion:** [PLG / SLG / Hybrid]
-- **Primary acquisition lever:** [product / outbound / both]
-- **Channel weighting rationale:** [why these channels match the motion]
-
-## Foundation
-- **Core message:** [one sentence]
-- **Awareness distribution:** [% per stage]
-
-## Pillars
-| # | Pillar | Type | % | Stage | Evidence |
-|---|--------|------|---|-------|---------|
-| 1 | ... | ... | ... | ... | ... |
-
-## Angle Bank
-| # | Angle | Hook | Stage | Trigger | Score | Class | Pillar |
-|---|-------|------|-------|---------|-------|-------|--------|
-| 1 | ... | ... | ... | ... | ... | ... | ... |
-
-## Channel Assignments
-| Channel | Type | Angle | Role | Cadence |
-|---------|------|-------|------|---------|
-| ... | ... | ... | ... | ... |
-
-**9-Channel Evaluation:** For each channel, the channel-agent assesses relevance and produces a select/skip decision. Channels: Search engines/AEO, Store/Listing platforms, Bounty/Info platforms, News, Forums/Communities, Social media, IRL (OOH/Events/POS), Mailbox, SMS.
-
-## Channel Execution Briefs
-
-For each selected channel, a mini-brief with actionable next steps:
-
-| Channel | Objective | Tactic | Budget Type | Success Metric | Owner | First Milestone |
-|---------|-----------|--------|-------------|----------------|-------|-----------------|
-| [e.g. Search engines] | [e.g. Capture intent traffic] | [e.g. Google Search ads + SEO content] | [Paid + Organic] | [CTR, CPL] | [Person] | [e.g. First campaign live by W2] |
-
-For offline channels (IRL, SMS), include execution notes:
-- **IRL:** Vendor/location requirements, lead capture method (QR code, signup form), follow-up workflow
-- **SMS:** Compliance requirements (TCPA/GDPR opt-in), character limits (160 GSM-7), unsubscribe mechanism
-- **OOH:** Readability specs, vanity URL/QR for tracking, legal disclaimers
-
-## Timeline
-| Week | Phase | Channel | Angle | Format | Status |
-|------|-------|---------|-------|--------|--------|
-| W1 | ... | ... | ... | ... | Planned |
-
-## Launch Sequence
-| Phase | Timing | Channels | Action |
-|-------|--------|----------|--------|
-| Internal | T-4w | ... | ... |
-
-> On re-run: rename existing artifact to `campaign-plan.v[N].md` and create new with incremented version.
-```
 
 ---
 
@@ -230,7 +161,7 @@ Run `brief-landing-page` for any campaign landing pages, `optimize-seo` for sear
 
 ## Worked Example
 
-End-to-end Route B walkthrough (B2B SaaS async-first PM tool — PLG, 60 days, 500 trial signups, 4 pillars + 12 angles + 5 selected channels + 4 skipped with rationale + 3-phase timeline + 5-phase ORB launch + critic PASS cycle 1) + cycle-2 FAIL hypothetical + Route C snippet (called by lp-brief): [`references/examples/campaign-walkthrough.md`](references/examples/campaign-walkthrough.md) [EXAMPLE].
+End-to-end Route B walkthrough (B2B SaaS async-first PM tool — PLG, 60 days, 500 trial signups, 4 pillars + 12 angles + 5 selected channels + 4 skipped with rationale + 3-phase timeline + 5-phase ORB launch + critic PASS cycle 1) + cycle-2 FAIL hypothetical + Route C snippet (called by brief-landing-page): [`references/examples/campaign-walkthrough.md`](references/examples/campaign-walkthrough.md) [EXAMPLE].
 
 ---
 

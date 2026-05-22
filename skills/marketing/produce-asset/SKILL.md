@@ -1,7 +1,7 @@
 ---
 name: produce-asset
 description: "Turns a brief-graphic artifact into render-ready prompts + an asset manifest. Tool-agnostic by design — emits prompts tuned for your chosen image engine (Midjourney / DALL·E / Imagen / Figma / designer); the stack holds no API keys and runs no render engines. Use when a design brief exists and you need production-ready prompts. Not for the copy that goes in the asset (use write-copy), the brief itself (use brief-graphic), or publishing the rendered asset (use publish-social)."
-argument-hint: "[design-brief slug or path]"
+argument-hint: "[brief-graphic slug or path]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
   version: "1.0.0"
@@ -30,7 +30,7 @@ Non-negotiable constraints — brief 04 § Production Principle + § Anti-patter
 
 | Artifact | Required? | What it provides |
 |----------|-----------|------------------|
-| `.forsvn/artifacts/mkt/design-briefs/[slug].md` (or lp-brief asset-slot) | **required** | Per-asset spec: concept direction, platform, aspect, safe zones, copy slots, type scale, contrast, file format, image-gen prompt seed (if brief-graphic populated it) |
+| `.forsvn/artifacts/mkt/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept direction, platform, aspect, safe zones, copy slots, type scale, contrast, file format, image-gen prompt seed (if brief-graphic populated it) |
 | `brand/BRAND.md` | **required** | Voice, archetype, sacred elements (do-not-touch rails for the renderer) |
 | `brand/DESIGN.md` | **required** | Color tokens (hex + token name), type scale, motion permissions if asset is animated, surface conventions (paper / matte / glass-if-permitted) |
 | Target platforms | optional | Defaults to the brief's `target_platforms`; can be overridden if producing for a subset |
@@ -97,7 +97,7 @@ ROUTE A (export-mode):
 - **Frontmatter (manifest):** 9 fields — `skill` / `version` / `date` / `status` / `slug` / `source_brief` / `target_platforms` / `slot_count` / `provenance` (generation-variant per `references/_shared/artifact-contract-template.md`)
 - **Frontmatter (per-slot prompt):** 6 fields — `skill` / `version` / `date` / `slot_id` / `platform` / `aspect_ratio`
 - **Generation provenance:** required. `input_artifacts` lists the brief-graphic path + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until a downstream eval cycle scores the rendered asset.
-- **Cross-stack contract:** consumed by downstream rendering tools (operator-chosen) + future `evaluate-content` / `evaluate-ad` cycles when produced assets are scored against the brief's hypothesis. Schema changes require atomic update across upstream callers (brief-graphic, lp-brief) — never silently drift.
+- **Cross-stack contract:** consumed by downstream rendering tools (operator-chosen) + future `evaluate-content` / `evaluate-ad` cycles when produced assets are scored against the brief's hypothesis. Schema changes require atomic update across upstream callers (brief-graphic, brief-landing-page) — never silently drift.
 
 Full template + field definitions + per-slot prompt schema: [`references/format-conventions.md`](references/format-conventions.md).
 
