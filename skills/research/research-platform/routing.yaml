@@ -1,0 +1,26 @@
+# Routing signals for research-platform. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "platform analytics"
+    - "platform evidence"
+    - "how are our posts doing"
+    - "social media analytics"
+    - "engagement evidence"
+    - "platform performance"
+  allOf:
+    - [platform, evidence]
+    - [our, analytics]
+    - [account, performance]
+  anyOf:
+    - "engagement rate"
+    - "post analytics"
+    - "owned analytics"
+    - "channel analytics"
+    - "follower growth"
+  noneOf:
+    - "what's working"
+    - "trending"
+    - "competitive analysis"
+    - "market size"
+  minScore: 6

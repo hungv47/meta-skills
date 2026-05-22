@@ -19,6 +19,7 @@ const tests = [
   ["Why is our signup rate dropping?", "diagnose"],
   ["What should we build next? Prioritize the options", "prioritize"],
   ["Model the funnel from traffic to revenue", "plan-funnel"],
+  ["Gather our platform analytics evidence for our X and YouTube accounts", "research-platform"],
   ["Create an eval loop for the new pricing page", "run-eval-loop"],
   ["Evaluate landing page analytics for the pricing page", "evaluate-landing-page"],
   ["Build our brand identity and voice guidelines", "create-brand"],

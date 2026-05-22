@@ -1,6 +1,6 @@
 {
   "name": "forsvn-skills",
-  "description": "FORSVN Skills — consolidated multi-agent skill stack. 39 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
+  "description": "FORSVN Skills — consolidated multi-agent skill stack. 40 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
   "version": "3.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
@@ -9,7 +9,7 @@
   "keywords": [
     "skills", "forsvn-skills", "multi-agent", "orchestration",
     "forsvn", "discover", "debate-agents", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
-    "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "evaluate-shortform",
+    "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
     "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanmaxxing", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs"
@@ -29,6 +29,7 @@
     "./skills/research/prioritize/",
     "./skills/research/plan-funnel/",
     "./skills/research/research-shortform/",
+    "./skills/research/research-platform/",
     "./skills/research/evaluate-shortform/",
 
     "./skills/marketing/create-brand/",
