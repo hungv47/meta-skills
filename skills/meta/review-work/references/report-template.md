@@ -43,11 +43,22 @@ provenance:
 # Review Chain Report
 
 **Artifact**: {what was reviewed — file paths, diff range, or named artifact}
+**Review target**: {detected target class — working-tree changes / branch vs base / last commit / operator-specified — and the diff command used, e.g. `git diff HEAD`}
 **Date**: {YYYY-MM-DD}
 **Mode**: {generalist | specialist (security/perf/correctness) | critic-consensus}
-**Rounds**: {how many review cycles — 1 default, 2 if max-loops engaged}
+**Rounds**: {N — 1 default; a 2nd round runs only when an accepted fix changed code, per review-setup.md § Closeout discipline}
 
 ## Verdict: {PASS | FIXED | CRITICAL}
+
+## Commands Run & Proof
+
+| Phase | Command(s) | Result |
+|-------|-----------|--------|
+| Format (pre-review) | `{formatter command, or "not run — <reason>"}` | {clean / N files reformatted} |
+| Test suite (concurrent) | `{test command, or "not auto-detected"}` | {PASS / FAIL (n) / inconclusive — still running} |
+| Fix-then-rerun (Accepted findings) | `{rerun commands per noise-filter § Fix-then-rerun, or "n/a — no Accepted findings"}` | {PASS} |
+
+**Final state**: {review clean + tests green | FIXED — N accepted findings, all rerun-verified | CRITICAL — surfaced to operator, not applied}
 
 ## Issues Found
 

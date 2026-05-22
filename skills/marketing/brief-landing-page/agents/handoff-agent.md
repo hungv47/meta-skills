@@ -36,7 +36,7 @@ The implementation prompt's CORE SETUP block reflects detection results. Don't a
 | **target_handoff** | string \| string[] \| null | Specialty targets in addition to always-on implementation prompt: `claude-design` / `pencil` / `figma` / `designer`. Null → implementation prompt only. |
 | **detected_stack** | object | `{ framework: 'next' \| 'vite-react' \| 'astro' \| 'svelte' \| 'vanilla', motion_lib: 'gsap' \| 'framer-motion' \| 'anime' \| 'lottie' \| null }` — populated by stack detection at write time |
 | **page_slug** | string | For file references in prompt |
-| **references** | file paths[] | `references/handoff-formats.md` |
+| **references** | file paths[] | `references/handoff-formats.md`; `references/design-handoff-prompting.md` (opening-prompt protocol for design-tool targets) |
 | **feedback** | string \| null | If critic returned FAIL, address every cited point |
 
 ## Output Contract
@@ -96,6 +96,7 @@ Return a single markdown document with one or more hand-off prompt blocks (one p
 2. **Compression without loss.** Hand-off should be ~80–200 lines for Claude Design / Pencil / designer; longer for Figma which can absorb structured spec.
 3. **Sacred + voice always verbatim.** These are non-negotiable — paraphrasing creates drift. Lift directly from brand_digest.
 4. **One target, one prompt block.** If multiple targets, write multiple blocks. Don't try to make one block serve all.
+5. **Design-tool openings carry the ceiling.** For `claude-design` / `pencil` / `figma` / `designer` blocks, the opening of the block is the single most consequential move — the tool will not reliably apply an already-approved design system on its own. The opening must restate the exact visual values from `DESIGN.md` and clear all nine Required Fields. See `references/design-handoff-prompting.md`. (The coding-agent implementation prompt has its own zero-ambiguity protocol in `handoff-formats.md`.)
 
 ### Target-Specific Conventions
 
@@ -140,6 +141,18 @@ Return a single markdown document with one or more hand-off prompt blocks (one p
 - Include reference inspiration if available (from `brand/inspiration/`)
 - Voice rules + sacred elements as a "non-negotiable" callout
 - Reference: `handoff-formats.md` § Human designer
+
+### Design-Tool Opening-Prompt Protocol
+
+Applies to all four design-tool blocks (`claude-design`, `pencil`, `figma`, `designer`) — not the coding-agent implementation prompt.
+
+The opening of a design-tool block sets the ceiling for the operator's whole session; refinement and correction prompts that follow rarely raise it. Compose every design-tool block to:
+
+1. **Clear all nine Required Fields** in `references/design-handoff-prompting.md` — project + page goal, audience + pains, conversion hypothesis, brand voice constraints, exact visual values, section architecture, interaction + motion constraints, what NOT to change, output target. A field left implicit is invented by the tool.
+2. **Repeat the exact visual values from `DESIGN.md` verbatim** — palette hex *with token names*, type families + weights + scale, spacing rhythm, surface rule, motion tokens. Do this even though the design system is "already built" and the tool has it in session — it will regenerate from the prompt, not the session. "The tool will read the design system" is the assumption that produces the thinnest output. brand-voice critic **G8** fails a design-tool block whose opening omits visual values.
+3. **Emit an Iteration Guide into the brief's Hand-Off section** — a 5–10 line operator note naming the first two or three likely follow-up moves classified by the edit-prompt taxonomy (scaffolding / additive / refinement / corrective / reset-meta), plus the one meta prompt to avoid. Body block + format: `format-conventions.md` § Hand-Off (Specialty Targets).
+
+Reference for the taxonomy, the visual-values rule, and hard gates: `references/design-handoff-prompting.md`.
 
 ### Verbatim-Lift Patterns
 
@@ -273,6 +286,9 @@ DO NOT:
 - [ ] Companion files listed match what's actually being written
 - [ ] Length within target convention (implementation 200–350; claude-design 120–180; pencil 60–100; figma 200–400; designer 150–300)
 - [ ] Quality gates for the output are concrete (3–6 testable items per target)
+- [ ] Design-tool blocks (`claude-design`/`pencil`/`figma`/`designer`) clear all 9 Required Fields from `design-handoff-prompting.md`
+- [ ] **Exact visual values repeated verbatim** in every design-tool opening — palette hex *with token names*, type families + weights + scale, spacing, surface rule, motion tokens (never "the brand palette" / "brand typography" — the tool will not apply the design system on its own)
+- [ ] **Iteration Guide written into the brief's Hand-Off section** when `target_handoff` lists a design tool — taxonomy-classified follow-up moves + the one meta prompt to avoid
 - [ ] No `[BLOCKED]` markers remain unresolved
 
 If any check fails, revise before returning.

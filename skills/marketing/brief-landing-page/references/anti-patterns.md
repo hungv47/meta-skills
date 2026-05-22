@@ -8,7 +8,7 @@ load_class: ANTI-PATTERN
 
 # LP-Brief Anti-Patterns
 
-> Re-read before any brief ships. The first 12 patterns are lp-brief-specific failure modes extracted from the body. The last 4 are cross-cutting marketing-stack patterns. Ownership column cites by **CP-ID** (conversion critic — 13 well-named principle IDs from `conversion-principles.md`) or **G-ID** (brand-voice critic — 9 well-named gates G1-G8b from `agents/brand-voice-critic-agent.md`) — NOT integer "Gate N" labels (both critics use letter+number naming, so direct ID references are accurate).
+> Re-read before any brief ships. Patterns 1–12 are lp-brief pipeline failure modes extracted from the body; patterns 13–16 are cross-cutting marketing-stack patterns; patterns 17–19 are design-handoff prompting patterns. Ownership column cites by **CP-ID** (conversion critic — 13 well-named principle IDs from `conversion-principles.md`) or **G-ID** (brand-voice critic — 9 well-named gates G1-G8b from `agents/brand-voice-critic-agent.md`) — NOT integer "Gate N" labels (both critics use letter+number naming, so direct ID references are accurate).
 
 ## Section 1 — LP-brief pipeline patterns (12)
 
@@ -203,6 +203,46 @@ load_class: ANTI-PATTERN
 **Instead:** When the brief is intended for an eval-loop cycle, scaffold the loop with `/run-eval-loop` FIRST (writes program.md, context.md, results.tsv). Then run lp-brief and copy the brief into the loop's `strategy/` directory. Then run lp-eval after launch. The Skill Chain section in brief.md step 5 explicitly names this: "[post-launch] collect analytics/recordings/experiment notes → run `evaluate-landing-page` inside the page's eval loop, then feed the resulting eval into next `lp-brief --rev=N`."
 
 **Owned by:** Orchestrator (Skill Chain section formats the loop-coordination expectation in every brief) + lp-eval Critical Gate 1 (existing eval loop required — returns NEEDS_CONTEXT if `program.md` missing, recommends `/run-eval-loop`).
+
+---
+
+## Section 3 — Design-handoff prompting patterns (3)
+
+> The hand-off block IS the opening prompt to a design tool, and the opening prompt sets the session's quality ceiling. These three patterns are the most common ways a hand-off loses the ceiling. Protocol: `design-handoff-prompting.md`.
+
+### 17. Vague quality adjectives in a design-tool prompt
+
+**Pattern:** A `claude-design` / `pencil` / `figma` / `designer` hand-off opens with "make it premium / high-end / clean / modern" instead of the exact visual values. The prompt names a quality level without defining what produces it.
+
+**Why it fails:** "Premium" is not a spec — the tool fills it with its own priors, which drift from the brand. The brief already holds the values that *make* this brand premium (palette, type, spacing, surface); a quality adjective discards them in favor of the tool's guess. The render comes back generically "nice" and off-brand.
+
+**Instead:** Replace every quality adjective with the values that produce it — not "premium" but the actual hex with token names, display font + weight, spacing rhythm, surface rule. The opening clears all 9 Required Fields in `design-handoff-prompting.md`; Field 5 (exact visual values) is a verbatim lift.
+
+**Owned by:** Handoff-agent (Required Fields + visual-values verbatim) + Brand-voice critic G8 (design-tool opening missing visual values = FAIL) + `design-handoff-prompting.md` § Required Fields.
+
+---
+
+### 18. Broad mid-session reset after useful structure exists
+
+**Pattern:** The brief's Iteration Guide recommends — or the operator later types — a meta prompt like "reconsider the page" / "rethink the layout from the brief" after the tool has already produced a workable structure.
+
+**Why it fails:** A design tool reads "reconsider" / "rethink" as "discard." The structure from the opening prompt is lost, and every following prompt fights to rebuild ground that was already there — the session ends further from the brief than it started. A broad reset is the single largest quality drop a session can take.
+
+**Instead:** After the opening, work in additive and refinement moves (edit-prompt taxonomy, `design-handoff-prompting.md`). If a genuine restart is needed, make it explicit — `"Discard the current direction and restart from:"` + a full new opening block — never a vague nudge. The brief's Iteration Guide names the meta prompt to avoid for this page.
+
+**Owned by:** Handoff-agent (Iteration Guide recommends additive / refinement / corrective moves only; flags the meta prompt to avoid) + `design-handoff-prompting.md` § Edit-Prompt Taxonomy.
+
+---
+
+### 19. Asking the tool to infer tokens from prior context
+
+**Pattern:** A design-tool opening says "use the design system" / "match the brand we set up" / "keep the established styling" instead of restating hex, type, and spacing — assuming the approved system in the session carries over.
+
+**Why it fails:** A design tool regenerates from the prompt, not from session memory. An approved palette and component library sitting in the session is context the tool applies unreliably. "Infer the tokens" produces the thinnest, most generic output — and the divergence is invisible until the render comes back off-brand.
+
+**Instead:** Treat the design system as un-passed until the prompt names it. Repeat every visual value verbatim in the opening — even though `DESIGN.md` is "already built" and the tool "has" it. This is the visual-values hard gate in `design-handoff-prompting.md`.
+
+**Owned by:** Handoff-agent (visual values repeated verbatim in every design-tool opening) + Brand-voice critic G8 + `design-handoff-prompting.md` § The visual-values rule.
 
 ---
 

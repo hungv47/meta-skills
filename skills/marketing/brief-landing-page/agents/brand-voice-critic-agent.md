@@ -82,7 +82,9 @@ You do NOT:
 **Verdict:** [PASS | FAIL]
 **Sacred elements in handoff blocks:** [verbatim from brand_digest? Y/N per block]
 **Voice rules in handoff blocks:** [verbatim? Y/N per block]
-[FAIL if hand-off block paraphrases sacred or voice rules instead of lifting verbatim.]
+**Visual values in design-tool opening prompts** (`claude-design` / `pencil` / `figma` / `designer`) — palette hex + token names, type families + weights + scale, spacing, surface rule, motion tokens repeated verbatim: [Y/N per block; N/A if `target_handoff` lists no design tool]
+**Iteration Guide present** in the brief's Hand-Off section when a design tool is targeted: [Y/N or N/A]
+[FAIL if a hand-off block paraphrases sacred or voice rules instead of lifting verbatim, OR if a design-tool opening prompt omits the exact visual values from `DESIGN.md` (per `references/design-handoff-prompting.md` — the tool will not apply an already-approved design system on its own; "the brand palette" is not the values), OR if a design-tool target has no Iteration Guide in the brief.]
 
 ### G8b — Implementation Prompt Compliance (always-emitted)
 **Verdict:** [PASS | FAIL]
@@ -192,7 +194,7 @@ If brief is 412 lines: PASS.
 - [ ] G2 (forbidden vocab): every forbidden word scanned across user-facing slots
 - [ ] G6 (envelope): line count cited, in or out of 250–500 range
 - [ ] G7 (asset slot brand compliance): every generative slot's Sacred Elements line checked
-- [ ] G8 (handoff verbatim): every handoff block checked for verbatim sacred + voice rules
+- [ ] G8 (handoff verbatim): every handoff block checked for verbatim sacred + voice rules; every design-tool opening prompt checked for verbatim visual values + an Iteration Guide
 - [ ] G8b (implementation prompt): Asset Placeholder Rule verbatim, URL-invention ban present, closing rule present, (BUG FIX) callouts present where applicable
 - [ ] Failures Summary lists all FAILs with re-dispatch direction
 - [ ] No sycophancy; no manufactured nits

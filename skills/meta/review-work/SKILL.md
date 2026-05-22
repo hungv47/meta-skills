@@ -107,6 +107,8 @@ Gather: the artifact itself + original requirements + relevant context (surround
 
 ### 2. Spawn the Reviewer (or Specialists if deep mode)
 
+**Format before dispatch** — per [`references/procedures/review-setup.md`](references/procedures/review-setup.md) § Closeout discipline: if the target is uncommitted work and a formatter is detected, offer to run it (operator-confirmed, never silent) before spawning the reviewer, so findings cite stable line numbers and the resolver patches logic, not layout.
+
 **Launch tests concurrently** — per [`references/procedures/review-setup.md`](references/procedures/review-setup.md) § Concurrent test execution: detect the project's test command and start it in the background as the reviewer is spawned, so the suite runs in parallel with the review. Fold any failures into the finding set when the reviewer returns.
 
 - **Generalist (fast/standard):** spawn one reviewer per [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE]. Prompt template + pre-construction reads (learned-rules, quality-feedback-protocol, shared-critic-rubrics) live in the ref.
@@ -147,6 +149,8 @@ For high-stakes code (auth, payments, data migrations), run a second verificatio
 Round 1: Implement → Review → Resolve → Apply
 Round 2 (only if critical/complex): Resolved output → Review → Resolve → Apply (if clean)
 ```
+
+**Rerun discipline** ([`review-setup.md`](references/procedures/review-setup.md) § Closeout discipline): a second *review* round runs only when an Accepted fix changed code in a way that could introduce a new defect — not for mechanical fixes (unused import, typo) and never to re-polish a clean report's wording. The fix-then-rerun checks (tests/type-check/build per Accepted finding) are separate and always run. Stop when the final review and tests are both clean.
 
 ### 7. Write the report
 
@@ -209,7 +213,7 @@ Every run ends with explicit status:
 - [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE] — fast/standard/deep semantics for this skill
 - [`references/procedures/reviewer.md`](references/procedures/reviewer.md) [PROCEDURE] — full reviewer agent prompt template + confidence rules + signal-vs-noise verification
 - [`references/procedures/resolver.md`](references/procedures/resolver.md) [PROCEDURE] — full resolver agent prompt template + FIXED/DECLINED structure
-- [`references/procedures/review-setup.md`](references/procedures/review-setup.md) [PROCEDURE] — target detection from git state + concurrent test execution (pre-review setup)
+- [`references/procedures/review-setup.md`](references/procedures/review-setup.md) [PROCEDURE] — target detection from git state + format-before-dispatch + concurrent test execution + closeout discipline (rerun/stop)
 - [`references/procedures/specialist-mode.md`](references/procedures/specialist-mode.md) [PROCEDURE] — 3-specialist parallel dispatch + auto-escalation triggers
 - [`references/procedures/critic-consensus.md`](references/procedures/critic-consensus.md) [PROCEDURE] — high-stakes non-code (compliance copy, paid media, launches)
 - [`references/procedures/scope-drift.md`](references/procedures/scope-drift.md) [PROCEDURE] — MISSING + UNPLANNED detection when tasks.md or spec.md exists
