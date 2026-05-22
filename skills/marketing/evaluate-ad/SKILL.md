@@ -79,7 +79,7 @@ Read `references/_shared/eval-loop-spec.md` before writing artifacts when availa
 
 **Hard-block conditions (fire BEFORE Cold Start):** (1) `program.md` or `context.md` absent → NEEDS_CONTEXT, recommend `/run-eval-loop`. (2) No measurement evidence for current cycle → BLOCKED with missing-evidence list. (3) Mixed-audience metrics with no clean split → BLOCKED until ingest is scoped to one audience-temp. (4) Custom 10+ column `results.tsv` schema → warn + flag to eval-loop owner; require hand-edit (not standard helper).
 
-**Read Order:** `program.md` → `context.md` → `results.tsv` → latest `strategy/` + `execution/` + `evals/` files → source ad-copy artifact (`.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md`) → canonical artifacts (`brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, campaign plan if present). If `.agents/manifest.json` is stale, run `bun scripts/manifest-sync.ts`.
+**Read Order:** `program.md` → `context.md` → `results.tsv` → latest `strategy/` + `execution/` + `evals/` files → source ad-copy artifact (`.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md`) → canonical artifacts (`brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, campaign plan if present). If `.forsvn/index/manifest.json` is stale, run `bun scripts/manifest-sync.ts`.
 
 **Warm Start** (loop exists + metric evidence present + audience-temp tagged): summarize loop + audience-temp + primary metric + baseline/prior result + latest creative artifact + current evidence window; proceed to evaluate cycle N.
 

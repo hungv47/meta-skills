@@ -63,6 +63,8 @@ const SUPPORT_REFS = {
   "playbook-ref-template.md": "references/playbook-ref-template.md",
   "product-marketing-context-schema.md": "references/product-marketing-context-schema.md",
   "before-starting-check.md": "references/before-starting-check.md",
+  "reviewable-artifact-contract.md": "references/reviewable-artifact-contract.md",
+  "roughdraft-review-protocol.md": "references/roughdraft-review-protocol.md",
   "hypothesis-framework.md": "skills/research/_shared/hypothesis-framework.md",
   "confidence-labeling.md": "skills/research/_shared/confidence-labeling.md",
   "marketing-foundations.md": "skills/marketing/_shared/marketing-foundations.md",
@@ -296,6 +298,8 @@ function syncSkill(dir) {
   if (/playbook-ref-template/.test(corpus)) addRef("playbook-ref-template.md");
   if (/product-marketing-context-schema/.test(corpus)) addRef("product-marketing-context-schema.md");
   if (/before-starting-check/.test(corpus)) addRef("before-starting-check.md");
+  if (/reviewable-artifact-contract/.test(corpus)) addRef("reviewable-artifact-contract.md");
+  if (/roughdraft-review-protocol/.test(corpus)) addRef("roughdraft-review-protocol.md");
   if (/hypothesis-framework/.test(corpus)) addRef("hypothesis-framework.md");
   if (/confidence-labeling/.test(corpus)) addRef("confidence-labeling.md");
   if (/marketing-foundations/.test(corpus)) addRef("marketing-foundations.md");

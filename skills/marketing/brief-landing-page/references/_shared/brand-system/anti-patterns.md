@@ -198,13 +198,13 @@ load_class: ANTI-PATTERN
 
 ### 16. Polish-chain misroute
 
-**Pattern:** User invokes `humanize` or `polish-vn` on BRAND.md output ("make the voice section sound less AI-written"). Polish chain runs on what is supposed to be the canonical voice definition.
+**Pattern:** User invokes `humanmaxxing` or `polish-vn` on BRAND.md output ("make the voice section sound less AI-written"). Polish chain runs on what is supposed to be the canonical voice definition.
 
-**Why it fails:** brand-system OUTPUT defines voice; humanize/vn-tone INPUT consumes voice. Running humanize on the voice definition itself recursively redefines what "voice" means. The downstream caller (copywriting) then reads a polished version of "what should be unpolished spec."
+**Why it fails:** brand-system OUTPUT defines voice; humanmaxxing/vn-tone INPUT consumes voice. Running humanmaxxing on the voice definition itself recursively redefines what "voice" means. The downstream caller (copywriting) then reads a polished version of "what should be unpolished spec."
 
-**Instead:** humanize and vn-tone run on **content** that REFERENCES brand-system voice (blog posts, ad copy, cold-outreach emails). They do NOT run on BRAND.md itself. If BRAND.md voice section reads "AI-written," re-dispatch voice-agent with feedback in cycle 2 of the critic gate — don't post-process the spec.
+**Instead:** humanmaxxing and vn-tone run on **content** that REFERENCES brand-system voice (blog posts, ad copy, cold-outreach emails). They do NOT run on BRAND.md itself. If BRAND.md voice section reads "AI-written," re-dispatch voice-agent with feedback in cycle 2 of the critic gate — don't post-process the spec.
 
-**Owned by:** Orchestrator (chain position note — brand-system is upstream of humanize/vn-tone, not a peer) + critic-agent ("No copywriting scope creep" criterion catches blog-post-style prose in BRAND.md).
+**Owned by:** Orchestrator (chain position note — brand-system is upstream of humanmaxxing/vn-tone, not a peer) + critic-agent ("No copywriting scope creep" criterion catches blog-post-style prose in BRAND.md).
 
 ---
 

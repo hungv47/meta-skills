@@ -14,7 +14,7 @@ The orchestrator follows this procedure directly — `clean-artifacts` is a sing
 
 You do NOT:
 - Delete files (any deletion is out of scope; v1 only moves).
-- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.agents/manifest.json`, `.forsvn/experience/`, `tasks.md`, `roadmap.md`).
+- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.forsvn/index/manifest.json`, `.forsvn/experience/`, `tasks.md`, `roadmap.md`).
 - Skip the critic gate, even if the scope is small or the operator says "just do it."
 - Operate on a stale or missing manifest — escalate to `NEEDS_CONTEXT` instead.
 - Recurse into `.git/`, submodule dirs, or `node_modules/`.
@@ -50,15 +50,15 @@ Run these in order. Do NOT skip steps — each is a load-bearing safeguard.
 ### Step 1 — Sanity-check the manifest
 
 ```bash
-test -f .agents/manifest.json || exit_with_status NEEDS_CONTEXT \
-  "Missing .agents/manifest.json. Run: bun scripts/manifest-sync.ts"
+test -f .forsvn/index/manifest.json || exit_with_status NEEDS_CONTEXT \
+  "Missing .forsvn/index/manifest.json. Run: bun scripts/manifest-sync.ts"
 ```
 
 If manifest exists, check its mtime:
 
 ```bash
 # If manifest mtime > 1 day, recommend re-sync; do NOT proceed
-find .agents/manifest.json -mtime +1 && exit_with_status NEEDS_CONTEXT \
+find .forsvn/index/manifest.json -mtime +1 && exit_with_status NEEDS_CONTEXT \
   "Manifest is stale (>1 day). Re-run: bun scripts/manifest-sync.ts"
 ```
 
@@ -90,7 +90,7 @@ Refuse HARD-NEVER scopes (operator passed `--scope .forsvn/experience/`, etc.) a
 
 ```bash
 case "<scope>" in
-  .agents/manifest.json|.agents/artifact-index.md|.forsvn/experience|.forsvn/experience/*|.forsvn/artifacts/meta/tasks.md|.forsvn/artifacts/meta/roadmap.md) \
+  .forsvn/index/manifest.json|.forsvn/index/artifact-index.md|.forsvn/experience|.forsvn/experience/*|.forsvn/artifacts/meta/tasks.md|.forsvn/artifacts/meta/roadmap.md) \
     exit_with_status BLOCKED "Scope <scope> is HARD-NEVER and cannot be cleaned by this skill." ;;
 esac
 ```
@@ -121,7 +121,7 @@ For each file collect:
 - Tracked-by-git? (`git ls-files --error-unmatch <path>` returns 0)
 - Has-uncommitted-changes? (`git diff --quiet <path>` returns nonzero)
 - Frontmatter fields if a markdown file: `status`, `lifecycle`, `kind`, `superseded_by`, `stale_after_days`
-- Manifest entry if any (look up by path in `.agents/manifest.json`; field semantics per [`../_shared/manifest-spec.md`](../_shared/manifest-spec.md) [PROCEDURE])
+- Manifest entry if any (look up by path in `.forsvn/index/manifest.json`; field semantics per [`../_shared/manifest-spec.md`](../_shared/manifest-spec.md) [PROCEDURE])
 
 ### Step 3 — Classify per artifact
 

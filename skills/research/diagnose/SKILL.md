@@ -34,7 +34,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` collapses the critic gate to a single pass within the chosen route — it does NOT auto-trigger Route A. Route A is a user-confirmation gate (operator must explicitly confirm skipping the external-factor scan per original semantics, preserving Critical Gate 2). **Cold Start STILL fires under `--fast`** (diagnose ALWAYS cold-starts — the 4 questions ARE the work; safety gates supersede mode-resolver downgrade).
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/diagnose-*.md`).
-2. Read `.agents/manifest.json` — find any prior `diagnose-*.md` for the same metric (re-run signal). Original SKILL.md "Re-run triggers" (metric shifts significantly, new data surfaces, prioritize initiative killed) are operator-judgment — do not auto-emit staleness warnings.
+2. Read `.forsvn/index/manifest.json` — find any prior `diagnose-*.md` for the same metric (re-run signal). Original SKILL.md "Re-run triggers" (metric shifts significantly, new data surfaces, prioritize initiative killed) are operator-judgment — do not auto-emit staleness warnings.
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — always-cold-start contract, 4-question Cold Start prompt, read order, staleness check, Write-back map (Q1-Q4 → goals.md, verbatim from original — Q1-Q3 persist, Q4 does NOT) all there.
 
 ---

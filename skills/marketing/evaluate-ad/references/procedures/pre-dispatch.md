@@ -34,7 +34,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 5. **Source ad-copy artifact** at `.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md` (and `.rationale.md` if present) — the brief's hypothesis is the benchmark for Diagnosis
 6. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, `.forsvn/artifacts/mkt/campaign-plan.md` if present
 
-If `.agents/manifest.json` is stale or missing, run:
+If `.forsvn/index/manifest.json` is stale or missing, run:
 
 ```bash
 bun scripts/manifest-sync.ts

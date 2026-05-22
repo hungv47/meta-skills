@@ -78,7 +78,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - **The next action is creative authorship, not scoring.** Route to `write-ad` with `--rev=N+1`.
 - **The next action is channel-mix retrospective.** Route to `plan-campaign`.
 - **The bottleneck is the LP, not the ad.** Route to `brief-landing-page` (and optionally `evaluate-landing-page` for the LP cycle).
-- **Brand voice cleanup on the ad copy itself.** That's the `humanize` polish chain at write-ad time, not eval time.
+- **Brand voice cleanup on the ad copy itself.** That's the `humanmaxxing` polish chain at write-ad time, not eval time.
 - **Non-Meta platforms.** v1 is Meta-only — Google RSA, LinkedIn Ads, TikTok Ads are reserved for future expansion (same surface as write-ad).
 
 ## Sibling coordination

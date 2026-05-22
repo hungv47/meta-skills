@@ -137,7 +137,7 @@ research_mechanics_date: YYYY-MM-DD
 campaign_tie_in: <slug or null>
 critic_passes: [hook, production, algorithm-fit, brand-fit]
 critic_loop_count: 1 | 2
-polish_chain_applied: vn-tone | humanize | none
+polish_chain_applied: vn-tone | humanmaxxing | none
 ```
 
 For variant artifacts, `role: variant` and additional field `variant_platform: <platform>`.

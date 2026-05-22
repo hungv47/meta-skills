@@ -46,7 +46,7 @@ Output quality is equivalent — multi-agent pattern optimizes focus and paralle
    FAIL (score <25)        → deliver artifact with critic annotations
      ↓
 4. [Optional] Polish chain
-   polish_chain=humanize   → route to humanize skill (terminal pass)
+   polish_chain=humanmaxxing   → route to humanmaxxing skill (terminal pass)
    polish_chain=vn-tone    → route to polish-vn skill (terminal pass)
    polish_chain=none       → skip
 ```
@@ -103,7 +103,7 @@ After critic returns ANY verdict (pass / done_with_concerns / fail — but NOT a
    - Q3 (Brand mode) → append to `experience/brand.md` as `Brand — mode (founder/company)` IF novel for the project (skip if already declared in `brand/BRAND.md`).
    - Q4 (Audience) → append to `experience/audience.md` as `Audience — primary persona` IF icp-research is absent AND audience was supplied via Cold Start.
    - Q5 (Goal) → append to `experience/goals.md` as `Goals — recent campaign goal`.
-3. **Manifest sync (last step):** run `bun scripts/manifest-sync.ts` to refresh `.agents/manifest.json` with the new artifact entry. social-copy artifacts have `type: social-copy-artifact` so manifest-sync's classifier picks them up automatically.
+3. **Manifest sync (last step):** run `bun scripts/manifest-sync.ts` to refresh `.forsvn/index/manifest.json` with the new artifact entry. social-copy artifacts have `type: social-copy-artifact` so manifest-sync's classifier picks them up automatically.
 
 **BLOCK + NEEDS_CONTEXT do NOT trigger write-back.** Partial runs that don't ship an artifact don't persist canonical state. The previous most-recent social-copy artifact (if any) remains the source of truth.
 
@@ -113,7 +113,7 @@ After critic returns ANY verdict (pass / done_with_concerns / fail — but NOT a
 
 After critic verdict (PASS or DONE_WITH_CONCERNS — NOT after FAIL or FORMAT_FAIL):
 
-- `--polish-chain humanize` → invoke `humanize` skill with the artifact path as input. humanize reads the artifact, rewrites `## Body` and `## CTA` in place (preserves Hook variants for A/B comparability), updates frontmatter `polish_chain_applied: humanize`, appends `## Polish chain notes` section.
+- `--polish-chain humanmaxxing` → invoke `humanmaxxing` skill with the artifact path as input. humanmaxxing reads the artifact, rewrites `## Body` and `## CTA` in place (preserves Hook variants for A/B comparability), updates frontmatter `polish_chain_applied: humanmaxxing`, appends `## Polish chain notes` section.
 - `--polish-chain vn-tone` → invoke `polish-vn` skill with the artifact path + target register (báo chí / semi-casual / bro / pop-marketing — operator answers register at vn-tone's own Cold Start). vn-tone rewrites Body + CTA, updates frontmatter, appends notes.
 - `--polish-chain none` → skip. Artifact ships as-is.
 
@@ -125,7 +125,7 @@ After critic verdict (PASS or DONE_WITH_CONCERNS — NOT after FAIL or FORMAT_FA
 
 **Previous:** `brief-shortform` (when the brief locks platform / hook / audience / goal) OR `plan-campaign` (when the campaign plan declares the social cadence) OR none (greenfield invocation with Cold Start).
 
-**Next:** `humanize` / `polish-vn` (polish chain, optional terminal pass) OR direct operator publish workflow (when polish_chain=none).
+**Next:** `humanmaxxing` / `polish-vn` (polish chain, optional terminal pass) OR direct operator publish workflow (when polish_chain=none).
 
 **Horizontal role:** social-copy is invoked at any stage of the marketing pipeline — after brief, after plan-campaign, or standalone. It does NOT have a foundational role (unlike icp-research / brand-system); it's a leaf-node producer in the pipeline.
 
@@ -144,7 +144,7 @@ After critic verdict (PASS or DONE_WITH_CONCERNS — NOT after FAIL or FORMAT_FA
 | Cold-outreach DMs (email, LinkedIn, Twitter, iMessage) | `write-outreach` |
 | LinkedIn articles, Substack posts, blog content (long-form) | `write-copy` or `optimize-seo` |
 | Vietnamese-market polish | `polish-vn` (terminal pass) |
-| AI-pattern stripping post-generation | `humanize` (terminal pass) |
+| AI-pattern stripping post-generation | `humanmaxxing` (terminal pass) |
 
 ---
 
@@ -164,7 +164,7 @@ Echo the chosen mode at the end of the Cold Start / Warm Start confirmation. Ope
 
 - **Skipping format-check on `--fast`.** `--fast` collapses the revision LOOP (no bounce-to-copywriter cycle), but the format-check itself still runs. Hard-cap violations on X (>280 chars) MUST be caught before critic or publish — that's a hard structural fail regardless of speed mode.
 - **Bouncing to copywriter more than once.** Max 1 revision cycle is load-bearing — second REVISION_REQUIRED = FORMAT_FAIL. Looping until the copy fits typically masks a brief-vs-platform mismatch and burns critic budget.
-- **Routing FAIL artifacts to polish chain.** Polish (humanize / vn-tone) doesn't fix critic-fail issues (generic hook, format mismatch). Operator resolves FAIL manually before invoking polish.
+- **Routing FAIL artifacts to polish chain.** Polish (humanmaxxing / vn-tone) doesn't fix critic-fail issues (generic hook, format mismatch). Operator resolves FAIL manually before invoking polish.
 - **Forcing a critic rewrite loop.** social-copy critic is single-pass by design — no rewrite cycles even under --deep. Short-form copy regenerates fast; rewrite cycles compound latency without proportional quality gain.
 - **Dispatching critic before format-check PASSes.** Critic dimension 2 (Char/Word Limit Compliance) auto-fails if a hard-cap violation reaches it. Format-check is gate, not advisory.
-- **Skipping manifest sync after write.** `.agents/manifest.json` is the index downstream skills (eval-loop, humanize, vn-tone, orchestrate-marketing) read for artifact discovery. Skipping sync leaves the new artifact invisible to downstream until the next manual sync.
+- **Skipping manifest sync after write.** `.forsvn/index/manifest.json` is the index downstream skills (eval-loop, humanmaxxing, vn-tone, orchestrate-marketing) read for artifact discovery. Skipping sync leaves the new artifact invisible to downstream until the next manual sync.

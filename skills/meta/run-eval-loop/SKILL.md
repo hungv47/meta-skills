@@ -1,6 +1,6 @@
 ---
 name: run-eval-loop
-description: "Scaffolds and maintains the workspace for a measurable strategy → execution → evaluation cycle — creates `.forsvn/loops/[slug]/` with program, context, a results ledger, and learnings. Use for an improvement loop, experiment ledger, or campaign/content iteration system tied to a metric. Routes surface scoring to the matching evaluate-* skill; not a universal evaluator. Not for one-shot planning (use discover or breakdown-tasks) or multi-perspective debate (use debate-panel)."
+description: "Scaffolds and maintains the workspace for a measurable strategy → execution → evaluation cycle — creates `.forsvn/loops/[slug]/` with program, context, a results ledger, and learnings. Use for an improvement loop, experiment ledger, or campaign/content iteration system tied to a metric. Routes surface scoring to the matching evaluate-* skill; not a universal evaluator. Not for one-shot planning (use discover or breakdown-tasks) or multi-perspective debate (use debate-agents)."
 argument-hint: "[measurable initiative name, e.g. 'pricing page conversion' or 'founder outbound sequence']"
 allowed-tools: Read Write Edit Grep Glob Bash
 metadata:
@@ -60,7 +60,7 @@ Helpers (full flags + validation rules in `references/_shared/eval-loop-spec.md`
 
 Follow [`references/pre-dispatch-protocol.md`](../../../references/pre-dispatch-protocol.md) for framing. Skill-specific entry:
 
-1. Read `.agents/manifest.json`. If missing/stale: `bun scripts/manifest-sync.ts`.
+1. Read `.forsvn/index/manifest.json`. If missing/stale: `bun scripts/manifest-sync.ts`.
 2. Inspect existing loops: `find .forsvn/loops -maxdepth 2 -type f 2>/dev/null | sort`.
 
 ### Warm Start (matching loop found)

@@ -11,7 +11,7 @@ metadata:
 
 # Cold Outreach — Orchestrator
 
-*Communication — Horizontal. Ready-to-send outbound across email, LinkedIn, Twitter/X, platform proposals. Multi-agent strategy → draft → voice → critic → humanize pipeline.*
+*Communication — Horizontal. Ready-to-send outbound across email, LinkedIn, Twitter/X, platform proposals. Multi-agent strategy → draft → voice → critic → humanmaxxing pipeline.*
 
 **Core Question:** "If I removed the personalization, would this email still make sense? If yes, the personalization isn't working."
 
@@ -22,7 +22,7 @@ metadata:
 1. **Mode + channel + target + proof are non-negotiable.** Missing-Input Hard Blocks fire (BLOCK) when any of these are absent and not resolvable from artifacts. Signal can be missing with weak-signal flag; prior_touches required for touch 2+.
 2. **One ask per message, low-friction in touch 1.** "Quick 30-minute call?" in touch 1 is too expensive for zero trust. Default to interest-question CTAs.
 3. **You > me ratio enforced structurally.** First sentence (after salutation) does NOT start with "I" or "My." you/your-count must exceed I/we/our-count. Critic auto-fail when violated.
-4. **Humanize runs ONCE as terminal pass with protected_tokens.** Running humanize twice strips specificity. Post-humanize Specificity regression check is **automatic, not judgment** — drops ≥2 or named entity/number absent → revert to critic-approved draft.
+4. **Humanmaxxing runs ONCE as terminal pass with protected_tokens.** Running humanmaxxing twice strips specificity. Post-humanmaxxing Specificity regression check is **automatic, not judgment** — drops ≥2 or named entity/number absent → revert to critic-approved draft.
 5. **Never argue with a "no" in reply route.** Breakup mode is default for firm not-interesteds. Critic auto-fails any reply that re-pitches after clear rejection, regardless of dim scores.
 
 ## Quality Gate
@@ -39,7 +39,7 @@ Before delivering, the **critic agent** verifies (5 dimensions, 0-10 each):
 
 Below threshold → full Layer 2 chain (composer → voice-auditor → critic) re-runs with feedback (max 2 cycles).
 
-After critic PASS, `humanize` is the terminal pass. Orchestrator then re-runs critic's **Specificity dimension only** on humanized text — if Specificity drops ≥2 OR any named entity/number present pre-humanize is absent post-humanize, revert to critic-approved draft. Protects the specificity anchor the critic just scored.
+After critic PASS, `humanmaxxing` is the terminal pass. Orchestrator then re-runs critic's **Specificity dimension only** on humanmaxxed text — if Specificity drops ≥2 OR any named entity/number present pre-humanmaxxing is absent post-humanmaxxing, revert to critic-approved draft. Protects the specificity anchor the critic just scored.
 
 ---
 
@@ -64,7 +64,7 @@ Full read-order + Warm/Cold Start prompts (7-question Cold Start) + Missing-Inpu
 
 ## Mode Resolution
 
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag collapses Layer 1b parallel (strategist + proof-selector) to sequential and skips the post-humanize Specificity regression check. **`--fast` does NOT skip Cold Start, Critical Gates 1-5, or Missing-Input Hard Blocks** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
+Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag collapses Layer 1b parallel (strategist + proof-selector) to sequential and skips the post-humanmaxxing Specificity regression check. **`--fast` does NOT skip Cold Start, Critical Gates 1-5, or Missing-Input Hard Blocks** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
 
 ---
 
@@ -103,8 +103,8 @@ ROUTE A (compose):
   5. LAYER 2 — SEQUENTIAL: composer → voice-auditor → critic
   6. Critic FAIL → re-dispatch FULL Layer 2 chain with feedback (max 2 cycles)
   6a. Voice-auditor BLOCKED on proof gap → re-dispatch composer + parallel proof-selector
-  7. TERMINAL: humanize with content-type "short-outbound" + channel + protected_tokens
-  8. POST-HUMANIZE REGRESSION: re-run critic's Specificity dim only
+  7. TERMINAL: humanmaxxing with content-type "short-outbound" + channel + protected_tokens
+  8. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only
   9. Write 3 artifacts ([slug].md + .rationale.md + .critic-score.md)
  10. Deliver message + rationale inline
 
@@ -113,7 +113,7 @@ ROUTE B (reply):
   2. LAYER 1: reply-classifier (types reply)
   3. LAYER 2 SEQUENTIAL: reply-composer → voice-auditor → critic (reply-specific rubric)
   4. Critic FAIL → re-dispatch FULL Layer 2 with feedback (max 2 cycles)
-  5. TERMINAL: humanize + Specificity regression (same as Route A)
+  5. TERMINAL: humanmaxxing + Specificity regression (same as Route A)
   6. Write artifacts; deliver inline
 
 ROUTE C (called by campaign-plan):
@@ -122,7 +122,7 @@ ROUTE C (called by campaign-plan):
   3. Return annotated message + rationale to calling skill
 ```
 
-Mechanics (how to spawn agents, single-agent fallback, Layer 1a + 1b two-stage strategy dispatch, Merge Step, Layer 2 sequential pipeline, critic gate + rewrite loop, Terminal humanize + Specificity regression, Reply Route Agent Flow with rubric substitutions, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1a dispatch entry.
+Mechanics (how to spawn agents, single-agent fallback, Layer 1a + 1b two-stage strategy dispatch, Merge Step, Layer 2 sequential pipeline, critic gate + rewrite loop, Terminal humanmaxxing + Specificity regression, Reply Route Agent Flow with rubric substitutions, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1a dispatch entry.
 
 ---
 
@@ -160,7 +160,7 @@ Slug is derived from target + channel (e.g., `jane-acme-email-t1`, `jane-acme-li
 
 ## Anti-Patterns
 
-Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. Banned phrases (~50 zero-tolerance) + reply killers + structural anti-patterns + 9 orchestrator-level rows (template-with-{{FirstName}} swap, "hope this finds you well", "quick 30-min call?" in touch 1, feature dumps, fake Re:/Fwd:, double-humanize, arguing with "no", skipping ICP artifact, multi-touch without prior-touches) + 4 cross-cutting marketing-stack rows (protected_tokens contract drop, post-humanize regression disabled, campaign-plan Route C context drop, artifact schema drift).
+Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. Banned phrases (~50 zero-tolerance) + reply killers + structural anti-patterns + 9 orchestrator-level rows (template-with-{{FirstName}} swap, "hope this finds you well", "quick 30-min call?" in touch 1, feature dumps, fake Re:/Fwd:, double-humanmaxxing, arguing with "no", skipping ICP artifact, multi-touch without prior-touches) + 4 cross-cutting marketing-stack rows (protected_tokens contract drop, post-humanmaxxing regression disabled, campaign-plan Route C context drop, artifact schema drift).
 
 Most common in practice: banned-phrase residual ("I hope this email finds you well", "leverage"), Specificity Floor violation (1 verifiable specific instead of ≥2), calendar CTA in touch 1, multi-touch without prior_touches.
 
@@ -169,7 +169,7 @@ Most common in practice: banned-phrase residual ("I hope this email finds you we
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — passed critic + humanize, ready-to-send
+- **DONE** — passed critic + humanmaxxing, ready-to-send
 - **DONE_WITH_CONCERNS** — delivered, flags noted (stale ICP, weak signal, rubric 35-39)
 - **BLOCKED** — missing target + ICP, or missing proof + product-context; state what's needed
 - **NEEDS_CONTEXT** — recommend `research-icp` or provide prior touches
@@ -182,7 +182,7 @@ After receiving the message: send, wait for reply or cadence (7-14 days typical)
 
 ## Worked Example
 
-End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO target, signal-strength 4, framework's four-step framework, critic PASS cycle 1 at 44/50, terminal humanize with `protected_tokens=["Ramp","9 days","4 days","Acme"]`, post-humanize Specificity regression passes) + FAIL-handling cycle-2 variant + voice-auditor BLOCKED path + Route B (reply) snippet: [`references/examples/cold-outreach-walkthrough.md`](references/examples/cold-outreach-walkthrough.md) [EXAMPLE].
+End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO target, signal-strength 4, framework's four-step framework, critic PASS cycle 1 at 44/50, terminal humanmaxxing with `protected_tokens=["Ramp","9 days","4 days","Acme"]`, post-humanmaxxing Specificity regression passes) + FAIL-handling cycle-2 variant + voice-auditor BLOCKED path + Route B (reply) snippet: [`references/examples/cold-outreach-walkthrough.md`](references/examples/cold-outreach-walkthrough.md) [EXAMPLE].
 
 ---
 

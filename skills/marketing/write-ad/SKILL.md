@@ -11,7 +11,7 @@ metadata:
 
 # Ad Copy — Orchestrator
 
-*Communication — Horizontal. Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic (cold) audiences. Multi-agent strategy → draft → format → voice → critic → humanize pipeline.*
+*Communication — Horizontal. Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic (cold) audiences. Multi-agent strategy → draft → format → voice → critic → humanmaxxing pipeline.*
 
 **Core Question:** "Would this ad still make sense if the platform stripped every claim that isn't substantiated by a named entity or measured number?"
 
@@ -23,7 +23,7 @@ metadata:
 2. **One audience-temp per artifact.** Run twice for campaigns spanning warm + cold; do NOT stack two audience-temps in one artifact.
 3. **Hero + 2 distinct variants per artifact.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants must isolate ONE variable each (Variable Subtraction).
 4. **Format-checker is a HARD gate, not a critic dim.** Bounces on Meta char-cap violation / banned policy phrase / unsubstantiated measured claim. PASSED / REVISION_REQUIRED (does NOT consume critic cycle) / FORMAT_FAIL (escalate to user).
-5. **Humanize runs ONCE per variant with `protected_tokens` including URL.** Post-humanize Specificity regression is **automatic, not judgment** per variant — drops ≥2 or named entity/number/URL absent → revert THAT variant to critic-approved.
+5. **Humanmaxxing runs ONCE per variant with `protected_tokens` including URL.** Post-humanmaxxing Specificity regression is **automatic, not judgment** per variant — drops ≥2 or named entity/number/URL absent → revert THAT variant to critic-approved.
 
 ## Quality Gate
 
@@ -39,7 +39,7 @@ Before delivering, the **critic agent** verifies (7 dimensions, 0-10 each):
 
 **Gate:** Total ≥ 49/70 **AND every dim ≥ 6**. Total 49-55 with all dims ≥ 6 = PASS as `DONE_WITH_CONCERNS`. Any dim < 6 = FAIL regardless of total.
 
-After critic PASS, `humanize` is the terminal pass on each variant. Orchestrator then re-runs critic's **Specificity dimension only** on humanized text — if Specificity drops ≥2 OR any named entity/number present pre-humanize is absent post-humanize, revert to critic-approved draft. Protects the specificity anchor.
+After critic PASS, `humanmaxxing` is the terminal pass on each variant. Orchestrator then re-runs critic's **Specificity dimension only** on humanmaxxed text — if Specificity drops ≥2 OR any named entity/number present pre-humanmaxxing is absent post-humanmaxxing, revert to critic-approved draft. Protects the specificity anchor.
 
 ---
 
@@ -65,7 +65,7 @@ Full read-order + Warm/Cold Start prompts (10-question Cold Start + retargeting 
 
 ## Mode Resolution
 
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag skips post-humanize Specificity regression check per variant (saves 3 critic-Specificity-dim invocations for hero + A + B). **`--fast` does NOT skip Cold Start, Critical Gates 1-5, Missing-Input Hard Blocks, or Format-Checker Hard Gate** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
+Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag skips post-humanmaxxing Specificity regression check per variant (saves 3 critic-Specificity-dim invocations for hero + A + B). **`--fast` does NOT skip Cold Start, Critical Gates 1-5, Missing-Input Hard Blocks, or Format-Checker Hard Gate** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
 
 ---
 
@@ -99,8 +99,8 @@ ROUTE A (compose):
   4. Critic FAIL → re-dispatch FULL Layer 2 chain with feedback (max 2 cycles)
   4a. Format-checker FORMAT_FAIL (second pass) → escalate to user
   4b. Format-checker REVISION_REQUIRED → re-dispatch composer (does NOT consume critic cycle)
-  5. TERMINAL: humanize per variant (3 invocations) with content-type "short-outbound" + audience-temp + protected_tokens (named entities + numbers + URLs)
-  6. POST-HUMANIZE REGRESSION: re-run critic's Specificity dim only per variant
+  5. TERMINAL: humanmaxxing per variant (3 invocations) with content-type "short-outbound" + audience-temp + protected_tokens (named entities + numbers + URLs)
+  6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant
   7. Write 3 artifacts ([slug].md + .rationale.md + .critic-score.md)
   8. Deliver hero + 2 variants + rationale inline
 
@@ -110,7 +110,7 @@ ROUTE B (called by campaign-plan):
   3. Return annotated hero + 2 variants + rationale to calling skill
 ```
 
-Mechanics (how to spawn agents, single-agent fallback, Layer 1 strategist solo with 7 verification checks, Layer 2 sequential pipeline with Format-Checker Hard Gate semantics, critic gate + rewrite loop, Terminal humanize per-variant + per-variant Specificity regression, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
+Mechanics (how to spawn agents, single-agent fallback, Layer 1 strategist solo with 7 verification checks, Layer 2 sequential pipeline with Format-Checker Hard Gate semantics, critic gate + rewrite loop, Terminal humanmaxxing per-variant + per-variant Specificity regression, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 
 ---
 
@@ -154,14 +154,14 @@ Slug pattern: `retargeting-2026-05-11-trial-app-followers` or `cold-2026-05-11-a
 
 ## Anti-Patterns
 
-Orchestrator + cross-cutting + 8 inherited sections: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 8 inherited sections (vendor-speak, AI-tells, fabrication, ceiling triggers, etc.) + §9 Orchestrator-Level (13 rows: cold-creative reused as retargeting, frequency creep, lookalikes on cold trial app, repurposed UGC at scale, purchase optimization on 3-day trial, banned health/finance/political claim, fabricated stat, paraphrase variants, em-dashes, generic "Quick question?" hooks, multi-CTA, double-humanize, change-everything-at-once) + §10 Cross-Cutting marketing-stack (4 rows: protected_tokens contract per-variant incl. URL, post-humanize regression per-variant, campaign-plan Route B context drop, artifact schema drift).
+Orchestrator + cross-cutting + 8 inherited sections: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 8 inherited sections (vendor-speak, AI-tells, fabrication, ceiling triggers, etc.) + §9 Orchestrator-Level (13 rows: cold-creative reused as retargeting, frequency creep, lookalikes on cold trial app, repurposed UGC at scale, purchase optimization on 3-day trial, banned health/finance/political claim, fabricated stat, paraphrase variants, em-dashes, generic "Quick question?" hooks, multi-CTA, double-humanmaxxing, change-everything-at-once) + §10 Cross-Cutting marketing-stack (4 rows: protected_tokens contract per-variant incl. URL, post-humanmaxxing regression per-variant, campaign-plan Route B context drop, artifact schema drift).
 
 ---
 
 ## Completion Status
 
 Every run ends with explicit status:
-- **DONE** — passed critic + format-checker + humanize regression, ready-to-publish
+- **DONE** — passed critic + format-checker + humanmaxxing regression, ready-to-publish
 - **DONE_WITH_CONCERNS** — delivered, flags noted (stale ICP, ceiling warning on repurposed-UGC, missing LP description, policy soft-warn override, total 49-55 with all dims ≥6)
 - **BLOCKED** — missing offer, missing proof + no product-context, or audience-temp missing; state what's needed
 - **NEEDS_CONTEXT** — recommend `research-icp` or provide proof candidates
@@ -178,7 +178,7 @@ After receiving the artifact:
 
 ## Worked Example
 
-End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day trial, trial_start conversion, dedicated creative, in-house production, 3 distinct variants: outcome-first / scale+social-proof / authority+mechanism, format-checker REVISION_REQUIRED on char-cap + health-claim disclaimer, composer revised, critic PASS aggregate 168/210 with per-variant 58/56/54, terminal humanize per variant with `protected_tokens` incl. URL, post-humanize Specificity regression passes per variant) + cycle-2 FAIL variant + Format-Checker REVISION_REQUIRED path + Route B called-by-campaign-plan snippet: [`references/examples/ad-copy-walkthrough.md`](references/examples/ad-copy-walkthrough.md) [EXAMPLE].
+End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day trial, trial_start conversion, dedicated creative, in-house production, 3 distinct variants: outcome-first / scale+social-proof / authority+mechanism, format-checker REVISION_REQUIRED on char-cap + health-claim disclaimer, composer revised, critic PASS aggregate 168/210 with per-variant 58/56/54, terminal humanmaxxing per variant with `protected_tokens` incl. URL, post-humanmaxxing Specificity regression passes per variant) + cycle-2 FAIL variant + Format-Checker REVISION_REQUIRED path + Route B called-by-campaign-plan snippet: [`references/examples/ad-copy-walkthrough.md`](references/examples/ad-copy-walkthrough.md) [EXAMPLE].
 
 ---
 

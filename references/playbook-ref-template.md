@@ -158,7 +158,7 @@ Critic gate with V/F/U rubric and Competitor Swap Test.
 - 3-5 variations per key line; the second-best becomes the alternative shown
 
 ## When NOT to use
-For polishing AI-sounding text → humanize. For brand voice creation → brand-system.
+For polishing AI-sounding text → humanmaxxing. For brand voice creation → brand-system.
 For landing-page architecture → lp-brief.
 ```
 

@@ -81,7 +81,7 @@ Read `references/_shared/eval-loop-spec.md` before writing artifacts when availa
 
 **Hard-block conditions (fire BEFORE Cold Start):** (1) `program.md` or `context.md` absent → NEEDS_CONTEXT, recommend `/run-eval-loop`. (2) Content under evaluation is short-form video → NEEDS_CONTEXT, route to `evaluate-shortform`. (3) No measurement evidence for current cycle → BLOCKED with missing-evidence list. (4) Primary-platform tag missing → BLOCKED, ask the operator to declare it. (5) Custom 10+ column `results.tsv` schema → warn + flag to eval-loop owner; require hand-edit (not standard helper).
 
-**Read Order:** `program.md` → `context.md` → `results.tsv` → latest `strategy/` + `execution/` + `evals/` files → source write-social artifact (`.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md`) → publish-social bundle manifest if present → canonical artifacts (`brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`). If `.agents/manifest.json` is stale, run `bun scripts/manifest-sync.ts`.
+**Read Order:** `program.md` → `context.md` → `results.tsv` → latest `strategy/` + `execution/` + `evals/` files → source write-social artifact (`.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md`) → publish-social bundle manifest if present → canonical artifacts (`brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`). If `.forsvn/index/manifest.json` is stale, run `bun scripts/manifest-sync.ts`.
 
 **Warm Start** (loop exists + metric evidence present + primary-platform tagged): summarize loop + primary platform + primary metric + baseline/prior result + latest content artifact + current evidence window; proceed to evaluate cycle N.
 

@@ -6,6 +6,24 @@ This file tracks releases of the consolidated `forsvn-skills` plugin (39 skills 
 
 ---
 
+## [3.0.0] - 2026-05-22
+
+**v3 — reviewable artifacts, `.forsvn/` root standardization, and two breaking skill renames.** Adds a human-review layer to Markdown artifacts, consolidates machine-derived state under a single `.forsvn/` root, and renames two skills. Skill count unchanged at 39 (meta 7 · research 7 · marketing 19 · product 6).
+
+### Changed
+
+- **[BREAKING] [meta] `debate-panel` renamed to `debate-agents`.** The skill directory, `name:`, `plugin.json` / `marketplace.json` entries, `hooks/skill-registry.json`, router tests, `manifest-sync.ts` producer inference, canonical references, and the `/forsvn` marketing/meta chains are all updated. **The `/debate-panel` command no longer exists — use `/debate-agents`.** No alias. Routing keywords (`debate`, `panel`, `perspective`, `consensus`, `viewpoint`) are unchanged, so natural-language intent still routes correctly.
+- **[BREAKING] [marketing] `humanize` renamed to `humanmaxxing`.** **The `/humanize` command no longer exists — use `/humanmaxxing`.** No alias. The rename is soul-deep, not cosmetic: directory, `name:`, plugin/marketplace entries, registry, router tests, every skill body, agent prompt, reference, and example adopt the slang verb family — `humanmax` (verb), `humanmaxxed` (past tense), `humanmaxxing` (the practice / gerund). The artifact output path becomes `[slug].humanmaxxed.md` and the cross-skill frontmatter contract is renamed (`humanmaxxing_quality_score`, `humanmaxxing_detector_status`, `polish_chain_applied: humanmaxxing`) across every consumer skill. The plain-English word `humanize` is retained only as a routing keyword/trigger phrase, so "humanize this" still routes users to the skill.
+- **[all] resource root standardized on `.forsvn/`.** The machine-derived index moved from `.agents/` to `.forsvn/index/` (`manifest.json` + `artifact-index.md`). `manifest-sync.ts` now writes there; 156 stale `.agents/` path references across skills and references are corrected; the execution harness and `.gitignore` follow. `.agents/` is retired and `skills-resources/` (named only in stale planning docs) was never materialized. Existing `.agents/` content is regenerable — run `bun scripts/manifest-sync.ts`. `implementation-roadmap/canonical-paths.md` rewritten to the single-root taxonomy.
+
+### Added
+
+- **[all] reviewable-artifact contract — a human-review layer for Markdown artifacts.** Four flat frontmatter fields (`review_state`, `review_tool`, `reviewed_at`, `reviewer`) plus a `## Review Gate` body block let an artifact carry explicit human sign-off, distinct from the skill-side `status`. `review_state` is one of `pending | approved | rejected | changes_requested | not_required`; absent or unrecognized values normalize to `not_required`, so legacy artifacts index unchanged. `manifest-sync.ts` parses the fields into `manifest.json` and renders a Review column in `artifact-index.md`; an invalid `review_state` produces a warning, never a crash. Two new canonical references — `reviewable-artifact-contract.md` (the state contract + lifecycle-default policy) and `roughdraft-review-protocol.md` (the procedure for running a review in Roughdraft, opt-in per invocation). `scripts/test-review-fixtures.ts` covers the four review cases. No skill consumes the contract yet — skill adoption is a scoped follow-up pass.
+
+### Removed
+
+- **[all] `.agents/` directory retired** — superseded by `.forsvn/index/` (see Changed). The directory and its two derived files are deleted; nothing distributable was lost.
+
 ## [2.0.1] - 2026-05-21
 
 Renames the Claude plugin to `forsvn-skills` while keeping the repository and install URL at `github.com/hungv47/meta-skills`.

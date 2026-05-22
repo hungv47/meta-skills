@@ -225,7 +225,7 @@ These nine patterns operate at the pipeline level — they describe how the orch
 | "Quick 30-minute call?" in touch 1 | Ask is too expensive for zero trust | CTA Friction rubric; strategist defaults to interest-question CTAs |
 | Feature dumps | One proof beats ten features; reads as desperation | proof-selector picks ONE; voice-auditor cuts lists |
 | Fake Re:/Fwd: subject lines | Short-term open rate bump, long-term trust destruction, reply rate collapse | Banned in `references/channels/email.md`; voice-auditor auto-fails |
-| Running humanize twice | Strips specificity, drifts toward generic | Terminal pass runs ONCE |
+| Running humanmaxxing twice | Strips specificity, drifts toward generic | Terminal pass runs ONCE |
 | Arguing with "no" in reply route | Burns goodwill, tanks domain reputation | reply-composer hard gate; critic auto-fails |
 | Skipping ICP artifact when present | Re-asks user for what's already known | Step 0 enforces artifact check first |
 | Multi-touch without prior-touches input | Touch 2 repeats touch 1's angle | Orchestrator prompts for prior touches when slug ends `-t2`, `-t3`, etc. |
@@ -234,19 +234,19 @@ These nine patterns operate at the pipeline level — they describe how the orch
 
 ## Cross-Cutting Marketing-Stack Anti-Patterns
 
-These patterns apply across the marketing stack — cold-outreach calls `humanize` as the terminal polish-chain pass for short-outbound EN content, and is itself called by `plan-campaign` as a Route C consumer. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
+These patterns apply across the marketing stack — cold-outreach calls `humanmaxxing` as the terminal polish-chain pass for short-outbound EN content, and is itself called by `plan-campaign` as a Route C consumer. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
 
-### Caller skipped the protected_tokens contract when invoking humanize
+### Caller skipped the protected_tokens contract when invoking humanmaxxing
 
-**Problem:** Orchestrator dispatches `humanize` with `content-type: "short-outbound"` but forgets to pass `protected_tokens` listing the named entities and numbers in the critic-approved draft. humanize's compression-agent paraphrases "$2.3M ARR" to "millions in ARR" or drops the Ramp logo. The post-humanize regression check still catches it (Specificity dim drops ≥2 or named entity absent) and reverts to the critic-approved draft — but the run wasted a humanize cycle.
+**Problem:** Orchestrator dispatches `humanmaxxing` with `content-type: "short-outbound"` but forgets to pass `protected_tokens` listing the named entities and numbers in the critic-approved draft. humanmaxxing's compression-agent paraphrases "$2.3M ARR" to "millions in ARR" or drops the Ramp logo. The post-humanmaxxing regression check still catches it (Specificity dim drops ≥2 or named entity absent) and reverts to the critic-approved draft — but the run wasted a humanmaxxing cycle.
 
-**INSTEAD:** Terminal pass step in `procedures/dispatch-mechanics.md` § "Terminal Pass: Humanize" lists `protected_tokens` as a required input (every named entity + number in critic-approved draft). Do NOT skip — it's the contract that prevents silent paraphrase. See sibling humanize's `anti-patterns.md` § "Calling skill drops protected_tokens contract" for the consumer-side framing.
+**INSTEAD:** Terminal pass step in `procedures/dispatch-mechanics.md` § "Terminal Pass: Humanmaxxing" lists `protected_tokens` as a required input (every named entity + number in critic-approved draft). Do NOT skip — it's the contract that prevents silent paraphrase. See sibling humanmaxxing's `anti-patterns.md` § "Calling skill drops protected_tokens contract" for the consumer-side framing.
 
-### Post-humanize regression check disabled or judgment-overridden
+### Post-humanmaxxing regression check disabled or judgment-overridden
 
-**Problem:** Orchestrator runs humanize, sees a clean polished message, ships it without re-running critic's Specificity dim. Two slots later eval shows the named proof ("cut close time from 9 days to 4 days") was paraphrased to "significantly reduced close time" — exactly the kind of generic claim the critic was designed to catch.
+**Problem:** Orchestrator runs humanmaxxing, sees a clean polished message, ships it without re-running critic's Specificity dim. Two slots later eval shows the named proof ("cut close time from 9 days to 4 days") was paraphrased to "significantly reduced close time" — exactly the kind of generic claim the critic was designed to catch.
 
-**INSTEAD:** Regression check is **automatic, not judgment** (per `dispatch-mechanics.md` § "Terminal Pass: Humanize" step 4). The check is just re-running critic's Specificity dim on humanized text + comparing against pre-humanize. The Specificity Floor of ≥2 verifiable specifics still applies. If the check fails, revert to critic-approved draft (do NOT try to re-fix humanize). Operator override of the regression check requires an explicit `--skip-regression` flag (not currently implemented; would be a v6.3.0 candidate).
+**INSTEAD:** Regression check is **automatic, not judgment** (per `dispatch-mechanics.md` § "Terminal Pass: Humanmaxxing" step 4). The check is just re-running critic's Specificity dim on humanmaxxed text + comparing against pre-humanmaxxing. The Specificity Floor of ≥2 verifiable specifics still applies. If the check fails, revert to critic-approved draft (do NOT try to re-fix humanmaxxing). Operator override of the regression check requires an explicit `--skip-regression` flag (not currently implemented; would be a v6.3.0 candidate).
 
 ### Campaign-plan Route C invocation drops mode/channel context
 

@@ -38,7 +38,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** — this skill is `budget: standard`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) applies the canonical heuristics. `--fast` flag forces Single-Agent Fallback. **Safety gates supersede `--fast`:** the 6 standard critical gates (or route-specific gates for Routes D + E) fire on every run, regardless of mode.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (default route writes to project; Route D writes to `research/product-context.md`; Route E appends to `CHANGELOG.md`).
-2. Read `.agents/manifest.json` for prior docs-writing runs against the same target; surface staleness signals.
+2. Read `.forsvn/index/manifest.json` for prior docs-writing runs against the same target; surface staleness signals.
 3. Read `.forsvn/experience/technical.md` for prior doc conventions (voice, formatting preferences).
 4. Read project context: existing README, CLAUDE.md, `research/product-context.md`, `package.json#description` — all available context before scanning code.
 

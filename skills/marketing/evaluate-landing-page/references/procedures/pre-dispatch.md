@@ -29,7 +29,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what was changed this cycle + prior eval verdicts
 5. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, campaign plan if present
 
-If `.agents/manifest.json` is stale or missing, run:
+If `.forsvn/index/manifest.json` is stale or missing, run:
 
 ```bash
 bun scripts/manifest-sync.ts

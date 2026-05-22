@@ -27,7 +27,7 @@ The artifact is load-bearing for the project and must stay in place.
 - `architecture/**` (canonical system blueprint)
 - `.git/**`, `.gitmodules`
 - Any path inside a directory listed in `.gitmodules` (submodule)
-- `.agents/manifest.json` (infrastructure)
+- `.forsvn/index/manifest.json` (infrastructure)
 - `.forsvn/experience/**` (Q&A substrate, append-only)
 - `.forsvn/artifacts/meta/roadmap.md` (session anchor)
 - `.forsvn/artifacts/meta/tasks.md` (session anchor)
@@ -40,7 +40,7 @@ The artifact is load-bearing for the project and must stay in place.
 | `brand/BRAND.md` | canonical |
 | `research/icp-research.md` | canonical |
 | `architecture/system-architecture.md` | canonical |
-| `.agents/manifest.json` | infrastructure |
+| `.forsvn/index/manifest.json` | infrastructure |
 | `.forsvn/experience/audience.md` | append-only substrate |
 | `.forsvn/artifacts/meta/tasks.md` | session anchor |
 | `.forsvn/artifacts/meta/records/skill-contracts.md` | living registry (`kind: registry`) |
@@ -202,7 +202,7 @@ The runner emits the tier in the per-candidate report so the operator can audit 
 
 ## Manifest-Driven Freshness Rules
 
-The runner reads `.agents/manifest.json` (per `references/_shared/manifest-spec.md`) and uses these fields:
+The runner reads `.forsvn/index/manifest.json` (per `references/_shared/manifest-spec.md`) and uses these fields:
 
 - **`updated_at`** — date of last write to the artifact's frontmatter or the file's mtime (manifest-sync derives this).
 - **`status`** — `done`, `done_with_concerns`, `blocked`, `needs_context`. Only `done` and `done_with_concerns` count as "load-bearing"; `blocked` and `needs_context` artifacts may be STALE candidates if old.
@@ -227,10 +227,10 @@ For artifacts WITHOUT a manifest entry: classify ORPHAN unless HARD-NEVER.
 
 ## When the Manifest is Missing or Stale
 
-If `.agents/manifest.json` doesn't exist or its mtime is > 1 day old, the runner emits status `NEEDS_CONTEXT` and recommends:
+If `.forsvn/index/manifest.json` doesn't exist or its mtime is > 1 day old, the runner emits status `NEEDS_CONTEXT` and recommends:
 
 ```
-.agents/manifest.json is missing or stale.
+.forsvn/index/manifest.json is missing or stale.
 Re-run before continuing:
  bun scripts/manifest-sync.ts
 ```

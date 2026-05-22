@@ -233,7 +233,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 4. Duration + cadence — 30/60/90 days, posts per week. → `goals`
 5. Constraints — team size, budget tier, channels you can't use. → `business`
 
-**humanize**
+**humanmaxxing**
 1. Target voice — 3 adjectives OR a reference brand OR `brand/BRAND.md`. → `brand` if novel
 2. Preserve register? (e.g., keep formal if technical) → routing only
 3. Compression target — light (10-15%) / moderate (20-30%) / heavy (30%+). → routing only

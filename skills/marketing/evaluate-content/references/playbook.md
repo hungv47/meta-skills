@@ -70,7 +70,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-content does not run as a heuristic audit.
 - **The next action is copy authorship, not scoring.** Route to `write-social` with `--rev=N+1`.
 - **The next action is a distribution / scheduling change.** Route to `publish-social`.
-- **Brand voice cleanup on the copy itself.** That's the `humanize` polish chain at write-social time, not eval time.
+- **Brand voice cleanup on the copy itself.** That's the `humanmaxxing` polish chain at write-social time, not eval time.
 
 ## Sibling coordination
 

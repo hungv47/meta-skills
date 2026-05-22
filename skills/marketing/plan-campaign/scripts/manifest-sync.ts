@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
-// manifest-sync — derive `.agents/manifest.json` from artifact frontmatter.
-// See meta-skills/references/manifest-spec.md for the full contract.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// manifest-sync — derive `.forsvn/index/manifest.json` from artifact frontmatter.
+// See references/_shared/manifest-spec.md for the full contract.
 //
 // Usage:
 //   bun /path/to/manifest-sync.ts [project-root]
@@ -15,8 +16,8 @@ const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-a
 const ROOT = realpathSync(ROOT_ARG);
 const ARTIFACT_ROOTS = [".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = ".forsvn/experience";
-const MANIFEST_PATH = join(ROOT, ".agents", "manifest.json");
-const ARTIFACT_INDEX_PATH = join(ROOT, ".agents", "artifact-index.md");
+const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
+const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
@@ -100,7 +101,7 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/artifacts\/meta\/specs\//, "discover"],
     [/^\.forsvn\/artifacts\/meta\/sketches\/prioritize/, "prioritize"],
     [/^\.forsvn\/artifacts\/meta\/sketches\//, "discover"],
-    [/^\.forsvn\/artifacts\/meta\/decisions\//, "debate-panel"],
+    [/^\.forsvn\/artifacts\/meta\/decisions\//, "debate-agents"],
     [/^\.forsvn\/artifacts\/meta\/records\/skill-contracts/, "meta-system"],
     [/^\.forsvn\/artifacts\/meta\/records\/.*review-work/, "review-work"],
     [/^\.forsvn\/artifacts\/meta\/records\/.*clean-artifacts/, "clean-artifacts"],
@@ -173,13 +174,13 @@ function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   if (/^\.forsvn\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
   if (/^\.forsvn\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
   if (/^\.forsvn\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
-  if (/^\.agents\/skill-artifacts\/meta\/decisions\//.test(rel)) return "decision";
-  if (/^\.agents\/skill-artifacts\/meta\/specs\//.test(rel)) return "spec";
-  if (/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
-  if (/^\.agents\/skill-artifacts\/meta\/records\//.test(rel)) return "snapshot";
-  if (/^\.agents\/skill-artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
-  if (/^\.agents\/skill-artifacts\/\.archive\//.test(rel)) return "archive";
-  if (/^\.agents\/skill-artifacts\//.test(rel)) return "pipeline";
+  if (/^\.forsvn\/artifacts\/meta\/decisions\//.test(rel)) return "decision";
+  if (/^\.forsvn\/artifacts\/meta\/specs\//.test(rel)) return "spec";
+  if (/^\.forsvn\/artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
+  if (/^\.forsvn\/artifacts\/meta\/records\//.test(rel)) return "snapshot";
+  if (/^\.forsvn\/artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
+  if (/^\.forsvn\/artifacts\/\.archive\//.test(rel)) return "archive";
+  if (/^\.forsvn\/artifacts\//.test(rel)) return "pipeline";
   return "";
 }
 
@@ -231,7 +232,7 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
 
   return `# Artifact Index
 
-Generated from artifact frontmatter by \`meta-skills/scripts/manifest-sync.ts\`.
+Generated from artifact frontmatter by \`scripts/manifest-sync.ts\`.
 
 - Updated: ${manifest.updated_at}
 - Artifacts indexed: ${entries.length}
@@ -260,7 +261,7 @@ for (const base of ARTIFACT_ROOTS) {
   const root = join(ROOT, base);
   for (const file of walkMd(root)) {
     const rel = relative(ROOT, file).split("\\").join("/");
-    if (rel === ".agents/artifact-index.md") continue;
+    if (rel === ".forsvn/index/artifact-index.md") continue;
 
     // Skip README files anywhere — documentation, not artifacts.
     if (basename(rel).toLowerCase() === "readme.md") continue;
@@ -326,9 +327,9 @@ const manifest = {
   experience,
 };
 
-const manifestDir = join(ROOT, ".agents");
+const manifestDir = join(ROOT, ".forsvn", "index");
 if (existsSync(manifestDir) && lstatSync(manifestDir).isSymbolicLink()) {
-  throw new Error("Refusing to write through symlinked .agents/");
+  throw new Error("Refusing to write through symlinked .forsvn/index/");
 }
 if (!existsSync(manifestDir)) mkdirSync(manifestDir, { recursive: true });
 for (const target of [MANIFEST_PATH, ARTIFACT_INDEX_PATH]) {

@@ -8,7 +8,7 @@ weighting_note_cycle_1: "Cycle 1 = 70% observation / 30% scoring. Single calibra
 
 # Short-Form Eval Rubric — v0.1 (Provisional)
 
-> **Provisional rubric.** Mandatory revision after cycle 2-3. The four primary dimensions plus author-discretion are intentionally lean — the panel that scoped this skill (`debate-panel` 2026-05-08) flagged premature-rubric-lock as the highest residual risk. The mitigation is procedural: revise this file deliberately at the cycle 2-3 boundary against accumulated variance.
+> **Provisional rubric.** Mandatory revision after cycle 2-3. The four primary dimensions plus author-discretion are intentionally lean — the panel that scoped this skill (`debate-agents` 2026-05-08) flagged premature-rubric-lock as the highest residual risk. The mitigation is procedural: revise this file deliberately at the cycle 2-3 boundary against accumulated variance.
 
 ## How to use this rubric
 

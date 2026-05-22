@@ -85,7 +85,7 @@ Q2 and Q3 persist per-route. Q1 (page identity) and Q4 (route) are run-specific.
 This skill **does not ship a default skill-chain doc.** Two paths:
 
 1. **Project has one** (e.g., `growth/page-redesigns/_prompts.md`) — read once at orchestrator level. Brief REFERENCES by section header; never inline-duplicate. Add page-specific overrides only.
-2. **Project does not** — brief generates a per-page chain inline: "Skill Chain" section listing downstream skills/prompts (`brief-graphic` per asset slot, `write-copy` for headline polish, `humanize` for AI-flavored copy). Page-scoped only — no project-level default created.
+2. **Project does not** — brief generates a per-page chain inline: "Skill Chain" section listing downstream skills/prompts (`brief-graphic` per asset slot, `write-copy` for headline polish, `humanmaxxing` for AI-flavored copy). Page-scoped only — no project-level default created.
 
 Rationale: project-level default locks teams into our chain. Per-page is correct because the chain depends on generative slots, copy polish needs, and asset rendering — all page-specific.
 

@@ -23,8 +23,7 @@ import type { AgentSpawn, OutputArtifact, RefLoad, RunMarker, RunResult, ToolEve
 const ARTIFACT_INFER_EXCLUDES = [
   "/.forsvn/artifacts/.archive/",
   "/.forsvn/artifacts/meta/records/harness/",
-  "/.agents/manifest.json",
-  "/.agents/artifact-index.md",
+  "/.forsvn/index/",
   "/.forsvn/loops/.harness/",
 ];
 
@@ -105,7 +104,6 @@ function main() {
         inferred = true;
         return Array.from(writtenPaths).filter((p) => {
           const inArtifactRegion =
-            p.includes("/.agents/") ||
             p.includes("/.forsvn/") ||
             p.startsWith(join(ROOT, "research") + "/") ||
             p.startsWith(join(ROOT, "brand") + "/") ||

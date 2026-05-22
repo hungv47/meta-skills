@@ -107,7 +107,7 @@ bun scripts/harness/stop.ts
   [--artifact <path>]...
 ```
 
-Pass `--artifact` once per output file the skill produced. If omitted, the harness infers from any Write/Edit calls that landed inside `.agents/`, `.forsvn/`, `research/`, `brand/`, or `architecture/`.
+Pass `--artifact` once per output file the skill produced. If omitted, the harness infers from any Write/Edit calls that landed inside `.forsvn/`, `research/`, `brand/`, or `architecture/`.
 
 Writes `<date>-<skill>-<run-id>.json` and removes the marker.
 

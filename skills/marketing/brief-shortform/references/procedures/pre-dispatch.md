@@ -23,7 +23,7 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. **Latest matching `.forsvn/artifacts/research/short-form-research/[slug].md`** from `.agents/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
+1. **Latest matching `.forsvn/artifacts/research/short-form-research/[slug].md`** from `.forsvn/index/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
    - Missing → emit: "No short-form-research artifact for this market. Run `research-shortform` first, or proceed with platform references only (briefs will lack current trend signals). [Run upstream / Proceed without]"
    - Trend signals stale (>30d) → emit: "Trend signals are X days old. Re-run research, or proceed with stale trends? Briefs may bet on decayed patterns. [Re-run / Proceed]"
    - Mechanics stale (>180d) → strongly recommend re-run; user can override with concerns flag.
@@ -116,7 +116,7 @@ Q1 (angle), Q2 (platforms), Q5 (campaign tie-in) are per-run inputs — do NOT w
 
 If `market = VN` is resolved (from research artifact, BRAND.md, or experience), the polish chain MUST include `polish-vn` per the Polish Chain table in SKILL.md (`polish-vn` on full body for company; `polish-vn` on spoken-line + full body for founder). The polish chain runs in Layer 2 post-critic; orchestrator does not need to ask the operator — auto-routing is the default. Anti-pattern row "VN market output without vn-tone" enforces this at critic gate if somehow bypassed.
 
-`humanize` auto-routing for EN founder follows the same pattern (spoken-line only).
+`humanmaxxing` auto-routing for EN founder follows the same pattern (spoken-line only).
 
 ## `--fast` behavior in Pre-Dispatch
 

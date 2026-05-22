@@ -27,7 +27,7 @@ Use the **Agent tool** (general-purpose or Explore) with a prompt built as:
 If multi-agent dispatch unavailable, run each agent's instructions sequentially in-context:
 - Layer 1: signal-analyst, strategist, proof-selector one at a time (independent)
 - Layer 2: composer → voice-auditor → critic in order
-- Terminal humanize: apply humanize instructions in-context if skill unreachable
+- Terminal humanmaxxing: apply humanmaxxing instructions in-context if skill unreachable
 
 Quality is equivalent — multi-agent optimizes parallelism and focus, not capability.
 
@@ -58,8 +58,8 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
    - Re-dispatch composer with the block reason as feedback.
    - If the block names a proof gap, re-dispatch proof-selector in parallel with "need stronger proof" so composer has a better pool.
    - Same BLOCKED reason repeats on second pass → escalate as `NEEDS_CONTEXT` (name what's missing — usually a concrete client + number).
-7. TERMINAL: invoke `humanize` with `content-type: "short-outbound"` + channel
-8. POST-HUMANIZE REGRESSION: re-run critic's Specificity dim only. Drops ≥2 OR any named entity/number absent post-humanize → revert to critic-approved draft.
+7. TERMINAL: invoke `humanmaxxing` with `content-type: "short-outbound"` + channel
+8. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved draft.
 9. Write artifacts to `.forsvn/artifacts/mkt/cold-outreach/[slug].md` (+ .rationale.md + .critic-score.md)
 10. Deliver message + rationale inline; show scorecard only if user asks or any dim scored 6-7
 ```
@@ -76,8 +76,8 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
    - voice-auditor (peer-voice pass)
    - critic (reply-specific rubric — see Reply Route Agent Flow below)
 4. Critic FAIL → re-dispatch FULL Layer 2 (reply-composer → voice-auditor → critic) with feedback (max 2 cycles)
-5. TERMINAL: `humanize` with `content-type: "short-outbound"`
-6. POST-HUMANIZE REGRESSION (same as Route A step 8)
+5. TERMINAL: `humanmaxxing` with `content-type: "short-outbound"`
+6. POST-HUMANMAXXING REGRESSION (same as Route A step 8)
 7. Write artifacts; deliver inline
 ```
 
@@ -170,31 +170,31 @@ Agents run in order. Each receives the prior agent's output.
 ### Critic Gate
 
 Critic returns:
-- **PASS** — scorecard → proceed to terminal humanize
+- **PASS** — scorecard → proceed to terminal humanmaxxing
 - **FAIL** — scorecard + rewrite feedback → re-dispatch composer (cycle 1 or 2)
 
 After 2 failed cycles, surface: "Critic couldn't reach threshold — here's the best draft + scorecard + what's blocking. Your call."
 
 ---
 
-## Terminal Pass: Humanize
+## Terminal Pass: Humanmaxxing
 
-After critic PASS, invoke `humanize` on the final draft:
+After critic PASS, invoke `humanmaxxing` on the final draft:
 
-1. Spawn agent with humanize's `SKILL.md` content
+1. Spawn agent with humanmaxxing's `SKILL.md` content
 2. Pass:
    - Final message text
-   - `content-type: "short-outbound"` (humanize's Content Type Calibration row: Light strip, Full voice, 0-10% compression — short outbound differs from marketing copy because further compression kills specificity)
+   - `content-type: "short-outbound"` (humanmaxxing's Content Type Calibration row: Light strip, Full voice, 0-10% compression — short outbound differs from marketing copy because further compression kills specificity)
    - Channel
-   - `protected_tokens`: every named entity + number in the critic-approved draft (humanize must not remove or paraphrase)
-3. Receive humanized output
+   - `protected_tokens`: every named entity + number in the critic-approved draft (humanmaxxing must not remove or paraphrase)
+3. Receive humanmaxxed output
 4. **Regression check (automatic, not judgment):** re-run critic's **Specificity dimension only**. Revert to critic-approved draft if any of:
    - Specificity drops ≥ 2 points
-   - Any named entity pre-humanize absent post-humanize
-   - Any concrete number pre-humanize absent post-humanize
-5. Otherwise ship humanized version.
+   - Any named entity pre-humanmaxxing absent post-humanmaxxing
+   - Any concrete number pre-humanmaxxing absent post-humanmaxxing
+5. Otherwise ship humanmaxxed version.
 
-Terminal pass is **automatic**, not opt-in. AI-sounding cold email is the biggest failure mode. Regression check protects against humanize silently stripping the specificity anchor.
+Terminal pass is **automatic**, not opt-in. AI-sounding cold email is the biggest failure mode. Regression check protects against humanmaxxing silently stripping the specificity anchor.
 
 ---
 
@@ -205,7 +205,7 @@ Terminal pass is **automatic**, not opt-in. AI-sounding cold email is the bigges
 2. reply-composer drafts per classification + next-touch logic (uses references/frameworks/objections.md)
 3. voice-auditor (same as compose route)
 4. critic (reply-specific rubric — 5 dimensions, same total-≥35 AND per-dim-≥6 gate)
-5. Terminal humanize + specificity regression check (same as Route A)
+5. Terminal humanmaxxing + specificity regression check (same as Route A)
 ```
 
 Reply-specific rubric (5 dims, two substitutions):

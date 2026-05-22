@@ -63,7 +63,7 @@ After the critic returns PASS (or cycle 2 ships `done_with_concerns`):
 
 1. Write artifact to `.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md`.
 2. Append row to `.forsvn/loops/[slug]/results.tsv` via `bun scripts/append-loop-result.ts` (validates header schema; rejects schema drift).
-3. Call `bun scripts/manifest-sync.ts` so `.agents/manifest.json` indexes the new cycle artifact.
+3. Call `bun scripts/manifest-sync.ts` so `.forsvn/index/manifest.json` indexes the new cycle artifact.
 
 Skipping step 2 breaks the loop's ledger; skipping step 3 makes the cycle invisible to future state-detection by `forsvn` and `forsvn`. Both are mandatory.
 

@@ -73,7 +73,7 @@ Multi-platform = re-invoke with a different `platform` argument. This is not edi
 
 Default `none`. Two opt-in terminal passes after critic verdict:
 
-- `--polish-chain humanize` → routes critic-passed copy through `humanize` skill (AI-pattern stripping, voice injection, 15% compression target). Use for any platform where audience sensitivity to AI tells is high.
+- `--polish-chain humanmaxxing` → routes critic-passed copy through `humanmaxxing` skill (AI-pattern stripping, voice injection, 15% compression target). Use for any platform where audience sensitivity to AI tells is high.
 - `--polish-chain vn-tone` → routes critic-passed copy through `polish-vn` skill (Vietnamese register polish: báo chí, semi-casual, bro, pop-marketing). Required for Vietnamese-market copy.
 
 Polish chain runs ONLY after critic verdict (`pass` or `done_with_concerns`). FORMAT_FAIL artifacts do NOT auto-route — operator must resolve format-fail manually before invoking the polish skill.
@@ -85,7 +85,7 @@ Polish chain runs ONLY after critic verdict (`pass` or `done_with_concerns`). FO
 Output artifact at `.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md` is consumed by:
 
 - **Operator publish workflow** — frontmatter `platform` + `goal` + `critic_verdict` fields drive publish decisions; body sections (Hook variants A/B + Body + CTA + Format spec + Critic verdict) are the publishable payload.
-- **`humanize` / `polish-vn`** (polish chain) — read the `## Body` and `## CTA` sections; rewrite in place; preserve frontmatter except adding `polish_chain_applied` field.
+- **`humanmaxxing` / `polish-vn`** (polish chain) — read the `## Body` and `## CTA` sections; rewrite in place; preserve frontmatter except adding `polish_chain_applied` field.
 - **eval-loop** (when invoked inside a measurable initiative) — frontmatter `critic_score` + `critic_verdict` fields fed into `.forsvn/loops/[slug]/results.tsv` for keep/discard/watch/blocked decisions on social-copy variants.
 
 Schema changes to the artifact frontmatter or required body sections require atomic update of polish-chain consumers and eval-loop infra. Renaming a section breaks downstream readers.
@@ -102,6 +102,6 @@ Schema changes to the artifact frontmatter or required body sections require ato
   - FORMAT_FAIL escalation pattern (two consecutive violations → user)
   - Discrimination test (weak brief <25, strong brief ≥35)
   - Single-platform + single-market per artifact constraint
-  - Polish chain default `none`; humanize / vn-tone terminal pass routing
+  - Polish chain default `none`; humanmaxxing / vn-tone terminal pass routing
   - Completion Status 4-tier (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT)
   - 5-question Cold Start prompt (platform / topic-or-brief / brand-mode / audience / goal) + Write-back map

@@ -102,7 +102,7 @@ Single route — the skill always runs Layer 1 + Layer 1.5 + Layer 2. Multi-plat
    - platform-tailor-agent (only if multi-platform — produces variants)
    - critic-agent (4-sub-critic gate; FAIL → re-dispatch named source agent)
 5. Critic FAIL → re-dispatch (max 2 cycles); after cycle 2, ship done_with_concerns
-6. Apply polish chain (vn-tone | humanize | none) per market + brand_mode on spoken-line section
+6. Apply polish chain (vn-tone | humanmaxxing | none) per market + brand_mode on spoken-line section
 7. Deliver hero + variants
 ```
 
@@ -146,7 +146,7 @@ research_mechanics_date: [YYYY-MM-DD]
 campaign_tie_in: [slug or null]
 critic_passes: [hook, production, algorithm-fit, brand-fit]
 critic_loop_count: [1 | 2]
-polish_chain_applied: vn-tone | humanize | none
+polish_chain_applied: vn-tone | humanmaxxing | none
 ---
 ```
 

@@ -39,7 +39,7 @@ You do NOT:
 ### Language Polish Routing
 - Market: [VN | EN | other]
 - Brand mode signal: [founder | company | unknown]
-- Required polish chain for downstream brief: [vn-tone | humanize | none] applied to [spoken-line section | full output]
+- Required polish chain for downstream brief: [vn-tone | humanmaxxing | none] applied to [spoken-line section | full output]
 
 ### VoC Phrases (3-5)
 Pulled from ICP if present; flagged as `[from cold-start hint]` if no ICP:
@@ -95,7 +95,7 @@ Pulled from ICP if present; flagged as `[from cold-start hint]` if no ICP:
 |---|---|
 | VN, founder | `polish-vn` Layer 2 on spoken-line section + full body |
 | VN, company | `polish-vn` Layer 2 on full body |
-| EN, founder | `humanize` Layer 2 on spoken-line section |
+| EN, founder | `humanmaxxing` Layer 2 on spoken-line section |
 | EN, company | none (default) |
 | Other | extend chain — flag as `polish-chain-extension-needed` |
 
@@ -130,7 +130,7 @@ archetype is "the friend who tells you the truth about your tools."
 ### Language Polish Routing
 - Market: EN
 - Brand mode signal: founder (single-creator brand per BRAND.md)
-- Required polish chain: humanize Layer 2 applied to spoken-line section
+- Required polish chain: humanmaxxing Layer 2 applied to spoken-line section
 
 ### VoC Phrases
 1. "Status updates eat my morning" — Emotional

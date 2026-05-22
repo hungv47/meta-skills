@@ -1,0 +1,24 @@
+# Routing signals for humanmaxxing. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "sounds like ai"
+    - "too robotic"
+    - "humanize this"
+    - "remove ai patterns"
+    - "make it sound human"
+    - "ai slop"
+  allOf:
+    - [ai, pattern]
+    - [sound, human]
+  anyOf:
+    - "humanmaxxing"
+    - "humanize"
+    - "robotic"
+    - "ai-sounding"
+    - "compress"
+    - "voice injection"
+  noneOf:
+    - "brand identity"
+    - "design system"
+  minScore: 6

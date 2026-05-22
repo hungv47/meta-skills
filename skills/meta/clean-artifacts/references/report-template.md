@@ -29,7 +29,7 @@ provenance:
   skill: clean-artifacts
   run_date: {YYYY-MM-DD}
   input_artifacts:                              # upstream artifacts whose state shapes the output
-    - .agents/manifest.json
+    - .forsvn/index/manifest.json
   config_sources:                               # runtime configuration sources (not traceable inputs)
     - .forsvn/experience/technical.md   # if exists — supplies excluded_paths
   output_eval: null                              # cleanup-artifacts has no downstream eval skill

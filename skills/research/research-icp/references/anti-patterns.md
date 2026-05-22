@@ -184,7 +184,7 @@
 - Downstream skill output references a section name that doesn't exist in the artifact (e.g., campaign-plan asks "where is the Decision Psychology section?" — section was renamed to "Buyer Psychology").
 - Habitat Map columns differ from `format-conventions.md` schema.
 
-**Why it fails:** 13+ downstream consumers (campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach, short-form-research, short-form-brief, humanize, seo, social-copy, vn-tone) read this artifact's structure. A schema change ripples — silent drift means consumers either fail or substitute defaults.
+**Why it fails:** 13+ downstream consumers (campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach, short-form-research, short-form-brief, humanmaxxing, seo, social-copy, vn-tone) read this artifact's structure. A schema change ripples — silent drift means consumers either fail or substitute defaults.
 
 **Drift modes:**
 - Renaming `## Persona N:` to `## Segment N:`.

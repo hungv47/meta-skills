@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Dispatch Mechanics
 
-**Load when:** Layer 1 (strategist solo) or Layer 2 (composer → format-checker → voice-auditor → critic sequential) dispatch begins, OR terminal Humanize per-variant invocation begins. Mechanics for spawning sub-agents per the orchestrator's Agent Manifest + Routes A/B.
+**Load when:** Layer 1 (strategist solo) or Layer 2 (composer → format-checker → voice-auditor → critic sequential) dispatch begins, OR terminal Humanmaxxing per-variant invocation begins. Mechanics for spawning sub-agents per the orchestrator's Agent Manifest + Routes A/B.
 
 ---
 
@@ -27,7 +27,7 @@ Use the **Agent tool** (general-purpose or Explore) with a prompt built as:
 If multi-agent dispatch unavailable, run each agent's instructions sequentially in-context:
 - Layer 1: strategist
 - Layer 2: composer → format-checker → voice-auditor → critic in order
-- Terminal humanize: apply humanize instructions in-context if skill unreachable
+- Terminal humanmaxxing: apply humanmaxxing instructions in-context if skill unreachable
 
 Quality is equivalent — multi-agent optimizes parallelism and focus, not capability. (For this skill, Layer 1 is solo and Layer 2 is sequential, so the parallelism advantage is small.)
 
@@ -56,8 +56,8 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
 4. Critic FAIL → re-dispatch FULL Layer 2 chain with feedback (max 2 cycles). Never feed critic a raw composer draft without format-checker + voice-auditor between.
 4a. Format-checker FORMAT_FAIL (second pass, hard caps still violated) → escalate to user; do not consume a critic cycle.
 4b. Format-checker REVISION_REQUIRED on policy/substantiation → re-dispatch composer with the named violation; do not consume a critic cycle.
-5. TERMINAL: invoke `humanize` per variant with `content-type: "short-outbound"` (Light strip on AI telltales only, Full sender voice, 0-10% compression — ad copy is already tight; further compression kills specificity)
-6. POST-HUMANIZE REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanize → revert to critic-approved variant.
+5. TERMINAL: invoke `humanmaxxing` per variant with `content-type: "short-outbound"` (Light strip on AI telltales only, Full sender voice, 0-10% compression — ad copy is already tight; further compression kills specificity)
+6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved variant.
 7. Write artifacts to `.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
 8. Deliver hero + 2 variants + rationale inline; show scorecard only if user asks or any dim scored 6-7 OR if creative_format=repurposed-ugc (variant-level ceiling warning prominent in artifact)
 ```
@@ -118,30 +118,30 @@ Format-checker is a HARD gate, not a critic dim — it bounces on:
 ### Critic Gate
 
 Critic returns:
-- **PASS** — scorecard → proceed to terminal humanize
+- **PASS** — scorecard → proceed to terminal humanmaxxing
 - **FAIL** — scorecard + rewrite feedback → re-dispatch FULL Layer 2 (composer → format-checker → voice-auditor → critic) with feedback (cycle 1 or 2)
 
 After 2 failed critic cycles, surface: "Critic couldn't reach threshold across 2 rewrite cycles — here's the best draft + per-variant scorecard + what's blocking. Your call."
 
 ---
 
-## Terminal Pass: Humanize
+## Terminal Pass: Humanmaxxing
 
-After critic PASS, invoke `humanize` on each variant (hero / A / B) independently:
+After critic PASS, invoke `humanmaxxing` on each variant (hero / A / B) independently:
 
-1. Spawn agent with humanize's `SKILL.md` content
+1. Spawn agent with humanmaxxing's `SKILL.md` content
 2. Pass:
    - Final variant text (primary text + headline + description as one unit)
-   - `content-type: "short-outbound"` (humanize's Content Type Calibration: ad copy already runs ≤125 chars visible — Light strip on AI telltales only, Full sender voice, **0-10% compression cap** because further compression strips specificity that critic just scored. Same calibration cold-outreach uses; humanize's table explicitly registers ad copy under this content-type.)
-   - Audience-temp (humanize voice-extraction reads brand voice differently for warm vs cold register)
-   - `protected_tokens`: every named entity + number + URL in the critic-approved variant (humanize must not remove or paraphrase)
-3. Receive humanized variant
-4. **Regression check (automatic, not judgment):** re-run critic's **Specificity dimension only** on the humanized variant. Revert to critic-approved variant if any of:
+   - `content-type: "short-outbound"` (humanmaxxing's Content Type Calibration: ad copy already runs ≤125 chars visible — Light strip on AI telltales only, Full sender voice, **0-10% compression cap** because further compression strips specificity that critic just scored. Same calibration cold-outreach uses; humanmaxxing's table explicitly registers ad copy under this content-type.)
+   - Audience-temp (humanmaxxing voice-extraction reads brand voice differently for warm vs cold register)
+   - `protected_tokens`: every named entity + number + URL in the critic-approved variant (humanmaxxing must not remove or paraphrase)
+3. Receive humanmaxxed variant
+4. **Regression check (automatic, not judgment):** re-run critic's **Specificity dimension only** on the humanmaxxed variant. Revert to critic-approved variant if any of:
    - Specificity drops ≥ 2 points
-   - Any named entity pre-humanize absent post-humanize
-   - Any concrete number pre-humanize absent post-humanize
-   - Any URL pre-humanize absent post-humanize
-5. Otherwise ship humanized variant.
+   - Any named entity pre-humanmaxxing absent post-humanmaxxing
+   - Any concrete number pre-humanmaxxing absent post-humanmaxxing
+   - Any URL pre-humanmaxxing absent post-humanmaxxing
+5. Otherwise ship humanmaxxed variant.
 
 Terminal pass is **automatic**, not opt-in. AI-sounding ad copy is the second-biggest reason ads get scrolled past (creative fatigue is first per `ad-intelligence/creative-cadence.md`).
 

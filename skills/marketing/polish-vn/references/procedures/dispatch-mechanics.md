@@ -143,7 +143,7 @@ Horizontal — polishes the output of any skill that produced Vietnamese text. v
 
 **Skill deference:**
 
-- Source text is in English and needs AI-pattern/voice work before translation → `humanize` on the English first, translate, then run `polish-vn` on the result
+- Source text is in English and needs AI-pattern/voice work before translation → `humanmaxxing` on the English first, translate, then run `polish-vn` on the result
 - Need new Vietnamese copy from scratch → `write-copy` with VN voice directives
 - Already well-polished but needs A/B variants → `write-copy` variant agent
 - Source text is in any non-VN language → translate first (vn-tone is not a translator)

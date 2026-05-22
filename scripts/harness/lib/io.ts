@@ -6,7 +6,7 @@ import { dirname, join, resolve } from "node:path";
 
 // Walk up from this file until we find the repo root — the dir holding
 // .claude-plugin/marketplace.json (the definitive single-repo signature; tracked,
-// unlike the gitignored .agents/). Falls back to cwd if nothing matches.
+// unlike the gitignored .forsvn/). Falls back to cwd if nothing matches.
 export function repoRoot(): string {
   let dir = dirname(new URL(import.meta.url).pathname);
   for (let i = 0; i < 8; i++) {

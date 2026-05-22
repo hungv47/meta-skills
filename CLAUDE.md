@@ -20,7 +20,7 @@ meta-skills/
 │   ├── marketplace.json    # single-plugin catalog (this repo IS the marketplace)
 │   └── plugin.json         # lists all 39 skill paths
 ├── skills/
-│   ├── meta/         # 7 process-layer skills (forsvn, discover, debate-panel, …)
+│   ├── meta/         # 7 process-layer skills (forsvn, discover, debate-agents, …)
 │   ├── research/     # 7 research skills (research-icp, research-market, diagnose, …)
 │   ├── marketing/    # 19 marketing skills (create-brand, write-copy, brief-landing-page, …)
 │   └── product/      # 6 product skills (map-user-flow, architect-system, clean-code, …)

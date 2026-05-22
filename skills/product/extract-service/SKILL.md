@@ -37,7 +37,7 @@ metadata:
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** — this skill is `budget: standard`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) auto-downgrades to the Single-Agent Fallback for ≤3-caller scopes; `--fast` forces single-agent regardless. **Safety gates supersede `--fast`:** all 8 Critical Gates fire on every run, in every mode.
-1. Read `.agents/manifest.json` for a prior extract-service run against the same scope; surface staleness if one exists.
+1. Read `.forsvn/index/manifest.json` for a prior extract-service run against the same scope; surface staleness if one exists.
 2. Read `.forsvn/experience/technical.md` for prior conventions notes.
 
 ## Pre-Dispatch

@@ -47,7 +47,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` collapses to single-pass scout + synthesis with critic skipped, but Critical Gates above STILL enforced (safety supersedes `--fast`). Cold Start (Pre-Dispatch) still fires under `--fast` if topic/market are missing.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory.
-2. Read `.agents/manifest.json` — check for prior short-form-research artifacts under (topic, market) for warm-start eligibility.
+2. Read `.forsvn/index/manifest.json` — check for prior short-form-research artifacts under (topic, market) for warm-start eligibility.
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — needed dimensions, read order, Cold/Warm prompts, write-back map all there.
 
 ## Artifact Contract

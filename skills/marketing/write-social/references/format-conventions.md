@@ -2,7 +2,7 @@
 
 > Load when the orchestrator assembles the final artifact OR when format-checker-agent validates structural compliance. Encodes the artifact path convention, the 13-field frontmatter schema, the body sectioned schema, the format-check rules, and date/number/citation conventions.
 
-The schemas in this file are **cross-stack contracts**. The frontmatter `critic_score` + `critic_verdict` fields feed `humanize` / `polish-vn` polish-chain consumers and `run-eval-loop` ledger ingestion. Renaming a field or reordering body sections requires atomic update of downstream consumers per `anti-patterns.md` row "Cross-stack contract drift."
+The schemas in this file are **cross-stack contracts**. The frontmatter `critic_score` + `critic_verdict` fields feed `humanmaxxing` / `polish-vn` polish-chain consumers and `run-eval-loop` ledger ingestion. Renaming a field or reordering body sections requires atomic update of downstream consumers per `anti-patterns.md` row "Cross-stack contract drift."
 
 ---
 
@@ -36,7 +36,7 @@ platform_intel_version: <last_verified date from platform-intelligence/[platform
 critic_score: <numeric, 0-50 across 5 dimensions × 0-10>
 critic_verdict: pass | done_with_concerns | fail
 status: done | done_with_concerns | blocked | needs_context
-polish_chain_applied: vn-tone | humanize | none
+polish_chain_applied: vn-tone | humanmaxxing | none
 ```
 
 **Field semantics:**
@@ -53,7 +53,7 @@ polish_chain_applied: vn-tone | humanize | none
 - `critic_score` — integer 0–50 (sum of 5 dimensions × 0–10).
 - `critic_verdict` — `pass` (≥35 AND no zero), `done_with_concerns` (25–34 OR any dim < 4), `fail` (< 25).
 - `status` — Completion Status from SKILL.md. Typically matches `critic_verdict` unless BLOCKED / NEEDS_CONTEXT.
-- `polish_chain_applied` — `none` (default), `humanize`, or `polish-vn`. Set by the polish-chain runner; copywriter-agent leaves it `none`.
+- `polish_chain_applied` — `none` (default), `humanmaxxing`, or `polish-vn`. Set by the polish-chain runner; copywriter-agent leaves it `none`.
 
 ---
 
@@ -102,7 +102,7 @@ polish_chain_applied: vn-tone | humanize | none
 
 ## Required body sections (cross-stack contract)
 
-In order. Renaming or reordering breaks polish-chain readers (humanize / vn-tone) and eval-loop ingestion.
+In order. Renaming or reordering breaks polish-chain readers (humanmaxxing / vn-tone) and eval-loop ingestion.
 
 1. **Hook variants** — one `### Variant [A|B|C]` block per variant (count = frontmatter `variant_count`). Each block has hook text + `**Char count:**` + `**Algorithm signal targeted:**`.
 2. **Body** — single block with body text + `**Char count:**`.
@@ -179,11 +179,11 @@ The explicit `- None` line is the contract — silent omission breaks downstream
 
 ## Polish chain output
 
-When `--polish-chain humanize` or `--polish-chain vn-tone` runs as a terminal pass:
+When `--polish-chain humanmaxxing` or `--polish-chain vn-tone` runs as a terminal pass:
 
 1. Polish skill reads the social-copy artifact at the path above.
 2. Polish skill rewrites the `## Body` and `## CTA` sections in place. Hook variants are NOT rewritten (preserves A/B comparability for downstream variant testing).
-3. Polish skill updates frontmatter: sets `polish_chain_applied: humanize` (or `polish-vn`). Does NOT change `critic_score` or `critic_verdict` (those are the pre-polish baseline; polish-pass scoring would require re-running the critic, which is out of polish-chain scope).
+3. Polish skill updates frontmatter: sets `polish_chain_applied: humanmaxxing` (or `polish-vn`). Does NOT change `critic_score` or `critic_verdict` (those are the pre-polish baseline; polish-pass scoring would require re-running the critic, which is out of polish-chain scope).
 4. Polish skill appends a `## Polish chain notes` section at the bottom of the artifact summarizing what changed and why (transparency for downstream eval-loop ingestion).
 
 Polish chain runs ONLY after critic verdict (`pass` or `done_with_concerns`). FORMAT_FAIL artifacts do NOT auto-route — operator must resolve format-fail manually before invoking polish.
@@ -196,8 +196,8 @@ For context — downstream skills + infra that depend on this format:
 
 | Consumer | What it reads |
 |---|---|
-| humanize | `## Body` + `## CTA` (rewrites in place); frontmatter (`polish_chain_applied` update) |
-| vn-tone | Same as humanize, plus `## Hook variants` for register check (4 registers: báo chí / semi-casual / bro / pop-marketing) |
+| humanmaxxing | `## Body` + `## CTA` (rewrites in place); frontmatter (`polish_chain_applied` update) |
+| vn-tone | Same as humanmaxxing, plus `## Hook variants` for register check (4 registers: báo chí / semi-casual / bro / pop-marketing) |
 | eval-loop | Frontmatter `critic_score` + `critic_verdict` + `goal` + `platform`; pipes into `results.tsv` for keep/discard/watch/blocked decisions |
 | operator publish workflow | Hook variants A/B (publish picks one per test), Body, CTA, Format spec, Anti-patterns triggered |
 | short-form-brief (when re-running) | `## Hook variants` for variant comparison; frontmatter `brief_source` for provenance |

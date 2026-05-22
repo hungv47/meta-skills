@@ -8,7 +8,7 @@ load_class: EXAMPLE
 
 # Cold Outreach — End-to-End Walkthrough
 
-**Load when:** an operator (human or agent) wants a complete trace of how a Route A (compose) touch gets produced — Pre-Dispatch → Layer 1a signal-analyst solo → Layer 1b strategist + proof-selector parallel → Merge → Layer 2 sequential (composer → voice-auditor → critic) → terminal humanize + specificity regression → deliver.
+**Load when:** an operator (human or agent) wants a complete trace of how a Route A (compose) touch gets produced — Pre-Dispatch → Layer 1a signal-analyst solo → Layer 1b strategist + proof-selector parallel → Merge → Layer 2 sequential (composer → voice-auditor → critic) → terminal humanmaxxing + specificity regression → deliver.
 
 This walkthrough covers Route A (operator slash-command for a first-touch cold email to a named target). Route B (reply handling) follows the same Layer 2 mechanics but replaces Layer 1 with `reply-classifier` and composer with `reply-composer` — short snippet at the end. Route C (called by `plan-campaign`) follows Route A mechanics but skips the AskUserQuestion fallbacks (calling skill resolves mode + channel + per-touch context before invocation).
 
@@ -178,22 +178,22 @@ Critic receives voice-audited draft + pre_writing verbatim + reads `anti-pattern
 | You > me ratio | 8 | 6 | you-count 3, I/we-count 2; first sentence starts with "Saw" not "I" — passes auto-fail. Could be slightly higher with reader-first phrasing in P3 but not worth a rewrite. |
 | Specificity | 9 | 6 | Specificity Floor MET (≥2 verifiable specifics): Ramp (named entity) + 9→4 days (named numbers + matches Jane's "9 days" verbatim). Trigger entity (Jane's post) traces back to pre_writing.Q2 — no signal fabrication. |
 
-**Total: 44/50** (threshold: 35) — PASS. Proceed to Terminal Humanize.
+**Total: 44/50** (threshold: 35) — PASS. Proceed to Terminal Humanmaxxing.
 
 Cycle 1 PASS. No rewrite needed.
 
 ---
 
-## Step 5 — Terminal Humanize + Specificity Regression
+## Step 5 — Terminal Humanmaxxing + Specificity Regression
 
-Orchestrator invokes `humanize` with:
+Orchestrator invokes `humanmaxxing` with:
 
 - Final message text (critic-approved draft above)
 - `content-type: "short-outbound"` (per Content Type Calibration — light strip, full voice, 0-10% compression)
 - Channel: `email`
-- `protected_tokens`: `["Ramp", "9 days", "4 days", "Acme"]` (every named entity + number — humanize MUST preserve verbatim)
+- `protected_tokens`: `["Ramp", "9 days", "4 days", "Acme"]` (every named entity + number — humanmaxxing MUST preserve verbatim)
 
-**Humanize returns** (Route C path — skips pattern-scanner since cold-outreach voice-auditor already cleaned banned phrases):
+**Humanmaxxing returns** (Route C path — skips pattern-scanner since cold-outreach voice-auditor already cleaned banned phrases):
 
 ```
 Subject: close-time tax
@@ -206,14 +206,14 @@ Thanks,
 [Sender]
 ```
 
-Word count: 65 (1 word more — humanize added "also a mid-market SaaS" for register-match specificity; net compression near 0% per short-outbound calibration). Em-dash converted to comma per humanize Absolute Prohibition #1.
+Word count: 65 (1 word more — humanmaxxing added "also a mid-market SaaS" for register-match specificity; net compression near 0% per short-outbound calibration). Em-dash converted to comma per humanmaxxing Absolute Prohibition #1.
 
 **Specificity regression check (automatic):**
 
-- Re-run critic's Specificity dim ONLY on humanized text.
+- Re-run critic's Specificity dim ONLY on humanmaxxed text.
 - Specificity score: 9 (unchanged — Ramp still present, 9 days + 4 days still present)
 - Protected tokens check: all 4 tokens present verbatim
-- Verdict: PASS — ship humanized version.
+- Verdict: PASS — ship humanmaxxed version.
 
 ---
 
@@ -221,17 +221,17 @@ Word count: 65 (1 word more — humanize added "also a mid-market SaaS" for regi
 
 Orchestrator writes 3 files to `.forsvn/artifacts/mkt/cold-outreach/`:
 
-- **`jane-acme-email-t1.md`** — final humanized text + frontmatter (`skill: write-outreach`, `version: 1`, `date: 2026-05-18`, `status: done`, `channel: email`, `mode: services-sell`, `touch: 1`, `route: compose`, `critic_total: 44/50`)
+- **`jane-acme-email-t1.md`** — final humanmaxxed text + frontmatter (`skill: write-outreach`, `version: 1`, `date: 2026-05-18`, `status: done`, `channel: email`, `mode: services-sell`, `touch: 1`, `route: compose`, `critic_total: 44/50`)
 - **`jane-acme-email-t1.rationale.md`** — angle + framework + signal strength + CTA logic + channel craft + anti-patterns avoided + Pre-Dispatch dimensions resolved
-- **`jane-acme-email-t1.critic-score.md`** — 5-dim scorecard + structural auto-fail checklist + cycle count (1) + post-humanize regression result
+- **`jane-acme-email-t1.critic-score.md`** — 5-dim scorecard + structural auto-fail checklist + cycle count (1) + post-humanmaxxing regression result
 
 ---
 
 ## Step 7 — Deliver inline
 
-Orchestrator delivers the humanized message + 2-line rationale to operator. Scorecard not shown (no dim scored 6-7; operator can read it from `[slug].critic-score.md` if curious).
+Orchestrator delivers the humanmaxxed message + 2-line rationale to operator. Scorecard not shown (no dim scored 6-7; operator can read it from `[slug].critic-score.md` if curious).
 
-**Completion Status: DONE** — passed critic + humanize regression, ready-to-send.
+**Completion Status: DONE** — passed critic + humanmaxxing regression, ready-to-send.
 
 ---
 
@@ -253,6 +253,6 @@ If cycle 2 still FAIL (e.g., total 32/50), orchestrator surfaces: "Critic couldn
 - **Step 2:** reply-composer drafts a 2-line acknowledgement + Q4 follow-up commitment, NO re-pitch ("Got it — I'll circle back in October. Best of luck with the close."). Reads `frameworks/objections.md` for `later` template.
 - **Step 3:** voice-auditor confirms casual peer register, no banned phrases.
 - **Step 4:** critic uses reply-route rubric — "Signal connection" → "Tone match" (8/10, matches Jane's brief defensive register), "CTA friction" → "Next step clarity" (9/10, single specific Q4 commitment). Total 42/50, hard gate passes (no re-pitch after soft no). PASS.
-- **Step 5:** Terminal humanize + specificity regression (no named entities in reply → tokens list empty, regression trivially passes).
+- **Step 5:** Terminal humanmaxxing + specificity regression (no named entities in reply → tokens list empty, regression trivially passes).
 - **Step 6:** Write artifacts (slug `jane-acme-email-t1-reply` to avoid collision with the original touch 1).
 - **Completion Status: DONE.**

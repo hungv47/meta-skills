@@ -12,7 +12,7 @@ load_class: PROCEDURE
 
 # Seven Sweeps — Unified Copy-Editing Framework
 
-**A 7-pass editing discipline applied between copy generation and humanize. Each pass owns one quality dimension; back-checking between passes prevents regression. Currently distributed across 4 agents — this file is the unified vocabulary.**
+**A 7-pass editing discipline applied between copy generation and humanmaxxing. Each pass owns one quality dimension; back-checking between passes prevents regression. Currently distributed across 4 agents — this file is the unified vocabulary.**
 
 > Why this exists: write-copy already runs the 7 passes, just under different labels in different agents. Without a unified doc, downstream evaluators couldn't score "Seven Sweeps completion" without re-deriving which agent owns which pass. The framework predates this skill (Corey Haines marketing-skills repo, IDEA-5 § 3); this ref is the import.
 
@@ -54,7 +54,7 @@ If any sweep produces an edit that violates an earlier sweep's checklist, **reve
 
 ## Canonical word-level-cut list
 
-Words to remove or replace, unless they carry irreplaceable meaning in context. Cross-stack reference — also consumed by `humanize` and `vn-tone`.
+Words to remove or replace, unless they carry irreplaceable meaning in context. Cross-stack reference — also consumed by `humanmaxxing` and `vn-tone`.
 
 ### Filler / intensifiers (Sweep 1 cuts)
 
@@ -116,7 +116,7 @@ The dim is OPTIONAL — when the operator did not request Seven Sweeps mode, the
 - **Quick first draft, expected to iterate.** Seven Sweeps is for near-final copy; running it on a v0 wastes effort.
 - **Single key-line work (Route A).** A single hook variant doesn't need the full 7-pass discipline — the critic's V/F/U + competitor-swap test handles it.
 - **Internal-tooling copy.** Sweep 7 (Zero Risk) is irrelevant when there's no purchase decision; skip it.
-- **Translation polish.** `polish-vn` and `humanize` run different rubrics. Don't double-pass.
+- **Translation polish.** `polish-vn` and `humanmaxxing` run different rubrics. Don't double-pass.
 
 ---
 
@@ -132,7 +132,7 @@ The dim is OPTIONAL — when the operator did not request Seven Sweeps mode, the
 
 ## Related refs
 
-- [[ai-patterns]] (in humanize) — terminal AI-tell list, cross-linked from Sweep 5 cuts
+- [[ai-patterns]] (in humanmaxxing) — terminal AI-tell list, cross-linked from Sweep 5 cuts
 - [[discovery-story]] — alternative social-proof pattern that can ride alongside Sweep 7
 - [[emotional-triggers]] — Sweep 6 source material
 - [[research-workflow]] — Pre-Dispatch step that grounds Sweeps 3 + 4 + 5 in real evidence

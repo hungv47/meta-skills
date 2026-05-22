@@ -34,7 +34,7 @@ Before asking, read in this sequence and announce what's resolved:
    - `.forsvn/experience/business.md` → market scope (informs Q4 if geo previously declared)
 
 3. **Manifest check:**
-   - `.agents/manifest.json` → check for stale `icp-research.md` / `campaign-plan.md` (>30 days → recommend re-running upstream)
+   - `.forsvn/index/manifest.json` → check for stale `icp-research.md` / `campaign-plan.md` (>30 days → recommend re-running upstream)
 
 ---
 

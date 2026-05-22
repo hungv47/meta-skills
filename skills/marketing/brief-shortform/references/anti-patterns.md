@@ -171,7 +171,7 @@ These patterns aren't tied to a single sub-critic — they apply to any short-fo
 
 ### VN-market brief without vn-tone polish chain
 
-**Problem:** `market = VN` resolved at Pre-Dispatch, but the polish chain bypasses `polish-vn` and ships the brief with `polish_chain_applied: none` or `polish_chain_applied: humanize`. Spoken-line section reads as Vietnamese-by-Google-Translate — particles missing, pronoun drift, idioms calqued from English, passive voice constructions.
+**Problem:** `market = VN` resolved at Pre-Dispatch, but the polish chain bypasses `polish-vn` and ships the brief with `polish_chain_applied: none` or `polish_chain_applied: humanmaxxing`. Spoken-line section reads as Vietnamese-by-Google-Translate — particles missing, pronoun drift, idioms calqued from English, passive voice constructions.
 
 **INSTEAD:** Pre-Dispatch (`procedures/pre-dispatch.md` § "VN auto-routing") enforces `polish-vn` for VN founder (spoken-line + full body) and VN company (full body). Auto-routing is the default; operator does not pick. If polish chain somehow ships as `none` for `market = VN`, critic Brand-fit flags as voice-mismatch FAIL and re-dispatches `copy-pack-agent` after re-running `polish-vn`.
 

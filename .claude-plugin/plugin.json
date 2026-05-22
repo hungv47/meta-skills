@@ -1,23 +1,23 @@
 {
   "name": "forsvn-skills",
   "description": "FORSVN Skills — consolidated multi-agent skill stack. 39 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",
   "license": "MIT",
   "keywords": [
     "skills", "forsvn-skills", "multi-agent", "orchestration",
-    "forsvn", "discover", "debate-panel", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
+    "forsvn", "discover", "debate-agents", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanize", "polish-vn",
+    "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanmaxxing", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs"
   ],
   "skills": [
     "./skills/meta/forsvn/",
     "./skills/meta/discover/",
-    "./skills/meta/debate-panel/",
+    "./skills/meta/debate-agents/",
     "./skills/meta/run-eval-loop/",
     "./skills/meta/breakdown-tasks/",
     "./skills/meta/review-work/",
@@ -48,7 +48,7 @@
     "./skills/marketing/produce-video/",
     "./skills/marketing/publish-social/",
     "./skills/marketing/optimize-seo/",
-    "./skills/marketing/humanize/",
+    "./skills/marketing/humanmaxxing/",
     "./skills/marketing/polish-vn/",
 
     "./skills/product/map-user-flow/",

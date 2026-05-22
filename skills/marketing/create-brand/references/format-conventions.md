@@ -195,7 +195,7 @@ This skill is the canonical producer of `brand/BRAND.md` + `brand/DESIGN.md` + `
 - `brief-landing-page` — full brand context for landing-page architecture
 - `brief-graphic` — DESIGN.md for per-asset specs + brand mark + visual atmosphere
 - `plan-campaign` — positioning + archetype for channel-strategy alignment
-- `humanize` — voice adjectives for soul-injection
+- `humanmaxxing` — voice adjectives for soul-injection
 - `polish-vn` — voice DNA for register selection
 - `brief-shortform` — brand mark + voice + visual atmosphere
 - `map-user-flow` — DESIGN.md design tokens + component context

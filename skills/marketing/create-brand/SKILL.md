@@ -90,7 +90,7 @@ Previous: `research-icp` (product context) | Next: `plan-campaign`, `write-copy`
 
 **Re-run triggers:** Major product pivots, new markets, audience shifts, or annual brand refresh.
 
-**Related (non-chain):** `research-icp` (audience data), `write-copy` (consumes voice guidelines), `humanize` (uses voice adjectives), `brief-graphic` (consumes DESIGN.md)
+**Related (non-chain):** `research-icp` (audience data), `write-copy` (consumes voice guidelines), `humanmaxxing` (uses voice adjectives), `brief-graphic` (consumes DESIGN.md)
 
 ### Skill Deference
 - **Need audience research first?** Run `research-icp` — brand without audience research → generic archetypes.
@@ -250,7 +250,7 @@ Summary:
 - **Lifecycle:** `canonical` — top-level brand-of-record artifacts; consumed by 10+ downstream marketing + product skills
 - **Versioning:** BRAND.md + DESIGN.md rename existing to `BRAND.v[N].md` / `DESIGN.v[N].md` on re-run; ASSETS.md is a **living file** — always updated in place, dropped-platform rows move to `## Orphaned` (preserved), only versioned (`ASSETS.v[N].md`) on explicit fresh-inventory request
 - **Frontmatter:** see [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE] § "Frontmatter schema (all three files)"
-- **Cross-stack contract:** schema changes (frontmatter fields, section headings, table column structures) require atomic update of `format-conventions.md` + every downstream caller (copywriting, ad-copy, cold-outreach, lp-brief, design-brief, campaign-plan, humanize, vn-tone, short-form-brief, user-flow) — never silently drift
+- **Cross-stack contract:** schema changes (frontmatter fields, section headings, table column structures) require atomic update of `format-conventions.md` + every downstream caller (copywriting, ad-copy, cold-outreach, lp-brief, design-brief, campaign-plan, humanmaxxing, vn-tone, short-form-brief, user-flow) — never silently drift
 
 ### Artifact Templates
 

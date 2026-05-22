@@ -184,13 +184,13 @@ load_class: ANTI-PATTERN
 
 ### 15. Polish-chain misroute
 
-**Pattern:** User invokes `humanize` on the brief itself ("make the brief sound less AI-written") or on a hand-off prompt block. Polish chain runs on what is supposed to be a structured operational document.
+**Pattern:** User invokes `humanmaxxing` on the brief itself ("make the brief sound less AI-written") or on a hand-off prompt block. Polish chain runs on what is supposed to be a structured operational document.
 
-**Why it fails:** lp-brief OUTPUT defines page strategy; humanize/vn-tone INPUT consumes USER-FACING copy. Running humanize on the brief recursively redefines what "brief" means — sections become prose paragraphs, structured rubric blocks get prose-ified, etc. Downstream skills can no longer parse the brief.
+**Why it fails:** lp-brief OUTPUT defines page strategy; humanmaxxing/vn-tone INPUT consumes USER-FACING copy. Running humanmaxxing on the brief recursively redefines what "brief" means — sections become prose paragraphs, structured rubric blocks get prose-ified, etc. Downstream skills can no longer parse the brief.
 
-**Instead:** humanize and vn-tone run on **published copy** that flowed THROUGH the brief (e.g., the final hero copy after the brief was executed). They do NOT run on brief.md itself. If brief copy candidates read AI-flavored, re-dispatch section-spec-agent with feedback in cycle 2 of the critic gate — don't post-process the brief.
+**Instead:** humanmaxxing and vn-tone run on **published copy** that flowed THROUGH the brief (e.g., the final hero copy after the brief was executed). They do NOT run on brief.md itself. If brief copy candidates read AI-flavored, re-dispatch section-spec-agent with feedback in cycle 2 of the critic gate — don't post-process the brief.
 
-**Owned by:** Orchestrator (chain position note in playbook — lp-brief is upstream of humanize/vn-tone for final-copy polish, not a peer) + Skill Chain section in brief (step 4: "humanize — final pass on any AI-generated body copy" runs AFTER implementation, not on the brief itself).
+**Owned by:** Orchestrator (chain position note in playbook — lp-brief is upstream of humanmaxxing/vn-tone for final-copy polish, not a peer) + Skill Chain section in brief (step 4: "humanmaxxing — final pass on any AI-generated body copy" runs AFTER implementation, not on the brief itself).
 
 ---
 

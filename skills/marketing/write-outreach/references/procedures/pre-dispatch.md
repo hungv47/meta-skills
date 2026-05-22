@@ -107,6 +107,6 @@ After Pre-Dispatch resolves, compile and pass to every agent in the `pre-writing
 
 ## `--fast` behavior in Pre-Dispatch
 
-`--fast` does NOT skip Cold Start — when mode / channel / target / proof are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` collapses Layer 1b parallel to sequential (still runs signal-analyst → strategist → proof-selector → composer → voice-auditor → critic → humanize, just no parallelism), and skips the post-humanize regression check on the Specificity dimension. Critical Gates + Missing-Input Hard Blocks STILL enforced per `_shared/mode-resolver.md`.
+`--fast` does NOT skip Cold Start — when mode / channel / target / proof are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` collapses Layer 1b parallel to sequential (still runs signal-analyst → strategist → proof-selector → composer → voice-auditor → critic → humanmaxxing, just no parallelism), and skips the post-humanmaxxing regression check on the Specificity dimension. Critical Gates + Missing-Input Hard Blocks STILL enforced per `_shared/mode-resolver.md`.
 
 Hard-block conditions above STILL fire under `--fast` — safety gates supersede `--fast`.

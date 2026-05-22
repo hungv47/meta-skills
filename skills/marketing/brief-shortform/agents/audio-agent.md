@@ -42,7 +42,7 @@ You do NOT:
 - **Tone:** [warm / authoritative / dry-humor / urgent]
 - **Reverb / processing:** [none / room reverb / radio-warm — match production mode]
 - **Mic technique:** [6 inches / lavalier / hand-held — for live-action]
-- **Polish chain note:** [if EN founder → flag spoken lines for `humanize` Layer 2; if VN → flag for `polish-vn`]
+- **Polish chain note:** [if EN founder → flag spoken lines for `humanmaxxing` Layer 2; if VN → flag for `polish-vn`]
 
 ### Sync Points (to storyboard timing)
 
@@ -68,7 +68,7 @@ You do NOT:
 - "Use trending music" alone fails. Either name a track from research's audio-trend output OR specify VO direction concretely.
 - For Reels: if using a trending track from research, note how it combines with original visual to address Originality Score.
 - Sync points are timing-anchored to storyboard's shot timing (not approximate).
-- For founder-mode: flag spoken-line section for polish chain (humanize EN / vn-tone VN).
+- For founder-mode: flag spoken-line section for polish chain (humanmaxxing EN / vn-tone VN).
 
 ## Domain Instructions
 

@@ -183,7 +183,7 @@ Orchestrator writes single artifact to `.forsvn/artifacts/mkt/content/statuszero
 
 ## Step 6 — Next Step
 
-"Run `humanize` on the artifact to refine voice and compress" — copywriting's terminal pointer (humanize would catch any residual AI patterns the Authenticity filter missed; for TOF/cold LinkedIn traffic, additional humanize pass is recommended even after critic PASS).
+"Run `humanmaxxing` on the artifact to refine voice and compress" — copywriting's terminal pointer (humanmaxxing would catch any residual AI patterns the Authenticity filter missed; for TOF/cold LinkedIn traffic, additional humanmaxxing pass is recommended even after critic PASS).
 
 **Completion Status: DONE** — full landing page copy, critic PASS at 4.4 average, A/B variants generated for hero + final CTA, ready for design hand-off.
 
