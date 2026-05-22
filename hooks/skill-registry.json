@@ -479,6 +479,44 @@
       ],
       "minScore": 6
     },
+    "research-platform": {
+      "phrases": [
+        "platform analytics",
+        "platform evidence",
+        "how are our posts doing",
+        "social media analytics",
+        "engagement evidence",
+        "platform performance"
+      ],
+      "allOf": [
+        [
+          "platform",
+          "evidence"
+        ],
+        [
+          "our",
+          "analytics"
+        ],
+        [
+          "account",
+          "performance"
+        ]
+      ],
+      "anyOf": [
+        "engagement rate",
+        "post analytics",
+        "owned analytics",
+        "channel analytics",
+        "follower growth"
+      ],
+      "noneOf": [
+        "what's working",
+        "trending",
+        "competitive analysis",
+        "market size"
+      ],
+      "minScore": 6
+    },
     "research-shortform": {
       "phrases": [
         "what's working on tiktok",

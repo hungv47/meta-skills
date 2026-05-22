@@ -2,7 +2,7 @@
 
 ![Agent Skills](./assets/banners/forsvn-skills.png)
 
-**39 skills that turn an AI agent into a product team — from "why did this break?" to shipped code.**
+**40 skills that turn an AI agent into a product team — from "why did this break?" to shipped code.**
 
 A composable skill stack for [AI agents](https://agentskills.io/home), spanning four domains:
 
@@ -13,7 +13,7 @@ A composable skill stack for [AI agents](https://agentskills.io/home), spanning 
 
 Skills chain. Each one reads what earlier skills left behind — in conversation or in `.forsvn/` artifacts — so output compounds as you move through the stack. Not sure where to start? Run `/forsvn`, the single front door.
 
-**Install — one plugin, all 39 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
+**Install — one plugin, all 40 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
 
 > **Plugin name:** the Claude plugin is `forsvn-skills`; the repository URL remains `github.com/hungv47/meta-skills` so existing links keep working.
 >
@@ -21,7 +21,7 @@ Skills chain. Each one reads what earlier skills left behind — in conversation
 
 ## Install
 
-Single plugin, all 39 skills. Works with Claude Code's plugin system, or the editor-agnostic [`skills` CLI](https://skills.sh) (Cursor, Codex, Windsurf, Gemini CLI, VS Code).
+Single plugin, all 40 skills. Works with Claude Code's plugin system, or the editor-agnostic [`skills` CLI](https://skills.sh) (Cursor, Codex, Windsurf, Gemini CLI, VS Code).
 
 ### Via Claude Code plugin marketplace
 
@@ -40,7 +40,7 @@ Requires Node.js 18+.
 
 ### Install a single skill
 
-Cherry-pick any of the 39 skills with `--skill`:
+Cherry-pick any of the 40 skills with `--skill`:
 
 ```bash
 npx skills add hungv47/meta-skills --skill write-copy
@@ -72,7 +72,7 @@ npx skills add hungv47/meta-skills --agent claude-code cursor
 
 ### Install globally
 
-Make all 39 skills available in every project on your machine:
+Make all 40 skills available in every project on your machine:
 
 ```bash
 npx skills add hungv47/meta-skills -g
@@ -113,7 +113,7 @@ The 4 source repos (`research-skills`, `marketing-skills`, `product-skills`, `ag
 ### Fastest path
 
 ```bash
-npx skills add hungv47/meta-skills -g    # install all 39 skills globally
+npx skills add hungv47/meta-skills -g    # install all 40 skills globally
 ```
 
 If you're not sure where to start, run `/forsvn` — the single front door. It reads cross-stack project state in `.forsvn/`, classifies your intent, asks ≤2 clarifying questions if needed, and routes you to the right leaf skill (or resumes a prior initiative).
@@ -169,17 +169,18 @@ Everything else lives under `.forsvn/`:
 
 End-to-end pipeline: meta process wrappers compose with research pipeline skills, product skills (pipeline + horizontal), and marketing skills (pipeline + horizontal).
 
-**39 skills total**: 7 research + 19 marketing + 6 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanmaxxing`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
+**40 skills total**: 8 research + 19 marketing + 6 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanmaxxing`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
 
 ## Skill Stacks
 
 ### Research — understand your market and decide what to do
 
-> 7 skills in [`skills/research/`](./skills/research/)
+> 8 skills in [`skills/research/`](./skills/research/)
 
 ```
 research-icp → research-market + diagnose → prioritize → plan-funnel
 research-shortform → .forsvn/artifacts/research/research-shortform/[slug].md (consumed by brief-shortform)
+research-platform  → .forsvn/artifacts/research/platform-evidence/[slug].md (owned-analytics evidence base; consumed by write-social, optimize-seo, research-shortform)
 ```
 
 | Skill | What it does | Use when... |
@@ -190,6 +191,7 @@ research-shortform → .forsvn/artifacts/research/research-shortform/[slug].md (
 | `prioritize` | Generates strategic options, scores trade-offs with ICE, recommends a path | The problem is clear and you need to decide *what* to build or pursue |
 | `plan-funnel` | Backward funnel modeling — revenue goals to traffic, conversions, unit economics | You need numeric targets: "how much traffic do we need to hit $X ARR?" |
 | `research-shortform` | Per-platform best-practice catalog — pulls hook archetypes, format constraints, algorithm signals, anti-patterns (consumed by `brief-shortform`) | You're starting a video pipeline and need fresh research grounding hooks/formats/signals across tiktok/reels/shorts/x/linkedin |
+| `research-platform` | Per-platform evidence base from the operator's *own* platform data — owned analytics, public metrics, manual exports, prior eval outcomes — every metric source-tagged and freshness-dated, every recommendation attributed (consumed by `write-social`, `optimize-seo`, `research-shortform`, `evaluate-*`) | You want social / SEO / short-form decisions grounded in your accounts' measured performance, not intuition |
 | `evaluate-shortform` | Closes the feedback loop — scores published short-form posts against the original brief, logs patterns, flags platform-signal staleness | You've published a video and want to know what the brief got right vs. what surprised you |
 
 ### Marketing — create, optimize, and measure marketing
@@ -505,7 +507,7 @@ Cherry-pick a single skill:
 npx skills add hungv47/meta-skills --skill write-copy
 ```
 
-Release notes: [`CHANGELOG.md`](./CHANGELOG.md). All 39 skills release in lockstep under one version number, with `[meta]` / `[research]` / `[marketing]` / `[product]` prefixes on stack-scoped entries.
+Release notes: [`CHANGELOG.md`](./CHANGELOG.md). All 40 skills release in lockstep under one version number, with `[meta]` / `[research]` / `[marketing]` / `[product]` prefixes on stack-scoped entries.
 
 Pre-2.0 history lives in the archived repos: [research-skills](https://github.com/hungv47/research-skills/blob/main/CHANGELOG.md), [marketing-skills](https://github.com/hungv47/marketing-skills/blob/main/CHANGELOG.md), [product-skills](https://github.com/hungv47/product-skills/blob/main/CHANGELOG.md), [meta-skills v1.x](https://github.com/hungv47/meta-skills/commits/main).
 

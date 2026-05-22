@@ -127,6 +127,7 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/artifacts\/mkt\/write-social\//, "write-social"],
     [/^\.forsvn\/artifacts\/product\/flow\//, "map-user-flow"],
     [/^\.forsvn\/artifacts\/research\/research-shortform/, "research-shortform"],
+    [/^\.forsvn\/artifacts\/research\/platform-evidence/, "research-platform"],
     [/^\.forsvn\/artifacts\/research\/evaluate-shortform/, "evaluate-shortform"],
     [/^\.forsvn\/loops\/[^/]+\/program\.md$/, "run-eval-loop"],
     [/^\.forsvn\/loops\/[^/]+\/context\.md$/, "run-eval-loop"],
