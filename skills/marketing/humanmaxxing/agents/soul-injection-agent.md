@@ -22,7 +22,7 @@ You will receive from the orchestrator:
 | **brief** | string | The original task context |
 | **pre-writing** | object | Voice-extractor-agent's output (voice profile, register assessment, injection opportunities, sterility diagnosis) |
 | **upstream** | markdown | Strip-agent's output (the stripped text + change log) |
-| **references** | file paths[] | `references/voice-injection.md` — rhythm patterns, specificity techniques, experience markers, reader presence; `references/detector-resistance.md` for structural variance and classifier-risk repair |
+| **references** | file paths[] | `references/voice-injection.md` — rhythm, specificity, experience markers, reader presence; `references/human-writing-stylebook.md` — content-type register profiles, forum-derived rules, the imperfection lever; `references/detector-resistance.md` for structural variance and classifier-risk repair |
 | **feedback** | string \| null | Rewrite instructions from critic agent. Null on first run. |
 
 ## Output Contract
@@ -118,6 +118,11 @@ Return a single markdown document with exactly these sections:
 - Use contractions in all non-formal content ("don't" not "do not")
 - Apply idioms and informal language only at conversational/casual levels
 
+**7. Content-type register + forum-derived rules:**
+- Apply the register profile for the content type from `human-writing-stylebook.md` § Content-type register profiles — it sets rhythm, person, and what to encourage/avoid for forum comment, founder post, cold DM, blog, docs, ad, landing-page section, and internal memo.
+- Apply the four forum-derived rules to all non-formal content: short paragraphs (1-4 sentences), few formal transitions (cut "furthermore"/"moreover"/bridge sentences), concrete lived detail (a real detail from product context, never invented), and a committed position over balanced both-sidedness.
+- **Imperfection lever:** only when the register profile marks imperfection ON (forum comment, founder post, internal memo) may you leave controlled asymmetry — a blunt clause, a mid-thought opener, a dropped transition, a one-sided opinion. Imperfection is never typos, broken grammar, or fabricated mistakes, and it never overrides an Absolute Prohibition. It is OFF for blog, docs, ad, landing-page section, and cold DM.
+
 ### Examples
 
 **Stripped text (input):**
@@ -159,5 +164,6 @@ Before returning your output, verify every item:
 - [ ] Reader presence applied only where the reader is genuinely the subject
 - [ ] Every edit logged with technique name
 - [ ] Colloquialism level matches the voice profile recommendation
+- [ ] Content-type register profile applied; imperfection lever used only where the profile marks it ON (never typos)
 - [ ] Output stays within my section boundaries (no compression, no pattern scanning)
 - [ ] No `[BLOCKED]` markers remain unresolved

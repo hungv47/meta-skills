@@ -6,6 +6,12 @@ This file tracks releases of the consolidated `forsvn-skills` plugin (39 skills 
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **[marketing] `humanmaxxing` — human-writing stylebook (WS5).** New `references/human-writing-stylebook.md`: human-writing doctrine, the four forum-derived rules (short paragraphs, fewer formal transitions, concrete lived detail, less balanced two-sidedness), 8 content-type register profiles (forum comment, founder post, cold DM, blog, docs, ad, landing-page section, internal memo), the imperfection lever (opt-in per profile, never typos or fabricated mistakes), and the no-generic-long-form gate — a hard Quality-Gate check that FAILs long-form output that could lose another 40% of its words with no meaning loss. The SKILL.md Content Type Calibration table expands 6 → 8 rows with a Register Profile column. Wired into all four relevant agents: voice-extractor selects the register profile, soul-injection applies it (new technique #7), compression self-applies the no-generic-long-form gate, critic verifies it (folded into compression verification). The em-dash ban stays blanket — Absolute Prohibition #1 is unchanged; the four existing domain catalogs (`ai-patterns`, `voice-injection`, `conciseness-rules`, `detector-resistance`) are unchanged, and the stylebook is a new doctrine layer that organizes and cross-references them. `metadata.version` 2.0.0 → 2.1.0. No new skill, no path changes — skill count stays 39. WS5 of the incremental-reviewable-artifacts program.
+
 ## [3.0.0] - 2026-05-22
 
 **v3 — reviewable artifacts, `.forsvn/` root standardization, and two breaking skill renames.** Adds a human-review layer to Markdown artifacts, consolidates machine-derived state under a single `.forsvn/` root, and renames two skills. Skill count unchanged at 39 (meta 7 · research 7 · marketing 19 · product 6).

@@ -4,7 +4,7 @@ description: "Strips AI tells, injects brand voice, and compresses existing text
 argument-hint: "[content file or text]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   budget: standard
   estimated-cost: "$0.15-0.40"
 ---
@@ -31,6 +31,7 @@ Before delivering, the **critic agent** verifies:
 - [ ] At most 2 Soft Tell patterns in the entire piece
 - [ ] No clusters of 3+ high-frequency AI vocabulary words in any paragraph
 - [ ] At least 15% word reduction from original
+- [ ] No-generic-long-form (long-form types only): the output cannot lose another 40% of its words without losing a unique idea, datum, example, or nuance
 - [ ] No unique ideas, data, examples, or nuance removed (check against original)
 - [ ] Read aloud with no stumbles, no robotic rhythm
 - [ ] Every paragraph contains at least one concrete fact, number, or named example
@@ -125,16 +126,20 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1 user checkpoint d
 
 ## Content Type Calibration
 
-This skill's examples are marketing-focused, but it works on any content type. Adjust the intensity of each step by content type:
+This skill's examples are marketing-focused, but it works on any content type. Adjust the intensity of each step — and match the register — by content type:
 
-| Content Type | Strip Intensity | Voice Injection | Compression Target |
-|-------------|----------------|-----------------|-------------------|
-| Marketing copy | Full — all 47 patterns | Full — brand voice adjectives | 20-30% |
-| Blog posts / thought leadership | Full | Moderate — author voice, not brand voice | 15-25% |
-| Short outbound — `content-type: "short-outbound"` (cold email, DM, proposal, Meta ad copy) | Light — AI telltales only | Full — sender voice | 0-10% (already compressed; further cuts kill specificity) |
-| Documentation / technical writing | Light — focus on clarity patterns only | Minimal — accuracy over personality | 10-15% |
-| Internal communications | Moderate | Light — conversational, not branded | 15-20% |
-| Academic / research | Light — remove only Hard Tells | None — maintain formal register | 5-10% |
+| Content Type | Strip Intensity | Voice Injection | Compression Target | Register Profile |
+|---|---|---|---|---|
+| Landing-page section | Full — all 47 patterns | Full — brand voice | 25-40% | brand voice, scannable |
+| Ad | Light — AI telltales only | Full — brand voice | 10-20% | punchy brand voice |
+| Blog / thought leadership | Full | Moderate — author voice, not brand voice | 15-25% | author voice, professional |
+| Founder post | Moderate | Full — founder's own voice | 15-25% | first-person, imperfection-light |
+| Forum comment | Light — Hard Tells only | Full — first-person | 0-10% | casual, imperfection ON |
+| Cold DM — `content-type: "short-outbound"` (cold email, DM, proposal) | Light — AI telltales only | Full — sender voice | 0-10% (already compressed; further cuts kill specificity) | professional-conversational |
+| Internal memo | Moderate | Light — conversational, not branded | 30-50% | plain, imperfection-light |
+| Documentation / technical | Light — clarity patterns only | Minimal — accuracy over personality | 10-15% | neutral, accuracy-first |
+
+The **Register Profile** column is a shorthand — the full per-type profile (rhythm, person, what to encourage/avoid, imperfection posture) lives in [`references/human-writing-stylebook.md`](references/human-writing-stylebook.md) [STYLEBOOK] § Content-type register profiles. Types not listed inherit the nearest profile: academic / white paper → Documentation register (formal), but compression 5-10% — Hard Tells only; case study → Blog; generic marketing copy → Ad or Landing-page section by length.
 
 **Key principle:** The further from marketing, the lighter the touch. Documentation that sounds like a blog post is worse than documentation with a few AI tells. Short outbound (cold email, DM, Upwork proposal) is a special case: it's typically 4-6 sentences with a named entity + number doing heavy lifting — compress further and you strip the thing that earns the reply.
 
@@ -189,6 +194,7 @@ End-to-end Route B walkthrough (AI-generated SaaS onboarding blog post, 178 word
 - **Playbook:** `references/playbook.md` [PLAYBOOK]
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
+- **Stylebook:** `references/human-writing-stylebook.md` [STYLEBOOK] — human-writing doctrine, 8 content-type register profiles, the no-generic-long-form gate
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/humanmaxxing-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{ai-patterns, voice-injection, conciseness-rules, detector-resistance, regression-suite}.md`
