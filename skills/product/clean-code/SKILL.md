@@ -30,6 +30,7 @@ metadata:
 - No test coverage AND behavior-preservation matters (write tests first; see [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] "When NOT to refactor").
 - Pre-existing test/build failures unrelated to cleanup (BLOCKED until baseline is green).
 - Code that won't change again — if nobody will read or modify it, the investment doesn't pay off.
+- The duplication is the same **operational mechanics** repeated across 2+ callers (identical SDK setup, retry loop, I/O plumbing) → use `/extract-service`. `clean-code` removes dead code and slop; it does not design service boundaries.
 
 ## Before Starting
 

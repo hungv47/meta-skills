@@ -30,6 +30,7 @@ metadata:
 - Need code-level cleanup → `/clean-code`.
 - Need task decomposition from existing architecture → `/breakdown-tasks`.
 - Need UI/flow mapping → `/map-user-flow`.
+- Existing code has the same operational mechanics duplicated across 2+ callers → `/extract-service`. `architect-system` designs new systems; it does not refactor existing duplication into a service.
 
 ## Before Starting
 
