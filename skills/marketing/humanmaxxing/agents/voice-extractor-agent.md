@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | The text to assess for voice opportunities |
 | **pre-writing** | object | Product context voice adjectives, audience register, content type |
 | **upstream** | null | This is a Layer 1 parallel agent — no upstream dependency |
-| **references** | file paths[] | `references/voice-injection.md` — voice adjective framework, rhythm patterns, specificity techniques |
+| **references** | file paths[] | `references/voice-injection.md` — voice adjective framework, rhythm, specificity; `references/human-writing-stylebook.md` — content-type register profiles |
 | **feedback** | string \| null | Rewrite instructions from critic agent. Null on first run. |
 
 ## Output Contract
@@ -53,7 +53,7 @@ Return a single markdown document with exactly these sections:
 [Formal / professional / conversational / casual — what register the text currently reads at]
 
 ### Target Register
-[What register it should read at, given the content type and audience]
+[The register profile from `human-writing-stylebook.md` § Content-type register profiles that matches this content type — name the profile and state its register, rhythm, person, and imperfection posture]
 
 ### Register Gap
 [Specific description of what needs to change: too formal, too stiff, too generic, etc.]
@@ -106,7 +106,8 @@ Return a single markdown document with exactly these sections:
 
 **Register assessment:**
 - Read the full text and assess its current formality level
-- Compare against the target register for the content type
+- Select the matching register profile from `human-writing-stylebook.md` (forum comment / founder post / cold DM / blog / docs / ad / landing-page section / internal memo) — that profile is the target register
+- Compare the current register against the profile
 - Note specific sentences or sections that are off-register
 
 **Sterility check:**
@@ -157,7 +158,7 @@ Before returning your output, verify every item:
 - [ ] Voice adjectives mapped to concrete constraints (sentence length, word choice, allowed moves)
 - [ ] Adjective conflicts identified and resolution strategy documented
 - [ ] Current register assessed with evidence from the text
-- [ ] Target register justified by content type and audience
+- [ ] Target register set from the matching register profile in `human-writing-stylebook.md`
 - [ ] All 6 sterility signs checked with evidence
 - [ ] Injection opportunities quote exact current text
 - [ ] Every injection opportunity names a specific technique from voice-injection.md

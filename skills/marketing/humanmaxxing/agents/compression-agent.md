@@ -22,7 +22,7 @@ You will receive from the orchestrator:
 | **brief** | string | The original task context |
 | **pre-writing** | object | Content type (determines compression target) and any user directives |
 | **upstream** | markdown | Soul-injection-agent's output (the voice-injected text + change log) |
-| **references** | file paths[] | `references/conciseness-rules.md` — filler phrase table, paragraph rules, section rules, depth preservation rules |
+| **references** | file paths[] | `references/conciseness-rules.md` — filler phrase table, paragraph rules, section rules, depth preservation rules; `references/human-writing-stylebook.md` — the no-generic-long-form gate + per-profile compression targets |
 | **feedback** | string \| null | Rewrite instructions from critic agent. Null on first run. |
 
 ## Output Contract
@@ -114,6 +114,10 @@ Also target:
 | **Hierarchy compression** | Section with one paragraph? Merge into adjacent section or promote to parent level. |
 | **List compression** | List with 2-3 items? Convert to a sentence. Reserve bulleted lists for 4+ genuinely parallel items. |
 
+**No-generic-long-form gate (self-applied, long-form content only):**
+
+Before returning, apply the gate from `human-writing-stylebook.md`: judge whether your compressed output could lose another 40% of its words without losing a unique idea, datum, example, or nuance. If it could, the output is still generic long-form — keep compressing. The 15% floor measures the cut from the original; this gate measures whether the *output* is dense. Applies to blog, docs, internal memo, white paper, and case study; not to forum comment, cold DM, ad, or landing-page section, where the content-type caps already govern.
+
 **Content-type targets:**
 
 | Content Type | Target Compression |
@@ -173,6 +177,7 @@ Before returning your output, verify every item:
 - [ ] Sentence-level filler phrase pass completed
 - [ ] Paragraph-level merge/redundancy/setup tests applied
 - [ ] Section-level earn-your-place test applied
+- [ ] No-generic-long-form gate self-applied (long-form content): output cannot lose another 40% without meaning loss
 - [ ] Structure preserved where it aids scanning (headings, lists for 4+ items)
 - [ ] Output stays within my section boundaries (no voice changes, no pattern scanning)
 - [ ] No `[BLOCKED]` markers remain unresolved

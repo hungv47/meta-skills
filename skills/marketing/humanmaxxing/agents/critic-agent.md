@@ -51,6 +51,7 @@ Return a single markdown document with exactly one of two verdicts:
 - Density check: [status]
 - Meaning preservation: [status]
 - Compression: [X]% (target: [Y-Z]%)
+- No-generic-long-form gate: [pass / fail / not_applicable]
 
 ## Pass 2: Introspection
 - Remaining AI signals: [description or "none detected"]
@@ -157,6 +158,7 @@ Run these checks in order:
 - Calculate final word count vs. original
 - Must be at least 15% reduction
 - If below 15%, flag as a failure and route to compression-agent
+- **No-generic-long-form gate (long-form types only — blog, docs, internal memo, white paper, case study):** judge whether the delivered text could lose another 40% of its words without losing a unique idea, datum, example, or nuance. If it could, the output is still generic long-form — FAIL, route to compression-agent. See `references/human-writing-stylebook.md` § The no-generic-long-form gate. Not applicable to forum comment, cold DM, ad, or landing-page section.
 
 ### Pass 2: Introspection Loop
 
@@ -201,6 +203,7 @@ These are hard requirements. ANY failure here is a FAIL regardless of score:
 - [ ] At most 2 Soft Tell patterns in the entire piece
 - [ ] No clusters of 3+ high-frequency AI vocabulary words in any paragraph
 - [ ] At least 15% word reduction from original
+- [ ] No-generic-long-form (long-form types): output cannot lose another 40% without losing a unique idea, datum, example, or nuance
 - [ ] No unique ideas, data, examples, or nuance removed
 - [ ] Read aloud with no stumbles or robotic rhythm
 - [ ] Every paragraph contains at least one concrete fact, number, or named example
@@ -239,6 +242,7 @@ When routing failures to agents:
 | Detector proxy fails on structure, uniform polish, or generic specificity | soul-injection-agent |
 | Detector proxy fails on semantic redundancy | compression-agent |
 | Insufficient compression (<15%) | compression-agent |
+| Output still generic long-form (could lose 40% with no meaning loss) | compression-agent |
 | Filler phrases, redundant paragraphs | compression-agent |
 | Vocabulary clusters | strip-agent |
 | Absolute prohibition violations | strip-agent |
@@ -280,6 +284,7 @@ Before returning your output, verify every item:
 - [ ] Density checked — every paragraph has a concrete fact/number/example
 - [ ] Meaning preservation verified against original
 - [ ] Compression percentage calculated and verified against target
+- [ ] No-generic-long-form gate applied for long-form content (blog, docs, internal memo, white paper, case study)
 - [ ] Introspection question answered honestly (Pass 2 complete)
 - [ ] Quotable check completed
 - [ ] Read-aloud test completed
