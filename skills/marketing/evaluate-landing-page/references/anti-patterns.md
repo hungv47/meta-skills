@@ -160,13 +160,13 @@ load_class: ANTI-PATTERN
 
 ### 13. Polish-chain misroute
 
-**Pattern:** User invokes `humanize` or `polish-vn` on the eval artifact ("make the diagnosis sound less robotic"). Polish chain runs on what is supposed to be a structured operational document.
+**Pattern:** User invokes `humanmaxxing` or `polish-vn` on the eval artifact ("make the diagnosis sound less robotic"). Polish chain runs on what is supposed to be a structured operational document.
 
-**Why it fails:** lp-eval OUTPUT is an evidence snapshot + ledger row + learning promotion proposal — structured operational data consumed by downstream cycles. Running humanize on it recursively redefines what "evaluation" means — verdicts become prose paragraphs, Evidence tables get prose-ified, etc. Downstream skills (future lp-eval cycles, lp-brief --rev=N+1, dashboard tools) can no longer parse it.
+**Why it fails:** lp-eval OUTPUT is an evidence snapshot + ledger row + learning promotion proposal — structured operational data consumed by downstream cycles. Running humanmaxxing on it recursively redefines what "evaluation" means — verdicts become prose paragraphs, Evidence tables get prose-ified, etc. Downstream skills (future lp-eval cycles, lp-brief --rev=N+1, dashboard tools) can no longer parse it.
 
-**Instead:** humanize and vn-tone run on USER-FACING copy (blog posts, ad copy, cold-outreach emails). They do NOT run on operational artifacts like cycle evaluations. If the eval artifact reads "robotic," that's correct register — operational documents prioritize parseability over style.
+**Instead:** humanmaxxing and vn-tone run on USER-FACING copy (blog posts, ad copy, cold-outreach emails). They do NOT run on operational artifacts like cycle evaluations. If the eval artifact reads "robotic," that's correct register — operational documents prioritize parseability over style.
 
-**Owned by:** Orchestrator (chain position note in playbook — lp-eval is operational; humanize/vn-tone are for user-facing copy) + chain-position discipline.
+**Owned by:** Orchestrator (chain position note in playbook — lp-eval is operational; humanmaxxing/vn-tone are for user-facing copy) + chain-position discipline.
 
 ---
 

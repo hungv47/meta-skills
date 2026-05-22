@@ -46,7 +46,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: standard`; `--fast` collapses to single-pass eval-runner (skip hook-strength parallel + skip pattern-extractor as separate Layer-2 agent), but Critical Gates above STILL enforced. Cold Start fires under `--fast` if catalog/brief/loop are unresolvable.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output paths match canonical inventory (`.forsvn/loops/[slug]/evals/` + `results.tsv`).
-2. Read `.agents/manifest.json` — find the matching `research-shortform` catalog by topic+market; check freshness.
+2. Read `.forsvn/index/manifest.json` — find the matching `research-shortform` catalog by topic+market; check freshness.
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — needed dimensions, read order, Cold/Warm prompts, hard-block conditions, catalog-freshness handling all there.
 
 ## Artifact Contract

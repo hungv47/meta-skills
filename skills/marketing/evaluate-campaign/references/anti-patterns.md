@@ -84,6 +84,6 @@ load_class: ANTI-PATTERN
 **Fix:** Critical Gate 1 blocks. Skill returns NEEDS_CONTEXT and recommends `/run-eval-loop` to scaffold first.
 
 ### Polish-chain misroute
-**Pattern:** Eval artifact is sent to humanize or polish-vn after writing.
-**Why it fails:** Eval artifacts are evidence + decisions, not customer-facing copy. Humanize would smooth attribution caveats into more confident-sounding prose — exactly the opposite of what attribution discipline requires.
-**Fix:** Eval artifacts skip the humanize/polish-vn polish chain. They ship as-is from critic PASS.
+**Pattern:** Eval artifact is sent to humanmaxxing or polish-vn after writing.
+**Why it fails:** Eval artifacts are evidence + decisions, not customer-facing copy. Humanmaxxing would smooth attribution caveats into more confident-sounding prose — exactly the opposite of what attribution discipline requires.
+**Fix:** Eval artifacts skip the humanmaxxing/polish-vn polish chain. They ship as-is from critic PASS.

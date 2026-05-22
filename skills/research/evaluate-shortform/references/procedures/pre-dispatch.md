@@ -25,7 +25,7 @@ load_class: PROCEDURE
 1. `.forsvn/loops/[loop-slug]/program.md`, `context.md`, and `results.tsv` — confirm the loop exists and find the next cycle.
 2. `<brief-path>` — confirm it exists, parse frontmatter for topic, market, target platform, hook archetype claim.
 3. `.forsvn/artifacts/research/short-form-research/[slug].md` — locate the matching catalog by topic+market; if multiple match, ask user once.
-4. `.agents/manifest.json` — confirm catalog freshness (warn if stale; don't block).
+4. `.forsvn/index/manifest.json` — confirm catalog freshness (warn if stale; don't block).
 5. `.forsvn/experience/content.md` — most recent entries for market and audience register.
 
 ---

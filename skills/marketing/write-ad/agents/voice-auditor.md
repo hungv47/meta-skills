@@ -62,7 +62,7 @@ You do NOT:
 These are inherited from write-outreach's voice-auditor + critic auto-fail list, scoped to ad copy. Run all of them across each variant. Any hit → either EDITS_APPLIED (if fixable in-place) or BLOCKED (if it requires composer rework).
 
 1. **Named banned phrase.** Read `references/anti-patterns.md` for the full list. Common ad-copy hits: "leverage", "unlock", "best-in-class", "industry-leading", "premier", "world-class", "next-level", "game-changing", "synergy", "transformative", "innovative", "revolutionary", "cutting-edge". Each is a fix-in-place candidate.
-2. **Em-dashes anywhere.** Zero tolerance, same rule as cold-outreach + humanize terminal pass. Replace every em-dash with a comma, period, or parentheses.
+2. **Em-dashes anywhere.** Zero tolerance, same rule as cold-outreach + humanmaxxing terminal pass. Replace every em-dash with a comma, period, or parentheses.
 3. **Setup-sentence opener.** Primary text opening with "I wanted to share...", "We're excited to announce...", "Looking for [thing]?" — meta-statements about the ad's existence. Replace with the substance.
 4. **"Just" as hedge.** "Just one click", "Just $9", "Just for you" — AI's favorite softener. A single instance is fix-in-place.
 5. **"Quick" as hedge.** "Quick question?", "Quick tip", "Quickly..." — same pattern as "just". Fix-in-place.

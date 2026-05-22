@@ -38,7 +38,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 0. **Mode resolution** — this skill is `budget: deep`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) auto-downgrades to `fast` for simple products (fewer than 3 user types AND fewer than 5 data entities) → Single-Agent Fallback path. `--fast` flag forces single-agent regardless of scope. **Safety gates supersede `--fast`:** the 8 Critical Gates fire on every run, regardless of mode. Pre-Dispatch fires under `--fast` if scale + constraints aren't resolvable.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`architecture/system-architecture.md`).
 2. Read `research/product-context.md`. If missing: interview for product dimensions or recommend `/research-icp` (from research-skills) to bootstrap. If `date` field >30 days old, recommend refresh.
-3. Read `.agents/manifest.json` for prior architecture runs + downstream task-breakdown state.
+3. Read `.forsvn/index/manifest.json` for prior architecture runs + downstream task-breakdown state.
 4. Read `.forsvn/experience/technical.md` for stack history + constraints.
 
 ## Pre-Dispatch

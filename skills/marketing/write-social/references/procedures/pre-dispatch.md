@@ -75,7 +75,7 @@ If the user answers without enough signal to define topic or audience (e.g., "po
 
 When market signal is Vietnamese (any of: user explicitly says "Vietnamese," "VN," "Vietnam," "Việt Nam"; brief / topic supplies Vietnamese-language source text; `research/icp-research.md` declares persona geo as Vietnam; `experience/audience.md` declares Vietnam geo), Pre-Dispatch sets `--polish-chain vn-tone` as the default IF operator did not pass `--polish-chain` explicitly. Behavior:
 
-1. **Operator passed `--polish-chain none` or `--polish-chain humanize`:** honor the operator's explicit choice. Do NOT override. (Operator may want raw English copy + manual VN translation downstream, or humanize-only for a non-VN region of a VN-bilingual market.)
+1. **Operator passed `--polish-chain none` or `--polish-chain humanmaxxing`:** honor the operator's explicit choice. Do NOT override. (Operator may want raw English copy + manual VN translation downstream, or humanmaxxing-only for a non-VN region of a VN-bilingual market.)
 2. **Operator passed `--polish-chain vn-tone`:** confirmed; proceed.
 3. **Operator omitted `--polish-chain`:** override default `none` → `polish-vn`. Echo the override in the Warm/Cold Start confirmation: `Vietnamese-market detected; defaulting --polish-chain to vn-tone. Pass --polish-chain none to override.`
 

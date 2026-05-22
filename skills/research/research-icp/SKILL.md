@@ -38,7 +38,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` collapses to Route A (Quick ICP) IF sufficient context exists for Warm Start (skips habitat-agent + decision-psychology-agent); critic gate collapses to single pass. **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize hallucinating personas (Critical Gate 1 floor; safety gates supersede mode-resolver downgrade).
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output paths match canonical inventory (`research/icp-research.md` + `research/product-context.md`, both `canonical` lifecycle).
-2. Read `.agents/manifest.json` — find any prior `research/icp-research.md` (re-run signal) and check `research/product-context.md` staleness (Critical Gate 4).
+2. Read `.forsvn/index/manifest.json` — find any prior `research/icp-research.md` (re-run signal) and check `research/product-context.md` staleness (Critical Gate 4).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — auto-scan first, then Warm/Cold Start, 5-question Cold Start prompt, read order, Write-back map (Q1 → product.md AND research/product-context.md as canonical; Q2-Q4 → audience.md; Q5 routing-only — verbatim from original SKILL.md) all there.
 
 ---
@@ -82,7 +82,7 @@ Critic agent verifies before delivery — body checklist below is the 9-bullet o
   |----------|--------|---------|
   | `diagnose.md` | diagnose (hungv47/research-skills) | Problem context sharpens audience research |
 
-- **Consumed by:** campaign-plan (personas + habitat for channel mix); brand-system (voice + emotional drivers + red flags); copywriting (target reader + pain + voice + objections); lp-brief (personas + decision psychology); design-brief (personas + red flags); ad-copy (Pain Profile + objections + trust signals); cold-outreach (demographics + decision psychology trigger + research path); short-form-research / short-form-brief (habitat + emotional drivers); humanize / seo / vn-tone (voice + canonical terminology); social-copy (personas + voice + emotional drivers)
+- **Consumed by:** campaign-plan (personas + habitat for channel mix); brand-system (voice + emotional drivers + red flags); copywriting (target reader + pain + voice + objections); lp-brief (personas + decision psychology); design-brief (personas + red flags); ad-copy (Pain Profile + objections + trust signals); cold-outreach (demographics + decision psychology trigger + research path); short-form-research / short-form-brief (habitat + emotional drivers); humanmaxxing / seo / vn-tone (voice + canonical terminology); social-copy (personas + voice + emotional drivers)
 - **Cross-stack OUTPUT contract:** Artifact Template structure + Habitat Map 5-column schema + Top 3 Emotional Drivers section + Next Step block + product-context.md 8-section schema are all load-bearing — schema changes require atomic update of 13 downstream consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---

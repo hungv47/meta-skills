@@ -87,8 +87,8 @@ The 9 supported channels:
 
 ## Field values — route
 
-- **`compose`** — Route A (first-touch or follow-up); user supplied target + trigger + proof, orchestrator dispatched Layer 1a → 1b → 2 → terminal humanize
-- **`reply`** — Route B (reply handling); user pasted inbound, orchestrator dispatched reply-classifier → reply-composer → voice-auditor → critic → terminal humanize
+- **`compose`** — Route A (first-touch or follow-up); user supplied target + trigger + proof, orchestrator dispatched Layer 1a → 1b → 2 → terminal humanmaxxing
+- **`reply`** — Route B (reply handling); user pasted inbound, orchestrator dispatched reply-classifier → reply-composer → voice-auditor → critic → terminal humanmaxxing
 
 ## critic_total format
 

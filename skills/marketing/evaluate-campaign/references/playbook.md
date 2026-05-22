@@ -73,7 +73,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-campaign does not run as a heuristic audit.
 - **The next action is campaign planning, not scoring.** Route to `plan-campaign` with `--rev=N+1`.
 - **The next action is ad-creative or organic-copy authoring.** Route to `write-ad` / `write-social`.
-- **Brand voice cleanup on the campaign copy itself.** That's the `humanize` polish chain at construction time, not eval time.
+- **Brand voice cleanup on the campaign copy itself.** That's the `humanmaxxing` polish chain at construction time, not eval time.
 
 ## Sibling coordination
 

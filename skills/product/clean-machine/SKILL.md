@@ -37,7 +37,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** — this skill is `budget: deep`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) auto-downgrades to `fast` for single-folder targets (operator points at one path) → Single-Agent Fallback path. `--fast` flag forces single-agent regardless of scope. **Safety gates supersede `--fast`:** the 6 Critical Gates fire on every run, regardless of mode. Pre-Dispatch fires under `--fast` if scope + aggressiveness + excluded paths aren't resolvable.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory.
-2. Read `.agents/manifest.json` for prior machine-cleanup runs; surface staleness if a recent run already covered this scope.
+2. Read `.forsvn/index/manifest.json` for prior machine-cleanup runs; surface staleness if a recent run already covered this scope.
 3. Read `.forsvn/experience/technical.md` for prior protected-paths list (machine-cleanup excluded paths).
 
 ## Pre-Dispatch

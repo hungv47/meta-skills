@@ -21,7 +21,7 @@ load_class: PROCEDURE
    - **Compliance** — does the artifact violate any stated policy (legal, brand-voice, platform-specific ad policy, regulatory)?
    - **Audience fit** — is the artifact calibrated to the named audience, or is it speaking past them?
    - **Mechanism distinctness** — for marketing copy: does it explain WHY the product works, not just WHAT it does?
-   - **Protected-token preservation** — for humanize/translation passes: were trademarks, version numbers, technical terms preserved verbatim?
+   - **Protected-token preservation** — for humanmaxxing/translation passes: were trademarks, version numbers, technical terms preserved verbatim?
    - **Research validity** — for ICP/market-research updates: are the claims supported by the cited sources, with sample sizes + dates?
 
    Use [`../_shared/shared-critic-rubrics.md`](../_shared/shared-critic-rubrics.md) for the canonical scoring rubric per dimension.

@@ -96,7 +96,7 @@ Read the message aloud. If it sounds like:
 - "basically" → delete
 - "actually" → delete (unless contrasting)
 
-**Em-dashes (zero tolerance, matches humanize downstream):**
+**Em-dashes (zero tolerance, matches humanmaxxing downstream):**
 - Every em-dash (—) → replace with comma, period, or parentheses. Zero em-dashes in output. Restructure the sentence if needed.
 
 ### Pro-Voice Rules (enforce, don't just permit)
@@ -211,7 +211,7 @@ Before returning your output, verify every item:
 - [ ] If the draft was too generic to strip without invention, I returned `[BLOCKED]` rather than rescuing it with fabrication
 - [ ] CTA tier is unchanged from composer's draft (I did not upgrade tier-2 → tier-4 or similar)
 - [ ] Contractions present throughout including sign-off ("Thanks," not "Thank you")
-- [ ] Zero em-dashes (—) in output (matches humanize downstream)
+- [ ] Zero em-dashes (—) in output (matches humanmaxxing downstream)
 - [ ] No banned vendor-speak remains ("leverage", "synergy", "best-in-class", "seamless", etc.)
 - [ ] Output stays within my section boundaries (no strategic changes, no new proof)
 

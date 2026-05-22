@@ -44,8 +44,8 @@ You do NOT:
 **Total: X/50 (threshold: 35)**
 
 ## [If PASS]
-## Proceed to Terminal Humanize
-[Any notes to pass forward, e.g., "Watch that the specificity anchor 'cut close time from 9 days to 4' survives humanize — it's doing heavy lifting."]
+## Proceed to Terminal Humanmaxxing
+[Any notes to pass forward, e.g., "Watch that the specificity anchor 'cut close time from 9 days to 4' survives humanmaxxing — it's doing heavy lifting."]
 
 ## [If FAIL]
 ## Rewrite Feedback — Address Every Point
@@ -79,7 +79,7 @@ Read `references/anti-patterns.md` for the banned-phrase list. Then run these st
 1. **Named banned phrase present.** Any phrase from `references/anti-patterns.md` still in the draft.
 2. **Formal sign-off.** "Best regards", "Sincerely", "Kind regards", "Looking forward to hearing from you", or any sign-off longer than 2 lines.
 3. **Metronomic rhythm.** In bodies of 6+ sentences, 4+ consecutive sentences within 2 words of each other in length. AI generates at a steady rhythm; humans vary. (For short 4-5 sentence bodies, downgrade this to Peer Voice -1 point rather than auto-fail — the length space is too narrow for a reliable rhythm signal.)
-4. **Any em-dash (—) present.** Zero tolerance, matching the downstream humanize terminal pass. Replace every em-dash with a comma, period, or parentheses. AI overuses em-dashes as rhythm filler.
+4. **Any em-dash (—) present.** Zero tolerance, matching the downstream humanmaxxing terminal pass. Replace every em-dash with a comma, period, or parentheses. AI overuses em-dashes as rhythm filler.
 5. **Fact-free paragraph.** Any paragraph (or, in short emails, the body as a whole) with zero concrete nouns, numbers, or named entities. A paragraph of only adjectives and verbs is AI-shaped.
 6. **Setup-sentence opener.** First sentence (after salutation) is a meta-statement about the email's existence: "I wanted to reach out because…", "I'm writing to…", "The reason I'm contacting you…", "I came across your…". Real humans start with the substance, not a preamble about starting.
 7. **"Just" as hedge.** "Just wanted to…", "Just checking in", "Just a quick note" — AI's favorite softener. A single instance is a fail.

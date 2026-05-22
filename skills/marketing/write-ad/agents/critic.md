@@ -61,8 +61,8 @@ You do NOT:
 - **Verdict driver:** [which variant/dim was the weakest? was it the aggregate average or a per-variant per-dim floor that drove the verdict?]
 
 ## [If PASS]
-## Proceed to Terminal Humanize
-[Per-variant notes for humanize, e.g., "Hero: watch the '20 lbs in 30 days' anchor survives humanize — it's the load-bearing specific. Variant A: 'Ramp · 9→4 day close' is the spec anchor."]
+## Proceed to Terminal Humanmaxxing
+[Per-variant notes for humanmaxxing, e.g., "Hero: watch the '20 lbs in 30 days' anchor survives humanmaxxing — it's the load-bearing specific. Variant A: 'Ramp · 9→4 day close' is the spec anchor."]
 
 ## [If FAIL]
 ## Rewrite Feedback — Address Every Point

@@ -48,7 +48,7 @@ Read: brand/BRAND.md (creative marketing skills) or architecture/system-architec
 
 **Research skills:** Read prior `research/*.md` files in domain.
 
-**Meta skills:** Read `.agents/manifest.json` + `.agents/artifact-index.md` for state.
+**Meta skills:** Read `.forsvn/index/manifest.json` + `.forsvn/index/artifact-index.md` for state.
 
 ### Step 3 — Read .forsvn/experience/{relevant-dim}.md
 
@@ -56,12 +56,12 @@ Per the skill's domain, read the matching experience dimension file. Skill-to-di
 
 | Skill domain | Reads experience dimension(s) |
 |---|---|
-| Marketing creative (write-copy, write-ad, write-outreach, write-social, polish-vn, humanize) | `audience.md`, `brand.md`, `content.md`, `business.md` |
+| Marketing creative (write-copy, write-ad, write-outreach, write-social, polish-vn, humanmaxxing) | `audience.md`, `brand.md`, `content.md`, `business.md` |
 | Marketing brief/system (create-brand, brief-landing-page, brief-graphic, brief-shortform, plan-campaign) | `audience.md`, `brand.md`, `business.md`, `goals.md` |
 | Marketing eval (evaluate-landing-page, optimize-seo) | `audience.md`, `content.md`, `goals.md` |
 | Product (architect-system, map-user-flow, clean-code, clean-machine, write-docs) | `product.md`, `technical.md`, `patterns.md` |
 | Research (research-icp, research-market, diagnose, prioritize, plan-funnel, research-shortform, evaluate-shortform) | `audience.md`, `business.md`, `goals.md`, `patterns.md` |
-| Meta (forsvn, run-eval-loop, debate-panel, breakdown-tasks, discover, review-work, clean-artifacts) | depends per-invocation; typically `patterns.md` + domain-specific |
+| Meta (forsvn, run-eval-loop, debate-agents, breakdown-tasks, discover, review-work, clean-artifacts) | depends per-invocation; typically `patterns.md` + domain-specific |
 
 Read **only** the dimensions the skill needs. Reading all 8 every time bloats Pre-Dispatch.
 

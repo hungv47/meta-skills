@@ -173,7 +173,7 @@ If the body is generic (applicable to any reader, not specifically the cohort ca
 
 ## 11. Polish Chain Routed on FORMAT_FAIL or FAIL Artifact
 
-**Definition:** Orchestrator invokes `humanize` or `polish-vn` as a terminal pass on an artifact that critic returned as `fail` OR that format-checker returned as FORMAT_FAIL. Polish skills don't fix critic-fail issues (generic hook, format mismatch) or format-fail issues (hard-cap violation that copywriter couldn't resolve in one revision cycle).
+**Definition:** Orchestrator invokes `humanmaxxing` or `polish-vn` as a terminal pass on an artifact that critic returned as `fail` OR that format-checker returned as FORMAT_FAIL. Polish skills don't fix critic-fail issues (generic hook, format mismatch) or format-fail issues (hard-cap violation that copywriter couldn't resolve in one revision cycle).
 
 **Detection rule:** If `polish_chain_applied != none` in frontmatter AND (`critic_verdict == fail` OR `status == blocked` from FORMAT_FAIL) = TRIGGERED.
 
@@ -209,10 +209,10 @@ If the body is generic (applicable to any reader, not specifically the cohort ca
 
 ## 14. Cross-Stack Contract Drift
 
-**Definition:** Refactor or schema change to the artifact frontmatter or required body sections (Hook variants A/B + Body + CTA + Format spec + Critic verdict + Anti-patterns triggered) ships without atomic update of downstream consumers (humanize / vn-tone / eval-loop / operator publish workflow).
+**Definition:** Refactor or schema change to the artifact frontmatter or required body sections (Hook variants A/B + Body + CTA + Format spec + Critic verdict + Anti-patterns triggered) ships without atomic update of downstream consumers (humanmaxxing / vn-tone / eval-loop / operator publish workflow).
 
 **Detection rule:** If a code review or diff modifies `format-conventions.md` § "Frontmatter schema" OR § "Required body sections" OR § "Critic verdict table" without a paired update to:
-- `humanize` skill's body-section reader (reads `## Body` + `## CTA`)
+- `humanmaxxing` skill's body-section reader (reads `## Body` + `## CTA`)
 - `polish-vn` skill's body-section reader + register hook check
 - `scripts/manifest-sync.ts` artifact-type classifier (if `type` field changes)
 - `run-eval-loop` results.tsv ingestion (if `critic_score` or `critic_verdict` field semantics change)

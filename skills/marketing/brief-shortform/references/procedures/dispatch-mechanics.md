@@ -86,7 +86,7 @@ After PASS, apply language polish to the spoken-line section (Hook verbal + VO d
 |---|---|
 | VN, founder | `polish-vn` Layer 2 on spoken-line section + full body |
 | VN, company | `polish-vn` Layer 2 on full body |
-| EN, founder | `humanize` Layer 2 on spoken-line section |
+| EN, founder | `humanmaxxing` Layer 2 on spoken-line section |
 | EN, company | none |
 | Other | flag `polish-chain-extension-needed` |
 

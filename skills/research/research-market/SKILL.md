@@ -34,7 +34,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` forces Route A (Quick Validation) — skip sizing-agent + opportunity-agent; consumer-landscape optional; critic gate collapses to single pass. `--deep` forces Route C (Fundraising / Market Entry). **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize scoping a market with no specified category (Critical Gates 1-4 floor).
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`research/market-research.md`, `canonical` lifecycle).
-2. Read `.agents/manifest.json` — find any prior `research/market-research.md` (re-run signal) and check `research/product-context.md` presence (consumes input — recommend `research-icp` first if missing).
+2. Read `.forsvn/index/manifest.json` — find any prior `research/market-research.md` (re-run signal) and check `research/product-context.md` presence (consumes input — recommend `research-icp` first if missing).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — Warm Start with product+B2B/B2C pre-fill OR Cold Start 5-question prompt, read order, Write-back map (Q1 → product.md; Q2+Q4 → business.md; Q3 → goals.md; Q5 → audience.md — verbatim from original SKILL.md), route selection (A/B/C) all there.
 
 ---

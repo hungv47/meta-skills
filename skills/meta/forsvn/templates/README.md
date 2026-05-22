@@ -8,7 +8,7 @@ owner: /forsvn
 
 The canonical, per-project state directory for the FORSVN agent stack. Written and read by `/forsvn` and every domain skill it dispatches.
 
-This directory is the single source of truth for everything a skill needs to resume work, avoid re-asking questions, and ground generations in product reality. It is **user-facing knowledge**, not infrastructure — distinct from `.agents/` which is reserved for machine-derived indexes.
+This directory is the single source of truth for everything a skill needs to resume work, avoid re-asking questions, and ground generations in product reality. It is **user-facing knowledge** — distinct from `.forsvn/index/` which is reserved for machine-derived indexes.
 
 ## Layout
 

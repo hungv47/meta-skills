@@ -8,7 +8,7 @@ load_class: EXAMPLE
 
 # Ad Copy — End-to-End Walkthrough
 
-**Load when:** an operator (human or agent) wants a complete trace of how a Route A (compose) artifact gets produced — Pre-Dispatch → Layer 1 strategist solo → Layer 2 sequential (composer → format-checker → voice-auditor → critic) → terminal humanize per variant + per-variant Specificity regression → deliver 3-file artifact.
+**Load when:** an operator (human or agent) wants a complete trace of how a Route A (compose) artifact gets produced — Pre-Dispatch → Layer 1 strategist solo → Layer 2 sequential (composer → format-checker → voice-auditor → critic) → terminal humanmaxxing per variant + per-variant Specificity regression → deliver 3-file artifact.
 
 This walkthrough covers Route A for cold-traffic subscription app with trial-start conversion. The Format-Checker REVISION_REQUIRED path + critic cycle-2 FAIL variant + Route B (called by campaign-plan) snippet are at the end. For the four short canonical examples (strong-retargeting / weak-retargeting / strong-cold / weak-cold with critic scorecards) see `references/examples.md` — this walkthrough is the operator's complete end-to-end trace.
 
@@ -229,36 +229,36 @@ Per-variant scorecards:
 | Specificity | 8 | Dr. Lin (named entity) + 6 minutes (UM detail) + 14-day trial = 3 specifics — meets floor |
 | Transmutation fit | 6 | AI UGC video is the right format for authority+mechanism (motion + voiceover for Dr. Lin) — adds production cost but tests video vs static |
 
-**Critic Total: 168/210 (PASS aggregate; every per-variant ≥49/70; every dim ≥6).** Proceed to terminal humanize per variant.
+**Critic Total: 168/210 (PASS aggregate; every per-variant ≥49/70; every dim ≥6).** Proceed to terminal humanmaxxing per variant.
 
 ---
 
-## Step 3 — Terminal Humanize per Variant + Specificity Regression
+## Step 3 — Terminal Humanmaxxing per Variant + Specificity Regression
 
-Orchestrator invokes `humanize` 3 times (hero / A / B) independently:
+Orchestrator invokes `humanmaxxing` 3 times (hero / A / B) independently:
 
-### 3a — Humanize Hero
+### 3a — Humanmaxxing Hero
 
 Pass: hero text + `content-type: "short-outbound"` + `audience-temp: cold` + `protected_tokens: ["Sarah K.", "8 lbs", "4 weeks", "14-day", "6 minutes", "MealKit", "mealkit.app/trial?utm=meta_q4"]`.
 
-Humanize returns:
+Humanmaxxing returns:
 - Primary text: "Sarah K. dropped 8 lbs in 4 weeks without thinking about meals. MealKit's AI plans your week from your goals, meals arrive prepped, ready in 6 minutes. Individual results vary. Start your 14-day free trial."
 - Headline: "8 lbs in 4 weeks, zero meal planning" (unchanged)
 - Description: "14-day trial. Cancel anytime." (unchanged)
 
 Net change: removed "from your goals — meals arrive" em-dash, replaced with comma. Compression near 0% (short-outbound calibration). All protected tokens preserved.
 
-**Specificity regression:** re-run critic Specificity dim only on humanized hero. Score: 9 (unchanged — all 5 specifics still present; Sarah K., 8 lbs, 4 weeks, 14-day, 6 minutes). URL `mealkit.app/trial?utm=meta_q4` preserved. PASS.
+**Specificity regression:** re-run critic Specificity dim only on humanmaxxed hero. Score: 9 (unchanged — all 5 specifics still present; Sarah K., 8 lbs, 4 weeks, 14-day, 6 minutes). URL `mealkit.app/trial?utm=meta_q4` preserved. PASS.
 
-### 3b — Humanize Variant A
+### 3b — Humanmaxxing Variant A
 
-Pass: variant A text + tokens. Humanize returns clean version (1 minor tone tweak; all 4 specifics preserved). Specificity regression: 9 (unchanged). PASS.
+Pass: variant A text + tokens. Humanmaxxing returns clean version (1 minor tone tweak; all 4 specifics preserved). Specificity regression: 9 (unchanged). PASS.
 
-### 3c — Humanize Variant B
+### 3c — Humanmaxxing Variant B
 
-Pass: variant B text + tokens. Humanize returns clean version. Specificity regression: 8 (unchanged). PASS.
+Pass: variant B text + tokens. Humanmaxxing returns clean version. Specificity regression: 8 (unchanged). PASS.
 
-All 3 variants pass regression → ship humanized versions.
+All 3 variants pass regression → ship humanmaxxed versions.
 
 ---
 
@@ -266,7 +266,7 @@ All 3 variants pass regression → ship humanized versions.
 
 Orchestrator writes 3 files to `.forsvn/artifacts/mkt/ad-copy/`:
 
-- **`cold-2026-05-18-mealkit-trial.md`** — hero + A + B humanized + frontmatter (`skill: write-ad`, `version: 1`, `date: 2026-05-18`, `status: done`, `network: meta`, `surface: meta-full-ad`, `audience_temp: cold`, `creative_format: dedicated`, `production_model: in-house`, `conversion_event: trial_start`, `critic_total: 168/210`, `critic_per_variant: {hero: 58/70, variant_a: 56/70, variant_b: 54/70}`)
+- **`cold-2026-05-18-mealkit-trial.md`** — hero + A + B humanmaxxed + frontmatter (`skill: write-ad`, `version: 1`, `date: 2026-05-18`, `status: done`, `network: meta`, `surface: meta-full-ad`, `audience_temp: cold`, `creative_format: dedicated`, `production_model: in-house`, `conversion_event: trial_start`, `critic_total: 168/210`, `critic_per_variant: {hero: 58/70, variant_a: 56/70, variant_b: 54/70}`)
 - **`cold-2026-05-18-mealkit-trial.rationale.md`** — angle + audience-temp framing + creative-format + production-model + anchor-proof per variant + anti-patterns avoided + Pre-Dispatch dimensions resolved
 - **`cold-2026-05-18-mealkit-trial.critic-score.md`** — 7-dim scorecards per variant + total + per-variant regression check + cycle count (1 critic cycle + 1 format-checker revise)
 
@@ -276,7 +276,7 @@ Orchestrator writes 3 files to `.forsvn/artifacts/mkt/ad-copy/`:
 
 Orchestrator delivers hero + A + B + rationale + format-checker REVISION_REQUIRED note (one revision absorbed). Scorecard not shown (no dim scored 6-7 except Variant A Transmutation fit = 5 — surface for operator awareness).
 
-**Completion Status: DONE** — passed critic + format-checker + humanize regression per variant, ready-to-publish.
+**Completion Status: DONE** — passed critic + format-checker + humanmaxxing regression per variant, ready-to-publish.
 
 ---
 

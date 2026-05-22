@@ -44,7 +44,7 @@ The cost of NOT running fresh-eyes is silent: bugs ship, get noticed weeks later
 ## When NOT to use this skill
 
 - **Code refactoring** → `clean-code`. fresh-eyes verifies quality; code-cleanup changes structure. Different shapes.
-- **Decision analysis with multiple perspectives** → `debate-panel`. fresh-eyes runs ONE reviewer (or 3 specialists in --thorough mode); agents-panel runs N agents debating.
+- **Decision analysis with multiple perspectives** → `debate-agents`. fresh-eyes runs ONE reviewer (or 3 specialists in --thorough mode); agents-panel runs N agents debating.
 - **Trivial changes** (typo fixes, log lines, config tweaks) — fresh-eyes overhead exceeds the benefit. Auto-trigger explicitly skips these.
 - **Read-only operations** — nothing to break, nothing to review.
 - **"Just do it quick"** — operator explicit signal to skip; honor it.
@@ -60,4 +60,4 @@ The cost of NOT running fresh-eyes is silent: bugs ship, get noticed weeks later
 - [`report-template.md`](report-template.md) [PROCEDURE] — output template with frontmatter contract
 - [`anti-patterns.md`](anti-patterns.md) [ANTI-PATTERN] — failure modes including the critic-on-critic ban
 - [`_shared/mode-resolver.md`](_shared/mode-resolver.md) [PROCEDURE] — fast/standard/deep semantics for this skill specifically
-- [`_shared/quality-feedback-protocol.md`](_shared/quality-feedback-protocol.md) — when to log critic overrides, repeated disagreements, post-humanize regressions
+- [`_shared/quality-feedback-protocol.md`](_shared/quality-feedback-protocol.md) — when to log critic overrides, repeated disagreements, post-humanmaxxing regressions

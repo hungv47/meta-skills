@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
-// manifest-sync — derive `.agents/manifest.json` from artifact frontmatter.
+// manifest-sync — derive `.forsvn/index/manifest.json` from artifact frontmatter.
 // See references/_shared/manifest-spec.md for the full contract.
 //
 // Usage:
@@ -16,10 +16,11 @@ const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-a
 const ROOT = realpathSync(ROOT_ARG);
 const ARTIFACT_ROOTS = [".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = ".forsvn/experience";
-const MANIFEST_PATH = join(ROOT, ".agents", "manifest.json");
-const ARTIFACT_INDEX_PATH = join(ROOT, ".agents", "artifact-index.md");
+const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
+const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
+const VALID_REVIEW_STATES = new Set(["pending", "approved", "rejected", "changes_requested", "not_required"]);
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
 const LIFECYCLE_SORT_ORDER = ["canonical", "loop", "loop-context", "learning", "anchor", "registry", "decision", "spec", "strategy", "execution", "evaluation", "pipeline", "snapshot", "archive", ""];
 
@@ -42,6 +43,10 @@ type ArtifactEntry = {
   upstream: string;
   downstream: string;
   decision_status: string;
+  review_state: string;
+  review_tool: string;
+  reviewed_at: string;
+  reviewer: string;
   size_bytes: number;
   frontmatter_present: boolean;
 };
@@ -101,7 +106,7 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/artifacts\/meta\/specs\//, "discover"],
     [/^\.forsvn\/artifacts\/meta\/sketches\/prioritize/, "prioritize"],
     [/^\.forsvn\/artifacts\/meta\/sketches\//, "discover"],
-    [/^\.forsvn\/artifacts\/meta\/decisions\//, "debate-panel"],
+    [/^\.forsvn\/artifacts\/meta\/decisions\//, "debate-agents"],
     [/^\.forsvn\/artifacts\/meta\/records\/skill-contracts/, "meta-system"],
     [/^\.forsvn\/artifacts\/meta\/records\/.*review-work/, "review-work"],
     [/^\.forsvn\/artifacts\/meta\/records\/.*clean-artifacts/, "clean-artifacts"],
@@ -174,13 +179,13 @@ function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   if (/^\.forsvn\/loops\/[^/]+\/strategy\//.test(rel)) return "strategy";
   if (/^\.forsvn\/loops\/[^/]+\/execution\//.test(rel)) return "execution";
   if (/^\.forsvn\/loops\/[^/]+\/evals\//.test(rel)) return "evaluation";
-  if (/^\.agents\/skill-artifacts\/meta\/decisions\//.test(rel)) return "decision";
-  if (/^\.agents\/skill-artifacts\/meta\/specs\//.test(rel)) return "spec";
-  if (/^\.agents\/skill-artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
-  if (/^\.agents\/skill-artifacts\/meta\/records\//.test(rel)) return "snapshot";
-  if (/^\.agents\/skill-artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
-  if (/^\.agents\/skill-artifacts\/\.archive\//.test(rel)) return "archive";
-  if (/^\.agents\/skill-artifacts\//.test(rel)) return "pipeline";
+  if (/^\.forsvn\/artifacts\/meta\/decisions\//.test(rel)) return "decision";
+  if (/^\.forsvn\/artifacts\/meta\/specs\//.test(rel)) return "spec";
+  if (/^\.forsvn\/artifacts\/meta\/records\/skill-contracts\.md$/.test(rel)) return "registry";
+  if (/^\.forsvn\/artifacts\/meta\/records\//.test(rel)) return "snapshot";
+  if (/^\.forsvn\/artifacts\/meta\/(roadmap|tasks)\.md$/.test(rel)) return "anchor";
+  if (/^\.forsvn\/artifacts\/\.archive\//.test(rel)) return "archive";
+  if (/^\.forsvn\/artifacts\//.test(rel)) return "pipeline";
   return "";
 }
 
@@ -212,8 +217,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
   const renderRows = (rows: Array<[string, ArtifactEntry]>): string => {
     if (rows.length === 0) return "_None._\n";
     return [
-      "| Artifact | Type | Why it exists | Use when | Status | Lineage |",
-      "|---|---|---|---|---|---|",
+      "| Artifact | Type | Why it exists | Use when | Status | Review | Lineage |",
+      "|---|---|---|---|---|---|---|",
       ...rows.map(([path, entry]) => {
         const why = entry.purpose || entry.summary || entry.title;
         const useWhen = entry.use_when || (entry.lifecycle === "snapshot" ? "Point-in-time audit trail; read only when investigating that run." : "");
@@ -225,7 +230,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
           entry.downstream ? `downstream: ${entry.downstream}` : "",
         ].filter(Boolean);
         const status = `${entry.status}${entry.stale ? " / stale" : ""}`;
-        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(lineageParts.join("; "))} |`;
+        const review = entry.review_state === "not_required" ? "—" : entry.review_state;
+        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(review)} | ${formatCell(lineageParts.join("; "))} |`;
       }),
     ].join("\n") + "\n";
   };
@@ -261,7 +267,7 @@ for (const base of ARTIFACT_ROOTS) {
   const root = join(ROOT, base);
   for (const file of walkMd(root)) {
     const rel = relative(ROOT, file).split("\\").join("/");
-    if (rel === ".agents/artifact-index.md") continue;
+    if (rel === ".forsvn/index/artifact-index.md") continue;
 
     // Skip README files anywhere — documentation, not artifacts.
     if (basename(rel).toLowerCase() === "readme.md") continue;
@@ -296,6 +302,19 @@ for (const base of ARTIFACT_ROOTS) {
     const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
     const summary = textField(fm, "summary");
 
+    // Review state — flat frontmatter (see references/reviewable-artifact-contract.md).
+    // Absent or unrecognized values normalize to "not_required" so legacy artifacts
+    // without a review layer still index cleanly.
+    const rawReviewState = textField(fm, "review_state");
+    const reviewState = !rawReviewState
+      ? "not_required"
+      : VALID_REVIEW_STATES.has(rawReviewState)
+        ? rawReviewState
+        : "not_required";
+    if (rawReviewState && !VALID_REVIEW_STATES.has(rawReviewState) && !isArchived) {
+      warnings.push(`${rel}: unknown review_state ${JSON.stringify(rawReviewState)} normalized to "not_required"`);
+    }
+
     artifacts[rel] = {
       produced_by: skill,
       produced_at: producedAt,
@@ -314,6 +333,10 @@ for (const base of ARTIFACT_ROOTS) {
       upstream: textField(fm, "upstream"),
       downstream: textField(fm, "downstream"),
       decision_status: textField(fm, "decision_status"),
+      review_state: reviewState,
+      review_tool: textField(fm, "review_tool"),
+      reviewed_at: textField(fm, "reviewed_at"),
+      reviewer: textField(fm, "reviewer"),
       size_bytes: stat.size,
       frontmatter_present: fm !== null,
     };
@@ -327,9 +350,9 @@ const manifest = {
   experience,
 };
 
-const manifestDir = join(ROOT, ".agents");
+const manifestDir = join(ROOT, ".forsvn", "index");
 if (existsSync(manifestDir) && lstatSync(manifestDir).isSymbolicLink()) {
-  throw new Error("Refusing to write through symlinked .agents/");
+  throw new Error("Refusing to write through symlinked .forsvn/index/");
 }
 if (!existsSync(manifestDir)) mkdirSync(manifestDir, { recursive: true });
 for (const target of [MANIFEST_PATH, ARTIFACT_INDEX_PATH]) {

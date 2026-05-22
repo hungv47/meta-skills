@@ -305,7 +305,7 @@ N. **CTA Block** — [purpose]
 1. `brief-graphic` — spec hero asset (slot: `hero-image`), then run image-gen against the produced prompt at `asset-slots/hero-image.prompt.md`
 2. `write-copy` — polish 3 headline candidates against 4-U + voice
 3. [implementation step — Claude Design / Figma / designer]
-4. `humanize` — final pass on any AI-generated body copy
+4. `humanmaxxing` — final pass on any AI-generated body copy
 5. [post-launch] collect analytics/recordings/experiment notes → run `evaluate-landing-page` inside the page's eval loop, then feed the resulting eval into next `lp-brief --rev=N`
 
 Page-scoped only. No project-level default is created.

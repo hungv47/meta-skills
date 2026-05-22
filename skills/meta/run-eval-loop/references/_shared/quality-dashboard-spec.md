@@ -25,7 +25,7 @@ Create the dashboard only when the Quality Feedback Protocol threshold is met:
 
 - a second eval-loop result exists in the project;
 - a critic override is logged;
-- a fresh-eyes review finds a repeated rubric or post-humanize regression issue;
+- a fresh-eyes review finds a repeated rubric or post-humanmaxxing regression issue;
 - the user asks for quality tracking.
 
 ## Schema
@@ -80,7 +80,7 @@ Update `skills[skill-name]` after:
 - a critic PASS/FAIL;
 - a `DONE_WITH_CONCERNS` delivery;
 - a fresh-eyes finding about a skill's output quality;
-- a post-humanize regression check that reverts or weakens an artifact.
+- a post-humanmaxxing regression check that reverts or weakens an artifact.
 
 Aggregate counts are cumulative. `avg_rewrite_cycles` and `avg_rubric_score` are recalculated from the new observation plus the existing aggregate. If the precise old sample count is unknown, keep the existing average and update only counts plus `dominant_fail_dimension`.
 

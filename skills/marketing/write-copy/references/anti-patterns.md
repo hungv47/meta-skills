@@ -76,7 +76,7 @@ load_class: ANTI-PATTERN
 
 ## Cross-Cutting Marketing-Stack Anti-Patterns
 
-These patterns apply across the marketing stack — copywriting is called by `plan-campaign` (Route C campaign touchpoints) and `brief-landing-page` (Route C per-section copy), and routes to `humanize` for terminal AI-pattern cleanup. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
+These patterns apply across the marketing stack — copywriting is called by `plan-campaign` (Route C campaign touchpoints) and `brief-landing-page` (Route C per-section copy), and routes to `humanmaxxing` for terminal AI-pattern cleanup. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
 
 ### Calling skill drops voice + audience context in Route C
 
@@ -90,11 +90,11 @@ These patterns apply across the marketing stack — copywriting is called by `pl
 
 **INSTEAD:** Pre-Dispatch warm-start scan reads `research/product-context.md` for voice adjectives. If absent AND no `brand/BRAND.md`, default to "clear, specific, human" + flag in pre-writing as `voice_source: default` (not brand-derived). NEEDS_CONTEXT escalation when voice + Unique Mechanism both unresolvable — recommend `create-brand` first. Do NOT silently fabricate brand voice.
 
-### humanize chain skipped for AI-sounding output
+### humanmaxxing chain skipped for AI-sounding output
 
-**Problem:** copywriting completes Route B → critic PASS → deliver. Output reads as AI-generated (em-dashes, "it's not just X, it's Y", rhetorical-question hooks). User asks "did this go through humanize?" — answer: no, the orchestrator skipped the terminal polish-chain because critic-agent's Authenticity filter scored a PASS.
+**Problem:** copywriting completes Route B → critic PASS → deliver. Output reads as AI-generated (em-dashes, "it's not just X, it's Y", rhetorical-question hooks). User asks "did this go through humanmaxxing?" — answer: no, the orchestrator skipped the terminal polish-chain because critic-agent's Authenticity filter scored a PASS.
 
-**INSTEAD:** copywriting's terminal pass SHOULD auto-route to `humanize` for EN-market copy that's persuasion-heavy (landing page, ad copy, sales email). The Authenticity filter catches some AI patterns but is not equivalent to humanize's 47-pattern catalog. For TOF / lead-magnet / sales-page copy: terminal humanize is recommended; copywriting's "Next Step: Run humanize to refine voice and compress" is the contract pointer. Sibling pattern to `write-outreach` which calls humanize as terminal pass with `protected_tokens`.
+**INSTEAD:** copywriting's terminal pass SHOULD auto-route to `humanmaxxing` for EN-market copy that's persuasion-heavy (landing page, ad copy, sales email). The Authenticity filter catches some AI patterns but is not equivalent to humanmaxxing's 47-pattern catalog. For TOF / lead-magnet / sales-page copy: terminal humanmaxxing is recommended; copywriting's "Next Step: Run humanmaxxing to refine voice and compress" is the contract pointer. Sibling pattern to `write-outreach` which calls humanmaxxing as terminal pass with `protected_tokens`.
 
 ### Cross-stack contract drift (Artifact Template schema)
 

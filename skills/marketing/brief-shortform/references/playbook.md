@@ -49,7 +49,7 @@ Brand mode and market drive the voice and polish chain; they're not cosmetic. Fo
 
 **Brand mode is exclusive.** founder OR company per brief — no hybrid. User picks per-invocation. Voice and polish chain are derived from brand mode, not configurable mid-brief.
 
-**Polish chain auto-routes by (market, brand_mode).** vn-tone for VN founder (spoken-line + full body) and VN company (full body); humanize for EN founder (spoken-line); none for EN company. Other markets flag `polish-chain-extension-needed`.
+**Polish chain auto-routes by (market, brand_mode).** vn-tone for VN founder (spoken-line + full body) and VN company (full body); humanmaxxing for EN founder (spoken-line); none for EN company. Other markets flag `polish-chain-extension-needed`.
 
 ## Principles
 

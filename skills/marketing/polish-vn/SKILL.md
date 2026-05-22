@@ -1,6 +1,6 @@
 ---
 name: polish-vn
-description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing) — fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and corporate translationese. Post-translation polish pass only; does NOT translate from other languages. Use on translated Vietnamese copy that reads stiff or foreign. Not for tone work on English or other languages (use humanize), or writing new Vietnamese copy from scratch (use write-copy)."
+description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing) — fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and corporate translationese. Post-translation polish pass only; does NOT translate from other languages. Use on translated Vietnamese copy that reads stiff or foreign. Not for tone work on English or other languages (use humanmaxxing), or writing new Vietnamese copy from scratch (use write-copy)."
 argument-hint: "[vietnamese text or file path] [--register bao-chi|semi-casual|bro|pop-marketing]"
 allowed-tools: Read Grep Glob Bash WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates — Read First
 
-1. **Input must be Vietnamese.** This skill does not translate. If the input is English or any other language, STOP and tell the user to translate first (using `humanize` if it needs tone work in source language, or their preferred MT).
+1. **Input must be Vietnamese.** This skill does not translate. If the input is English or any other language, STOP and tell the user to translate first (using `humanmaxxing` if it needs tone work in source language, or their preferred MT).
 2. **Target register must be specified.** One of `bao-chi` / `semi-casual` / `bro` / `pop-marketing`. If ambiguous from context, ask the user before dispatching.
 3. **Do NOT change facts.** Polishing means form, not content. Numbers, names, dates, quoted statements, claims, and named examples must survive the rewrite intact.
 4. **Register is pair-locked.** The polisher picks one pronoun pair (self ↔ reader) at the start and holds it to the end. Drift is the #1 translation giveaway — catching it is the critic's primary gate.

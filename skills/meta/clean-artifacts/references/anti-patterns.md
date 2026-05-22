@@ -27,7 +27,7 @@ load_class: ANTI-PATTERN
 |---|---|---|
 | Skipping the critic gate to save time | The whole point of the skill is the gate. Without it, this is `rm -rf` with extra ceremony. | The gate is mandatory; delete operations bypass it only when escalating to operator. |
 | Deleting instead of moving | "Reversible" means the operator can recover from a mistake without git surgery. | MOVE to dated archive. Always. |
-| Operating without `.agents/manifest.json` fresh | Stale manifest classifies wrong. | Run `bun scripts/manifest-sync.ts` first if manifest mtime > 1 day. |
+| Operating without `.forsvn/index/manifest.json` fresh | Stale manifest classifies wrong. | Run `bun scripts/manifest-sync.ts` first if manifest mtime > 1 day. |
 | Recursing into submodule dirs | Each submodule is its own repo with its own cadence; this skill operates at one repo level only. | Read `.gitmodules`; skip those paths. |
 | Reporting with no per-file rationale | Operator can't audit a "trust me, this is stale" list. | Every candidate gets class + last-mod + bytes + reference count. |
 | Walking with `find -L` | Symlinks may point outside scope or into `.git/` | Plain `find` — never follow links. |

@@ -24,7 +24,7 @@ metadata:
 ## When NOT To Use
 
 - You already know the skill — call it directly. `/forsvn` is the discovery surface, not a gate.
-- You want a deep multi-perspective debate — use `/debate-panel`.
+- You want a deep multi-perspective debate — use `/debate-agents`.
 - You want a full scoping conversation — use `/discover`.
 
 ## Operating Contract
@@ -77,10 +77,10 @@ Parse the user's ask against the taxonomy. Pick exactly one of these intent clas
 | User says | Intent class | Route |
 |---|---|---|
 | "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "funnel", "targets" | research | leaf via [`references/chains/research.md`](references/chains/research.md) |
-| "brand", "campaign", "copy", "headline", "landing page", "LP", "ad", "SEO", "video", "TikTok", "reel", "short", "cold email", "outreach", "humanize", "VN tone" | marketing | leaf via [`references/chains/marketing.md`](references/chains/marketing.md) |
+| "brand", "campaign", "copy", "headline", "landing page", "LP", "ad", "SEO", "video", "TikTok", "reel", "short", "cold email", "outreach", "humanize", "humanmax", "VN tone" | marketing | leaf via [`references/chains/marketing.md`](references/chains/marketing.md) |
 | "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | leaf via [`references/chains/product.md`](references/chains/product.md) |
 | "scope this", "clarify", "what should we build", "requirements unclear" | scope | `/discover` |
-| "debate this", "multiple perspectives", "poll", "consensus" | debate | `/debate-panel` |
+| "debate this", "multiple perspectives", "poll", "consensus" | debate | `/debate-agents` |
 | "decompose", "task list", "break down", "implementation order" | decompose | `/breakdown-tasks` |
 | "review my work", "second opinion", "did I miss anything" | review | `/review-work` |
 | "improvement loop", "track metric", "experiment ledger" | loop | `/run-eval-loop` |

@@ -102,7 +102,7 @@ After Pre-Dispatch resolves, compile and pass to every agent:
 
 ## Hard-block conditions
 
-- **Input is not Vietnamese.** Stop and tell user to translate first (using `humanize` for source-language tone work, then their preferred MT). Critical Gate 1. NEEDS_CONTEXT verdict.
+- **Input is not Vietnamese.** Stop and tell user to translate first (using `humanmaxxing` for source-language tone work, then their preferred MT). Critical Gate 1. NEEDS_CONTEXT verdict.
 - **Target register requested = `bro` but subvariant missing.** Re-ask Q3 (bro-otofun / bro-voz). Cannot polish bro without subvariant — they're non-interchangeable speech communities.
 - **Target register = "hybrid" or any non-canonical value.** Reject and re-ask Q1 (one of the 4 canonical registers).
 - **Polishing factually broken passages.** If diagnostic agent flags the text as containing untranslatable claims or structural problems beyond register polish (e.g., garbled translation that lost the meaning), BLOCKED verdict — user fixes upstream first.

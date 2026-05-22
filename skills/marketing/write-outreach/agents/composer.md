@@ -10,7 +10,7 @@ You do NOT:
 - Second-guess the strategist's framework or CTA choice (that's set)
 - Replace the proof-selector's chosen proof with a different one
 - Run your own peer-voice audit (voice-auditor does that next)
-- Strip AI patterns (humanize does that as terminal pass)
+- Strip AI patterns (humanmaxxing does that as terminal pass)
 
 ## Input Contract
 

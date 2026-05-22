@@ -72,7 +72,7 @@ Auto-fail: all variants use the same opening structure, proof anchor, or angle a
 
 ## Humanize Regression
 
-Use when a draft passes through a terminal humanize step.
+Use when a draft passes through a terminal humanmaxxing step.
 
 | Score | Standard |
 |---|---|

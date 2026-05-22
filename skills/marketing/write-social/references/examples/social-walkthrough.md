@@ -203,9 +203,9 @@ polish_chain_applied: none
 
 ## 7. Polish Chain Decision
 
-Operator did not pass `--polish-chain humanize` or `--polish-chain vn-tone`. Default `none` applies. Artifact ships as-is. Frontmatter `polish_chain_applied: none`.
+Operator did not pass `--polish-chain humanmaxxing` or `--polish-chain vn-tone`. Default `none` applies. Artifact ships as-is. Frontmatter `polish_chain_applied: none`.
 
-If operator had passed `--polish-chain humanize`, orchestrator would invoke `humanize` skill with the artifact path. humanize would rewrite Body + CTA (preserving Hook variants A + B for A/B comparability), update frontmatter to `polish_chain_applied: humanize`, append `## Polish chain notes` section summarizing changes.
+If operator had passed `--polish-chain humanmaxxing`, orchestrator would invoke `humanmaxxing` skill with the artifact path. humanmaxxing would rewrite Body + CTA (preserving Hook variants A + B for A/B comparability), update frontmatter to `polish_chain_applied: humanmaxxing`, append `## Polish chain notes` section summarizing changes.
 
 ---
 
@@ -221,5 +221,5 @@ Status: **DONE**. Critic verdict `pass` (44/50, no individual dimension < 4). va
 - **Tier 1 archetype + algorithm signal pairing** as the copywriter's craft decision (not a formula — the Founder Receipt + Save rate combination is specific to founder voice + LinkedIn audience; a generic agent would pick a Tier 2 archetype and miss the cohort callout).
 - **Format-check as gate, not advisory** — every rule explicitly PASSes before critic sees the draft. No revision cycle needed in this walkthrough (clean copywriter output) but the rule is "max 1 revision" not "zero revisions."
 - **Critic discrimination test** runs every time — the weak-brief estimation isn't optional. If both weak and strong landed in the same verdict zone, critic would flag rubric integrity, NOT silently ship a passing score.
-- **Polish chain decision is operator-flag-driven** — orchestrator does NOT auto-route to humanize / vn-tone based on critic verdict. Default is `none` unless flag supplied.
+- **Polish chain decision is operator-flag-driven** — orchestrator does NOT auto-route to humanmaxxing / vn-tone based on critic verdict. Default is `none` unless flag supplied.
 - **Experience write-back is conditional** — skip when canonical sources (brand/BRAND.md, research/icp-research.md) already declare the answer. Don't overwrite icp-research-populated audience with a one-line Cold Start fallback.

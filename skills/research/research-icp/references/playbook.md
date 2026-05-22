@@ -8,7 +8,7 @@
 
 > **"Who exactly are we talking to and what keeps them up at night?"**
 
-icp-research is Communication Step 1 of 4 and the foundational skill across all 4 stacks. Its single job: turn a fuzzy market description into a defensible audience profile — 1-2 personas with named demographics, evidenced pain, mapped habitats, decision-psychology specifics — that 13+ downstream skills (campaign-plan, brand-system, copywriting, lp-brief, ad-copy, short-form-research, design-brief, humanize, seo, social-copy, cold-outreach, vn-tone, ...) read for audience context.
+icp-research is Communication Step 1 of 4 and the foundational skill across all 4 stacks. Its single job: turn a fuzzy market description into a defensible audience profile — 1-2 personas with named demographics, evidenced pain, mapped habitats, decision-psychology specifics — that 13+ downstream skills (campaign-plan, brand-system, copywriting, lp-brief, ad-copy, short-form-research, design-brief, humanmaxxing, seo, social-copy, cold-outreach, vn-tone, ...) read for audience context.
 
 ---
 
@@ -64,7 +64,7 @@ The body Quality Gate checklist (6 bullets in SKILL.md) is a body-load reminder 
 
 icp-research creates **two canonical artifacts** that 13+ downstream skills read:
 
-1. **`research/product-context.md`** — the cross-stack canonical record (product, buyer, problem, differentiator, social proof, model, voice, primary CTA, canonical terminology). Created on first run, updated on re-run. Consumed by: campaign-plan, brand-system, copywriting, humanize, lp-brief, design-brief, ad-copy, cold-outreach, vn-tone, social-copy, seo, short-form-research, short-form-brief.
+1. **`research/product-context.md`** — the cross-stack canonical record (product, buyer, problem, differentiator, social proof, model, voice, primary CTA, canonical terminology). Created on first run, updated on re-run. Consumed by: campaign-plan, brand-system, copywriting, humanmaxxing, lp-brief, design-brief, ad-copy, cold-outreach, vn-tone, social-copy, seo, short-form-research, short-form-brief.
 2. **`research/icp-research.md`** — the audience profile (1-2 personas with pain + habitat + decision psychology + emotional drivers + red flags). Consumed by: campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach.
 
 Both are **canonical** lifecycle (top-level `research/` folder, not pipeline output). Edited in place on re-run; versioned via `icp-research.v[N].md` rename.

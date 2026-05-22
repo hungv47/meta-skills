@@ -39,7 +39,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 6. Any per-asset eval artifacts in the loop (`evaluate-ad` / `evaluate-content` / `evaluate-landing-page` cycle files) — context only; never re-scored
 7. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`
 
-If `.agents/manifest.json` is stale or missing, run:
+If `.forsvn/index/manifest.json` is stale or missing, run:
 
 ```bash
 bun scripts/manifest-sync.ts

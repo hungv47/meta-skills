@@ -1,7 +1,7 @@
 ---
 name: write-social
-description: "Generates platform-native social copy (hooks, body, CTA, format spec) for tiktok, reels, shorts, x, linkedin. Enforces char/word limits, CTA placement vs algorithm truncation, and hook-archetype compliance. Use to draft organic social posts and hook variants for one platform per run. Not for paid-ad copy (use write-ad), landing-page copy (use write-copy), video briefs with storyboards (use brief-shortform), or long-form articles. Vietnamese polish: see polish-vn. AI-tell cleanup: see humanize."
-argument-hint: "<topic-or-brief-path> <platform> [--variants N] [--polish-chain humanize|vn-tone|none] [--goal awareness|engagement|click|save|share]"
+description: "Generates platform-native social copy (hooks, body, CTA, format spec) for tiktok, reels, shorts, x, linkedin. Enforces char/word limits, CTA placement vs algorithm truncation, and hook-archetype compliance. Use to draft organic social posts and hook variants for one platform per run. Not for paid-ad copy (use write-ad), landing-page copy (use write-copy), video briefs with storyboards (use brief-shortform), or long-form articles. Vietnamese polish: see polish-vn. AI-tell cleanup: see humanmaxxing."
+argument-hint: "<topic-or-brief-path> <platform> [--variants N] [--polish-chain humanmaxxing|vn-tone|none] [--goal awareness|engagement|click|save|share]"
 allowed-tools: Read Write Bash Grep Glob
 metadata:
   version: "1.0.0"
@@ -35,7 +35,7 @@ Non-negotiable constraints before dispatching any agent:
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK].
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: standard`; `--fast` collapses format-check revision loop to ZERO (single-pass; hard-cap violation → FORMAT_FAIL immediately); `--deep` bumps revision loop to MAX 2 cycles. Critic gate is single-pass at baseline (no rewrite loop even under --deep). **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize hallucinating audience or brand_mode (Anti-Pattern #5 floor; safety gates supersede mode-resolver downgrade).
-1. Read `.agents/manifest.json` — find any prior `.forsvn/artifacts/mkt/copy/[platform]-*-[slug].md` for this topic + platform (variant exploration signal) and any `brief-shortform` or `plan-campaign` artifact this run might follow.
+1. Read `.forsvn/index/manifest.json` — find any prior `.forsvn/artifacts/mkt/copy/[platform]-*-[slug].md` for this topic + platform (variant exploration signal) and any `brief-shortform` or `plan-campaign` artifact this run might follow.
 2. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — auto-scan first (`research/icp-research.md` + `brand/BRAND.md` + `experience/`), then Warm/Cold Start. 5-question Cold Start (platform / topic-or-brief / brand-mode / audience / goal), Write-back map (Q1 routing-only; Q2→content.md; Q3→brand.md if novel; Q4→audience.md if icp-research absent; Q5→goals.md), and Cold-Start-under-`--fast` floor all there.
 
 ---
@@ -82,14 +82,14 @@ Critic agent verifies before delivery against the 5-dimension rubric in [`refere
   | `research/icp-research.md` | icp-research (hungv47/research-skills) | Resolves audience dimension; gives critic richer voice/brand-mode signal |
   | `research/product-context.md` | icp-research (hungv47/research-skills) | Gives copywriter primary CTA + canonical terminology |
 
-- **Consumed by:** `humanize` + `polish-vn` (polish chain — read `## Body` + `## CTA`, rewrite in place, preserve Hook variants for A/B comparability, update `polish_chain_applied`); `run-eval-loop` (frontmatter `critic_score` + `critic_verdict` + `goal` + `platform` → `results.tsv`); operator publish workflow (Hook variants + Body + CTA + Format spec + Critic verdict + Anti-patterns triggered)
+- **Consumed by:** `humanmaxxing` + `polish-vn` (polish chain — read `## Body` + `## CTA`, rewrite in place, preserve Hook variants for A/B comparability, update `polish_chain_applied`); `run-eval-loop` (frontmatter `critic_score` + `critic_verdict` + `goal` + `platform` → `results.tsv`); operator publish workflow (Hook variants + Body + CTA + Format spec + Critic verdict + Anti-patterns triggered)
 - **Cross-stack OUTPUT contract:** 13-field frontmatter schema + 6-section body schema + 5-dimension critic verdict table + Anti-patterns triggered listing convention are all load-bearing — schema changes require atomic update of polish-chain + eval-loop + operator-workflow consumers (per `anti-patterns.md` row "Cross-stack contract drift")
 
 ---
 
 ## Chain Position
 
-**Previous:** `brief-shortform` (when brief locks platform/hook/audience/goal) OR `plan-campaign` (when campaign declares social cadence) OR none (greenfield with Cold Start) | **Next:** `humanize` / `polish-vn` (polish chain, optional) OR direct operator publish.
+**Previous:** `brief-shortform` (when brief locks platform/hook/audience/goal) OR `plan-campaign` (when campaign declares social cadence) OR none (greenfield with Cold Start) | **Next:** `humanmaxxing` / `polish-vn` (polish chain, optional) OR direct operator publish.
 
 **Horizontal role:** invoked at any stage of the marketing pipeline. NOT foundational (unlike icp-research / brand-system) — it's a leaf-node producer.
 
@@ -101,7 +101,7 @@ Critic agent verifies before delivery against the 5-dimension rubric in [`refere
 - Landing-page copy, headlines, taglines, section copy → `write-copy`
 - LinkedIn articles, Substack posts, blog content (long-form) → `write-copy` or `optimize-seo`
 - Vietnamese-market polish → `polish-vn` (terminal pass)
-- AI-pattern stripping post-generation → `humanize` (terminal pass)
+- AI-pattern stripping post-generation → `humanmaxxing` (terminal pass)
 
 ---
 

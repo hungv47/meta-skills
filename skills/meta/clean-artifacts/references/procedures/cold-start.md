@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Cold-Start Question Bundle
 
-**Load when:** scope, mode, or excludes are missing from invocation AND not resolvable from `.agents/manifest.json` / `.forsvn/experience/technical.md`. The orchestrator emits this single bundled prompt and waits for one round-trip per [`../../_shared/pre-dispatch-protocol.md`](../../_shared/pre-dispatch-protocol.md).
+**Load when:** scope, mode, or excludes are missing from invocation AND not resolvable from `.forsvn/index/manifest.json` / `.forsvn/experience/technical.md`. The orchestrator emits this single bundled prompt and waits for one round-trip per [`../../_shared/pre-dispatch-protocol.md`](../../_shared/pre-dispatch-protocol.md).
 
 ---
 

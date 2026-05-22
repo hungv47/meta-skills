@@ -81,7 +81,7 @@
       ],
       "minScore": 6
     },
-    "debate-panel": {
+    "debate-agents": {
       "phrases": [
         "debate this",
         "get perspectives",
@@ -917,7 +917,7 @@
       ],
       "minScore": 6
     },
-    "humanize": {
+    "humanmaxxing": {
       "phrases": [
         "sounds like ai",
         "too robotic",
@@ -937,6 +937,7 @@
         ]
       ],
       "anyOf": [
+        "humanmaxxing",
         "humanize",
         "robotic",
         "ai-sounding",

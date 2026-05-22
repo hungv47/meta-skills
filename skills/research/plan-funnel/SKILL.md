@@ -36,7 +36,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: standard`; `--fast` forces Route C (Fast Bump) if conditions hold, otherwise Route B with critic-gate skipped. **Hard gate (Critical Gates above) STILL enforced under `--fast`** — safety gates supersede mode-resolver downgrade.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/targets-*.md`).
-2. Read `.agents/manifest.json` — find the matching `prioritize-*.md` (required) and `targets-*.md` (prior, if any). Check freshness (>30 days surfaces a warning).
+2. Read `.forsvn/index/manifest.json` — find the matching `prioritize-*.md` (required) and `targets-*.md` (prior, if any). Check freshness (>30 days surfaces a warning).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — hard-gate enforcement, read order, Cold/Warm Start prompts, staleness check, growth-motion identification, write-back map all there.
 
 ---

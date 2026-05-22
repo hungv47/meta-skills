@@ -60,11 +60,11 @@ Register is pair-locked. The polisher picks one pronoun pair (self ↔ reader) a
 
 ## When NOT to use this skill
 
-- **Source text is in English.** vn-tone does not translate. Run `humanize` on the English first if it needs AI-pattern removal, translate with your preferred MT (or use `write-copy` with VN voice directives for new VN copy), then run vn-tone on the result.
+- **Source text is in English.** vn-tone does not translate. Run `humanmaxxing` on the English first if it needs AI-pattern removal, translate with your preferred MT (or use `write-copy` with VN voice directives for new VN copy), then run vn-tone on the result.
 - **Source text is in any other non-Vietnamese language.** Same as above — translate first.
 - **New Vietnamese copy from scratch.** Use `write-copy` with VN voice directives. vn-tone polishes existing VN text; it does not generate.
 - **A/B variants of already-polished text.** Use `write-copy` variant agent. vn-tone is a single-pass polish, not a multi-variant generator.
-- **English tone work.** Use `humanize` for EN AI-pattern stripping and voice injection. humanize is to EN what vn-tone is to VN.
+- **English tone work.** Use `humanmaxxing` for EN AI-pattern stripping and voice injection. humanmaxxing is to EN what vn-tone is to VN.
 - **Mixed-language text (Vinglish, code-switching).** Edge case — flag to user. Default behavior is to polish the VN portions and preserve the EN portions as loanwords (per loanword principle); if the user wants the EN portions converted, that's a translation job, not a polish job.
 
 ## History / origin

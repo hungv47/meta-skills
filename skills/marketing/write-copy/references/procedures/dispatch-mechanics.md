@@ -226,7 +226,7 @@ Horizontal — called by `plan-campaign`, `brief-landing-page`. Can run standalo
 
 ### Skill Deference
 
-- **Content reads as AI-generated?** → Run `humanize` after (terminal polish-chain auto-route)
+- **Content reads as AI-generated?** → Run `humanmaxxing` after (terminal polish-chain auto-route)
 - **Optimizing for search/AI citations?** → Coordinate with `optimize-seo`
 - **Need page architecture (not just copy)?** → `brief-landing-page` first, then copywriting per section
 - **Need full campaign orchestration?** → `plan-campaign` first, then copywriting per touchpoint

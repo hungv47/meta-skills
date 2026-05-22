@@ -15,7 +15,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
                                 write-outreach / brief-shortform / write-ad /
                                 write-social / brief-graphic
                               ↓
-                              humanize / polish-vn (terminal polish)
+                              humanmaxxing / polish-vn (terminal polish)
                               evaluate-landing-page (post-launch, in eval loop)
 ```
 
@@ -36,7 +36,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 | "cold email", "LinkedIn DM", "outbound", "proposal" | `/write-outreach` (hard-gated on ICP) |
 | "tweet", "linkedin post", "tiktok caption", "social post" | `/write-social` (single-platform per invocation) |
 | "carousel", "thumbnail", "OG card", "banner", "asset brief" | `/brief-graphic` |
-| "humanize this", "sounds AI-generated", "strip the slop" | `/humanize` |
+| "humanize this", "humanmax this", "sounds AI-generated", "strip the slop" | `/humanmaxxing` |
 | "Vietnamese tone", "polish VN" | `/polish-vn` |
 | "scope this", "clarify requirements" | `/discover` |
 
@@ -54,13 +54,13 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 10. **Outbound intent** → `/write-outreach`. Hard requires `research/icp-research.md`.
 11. **Social-post intent** → `/write-social`. Single-platform per invocation; ask which platform.
 12. **Asset-design intent** → `/brief-graphic`. Per-asset (carousel/thumbnail/banner/OG card).
-13. **Text-polish intent** → `/humanize`. Trivial, no gate.
+13. **Text-polish intent** → `/humanmaxxing`. Trivial, no gate.
 14. **VN-polish intent** → `/polish-vn`. Post-translation only.
 15. **No clear intent + everything done** → marketing stack exhausted. Suggest crossing to product or research chain.
 16. **Stale brand:** include warning, offer refresh, route forward if operator chooses.
 17. **Skip-rules:** "I just want X" without upstream → respect it, route, include the quality-drop caveat.
 18. **Wrap-around:** `/brief-landing-page` feeding a launch, `/write-ad` feeding a paid campaign → append `(optional /review-work after)`.
-19. **Polish chain mention:** if producing copy AND `brand_mode=founder` or market includes Vietnamese → mention `/humanize` or `/polish-vn` as terminal step.
+19. **Polish chain mention:** if producing copy AND `brand_mode=founder` or market includes Vietnamese → mention `/humanmaxxing` or `/polish-vn` as terminal step.
 20. **Ambiguity:** intent matches 2+ buckets → propose 2 options with rationale, let operator pick.
 
 ## Anti-patterns
@@ -68,6 +68,6 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 - Routing past missing ICP / brand.
 - Recommending hard-gated skills (`/write-ad`, `/write-outreach`, `/evaluate-landing-page`) without upstream.
 - Conflating `/brief-landing-page` (pre-launch) vs `/evaluate-landing-page` (post-launch eval).
-- Conflating `/write-copy` (generation) vs `/humanize` (polish).
+- Conflating `/write-copy` (generation) vs `/humanmaxxing` (polish).
 - Recommending `/write-social` as multi-platform.
 - Recommending `/write-ad` without asking audience-temperature.

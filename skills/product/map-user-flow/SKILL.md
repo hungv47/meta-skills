@@ -50,7 +50,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** — this skill is `budget: standard`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) applies the canonical heuristics (≤3 sentences / single-topic clear-scope / multi-artifact). `--fast` flag forces Single-Agent Fallback (multi-agent unavailable also routes there). **Safety gates supersede `--fast`:** the 7 Critical Gates + mandatory platforms+surfaces gate fire on every run, regardless of mode.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory.
-2. Read `.agents/manifest.json` for prior flow files at this slug + cross-flow staleness.
+2. Read `.forsvn/index/manifest.json` for prior flow files at this slug + cross-flow staleness.
 3. Read `.forsvn/experience/{audience,technical,goals}.md` for product, audience, and platform history.
 
 ## Quality Gate

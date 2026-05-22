@@ -1,6 +1,6 @@
 # Polish Chain
 
-Language polish routing matrix. Applied as Layer 2 post-critic step — runs vn-tone or humanize on the spoken-line section based on (market, brand_mode).
+Language polish routing matrix. Applied as Layer 2 post-critic step — runs vn-tone or humanmaxxing on the spoken-line section based on (market, brand_mode).
 
 ---
 
@@ -10,7 +10,7 @@ Language polish routing matrix. Applied as Layer 2 post-critic step — runs vn-
 |---|---|---|---|
 | VN | founder | `polish-vn` | spoken-line section + full body |
 | VN | company | `polish-vn` | full body |
-| EN | founder | `humanize` | spoken-line section |
+| EN | founder | `humanmaxxing` | spoken-line section |
 | EN | company | none | n/a — default brand voice |
 | Other | any | flag `polish-chain-extension-needed` | n/a |
 
@@ -33,9 +33,9 @@ The polish chain applies to text that will be heard or read aloud:
 After critic-agent PASSes the brief:
 
 1. Orchestrator extracts the spoken-line section content
-2. Invokes the relevant polish skill (`polish-vn` or `humanize`) on that content
+2. Invokes the relevant polish skill (`polish-vn` or `humanmaxxing`) on that content
 3. Replaces the spoken-line section in the brief with the polished version
-4. Brief is delivered with `polish_chain_applied: [vn-tone | humanize | none]` in frontmatter
+4. Brief is delivered with `polish_chain_applied: [vn-tone | humanmaxxing | none]` in frontmatter
 
 The polish chain does NOT re-dispatch craft agents. It's a finishing pass over already-PASSed content.
 
@@ -50,7 +50,7 @@ EN founder VO scripts that read AI-cadenced are the most common failure mode for
 - "It's not X — it's Y" formula
 - Smart-quotes inserted by tooling
 
-`humanize` strips these patterns specifically for the spoken-line section. The brief's caption and other text can stay in default voice; only the spoken layer needs the polish.
+`humanmaxxing` strips these patterns specifically for the spoken-line section. The brief's caption and other text can stay in default voice; only the spoken layer needs the polish.
 
 ---
 

@@ -15,7 +15,7 @@ Meta is not a linear pipeline — it's a set of process tools wrapped around dom
 ```
 discover           — scope unclear, conversation needed
 breakdown-tasks    — spec/architecture done, need a buildable task list
-debate-panel       — complex decision, multiple perspectives wanted
+debate-agents       — complex decision, multiple perspectives wanted
 run-eval-loop      — measurable initiative needs strategy → execution → eval workspace
 review-work        — post-implementation independent review
 clean-artifacts    — .forsvn/ artifact tree needs grooming
@@ -27,7 +27,7 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 |---|---|
 | "scope this", "clarify", "what should we build", "requirements unclear" | `/discover` |
 | "decompose", "task list", "break down", "implementation order" | `/breakdown-tasks` |
-| "debate this", "multiple perspectives", "poll", "consensus" | `/debate-panel` |
+| "debate this", "multiple perspectives", "poll", "consensus" | `/debate-agents` |
 | "review my work", "second opinion", "did I miss anything" | `/review-work` |
 | "improvement loop", "track metric", "experiment ledger" | `/run-eval-loop` |
 | "groom artifacts", "clean up .forsvn", "audit the artifact tree" | `/clean-artifacts` |

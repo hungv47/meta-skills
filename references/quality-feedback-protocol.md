@@ -9,7 +9,7 @@ Apply this protocol after:
 - An eval-loop cycle writes a `keep`, `discard`, `watch`, or `blocked` result.
 - A critic gate is overridden by the operator.
 - A fresh-eyes review finds a repeatable rubric gap.
-- A humanize pass is used on a skill-produced artifact that still has named entities, claims, URLs, numbers, or formatting constraints.
+- A humanmaxxing pass is used on a skill-produced artifact that still has named entities, claims, URLs, numbers, or formatting constraints.
 - A research artifact has been consumed by multiple downstream loops or contradicted by downstream evidence.
 
 ## Learning Promotion To Experience
@@ -97,7 +97,7 @@ Create the dashboard when any of these thresholds are met:
 
 - a second eval-loop result exists in the project;
 - a critic override is logged;
-- a fresh-eyes review finds a repeated rubric or post-humanize regression issue;
+- a fresh-eyes review finds a repeated rubric or post-humanmaxxing regression issue;
 - the user asks for quality tracking.
 
 After creation, update it on every eval-loop result, critic override, and fresh-eyes report that changes a skill/rubric/loop quality signal. Do not create it for a single isolated successful run with no quality finding.
@@ -121,7 +121,7 @@ Example: if `evaluate-landing-page` repeatedly finds that `brief-landing-page` p
 
 ## Post-Humanize Regression Check
 
-Any skill that runs `humanize` on a generated artifact must preserve meaning before accepting the rewrite.
+Any skill that runs `humanmaxxing` on a generated artifact must preserve meaning before accepting the rewrite.
 
 Required checks:
 
@@ -129,9 +129,9 @@ Required checks:
 2. Specificity did not drop: concrete mechanisms, proof points, and audience details remain present.
 3. CTA and deliverable format are unchanged.
 4. Compression did not remove mandatory caveats or substantiation.
-5. If the original had a critic score or rubric pass, the humanized output still satisfies the same pass/fail gate.
+5. If the original had a critic score or rubric pass, the humanmaxxed output still satisfies the same pass/fail gate.
 
-If a protected token is missing, rerun humanize with protected-token instructions or revert that section. Never accept a smoother rewrite that weakens the underlying argument or factual contract.
+If a protected token is missing, rerun humanmaxxing with protected-token instructions or revert that section. Never accept a smoother rewrite that weakens the underlying argument or factual contract.
 
 ## Research Artifact Evaluation
 

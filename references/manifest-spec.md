@@ -1,6 +1,6 @@
 # Manifest Spec
 
-> Canonical spec for `.agents/manifest.json` — the derived state index that lets every skill in the stack discover, evaluate, and collaborate around artifacts without re-scanning the filesystem. Every skill that produces or consumes artifacts points here.
+> Canonical spec for `.forsvn/index/manifest.json` — the derived state index that lets every skill in the stack discover, evaluate, and collaborate around artifacts without re-scanning the filesystem. Every skill that produces or consumes artifacts points here.
 
 ## Purpose
 
@@ -10,13 +10,13 @@ Three failure modes this spec prevents:
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.agents/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.agents/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/{meta,mkt,product,research}/`, measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
+Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/{meta,mkt,product,research}/`, measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
 ---
 
-## The Substrate: `.agents/manifest.json`
+## The Substrate: `.forsvn/index/manifest.json`
 
 Single JSON file at project root. Cheap to read (<50KB at scale), trivially parseable, machine-friendly. Schema:
 
@@ -43,6 +43,10 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "upstream": "operator interview, product source material",
       "downstream": "brand-system, campaign-plan, copywriting, system-architecture",
       "decision_status": "",
+      "review_state": "approved",
+      "review_tool": "roughdraft",
+      "reviewed_at": "2026-04-12",
+      "reviewer": "operator",
       "size_bytes": 18432,
       "frontmatter_present": true
     },
@@ -64,6 +68,10 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "upstream": "operator intent, analytics baseline",
       "downstream": "lp-brief, copywriting, lp-eval",
       "decision_status": "",
+      "review_state": "not_required",
+      "review_tool": "none",
+      "reviewed_at": "",
+      "reviewer": "",
       "size_bytes": 7342,
       "frontmatter_present": true
     },
@@ -117,6 +125,10 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `upstream` — comma-separated sources or prerequisite artifacts that fed this one.
 - `downstream` — comma-separated skills or artifacts expected to consume this one.
 - `decision_status` — optional decision state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts.
+- `review_state` — human-review state: `pending | approved | rejected | changes_requested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Full semantics in [[reviewable-artifact-contract]].
+- `review_tool` — review surface: `roughdraft | inline | none`. From frontmatter; empty string when absent.
+- `reviewed_at` — date the review was recorded (`YYYY-MM-DD`). Empty until reviewed.
+- `reviewer` — who recorded the review. Empty until reviewed.
 - `size_bytes` — file size, useful for sanity checks.
 - `frontmatter_present` — `true` if any frontmatter was found, `false` if file has none. Lets consumers distinguish well-formed artifacts from legacy ones.
 
@@ -178,7 +190,7 @@ When you ship a new skill OR edit an existing skill that produces artifacts:
 
 1. **Write frontmatter on every produced artifact** with at minimum the four required fields.
 2. **Call `manifest-sync` at end of skill** as the final side-effect (one bash line — see Write Protocol below).
-3. **Don't write to `.agents/manifest.json` directly.** It's derived state. Update artifact frontmatter; let sync derive the rest.
+3. **Don't write to `.forsvn/index/manifest.json` directly.** It's derived state. Update artifact frontmatter; let sync derive the rest.
 
 Legacy artifacts without frontmatter are tolerated — sync infers `produced_by` from path patterns and defaults the rest. But missing frontmatter shows up in the manifest as `frontmatter_present: false`, which orchestrators can surface as a quality signal.
 
@@ -196,14 +208,14 @@ What it does:
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields.
 4. For experience files (`.forsvn/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
-6. Write `.agents/manifest.json` (pretty-printed JSON, trailing newline).
-7. Write `.agents/artifact-index.md` (human-readable selection index derived from the manifest).
+6. Write `.forsvn/index/manifest.json` (pretty-printed JSON, trailing newline).
+7. Write `.forsvn/index/artifact-index.md` (human-readable selection index derived from the manifest).
 
 The script is **idempotent** for unchanged artifact state — running it twice preserves `updated_at` and generated output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
 
 ### Human-readable index
 
-`manifest-sync` also writes `.agents/artifact-index.md`. This file is infrastructure, like `.agents/manifest.json`; it is not a skill output and should not be hand-edited. It exists for the exact failure mode the JSON manifest does not solve well: a human or agent browsing artifacts needs to know **why** an artifact exists, **when** to use it, and **what replaced it**.
+`manifest-sync` also writes `.forsvn/index/artifact-index.md`. This file is infrastructure, like `.forsvn/index/manifest.json`; it is not a skill output and should not be hand-edited. It exists for the exact failure mode the JSON manifest does not solve well: a human or agent browsing artifacts needs to know **why** an artifact exists, **when** to use it, and **what replaced it**.
 
 The index groups active artifacts separately from archived/historical artifacts. Active canonical records, anchors, registries, decisions, and specs come first. Snapshots and archived rows are audit trail by default unless their `use_when` field says otherwise.
 
@@ -247,11 +259,11 @@ bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
 
 When a skill needs to know what artifacts exist, what their status is, or whether they're stale, the read order is:
 
-1. **Read `.agents/manifest.json` first.** Single file, single read. Tells you everything you need to discover and evaluate artifacts.
+1. **Read `.forsvn/index/manifest.json` first.** Single file, single read. Tells you everything you need to discover and evaluate artifacts.
 2. **If the artifact you need is listed → read the artifact itself for content.** Manifest gives you the metadata; the markdown gives you the substance.
 3. **If the artifact is NOT in the manifest → it does not exist OR sync is stale.** Fall back to filesystem check only if you suspect drift.
 
-For exploratory browsing or human-facing status summaries, read `.agents/artifact-index.md` after the JSON manifest. The JSON is the machine contract; the index is the readable map.
+For exploratory browsing or human-facing status summaries, read `.forsvn/index/artifact-index.md` after the JSON manifest. The JSON is the machine contract; the index is the readable map.
 
 ### Status-aware consumption
 
@@ -278,7 +290,7 @@ const marketExists = await fileExists('research/market-research.md')
 // ...
 
 // After (manifest read)
-const manifest = JSON.parse(await readFile('.agents/manifest.json', 'utf8'))
+const manifest = JSON.parse(await readFile('.forsvn/index/manifest.json', 'utf8'))
 const icpEntry = manifest.artifacts['research/icp-research.md']
 const icpDone = icpEntry?.status === 'done' && !icpEntry.stale
 ```
@@ -296,7 +308,7 @@ When a skill finishes producing an artifact:
    ```bash
    bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts
    ```
-3. **Do NOT write to `.agents/manifest.json` directly.** Sync owns it.
+3. **Do NOT write to `.forsvn/index/manifest.json` directly.** Sync owns it.
 
 This is intentionally a single-script approach instead of per-skill manifest writes:
 - **No skill can corrupt the manifest** — sync rebuilds from scratch.
@@ -350,12 +362,12 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 
 ## Anti-Patterns
 
-1. **Writing to `.agents/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
+1. **Writing to `.forsvn/index/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
 2. **Reading the filesystem when the manifest would do.** Per-skill `glob('.forsvn/artifacts/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
 5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `.forsvn/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.
-6. **Hand-editing `.agents/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
+6. **Hand-editing `.forsvn/index/artifact-index.md`.** It is generated. Fix artifact frontmatter or the sync script instead.
 7. **Adding fields to manifest entries without spec'ing them here first.** The schema is the contract. Drift breaks consumers.
 8. **Over-trusting `summary`.** It's a one-line preview, not a substitute for reading the artifact when content matters. Use it for routing decisions, not for grounded analysis.
 9. **Leaving `purpose` / `use_when` blank on new non-terminal artifacts.** This recreates the original selection problem: the artifact exists, but nobody knows why to select it.
@@ -387,7 +399,7 @@ These are recorded so future-us doesn't accidentally rebuild them ad-hoc:
 **Skill migration order** (informational, not enforced):
 1. `start-*` orchestrators retrofit to read manifest. Immediate value: cleaner code, status-aware routing.
 2. Skills that produce widely-consumed artifacts (icp-research, market-research, brand-system) retrofit to write rich frontmatter. Compounding value as more consumers benefit.
-3. Skills that produce mostly-local artifacts (humanize, vn-tone) retrofit when they're touched for other reasons. Lowest priority.
+3. Skills that produce mostly-local artifacts (humanmaxxing, vn-tone) retrofit when they're touched for other reasons. Lowest priority.
 
 No big-bang migration. Sync's graceful fallback means partial adoption is safe.
 

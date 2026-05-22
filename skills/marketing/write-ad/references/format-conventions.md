@@ -63,7 +63,7 @@ Every run produces THREE files in `.forsvn/artifacts/mkt/ad-copy/`:
 |------|---------|----------|
 | `[slug].md` | Hero (primary text + headline + description) + Variant A + Variant B, ready-to-publish. Full frontmatter above. | Human (advertiser/marketer), `plan-campaign` (Route B — sequences next audience-temp) |
 | `[slug].rationale.md` | Angle, audience-temperature framing, creative format, production model, anchor proof, anti-patterns avoided. Per-variant rationale (3 sections — hero / A / B). Pre-Dispatch dimensions resolved. | Human (advertiser review), maintainer (audit), `plan-campaign` (Route B — reads angle for campaign coherence) |
-| `[slug].critic-score.md` | Rubric scorecard across 7 dimensions, per-variant scores (3 scorecards), terminal-humanize regression check per variant, cycle count. | Maintainer (audit), `plan-campaign` (Route B — picks PASS scores ≥56/70 for highest-priority budget allocation) |
+| `[slug].critic-score.md` | Rubric scorecard across 7 dimensions, per-variant scores (3 scorecards), terminal-humanmaxxing regression check per variant, cycle count. | Maintainer (audit), `plan-campaign` (Route B — picks PASS scores ≥56/70 for highest-priority budget allocation) |
 
 ## Field values — network
 
@@ -144,4 +144,4 @@ For NEW audience-temp (warm + cold for same offer same day): write fresh `[slug]
 
 **Critic FAIL on dim <6 in any variant** → re-dispatch FULL Layer 2 chain (composer → format-checker → voice-auditor → critic) with feedback. Max 2 cycles. Cycle 2 FAIL → surface scorecard + best draft + per-variant blocking issues as DWC.
 
-**Post-humanize Specificity regression FAIL per variant** → revert THAT variant to critic-approved (do NOT cascade revert across all 3; do NOT try to re-fix humanize). Frontmatter `critic_per_variant.X` reflects critic-approved score in this case (humanize improvement on Specificity was negative; reverting is the correct action).
+**Post-humanmaxxing Specificity regression FAIL per variant** → revert THAT variant to critic-approved (do NOT cascade revert across all 3; do NOT try to re-fix humanmaxxing). Frontmatter `critic_per_variant.X` reflects critic-approved score in this case (humanmaxxing improvement on Specificity was negative; reverting is the correct action).

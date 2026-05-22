@@ -45,7 +45,7 @@ After Pre-Dispatch, generate or update `research/product-context.md` — the can
 | [canonical term] | [precise definition] | [synonyms to avoid] |
 ```
 
-**Canonical Terminology** defines shared vocabulary for product and domain. Downstream skills (campaign-plan, copywriting, humanize, lp-brief, design-brief) reference this for consistent language. Populate during scope interview — ask: "What do you call your users? Pricing tiers? Main workspace?" If no strong preferences, propose defaults from codebase (variable names, UI labels, docs).
+**Canonical Terminology** defines shared vocabulary for product and domain. Downstream skills (campaign-plan, copywriting, humanmaxxing, lp-brief, design-brief) reference this for consistent language. Populate during scope interview — ask: "What do you call your users? Pricing tiers? Main workspace?" If no strong preferences, propose defaults from codebase (variable names, UI labels, docs).
 
 **All marketing skills read this file for product context.**
 
@@ -226,7 +226,7 @@ For context — downstream skills that depend on this format:
 | cold-outreach | Demographics + decision psychology trigger + research path |
 | short-form-research | Habitat map (platform selection) + emotional drivers (hook angle) |
 | short-form-brief | Same as short-form-research + voice |
-| humanize | Voice (from product-context.md) + canonical terminology |
+| humanmaxxing | Voice (from product-context.md) + canonical terminology |
 | seo | Canonical terminology + pain phrasing |
 | social-copy | Personas + voice + emotional drivers |
 | vn-tone | Voice (from product-context.md) + canonical terminology (translation glossary) |

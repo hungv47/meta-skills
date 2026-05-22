@@ -123,9 +123,9 @@ These apply across all marketing-skills, not just seo. Same detection/fix shape;
 
 ## 10. Polish-Chain on FAIL
 
-**Detection:** Critic returned FAIL and orchestrator dispatched polish-chain (humanize, vn-tone) on findings that haven't been re-dispatched per Rewrite Routing.
+**Detection:** Critic returned FAIL and orchestrator dispatched polish-chain (humanmaxxing, vn-tone) on findings that haven't been re-dispatched per Rewrite Routing.
 
-**Bad:** Critic FAILs gate 1 ("Evidence missing in 3 findings") → orchestrator runs humanize on the whole doc.
+**Bad:** Critic FAILs gate 1 ("Evidence missing in 3 findings") → orchestrator runs humanmax on the whole doc.
 **Good:** Critic FAILs gate 1 → orchestrator re-dispatches named agent (e.g., content-quality-agent) with specific feedback → produces revised findings → re-merge → critic re-evaluates. Polish chain ONLY after PASS.
 
 **Owned by:** orchestrator (Step 8 of Dispatch Protocol). Polish-chain is post-PASS only.

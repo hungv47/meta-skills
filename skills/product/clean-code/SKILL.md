@@ -37,7 +37,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** — this skill is `budget: deep`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) auto-downgrades to `fast` for ≤5-file scopes (→ Single-Agent Fallback path below); `--fast` flag forces single-agent regardless of scope. **Safety gates supersede `--fast`:** the 5 golden rules (Critical Gates below) fire on every run, regardless of mode. Pre-Dispatch fires under `--fast` if test-suite presence + conventions aren't resolvable.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md`).
-2. Read `.agents/manifest.json` for prior cleanup runs against the same scope; surface staleness if a recent cleanup already covered this path.
+2. Read `.forsvn/index/manifest.json` for prior cleanup runs against the same scope; surface staleness if a recent cleanup already covered this path.
 3. Read `.forsvn/experience/technical.md` for prior conventions notes.
 
 ## Pre-Dispatch

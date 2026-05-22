@@ -1,6 +1,6 @@
 ---
 name: discover
-description: "Conversational discovery that turns a vague idea, feature, or task into shared clarity — adapts from quick scoping (3-5 questions) to deep multi-round interviews, then produces inline decisions or an optional saved spec. Use to clarify requirements before building. Not for multi-perspective debate (use debate-panel), decomposing work (use breakdown-tasks), or diagnosing a metric decline (use diagnose)."
+description: "Conversational discovery that turns a vague idea, feature, or task into shared clarity — adapts from quick scoping (3-5 questions) to deep multi-round interviews, then produces inline decisions or an optional saved spec. Use to clarify requirements before building. Not for multi-perspective debate (use debate-agents), decomposing work (use breakdown-tasks), or diagnosing a metric decline (use diagnose)."
 argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
@@ -139,7 +139,7 @@ For domain-specific extended probing questions (data/state, errors, UX, security
 
 ### Step 5: Complex Decision Points → Agent Room
 
-When a decision genuinely needs more than one perspective — architecture choice, strategic direction, design tradeoff with no clear winner — invoke `debate-panel` as a sub-routine.
+When a decision genuinely needs more than one perspective — architecture choice, strategic direction, design tradeoff with no clear winner — invoke `debate-agents` as a sub-routine.
 
 **When to invoke:** Two+ viable approaches with non-obvious tradeoffs; decision is expensive to reverse; you're uncertain and want to pressure-test your thinking. **How:** Frame the specific decision ("WebSocket push or polling for this use case?"), include context. Panel debates, returns recommendation, conversation continues. **When NOT to invoke:** clear best answer from context; user already has a strong preference; choice is easily reversible.
 
@@ -202,7 +202,7 @@ Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.
 
 - **FEATURE or TASK to clarify?** → this skill
 - **Declining METRIC to diagnose?** → `diagnose`
-- **Multi-perspective debate on a decision?** → `debate-panel` (or invoke as sub-routine here at Step 5)
+- **Multi-perspective debate on a decision?** → `debate-agents` (or invoke as sub-routine here at Step 5)
 - **Know what to build, need technical design?** → `architect-system`
 - **Decompose into tasks?** → `breakdown-tasks`
 

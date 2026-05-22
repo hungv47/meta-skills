@@ -138,6 +138,6 @@ After Pre-Dispatch resolves, compile and pass to every agent in the `pre-writing
 
 ## `--fast` behavior in Pre-Dispatch
 
-`--fast` does NOT skip Cold Start — when audience-temp / offer / creative-format / proof are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` skips post-humanize Specificity regression check per variant (saves 1 critic-Specificity-dim invocation per variant = 3 invocations saved for hero + A + B). Critical Gates + Missing-Input Hard Blocks + Format-Checker Hard Gate STILL enforced per `_shared/mode-resolver.md`.
+`--fast` does NOT skip Cold Start — when audience-temp / offer / creative-format / proof are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` skips post-humanmaxxing Specificity regression check per variant (saves 1 critic-Specificity-dim invocation per variant = 3 invocations saved for hero + A + B). Critical Gates + Missing-Input Hard Blocks + Format-Checker Hard Gate STILL enforced per `_shared/mode-resolver.md`.
 
 Hard-block conditions above STILL fire under `--fast` — safety gates supersede `--fast`.

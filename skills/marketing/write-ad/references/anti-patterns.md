@@ -97,7 +97,7 @@ Same pattern as "just".
 
 ### 2e. Em-dashes
 
-Zero tolerance — same rule as cold-outreach voice-auditor + humanize terminal pass.
+Zero tolerance — same rule as cold-outreach voice-auditor + humanmaxxing terminal pass.
 
 **Fix:** replace every em-dash with a comma, period, or parentheses.
 
@@ -359,26 +359,26 @@ These thirteen patterns operate at the pipeline level — they describe how the 
 | Em-dashes in ad copy | AI rhythm filler; reads instantly fake | Voice-auditor zero-tolerance auto-fail (same rule as cold-outreach) |
 | "Quick question?" / "Are you tired of..." hooks | Generic; doesn't earn the 3-second window | Critic Hook dim 0-2 band |
 | Multi-CTA in one ad | Splits intent; conversion-event signal degrades | Composer one-CTA-per-variant rule; format-checker flag |
-| Running humanize twice | Strips specificity, drifts toward generic | Terminal pass runs ONCE per variant |
+| Running humanmaxxing twice | Strips specificity, drifts toward generic | Terminal pass runs ONCE per variant |
 | Changing every variable at once | No learning; cannot tell if hook, format, proof, CTA, funnel, or offer caused the result | Strategist names one isolated variable per variant using Variable Subtraction |
 
 ---
 
 ## 10. Cross-Cutting Marketing-Stack Anti-Patterns
 
-These patterns apply across the marketing stack — ad-copy calls `humanize` as terminal polish-chain per variant (hero + A + B = 3 humanize invocations), and is itself called by `plan-campaign` as a Route B consumer. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
+These patterns apply across the marketing stack — ad-copy calls `humanmaxxing` as terminal polish-chain per variant (hero + A + B = 3 humanmaxxing invocations), and is itself called by `plan-campaign` as a Route B consumer. Enforced via Pre-Dispatch wiring + critic verification + cross-skill contract.
 
-### Caller skipped the protected_tokens contract (per-variant) when invoking humanize
+### Caller skipped the protected_tokens contract (per-variant) when invoking humanmaxxing
 
-**Problem:** Orchestrator dispatches `humanize` for hero variant with `content-type: "short-outbound"` but forgets to pass `protected_tokens` listing the named entities + numbers + URLs in the critic-approved variant. humanize's compression-agent paraphrases "$2.3M ARR" to "millions in ARR" or drops the `app.com/trial?utm=meta_q4` URL. The post-humanize regression check still catches it (Specificity dim drops ≥2 or named entity absent or URL absent) and reverts to the critic-approved variant — but the run wasted a humanize cycle. With 3 variants per artifact, the waste compounds 3x.
+**Problem:** Orchestrator dispatches `humanmaxxing` for hero variant with `content-type: "short-outbound"` but forgets to pass `protected_tokens` listing the named entities + numbers + URLs in the critic-approved variant. humanmaxxing's compression-agent paraphrases "$2.3M ARR" to "millions in ARR" or drops the `app.com/trial?utm=meta_q4` URL. The post-humanmaxxing regression check still catches it (Specificity dim drops ≥2 or named entity absent or URL absent) and reverts to the critic-approved variant — but the run wasted a humanmaxxing cycle. With 3 variants per artifact, the waste compounds 3x.
 
-**INSTEAD:** Terminal pass step in `procedures/dispatch-mechanics.md` § "Terminal Pass: Humanize" lists `protected_tokens` as a required input (every named entity + number + URL in critic-approved variant). Do NOT skip per variant — it's the contract that prevents silent paraphrase. The URL check is ad-copy-specific (unlike cold-outreach which rarely embeds URLs); humanize's regression must verify URL preservation. Sibling pattern to cold-outreach's protected_tokens contract; see sibling humanize's `anti-patterns.md` § "Calling skill drops protected_tokens contract" for the consumer-side framing.
+**INSTEAD:** Terminal pass step in `procedures/dispatch-mechanics.md` § "Terminal Pass: Humanmaxxing" lists `protected_tokens` as a required input (every named entity + number + URL in critic-approved variant). Do NOT skip per variant — it's the contract that prevents silent paraphrase. The URL check is ad-copy-specific (unlike cold-outreach which rarely embeds URLs); humanmaxxing's regression must verify URL preservation. Sibling pattern to cold-outreach's protected_tokens contract; see sibling humanmaxxing's `anti-patterns.md` § "Calling skill drops protected_tokens contract" for the consumer-side framing.
 
-### Post-humanize regression check disabled or judgment-overridden (per-variant)
+### Post-humanmaxxing regression check disabled or judgment-overridden (per-variant)
 
-**Problem:** Orchestrator runs humanize on hero, sees a clean polished variant, ships it without re-running critic's Specificity dim. Two slots later eval shows the named proof ("12,000 users in 90 days") was paraphrased to "thousands of users" — exactly the kind of generic claim the critic was designed to catch. With 3 variants, skipping regression on even one variant introduces silent specificity drift that the artifact frontmatter doesn't surface.
+**Problem:** Orchestrator runs humanmaxxing on hero, sees a clean polished variant, ships it without re-running critic's Specificity dim. Two slots later eval shows the named proof ("12,000 users in 90 days") was paraphrased to "thousands of users" — exactly the kind of generic claim the critic was designed to catch. With 3 variants, skipping regression on even one variant introduces silent specificity drift that the artifact frontmatter doesn't surface.
 
-**INSTEAD:** Regression check is **automatic, not judgment** (per `dispatch-mechanics.md` § "Terminal Pass: Humanize" step 4). The check runs per variant (3 invocations of critic's Specificity dim per artifact). The Specificity Floor of ≥2 verifiable specifics still applies. If any variant's check fails, revert THAT variant to critic-approved (do NOT try to re-fix humanize; do NOT cascade revert across all 3 variants). Operator override of regression requires explicit `--skip-regression-per-variant` flag (not currently implemented; v6.3.0 candidate).
+**INSTEAD:** Regression check is **automatic, not judgment** (per `dispatch-mechanics.md` § "Terminal Pass: Humanmaxxing" step 4). The check runs per variant (3 invocations of critic's Specificity dim per artifact). The Specificity Floor of ≥2 verifiable specifics still applies. If any variant's check fails, revert THAT variant to critic-approved (do NOT try to re-fix humanmaxxing; do NOT cascade revert across all 3 variants). Operator override of regression requires explicit `--skip-regression-per-variant` flag (not currently implemented; v6.3.0 candidate).
 
 ### Campaign-plan Route B invocation drops audience-temp / creative-format / production-model context
 

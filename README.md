@@ -54,7 +54,7 @@ Single-skill installs are self-contained — shared scripts and references the s
 Cherry-pick multiple skills in a single call:
 
 ```bash
-npx skills add hungv47/meta-skills --skill write-copy humanize review-work
+npx skills add hungv47/meta-skills --skill write-copy humanmaxxing review-work
 ```
 
 List what's available without installing:
@@ -169,7 +169,7 @@ Everything else lives under `.forsvn/`:
 
 End-to-end pipeline: meta process wrappers compose with research pipeline skills, product skills (pipeline + horizontal), and marketing skills (pipeline + horizontal).
 
-**39 skills total**: 7 research + 19 marketing + 6 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanize`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
+**39 skills total**: 7 research + 19 marketing + 6 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanmaxxing`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
 
 ## Skill Stacks
 
@@ -207,7 +207,7 @@ plan-campaign
   ├─ write-ad (per audience temperature)
   └─ write-outreach (per touch)
 
-Horizontal: write-copy, humanize, polish-vn — invoked at any stage.
+Horizontal: write-copy, humanmaxxing, polish-vn — invoked at any stage.
 ```
 
 | Skill | What it does | Use when... |
@@ -219,10 +219,10 @@ Horizontal: write-copy, humanize, polish-vn — invoked at any stage.
 | `evaluate-landing-page` | Post-launch landing-page evaluation — metric ingest, diagnosis, keep/discard/watch/blocked row, learning promotion | A launched landing page has analytics, experiment results, or metric notes and needs a loop-local decision |
 | `brief-graphic` | Per-asset graphic-design brief with platform-aware specs (aspect, safe zones, type scale, contrast, file format) and downstream handoff (image-gen prompt / vector-tool spec / designer-handoff) | You need a brief for a single visual asset (IG carousel, OG image, banner ad, YT thumbnail, OOH, etc.) — rendering happens downstream |
 | `optimize-seo` | Technical audit, AI/AEO optimization, programmatic SEO, ASO | You want more organic traffic — search, AI answers, or app store visibility |
-| `humanize` | Strips AI patterns, injects brand voice, compresses for density | You have AI-generated text that sounds robotic and needs to read human |
+| `humanmaxxing` | Strips AI patterns, injects brand voice, compresses for density | You have AI-generated text that sounds robotic and needs to read human |
 | `polish-vn` | Polishes translated Vietnamese into a native register (báo chí, semi-casual, bro, or pop-marketing) | You have Vietnamese copy that reads translated/robotic or needs register alignment |
 | `write-ad` | Meta paid-ad copy for retargeting or cold traffic — hero + 2 variants with char-cap, policy, claim, voice, and critic gates | You're shipping Facebook/Instagram ads and need audience-temperature-specific creative copy |
-| `write-outreach` | Cold email / DM / proposal composition with signal-based personalization, channel-specific craft, rubric scoring, terminal humanize pass | You're writing first-touch outbound or replies to inbound responses and want it to read like a sharp human, not a template |
+| `write-outreach` | Cold email / DM / proposal composition with signal-based personalization, channel-specific craft, rubric scoring, terminal humanmaxxing pass | You're writing first-touch outbound or replies to inbound responses and want it to read like a sharp human, not a template |
 | `brief-shortform` | Per-asset short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. Hard cap: 1 hero + 2 platform variants per invocation. Brand modes: founder / company. Polish chain auto-routes per (market, brand_mode) | You're producing a TikTok / Reels / Shorts / X / LinkedIn video and need a production-ready brief tied to platform-intelligence + ICP voice |
 | `write-social` | Platform-native social copy — A/B hook variants, body, CTA. Char-limit + CTA-truncation enforced; 5-dim critic rubric (hook strength / char-word limit / CTA placement / pattern-interrupt density / format compliance) | You need ready-to-publish copy for tiktok / reels / shorts / x / linkedin from a brief or topic |
 
@@ -246,7 +246,7 @@ Horizontal: write-copy, humanize, polish-vn — invoked at any stage.
 |-------|-------------|-------------|
 | `forsvn` | Front door — classifies intent, loads `.forsvn/` state, asks ≤2 clarifying questions if needed, routes to a leaf skill or resumes a prior initiative | You don't know which skill to call, want to continue something, or want a vague ask to land somewhere concrete |
 | `discover` | Conversational discovery — adapts from quick scoping (3-5 questions) to deep interviews | You have a vague idea or clear task and want alignment before building |
-| `debate-panel` | Multi-agent discussion rooms — debate (argue in rounds) or consensus polling | You're facing a complex decision and want multiple perspectives |
+| `debate-agents` | Multi-agent discussion rooms — debate (argue in rounds) or consensus polling | You're facing a complex decision and want multiple perspectives |
 | `run-eval-loop` | Creates or resumes a measurable improvement workspace with `program.md`, `context.md`, `strategy/`, `execution/`, `evals/`, `results.tsv`, and `learnings.md` under `.forsvn/loops/[slug]/` | You want a campaign, page, ad set, email sequence, social series, or content motion to improve over measured cycles |
 | `breakdown-tasks` | Decomposes work into granular, testable tasks with acceptance criteria | Work is too big to just start — needs decomposition first |
 | `review-work` | Fresh-eyes review — implement, review, resolve. Max 2 rounds | You've built something and want an independent quality check |
@@ -274,7 +274,7 @@ Not sure which skill to run? Find your situation:
 | "We need more organic traffic" | `/optimize-seo` |
 | "Write Meta ad copy for retargeting or cold traffic" | `/write-ad` |
 | "Write a cold email / DM / proposal" | `/write-outreach` |
-| "This reads like AI wrote it" | `/humanize` |
+| "This reads like AI wrote it" | `/humanmaxxing` |
 | "Polish Vietnamese that sounds translated" | `/polish-vn` |
 | "Create an autoresearch-style loop for this campaign/page/content series" | `/run-eval-loop` |
 | "Where should strategy, execution, evals, and learnings live for this measurable initiative?" | `/run-eval-loop` |
@@ -287,7 +287,7 @@ Not sure which skill to run? Find your situation:
 | "Scope this before building" | `/discover` |
 | "Help me think through this idea" | `/discover` |
 | "Break this into tasks" | `/breakdown-tasks` |
-| "Debate this decision" | `/debate-panel` |
+| "Debate this decision" | `/debate-agents` |
 | "Verify this output" | `/review-work` |
 
 ## Worked Examples: Artifact Flow in Practice
@@ -347,7 +347,7 @@ Each downstream skill produces richer output because it inherits upstream contex
 ### Example 3: Multi-Perspective Decision
 
 ```
-/debate-panel "debate: should we build a Chrome extension or a web app?"
+/debate-agents "debate: should we build a Chrome extension or a web app?"
   ├─ spawns 3 agents (Architect, Pragmatist, Critic)
   ├─ 3 rounds of structured debate
   └─ writes .forsvn/artifacts/meta/decisions/[date]-<slug>.md (consensus, splits, recommendation)
@@ -399,7 +399,7 @@ Each downstream skill produces richer output because it inherits upstream contex
 /write-outreach "first-touch email to founders of seed AI startups, channel: email"
   ├─ reads research/product-context.md + research/icp-research.md (audience signals)
   ├─ Layer 1: signal-analyst → strategist + proof-selector in parallel
-  ├─ Layer 2: composer → voice-auditor → critic → terminal humanize
+  ├─ Layer 2: composer → voice-auditor → critic → terminal humanmaxxing
   └─ writes .forsvn/artifacts/mkt/write-outreach/founder-touch1.md + .rationale.md + .critic-score.md
 
 /write-outreach "reply to: <prospect's response asking about pricing>"
@@ -425,11 +425,11 @@ Each downstream skill produces richer output because it inherits upstream contex
 
 **Answer Pre-Dispatch questions in one reply.** When a skill asks 5 questions in one message, answer all 5 in one response. The skill is bundling so it can dispatch parallel sub-agents — answering one at a time forces it to re-prompt and slows everything down.
 
-**Use horizontal skills late, not early.** `humanize`, `polish-vn`, `write-copy` apply to outputs from any pipeline skill. Run them as a polish pass after the pipeline produces a draft, not as a starting point.
+**Use horizontal skills late, not early.** `humanmaxxing`, `polish-vn`, `write-copy` apply to outputs from any pipeline skill. Run them as a polish pass after the pipeline produces a draft, not as a starting point.
 
 **Override skill recommendations when you have context.** Skills auto-detect the right path (e.g., `brief-graphic` auto-routes to image-gen vs. vector-tool). If you know better, override with flags or correct in the conversation.
 
-**Install globally.** The meta-layer skills (`/forsvn`, `/discover`, `/run-eval-loop`, `/debate-panel`, `/breakdown-tasks`, `/review-work`) are domain-agnostic and useful in every project on your machine — `npx skills add hungv47/meta-skills -g` is the install most people regret skipping.
+**Install globally.** The meta-layer skills (`/forsvn`, `/discover`, `/run-eval-loop`, `/debate-agents`, `/breakdown-tasks`, `/review-work`) are domain-agnostic and useful in every project on your machine — `npx skills add hungv47/meta-skills -g` is the install most people regret skipping.
 
 ## How Skills Communicate
 
@@ -442,10 +442,10 @@ Skills pass data through markdown files under `.forsvn/`, canonical folders, and
 | `.forsvn/artifacts/meta/records/diagnose-*.md` | `diagnose` | `prioritize` |
 | `.forsvn/artifacts/meta/sketches/prioritize-*.md` | `prioritize` | `plan-campaign`, `architect-system`, `plan-funnel` |
 | `.forsvn/artifacts/meta/records/targets-*.md` | `plan-funnel` | — (terminal until measurement skill exists) |
-| `brand/BRAND.md`, `brand/DESIGN.md`, `brand/ASSETS.md` | `create-brand` | Visual decisions in `brief-landing-page`, `brief-graphic`, `humanize`, `write-copy` |
+| `brand/BRAND.md`, `brand/DESIGN.md`, `brand/ASSETS.md` | `create-brand` | Visual decisions in `brief-landing-page`, `brief-graphic`, `humanmaxxing`, `write-copy` |
 | `.forsvn/artifacts/mkt/plan-campaign/[slug].md` | `plan-campaign` | `brief-landing-page`, `optimize-seo`, `write-outreach`, `write-copy` |
-| `.forsvn/artifacts/mkt/write-copy/[slug].md` | `write-copy` | `humanize`, `polish-vn`, `brief-graphic` (copy-anchor) |
-| `.forsvn/artifacts/mkt/humanize/[slug].md` | `humanize` | `polish-vn` |
+| `.forsvn/artifacts/mkt/write-copy/[slug].md` | `write-copy` | `humanmaxxing`, `polish-vn`, `brief-graphic` (copy-anchor) |
+| `.forsvn/artifacts/mkt/humanmaxxing/[slug].md` | `humanmaxxing` | `polish-vn` |
 | `.forsvn/artifacts/mkt/polish-vn/[slug].md` | `polish-vn` | — (terminal) |
 | `.forsvn/artifacts/mkt/optimize-seo/[mode].md` | `optimize-seo` | `write-copy`, `brief-landing-page` |
 | `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` + `asset-slots/*.prompt.md` | `brief-landing-page` | `brief-graphic` (per slot) + external designer / image-gen |
@@ -461,7 +461,7 @@ Skills pass data through markdown files under `.forsvn/`, canonical folders, and
 | `architecture/system-architecture.md` | `architect-system` | `breakdown-tasks` |
 | `.forsvn/artifacts/meta/tasks.md` | `breakdown-tasks` | Task execution |
 | `.forsvn/artifacts/meta/records/cleanup-*.md` | `clean-code` | — (terminal) |
-| `.forsvn/artifacts/meta/decisions/[date]-<slug>.md` | `debate-panel` | — (lifecycle: decision — dated, immutable) |
+| `.forsvn/artifacts/meta/decisions/[date]-<slug>.md` | `debate-agents` | — (lifecycle: decision — dated, immutable) |
 | `.forsvn/artifacts/meta/records/[date]-review-work-<slug>.md` | `review-work` | — (lifecycle: snapshot — dated, immutable) |
 | `.forsvn/routing/last-session.md` + `routing/history/*.md` | `forsvn` | Future `/forsvn` invocations (resume) |
 
@@ -479,7 +479,7 @@ SKILL.md (Orchestrator)
   └─ Critic Agent ────────────────────── PASS / FAIL (max 2 cycles)
 ```
 
-**~150 specialized agents** across domain skills. Meta-skills use additional patterns: **dynamic agent spawning** (`debate-panel`, `review-work`) and **conversation-first discovery** (`discover`, `forsvn`).
+**~150 specialized agents** across domain skills. Meta-skills use additional patterns: **dynamic agent spawning** (`debate-agents`, `review-work`) and **conversation-first discovery** (`discover`, `forsvn`).
 
 ## Releases
 

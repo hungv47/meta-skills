@@ -1,6 +1,6 @@
 ---
 name: write-copy
-description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and full-page section copy — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Use to draft or critique landing-page and direct-response copy. Not for AI-sounding cleanup (use humanize), search/AI-citation optimization (use optimize-seo), brand voice guidelines (use create-brand), landing-page architecture (use brief-landing-page), social posts (use write-social), or paid-ad copy (use write-ad)."
+description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and full-page section copy — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Use to draft or critique landing-page and direct-response copy. Not for AI-sounding cleanup (use humanmaxxing), search/AI-citation optimization (use optimize-seo), brand voice guidelines (use create-brand), landing-page architecture (use brief-landing-page), social posts (use write-social), or paid-ad copy (use write-ad)."
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -186,7 +186,7 @@ status: done | done_with_concerns | blocked | needs_context
 
 ## Anti-Patterns
 
-Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 5 orchestrator-level rows (skipping pre-writing, dispatching all for single key line, ignoring critic FAIL, wrong-agent re-dispatch, >2 rewrite cycles) + 4 pipeline-level rows (voice-too-early, psychology trigger-density miss, zero-risk over-application, variant gratuity) + 4 cross-cutting marketing-stack rows (Route C context drop, brand-system absent → voice fabrication, humanize chain skipped for AI-sounding, artifact schema drift).
+Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 5 orchestrator-level rows (skipping pre-writing, dispatching all for single key line, ignoring critic FAIL, wrong-agent re-dispatch, >2 rewrite cycles) + 4 pipeline-level rows (voice-too-early, psychology trigger-density miss, zero-risk over-application, variant gratuity) + 4 cross-cutting marketing-stack rows (Route C context drop, brand-system absent → voice fabrication, humanmaxxing chain skipped for AI-sounding, artifact schema drift).
 
 ---
 
@@ -200,7 +200,7 @@ Every run ends with explicit status:
 
 ## Next Step
 
-Run `humanize` to refine voice and compress. Seven Sweeps (Layer 2 cumulative) runs BEFORE humanize — humanize is the terminal polish pass, not a replacement for the sweeps. See [`references/seven-sweeps.md`](references/seven-sweeps.md) § "When NOT to run Seven Sweeps" for cases where the full pass is skipped.
+Run `humanmaxxing` to refine voice and compress. Seven Sweeps (Layer 2 cumulative) runs BEFORE humanmaxxing — humanmaxxing is the terminal polish pass, not a replacement for the sweeps. See [`references/seven-sweeps.md`](references/seven-sweeps.md) § "When NOT to run Seven Sweeps" for cases where the full pass is skipped.
 
 ---
 

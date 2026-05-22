@@ -36,7 +36,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 6. `.forsvn/artifacts/mkt/published-social/[slug]/manifest.md` if present — post URLs + distribution provenance
 7. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`
 
-If `.agents/manifest.json` is stale or missing, run:
+If `.forsvn/index/manifest.json` is stale or missing, run:
 
 ```bash
 bun scripts/manifest-sync.ts
