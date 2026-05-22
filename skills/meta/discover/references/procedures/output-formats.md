@@ -34,6 +34,10 @@ skill: discover
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
+review_state: pending      # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 mode: idea-stage | plan-review
 plan-review-mode: scope-expansion | selective-expansion | hold-scope | scope-reduction  # only when mode = plan-review
 light_spec: false
@@ -145,6 +149,14 @@ One line, mode-mapped:
   - `CUT_AGGRESSIVELY` — recommend cuts even beyond the user's framing
 
 The Verdict line maps to the Completion Status Protocol — `VALIDATED` / `BUILD_AS_PROPOSED` etc. → `done`; verdicts with caveats → `done_with_concerns`; `NEEDS_MORE_VALIDATION` → `needs_context`; irreconcilable inputs → `blocked`.
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 **Single verdict, two surfaces:** the verdict stated in conversation at Step 6 persists verbatim to the `## Verdict` section of the saved artifact — same enum, stated once in conversation, recorded once in artifact. There are not two verdicts.
@@ -161,6 +173,10 @@ skill: discover
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
+review_state: pending      # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 mode: idea-stage | plan-review
 light_spec: true
 ---
@@ -182,6 +198,14 @@ light_spec: true
 
 ## Open Questions
 - [ ] [Unresolved items]
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 Don't apply Premise Challenge or Dream State Mapping to a "add a dark mode toggle" scope — the rigor structure is for Medium/Deep work where the user is making strategic calls.

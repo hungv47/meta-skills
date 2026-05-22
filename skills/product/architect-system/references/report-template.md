@@ -15,6 +15,7 @@ load_class: PROCEDURE
 ## Frontmatter
 
 Baseline required fields: `skill`, `version`, `date`, `status`.
+Review fields (human-review layer, per `references/_shared/reviewable-artifact-contract.md`): `review_state`, `review_tool`, `reviewed_at`, `reviewer`. This is a `canonical` artifact, so `review_state` defaults to `pending` — a human gate is required before `status: done` is fully trusted. `status` (skill quality gate) and `review_state` (human acceptance) are independent.
 Step 7.5 additions (manifest-sync conformance; backfilled going forward): `lifecycle`, `produced_by`, `provenance`.
 
 ```yaml
@@ -23,6 +24,10 @@ skill: architect-system
 version: {N}
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
+review_state: pending      # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 # Step 7.5 fields (artifact-graph hardening; backfilled going forward):
 lifecycle: canonical
 produced_by: system-architecture
@@ -101,11 +106,19 @@ List any patterns that were checked but excluded per the false-positive exclusio
 
 ## Next Step
 Run `breakdown-tasks` to decompose this architecture into implementable tasks.
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 ## Required vs. optional sections
 
-- **Required:** §1-12 + §12a + §12b + §12d (false-positive log). Skipping a section silently violates Critical Gate 1 ("every tech choice has a rationale") or Gate 4 ("Deployment section includes complete env var list").
+- **Required:** §1-12 + §12a + §12b + §12d (false-positive log) + the final `## Review Gate` block. Skipping a section silently violates Critical Gate 1 ("every tech choice has a rationale") or Gate 4 ("Deployment section includes complete env var list"). The `## Review Gate` block is the final section of every artifact — it carries the human review-state contract per `references/_shared/reviewable-artifact-contract.md`.
 - **Conditional:** §12c (LLM/AI Security) — include only when the system uses AI/LLM.
 - **Required when applicable:** Not Included (omit if every spec'd item is in scope); Open Questions (omit if all critic findings resolved within 2 revision rounds).
 

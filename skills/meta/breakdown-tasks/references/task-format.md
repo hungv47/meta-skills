@@ -34,6 +34,10 @@ skill: breakdown-tasks
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
+review_state: not_required # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 ---
 
 # Tasks
@@ -75,6 +79,14 @@ status: done | done_with_concerns | blocked | needs_context
 
 **History:**
 - {{today}} · task-breakdown · created
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 Each task is a `###` block under `## Tasks` — siblings, not nested. Agents anchor on `### Task T[N]:` to jump from index row to block.

@@ -58,9 +58,10 @@ Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`).
 
 - **Path:** `architecture/system-architecture.md` (active); prior runs renamed to `system-architecture.v[N].md`.
 - **Lifecycle:** `canonical` (top-level folder; edited in place by humans + future runs; the team's authoritative architecture record).
-- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `lifecycle`, `produced_by`, `provenance` (with `skill`, `run_date`, `input_artifacts`, `output_eval`).
+- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance` (with `skill`, `run_date`, `input_artifacts`, `output_eval`).
 - **Required sections:** 12 sections (§1 Overview → §12 Security Review) + §12a STRIDE + §12b OWASP + §12d false-positive log. §12c LLM/AI Security conditional. Not Included + Open Questions when applicable.
 - **Consumed by:** `breakdown-tasks` (decomposes architecture into tasks), `review-work` (post-implementation review), `clean-code` (preserves boundaries during refactoring), `forsvn` (state detection), operator (canonical reference).
+- **Review:** Review-gated artifact. Write the review frontmatter (`review_state` / `review_tool` / `reviewed_at` / `reviewer`) and the `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run the review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `review_state` defaults to `pending`. `status` (skill quality gate) and `review_state` (human acceptance) are independent — `status: done` + `review_state: pending` is valid.
 - Full template + section content + version-increment rule: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 
 ## Chain Position

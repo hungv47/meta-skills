@@ -115,11 +115,12 @@ Mechanics (how to spawn agents, parallel/sequential tables, single-agent fallbac
 - **Hero path:** `.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md`
 - **Variant path:** `.forsvn/artifacts/mkt/short-form-brief/[slug]/variants/[platform].md`
 - **Lifecycle:** `pipeline` — one artifact per (angle, platform-set, market); re-run on angle/platform/market pivot
-- **Frontmatter fields:** `type`, `role`, `status`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied` (full schema in Output Artifact Structure below)
-- **Hero body sections (14, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap
+- **Frontmatter fields:** `type`, `role`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied` (full schema in Output Artifact Structure below)
+- **Hero body sections (15, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap · Review Gate
 - **Variant body sections:** What Changed From Hero · Hook · Storyboard delta · Audio Plan · Caption · CTA
 - **Consumed by:** human producers / video editors / motion designers (no further skill chain at v1)
-- **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" — never silently drift
+- **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" — never silently drift. The four review fields + `## Review Gate` heading are additive and orthogonal — consumers match sections by heading, so adding them does not affect downstream readers.
+- **Review:** This `pipeline` artifact carries the review machinery but `review_state` defaults to `not_required` — most runs are regenerable drafts. The `## Review Gate` block and review fields ship in the template so the operator or a loop can opt a run into review by setting `review_state: pending`. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); review procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). Review machinery applies to the hero `brief.md` only — not the per-platform `variants/[platform].md` files.
 
 Full template + per-section format rules (date format, timing format, framing tags, archetype tagging, VoC exact-quote rule, variant "What Changed" guard) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
@@ -132,6 +133,10 @@ Full template + per-section format rules (date format, timing format, framing ta
 type: short-form-brief
 role: hero
 status: done | done_with_concerns | blocked | needs_context
+review_state: not_required # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 date: [YYYY-MM-DD]
 slug: [slug]
 angle: [free text]
@@ -149,6 +154,8 @@ critic_loop_count: [1 | 2]
 polish_chain_applied: vn-tone | humanmaxxing | none
 ---
 ```
+
+The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md). This is a `pipeline` artifact → `review_state` defaults to `not_required`; an operator or eval loop can opt a run into review by setting it `pending` and following [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). These fields and the `## Review Gate` body section apply to the **hero `brief.md`** only — not the per-platform `variants/[platform].md` files.
 
 `variants/[platform].md` template starts with "What Changed From Hero" — guards against caption-only resizing (per `format-conventions.md`).
 

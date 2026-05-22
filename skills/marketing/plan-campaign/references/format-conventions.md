@@ -24,6 +24,10 @@ skill: plan-campaign
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
+review_state: not_required    # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft       # roughdraft | inline | none
+reviewed_at:                  # YYYY-MM-DD — empty until reviewed
+reviewer:                     # who recorded the review — empty until reviewed
 ---
 ```
 
@@ -33,8 +37,14 @@ status: done | done_with_concerns | blocked | needs_context
 | `version` | Integer; increment when re-running with preserved history (see Re-run convention) |
 | `date` | ISO `YYYY-MM-DD`; the date the orchestrator started the run, not the date the campaign launches |
 | `status` | One of the four values; **never** omit, never invent new values |
+| `review_state` | Human acceptance state. Defaults to `not_required` — this is a `pipeline` artifact and most runs are regenerable drafts. The operator or a loop opts a run into review by setting `pending`. Independent of `status` (skill quality gate). Field semantics: `references/_shared/reviewable-artifact-contract.md`. |
+| `review_tool` | `roughdraft` (default) / `inline` / `none`. Where the review happens. |
+| `reviewed_at` | ISO `YYYY-MM-DD`; empty until a human review is recorded. |
+| `reviewer` | Who recorded the review; empty until reviewed. |
 
 Optional fields permitted (orchestrator may add when relevant): `campaign_name`, `goal`, `audience`, `growth_motion`, `team_size`, `budget_tier`, `duration_days`.
+
+The four review fields are additive and orthogonal to the campaign-plan body schema — downstream consumers (lp-brief, cold-outreach, ad-copy, seo, short-form-brief, funnel-planner) jump to body sections by heading match and do not parse review fields, so this addition does **not** require updating downstream consumer skills. Review procedure: `references/_shared/roughdraft-review-protocol.md`.
 
 ## Body section order — fixed
 
@@ -52,6 +62,7 @@ The Artifact Template prescribes a fixed section order. Do **not** reorder; down
    - Followed by execution notes for offline channels when selected (IRL, SMS, OOH)
 9. `## Timeline` — table with columns: `Week`, `Phase`, `Channel`, `Angle`, `Format`, `Status`
 10. `## Launch Sequence` — table with columns: `Phase`, `Timing`, `Channels`, `Action`
+11. `## Review Gate` — final section; the human-review decision block (see "Review Gate block" below)
 
 ## Pillar table
 
@@ -110,6 +121,22 @@ These notes are non-optional when the channel is selected — the orchestrator w
 - **Timing format:** `T-Nw` (weeks before launch) / `Day 0` (launch day) / `T+Nw` (weeks after).
 - **Channels column:** the channel(s) activated in that phase, drawn from Channel Assignments.
 - **Action column:** specific verifiable action ("Invite 50 alpha users to private Slack" not "Activate email list").
+
+## Review Gate block
+
+The campaign-plan artifact ends with a `## Review Gate` section — the final body section, after `## Launch Sequence`:
+
+```markdown
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+```
+
+This `pipeline` artifact ships the block in every run, but `review_state` defaults to `not_required` — most campaign plans are regenerable drafts. The operator (or a loop) opts a run into review by setting `review_state: pending` in frontmatter and running the review per `references/_shared/roughdraft-review-protocol.md`. When a review completes, the agent reads the checked box, sets `review_state` accordingly (Approve → `approved`, Reject → `rejected`, Suggest changes → `changes_requested`), and fills `reviewed_at` + `reviewer`. Field semantics: `references/_shared/reviewable-artifact-contract.md`.
 
 ## Re-run convention
 
