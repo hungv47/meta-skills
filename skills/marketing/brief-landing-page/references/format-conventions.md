@@ -54,7 +54,7 @@ Format (verbatim from brief template):
 > Decide before execution: ship as-is, revise manually, or kill.
 ```
 
-## Frontmatter schema (13 fields)
+## Frontmatter schema (17 fields)
 
 ```yaml
 ---
@@ -62,6 +62,10 @@ skill: brief-landing-page
 version: 1
 date: [today]
 status: [done | done_with_concerns | blocked | needs_context]
+review_state: not_required # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 page_route: [/pricing | /services | etc.]
 tier: [primary | secondary]
 rev: [N — what revision this is]
@@ -90,7 +94,9 @@ provenance:
 
 Date format: ISO `YYYY-MM-DD`. `target_handoff` accepts a single value, list, or `null` — null skips the optional Hand-Off (Specialty Targets) section entirely; the implementation prompt companion is the universal default and always emitted regardless.
 
-## Body section structure (14 sections, in order)
+The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). This is a `pipeline` artifact, so `review_state` defaults to `not_required` — most briefs are regenerable drafts. The fields and the `## Review Gate` body block ship in the template so the operator (or an eval loop) can opt a run into review by setting `review_state: pending`; the procedure for running that review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). Review fields apply to the main `brief.md` artifact only — not the `handoff-*.md` companions or `asset-slots/*.prompt.md` files. They are flat by design (the `manifest-sync` parser reads flat YAML) and additive/orthogonal to the existing schema — adding them does not change how downstream consumers read the brief.
+
+## Body section structure (15 sections, in order)
 
 1. **Title + Page/Tier/Rev/Hand-off-target heading block** — H1 + 4 bold lines
 2. **Concerns** — only present if status = done_with_concerns (pinned at top)
@@ -106,6 +112,7 @@ Date format: ISO `YYYY-MM-DD`. `target_handoff` accepts a single value, list, or
 12. **Pre-flight Checklist** — 5 GFM checkboxes
 13. **Skill Chain** — referenced (if project has shared chain doc) OR generated per-page inline (no project-level default created)
 14. **Launch Plan + Results + Why This Works** — 3 short closing sections
+15. **Review Gate** — human-review block (Approve / Reject / Suggest changes) per `_shared/reviewable-artifact-contract.md`; final section of the artifact
 
 ## Full artifact template (byte-identical)
 
@@ -119,6 +126,10 @@ skill: brief-landing-page
 version: 1
 date: [today]
 status: [done | done_with_concerns | blocked | needs_context]
+review_state: not_required # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 page_route: [/pricing | /services | etc.]
 tier: [primary | secondary]
 rev: [N — what revision this is]
@@ -321,6 +332,14 @@ Page-scoped only. No project-level default is created.
 ## Why This Works (sanity check)
 
 [2–4 lines: the brief's load-bearing arguments — why this hero/this architecture/this CTA hierarchy lands the hypothesis.]
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 > Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/lp-brief/[slug]/v[N]/brief.md`, preserve prior versions.

@@ -34,10 +34,11 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 - **Path:** `.forsvn/artifacts/meta/tasks.md` (single file, edited in place across runs)
 - **Lifecycle:** `pipeline` (re-edited as work progresses; not a dated snapshot. Full re-decomposition snapshots prior version to `tasks.v[N].md` per task-format.md re-run behavior)
-- **Frontmatter fields:** `skill`, `version`, `date`, `status`. Full schema + Status Index + Shared Context + Task block format: [`references/task-format.md`](references/task-format.md) [PROCEDURE].
+- **Frontmatter fields:** `skill`, `version`, `date`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`. Full schema + Status Index + Shared Context + Task block format: [`references/task-format.md`](references/task-format.md) [PROCEDURE].
 - **Required sections:** Status Index (the source-of-truth table for resume protocol), Shared Context (architectural decisions every task references), Tasks (sibling `###` blocks with stable IDs).
 - **Consumed by:** fresh engineering sessions (Claude Code / coding agents / human devs) running the Resume Protocol from [`references/execution-protocol.md`](references/execution-protocol.md); orchestrators batching AFK tasks; operator (status visibility); fresh-eyes (scope-drift detection against UNPLANNED changes).
 - **Eval workspace:** none — task-breakdown produces a plan, not a measurable initiative.
+- **Review:** This `pipeline` artifact carries the review machinery but `review_state` defaults to `not_required` — most runs are regenerable drafts. The `## Review Gate` block and review fields ship in the template so the operator or a loop can opt a run into review by setting `review_state: pending`. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); review procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
 
 ## Pre-Dispatch
 

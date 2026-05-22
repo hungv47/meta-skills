@@ -23,6 +23,10 @@ produced_by: agents-panel
 version: {skill-version}     # matches running skill's metadata.version (currently 2.0.0)
 date: {YYYY-MM-DD}
 status: done | done_with_concerns | blocked | needs_context
+review_state: pending      # pending | approved | rejected | changes_requested | not_required
+review_tool: roughdraft    # roughdraft | inline | none
+reviewed_at:               # YYYY-MM-DD — empty until reviewed
+reviewer:                  # who recorded the review — empty until reviewed
 mode: debate | poll
 agents: N
 rounds: R                     # debate only
@@ -62,6 +66,14 @@ provenance:
 
 ## Debate Highlights
 - {notable mind-changes, strong arguments, surprising agreements}
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 ## Poll report body
@@ -88,6 +100,14 @@ provenance:
 
 ## High-Variance Flags
 - {options where std-dev > 2 — genuine judgment calls, not consensus}
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 ## Slug convention

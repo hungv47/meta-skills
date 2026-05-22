@@ -43,11 +43,12 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 - **Path:** `.forsvn/artifacts/meta/specs/<slug>.md` (per-spec slug, working drafts — created only when user asks to save)
 - **Lifecycle:** `spec` (working draft, edited iteratively until promoted to task-breakdown or system-architecture)
-- **Frontmatter fields:** `skill`, `version`, `date`, `status`, `mode` (idea-stage / plan-review), `plan-review-mode` (when mode=plan-review), `light_spec` (true for compact format). Full template: [`references/procedures/output-formats.md`](references/procedures/output-formats.md) [PROCEDURE].
+- **Frontmatter fields:** `skill`, `version`, `date`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode` (idea-stage / plan-review), `plan-review-mode` (when mode=plan-review), `light_spec` (true for compact format). Full template: [`references/procedures/output-formats.md`](references/procedures/output-formats.md) [PROCEDURE].
 - **Required sections (Medium/Deep depth):** Premise Challenge / Dream State Mapping / Decided Approach / Implementation Alternatives (min 2-3) / Temporal Interrogation / Key Decisions / Edge Cases / Failure Conditions / Out of Scope / Open Questions / Open Branches (operator-overridden, only if status=done_with_concerns) / Implementation Notes / Verdict. **Light-depth saves skip the 5 mandatory sections** (Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict don't apply); use compact format with frontmatter `light_spec: true`.
 - **Consumed by:** operator (decision audit trail); `breakdown-tasks` (decomposes the Decided Approach + Key Decisions); `architect-system` (designs the technical surface); `review-work` (scope-drift detection against MISSING/UNPLANNED changes).
 - **Side effect (idea-stage only):** spawns `agents/idea-critic.md` once at Step 2.7 per [`references/procedures/idea-critic-dispatch.md`](references/procedures/idea-critic-dispatch.md) [PROCEDURE].
 - **Eval workspace:** none — discover produces a spec, not a measurable initiative.
+- **Review:** Review-gated artifact. Write the review frontmatter (`review_state` / `review_tool` / `reviewed_at` / `reviewer`) and the `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run the review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `review_state` defaults to `pending`. `status` (skill quality gate) and `review_state` (human acceptance) are independent — `status: done` + `review_state: pending` is valid.
 
 ## Adaptive Depth
 

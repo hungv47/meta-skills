@@ -222,6 +222,16 @@ V:[1-3] F:[1-3] U:[1-3] = [total]/9. [Scoring rationale: Visual, Falsifiable, Un
 | **Social media** | [profile visual, post style, screenshot treatments] |
 | **Email** | [typography with fallbacks, visual treatment] |
 | **Documentation** | [theme, typography, visual hierarchy] |
+
+---
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
 ---
@@ -546,4 +556,14 @@ The mood is: **[3-4 adjectives].**
 
 - [Concrete prohibitions — 10-15 items]
 - [Each rule should name the specific anti-pattern and why it's wrong]
+
+---
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```

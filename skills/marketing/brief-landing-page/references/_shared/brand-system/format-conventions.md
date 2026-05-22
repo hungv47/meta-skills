@@ -40,12 +40,32 @@ file: BRAND.md | DESIGN.md | ASSETS.md
 version: [integer, increments on re-run; ASSETS.md stays at 1 unless explicitly fresh-inventory'd]
 date: [ISO YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
+review_state: pending         # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
+review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none
+reviewed_at:                  # YYYY-MM-DD — empty until reviewed
+reviewer:                     # who recorded the review — empty until reviewed
 declared_platforms: [list of platforms declared at Pre-Dispatch Q6]
 brand_md_version: [integer — ASSETS.md only; pins ASSETS.md to the BRAND.md version it was projected from]
 design_md_version: [integer — ASSETS.md only; pins to DESIGN.md version]
 last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 ---
 ```
+
+### Review fields (human-review layer)
+
+The four review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. `status` (skill quality gate) and `review_state` (human acceptance) are independent.
+
+Per-file `review_state` default:
+
+| File | `review_state` default | `review_tool` default | `## Review Gate` body block | Why |
+|---|---|---|---|---|
+| BRAND.md | `pending` | `roughdraft` | Yes — final section | Authored canonical brand-of-record; needs a human gate before it is trusted |
+| DESIGN.md | `pending` | `roughdraft` | Yes — final section | Authored canonical design-of-record; needs a human gate before it is trusted |
+| ASSETS.md | `not_required` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored; a projected file is not a review candidate |
+
+`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md, when a review completes the agent reads the checked `## Review Gate` box and sets `review_state` (Approve → `approved`, Reject → `rejected`, Suggest changes → `changes_requested`), then fills `reviewed_at` + `reviewer`.
+
+**Cross-stack note — review fields are exempt from the downstream-caller update rule.** The "Cross-stack contract" section below requires atomic downstream-caller updates on schema change. The four review fields are the deliberate exception: they are additive and orthogonal, and every downstream caller consumes brand content by heading match without parsing frontmatter review fields. Adding them updates only this file — no downstream caller is touched.
 
 ## BRAND.md structure (11 sections, in order)
 
@@ -62,6 +82,8 @@ last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 11. **Digital Touchpoints** — see "Per-platform Digital Touchpoints" subsection format below.
 
 Plus optional **Product-Specific Sections** (between Brand Mark and Digital Touchpoints — at least 1 unique to this product, with WHAT + WHY).
+
+After §11, BRAND.md ends with the `## Review Gate` body block (review machinery, not a brand-content section — see "Review Gate body block" below).
 
 ### Lexicon Rules block (BRAND.md §9, mandatory)
 
@@ -107,6 +129,8 @@ Route A: Digital Touchpoints contains ONLY the `Platforms declared at intake: [l
 10. **Accessibility** — contrast (WCAG AA 4.5:1 normal / 3:1 large/UI), focus states, touch targets (≥44px), color independence, dark mode audit.
 11. **Do's and Don'ts** — 10-15 items each, concrete and testable.
 
+After §11, DESIGN.md ends with the `## Review Gate` body block (review machinery, not a design-content section — see "Review Gate body block" below).
+
 ### Font Loading & Licensing table format (DESIGN.md §3, mandatory)
 
 | Font | Source | License | Status | Load method |
@@ -125,6 +149,24 @@ forbidden_icons:
     reason: "Cheap-startup connotation; we are not 'premium-icon trying-too-hard'."
   # 3-8 entries OR empty list with one-line explanation
 ```
+
+## Review Gate body block (BRAND.md + DESIGN.md only)
+
+BRAND.md and DESIGN.md each end with a `## Review Gate` block as their final section — the human-review decision surface, per `references/_shared/reviewable-artifact-contract.md`:
+
+```markdown
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+```
+
+This block ships in the BRAND.md and DESIGN.md templates (`artifact-templates.md`). It is review machinery, not brand/design content — the "11 sections" counts above are unchanged. The reviewer checks exactly one box; the agent reads it and sets `review_state` per the per-file table in "Review fields" above, then fills `reviewed_at` + `reviewer`. Review procedure: `references/_shared/roughdraft-review-protocol.md`.
+
+**ASSETS.md does NOT carry a `## Review Gate` block.** ASSETS.md is a deterministic projection — auto-scanned and regenerated each run, not human-authored — so it is not a review candidate. It carries the four review fields with `review_state: not_required` + `review_tool: none` (see "Review fields" above) but no body block.
 
 ## ASSETS.md structure (5 fixed + per-platform, Route B only)
 
