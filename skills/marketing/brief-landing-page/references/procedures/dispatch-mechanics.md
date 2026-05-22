@@ -88,7 +88,7 @@ Output: surface rhythm plan + section list + ASCII diagram + scroll velocity not
 
 | Agent | Pass These Inputs | Reference Files |
 |---|---|---|
-| Hand-Off Agent | full assembled brief (architecture + section spec + asset slots) + `target_handoff` (specialty targets, may be null) + detected_stack (framework + motion library, auto-detected from repo) | `references/handoff-formats.md` |
+| Hand-Off Agent | full assembled brief (architecture + section spec + asset slots) + `target_handoff` (specialty targets, may be null) + detected_stack (framework + motion library, auto-detected from repo) | `references/handoff-formats.md`; `references/design-handoff-prompting.md` (opening-prompt protocol — pass when `target_handoff` lists a design tool) |
 
 **Output (always):** `handoff-implementation.md` — universal coding-agent prompt block (Claude Code / Cursor / Codex / Opus / Gemini / GPT). Stack auto-detected at write time; falls back to pure HTML/CSS/Vanilla JS. Motion stack from `brand/DESIGN.md` or GSAP+ScrollTrigger+Lenis default. Contains verbatim Asset Placeholder Rule so coding agents never invent stock-photo URLs.
 

@@ -42,9 +42,29 @@ Layer 1 + Layer 2 are sequential. A finding only reaches Layer 2 if it survives 
 
 ---
 
+## Finding state taxonomy
+
+Every finding the reviewer surfaces ends in **exactly one** of four terminal states. The two-layer model decides *which*; this table is the canonical vocabulary for it — use these tokens in finding records, the report, and `quality-feedback-protocol` logs.
+
+| State | Layer | Meaning | In the report? |
+|-------|-------|---------|----------------|
+| `rejected_not_real` | Layer 1 | Already handled / equivalent to current code / hallucinated. Never was a real defect. | No — dropped pre-report. |
+| `accepted_fixed` | Layer 2 | Real, in-scope this pass, fixed, and cleared `§ Fix-then-rerun protocol`. | Yes — **Accepted (fixed)**. |
+| `accepted_deferred` | Layer 2 | Real and actionable, but out-of-scope this pass (or an Accepted fix was rolled back); follow-up logged. | Yes — **Deferred**. |
+| `rejected_not_worth_it` | Layer 2 | Real-or-borderline but not worth a fix: pure preference, fix cost disproportionate to value, or <5/10 reviewer confidence. | Yes — **Rejected (filtered as noise)**, one line each. |
+
+Rules:
+
+- **Exactly one state per finding.** A "half-actionable" finding is *split* into two findings, each with its own state (see Borderline cases) — never one finding carrying two states.
+- `rejected_not_real` is the only state that does not reach the report. The other three all appear, in their named subsection.
+- An `accepted_fixed` finding whose fix fails its rerun is **re-stated** as `accepted_deferred` ("Attempted, Rolled Back") — it never silently stays `accepted_fixed`.
+- The three report subsections map 1:1: `accepted_fixed` → Accepted, `accepted_deferred` → Deferred, `rejected_not_worth_it` → Rejected.
+
+---
+
 ## Category definitions
 
-### Accepted
+### Accepted — `accepted_fixed`
 
 **Real, actionable, in-scope for THIS review pass.** The resolver will fix it; the report shows what changed.
 
@@ -59,7 +79,7 @@ Acceptance criteria (all must hold):
 3. Fix cost is proportional to fix value. A 4-hour fix on a 1-line lint nit is not proportional; it's a Reject.
 4. Fix can land in this commit without expanding the review pass into a redesign.
 
-### Rejected (filtered as noise)
+### Rejected (filtered as noise) — `rejected_not_worth_it`
 
 **Real OR borderline, but not worth surfacing or fixing.** Suppressed from the report's primary narrative, but optionally listed in the Rejected subsection with a one-line suppression reason so the operator can verify the reviewer's judgment.
 
@@ -77,7 +97,7 @@ Rejection criteria (any one suffices):
 
 **Rejected findings ARE listed in the report's Rejected subsection** — brief, one-line each with the suppression reason. This lets the operator audit the reviewer's judgment without padding the main narrative.
 
-### Deferred
+### Deferred — `accepted_deferred`
 
 **Real, actionable, but OUT OF SCOPE for THIS review pass.** Surfaced for operator awareness; not fixed now; should produce a follow-up task or issue.
 
@@ -129,7 +149,7 @@ For every Accepted finding, the loop is:
    - Config change → schema validator + dependent-service smoke test
 4. If reruns pass → mark Accepted entry as "Fixed + Verified" with the rerun commands run.
 5. If reruns FAIL → the fix introduced a regression. Two options:
-   a. Roll back the fix; mark the Accepted entry as "Attempted, Rolled Back" with rationale; downgrade to Deferred for follow-up.
+   a. Roll back the fix; mark the Accepted entry as "Attempted, Rolled Back" with rationale; downgrade to Deferred (`accepted_deferred`) for follow-up.
    b. Operator decides to ship the regression knowingly (rare); critic override log per scripts/eval/log-critic-override.ts captures the decision.
 ```
 

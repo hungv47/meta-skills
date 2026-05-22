@@ -244,7 +244,7 @@ User responses:
 - **Envelope:** 250-500 lines enforced strictly by brand-voice critic G6 (under 250 = insufficient depth FAIL; over 500 = bloat FAIL)
 - **Cross-stack contract:** consumed by human designers + coding agents + `brief-graphic` (per slot) + indirectly by `evaluate-landing-page` cycles (when brief referenced from loop's `strategy/` directory). Schema changes require atomic update across upstream callers (plan-campaign) + downstream consumers (brief-graphic, coding agents, lp-eval) — never silently drift.
 
-Full 205-line artifact template byte-identical + per-section format rules + companion file conventions: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
+Full artifact template byte-identical + per-section format rules + companion file conventions: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
 > Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/lp-brief/[slug]/v[N]/brief.md`, preserve prior versions.
 
@@ -258,7 +258,7 @@ See `references/examples.md` — three end-to-end walkthroughs (Route A fresh LP
 
 ## Anti-Patterns
 
-Pipeline reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any brief ships. 12 brief-landing-page-specific patterns (pretending heuristic review is CRO, generic hypothesis, inlining shared skill chain, stale or fake proof, ignoring sacred elements, no objection handling, brief too short, brief too long, hero copy violating voice, coding-agent inventing asset URLs, implementation-prompt sacred-creep, implementation-prompt stack mismatch) + 4 cross-cutting marketing-stack rows (upstream context skipped → NEEDS_CONTEXT, cross-stack contract drift, polish-chain misroute, downstream eval-loop violation).
+Pipeline reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any brief ships. 12 brief-landing-page-specific patterns (pretending heuristic review is CRO, generic hypothesis, inlining shared skill chain, stale or fake proof, ignoring sacred elements, no objection handling, brief too short, brief too long, hero copy violating voice, coding-agent inventing asset URLs, implementation-prompt sacred-creep, implementation-prompt stack mismatch) + 4 cross-cutting marketing-stack rows (upstream context skipped → NEEDS_CONTEXT, cross-stack contract drift, polish-chain misroute, downstream eval-loop violation) + 3 design-handoff prompting patterns (vague quality adjectives, broad mid-session reset, token inference from prior context).
 
 Most common in practice: ignoring sacred elements (Critical Gate 3 + Brand-voice critic G1 sacred 4/4 auto-FAIL), brief too long (Critical Gate 4 + G6 envelope), coding-agent inventing asset URLs (G8b Implementation Prompt Compliance — Asset Placeholder Rule verbatim), hero copy violating voice (G2 Forbidden Vocabulary single-hit FAIL).
 
@@ -276,11 +276,11 @@ Most common in practice: ignoring sacred elements (Critical Gate 3 + Brand-voice
 ## References
 
 - **Playbook:** `references/playbook.md` [PLAYBOOK]
-- **Format:** `references/format-conventions.md` [PROCEDURE] — full 205-line artifact template byte-identical + companion file conventions
+- **Format:** `references/format-conventions.md` [PROCEDURE] — full artifact template byte-identical + companion file conventions
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Examples:** `references/examples.md` — Route A + Route B + Route C worked walkthroughs
-- **Domain catalogs** (loaded by agents at dispatch): `references/{conversion-principles, section-templates, surface-rhythm, hypothesis-rubric, handoff-formats, failure-modes}.md` + `references/conversion/` subdir (6 source files: core-principles, advanced-psychology, social-proof-trust, ux-design, testing-optimization, implementation-checklist)
+- **Domain catalogs** (loaded by agents at dispatch): `references/{conversion-principles, section-templates, surface-rhythm, hypothesis-rubric, handoff-formats, design-handoff-prompting, failure-modes}.md` + `references/conversion/` subdir (6 source files: core-principles, advanced-psychology, social-proof-trust, ux-design, testing-optimization, implementation-checklist)
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric, brand-system/*, design-brief/*}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `conversion-critic-agent.md` holds the canonical CP-01 → CP-13 scoring rubric + Cross-Cutting Checks + Scoring Patterns Per CP + Tier Excuses + Cycle Logic. `brand-voice-critic-agent.md` holds the canonical G1-G8b gates + Sacred Element Detection + Voice Forbidden Vocab Detection + Token Discipline + Envelope Math.

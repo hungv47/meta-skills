@@ -22,6 +22,7 @@ load_class: ANTI-PATTERN
 | Skipping the resolver when issues found | Reviewer's findings need synthesis (not just patches) — resolver sees BOTH original AND review. | If ISSUES_FOUND, run the resolver. If PASS, skip — but ISSUES_FOUND with no resolver is wrong. |
 | Auto-applying without the self-regulation gate | Resolver-introduced regressions can ship silently | Check >30% modified, >10 findings, regression triggers BEFORE applying. If any trigger fires, surface to operator instead. |
 | Running >2 loops | If 2 rounds don't converge, the design is the problem — review can't fix it | Stop at max 2 loops. Surface to operator with status DONE_WITH_CONCERNS or BLOCKED. |
+| Rerunning a clean review to polish wording | Reruns verify fixes, not prose — a clean report that just gets reworded burns budget and adds zero signal | Rerun the review only when an Accepted fix changed code (`procedures/review-setup.md` § Closeout discipline). A clean report ships as written. |
 | Padding the report with nits to look thorough | Suppresses signal under noise; trains operator to ignore future reports | Reviewer prompt enforces "suppress findings <5/10 confidence." Honor it. |
 
 ## Reviewer anti-patterns (the reviewer should avoid these — the prompt enforces them)

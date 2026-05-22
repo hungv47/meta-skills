@@ -1,14 +1,14 @@
 ---
-title: Review-Work — Setup (target detection + concurrent tests)
+title: Review-Work — Setup & Closeout (target detection · format · concurrent tests · rerun discipline)
 lifecycle: canonical
 status: stable
 produced_by: review-work
 load_class: PROCEDURE
 ---
 
-# Review Setup
+# Review Setup & Closeout
 
-**Load before Step 1.** Two pre-review setup moves the orchestrator runs before spawning the reviewer: (1) detect the review target from git state, (2) launch the test suite concurrently so it runs while the reviewer thinks. Brief 06 § Review Workflow names both as first-class capabilities.
+**Load before Step 1.** The setup and closeout moves the orchestrator runs around the review: (1) detect the review target from git state, (2) format the target before dispatch when formatting can move lines, (3) launch the test suite concurrently so it runs while the reviewer thinks, and (4) apply closeout discipline — rerun only what an accepted fix changed, and stop when the result is clean. Brief 06 § Review Workflow names these as first-class capabilities of a practical closeout.
 
 ---
 
@@ -70,3 +70,30 @@ Brief 06: "run tests and review in parallel where practical." Don't make the rev
 **Anti-pattern:** blocking the reviewer dispatch on test completion. The whole point is overlap — if the suite takes 4 minutes, the reviewer should be 4 minutes into its work by the time results land, not idle.
 
 **When NOT to run tests concurrently:** reviewing a non-code artifact (copy, a design doc, a plan); a destructive or side-effecting test suite (hits a real database, sends mail, costs money) — flag it to the operator instead of launching it; the operator said "quick review."
+
+---
+
+## § Closeout discipline
+
+Target detection and concurrent tests get the review *started* cleanly. Closeout discipline keeps it from *grinding* — it decides when to format, when to rerun, and when to stop. Brief 06 § Review Workflow frames the closeout sequence as: format, review, fix accepted findings, rerun what those fixes touched, stop when clean.
+
+**Procedure:**
+
+1. **Format before the reviewer is spawned — when formatting can move lines.** If the detected target is uncommitted working-tree changes and the project has an autoformatter (`prettier`, `ruff format`, `gofmt`, `cargo fmt`, a `Makefile` `fmt:` target), format *before* dispatch. Rationale: a formatter run *after* review invalidates every line number the reviewer cited and forces the resolver to fight whitespace diffs. Format first → the reviewer cites stable lines → the resolver patches logic, not layout.
+   - Because this rewrites the operator's uncommitted files, surface it for confirmation alongside the target-detection line — never run it silently:
+     ```
+     Detected formatter: `prettier` — format the 8 changed files before review so findings cite stable lines? [Y / skip]
+     ```
+   - **Skip** when: the target is an already-committed diff (formatting it means a new commit — out of scope for a review), no formatter is detected, or the operator said "quick review." On skip, note "not formatted" in the report.
+   - On `Y`, record the formatter command in the report's Commands Run section.
+
+2. **Rerun discipline — rerun the *review*, not just the tests, only when accepted findings changed code.** Two reruns are distinct and must not be conflated:
+   - **Fix-then-rerun (mandatory)** — `noise-filter.md § Fix-then-rerun protocol` reruns *tests / type-check / build* for every Accepted fix. This always runs; it is the verification gate.
+   - **Second review round (gated)** — a full Step 6 review pass over the resolver's output runs **only if** an Accepted fix changed code in a way that could introduce a *new* defect: logic edits, control-flow changes, new branches. Do **not** open a second review round when every finding was `rejected_not_worth_it` / `rejected_not_real` (nothing changed) or the only Accepted fixes were mechanical (removed an unused import, fixed a typo, renamed a local) with no behavior change.
+   - Never rerun a clean review to improve the *wording* of the report. A rerun verifies code, not prose (`anti-patterns.md`).
+
+3. **Stop condition.** The review is done when the final review round reports no new findings **and** the concurrent suite (or the fix-then-rerun checks) is green. Write the report and deliver — do not open another round "to be sure." If two rounds have not converged, that is the `Max 2 loops` gate (`anti-patterns.md`), not a license for a third round.
+
+**Do not adopt sandbox / approval bypasses.** The external review skill this closeout protocol draws from ships a "skip the approval prompt" / "bypass the sandbox" helper default. **That default is explicitly rejected here.** It is not portable across operators and conflicts with this repo's safety bar — every command this skill runs (formatter, tests, reruns) goes through the normal permission path. Adopt the *closeout sequence*; never the bypass.
+
+**Anti-pattern:** formatting *after* the reviewer returns — it renumbers every cited line and makes the resolver's diff unreadable. Format before dispatch, or not at all this pass.

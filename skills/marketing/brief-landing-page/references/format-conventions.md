@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # LP-Brief Format Conventions
 
-> Format rules for the lp-brief artifact (`brief.md`) + companions (`handoff-implementation.md` always, `handoff-{claude-design,figma,designer}.md` optional, `asset-slots/{slot-id}.prompt.md` per slot). Cited from SKILL.md "Artifact Contract" block + "Artifact Template" section. Full 205-line artifact template below is extracted **byte-identical** from baseline — schema changes here require atomic update across upstream callers + downstream consumers.
+> Format rules for the lp-brief artifact (`brief.md`) + companions (`handoff-implementation.md` always, `handoff-{claude-design,figma,designer}.md` optional, `asset-slots/{slot-id}.prompt.md` per slot). Cited from SKILL.md "Artifact Contract" block + "Artifact Template" section. The full artifact template below is the canonical `brief.md` structure — schema changes here require atomic update across upstream callers + downstream consumers.
 
 ## Output locations
 
@@ -108,7 +108,7 @@ The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are 
 8. **Asset Slots** — table with Slot / Section / Dimensions / Format / File path / Fallback / Generation prompt columns + per-slot prompt-file note
 9. **What NOT to Do** — sacred elements + page-specific failure modes + voice violations
 10. **Implementation Prompt (Coding Agents)** — companion-file pointer (full block lives at `handoff-implementation.md` to keep brief.md within envelope)
-11. **Hand-Off (Specialty Targets)** — optional; only when `target_handoff` lists `claude-design` / `pencil` / `figma` / `designer`. Omit entirely when `target_handoff` is null.
+11. **Hand-Off (Specialty Targets)** — optional; only when `target_handoff` lists `claude-design` / `pencil` / `figma` / `designer`. Per-target prompt block + an **Iteration Guide** (follow-up-prompt guardrail per `design-handoff-prompting.md`). Omit entirely when `target_handoff` is null.
 12. **Pre-flight Checklist** — 5 GFM checkboxes
 13. **Skill Chain** — referenced (if project has shared chain doc) OR generated per-page inline (no project-level default created)
 14. **Launch Plan + Results + Why This Works** — 3 short closing sections
@@ -296,8 +296,18 @@ N. **CTA Block** — [purpose]
 **Prompt block (paste verbatim):**
 
 ```
-[Hand-off prompt composed by handoff-agent — concrete enough to execute without follow-up]
+[Hand-off prompt composed by handoff-agent — opening clears the 9 Required Fields
+and repeats DESIGN.md visual values verbatim, per references/design-handoff-prompting.md]
 ```
+
+### Iteration Guide (design-tool targets only)
+
+> Operator note for the follow-up prompts after the opening block above. Omit when `target_handoff` is `null` or coding-agent only. Moves classified by the edit-prompt taxonomy in `references/design-handoff-prompting.md`.
+
+- **Refinement** (expected): [the one property the operator will likely adjust first — e.g., "hero vertical padding"]
+- **Additive** (expected): [the next section or component likely to be added]
+- **Corrective** (if it drifts): [the constraint most at risk — e.g., "restore matte surfaces"]
+- **Do NOT type:** broad meta prompts ("reconsider the page", "rethink the layout") — the tool reads them as discard and the session rarely recovers. To restart, paste a full new opening block.
 
 ### Pre-flight Checklist
 
@@ -364,7 +374,7 @@ Brand-voice critic G8b enforces all of the above on every run regardless of `tar
 
 ### `handoff-{claude-design,figma,designer}.md` (optional per `target_handoff`)
 
-Per-target hand-off prompt block. Lift sacred elements + voice rules verbatim from brand_digest into each — never paraphrase. Brand-voice critic G8 FAILs on paraphrase.
+Per-target hand-off prompt block. The opening of each block follows the design-tool opening-prompt protocol in `references/design-handoff-prompting.md`: clear all nine Required Fields and **repeat the exact visual values from `DESIGN.md` verbatim** (palette hex + token names, type, spacing, surface, motion) — the design tool will not apply an already-approved system on its own. Lift sacred elements + voice rules verbatim from brand_digest into each — never paraphrase. Brand-voice critic G8 FAILs on paraphrase, on missing visual values in a design-tool opening, or on a design-tool target with no Iteration Guide in the brief.
 
 ### `asset-slots/{slot-id}.prompt.md` (written by downstream `brief-graphic`)
 
