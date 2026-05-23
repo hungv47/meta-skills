@@ -37,26 +37,32 @@ load_class: PROCEDURE
 
 ## Manifest schema (`manifest.md`)
 
+The manifest carries 12 frontmatter fields in shortform mode + 3 added fields in app-preview mode (`mode`, `surface`, `brand_source`). The `mode` field discriminates the rest. Aspects supported: `9:16` / `1:1` / `16:9` / `4:5` / `custom-WxH` for shortform; same set plus `2:3` for app-preview.
+
 ```markdown
 ---
 skill: produce-video
 version: 1
 date: [today]
 status: done | done_with_concerns | blocked | needs_context
+mode: shortform | app-preview        # WS4 — discriminator; required
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md OR variants path OR hand-written video-brief path]
-target_platforms: [list — e.g., tiktok, reels, shorts]
-aspect: [9:16 | 1:1 | 16:9 | 4:5 | custom-WxH]
+source_brief: [.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md OR variants path OR hand-written video-brief path OR .forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md]
+target_platforms: [list — e.g., tiktok, reels, shorts]    # shortform mode
+surface: [app-store | onboarding | website | social]      # app-preview mode only — omit in shortform
+aspect: [9:16 | 1:1 | 16:9 | 4:5 | 2:3 | custom-WxH]
 length_seconds: [N]
 shot_count: [N]
-cta: "[exact CTA copy from brief — verbatim]"
+cta: "[exact CTA copy from brief — verbatim]"             # shortform required; app-preview may be "(none)"
+brand_source: brand-md | cold-start-hint                  # app-preview mode only — omit in shortform
 provenance:
   skill: produce-video
   run_date: [today]
   input_artifacts:
     - [source_brief path]
-    - brand/BRAND.md
-    - brand/DESIGN.md
+    - brand/BRAND.md       # both modes
+    - brand/DESIGN.md      # both modes (or annotated "absent — cold-start-hint" when brand_source: cold-start-hint)
+    - [.forsvn/artifacts/mkt/app-preview-brief/[slug]/assets.md]  # app-preview mode only
   output_eval: null  # set when a downstream eval cycle scores the rendered video
 ---
 
@@ -141,15 +147,25 @@ If the brief changes or the runtime choice changes: re-run `produce-video` with 
 
 ## Per-shot prompt schema (`scenes/[shot-id].md`)
 
+Frontmatter carries the same 7 fields in both modes; app-preview adds 5 mode-specific fields below the common block. The `mode` field on the shot mirrors the manifest's discriminator.
+
 ```markdown
 ---
 skill: produce-video
 version: 1
 date: [today]
+mode: shortform | app-preview              # WS4 — mirrors manifest.mode
 shot_id: [shot-1 | shot-2 | ...]
 shot_index: [1 | 2 | ...]
 duration_seconds: [N]
-platform: [primary target platform from manifest]
+platform: [primary target platform from manifest]     # shortform mode
+surface: [app-store | onboarding | website | social]  # app-preview mode (replaces platform)
+# --- app-preview-only fields (omit in shortform mode) ---
+source_screenshot: [project-relative path to screenshot]
+crop_rect: "[x, y, w, h]"                  # source-pixel rectangle OR named-component selector string
+mask_transform: static | crossfade-in-place | hard-cut | mask-expand | mask-contract | composite
+interaction_verb: rest | tap | drag | scroll | type | toggle | reveal | hold | settle | transition
+pointer_spec: none | "{style, color_hex, color_token, position_crop_relative: {x,y}, ripple: {start_px, end_px, duration_s} | null}"
 ---
 
 # Shot [N] — [optional one-line role: Hook / Problem / Mechanism / Proof / CTA]
@@ -219,6 +235,24 @@ DO NOT:
 
 ---
 
+## App-Preview Mode — Body Section Additions
+
+When `mode: app-preview`, the manifest's body uses the same 9 required sections as shortform PLUS the following adjustments:
+
+- **Shot List** — table gains 4 columns appended after `Voice / Narration`: `Source Screenshot` / `Crop Rect` / `Mask Transform` / `Interaction Verb`. Pointer + caption-band live in the per-shot prompt file; the manifest's row carries only their presence.
+- **Audio Plan** — narration is `present: false` by default for app-preview; the section reduces to the per-beat audio table (UI tap / whoosh / confirm chime) from the handoff. TTS spec block omitted unless the companion `brief.md` § Pointer + Audio Plan supplied narration text.
+- **Verification Checklist** — per-shot gates change to 5 app-preview gates: *(1)* Aspect matches handoff (no silent override) — *(2)* Duration matches handoff — *(3)* Source screenshot renders at crop rect with no rescale drift — *(4)* Pointer color resolves to a DESIGN.md token or `(cold-start-sampled)` — *(5)* Caption band geometry honored.
+- **Concerns** — pinned at top when `brand_source: cold-start-hint` even on status `done`. The cold-start posture is a permanent provenance note for the rendered video.
+
+The per-shot prompt schema's required body sections (Visual Prompt / On-Screen Text / Voice / Audio / Brand Tokens / Anti-Patterns / Renderer Hints / Change Log) carry forward unchanged in shape; app-preview content patterns are:
+
+- **Visual Prompt** — DOES NOT describe a synthesized image. Instead it describes the **composition operation**: source screenshot file + crop rectangle + mask transform + interaction overlay. No "lighting / mood" line; no "camera / motion" line; the screenshot is the visual. The body reads as a stage direction, not an image-gen prompt.
+- **On-Screen Text** — same verbatim rule; caption text is read from the handoff's `caption_text` column. Position field carries `caption_band.position` (e.g., `bottom-quarter`) rather than the shortform's `top-third / center / bottom-third`.
+- **Brand Tokens** — `pointer_spec.color_hex` + `caption_band` background token MUST be cited. When `brand_source: cold-start-hint`, the token name may be the literal `(cold-start-sampled)` with the hex sampled from the source screenshot — never a fabricated token.
+- **Renderer Hints** — REQUIRED in app-preview mode (not optional like shortform). Both Remotion and HyperFrames hints must be populated because both scaffolds need crop/mask/pointer semantics.
+
+---
+
 ## HyperFrames scaffold schema (`hyperframes/scaffold.html`)
 
 A complete single-file HyperFrames composition. Inlines a `<script type="application/json" id="hf-scenes">` block with all shots' specs, so the operator can run `hyperframes preview` from the bundle directory.
@@ -267,6 +301,130 @@ The scaffold compiles + runs but renders empty `<Sequence>` blocks until the ope
 
 ---
 
+## App-Preview Mode — HyperFrames scaffold patterns
+
+When `mode: app-preview`, the HyperFrames scaffold carries the same single-file structure as shortform PLUS the following per-scene additions inside `<script type="application/json" id="hf-scenes">`:
+
+```json
+{
+  "meta": { "slug", "aspect", "length_seconds", "fps": 30, "mode": "app-preview", "surface": "app-store" },
+  "scenes": [
+    {
+      "id": "shot-1",
+      "duration_seconds": N,
+      "source_screenshot": "screenshots/01-home.png",
+      "crop_rect": [x, y, w, h],
+      "mask_transform": "static" | "crossfade-in-place" | "hard-cut" | "mask-expand" | "mask-contract" | "composite",
+      "mask_keyframes": [   // only when mask_transform is mask-expand / mask-contract / composite
+        { "t_s": 0.0, "rect": [x, y, w, h] },
+        { "t_s": 0.4, "rect": [x2, y2, w2, h2] }
+      ],
+      "interaction_verb": "tap",
+      "pointer_spec": {
+        "style": "solid-circle",
+        "size_px": 64,
+        "color_hex": "#0F4C5C",
+        "color_token": "color.accent",
+        "position_crop_relative": {"x": 430, "y": 110},
+        "ripple": {"start_px": 80, "end_px": 160, "duration_s": 0.3}
+      },
+      "caption_band": {"position": "bottom-quarter", "height_px": 480, "safe_area_inset_px": 120},
+      "on_screen_text": [{ "text": "Tap to begin a surge", "entry_s": 0.0, "exit_s": 2.0 }],
+      "audio": { "music": "none", "sfx": [], "default_state": "on" }
+    }
+  ]
+}
+```
+
+The HyperFrames runtime maps these to:
+
+- **`source_screenshot` → `<img src>` layer** inside the stage, naturally sized; the operator may set `image-rendering: -webkit-optimize-contrast` on the layer to preserve crisp UI edges at scale.
+- **`crop_rect` + `mask_transform: static` → CSS `overflow: hidden` + `transform: scale(K) translate(-x, -y)`** on the stage container, where K is derived from output-width ÷ crop-width. For `mask_transform: mask-expand` / `mask-contract` / composite, the operator drives the transform via `element.animate()` (waapi) using `mask_keyframes` as the keyframe stops, with `currentTime` slaved to HyperFrames' `hf-seek` events. See `references/_shared/production-pattern.md` for the seek-driven pattern.
+- **`mask_transform: crossfade-in-place` → 2 stacked `<img>` layers**, top layer `opacity` waapi-animated from 1→0 across the `duration_s` (or sub-window) named in the spec.
+- **`mask_transform: hard-cut` → instantaneous `<img src>` swap** at the beat boundary; no animation.
+- **`pointer_spec` → absolutely-positioned `<div>`** inside the cropped stage, sized + colored per spec; `ripple` rendered as a second `<div>` with waapi-animated `width` / `height` / `opacity` keyframes.
+- **`caption_band` → fixed-position `<div>`** at `bottom: safe_area_inset_px`, height `height_px`, with the caption text rendered inside per the existing brand-token type rules. Fade-in/fade-out via waapi.
+
+The scaffold uses **waapi adapter patterns** (see project-level `waapi` skill if available) for all motion, ensuring deterministic seek behavior under HyperFrames' frame-by-frame render loop. Programmatic `setTimeout` / `setInterval` are FORBIDDEN — they cannot seek.
+
+---
+
+## App-Preview Mode — Remotion scaffold patterns
+
+When `mode: app-preview`, the Remotion scaffold carries the same single-file structure as shortform PLUS the following adjustments to the `SCENES` array and the per-scene render component:
+
+```tsx
+const SCENES: Scene[] = [
+  {
+    id: 'shot-1',
+    durationSeconds: 2.0,
+    mode: 'app-preview',
+    sourceScreenshot: 'screenshots/01-home.png',
+    cropRect: [240, 1820, 810, 220],        // [x, y, w, h] in source pixels
+    maskTransform: 'static',
+    maskKeyframes: null,                    // present only for mask-expand / mask-contract / composite
+    interactionVerb: 'rest',
+    pointerSpec: null,                      // or { style, sizePx, colorHex, colorToken, positionCropRelative, ripple }
+    captionBand: { position: 'bottom-quarter', heightPx: 480, safeAreaInsetPx: 120 },
+    onScreenText: [{ text: 'Tap to begin a surge', entryS: 0.0, exitS: 2.0 }],
+    audio: { music: 'none', sfx: [], defaultState: 'on' },
+  },
+  // ... shot-2 through shot-N
+];
+
+// App-preview scene renderer — operator fills in this component
+const AppPreviewScene: React.FC<{scene: Scene}> = ({scene}) => {
+  const frame = useCurrentFrame();
+  const {fps, width, height} = useVideoConfig();
+
+  // Crop scale: output width ÷ crop width
+  const [cropX, cropY, cropW, cropH] = scene.cropRect as [number, number, number, number];
+  const scale = width / cropW;
+
+  // Interpolated rect for mask-expand / mask-contract
+  const currentRect =
+    scene.maskKeyframes != null
+      ? interpolateRect(scene.maskKeyframes, frame / fps)
+      : scene.cropRect;
+
+  return (
+    <AbsoluteFill style={{overflow: 'hidden', backgroundColor: BRAND.surface}}>
+      <img
+        src={scene.sourceScreenshot}
+        style={{
+          position: 'absolute',
+          left: -currentRect[0] * scale,
+          top: -currentRect[1] * scale,
+          width: `auto`,
+          height: `auto`,
+          transform: `scale(${width / currentRect[2]})`,
+          transformOrigin: 'top left',
+          imageRendering: 'crisp-edges',
+        }}
+      />
+      {scene.pointerSpec && <Pointer spec={scene.pointerSpec} scale={scale} />}
+      {scene.onScreenText.map((t, i) => (
+        <CaptionBand key={i} band={scene.captionBand} text={t} frame={frame} fps={fps} />
+      ))}
+    </AbsoluteFill>
+  );
+};
+```
+
+The Remotion scaffold maps the spec to:
+
+- **`source_screenshot` → `<img>`** with absolute positioning and CSS transform-driven crop (same math as HyperFrames; Remotion's deterministic frame loop replaces waapi).
+- **`mask_transform: static` → fixed `cropRect`**; `mask-expand` / `mask-contract` / composite → frame-interpolated rect via a helper like `interpolateRect(keyframes, currentTimeSeconds)` that linearly interpolates each of `[x, y, w, h]` between keyframe stops.
+- **`mask_transform: crossfade-in-place` → 2 stacked `<img>` layers** with opacity driven by `interpolate(frame, [start, end], [1, 0])` from Remotion's standard utility.
+- **`mask_transform: hard-cut` → switch the `<img src>` instantly** at the beat boundary; the Sequence boundary IS the cut.
+- **`pointer_spec` → `<Pointer>` component** (operator fills) rendered as an absolutely-positioned div sized + colored per spec; ripple uses Remotion's `interpolate(frame, [tapStart, tapStart + 0.3 * fps], [80, 160])` for the radius and `[0.6, 0]` for the opacity.
+- **`caption_band` → `<CaptionBand>` component** absolutely positioned at the band's safe-area inset; text fades in/out via Remotion's `interpolate`.
+- **Composition dimensions** derive from `aspect`: `9:16` → 1080×1920; `2:3` → 1080×1620; `1:1` → 1080×1080.
+
+Both runtimes thus reach **functional parity** for app-preview output: crop scaling, mask transforms, pointer glyph + ripple, caption band, and seek-driven animation. The choice between them is operator preference (Remotion is React-component-first; HyperFrames is single-file HTML-first), not capability.
+
+---
+
 ## Vercel AI CLI README schema (`vercel-ai-cli.md`)
 
 Plain markdown how-to with three sections:
@@ -277,66 +435,82 @@ Plain markdown how-to with three sections:
 4. **Assembly section:** points operator to FFmpeg / DaVinci / Premiere / Final Cut / HyperFrames / Remotion for final video assembly
 5. **Audio (TTS) section:** points to ElevenLabs / OpenAI TTS / Coqui / Piper / macOS `say` for narration generation, references the manifest's TTS spec
 
+**App-preview mode note.** Options A-C all describe image-generation pipelines, which do NOT apply to app-preview mode — the "visual" is a real screenshot already on disk, not a prompt for a synthesizer. When `mode: app-preview`, the Vercel AI CLI README's body collapses to a single section:
+
+> **App-preview mode** — this bundle composes real UI screenshots from `assets.md` § Screenshots, not synthesized images. There is no image-gen step. Use the HyperFrames scaffold (`hyperframes/scaffold.html`) or the Remotion scaffold (`remotion/scaffold.tsx`) to render. The audio (TTS) section below still applies if the brief included narration.
+
+The TTS section follows unchanged.
+
 ---
 
 ## Field semantics
 
 ### Manifest
 
-| Field | Type | Notes |
-|---|---|---|
-| `skill` | kebab-case | Always `produce-video` |
-| `version` | integer | Artifact version (increment on `--rev=N` re-run) |
-| `date` | ISO YYYY-MM-DD | Original creation date; do not update on edits in place |
-| `status` | enum | `done` / `done_with_concerns` / `blocked` / `needs_context` per Completion Status Protocol |
-| `slug` | kebab-case | Matches upstream brief slug |
-| `source_brief` | project-relative path | The brief-shortform hero or variant; or hand-written video-brief path |
-| `target_platforms` | list of strings | Subset of platforms the brief defined |
-| `aspect` | string | One of `9:16` / `1:1` / `16:9` / `4:5` / `custom-WxH` |
-| `length_seconds` | integer | Total video length; per-shot durations sum to this exactly |
-| `shot_count` | integer | Number of files under `scenes/` |
-| `cta` | string | Exact CTA copy from brief; appears verbatim in final shot's on-screen text |
-| `provenance` | block (generation variant) | Required per D8 contract; see `references/_shared/artifact-contract-template.md` |
+| Field | Type | Mode | Notes |
+|---|---|---|---|
+| `skill` | kebab-case | both | Always `produce-video` |
+| `version` | integer | both | Artifact version (increment on `--rev=N` re-run) |
+| `date` | ISO YYYY-MM-DD | both | Original creation date; do not update on edits in place |
+| `status` | enum | both | `done` / `done_with_concerns` / `blocked` / `needs_context` per Completion Status Protocol |
+| `mode` | enum | both | `shortform` or `app-preview`; required from WS4 onward |
+| `slug` | kebab-case | both | Matches upstream brief slug |
+| `source_brief` | project-relative path | both | The brief-shortform hero/variant; OR hand-written video-brief; OR app-preview's `handoff-produce-video.md` |
+| `target_platforms` | list of strings | shortform | Subset of platforms the brief defined |
+| `surface` | enum | app-preview | One of `app-store` / `onboarding` / `website` / `social`; replaces `target_platforms` |
+| `aspect` | string | both | One of `9:16` / `1:1` / `16:9` / `4:5` / `custom-WxH`; app-preview also accepts `2:3` |
+| `length_seconds` | integer | both | Total video length; per-shot durations sum to this exactly |
+| `shot_count` | integer | both | Number of files under `scenes/` |
+| `cta` | string | both | Exact CTA copy from brief; appears verbatim in final shot. App-preview may be `(none)` |
+| `brand_source` | enum | app-preview | `brand-md` or `cold-start-hint`; pinned in Concerns when cold-start |
+| `provenance` | block (generation variant) | both | Required per D8 contract; see `references/_shared/artifact-contract-template.md` |
 
 ### Per-shot prompt
 
-| Field | Type | Notes |
-|---|---|---|
-| `skill` | kebab-case | Always `produce-video` |
-| `version` | integer | Mirrors manifest version |
-| `date` | ISO YYYY-MM-DD | Same as manifest |
-| `shot_id` | kebab-case | Stable identifier: `shot-1`, `shot-2`, ... |
-| `shot_index` | integer | 1-based index matching shot_id suffix |
-| `duration_seconds` | number | Per-shot duration; sums across all shots = manifest.length_seconds |
-| `platform` | kebab-case | Primary target platform from manifest |
+| Field | Type | Mode | Notes |
+|---|---|---|---|
+| `skill` | kebab-case | both | Always `produce-video` |
+| `version` | integer | both | Mirrors manifest version |
+| `date` | ISO YYYY-MM-DD | both | Same as manifest |
+| `mode` | enum | both | Mirrors manifest.mode |
+| `shot_id` | kebab-case | both | Stable identifier: `shot-1`, `shot-2`, ... |
+| `shot_index` | integer | both | 1-based index matching shot_id suffix |
+| `duration_seconds` | number | both | Per-shot duration; sums across all shots = manifest.length_seconds |
+| `platform` | kebab-case | shortform | Primary target platform from manifest |
+| `surface` | enum | app-preview | App-preview surface from manifest; replaces `platform` |
+| `source_screenshot` | project-relative path | app-preview | Path to the source UI screenshot (must exist on disk) |
+| `crop_rect` | `[x,y,w,h]` ints \| selector string | app-preview | Source-pixel rect OR named component selector |
+| `mask_transform` | enum | app-preview | `static` / `crossfade-in-place` / `hard-cut` / `mask-expand` / `mask-contract` / `composite` |
+| `interaction_verb` | enum | app-preview | One of the 10 canonical verbs from `brief-app-preview/references/interaction-grammar.md` § 1 |
+| `pointer_spec` | object \| `none` | app-preview | Pointer style + color + position + ripple, OR literal `none` for non-pointer beats |
 
 ---
 
 ## Required body sections (cross-stack contract)
 
-In order. Renaming or reordering breaks downstream consumers + critic.
+In order. Renaming or reordering breaks downstream consumers + critic. Both modes share the 9 / 8 section spines below; app-preview differences are noted inline.
 
 ### Manifest
 
-1. **Header block** (Source brief / Target platforms / Aspect / Length / Shot count / CTA / Status)
-2. **Concerns** (only when status is done_with_concerns; otherwise omit section header)
-3. **Shot List** (6 columns: Shot / Duration / Visual / On-Screen Text / Voice / Asset Prompt File)
-4. **Audio Plan** (Music + TTS spec block)
-5. **Caption + Hashtags** (platform-side metadata)
-6. **Verification Checklist** (per shot, 5 spec gates each)
-7. **Runtime Choices** (numbered list of 4 runtime options)
+1. **Header block** (Source brief / Mode / Target platforms or Surface / Aspect / Length / Shot count / CTA / Status / Brand source [app-preview])
+2. **Concerns** (always pinned at top when `brand_source: cold-start-hint`; otherwise only when status is done_with_concerns)
+3. **Shot List** — shortform: 6 columns (Shot / Duration / Visual / On-Screen Text / Voice / Asset Prompt File). App-preview: 10 columns (Shot / Duration / Visual / On-Screen Text / Voice / Asset Prompt File / Source Screenshot / Crop Rect / Mask Transform / Interaction Verb)
+4. **Audio Plan** — Music + TTS spec block (shortform); per-beat audio table (app-preview, TTS optional)
+5. **Caption + Hashtags** (platform-side metadata; app-preview may omit hashtags since the surface is non-social)
+6. **Verification Checklist** — shortform: 5 gates per shot. App-preview: 5 different gates per shot (aspect / duration / crop fidelity / pointer color / caption-band geometry)
+7. **Runtime Choices** (numbered list of 4 runtime options shortform; 2 runtime options + 1 non-applicable note in app-preview — Vercel AI CLI does not apply)
 8. **Re-run** (1-line note on `--rev=N` semantics)
 9. **Operator Next Steps** (numbered list)
 
 ### Per-shot prompt
 
-1. **Visual Prompt** (renderer-agnostic body)
+1. **Visual Prompt** — shortform: renderer-agnostic synthesis prompt body. App-preview: composition operation (source + crop + mask transform + interaction overlay); no synthesis prompt.
 2. **On-Screen Text (verbatim)**
-3. **Voice / Narration** (or "none")
+3. **Voice / Narration** (or "none"; app-preview defaults to "none" unless brief supplied narration)
 4. **Audio (this shot)**
-5. **Brand Tokens (verbatim)**
+5. **Brand Tokens (verbatim)** — app-preview MUST cite pointer color + caption-band background; `(cold-start-sampled)` token name allowed when `brand_source: cold-start-hint`
 6. **Anti-Patterns (DO NOT list)**
-7. **Renderer Hints** (optional; omit if no runtime preference)
+7. **Renderer Hints** — shortform: optional. **App-preview: REQUIRED** (both Remotion + HyperFrames hints populated; runtime needs crop/mask/pointer semantics regardless of operator's runtime choice)
 8. **Change Log** (cycle 2+ only)
 
 ---

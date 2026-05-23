@@ -11,9 +11,9 @@ load_class: ANTI-PATTERN
 
 # Anti-Patterns — produce-video
 
-**Re-read before any bundle ships. The 6 orchestrator-level patterns + 4 cross-cutting marketing-stack rows cover the failure modes brief 04 explicitly named, plus the cross-stack drift risks every production skill carries.**
+**Re-read before any bundle ships. The 6 orchestrator-level patterns + 3 app-preview-mode patterns + 4 cross-cutting marketing-stack rows cover the failure modes brief 04 + WS4 explicitly named, plus the cross-stack drift risks every production skill carries.**
 
-The shared production-skill anti-pattern catalog — the orchestrator-level set + the 4 cross-cutting rows — is canonical in [`_shared/production-pattern.md`](_shared/production-pattern.md) § 7; the rows below are the produce-video-specific instances (Anti-pattern 6, shot-duration padding, is produce-video-only).
+The shared production-skill anti-pattern catalog — the orchestrator-level set + the 4 cross-cutting rows — is canonical in [`_shared/production-pattern.md`](_shared/production-pattern.md) § 7; the rows below are the produce-video-specific instances (Anti-pattern 6, shot-duration padding, and Anti-patterns 7-9, app-preview mode, are produce-video-only).
 
 ---
 
@@ -76,6 +76,38 @@ The shared production-skill anti-pattern catalog — the orchestrator-level set 
 **Why it fails:** The brief's shot timing is calibrated against platform retention curves (hook in first 1s, peak at shot 2-3, CTA reveal at shot N-1 → shot N). Padding distorts the curve. Splitting introduces transitions the brief didn't approve.
 
 **Fix:** Critic Gate 1 check: `SUM(scenes[*].duration_seconds) == manifest.length_seconds` exactly. If brief math doesn't sum, return `NEEDS_CONTEXT` and ask the brief layer (brief-shortform) to fix the brief's shot timing. Never silently re-distribute.
+
+---
+
+## App-preview-mode patterns (added in WS4)
+
+### 7. Inventing UI elements not present in the source screenshot
+
+**Pattern:** App-preview mode. The handoff says "B3 reveal: dim overlay rises, tide appears" with `source_screenshot: screenshots/03-active.png`. Prompt-author writes a Visual Prompt that adds a glowing border, a confetti burst, or "a subtle highlight indicating success" — none of which are in the source screenshot. The runtime renders these as composited overlays, producing footage that misrepresents the product UI.
+
+**Why it fails:** App-preview's promise is that the rendered video is a faithful demonstration of the product. Invented UI elements are footage fraud — they show behavior the product doesn't actually have. App Store / onboarding surfaces have rejection policies for misleading captures; the legal risk compounds the brand risk. Critic Gate 5 auto-FAILs.
+
+**Fix:** Visual Prompt sections describe ONLY composition operations on the real screenshot — crop, mask transform, interaction overlay (pointer + caption-band). No "add," "introduce," "show a," "indicate" verbs. The DO NOT list in every per-shot prompt includes "do not add visual elements absent from the source screenshot." When the brief calls for a result-state that isn't in the supplied screenshots, return `NEEDS_CONTEXT` and ask `brief-app-preview` for the missing state screenshot.
+
+---
+
+### 8. Custom interaction verbs or mask transforms (vocabulary expansion)
+
+**Pattern:** App-preview mode. The handoff uses a canonical verb (`tap`, `reveal`, `hold`), but the prompt-author "improves" it in the per-shot prompt — `tap` becomes "pulse-tap," `reveal` becomes "swoop-in," `static` mask becomes "subtle drift." Or vice versa: a fresh prompt-author run on the same handoff invents `glitch-transition` because it feels more energetic.
+
+**Why it fails:** The canonical 10-verb set + 6-transform set are calibrated against the brief-app-preview Gate 3 vocabulary and the runtime scaffolds' implementation. Custom verbs/transforms have no implementation contract — the HyperFrames and Remotion scaffolds don't know how to map "pulse-tap" to a deterministic motion spec. Critic Gate 6 auto-FAILs. Worse: vocabulary drift is contagious — once one custom verb ships, future prompt-authors will treat it as precedent.
+
+**Fix:** Verb-set + transform-set lock. Every `interaction_verb` is one of the 10; every `mask_transform` is one of the 6. The DO NOT list in every per-shot prompt cites the canonical sets explicitly. When the handoff itself contains a non-canonical verb, the brief is broken — return `NEEDS_CONTEXT` and defer to `brief-app-preview` (its Gate 3 should have caught it).
+
+---
+
+### 9. Synthetic pointer or caption-band effects (gradient / glow / neon)
+
+**Pattern:** App-preview mode. The handoff specifies `pointer: solid-circle 64px @ (430, 110) accent`. Prompt-author writes `pointer color: radial-gradient(#0F4C5C, #00FFFF)` or "add a soft glow around the pointer for visibility" or "caption-band fades from accent to translucent gradient." The runtime renders synthetic effects that DON'T match the brand's actual visual language.
+
+**Why it fails:** Brand fidelity violation by stealth. The pointer and caption-band are the only on-screen overlays in app-preview mode; they are the brand's UI vocabulary. A neon-gradient pointer reads as "AI-generated" even when the underlying UI is the real product — it breaks the immersion of "this is the actual app." Critic Gate 7 auto-FAILs. Also relevant: the `create-brand` WS9 anti-pattern #21 ("Generic AI-glow palette default") prohibits this pattern at the brand layer; the same prohibition applies here.
+
+**Fix:** Pointers and caption-band backgrounds are SOLID colors only. Hex from `brand/DESIGN.md` (with token name) OR source-sampled hex with `(cold-start-sampled)` token name. The per-shot Brand Tokens section explicitly states "solid" or the equivalent on every shot. DO NOT list adds "do not apply gradient, glow, or neon effects to pointer or caption-band." When the brief itself specifies a synthetic effect (e.g., the motion-spec-agent shipped a gradient), the brief is broken — return `NEEDS_CONTEXT`.
 
 ---
 
