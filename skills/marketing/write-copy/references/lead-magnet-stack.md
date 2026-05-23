@@ -236,3 +236,78 @@ Putting both stacks together — a single post running the 5-element structure w
 ## Source Notes
 
 - Pairs with [`emotional-triggers.md`](emotional-triggers.md) (the 6-lever framework — this stack is a specific deployment pattern of that framework for lead-magnet posts) and [`belief-disruption.md`](belief-disruption.md) (TOF mechanic; can serve as Element 1-2 body when audience is problem-unaware).
+
+---
+
+## DM-Capture Mechanics — The Post→DM→Email Bridge
+
+Element 5 references low-friction CTAs ("comment a word, DM, follow"). This subsection drills into the **comment-keyword-to-DM** mechanic specifically — the trigger flow that turns a public comment into a private DM containing the asset and an email-capture step. It's the second layer the FOMO stack typically loads against.
+
+### Why It Works
+
+Compared to "click this link to download," the comment-keyword flow:
+
+- Removes the click-to-external-page friction (the asset arrives in the platform the reader already uses)
+- Inflates the post's engagement signal (comments are the highest-weighted action on most algorithms)
+- Creates a tight reciprocity loop — the user takes a small public action and the asset arrives privately within minutes
+- Filters intent: people who comment have higher intent than people who would have lurked over a link
+
+The cost: the post-comment-DM flow doesn't capture the email until the DM is delivered, so the DM payload must do the email-capture work without burning trust.
+
+### The Five-Move Flow
+
+| Move | What | Operator job |
+|---|---|---|
+| 1. **Post body** | The 5-element lead-magnet post (above) ending with a memorable trigger word | Compose post with trigger word in Element 5 |
+| 2. **Public comment** | Reader comments the trigger word ("VIRAL", "SYSTEM", "STACK") | None — algorithmic |
+| 3. **DM delivery** | The reader receives a DM with: (a) one-line greeting, (b) the asset itself OR a one-click link, (c) optional soft email-capture step | Pre-write the DM template; pick manual or automated delivery |
+| 4. **Email-capture step** | Either the DM contains a short opt-in line ("reply with your email and I'll add you to the weekly breakdown") OR the asset link is gated behind a one-field email form | Pre-decide gating posture; honor it consistently |
+| 5. **Asset arrival** | Asset opens immediately. If gated, asset arrives via the linked email or as a follow-up DM | Asset must match the investment-signaling claim from Element 4 |
+
+### Trigger-Word Selection Rules
+
+- **Memorable and on-theme** — "VIRAL" / "STACK" / "PSYCH" / "SYSTEM" / "BREAK" read as part of the content's argument, not random tokens. Generic ("YES", "ME", "INFO") drives 2-3x fewer comments because the action feels arbitrary.
+- **One syllable or two** — readers comment from phones; longer words get typos and break automation matching.
+- **Unique within the account's recent posts** — running the same trigger across 5 posts in 2 weeks trains regulars to ignore it. Rotate every 2-3 lead-magnet posts.
+- **Avoid common English words** — "TIME", "GROWTH", "WIN" collide with organic comment text and trip automation false-positives.
+
+### Manual vs Automated Delivery
+
+| Mode | When to use | Risk |
+|---|---|---|
+| **Manual DM by operator** | First 50-200 comments, audience-building phase, when the trigger volume is below the operator's tolerance for inbox work | Operator burns out at scale; replies become inconsistent |
+| **Automation tool (e.g., MEE6-style for LinkedIn, ManyChat-style for IG, custom for X)** | Trigger volume >50-100/post or a recurring campaign | Platform TOS varies — IG/Meta is permissive when consensual; X is murkier; LinkedIn has no first-party automation API and tooling is gray-area |
+| **Manual → automated bridge** | Start manual to learn the DM-friction points, then automate once the DM template is locked | None if the bridge is honest — DON'T claim "I personally read every DM" once the response is automated |
+
+**Honesty rule:** if the DM is automated, the DM body should not impersonate the operator's personal voice in a way that breaks trust on the second message. Either acknowledge automation ("auto-sending this so you get it fast — happy to chat in a reply") or write the automated DM in the same voice the operator would actually use, then continue manually in replies.
+
+### Email-Capture Posture Choices
+
+The post→DM flow can capture email three ways. Pick one explicitly:
+
+1. **Ungated asset in DM** — asset (PDF link, Notion link, raw text) sent directly. No email capture. Highest trust + lowest list-growth rate.
+2. **Email-gated link in DM** — DM contains a link to a one-field opt-in page; asset arrives via email. Best for high-intent lists. Loses ~30-50% of DM recipients at the gate (typical practitioner inference, varies by audience).
+3. **Soft opt-in in DM body** — DM contains the asset AND a one-line "want my weekly breakdown? reply with your email" — non-blocking opt-in. Highest delivered-asset rate; captures a smaller email list of the most engaged subset.
+
+The right choice depends on whether the operator's goal is the largest possible email list, the highest-intent email list, or maximum reach for the asset itself. Lock the choice before the post goes live.
+
+### Anti-Patterns
+
+- **Bait-and-switch DM.** Promise "the framework" in the post, send a DM pitching a $497 course with "framework details inside the call." This is the single worst trust-burn in the playbook. Whatever the post promises, the DM delivers — the upsell goes in a *later* email, not the first DM.
+- **Generic trigger word.** "Comment YES below" — works on accounts with deep baseline engagement; on cold posts it under-converts memorable triggers by ~2-3x.
+- **Trigger word in the post title or first line.** Readers see the trigger before the argument; comments arrive without the lead-magnet psychology firing. Trigger lives in Element 5 only.
+- **DM with three asks.** "Comment KEYWORD, follow me, and reply with your email" — three actions splits the response; the conversion goes to whichever is easiest, usually following. One ask per DM.
+- **Automation that fires on partial match.** Trigger word matching `STACK` also fires on "thanks for the stack overflow link." Match the full word at word boundaries; reject if the comment is a reply to another comment.
+- **No follow-up sequence.** The DM arrives, the asset arrives, the reader never hears from the account again. The DM is the *start* of the relationship — at minimum, the operator should have a 1-message thank-you 24h later opening a low-pressure thread.
+- **Performance claims based on outlier posts.** "This flow gets 700+ emails per post" — survivorship-biased. Most posts running this flow capture 10-100 comments. Plan against the median, not the outlier.
+
+### Composition Checklist
+
+Before posting:
+
+- [ ] Trigger word picked, on-theme, 1-2 syllables, not used in this account's recent 3 lead-magnet posts
+- [ ] DM template written, voice-consistent, single ask, asset-arrival mechanism decided
+- [ ] Email-capture posture explicitly chosen (ungated / gated link / soft opt-in)
+- [ ] Asset under the post justifies Element 4's investment signal — no 2-page PDF behind "8 months of work"
+- [ ] Manual-vs-automated delivery decided; if automated, the DM voice is honest about it
+- [ ] 24h follow-up plan exists (even a single thank-you message)

@@ -86,7 +86,7 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget:
 
 ### Shared References (read by multiple agents)
 
-- **Frameworks** (`references/`): `headline-formulas.md` (hook), `page-sections.md` (body + social-proof), `emotional-triggers.md` (psychology + hook + critic), `belief-disruption.md` (psychology + hook, TOF only), `lead-magnet-stack.md` (hook + social-proof + cta, lead-magnet posts), `research-workflow.md` (Pre-Dispatch step 1), `discovery-story.md` (social-proof mechanism-led trust), `seven-sweeps.md` (unified 7-pass editing framework — names which agents own each sweep, defines back-checking protocol between sweeps, canonical word-level-cut list, optional Expert Panel Scoring high-stakes mode, optional critic dim when `--seven-sweeps`/`--high-stakes` mode is requested)
+- **Frameworks** (`references/`): `headline-formulas.md` (hook — includes objection-to-hook patterns), `page-sections.md` (body + social-proof), `emotional-triggers.md` (psychology + hook + critic), `belief-disruption.md` (psychology + hook, TOF only), `lead-magnet-stack.md` (hook + social-proof + cta, lead-magnet posts — includes DM-capture mechanics), `lifecycle-sequences.md` (abandoned-cart + post-purchase + win-back sequence copy patterns), `research-workflow.md` (Pre-Dispatch step 1), `discovery-story.md` (social-proof mechanism-led trust), `seven-sweeps.md` (unified 7-pass editing framework — names which agents own each sweep, defines back-checking protocol between sweeps, canonical word-level-cut list, optional Expert Panel Scoring high-stakes mode, optional critic dim when `--seven-sweeps`/`--high-stakes` mode is requested)
 
 ---
 
@@ -169,7 +169,7 @@ End-to-end Route B walkthrough (StatusZero landing page — async standup replac
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/copywriting-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch): `references/{headline-formulas, page-sections, emotional-triggers, belief-disruption, lead-magnet-stack, research-workflow, discovery-story}.md`
+- **Domain catalogs** (loaded by agents at dispatch): `references/{headline-formulas, page-sections, emotional-triggers, belief-disruption, lead-magnet-stack, lifecycle-sequences, research-workflow, discovery-story}.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
 - **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical V/F/U rubric + trigger-density gate + Authenticity filter + re-dispatch routing table.

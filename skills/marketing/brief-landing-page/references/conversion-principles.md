@@ -107,6 +107,13 @@
 - **Applies to:** hero
 - **lp-brief application:** hero spec must answer the source's three 3-second questions explicitly. Critic FAILs hero specs that don't answer them.
 
+### CP-14 — 5-Question Visitor Diagnostic
+
+- **Pattern basis:** internal research synthesis. Distinct from CP-13: CP-13 checks hero comprehension; CP-14 checks whether the page sequences answers to the five real visitor questions across hero + first scroll.
+- **Rule:** Above-fold + first scroll must produce a quotable line answering each of: (Q1) What is this? (Q2) How does it solve my problem? (Q3) Why trust you? (Q4) Who else uses this? (Q5) What do I do now? See `references/conversion/core-principles.md` §9 for full diagnostic + failure modes.
+- **Applies to:** hero, value-prop, social-proof, primary-CTA sections (as a cross-section sequence check)
+- **lp-brief application:** the brief's pre-launch foundation section runs the 5-question diagnostic and quotes the answering line for each question. **Advisory only** — conversion-critic-agent surfaces a NOTE (not a FAIL) when a question lacks a quotable answering line. Promote to FAIL only if pre-launch foundation explicitly requires the diagnostic.
+
 ---
 
 ## Principles Intentionally NOT in Critic Rubric

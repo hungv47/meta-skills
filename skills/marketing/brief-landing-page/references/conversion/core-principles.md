@@ -256,3 +256,52 @@ who've taken back their time."
 "You'll be able to..." not "This allows..."
 "Imagine..." not "This product..."
 ```
+
+---
+
+## 9. The 5-Question Visitor Diagnostic
+
+**Rule**: Above-fold + first scroll must answer five visitor questions in order
+
+### The Five Questions
+
+Every visitor arrives with five unspoken questions. If the page cannot answer them in sequence, the visitor leaves before the CTA.
+
+1. **What is this?** — One-sentence category clarity. If the visitor cannot describe what you do in their own words after 3 seconds, you fail Q1.
+2. **How does it solve my problem?** — The link from product capability to *their* outcome. Not "What does it do?" — "What does it do *for me*?"
+3. **Why should I trust you over others?** — Differentiation + proof. The visitor is comparing — make the answer easy.
+4. **Who else is using this successfully?** — Specific social proof. Logos, named customers, count of users, named results. Not generic "trusted by thousands."
+5. **What do I need to do right now?** — Single, unambiguous next action. If the visitor has to decide between 3 CTAs, they choose zero.
+
+### How This Differs from the 3-Second Test (§2 above-fold + CP-13)
+
+- **3-second test** asks: "Can the visitor *understand* the value in 3 seconds?" — a single comprehension check on the hero
+- **5-question diagnostic** asks: "Does the page *answer* the five real visitor questions in order?" — a sequence check across hero + first scroll
+
+The 3-second test catches confusing heros. The 5-question diagnostic catches pages that pass the 3-second test but still bounce because Q2/Q3/Q4 are missing.
+
+### Diagnostic Application
+
+For each candidate page or section spec:
+
+- [ ] Q1 answered? Quote the exact line that does it.
+- [ ] Q2 answered? Quote the line linking capability → audience outcome.
+- [ ] Q3 answered? Quote the differentiator + proof anchor.
+- [ ] Q4 answered? Quote the specific social-proof unit (logo / count / named result).
+- [ ] Q5 answered? Identify the single primary CTA + verify no competing CTA in the same viewport.
+
+A "yes" on any question requires a quotable line, not an inferred answer. "It's kind of implied" is a fail.
+
+### Common Failure Modes
+
+| Failure | Symptom | Fix |
+|---|---|---|
+| Q1 unclear | Visitor cannot describe the product after reading the hero | Rewrite hero to lead with category, not metaphor |
+| Q2 missing | Page lists features but never says what changes for the visitor | Add a "so you can…" line per feature (see §8) |
+| Q3 generic | Differentiation reads as marketing claim, not contrast | Name the alternative being beaten + the specific dimension |
+| Q4 thin | Social proof is a generic "trusted by thousands" tagline | Replace with specific named logos, counts, or named outcomes |
+| Q5 muddled | Multiple equally-weighted CTAs above the fold | Demote secondary CTAs to lower in the page or to text links |
+
+### Application in lp-brief
+
+This diagnostic is **advisory** at brief-time — surfaced as a section-spec note where appropriate, not a critic FAIL. It runs as a pre-launch readiness check (§12 pre-launch foundation) and as a diagnostic lens during evaluate-landing-page eval-loop scoring. If a section spec scores ≤3/5 on the diagnostic and is not the final pre-launch foundation section, the conversion-critic-agent surfaces an advisory note (not a FAIL) recommending which question to strengthen.
