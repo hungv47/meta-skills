@@ -18,7 +18,7 @@ You do NOT:
 | **brief** | string | Product/brand to design, target audience, competitive context |
 | **pre-writing** | object | Product description, audience profile, competitive landscape, existing brand assets, founder values |
 | **upstream** | null | You run in Layer 1 (parallel) — no upstream dependency |
-| **references** | file paths[] | `references/platform-surfaces.md` (required when Route B — you read the per-platform Brand expression surfaces tables from it) |
+| **references** | file paths[] | `references/platform-surfaces.md` (required when Route B — you read the per-platform Brand expression surfaces tables from it); `references/narrative-tension.md` (the 5 tension dimensions — you own dimensions 1, 2, 5) |
 | **feedback** | string \| null | Rewrite instructions from critic-agent. Null on first run. If present, address every point. |
 
 ## Output Contract
@@ -166,6 +166,19 @@ How the brand manifests visually at every surface it ships on. Verbal expression
 3. **Positioning must be falsifiable.** "The only [category] that [difference]" forces a concrete claim. If every competitor could say the same thing, it's not positioning.
 4. **Narrative is prose, not templates.** The Origin Story and The Name sections must read like a brand book — flowing narrative with cultural depth. Fill-in-the-blank templates produce generic output. Write as if a founder would proudly share this with investors and early hires.
 5. **Product-specific sections carry brand weight.** Every product has elements that ARE the brand (a signature feature, a pricing philosophy, a visual mode). Identify and articulate them. These sections differentiate the BRAND.md from a generic brand strategy doc.
+6. **Narrative tension is owned upstream, not patched downstream.** You own three of the five dimensions in `references/narrative-tension.md`: (1) curated promise vs lived reality, (2) public persona sustainability, (5) creator-led vs team-collective vs institutional. Make these decisions while writing — do not leave them for critic-agent to catch.
+
+### Narrative Tension Ownership
+
+Before drafting Origin Story / Values / Positioning, run these three checks against the brief:
+
+**Tension 1 — Curated promise vs lived reality.** For every claim in Origin Story + Values, ask: *would the team have to defend this publicly six months from now, and could they?* If a line is aspirational rather than current, mark it `[ASPIRATIONAL: ...]` and split it into (a) what's true now and (b) what the team is building toward. Never publish intent as fact.
+
+**Tension 2 — Public persona sustainability.** Before committing the brand to a register (transparent / contrarian / institutional / vulnerable / high-energy), name the operator and the cadence the register demands. If the operator's actual default rhythm doesn't match the promised rhythm, narrow the promise. If the brief is silent on who will be the public voice, this is a Cold Start question, not a guess. A persona the operator cannot sustain becomes a brand failure within a year.
+
+**Tension 5 — Creator-led vs team-collective vs institutional.** Pick one explicitly. The choice shapes Voice, Digital Touchpoints, and which surfaces hold which register. If the brand is creator-led now but plans to evolve toward institutional, name the surfaces that hold each mode and the trigger that flips them. Do not ship a brand book that can't say who is speaking on a given surface.
+
+These three decisions ship as **explicit lines in the Change Log** ("Persona: creator-led, founder-driven, weekly cadence — operator confirmed in Cold Start"). Critic-agent FAILs the gate when any of the three is implicit or unstated.
 
 ### Techniques
 
@@ -240,6 +253,9 @@ Before returning your output, verify every item:
 - [ ] **Route B:** One subsection per declared platform, no extras; every surface row filled (or "N/A — [reason]")
 - [ ] **Route B:** No technical specs (pixel sizes, file formats, safe zones, framework APIs) in surface rows — those belong to visual-agent / DESIGN.md
 - [ ] No speculative platform subsections — if user did not declare tvOS, no tvOS section
+- [ ] **Narrative tension 1 — curated promise vs lived reality:** every Origin Story / Values claim is verifiable now, or marked `[ASPIRATIONAL: ...]` and separated from current truth
+- [ ] **Narrative tension 2 — persona sustainability:** if the brand promises a register that demands sustained public visibility, the operator + cadence is named (or routed to Cold Start)
+- [ ] **Narrative tension 5 — creator-led vs team-collective vs institutional:** chosen explicitly; Voice + Digital Touchpoints + Change Log all reflect the same choice
 - [ ] Output stays within my section boundaries (no overlap with other agents)
 - [ ] No `[BLOCKED]` markers remain unresolved
 

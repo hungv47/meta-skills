@@ -10,7 +10,7 @@ load_class: ANTI-PATTERN
 
 # Brand-System Anti-Patterns
 
-> Re-read before any artifact ships. The first 13 patterns are brand-system-specific failure modes extracted from the body. The last 4 are cross-cutting marketing-stack patterns that apply to every skill in the stack. Ownership column cites which agent's checklist catches it (named criteria from `agents/critic-agent.md` — no integer "Gate N" references because the critic uses criterion names, not numbers).
+> Re-read before any artifact ships. 21 patterns total — organized as: 13 brand-system pipeline patterns (Section 1), 4 cross-cutting marketing-stack patterns (Section 2), 2 narrative-tension patterns (Section 3), and 2 brand-kit board patterns (Section 4). Ownership column cites which agent's checklist catches it (named criteria from `agents/critic-agent.md` — no integer "Gate N" references because the critic uses criterion names, not numbers).
 
 ## Section 1 — Brand-system pipeline patterns (13)
 
@@ -220,8 +220,64 @@ load_class: ANTI-PATTERN
 
 ---
 
+---
+
+## Section 3 — Narrative-tension patterns (2)
+
+### 18. Persona the operator cannot sustain
+
+**Pattern:** BRAND.md promises a public register — "ships in public weekly," "always-on community engagement," "contrarian takes daily" — that the actual operator(s) cannot sustain at the brand's stated cadence for years. Within 12 months the brand quietly stops doing the thing it promised.
+
+**Why it fails:** A brand built on a persona that the team cannot perform decays into either silence (the promise stops being met) or burnout (the team meets the promise at unsustainable personal cost). Both outcomes erode trust faster than under-promising would have. The audience can verify cadence — quarterly posts vs. promised weekly posts is visible from the outside.
+
+**Instead:** Strategy-agent runs the Tension 2 check (`references/narrative-tension.md` § Public persona sustainability) before committing the brand to any cadence-bound persona. Name the operator and the cadence in the Change Log: `Persona: creator-led, founder-driven, monthly newsletter + day-of support — operator-confirmed.` Narrow the promise to what the operator's track record supports.
+
+**Owned by:** Strategy-agent (Narrative Tension Ownership domain instruction + Self-Check) + Critic-agent (NT-Q1 FAIL gate — "Does the brand demand a persona the operator cannot sustain?" — re-dispatches strategy-agent + voice-agent if needed).
+
+---
+
+### 19. Retrofitted hero's journey
+
+**Pattern:** Personality-agent or strategy-agent imports an adversity arc the brief doesn't actually support — "we almost went broke," "the founder rebuilt from zero," "tough times taught us resilience" — because founder-origin stories sell. The struggle is hand-wavy, undated, and disconnected from what the brand currently does differently.
+
+**Why it fails:** Audiences detect costume-drama adversity within two paragraphs. The brand burns trust on first contact because the manufactured arc reads as marketing artifact, not lived experience. A brand can be excellent without trauma — the retrofit makes it less credible, not more. Worse, retrofitted struggle often *also* exploits audience pain (NT-Q4 collision), styling the audience's challenges as the operator's voice.
+
+**Instead:** Personality-agent applies Tension 3 (`references/narrative-tension.md` § Progress through struggle — when true) **only when the brief contains a specific, dated, owned arc**. If the brief doesn't contain such an arc, the brand's character is written without one. The Change Log explicitly states `Struggle arc: not applicable — brand earns trust through [capability / track record / credentials], not adversity rhetoric.`
+
+**Owned by:** Personality-agent (Narrative Tension Ownership domain instruction + Self-Check) + Critic-agent (NT-Q4 FAIL gate — "Is the narrative exploiting pain instead of earning trust?" — re-dispatches personality-agent and strategy-agent when Origin Story is the offender).
+
+---
+
+## Section 4 — Brand-kit board patterns (2)
+
+### 20. Brand decisions invented at the board layer
+
+**Pattern:** Visual-agent producing a Step 9d brand-kit board introduces a *new* color, font, accent, or logo variant that doesn't exist in `brand/DESIGN.md` or `brand/BRAND.md` because "it looks better on the board." The board becomes a parallel source of truth; downstream renders use board-only values that won't appear in production.
+
+**Why it fails:** Brand-kit boards are derivative artifacts (see anti-pattern #13 for the related Claude Design version). When a board introduces brand decisions, the spec stops being canonical — re-running brand-system regenerates DESIGN.md without the board-only choices, then the next board contradicts the previous one. The team ends up with two divergent palettes / type stacks, and nobody is sure which is real.
+
+**Instead:** Every color, font, and logo treatment in the board traces to an existing BRAND.md / DESIGN.md section. If a panel needs a value that's not in DESIGN.md, route the gap *back* to visual-agent's primary Layer-1 output — update DESIGN.md FIRST, then re-spec the board against the updated source. Boards live under `brand/artboards/`, never inside `brand/BRAND.md` or `brand/DESIGN.md`.
+
+**Owned by:** Visual-agent (Domain Instructions § Brand-Kit Board Output + Self-Check "No new brand decisions in the board") + Critic-agent (BK-G1 FAIL gate — re-dispatches visual-agent to update DESIGN.md before re-spec'ing the board).
+
+---
+
+### 21. Generic AI-glow palette default
+
+**Pattern:** Brand-kit board reaches for a purple-blue gradient ("AI glow") in panel backgrounds, logo treatment, atmospheric panels — because the product is "tech" or "AI" — without the strategy actually demanding it. The board becomes indistinguishable from every other AI-product brand deck.
+
+**Why it fails:** Purple-blue gradient is the single most over-used visual signal for "AI / tech / futuristic" and has fully saturated as a trope. Boards using it without strategic justification telegraph "we let the tool default decide our brand's aesthetic." Audiences (and investors, hiring candidates, design-aware customers) read the cliché immediately — the brand reads less premium for using it, not more.
+
+**Instead:** Visual mode is selected from the 8-mode menu in `references/brand-kit-rendering.md` based on **archetype + product category**. The Voice mode is the only one where purple-blue lilac glow has a defensible home (Voice AI + Caregiver/Sage/Lover archetypes). Every other mode uses its declared palette posture. Critic-agent BK-G4 FAILs purple-blue gradient applied without justification in any panel.
+
+**Owned by:** Visual-agent (Domain Instructions § Brand-Kit Board Output + Self-Check "No purple-blue AI-glow unless strategy demands it") + Critic-agent (BK-G4 FAIL gate) + `references/ai-slop-detection.md` (canonical slop checklist already names this as a top slop signal).
+
+---
+
 ## Cross-references
 
-- For agent-side gate ownership: see `agents/critic-agent.md` (13 BRAND.md gates + 13 DESIGN.md gates + 4 cross-file gates + 6-row Cross-Element Coherence Matrix + 7-dimension Scoring Rubric + 8-row Rewrite Routing table — all use criterion names, not integer "Gate N" references).
+- For agent-side gate ownership: see `agents/critic-agent.md` (13 BRAND.md gates + 6 narrative-tension gates + 13 DESIGN.md gates + 9 brand-kit board gates + 4 cross-file gates + 6-row Cross-Element Coherence Matrix + 7-dimension Scoring Rubric + Rewrite Routing table — all use criterion names, not integer "Gate N" references).
 - For procedural correctness: see `procedures/dispatch-mechanics.md` (Step 8.5 substep semantics catch patterns 10-12) and `procedures/pre-dispatch.md` (Q6 disambiguation catches pattern 17).
 - For format-side correctness: see `format-conventions.md` (Lexicon Rules + Font Loading & Licensing + Forbidden Icons block requirements catch upstream agent misses).
+- For narrative-tension framework: see `references/narrative-tension.md` (5 dimensions + 4 critic questions — owns patterns 18-19).
+- For brand-kit board framework: see `references/brand-kit-rendering.md` (one-board visual argument + 5 logo methods + 8 visual modes + 10 board anti-patterns including the canonical version of patterns 20-21).
