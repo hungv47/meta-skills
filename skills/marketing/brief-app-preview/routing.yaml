@@ -1,0 +1,40 @@
+# Routing signals for brief-app-preview. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "app preview brief"
+    - "app store preview"
+    - "onboarding video brief"
+    - "feature demo brief"
+    - "ui preview video"
+    - "product demo video"
+    - "app onboarding"
+    - "screen recording brief"
+    - "interaction storyboard"
+    - "ui motion brief"
+  allOf:
+    - [app, preview]
+    - [app, store, preview]
+    - [feature, demo]
+    - [onboarding, video]
+    - [ui, motion]
+    - [screenshot, brief]
+  anyOf:
+    - "app preview"
+    - "feature demo"
+    - "onboarding"
+    - "product demo"
+    - "ui beat"
+    - "screen recording"
+    - "screenshot"
+    - "interaction beat"
+  noneOf:
+    - "tiktok"
+    - "reels"
+    - "shorts"
+    - "social video"
+    - "short-form"
+    - "hook variations"
+    - "publish"
+    - "render"
+  minScore: 6
