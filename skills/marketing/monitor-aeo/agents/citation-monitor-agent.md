@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | Operator brief |
 | **pre-writing** | object | `{ subject_domain, competitor_domains[], export_paths_by_provider }` |
 | **upstream** | markdown | Concatenated outputs from query-set-agent (locked matrix) + provider-readiness-agent (ledger) |
-| **references** | file paths[] | Absolute paths to `references/evidence-classes.md`, `references/provider-matrix.md` |
+| **references** | file paths[] | Absolute paths to `references/_shared/evidence-classes.md`, `references/provider-matrix.md` |
 | **feedback** | string \| null | Rewrite instructions from critic |
 
 ## Output Contract

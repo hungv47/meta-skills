@@ -20,7 +20,7 @@ You will receive from the orchestrator:
 | **brief** | string | Original operator brief |
 | **pre-writing** | object | The full pre-writing object the orchestrator built |
 | **upstream** | markdown | report-agent's full output + the actual `report.md` + `handoff-optimize-seo.md` contents |
-| **references** | file paths[] | Absolute paths to `references/anti-patterns.md`, `references/evidence-classes.md` |
+| **references** | file paths[] | Absolute paths to `references/anti-patterns.md`, `references/_shared/evidence-classes.md` |
 | **feedback** | string \| null | Null — critic doesn't receive feedback (max 2 rewrite cycles enforced by orchestrator) |
 
 ## Output Contract

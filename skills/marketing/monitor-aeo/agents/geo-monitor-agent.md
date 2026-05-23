@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | Operator brief |
 | **pre-writing** | object | `{ subject_domain, competitor_domains[], geo_export_path, target_keywords?[] }` |
 | **upstream** | markdown | query-set-agent matrix + provider-readiness-agent ledger |
-| **references** | file paths[] | Absolute paths to `references/evidence-classes.md`, `references/provider-matrix.md` |
+| **references** | file paths[] | Absolute paths to `references/_shared/evidence-classes.md`, `references/provider-matrix.md` |
 | **feedback** | string \| null | Rewrite instructions from critic |
 
 ## Output Contract

@@ -2,6 +2,11 @@
 
 Platform-specific optimization details and reference-optimized content templates.
 
+> **Companions:**
+> - `references/retrieval-layer-seo.md` — the 6-property retrieval-layer framework (extractable chunks, 40-60 word answer blocks, primary-source citations, entity corroboration, crawler access, freshness/contradiction), the audit-output schema for retrieval-layer findings, the cross-skill seam with `monitor-aeo`'s handoff, and the four retrieval-layer anti-patterns. **Load this companion alongside ai-seo.md when AI-SEO mode (Route B) or Full mode (Route E) is active.** This file is the per-platform tactic catalog; that file is the cross-platform retrieval strategy + finding schema.
+> - `references/_shared/evidence-classes.md` — every claim about retrieval/citation behavior carries a tag from this taxonomy. P1 (Immediate) recommendations must not be `hypothesis`-only; "vendor V's private prompt does Z" is inadmissible (reframe as `observed-test` or `hypothesis` with a measurement plan). Shared with `monitor-aeo` — recommendations sourced from `monitor-aeo`'s `handoff-optimize-seo.md` arrive pre-tagged.
+> - `references/live-serp-remediation.md` — the operational loop for turning a benchmark report into manifest-tracked page-level edits (vendor-agnostic; sentence-level only; one tuning pass then stop).
+
 ---
 
 ## Research-Backed Optimization Methods

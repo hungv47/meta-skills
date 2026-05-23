@@ -70,6 +70,7 @@ const SUPPORT_REFS = {
   "confidence-labeling.md": "skills/research/_shared/confidence-labeling.md",
   "marketing-foundations.md": "skills/marketing/_shared/marketing-foundations.md",
   "production-pattern.md": "skills/marketing/_shared/production-pattern.md",
+  "evidence-classes.md": "skills/marketing/_shared/evidence-classes.md",
   "copywriting-research-workflow.md": "skills/marketing/write-copy/references/research-workflow.md",
   "clipping-and-live.md": "skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md",
 };
@@ -306,6 +307,7 @@ function syncSkill(dir) {
   if (/confidence-labeling/.test(corpus)) addRef("confidence-labeling.md");
   if (/marketing-foundations/.test(corpus)) addRef("marketing-foundations.md");
   if (/production-pattern/.test(corpus)) addRef("production-pattern.md");
+  if (/evidence-classes/.test(corpus)) addRef("evidence-classes.md");
   if (/copywriting\/references\/research-workflow|copywriting-research-workflow/.test(corpus)) {
     addRef("copywriting-research-workflow.md");
   }

@@ -20,7 +20,7 @@ You will receive from the orchestrator:
 | **brief** | string | Operator brief |
 | **pre-writing** | object | `{ subject_domain, slug, mode, date, prior_snapshot_paths[] }` |
 | **upstream** | markdown | Concatenated outputs from query-set, provider-readiness, and every Layer-1 monitor that ran (citation, geo, traffic, readiness) |
-| **references** | file paths[] | Absolute paths to `references/format-conventions.md`, `references/evidence-classes.md` |
+| **references** | file paths[] | Absolute paths to `references/format-conventions.md`, `references/_shared/evidence-classes.md` |
 | **feedback** | string \| null | Rewrite instructions from critic |
 
 ## Output Contract
