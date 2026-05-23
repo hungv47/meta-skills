@@ -12,7 +12,7 @@
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
     "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanmaxxing", "polish-vn",
-    "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs"
+    "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs", "build-ios-apps"
   ],
   "skills": [
     "./skills/meta/forsvn/",
@@ -57,6 +57,7 @@
     "./skills/product/clean-code/",
     "./skills/product/extract-service/",
     "./skills/product/clean-machine/",
-    "./skills/product/write-docs/"
+    "./skills/product/write-docs/",
+    "./skills/product/build-ios-apps/"
   ]
 }
