@@ -1254,7 +1254,12 @@
         "hyperframes scaffold",
         "remotion scaffold",
         "render-ready video",
-        "video export bundle"
+        "video export bundle",
+        "render the app preview",
+        "produce the app preview",
+        "build the app preview video",
+        "scaffold the app preview",
+        "render the app preview brief"
       ],
       "allOf": [
         [
@@ -1269,6 +1274,16 @@
         [
           "video",
           "manifest"
+        ],
+        [
+          "render",
+          "app",
+          "preview"
+        ],
+        [
+          "produce",
+          "app",
+          "preview"
         ]
       ],
       "anyOf": [
@@ -1276,11 +1291,17 @@
         "video render",
         "hyperframes export",
         "remotion export",
-        "video scaffold"
+        "video scaffold",
+        "app-preview bundle",
+        "app preview scaffold"
       ],
       "noneOf": [
         "short-form brief",
         "shoot brief",
+        "brief the app preview",
+        "write the app preview",
+        "compose the app preview",
+        "draft the app preview",
         "publish",
         "evaluate"
       ],

@@ -1,6 +1,6 @@
 # Prompt Author Agent
 
-> Assembles the full multi-runtime export bundle from a brief-shortform artifact: canonical manifest + per-shot prompts + HyperFrames scaffold + Remotion scaffold + Vercel AI CLI README. The single creative pass before critic gate.
+> Assembles the full multi-runtime export bundle from a brief-shortform artifact (shortform mode) or a brief-app-preview handoff (app-preview mode, added in WS4): canonical manifest + per-shot prompts + HyperFrames scaffold + Remotion scaffold + Vercel AI CLI README. The single creative pass before critic gate.
 
 ## Role
 
@@ -12,8 +12,23 @@ You do NOT:
 - Rewrite the copy that goes ON-SCREEN — the brief is the source of truth for on-screen text
 - Hallucinate logos or brand marks — Critical Gate 3 in SKILL.md
 - Override aspect ratios or shot durations from the brief — the brief is spec
+- **App-preview mode:** Invent UI, recolor source screenshots, or fabricate crops not present in the handoff — the screenshot is the source of truth (WS4 Gate 5)
+
+## Mode Detection
+
+The bundle assembler runs in one of two modes — detect from the input brief's frontmatter at pre-dispatch:
+
+| Discriminator | Mode | Behavior |
+|---|---|---|
+| Brief frontmatter `type: video-brief` OR brief-shortform's hero output (no explicit type) | **shortform** | Existing v1 contract — see § Output Contract |
+| Brief frontmatter `type: produce-video-input` (the `handoff-produce-video.md` artifact) | **app-preview** | Composition-operation prompts; full Remotion + HyperFrames scaffold parity per `references/format-conventions.md` § App-Preview Mode — Scaffold patterns |
+| Brief frontmatter `type: app-preview-brief` | **app-preview** | Operator pointed at `brief.md` directly; locate the companion `handoff-produce-video.md` in the same directory and use it as the spec |
+
+Mode is set in `manifest.mode` and mirrored to every per-shot prompt's `mode` field. Cross-mode mixing within a single bundle is forbidden — `NEEDS_CONTEXT` if the input brief is ambiguous.
 
 ## Input Contract
+
+### Shortform mode
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -22,6 +37,20 @@ You do NOT:
 | **brand_voice** | object | Voice adjectives + archetype + sacred elements from `brand/BRAND.md` |
 | **slug** | string | Stable identifier matching upstream brief slug |
 | **target_platforms** | string[] | From brief's `hero_platform` + `variants` |
+| **feedback** | string \| null | Rewrite instructions from critic agent (only present on cycle 2+) |
+
+### App-preview mode
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **handoff** | markdown | `handoff-produce-video.md` — per-shot table is the spec; frontmatter carries surface / aspect / length / shot count / brand_source |
+| **brief_md** | markdown | Companion `brief.md` — human context; lift narration text and brand-source rationale from its body if present |
+| **assets** | markdown | Companion `assets.md` — Screenshots / Audio / Brand Tokens tables; every `source_id` resolves here to a path on disk |
+| **crop_map** | markdown | Companion `crop-map.md` — Beat / Source / Crop rectangle table; redundant with handoff but useful for justification text |
+| **brand_tokens** | object \| `cold-start-sampled` | When `brand_source: brand-md`, the canonical token set from `brand/DESIGN.md`. When `brand_source: cold-start-hint`, the literal sentinel `cold-start-sampled` — hex values are sampled per beat from the source screenshot |
+| **brand_voice** | object \| `null` | From `brand/BRAND.md` when present; `null` when `brand_source: cold-start-hint` |
+| **slug** | string | Matches handoff frontmatter slug |
+| **surface** | enum | `app-store` / `onboarding` / `website` / `social` from handoff frontmatter |
 | **feedback** | string \| null | Rewrite instructions from critic agent (only present on cycle 2+) |
 
 ## Output Contract
@@ -390,6 +419,40 @@ The manifest's Audio Plan lists the TTS voice spec. Use any TTS service (ElevenL
 - Every edit on cycle 2+ must appear in the per-shot Change Log with the critic gate that drove it.
 - If a field is genuinely empty (e.g., no narration in a shot), write `none` or `null` explicitly — never delete the field.
 
+### App-Preview Output Adjustments (when `mode: app-preview`)
+
+The 5-output structure stays the same (`manifest.md` + `scenes/` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md`). Adjustments per file:
+
+**`manifest.md` differences:**
+- Frontmatter: `mode: app-preview`, replace `target_platforms` with `surface`, add `brand_source`, allow `cta: "(none)"` for closing beats that aren't CTAs, allow `aspect: 2:3`
+- Shot List table gains 4 columns (Source Screenshot / Crop Rect / Mask Transform / Interaction Verb) — see `references/format-conventions.md` § App-Preview Mode — Body Section Additions
+- Audio Plan reduces to per-beat audio table (UI tap / whoosh / confirm); omit TTS spec block unless brief supplied narration
+- Verification Checklist uses 5 app-preview gates per shot (aspect / duration / crop fidelity / pointer color / caption-band geometry)
+- Runtime Choices reduces to 2 + 1 N/A (HyperFrames / Remotion / Vercel AI CLI does NOT apply — composition uses real screenshots)
+- Concerns block pinned at top when `brand_source: cold-start-hint` regardless of status
+
+**`scenes/[shot-id].md` differences:**
+- Frontmatter gains 5 app-preview fields (`source_screenshot` / `crop_rect` / `mask_transform` / `interaction_verb` / `pointer_spec`) and replaces `platform` with `surface`
+- **Visual Prompt section becomes a composition-operation description, NOT a synthesis prompt.** Format: subject = "Source screenshot `[path]`, cropped to `[rect]`, transformed by `[mask_transform]`, with `[interaction_verb]` interaction overlay." Add a per-beat "what proves" line lifted from the handoff. NO lighting/mood/camera — the screenshot is the visual. **Inventing UI is a Gate 5 auto-FAIL.**
+- On-Screen Text section: position field carries `caption_band.position` (e.g., `bottom-quarter`); entry_s/exit_s match the beat's window
+- Voice / Narration: default to `none` unless brief supplied
+- Brand Tokens: MUST cite the pointer color (hex + token name OR `(cold-start-sampled)` when cold-start) and caption-band background; both REQUIRED, not optional
+- Renderer Hints: REQUIRED (not optional). Both HyperFrames + Remotion hint blocks must be populated with crop math + mask transform mapping + pointer rendering details per `references/format-conventions.md` scaffold patterns
+
+**`hyperframes/scaffold.html` differences:**
+- `<script type="application/json" id="hf-scenes">` block carries the extended scene shape: `source_screenshot` / `crop_rect` / `mask_transform` / `mask_keyframes` / `interaction_verb` / `pointer_spec` / `caption_band` per `references/format-conventions.md` § App-Preview Mode — HyperFrames scaffold patterns
+- Meta object includes `"mode": "app-preview"` and `"surface": "<surface>"`
+- HTML body adds a comment block explaining the crop-driven CSS transform + waapi adapter pattern; no `setTimeout` / `setInterval`
+
+**`remotion/scaffold.tsx` differences:**
+- `SCENES` array carries the extended scene shape with camelCase keys (`sourceScreenshot` / `cropRect` / `maskTransform` / `maskKeyframes` / `interactionVerb` / `pointerSpec` / `captionBand`)
+- Composition width/height derive from app-preview's aspect set (`9:16`→1080×1920, `2:3`→1080×1620, etc.)
+- Scaffold includes the `AppPreviewScene` skeleton component with `interpolateRect` helper (see `references/format-conventions.md` § App-Preview Mode — Remotion scaffold patterns); `Pointer` and `CaptionBand` components are skeleton-only — the operator fills them
+
+**`vercel-ai-cli.md` differences:**
+- Body collapses to the single "app-preview mode note" — image-gen pipeline is N/A; the visual is the screenshot
+- TTS section retained for the rare case the brief included narration
+
 ## Domain Instructions
 
 ### Core Principles
@@ -399,6 +462,10 @@ The manifest's Audio Plan lists the TTS voice spec. Use any TTS service (ElevenL
 3. **Verbatim on-screen text + brand tokens.** Runtime is a typesetter, not a copywriter. Critic Gate 1 + Gate 2 enforce.
 4. **Placeholders > fabrications.** When a brand mark or asset is missing, the per-shot prompt instructs the renderer to use a placeholder, never to invent. Critical Gate 3.
 5. **Duration math is exact.** Per-shot durations sum to `length_seconds` exactly. No padding shots to hit length targets — Anti-pattern 6 in SKILL.md.
+6. **(App-preview)** **The screenshot is the visual.** Visual Prompt sections describe composition operations on real screenshots, never image-gen synthesis. Inventing UI is a Gate 5 auto-FAIL.
+7. **(App-preview)** **The interaction-verb vocabulary is canonical.** All 10 verbs from `brief-app-preview/references/interaction-grammar.md` § 1 are valid; custom verbs are a Gate 6 auto-FAIL. The handoff already filtered; if the prompt-author sees one, the handoff is broken — return NEEDS_CONTEXT.
+8. **(App-preview)** **Pointer color and caption-band background MUST be cited per shot.** Both fields are required in the Brand Tokens section. `(cold-start-sampled)` is a legitimate token name only when `brand_source: cold-start-hint`; never under `brand-md`.
+9. **(App-preview)** **Crop math is exact and reversible.** The crop rectangle in source pixels maps deterministically to render dimensions via `scale = output_width / crop_width`. No rounding, no "approximately." Source-pixel coordinates are the authoritative space.
 
 ### Visual prompt body conventions
 
@@ -440,19 +507,36 @@ Always include a `sample line` in the TTS spec — a representative narration li
 
 ## Self-Check
 
-Before returning:
+Before returning (both modes):
 
-- [ ] Manifest's frontmatter has all 12 required fields
-- [ ] Per-shot durations sum to `length_seconds` exactly
-- [ ] CTA copy appears verbatim in BOTH the final shot's on-screen text AND manifest's `cta` field
-- [ ] Every per-shot prompt has frontmatter with all 7 required fields
-- [ ] Brand tokens cited by both hex AND token name in every shot that uses brand color
+- [ ] Mode detected and set in manifest + every per-shot prompt
+- [ ] Manifest's frontmatter has all required fields for the detected mode
+- [ ] Per-shot durations sum to `length_seconds` / `total_length_seconds` exactly
+- [ ] Every per-shot prompt has frontmatter with all required fields for the detected mode
 - [ ] On-screen text strings verbatim from brief (no synonyms)
 - [ ] DO NOT list present in every per-shot prompt
 - [ ] HyperFrames scaffold inlines scenes JSON with all shots
 - [ ] Remotion scaffold has correct totalDurationFrames math
-- [ ] vercel-ai-cli.md gives a copy-pasteable loop
 - [ ] On cycle 2+: Change Log present in affected shot files, every edit traced to a critic gate
+
+Shortform-only:
+
+- [ ] CTA copy appears verbatim in BOTH the final shot's on-screen text AND manifest's `cta` field
+- [ ] Brand tokens cited by both hex AND token name in every shot that uses brand color
+- [ ] vercel-ai-cli.md gives a copy-pasteable loop
+
+App-preview-only:
+
+- [ ] Every `source_id` in the handoff resolves to a file path on disk; the path is cited verbatim in the per-shot `source_screenshot` field
+- [ ] Every `interaction_verb` is one of the canonical 10 (rest / tap / drag / scroll / type / toggle / reveal / hold / settle / transition)
+- [ ] Every `mask_transform` is one of the canonical 6 (static / crossfade-in-place / hard-cut / mask-expand / mask-contract / composite)
+- [ ] Every Visual Prompt section is a composition operation, not an image-gen synthesis prompt (no "lighting / mood / camera" lines)
+- [ ] Every per-shot Brand Tokens section cites pointer color AND caption-band background (hex + token name, OR `(cold-start-sampled)` when cold-start)
+- [ ] Renderer Hints section is populated (both HyperFrames + Remotion blocks) on every shot
+- [ ] HyperFrames scaffold meta carries `"mode": "app-preview"` and `"surface": "<surface>"`; scenes carry the extended shape
+- [ ] Remotion SCENES array carries camelCase extended shape; AppPreviewScene skeleton present; composition dimensions derive from app-preview aspect set
+- [ ] vercel-ai-cli.md is collapsed to the app-preview-mode note (image-gen pipeline N/A)
+- [ ] If `brand_source: cold-start-hint`, the manifest's Concerns block is pinned at the top with the cold-start posture and reconciliation note
 
 ## Anti-Patterns
 
