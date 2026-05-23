@@ -2,7 +2,7 @@
 
 ![Agent Skills](./assets/banners/forsvn-skills.png)
 
-**40 skills that turn an AI agent into a product team — from "why did this break?" to shipped code.**
+**43 skills that turn an AI agent into a product team — from "why did this break?" to shipped code.**
 
 A composable skill stack for [AI agents](https://agentskills.io/home), spanning four domains:
 
@@ -15,7 +15,7 @@ Skills chain. Each one reads what earlier skills left behind — in conversation
 
 ![The Agent Skills stack — four skill domains feed a central .forsvn artifact store, which feeds manifest, loops, and review](./assets/banners/forsvn-skills-systemmap.svg)
 
-**Install — one plugin, all 40 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
+**Install — one plugin, all 43 skills:** `/plugin marketplace add hungv47/meta-skills` (Claude Code) · `npx skills add hungv47/meta-skills` (Cursor, Codex, others).
 
 > **Plugin name:** the Claude plugin is `forsvn-skills`; the repository URL remains `github.com/hungv47/meta-skills` so existing links keep working.
 >
@@ -23,7 +23,7 @@ Skills chain. Each one reads what earlier skills left behind — in conversation
 
 ## Install
 
-Single plugin, all 40 skills. Works with Claude Code's plugin system, or the editor-agnostic [`skills` CLI](https://skills.sh) (Cursor, Codex, Windsurf, Gemini CLI, VS Code).
+Single plugin, all 43 skills. Works with Claude Code's plugin system, or the editor-agnostic [`skills` CLI](https://skills.sh) (Cursor, Codex, Windsurf, Gemini CLI, VS Code).
 
 ### Via Claude Code plugin marketplace
 
@@ -42,7 +42,7 @@ Requires Node.js 18+.
 
 ### Install a single skill
 
-Cherry-pick any of the 40 skills with `--skill`:
+Cherry-pick any of the 43 skills with `--skill`:
 
 ```bash
 npx skills add hungv47/meta-skills --skill write-copy
@@ -74,7 +74,7 @@ npx skills add hungv47/meta-skills --agent claude-code cursor
 
 ### Install globally
 
-Make all 40 skills available in every project on your machine:
+Make all 43 skills available in every project on your machine:
 
 ```bash
 npx skills add hungv47/meta-skills -g
@@ -115,7 +115,7 @@ The 4 source repos (`research-skills`, `marketing-skills`, `product-skills`, `ag
 ### Fastest path
 
 ```bash
-npx skills add hungv47/meta-skills -g    # install all 40 skills globally
+npx skills add hungv47/meta-skills -g    # install all 43 skills globally
 ```
 
 If you're not sure where to start, run `/forsvn` — the single front door. It reads cross-stack project state in `.forsvn/`, classifies your intent, asks ≤2 clarifying questions if needed, and routes you to the right leaf skill (or resumes a prior initiative).
@@ -171,7 +171,7 @@ Everything else lives under `.forsvn/`:
 
 End-to-end pipeline: meta process wrappers compose with research pipeline skills, product skills (pipeline + horizontal), and marketing skills (pipeline + horizontal).
 
-**40 skills total**: 8 research + 19 marketing + 6 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanmaxxing`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
+**43 skills total**: 8 research + 21 marketing + 7 product + 7 meta. `/forsvn` (the front door) reads project state and routes to the right leaf skill. Research and product pipelines run in sequence; marketing has a pipeline plus horizontal skills (`write-copy`, `humanmaxxing`, `polish-vn`) that apply at any stage. Meta skills are domain-agnostic process wrappers that compose with any skill. Measurable initiatives can be wrapped in `/run-eval-loop`, the single scaffold/ledger entrypoint for autoresearch-style keep/discard cycles. Surface-specific eval skills still do the scoring. Short-form video pipeline: `research-shortform` → `brief-shortform` + `write-social` → `evaluate-shortform` (closes the loop). Landing-page loop: `run-eval-loop` → `evaluate-landing-page` for post-launch scoring.
 
 ## Skill Stacks
 
@@ -198,7 +198,7 @@ research-platform  → .forsvn/artifacts/research/platform-evidence/[slug].md (o
 
 ### Marketing — create, optimize, and measure marketing
 
-> 19 skills in [`skills/marketing/`](./skills/marketing/)
+> 21 skills in [`skills/marketing/`](./skills/marketing/)
 
 ```
 create-brand
@@ -232,7 +232,7 @@ Horizontal: write-copy, humanmaxxing, polish-vn — invoked at any stage.
 
 ### Product — design and build software
 
-> 6 skills in [`skills/product/`](./skills/product/)
+> 7 skills in [`skills/product/`](./skills/product/)
 
 | Skill | What it does | Use when... |
 |-------|-------------|-------------|
@@ -296,7 +296,7 @@ Not sure which skill to run? Find your situation:
 
 ## Worked Examples: Artifact Flow in Practice
 
-Real workflows are 3-6 skills, not 16. Each example below is a chain users actually run end-to-end in one session.
+Real workflows chain three to six skills, not 16. Each example below is a chain users actually run end-to-end in one session.
 
 ### Example 1: Research → Marketing Pipeline
 
@@ -509,7 +509,7 @@ Cherry-pick a single skill:
 npx skills add hungv47/meta-skills --skill write-copy
 ```
 
-Release notes: [`CHANGELOG.md`](./CHANGELOG.md). All 40 skills release in lockstep under one version number, with `[meta]` / `[research]` / `[marketing]` / `[product]` prefixes on stack-scoped entries.
+Release notes: [`CHANGELOG.md`](./CHANGELOG.md). All 43 skills release in lockstep under one version number, with `[meta]` / `[research]` / `[marketing]` / `[product]` prefixes on stack-scoped entries.
 
 Pre-2.0 history lives in the archived repos: [research-skills](https://github.com/hungv47/research-skills/blob/main/CHANGELOG.md), [marketing-skills](https://github.com/hungv47/marketing-skills/blob/main/CHANGELOG.md), [product-skills](https://github.com/hungv47/product-skills/blob/main/CHANGELOG.md), [meta-skills v1.x](https://github.com/hungv47/meta-skills/commits/main).
 

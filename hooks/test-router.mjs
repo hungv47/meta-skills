@@ -28,6 +28,8 @@ const tests = [
   ["This text sounds like AI wrote it, humanize it", "humanmaxxing"],
   ["Polish this vietnamese text for bro tone", "polish-vn"],
   ["Do an SEO audit of our site", "optimize-seo"],
+  ["Track our AI Overview citations and AI referral traffic", "monitor-aeo"],
+  ["Build an app store preview brief with screenshots and interaction beats", "brief-app-preview"],
   ["Write Meta retargeting ad copy for this offer", "write-ad"],
   ["Map the user flow for onboarding", "map-user-flow"],
   ["Design the tech stack and database schema", "architect-system"],

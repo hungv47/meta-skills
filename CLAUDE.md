@@ -1,10 +1,10 @@
 # forsvn-skills — Agent Guide
 
-This repo is the `forsvn-skills` plugin, distributed from `github.com/hungv47/meta-skills` for URL continuity: 40 composable skills for AI agents across meta, research, marketing, and product domains. This file tells an agent **how to use the stack** and **the bar for extending it**.
+This repo is the `forsvn-skills` plugin, distributed from `github.com/hungv47/meta-skills` for URL continuity: 43 composable skills for AI agents across meta, research, marketing, and product domains. This file tells an agent **how to use the stack** and **the bar for extending it**.
 
 ## Scope — In-Repo Skills Only
 
-When the user asks about "my skills," "our skills," or where to add a capability, the candidate set is **only the skills in this repo** under `skills/{meta,research,marketing,product}/`. 40 skills total.
+When the user asks about "my skills," "our skills," or where to add a capability, the candidate set is **only the skills in this repo** under `skills/{meta,research,marketing,product}/`. 43 skills total.
 
 Do **not** recommend or route to external skills (other marketplace/plugin skills that appear in the available-skills list). They may be installed locally, but they are not part of this stack. If a gap exists, propose either (a) enriching an existing in-repo skill or (b) a new in-repo skill that clears the Quality Standard bar.
 
@@ -12,18 +12,18 @@ Exception: the user explicitly names an external skill and asks about it.
 
 ## Repository Structure
 
-Single repo, no submodules. All 40 skills organized by domain:
+Single repo, no submodules. All 43 skills organized by domain:
 
 ```
 meta-skills/
 ├── .claude-plugin/
 │   ├── marketplace.json    # single-plugin catalog (this repo IS the marketplace)
-│   └── plugin.json         # lists all 40 skill paths
+│   └── plugin.json         # lists all 43 skill paths
 ├── skills/
 │   ├── meta/         # 7 process-layer skills (forsvn, discover, debate-agents, …)
 │   ├── research/     # 8 research skills (research-icp, research-market, diagnose, …)
-│   ├── marketing/    # 19 marketing skills (create-brand, write-copy, brief-landing-page, …)
-│   └── product/      # 6 product skills (map-user-flow, architect-system, clean-code, …)
+│   ├── marketing/    # 21 marketing skills (create-brand, write-copy, brief-landing-page, brief-app-preview, monitor-aeo, …)
+│   └── product/      # 7 product skills (map-user-flow, architect-system, clean-code, build-ios-apps, …)
 ├── references/       # cross-stack canonical contracts (pre-dispatch, mode-resolver, manifest-spec, …)
 ├── hooks/            # user-prompt-submit skill-router (suggestion-only)
 └── scripts/          # manifest-sync, registry build, marketplace-bump

@@ -49,7 +49,7 @@ The skill stops — `NEEDS_CONTEXT` or a "don't extract" recommendation — in t
 
 ## History / origin
 
-- **v1.0.0 (D21, 2026-05-20):** new skill, Workstream F slice 2. Sourced from IDEA-3 § Code Structure (the michaelshimeles `code-structure` Service Layer Architecture pattern) and brief 06 § Code Cleanup and Service Extraction. IDEA-3's standing verdict — "new skill candidate, distinct from code-cleanup's behavioral scope" — was confirmed at the D21 interview (round 15). Locked: standalone skill (not a clean-code mode); v1 deliverable is plan + gated caller-by-caller apply. 4-agent shape (scanner → planner → migration → critic) with an operator-approval gate between plan and apply. budget `standard`.
+- **v1.0.0 (D21, 2026-05-20):** new skill, Workstream F slice 2. Sourced from IDEA-3 § Code Structure (an external service-layer-architecture pattern) and brief 06 § Code Cleanup and Service Extraction. IDEA-3's standing verdict — "new skill candidate, distinct from code-cleanup's behavioral scope" — was confirmed at the D21 interview (round 15). Locked: standalone skill (not a clean-code mode); v1 deliverable is plan + gated caller-by-caller apply. 4-agent shape (scanner → planner → migration → critic) with an operator-approval gate between plan and apply. budget `standard`.
 
 ## Further reading
 

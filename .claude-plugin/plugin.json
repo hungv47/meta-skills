@@ -1,6 +1,6 @@
 {
   "name": "forsvn-skills",
-  "description": "FORSVN Skills — consolidated multi-agent skill stack. 40 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
+  "description": "FORSVN Skills — consolidated multi-agent skill stack. 43 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
   "version": "3.0.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
@@ -11,7 +11,7 @@
     "forsvn", "discover", "debate-agents", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "humanmaxxing", "polish-vn",
+    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "monitor-aeo", "humanmaxxing", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs", "build-ios-apps"
   ],
   "skills": [
@@ -39,6 +39,7 @@
     "./skills/marketing/write-social/",
     "./skills/marketing/brief-shortform/",
     "./skills/marketing/brief-landing-page/",
+    "./skills/marketing/brief-app-preview/",
     "./skills/marketing/evaluate-landing-page/",
     "./skills/marketing/evaluate-ad/",
     "./skills/marketing/evaluate-content/",
@@ -49,6 +50,7 @@
     "./skills/marketing/produce-video/",
     "./skills/marketing/publish-social/",
     "./skills/marketing/optimize-seo/",
+    "./skills/marketing/monitor-aeo/",
     "./skills/marketing/humanmaxxing/",
     "./skills/marketing/polish-vn/",
 
