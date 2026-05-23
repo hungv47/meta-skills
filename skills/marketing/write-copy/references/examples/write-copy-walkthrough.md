@@ -217,8 +217,8 @@ If cycle 2 had also FAILed on a different dimension (e.g., trigger density dropp
 
 **Scenario:** lp-brief invokes copywriting Route C for the StatusZero landing's hero section (lp-brief has already locked the page architecture + hypothesis + per-section spec).
 
-- **Step 1:** Pre-Dispatch reads lp-brief's artifact at `.forsvn/artifacts/mkt/lp-brief/statuszero/brief.md` — extracts audience + voice + Unique Mechanism + the one shift + traffic source per-section. No AskUserQuestion mid-flow.
+- **Step 1:** Pre-Dispatch reads lp-brief's artifact at `.forsvn/artifacts/mkt/brief-landing-page/statuszero/brief.md` — extracts audience + voice + Unique Mechanism + the one shift + traffic source per-section. No AskUserQuestion mid-flow.
 - **Step 2:** Dispatch hook-agent + cta-agent in parallel (Route C picks the agents lp-brief's per-section spec named — for hero section: headline + sub-head + hero CTA).
 - **Step 3:** Dispatch critic-agent. PASS.
-- **Step 4:** Return annotated hero copy directly to lp-brief (NO standalone artifact file written by copywriting in Route C; lp-brief embeds copy + annotations in its own artifact at `.forsvn/artifacts/mkt/lp-brief/statuszero/v1/brief.md`).
+- **Step 4:** Return annotated hero copy directly to lp-brief (NO standalone artifact file written by copywriting in Route C; lp-brief embeds copy + annotations in its own artifact at `.forsvn/artifacts/mkt/brief-landing-page/statuszero/v1/brief.md`).
 - **Completion Status: DONE.**

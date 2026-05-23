@@ -14,14 +14,14 @@ load_class: PROCEDURE
 
 | Path | When | Lifecycle |
 |---|---|---|
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` | Always (Approval Gate 3 PASS or DONE_WITH_CONCERNS) | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-implementation.md` | Always — emitted alongside brief.md | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-claude-design.md` | When `target_handoff` lists `claude-design` | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-figma.md` | When `target_handoff` lists `figma` | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-designer.md` | When `target_handoff` lists `designer` | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/{slot-id}.prompt.md` | Per generative slot, written by `brief-graphic` (not by lp-brief itself) | pipeline |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/rejected.md` | When user rejects at Approval Gate 3 | pipeline (terminal) |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/v[N]/brief.md` | Re-run with `--rev=N`; prior versions preserved | pipeline (versioned) |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` | Always (Approval Gate 3 PASS or DONE_WITH_CONCERNS) | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-implementation.md` | Always — emitted alongside brief.md | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-claude-design.md` | When `target_handoff` lists `claude-design` | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-figma.md` | When `target_handoff` lists `figma` | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-designer.md` | When `target_handoff` lists `designer` | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/{slot-id}.prompt.md` | Per generative slot, written by `brief-graphic` (not by lp-brief itself) | pipeline |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/rejected.md` | When user rejects at Approval Gate 3 | pipeline (terminal) |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/v[N]/brief.md` | Re-run with `--rev=N`; prior versions preserved | pipeline (versioned) |
 
 ## File naming + versioning
 
@@ -118,7 +118,7 @@ The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are 
 
 > This is the canonical brief.md template. Sub-agents (section-spec, asset-slot, handoff) populate it; orchestrator assembles. Schema changes require atomic update across upstream callers (campaign-plan if it inlines brief structure) + downstream consumers (design-brief reads Asset Slots; coding agents read Implementation Prompt companion; lp-eval reads loop-local strategy artifacts that may reference brief.md).
 
-Save to `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md`:
+Save to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md`:
 
 ```markdown
 ---
@@ -270,7 +270,7 @@ N. **CTA Block** — [purpose]
 | Logo grid | Social proof | 6 cells × 60px | SVG | `growth/[slug]/logos.svg` | "delete cell if not real" | — |
 | Founder portrait | Story | 600×600 | WebP | `growth/[slug]/founder.webp` | spot illustration | [link if generative] |
 
-**Generation prompts** for asset slots that use generative AI live at `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-name].prompt.md`. Each is written by `brief-graphic` against the slot's spec — the prompt is the actionable handoff to an image-generation tool.
+**Generation prompts** for asset slots that use generative AI live at `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-name].prompt.md`. Each is written by `brief-graphic` against the slot's spec — the prompt is the actionable handoff to an image-generation tool.
 
 ## What NOT to Do
 
@@ -352,7 +352,7 @@ Page-scoped only. No project-level default is created.
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-> Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/lp-brief/[slug]/v[N]/brief.md`, preserve prior versions.
+> Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/v[N]/brief.md`, preserve prior versions.
 
 ## Companion file conventions
 

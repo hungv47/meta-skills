@@ -41,7 +41,7 @@ Five dimensions drive brief production. Pre-Dispatch resolves each from pipeline
 1. **Pipeline artifacts (hard-gate resolved):**
    - `brand/BRAND.md` + `brand/DESIGN.md` (confirmed by hard gate before this step)
    - `brand/ASSETS.md` for dimension pre-fill (if exists)
-   - `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md` if invoked from brief-landing-page (carries slot spec)
+   - `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-id].md` if invoked from brief-landing-page (carries slot spec)
    - `.forsvn/artifacts/mkt/content/[slug].copy.md` if copy supplied separately (from write-copy)
    - `.forsvn/artifacts/mkt/campaign-plan.md` for campaign context, awareness stage, channel placement
    - `research/icp-research.md` for audience visual preferences (optional but useful)
@@ -59,7 +59,7 @@ Read if present; affect Warm Start summary fields:
 | Artifact | Source | Benefit |
 |----------|--------|---------|
 | `brand/ASSETS.md` | brand-system Route B | Auto-fill dimensions, tick checkbox on completion |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md` | lp-brief | Slot spec when brief is for an LP asset |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-id].md` | lp-brief | Slot spec when brief is for an LP asset |
 | `.forsvn/artifacts/mkt/content/[slug].copy.md` | copywriting | Copy to use in the asset |
 | `.forsvn/artifacts/mkt/campaign-plan.md` | campaign-plan | Campaign context, awareness stage |
 | `research/icp-research.md` | icp-research | Audience visual preferences |

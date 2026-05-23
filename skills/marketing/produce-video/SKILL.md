@@ -39,7 +39,7 @@ The accepted input depends on mode. Mode is auto-detected from the brief's front
 
 | Artifact | Required? | What it provides |
 |----------|-----------|------------------|
-| `.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md` (or `variants/[platform].md`) | **required** (primary path) | Hook · shot list · on-screen text choreography · audio plan · caption · CTA · aspect · length · production notes |
+| `.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md` (or `variants/[platform].md`) | **required** (primary path) | Hook · shot list · on-screen text choreography · audio plan · caption · CTA · aspect · length · production notes |
 | Hand-written video-brief matching `references/video-brief-schema.md` | **alt path** | Same fields as the brief-shortform output — schema-validated at pre-dispatch |
 | `brand/BRAND.md` | **required** | Voice, archetype, sacred elements (do-not-touch rails for runtime + TTS) |
 | `brand/DESIGN.md` | **required** | Color tokens (hex + name), type scale, motion permissions, surface conventions |

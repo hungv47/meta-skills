@@ -264,7 +264,7 @@ All 3 variants pass regression → ship humanmaxxed versions.
 
 ## Step 4 — Write artifacts
 
-Orchestrator writes 3 files to `.forsvn/artifacts/mkt/ad-copy/`:
+Orchestrator writes 3 files to `.forsvn/artifacts/mkt/write-ad/`:
 
 - **`cold-2026-05-18-mealkit-trial.md`** — hero + A + B humanmaxxed + frontmatter (`skill: write-ad`, `version: 1`, `date: 2026-05-18`, `status: done`, `network: meta`, `surface: meta-full-ad`, `audience_temp: cold`, `creative_format: dedicated`, `production_model: in-house`, `conversion_event: trial_start`, `critic_total: 168/210`, `critic_per_variant: {hero: 58/70, variant_a: 56/70, variant_b: 54/70}`)
 - **`cold-2026-05-18-mealkit-trial.rationale.md`** — angle + audience-temp framing + creative-format + production-model + anchor-proof per variant + anti-patterns avoided + Pre-Dispatch dimensions resolved

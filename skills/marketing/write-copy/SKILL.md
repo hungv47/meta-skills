@@ -158,7 +158,7 @@ Run `humanmaxxing` to refine voice and compress. Seven Sweeps (Layer 2 cumulativ
 
 ## Worked Example
 
-End-to-end Route B walkthrough (StatusZero landing page — async standup replacement for engineering managers, LinkedIn ads cold traffic, full Layer 1 parallel + Merge + variant + Layer 2 sequential + critic PASS at 4.4 V/F/U average) + cycle-2 FAIL variant (Competitor Swap Test failure on hero, hook-agent re-anchors on Unique Mechanism, cycle 2 PASS) + Route A single-key-line snippet + Route C called-by-brief-landing-page snippet: [`references/examples/copywriting-walkthrough.md`](references/examples/copywriting-walkthrough.md) [EXAMPLE].
+End-to-end Route B walkthrough (StatusZero landing page — async standup replacement for engineering managers, LinkedIn ads cold traffic, full Layer 1 parallel + Merge + variant + Layer 2 sequential + critic PASS at 4.4 V/F/U average) + cycle-2 FAIL variant (Competitor Swap Test failure on hero, hook-agent re-anchors on Unique Mechanism, cycle 2 PASS) + Route A single-key-line snippet + Route C called-by-brief-landing-page snippet: [`references/examples/write-copy-walkthrough.md`](references/examples/write-copy-walkthrough.md) [EXAMPLE].
 
 ---
 
@@ -168,7 +168,7 @@ End-to-end Route B walkthrough (StatusZero landing page — async standup replac
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/copywriting-walkthrough.md` [EXAMPLE]
+- **Example:** `references/examples/write-copy-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{headline-formulas, page-sections, emotional-triggers, belief-disruption, lead-magnet-stack, lifecycle-sequences, research-workflow, discovery-story}.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles

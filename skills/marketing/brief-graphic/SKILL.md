@@ -55,7 +55,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand/BRAN
 | `brand/BRAND.md` | create-brand | **REQUIRED** (hard gate) — voice, archetype, sacred elements |
 | `brand/DESIGN.md` | create-brand | **REQUIRED** (hard gate) — palette, typography, surface language, motion |
 | `brand/ASSETS.md` | create-brand Route B | Optional — auto-fill dimensions, tick checkbox on completion |
-| `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — slot spec when brief is for an LP asset |
+| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — slot spec when brief is for an LP asset |
 | `.forsvn/artifacts/mkt/content/[slug].copy.md` | write-copy | Optional — copy to use in the asset |
 | `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — campaign context, awareness stage |
 | `research/icp-research.md` | research-icp | Optional — audience visual preferences |
@@ -146,7 +146,7 @@ Per project standard, every run ends with explicit status:
 
 ## Worked Example
 
-End-to-end walkthrough (OG image for async-first PM tool launch — image-gen route, midjourney-v6 target, brand artifacts loaded from BRAND.md + DESIGN.md, copy from write-copy artifact, ASSETS.md path match, Layer 1 parallel returns 3 distinct concepts, Approval Gate 1 user picks "Editorial calm", Layer 2 prompt-craft returns primary + 2 variants, Layer 3 critic PASS 27/28 + AI-aesthetic 0/27, Approval Gate 2 Approve, artifact written + ASSETS.md auto-tick) + cycle-2 FAIL hypothetical + `--fast` variant snippet + Route C snippet (called by lp-brief): [`references/examples/design-brief-walkthrough.md`](references/examples/design-brief-walkthrough.md) [EXAMPLE]. Additional asset-type examples (IG carousel, YouTube thumbnail, OOH billboard, template-pack): [`references/examples.md`](references/examples.md).
+End-to-end walkthrough (OG image for async-first PM tool launch — image-gen route, midjourney-v6 target, brand artifacts loaded from BRAND.md + DESIGN.md, copy from write-copy artifact, ASSETS.md path match, Layer 1 parallel returns 3 distinct concepts, Approval Gate 1 user picks "Editorial calm", Layer 2 prompt-craft returns primary + 2 variants, Layer 3 critic PASS 27/28 + AI-aesthetic 0/27, Approval Gate 2 Approve, artifact written + ASSETS.md auto-tick) + cycle-2 FAIL hypothetical + `--fast` variant snippet + Route C snippet (called by lp-brief): [`references/examples/brief-graphic-walkthrough.md`](references/examples/brief-graphic-walkthrough.md) [EXAMPLE]. Additional asset-type examples (IG carousel, YouTube thumbnail, OOH billboard, template-pack): [`references/examples.md`](references/examples.md).
 
 ---
 
@@ -156,7 +156,7 @@ End-to-end walkthrough (OG image for async-first PM tool launch — image-gen ro
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/design-brief-walkthrough.md` [EXAMPLE]
+- **Example:** `references/examples/brief-graphic-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{asset-types, platform-modules, prompt-patterns, visual-rubric, failure-modes, examples}.md`
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, anti-sycophancy, shared-critic-rubrics, quality-feedback-protocol, quality-dashboard-spec}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles

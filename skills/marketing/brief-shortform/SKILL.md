@@ -51,7 +51,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load research a
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/artifacts/research/short-form-research/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
+| `.forsvn/artifacts/research/research-shortform/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
 | `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
 | `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
 | `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs if `[slug]` matches |
@@ -112,8 +112,8 @@ Mechanics (how to spawn agents, parallel/sequential tables, single-agent fallbac
 
 ## Artifact Contract
 
-- **Hero path:** `.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md`
-- **Variant path:** `.forsvn/artifacts/mkt/short-form-brief/[slug]/variants/[platform].md`
+- **Hero path:** `.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md`
+- **Variant path:** `.forsvn/artifacts/mkt/brief-shortform/[slug]/variants/[platform].md`
 - **Lifecycle:** `pipeline` — one artifact per (angle, platform-set, market); re-run on angle/platform/market pivot
 - **Frontmatter fields:** `type`, `role`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied` (full schema in Output Artifact Structure below)
 - **Hero body sections (15, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap · Review Gate
@@ -126,7 +126,7 @@ Full template + per-section format rules (date format, timing format, framing ta
 
 ### Output Artifact Structure (frontmatter spec)
 
-`.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md` (hero) — full template lives in `.forsvn/artifacts/meta/short-form-brief-spec.md` §5.1. Frontmatter:
+`.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md` (hero) — full template lives in `.forsvn/artifacts/meta/short-form-brief-spec.md` §5.1. Frontmatter:
 
 ```yaml
 ---
@@ -145,7 +145,7 @@ production_mode: live-action | motion-graphic | mixed
 market: [region]
 hero_platform: tiktok | reels | shorts | x | linkedin
 variants: [list]
-research_artifact: .forsvn/artifacts/research/short-form-research/[slug].md
+research_artifact: .forsvn/artifacts/research/research-shortform/[slug].md
 research_trend_signals_date: [YYYY-MM-DD]
 research_mechanics_date: [YYYY-MM-DD]
 campaign_tie_in: [slug or null]
@@ -180,7 +180,7 @@ Most common in practice: AI slop openers ("Hey guys"), vague action verbs ("show
 
 ## Worked Example
 
-End-to-end walkthrough (Pre-Dispatch warm-start → Layer 1 parallel → Layer 1.5 parallel → Layer 2 platform-tailor + critic PASS → polish chain → deliver; plus FAIL-handling cycle 2 variant + `--fast` variant): [`references/examples/short-form-brief-walkthrough.md`](references/examples/short-form-brief-walkthrough.md) [EXAMPLE].
+End-to-end walkthrough (Pre-Dispatch warm-start → Layer 1 parallel → Layer 1.5 parallel → Layer 2 platform-tailor + critic PASS → polish chain → deliver; plus FAIL-handling cycle 2 variant + `--fast` variant): [`references/examples/brief-shortform-walkthrough.md`](references/examples/brief-shortform-walkthrough.md) [EXAMPLE].
 
 Two condensed reference briefs in different (market, brand_mode, platform) combinations: [`references/_examples/example-1-vn-founder-tiktok.md`](references/_examples/example-1-vn-founder-tiktok.md), [`references/_examples/example-2-us-company-reels-shorts.md`](references/_examples/example-2-us-company-reels-shorts.md).
 
@@ -192,7 +192,7 @@ Two condensed reference briefs in different (market, brand_mode, platform) combi
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/short-form-brief-walkthrough.md` [EXAMPLE]
+- **Example:** `references/examples/brief-shortform-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by craft agents at dispatch, not orchestrator): `references/{hook-archetypes, storyboard-grammar, caption-cta-rules, production-modes, success-criteria-templates, polish-chain}.md`
 - **Platform intelligence** (loaded by format-agent + platform-tailor-agent): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13)
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`

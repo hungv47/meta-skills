@@ -57,7 +57,7 @@ critic_per_variant:
 
 ## Output file structure (3 files per run)
 
-Every run produces THREE files in `.forsvn/artifacts/mkt/ad-copy/`:
+Every run produces THREE files in `.forsvn/artifacts/mkt/write-ad/`:
 
 | File | Content | Consumer |
 |------|---------|----------|

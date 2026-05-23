@@ -22,7 +22,7 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. `.forsvn/artifacts/research/short-form-research/[slug].md` if exists — check (topic, market) match and freshness windows
+1. `.forsvn/artifacts/research/research-shortform/[slug].md` if exists — check (topic, market) match and freshness windows
 2. `.forsvn/experience/content.md` — most recent entries for market, audience register, topics already researched
 3. `.forsvn/experience/audience.md` — primary persona, language, habitats
 4. `research/icp-research.md`, `research/product-context.md` — full audience + business context if present

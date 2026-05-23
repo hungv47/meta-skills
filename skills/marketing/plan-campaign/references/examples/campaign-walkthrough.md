@@ -235,6 +235,6 @@ When `brief-landing-page` calls campaign-plan via Route C (read-then-fall-throug
 1. lp-brief invokes orchestrator with: "Need campaign context for landing page on async-first messaging."
 2. Orchestrator reads `.forsvn/artifacts/mkt/campaign-plan.md` — present + date 2026-05-18 (today) → return.
 3. lp-brief extracts: Pillar 2 ("Async-first shipping") + Angle #4 ("How to ship 2x without hiring") + Channel "Search engines" → uses these to anchor hypothesis + section spec.
-4. lp-brief writes its brief at `.forsvn/artifacts/mkt/lp-brief/async-shipping-lp/brief.md` with `consumed: [.forsvn/artifacts/mkt/campaign-plan.md]` in frontmatter.
+4. lp-brief writes its brief at `.forsvn/artifacts/mkt/brief-landing-page/async-shipping-lp/brief.md` with `consumed: [.forsvn/artifacts/mkt/campaign-plan.md]` in frontmatter.
 
 If campaign-plan.md were missing or stale (>30 days), Route C falls through to Route B (run full campaign-plan first) — lp-brief waits.

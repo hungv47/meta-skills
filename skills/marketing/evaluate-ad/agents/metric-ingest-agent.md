@@ -10,7 +10,7 @@ Normalize launched Meta-ad evidence into a metric packet the orchestrator can tr
 - Loop `context.md`, especially baseline and measurement assumptions
 - Prior `results.tsv`
 - Audience-temp tag for the current cycle (`cold-traffic` OR `retargeting`) — operator-supplied; gates Critical Gate 4 in SKILL.md
-- Source ad-copy artifact (`.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md`) — the brief being scored
+- Source ad-copy artifact (`.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md`) — the brief being scored
 - Current evidence: Meta Ads Manager export, CSV from Supermetrics / Triple Whale / Northbeam, screenshot summary, operator-supplied numbers, qualitative comments
 
 ## Output Contract

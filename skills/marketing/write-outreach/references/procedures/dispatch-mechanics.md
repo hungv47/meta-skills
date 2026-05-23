@@ -60,7 +60,7 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
    - Same BLOCKED reason repeats on second pass → escalate as `NEEDS_CONTEXT` (name what's missing — usually a concrete client + number).
 7. TERMINAL: invoke `humanmaxxing` with `content-type: "short-outbound"` + channel
 8. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved draft.
-9. Write artifacts to `.forsvn/artifacts/mkt/cold-outreach/[slug].md` (+ .rationale.md + .critic-score.md)
+9. Write artifacts to `.forsvn/artifacts/mkt/write-outreach/[slug].md` (+ .rationale.md + .critic-score.md)
 10. Deliver message + rationale inline; show scorecard only if user asks or any dim scored 6-7
 ```
 

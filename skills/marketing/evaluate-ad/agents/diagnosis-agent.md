@@ -8,7 +8,7 @@ Explain why the ad cycle likely moved, using the source ad-copy artifact's hypot
 
 - Loop `program.md` and `context.md`
 - Latest strategy/execution artifacts
-- **Source ad-copy artifact** (`.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md`) — read the hook, anchor, audience-temp framing, CTA, hypothesis, and `.rationale.md` if present
+- **Source ad-copy artifact** (`.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md`) — read the hook, anchor, audience-temp framing, CTA, hypothesis, and `.rationale.md` if present
 - Metric Ingest output (from Layer 1 sibling) — DO NOT re-fetch metrics; consume the normalized packet
 - Current cycle evidence (raw Ads Manager export, CSV, qualitative comments) — same source set as Metric Ingest, read independently for behavioral signals (engagement comments, save/share ratios, click-quality)
 - Optional qualitative evidence: support tickets, sales notes, customer DMs referencing the ad, screenshot of comments thread

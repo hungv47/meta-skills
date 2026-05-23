@@ -173,7 +173,7 @@ Approval Gate 2 fires regardless of `--fast` — user acceptance is non-optional
 
 **Previous:**
 - `create-brand` — REQUIRED. Hard gate on `brand/BRAND.md` + `brand/DESIGN.md`.
-- `brief-landing-page` — OPTIONAL. When design-brief is invoked from a landing-page asset slot, lp-brief passes the slot spec via `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/[slot-id].md`.
+- `brief-landing-page` — OPTIONAL. When design-brief is invoked from a landing-page asset slot, lp-brief passes the slot spec via `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-id].md`.
 - `write-copy` — OPTIONAL. When in-asset copy is supplied separately via `.forsvn/artifacts/mkt/content/[slug].copy.md`.
 
 **Next:**
