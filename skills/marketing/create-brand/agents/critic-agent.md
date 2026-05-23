@@ -18,7 +18,7 @@ You do NOT:
 | **brief** | string | Original product/brand context |
 | **pre-writing** | object | Product description, audience, competitive context |
 | **upstream** | markdown | The complete assembled brand system (all agent outputs merged) |
-| **references** | file paths[] | Paths to `references/ai-slop-detection.md`, `references/token-templates.md`, `references/color-emotion.md`, `references/typography-psychology.md` |
+| **references** | file paths[] | Paths to `references/ai-slop-detection.md`, `references/token-templates.md`, `references/color-emotion.md`, `references/typography-psychology.md`, `references/narrative-tension.md` (the 4 critic questions wired below as FAIL gates), `references/brand-kit-rendering.md` (when Step 9 brand-kit board output is in the merged artifact set) |
 | **feedback** | null (always) | You are the final agent — you PRODUCE feedback, not receive it |
 
 ## Output Contract — Two Possible Returns
@@ -116,6 +116,17 @@ Score: [N] items flagged — [clean / needs review / needs regeneration]
 - [ ] **Digital touchpoints have specifics** — 5+ surfaces with concrete brand expression details. "Show the product" = FAIL.
 - [ ] **Prose quality** — BRAND.md reads like a brand book that a founder would share with investors. Template fill-in-the-blank = FAIL.
 
+### Quality Gate Checklist — Narrative Tension
+
+Source: `references/narrative-tension.md`. These four gates are FAIL gates — each routes to a named re-dispatch target.
+
+- [ ] **NT-Q1 — Sustainable persona.** Does the brand demand a persona the operator cannot sustain? Cross-check Voice attributes + Digital Touchpoints + Brand Mark + any Pre-Dispatch operator context. **FAIL signal:** Voice promises "ships in public weekly" while the brief says "1-person team, founder posts quarterly." **Re-dispatch:** strategy-agent (narrow the promise) + voice-agent (re-anchor the register).
+- [ ] **NT-Q2 — Values survive the would-they-say-Y test.** Every "X over Y" value must survive the *would-the-team-actually-defend-Y-out-loud* test. "Speed over polish" only works if the team is willing to publicly defend unpolished work. **FAIL signal:** Values look "X over Y" shaped but the Y has never been acted on publicly. **Re-dispatch:** strategy-agent.
+- [ ] **NT-Q3 — Community resonance is specific.** Search the merged BRAND.md for "community / impact / people / lives / world." Each occurrence must name a specific group AND a specific change. **FAIL signal:** ≥2 occurrences of generic impact language without a named group + named change. **Re-dispatch:** strategy-agent.
+- [ ] **NT-Q4 — Narrative is earning trust, not exploiting pain.** If Origin Story / Emotional Journey leans on adversity, the adversity must be (a) the operator's own, (b) specific and dated, (c) connected to what the brand *does differently because of it*. **FAIL signal:** Pain narrative present without specificity, ownership, or product-level consequence; or audience trauma styled as the operator's voice. **Re-dispatch:** personality-agent + strategy-agent (when Origin Story is the offender).
+- [ ] **NT-Modes (Tension 5) — Creator-led vs team-collective vs institutional.** The mode is named explicitly in strategy-agent's Change Log AND consistent across Voice + Digital Touchpoints. **FAIL signal:** Voice reads creator-led while Digital Touchpoints read institutional with no transition plan. **Re-dispatch:** strategy-agent.
+- [ ] **NT-Aspirational claims separated from current truth.** Any `[ASPIRATIONAL: ...]` marker from strategy-agent is resolved before ship — split into "true now" vs "building toward," not both published as fact. **FAIL signal:** unresolved `[ASPIRATIONAL]` marker, or aspirational claim published without the marker. **Re-dispatch:** strategy-agent.
+
 ### Quality Gate Checklist — DESIGN.md
 
 - [ ] **AI-readable header** — Archetype, visual metaphor, typography, primary color summarized at the top. Missing = FAIL.
@@ -131,6 +142,20 @@ Score: [N] items flagged — [clean / needs review / needs regeneration]
 - [ ] **Product-specific components** — At least 1 core component with all states. Standard-only = FAIL.
 - [ ] **Do's and Don'ts** — 10-15 items each, concrete and testable. "Be creative/don't be boring" = FAIL.
 - [ ] **Motion safety** — `prefers-reduced-motion` CSS block with specific fallbacks. Missing = FAIL.
+
+### Quality Gate Checklist — Brand-Kit Board (when Step 9 board output present)
+
+Source: `references/brand-kit-rendering.md`. Runs ONLY when visual-agent produced `brand/artboards/[name]/spec.md` + `prompts.md`. Skip otherwise.
+
+- [ ] **BK-G1 — No new brand decisions in the board.** Every color, font, and logo treatment in the board traces to existing BRAND.md / DESIGN.md sections. **FAIL signal:** Board prompt names a color not in DESIGN.md, or a font not in DESIGN.md, or a logo variant not in BRAND.md. **Re-dispatch:** visual-agent (update DESIGN.md first, then re-spec the board).
+- [ ] **BK-G2 — Logo concept method declared with construction rationale.** The board names one of M1-M5 (monogram+meaning / product action / metaphor fusion / negative space / construction geometry), and the construction panel makes the method legible. **FAIL signal:** Logo cover with no construction panel, or construction panel that doesn't justify the method. **Re-dispatch:** visual-agent.
+- [ ] **BK-G3 — Visual mode held, not mixed.** One mode from the 8-mode menu is selected, with 1-line rationale tying to archetype + product category. Mixing modes requires explicit operator confirmation. **FAIL signal:** Board mixes two modes without justification; or visual-mode field missing. **Re-dispatch:** visual-agent.
+- [ ] **BK-G4 — No generic AI-glow / purple-blue gradient defaults.** Unless the brand is Voice mode + a relevant archetype (Caregiver / Sage / Lover) — and the strategy demands it — the board does not lean on the purple-blue AI gradient. **FAIL signal:** Purple-blue gradient applied without strategy justification in any panel. **Re-dispatch:** visual-agent.
+- [ ] **BK-G5 — Mockup discipline.** Mockups are identity applications, not feature demos. No full fake dashboards with fabricated rows, no glossy 3D device renders, no multi-device stacks, no busy 20+ UI-element panels. **FAIL signal:** Any panel reads as a product screenshot more than a brand artifact. **Re-dispatch:** visual-agent.
+- [ ] **BK-G6 — Reference compositions not copied verbatim.** If reference moodboards were provided, the board extracts rhythm / grid / density / accent logic — not exact compositions, logos, taglines, or unique assets. **FAIL signal:** Panel arrangement, mark, or composition reproduces a reference. **Re-dispatch:** visual-agent.
+- [ ] **BK-G7 — Text budget honored.** Allowed text: brand name 1×, tagline 1× (≤7 words), optional URL/command 1×, 2-5 section labels, short UI chips. **FAIL signal:** Body paragraphs, fake lorem copy, long menu lists, or unreadable labels. **Re-dispatch:** visual-agent.
+- [ ] **BK-G8 — Board lives under `brand/artboards/`.** Never inside `brand/BRAND.md` or `brand/DESIGN.md`. Never as a master asset in `brand/logo/` or `brand/imagery/`. **FAIL signal:** Board spec or prompts written into BRAND.md / DESIGN.md, or render saved as a master asset. **Re-dispatch:** orchestrator (file-placement fix) + visual-agent (re-emit).
+- [ ] **BK-G9 — Existing logo assets reused.** If `brand/logo/logo-full.svg` exists, the board references it; if absent, prompts use a placeholder rectangle labeled `logo: [concept name]` — never a hallucinated final mark. **FAIL signal:** Board prompt commissions a "new logo" when an existing one is on disk; or hallucinates a final mark in the absence of an asset. **Re-dispatch:** visual-agent.
 
 ### Quality Gate Checklist — Cross-File
 
@@ -179,6 +204,20 @@ This is the critic's unique contribution — no other agent checks this:
 | Component specs missing, hardcoded values | **component-token-agent** |
 | Contrast failures, touch targets, focus states | **accessibility-agent** |
 | Cross-element incoherence | Whichever agent owns the contradicting element |
+| Narrative tension Q1 — sustainable persona violated | **strategy-agent** (+ voice-agent if voice register is the carrier) |
+| Narrative tension Q2 — value tradeoff is shaped but not lived | **strategy-agent** |
+| Narrative tension Q3 — generic community / impact language | **strategy-agent** |
+| Narrative tension Q4 — exploitative or invented pain narrative | **personality-agent** (+ strategy-agent when Origin Story is the offender) |
+| Narrative tension T5 — creator/team/institutional mode inconsistent | **strategy-agent** |
+| Brand-kit BK-G1 — new brand decisions in the board | **visual-agent** (update DESIGN.md first, then re-spec board) |
+| Brand-kit BK-G2 — missing logo concept method / construction | **visual-agent** |
+| Brand-kit BK-G3 — visual mode mixed or missing | **visual-agent** |
+| Brand-kit BK-G4 — generic AI-glow palette | **visual-agent** |
+| Brand-kit BK-G5 — feature-demo mockups instead of identity applications | **visual-agent** |
+| Brand-kit BK-G6 — copied reference composition | **visual-agent** |
+| Brand-kit BK-G7 — text budget exceeded | **visual-agent** |
+| Brand-kit BK-G8 — board written into BRAND.md / DESIGN.md | **orchestrator** (file move) + **visual-agent** (re-emit) |
+| Brand-kit BK-G9 — hallucinated logo / wrong asset reuse | **visual-agent** |
 
 ### Anti-Patterns
 

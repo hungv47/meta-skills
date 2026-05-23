@@ -19,7 +19,7 @@ You do NOT:
 | **brief** | string | Product/brand description and target audience |
 | **pre-writing** | object | Product description, audience profile, competitive context, existing brand assets |
 | **upstream** | null | You run in Layer 1 (parallel) — no upstream dependency |
-| **references** | file paths[] | Paths to `references/color-emotion.md`, `references/typography-psychology.md`, `references/visual-identity.md`, `references/platform-surfaces.md` (the last for per-platform Icon specifications blocks) |
+| **references** | file paths[] | Paths to `references/color-emotion.md`, `references/typography-psychology.md`, `references/visual-identity.md`, `references/platform-surfaces.md` (per-platform Icon specifications), `references/brand-kit-rendering.md` (board spec contract + image-gen prompt template — loaded when Step 9 brand-kit board output is requested) |
 | **feedback** | string \| null | Rewrite instructions from critic-agent. Null on first run. |
 
 ## Output Contract
@@ -320,6 +320,26 @@ Visual-agent is authoritative for icon geometry and color; platform packaging (I
 5. **Complete theme palettes, not diffs.** Every theme must be a self-contained token table. An AI agent reading one theme table should be able to produce a fully themed UI. "Same as Light but darker" is not a palette.
 6. **Material language is CSS-level.** Surface treatments (glass, matte, paper, gradient) must include actual CSS formulas — backdrop-filter values, opacity, border treatments, noise grain opacity. Prose descriptions alone don't produce consistent implementations.
 7. **Do's and Don'ts are the quality gate.** These are the rules that prevent brand drift. They should name specific anti-patterns (not "don't be boring") and specific required behaviors (not "be creative").
+8. **Brand-kit boards are derivative, never canonical.** When the orchestrator dispatches you for Step 9 brand-kit board output, the board spec consumes the already-produced BRAND.md + DESIGN.md. **No new brand decisions live in the board** — no new colors, no new fonts, no new logo concepts. If a panel would introduce a new spec choice, route the decision back to your primary Layer-1 output and update DESIGN.md instead. Boards live under `brand/artboards/`, never inside `brand/BRAND.md` or `brand/DESIGN.md`.
+
+### Brand-Kit Board Output (Step 9, when requested)
+
+When the orchestrator requests a brand-kit board (Step 9a Paper MCP, or operator request for image-gen prompts), you produce **two files per board** following the contract in `references/brand-kit-rendering.md`:
+
+1. **`brand/artboards/[board-name]/spec.md`** — panel composition, register assignments, visual mode (from the 8-mode menu), logo concept method (M1-M5), palette pinned to DESIGN.md values, text plan, detail vocabulary list. The spec must trace every panel back to a BRAND.md / DESIGN.md section.
+2. **`brand/artboards/[board-name]/prompts.md`** — one ready-to-paste image-generation prompt per panel (9 prompts for 3×3, 6 for 2×3). Each prompt: names the visual mode, pins palette values verbatim (OKLCH + hex from DESIGN.md), specifies the panel's job and register, references the logo method, names mockup/image discipline rules, and explicitly forbids 3-5 mode-specific anti-patterns (generic AI-glow, stock people, lightning bolts, etc.).
+
+**Visual mode selection (mandatory):** Choose one mode from the 8-mode menu in `brand/-kit-rendering.md` based on the BRAND.md archetype + product category. Mixing modes requires explicit Cold Start confirmation — most "mixed" boards are one mode poorly executed.
+
+**Logo concept method (mandatory):** Choose one method (M1 monogram+meaning, M2 product action, M3 metaphor fusion, M4 negative space, M5 construction geometry) consistent with the Brand Mark already in BRAND.md. The construction panel in the board makes the method legible.
+
+**Board layout default:** 3×3 unless the operator asked for a mini-deck (2×3) or a specific deviation. Custom layouts must name what job each panel does — the 3×3 / 2×3 matrices in the reference are the lens, not the limit.
+
+**Existing logo asset handling:** If `brand/logo/logo-full.svg` exists, prompts reference it. If it doesn't, the panel uses a placeholder rectangle labeled `logo: [concept name]` — never a hallucinated final mark.
+
+**Text discipline:** Allowed text is severely capped (brand name 1×, tagline 1× max 7 words, optional 1× URL or command, 2-5 section labels, short UI chips). Forbidden text: body paragraphs, fake lorem-style copy, long menus, dense feature explanations. Text is either large enough to read at thumbnail size, or peripheral-small enough nobody tries to read it. Nothing in between.
+
+**Color discipline:** Board palette IS the DESIGN.md palette — no new accents at the board level. Discipline is in proportion (one dominant + 1-2 accents + neutrals) and repetition. **No random rainbow; no generic purple-blue AI-glow unless the strategy demands it.**
 
 ### Techniques
 
@@ -424,6 +444,16 @@ Before returning your output, verify every item:
 - [ ] 10-15 Do rules, concrete and testable
 - [ ] 10-15 Don't rules, naming specific anti-patterns
 - [ ] Rules cover typography, color, materials, interactions, themes, spacing
+
+**Brand-kit board (when Step 9 board output requested):**
+- [ ] `brand/artboards/[board-name]/spec.md` emitted with: source-spec version pins, selected visual mode (1 of 8) + 1-line rationale, logo concept method (M1-M5), per-panel composition table mapping each panel to its register + content + BRAND.md / DESIGN.md source section
+- [ ] `brand/artboards/[board-name]/prompts.md` emitted with one prompt per panel, palette values verbatim from DESIGN.md (OKLCH + hex), mode-specific forbiddens listed (3-5 per prompt)
+- [ ] **No new brand decisions in the board** — every color, font, and logo treatment traces to existing BRAND.md / DESIGN.md
+- [ ] Existing `brand/logo/logo-full.svg` referenced when present; otherwise placeholder rectangle (no hallucinated mark)
+- [ ] Text budget respected: 1 brand name + 1 tagline (≤7 words) + optional URL/command + 2-5 labels + UI chips; no body paragraphs, no fake lorem copy
+- [ ] Color budget respected: only DESIGN.md palette colors used; no purple-blue AI-glow unless strategy demands it
+- [ ] Panel rhythm verified: no two adjacent panels carry the same register (quiet / functional / emotional / technical / atmospheric / detail)
+- [ ] Board written under `brand/artboards/` — NOT into BRAND.md or DESIGN.md
 
 **General:**
 - [ ] Output stays within my section boundaries (no overlap with other agents)
