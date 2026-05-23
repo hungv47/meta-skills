@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | The site URL and AI SEO goals |
 | **pre-writing** | object | Site type, CMS/framework, current schema status, ICP data |
 | **upstream** | markdown \| null | Null — you are a Layer 1 parallel agent |
-| **references** | file paths[] | `references/ai-seo.md`, `references/schema-reference.md` |
+| **references** | file paths[] | `references/ai-seo.md`, `references/schema-reference.md`, `references/retrieval-layer-seo.md`, `references/_shared/evidence-classes.md`, `references/live-serp-remediation.md` (when a benchmark report is supplied) |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |
 
 ## Output Contract
@@ -73,6 +73,16 @@ Return a single markdown document with exactly these sections:
 - **Fix:** [exact structural change needed]
 - **Priority:** Critical / High / Medium / Low
 
+**Retrieval-layer extension (required when AI-SEO mode is active):** every finding ALSO carries the six retrieval-layer fields below (per `references/retrieval-layer-seo.md` § Audit output schema + `references/format-conventions.md` § Retrieval-layer finding extension).
+
+- **Query:** [the specific search/chat query the chunk would surface for]
+- **Target page:** [exact URL of the page that will own the answer chunk]
+- **Extraction unit:** [first paragraph under H2 'X' / FAQ entry titled 'Y' / comparison-table row 'Z' / new H3 between sections A and B]
+- **Source/corroboration gap:** [primary URL the chunk needs to cite + (when applicable) third-party host that needs corroboration — this last field is shared with ai-presence-agent]
+- **Measurement query:** [exact query to re-test post-fix — often the persona-prefixed `monitor-aeo` query, not necessarily the same as Query]
+- **Expected citation behavior:** [cited verbatim in Perplexity / pulled into Google AI Overview reference block / surfaced in ChatGPT search run with verify-resolving URL — concrete and falsifiable]
+- **Evidence class:** [observed-test | single-run | unavailable | public-doc | practitioner-inference | hypothesis] (per `references/_shared/evidence-classes.md`)
+
 [Repeat for each finding]
 
 ## Change Log
@@ -91,6 +101,8 @@ Return a single markdown document with exactly these sections:
 1. **Structure is how AI models "see" your content.** AI models parse headings, tables, and answer passages to extract citable information. Unstructured walls of text get skipped even if the information is excellent.
 2. **Schema is explicit metadata for machines.** While heading structure helps AI models parse content, schema markup provides machine-readable metadata that search engines and AI systems consume directly. Both matter.
 3. **Cite sources — it is the single strongest factor for AI visibility.** The Princeton GEO/AEO study found that citing sources provides a +40% citation boost. This is the highest-impact structural change.
+4. **The unit AI retrieval lifts is heading + immediately-following paragraph.** Optimizing for ranking ≠ optimizing for retrieval. Every retrieval-layer finding names the specific extraction unit; "improve the page" or "rewrite the section" is critic-FAIL. See `references/retrieval-layer-seo.md` § 1-2 for the 6-property retrieval framework.
+5. **Every claim about retrieval/citation behavior carries an evidence class.** Per `references/_shared/evidence-classes.md`. "Vendor V's private prompt does Z" is inadmissible — reframe as `observed-test` (from `monitor-aeo` handoff) or `hypothesis` (with measurement plan). P1 recommendations must not be `hypothesis`-only.
 
 ### Princeton GEO/AEO Study — Optimization Impact on AI Citations
 
@@ -188,5 +200,9 @@ Before returning your output, verify every item:
 - [ ] Princeton GEO/AEO metrics are referenced for impact sizing (not made-up numbers)
 - [ ] Source citation presence is checked and recommendations are specific
 - [ ] Comparison table presence and quality are evaluated
+- [ ] Every retrieval-layer finding carries Query / Target page / Extraction unit / Source-or-corroboration gap / Measurement query / Expected citation behavior / Evidence class (per `references/format-conventions.md` § Retrieval-layer finding extension)
+- [ ] No P1 (Critical/High) recommendation is `hypothesis`-only; `hypothesis` rows carry an explicit measurement plan
+- [ ] No finding claims a vendor's private prompt as evidence; such claims are reframed as `hypothesis` or `observed-test`
+- [ ] No retrieval-layer finding ships when the target page fails `references/technical-crawler-checklist.md` checks #5/#8/#9 OR when the relevant AI crawler is blocked — that's a Technical Audit blocker, not a structure finding
 - [ ] Output stays within my section boundaries (no overlap with other agents)
 - [ ] No `[BLOCKED]` markers remain unresolved

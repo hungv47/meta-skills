@@ -2,6 +2,8 @@
 
 Detailed audit report template and site-type-specific checklists.
 
+> **Companion:** `references/technical-crawler-checklist.md` holds the per-URL 12-check crawler-style technical ledger (title / meta / H1-H2 / OG / canonical / hreflang / JSON-LD / robots / sitemap / orphans / alt / thin-lang-icons) and the vendor-agnostic crawler-tool adapter pattern. **This file is the strategic audit shape (Executive Summary, layer status, prioritized plan, re-audit schedule, CWV thresholds, URL structure, internal linking, architecture deliverables). That file is the per-URL technical ledger.** Run the checklist on every page audited at the technical layer; map every `FAIL:` row into the `Issue / Impact / Evidence / Fix / Priority` schema from `references/format-conventions.md`.
+
 ---
 
 ## Audit Report Template

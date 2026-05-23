@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | Operator brief; mode (`bing-readiness`, `llms-readiness`, or `full-report`) decides which subset runs |
 | **pre-writing** | object | `{ subject_domain, bing_webmaster_export?, indexnow_log?, sitemap_url?, robots_url?, mode }` |
 | **upstream** | markdown | query-set + provider-readiness outputs |
-| **references** | file paths[] | Absolute paths to `references/llms-readiness.md`, `references/evidence-classes.md` |
+| **references** | file paths[] | Absolute paths to `references/llms-readiness.md`, `references/_shared/evidence-classes.md` |
 | **feedback** | string \| null | Rewrite instructions from critic |
 
 ## Output Contract

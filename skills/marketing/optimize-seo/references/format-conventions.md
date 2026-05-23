@@ -120,6 +120,22 @@ The critic enforces Issue/Impact/Evidence/Fix as mandatory (gate 1). Missing any
 
 **Hedge language is banned in Findings.** Critic catches: "consider," "might want to," "could potentially," "it may help to," "think about." Direct: "Do X because Y."
 
+### Retrieval-layer finding extension (AI-SEO mode only)
+
+When the finding is a retrieval-layer recommendation (Route B or E, produced by `ai-structure-agent` or `ai-presence-agent` per `references/retrieval-layer-seo.md`), the finding adds six more required fields beyond Issue/Impact/Evidence/Fix/Priority:
+
+```markdown
+- Query: [the specific search/chat query the chunk would surface for]
+- Target page: [exact URL of the page that will own the answer chunk]
+- Extraction unit: [first paragraph under H2 'X' / FAQ entry titled 'Y' / comparison-table row 'Z']
+- Source/corroboration gap: [primary URL the chunk needs to cite + third-party host that needs corroboration]
+- Measurement query: [exact query to re-test post-fix; often the monitor-aeo persona-prefixed query]
+- Expected citation behavior: [cited verbatim in Perplexity / pulled into AI Overview reference block / surfaced in ChatGPT search run with verify-resolving URL]
+- Evidence class: [observed-test | single-run | unavailable | public-doc | practitioner-inference | hypothesis] (per `references/_shared/evidence-classes.md`)
+```
+
+Retrieval-layer findings missing any of Query / Target page / Extraction unit / Measurement query / Expected citation behavior / Evidence class → critic FAIL → re-dispatch to source agent. The 5 base fields remain mandatory across all modes; the 6 extension fields only fire for retrieval-layer findings in AI-SEO mode.
+
 ---
 
 ## Priority Actions — force ranking rule
@@ -171,8 +187,12 @@ Operators may add custom metrics. Agents recommend frequency: monthly for AI SEO
 
 Agents read mode-specific reference files (passed at dispatch, not read by orchestrator):
 
-- `references/technical-audit.md` — Full audit template + checklists (Technical Audit mode)
-- `references/ai-seo.md` — Platform-specific AI optimization + citation data + AEO techniques (AI SEO mode)
+- `references/technical-audit.md` — Strategic audit template + CWV thresholds + URL structure + internal linking + architecture deliverables (Technical Audit mode)
+- `references/technical-crawler-checklist.md` — Per-URL 12-check technical ledger + vendor-agnostic crawler-tool adapter (Technical Audit + Full modes)
+- `references/ai-seo.md` — Platform-specific AI optimization + citation data + AEO techniques + monitoring tools + llms.txt spec (AI SEO mode)
+- `references/retrieval-layer-seo.md` — 6-property retrieval framework + per-finding schema extension + `monitor-aeo` handoff consumption (AI SEO + Full modes)
+- `references/live-serp-remediation.md` — Vendor-agnostic remediation loop + resumable manifest spec (AI SEO + Full modes when a benchmark report is supplied)
+- `references/_shared/evidence-classes.md` — Shared evidence taxonomy (canonical at `skills/marketing/_shared/evidence-classes.md`); every retrieval/citation claim carries a tag
 - `references/programmatic-seo.md` — pSEO template patterns + implementation (Programmatic mode)
 - `references/competitor-pages.md` — Comparison page templates + keyword targeting (Competitor Pages mode)
 - `references/schema-reference.md` — Schema types + implementation contexts + validation (AI SEO + all modes that touch structured data)

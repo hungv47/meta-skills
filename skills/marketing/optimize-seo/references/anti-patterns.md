@@ -2,7 +2,7 @@
 
 > Load when drafting recommendations or evaluating critic-FAIL feedback. Detection rules tell you *how to catch* the failure mode; bad/good examples show *what counts*.
 
-Pattern set: **9 SEO-specific (from baseline body) + 4 cross-cutting marketing-stack failures** = 13 patterns total.
+Pattern set: **9 SEO-specific (from baseline body) + 4 retrieval-layer + 4 cross-cutting marketing-stack failures** = 17 patterns total.
 
 Per-pattern ownership maps to `agents/critic-agent.md` Rewrite Routing Table; agent column tells you who to re-dispatch on critic FAIL.
 
@@ -115,13 +115,71 @@ Per-pattern ownership maps to `agents/critic-agent.md` Rewrite Routing Table; ag
 
 ---
 
-## Cross-cutting marketing-stack failures (10-13)
+## Retrieval-layer failures (10-13)
+
+These apply when AI-SEO (Route B) or Full SEO (Route E) is active. Source of truth for the framework these patterns enforce: `references/retrieval-layer-seo.md`.
+
+---
+
+## 10. Markdown / llms.txt theater without crawlable content quality
+
+**Detection:** AI-SEO recommendations propose shipping or expanding `/llms.txt`, `/llms-full.txt`, per-URL `.md` companions, or the four-tier discovery hierarchy on pages that do not pass the 6-property retrieval-layer framework (extractable answer chunks, 40-60 word direct-answer blocks, primary-source citations, entity corroboration, crawler access, freshness/contradiction handling).
+
+**Bad:** "Ship `/llms.txt` listing all 80 docs pages, plus per-URL `.md` companions on every marketing page." (Body pages are walls of prose with no H2-anchored answer blocks and no source citations.)
+**Good:** "Audit retrieval-layer properties on the top 10 AI-SEO target pages per `references/retrieval-layer-seo.md` §§ 1-6. Fix chunkability + source citations + freshness on those 10 pages first. Then ship `/llms.txt` once the underlying pages are retrieval-grade — order matters."
+
+**Why it matters:** the discovery files are a contract between your site and the parser. They don't change what the parser *finds* on the page. A perfect manifest pointing at unretrievable content is a wasted operator session.
+
+**Owned by:** ai-presence-agent (file recommendations) + ai-structure-agent (underlying content readiness). Critic enforces via the new retrieval-layer per-finding schema (every retrieval recommendation names the Extraction unit + Measurement query).
+
+---
+
+## 11. Entity mentions from low-quality sources presented as authority
+
+**Detection:** AI-SEO findings cite or recommend adding citations to aggregator / low-traffic blog / SEO-bait domains as if they were `public-doc` or `expert-publication` sources. Citation chain consists entirely of secondary aggregators with no link to the primary or expert publication.
+
+**Bad:** "Add citation to [low-traffic SEO blog] which mentioned us, to build authority signals."
+**Good:** "Add citation to the primary [Princeton GEO paper / Anthropic engineering doc / G2 industry report] linked from `references/retrieval-layer-seo.md` § Source-class weighting. Replace the aggregator-only chain on /blog/ai-seo-guide with the primary source URL + date."
+
+**Why it matters:** retrieval scorers de-weight pages whose citation graph consists of aggregators citing aggregators. The source-class table in `retrieval-layer-seo.md` § 3 names the weighting. Adding low-quality entity mentions can demote the host page by association.
+
+**Owned by:** ai-presence-agent (corroboration sources) + ai-structure-agent (in-page citations). Critic enforces by checking the source-class weighting field on every "uses source" recommendation.
+
+---
+
+## 12. Long prose sections that cannot be extracted independently
+
+**Detection:** AI-SEO mode recommends pages with H2 sections > 400 words that are pure prose (no H3 sub-anchors, no answer blocks, no lists, no tables). Or recommends new content drafts in this shape.
+
+**Bad:** "Write a 2,500-word definitive guide to [topic]" with no per-section sub-structure spec.
+**Good:** "Write a 2,500-word guide structured as 6 H2 sections, each with a 40-60 word answer block as the first paragraph, plus H3 sub-anchors when the section exceeds 400 words. Per `references/retrieval-layer-seo.md` § 1." OR for an existing page: "Restructure /blog/x: section 'How it works' (1,200 words of prose) → split into 4 H3 sub-anchors with answer blocks each (per § 1 + § 2)."
+
+**Why it matters:** the unit AI retrieval lifts is heading + first paragraph. A wall of prose under one heading produces, at best, a lifted intro paragraph that doesn't answer the question. Decomposing into anchored chunks multiplies the page's retrievable surface.
+
+**Owned by:** ai-structure-agent. Critic enforces by checking the Extraction unit field — recommendations naming "the whole page" as the unit fail.
+
+---
+
+## 13. AI SEO work before technical crawl/index issues are fixed
+
+**Detection:** AI-SEO mode (Route B) or Full mode (Route E) ships retrieval-layer recommendations on pages whose `references/technical-crawler-checklist.md` audit shows FAIL on checks #5 (canonical), #8 (robots/noindex/X-Robots-Tag), or #9 (sitemap), OR where ai-presence-agent's crawler access audit shows the relevant AI crawler is blocked.
+
+**Bad:** "Add FAQ schema + 40-60 word answer blocks to drive ChatGPT citations." (GPTBot is blocked in robots.txt; or the page returns `X-Robots-Tag: noindex`; or the canonical points to a 404.)
+**Good:** "BLOCKED: GPTBot disallowed in robots.txt line 14 (per `references/technical-crawler-checklist.md` check #8). Route A (Technical Audit) recommendations land first: unblock GPTBot + ClaudeBot + PerplexityBot. After that, return to retrieval-layer work."
+
+**Why it matters:** retrieval-layer optimization on a page the crawler can't reach is wasted work. Critical Gate 2 in `SKILL.md` (AI SEO is additive, not alternative) names this — the gate exists because this is one of the most common AEO failure modes.
+
+**Owned by:** ai-structure-agent + ai-presence-agent self-check + crawl-agent (when Route E). Critic gate 8 (AI SEO recommendations platform-specific) catches when the recommendations don't acknowledge the crawl blocker.
+
+---
+
+## Cross-cutting marketing-stack failures (14-17)
 
 These apply across all marketing-skills, not just seo. Same detection/fix shape; ownership clarified.
 
 ---
 
-## 10. Polish-Chain on FAIL
+## 14. Polish-Chain on FAIL
 
 **Detection:** Critic returned FAIL and orchestrator dispatched polish-chain (humanmaxxing, vn-tone) on findings that haven't been re-dispatched per Rewrite Routing.
 
@@ -132,7 +190,7 @@ These apply across all marketing-skills, not just seo. Same detection/fix shape;
 
 ---
 
-## 11. Multi-mode in one invocation
+## 15. Multi-mode in one invocation
 
 **Detection:** invocation says "do audit + AI + programmatic" → orchestrator runs all routes in one pass and merges into one artifact.
 
@@ -145,7 +203,7 @@ These apply across all marketing-skills, not just seo. Same detection/fix shape;
 
 ---
 
-## 12. VN-market output without vn-tone
+## 16. VN-market output without vn-tone
 
 **Detection:** Cold Start Q4 (geo + language scope) declared a Vietnamese market and the artifact ships without a vn-tone polish pass on user-facing copy (Findings narrative, Priority Actions, Next Step).
 
@@ -156,7 +214,7 @@ These apply across all marketing-skills, not just seo. Same detection/fix shape;
 
 ---
 
-## 13. Contract drift
+## 17. Contract drift
 
 **Detection:** artifact frontmatter missing one of (skill, mode, version, date, status), OR `mode` value not in the enum (audit / ai / programmatic / competitor / aso), OR body missing one of the H2 sections (Diagnosis / Findings / Priority Actions / Implementation Plan / Dependencies / Metrics to Track / Next Step).
 

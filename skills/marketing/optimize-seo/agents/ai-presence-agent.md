@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | The site URL and AI SEO goals |
 | **pre-writing** | object | Site type, current robots.txt, ICP data, brand name, top competitors |
 | **upstream** | markdown \| null | Null — you are a Layer 1 parallel agent |
-| **references** | file paths[] | `references/ai-seo.md` |
+| **references** | file paths[] | `references/ai-seo.md`, `references/retrieval-layer-seo.md`, `references/_shared/evidence-classes.md`, `references/live-serp-remediation.md` (when a benchmark report is supplied), `references/technical-crawler-checklist.md` § 8 (robots/noindex/X-Robots-Tag), `.forsvn/artifacts/mkt/aeo-monitor/[slug]/handoff-optimize-seo.md` (when `monitor-aeo` has run) |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |
 
 ## Output Contract
@@ -89,6 +89,16 @@ Return a single markdown document with exactly these sections:
 - **Fix:** [exact action]
 - **Priority:** Critical / High / Medium / Low
 
+**Retrieval-layer extension (required when the finding is about third-party corroboration or `llms.txt` / discovery files):** every such finding ALSO carries the six retrieval-layer fields below (per `references/retrieval-layer-seo.md` § Audit output schema + `references/format-conventions.md` § Retrieval-layer finding extension). Pure crawler-access / robots.txt findings can skip the extension — those are technical blockers, not retrieval-layer recommendations.
+
+- **Query:** [the specific search/chat query the corroboration would surface for — often the `monitor-aeo` persona-prefixed query when handoff evidence is supplied]
+- **Target page:** [the page or third-party surface the corroboration acts on — your owned URL OR the third-party host (G2, Capterra, Reddit thread, industry-publication article)]
+- **Extraction unit:** [the specific third-party surface or owned-page chunk — e.g., "G2 profile review-count + first 3 reviews", "Wikipedia page section 'X'", "`/llms.txt` Section 'Pricing' link"]
+- **Source/corroboration gap:** [which third-party surface needs corroboration AND which competitor currently has it per the `monitor-aeo` cited-domain inventory]
+- **Measurement query:** [the AI-surface query to re-test post-fix; the persona-prefixed `monitor-aeo` query when available]
+- **Expected citation behavior:** [cited via G2 source in Perplexity / appears in ChatGPT search-run with G2 URL / appears in AI Overview cited-domain list — concrete and falsifiable]
+- **Evidence class:** [observed-test | single-run | unavailable | public-doc | practitioner-inference | hypothesis] (per `references/_shared/evidence-classes.md`)
+
 [Repeat for each finding]
 
 ## Baseline Score (for validation tracking)
@@ -113,6 +123,9 @@ Return a single markdown document with exactly these sections:
 1. **Third-party presence drives AI citations more than your own site.** Brands are cited 6.5x more through third-party sources than their own content. Optimizing only your site while ignoring review sites and publications misses the biggest lever.
 2. **If AI crawlers are blocked, nothing else matters for AI SEO.** A blocked GPTBot means zero ChatGPT citations. Always check crawler access first.
 3. **AI SEO changes fast — track and validate.** Unlike traditional SEO where changes take months, AI platform behavior changes weekly. Establish baselines and re-test regularly.
+4. **Consume `monitor-aeo`'s handoff as the primary `observed-test` input.** When `handoff-optimize-seo.md` exists, the cited-domain inventory + competitor cited-domain share are the load-bearing evidence for third-party corroboration recommendations. Per `references/retrieval-layer-seo.md` § Reading a `monitor-aeo` handoff.
+5. **Discovery files (`llms.txt`, `pricing.md`) are bets with asymmetric upside, not guaranteed lift.** Frame recommendations as low-cost agent-readability investments, not as "this will get you cited." See `references/ai-seo.md` § llms.txt Adoption Matrix and the new anti-pattern #10 (Markdown / llms.txt theater) — fix retrieval-grade content first, then ship the file.
+6. **Every claim about retrieval/citation behavior carries an evidence class.** Per `references/_shared/evidence-classes.md`. Don't claim provider behavior from training-data recall.
 
 ### Princeton GEO/AEO Study — Key Presence Metrics
 
@@ -312,5 +325,10 @@ Before returning your output, verify every item:
 - [ ] Baseline score is calculated for future validation tracking
 - [ ] Platform-specific optimization sections reference each platform's actual data sources
 - [ ] Findings reference specific metrics (6.5x third-party citation rate, 7.8% Wikipedia rate, etc.)
+- [ ] When `monitor-aeo`'s `handoff-optimize-seo.md` exists, it has been consumed: cited-domain inventory + competitor cited-domain share inform third-party corroboration findings
+- [ ] Every retrieval-layer finding (third-party corroboration or discovery files) carries Query / Target page / Extraction unit / Source-or-corroboration gap / Measurement query / Expected citation behavior / Evidence class (per `references/format-conventions.md` § Retrieval-layer finding extension)
+- [ ] No P1 (Critical/High) recommendation is `hypothesis`-only; `hypothesis` rows carry an explicit measurement plan
+- [ ] No discovery-file recommendation (llms.txt etc.) ships when the underlying pages fail the retrieval-layer 6-property framework — fix content first per `references/retrieval-layer-seo.md` and anti-pattern #10
+- [ ] No retrieval-layer recommendation ships when the relevant AI crawler is blocked — that's a Technical Audit blocker reported in the AI Crawler Access Audit section
 - [ ] Output stays within my section boundaries (no overlap with other agents)
 - [ ] No `[BLOCKED]` markers remain unresolved

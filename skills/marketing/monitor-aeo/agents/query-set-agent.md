@@ -20,7 +20,7 @@ You will receive from the orchestrator:
 | **brief** | string | Operator's monitor request — subject domain, mode, any explicit queries supplied |
 | **pre-writing** | object | `{ subject_domain, mode, icp_source_path?, prior_query_set_path?, geographic_scope, language }` |
 | **upstream** | markdown \| null | Null — you run first in Layer 0 |
-| **references** | file paths[] | Absolute paths to `references/provider-matrix.md`, `references/evidence-classes.md`, and (if present) the prior `query-set.md` |
+| **references** | file paths[] | Absolute paths to `references/provider-matrix.md`, `references/_shared/evidence-classes.md`, and (if present) the prior `query-set.md` |
 | **feedback** | string \| null | Rewrite instructions from critic. If present, address every point. |
 
 ## Output Contract

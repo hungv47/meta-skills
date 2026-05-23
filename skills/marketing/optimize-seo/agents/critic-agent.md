@@ -19,7 +19,7 @@ You do NOT:
 | **brief** | string | Original task context and mode |
 | **pre-writing** | object | Site type, business context, mode |
 | **upstream** | markdown | The full merged document from prioritization-agent (includes all Layer 1 findings + prioritized action plan) |
-| **references** | file paths[] | None required — evaluation criteria are self-contained |
+| **references** | file paths[] | `references/_shared/evidence-classes.md` when AI-SEO mode is active (per § Retrieval-Layer Gates below) |
 | **feedback** | null (always) | You are the final agent — you PRODUCE feedback for other agents, you never receive it. On rewrite cycles, you re-evaluate the updated document from scratch. |
 
 ## Output Contract — Two Possible Returns
@@ -118,6 +118,18 @@ Every item must pass for a PASS verdict:
 - [ ] Recommendations are current — not citing deprecated practices or outdated tools
 - [ ] Data points used are dated or attributable (Princeton GEO/AEO study, Google documentation, etc.)
 
+### Retrieval-Layer Gates (AI-SEO mode only — Routes B and E)
+
+When AI-SEO mode is active, every retrieval-layer finding (from `ai-structure-agent` or `ai-presence-agent`'s third-party / discovery-file findings) clears these additional gates:
+
+- [ ] **Retrieval-layer per-finding schema present.** Every retrieval-layer finding carries Query / Target page / Extraction unit / Source-or-corroboration gap / Measurement query / Expected citation behavior / Evidence class (per `references/format-conventions.md` § Retrieval-layer finding extension). Missing any of the 6 extension fields → FAIL → re-dispatch to source agent.
+- [ ] **Evidence class is present and valid.** Every retrieval/citation claim is tagged from `references/_shared/evidence-classes.md`. Untagged claims default to `hypothesis` and are flagged as such; persistent untagged claims → FAIL.
+- [ ] **No P1 (Critical/High) recommendation is `hypothesis`-only.** A `hypothesis`-only P1 fails; demote to P2/P3 or pair with an `observed-test` from the `monitor-aeo` handoff.
+- [ ] **No inadmissible "private prompt" claim.** Findings that assert vendor private-prompt behavior (e.g. "ChatGPT's system prompt prioritizes X") → FAIL. Reframe as observed retrieval behavior (`observed-test`) or as a `hypothesis` with measurement plan.
+- [ ] **Technical-audit blocker gate.** Retrieval-layer findings on pages whose `references/technical-crawler-checklist.md` shows FAIL on checks #5 (canonical), #8 (robots/noindex/X-Robots-Tag), or #9 (sitemap), OR where the relevant AI crawler is blocked, are an anti-pattern #13 violation → FAIL → escalate to Route A (Technical Audit) first.
+- [ ] **Vendor-score-chasing check.** When the live-SERP remediation loop is active (`references/live-serp-remediation.md`), no recommendation names a proprietary vendor score as the success metric. The Measurement query field must name an AI-surface query, not the vendor's score.
+- [ ] **Manifest required for multi-page remediation.** When the live-SERP loop touches more than 3 pages, a manifest at `.forsvn/artifacts/mkt/seo-ai.serp-remediation-manifest.md` exists with stable ordering, batch range, baseline / rescan / retrieval-delta fields populated. Missing manifest on a >3-page loop → FAIL.
+
 ### Rewrite Routing
 
 When a section fails, route the fix to the right agent:
@@ -135,6 +147,11 @@ When a section fails, route the fix to the right agent:
 | Comparison page missing honest competitor section | **comparison-page-agent** with feedback |
 | Prioritization is a flat list with no phases | **prioritization-agent** with feedback |
 | Multiple agents' outputs contradict each other | **orchestrator** — flag for re-merge |
+| Retrieval-layer finding (chunk / answer block / schema) missing one of the 6 extension fields | **ai-structure-agent** with feedback naming the missing field |
+| Retrieval-layer finding (third-party corroboration / discovery file) missing one of the 6 extension fields | **ai-presence-agent** with feedback naming the missing field |
+| P1 recommendation is `hypothesis`-only OR cites a vendor "private prompt" | **source agent** (ai-structure or ai-presence) with feedback: demote or reframe per `references/_shared/evidence-classes.md` |
+| Live-SERP remediation loop is active on >3 pages with no manifest | **source agent** with feedback: write the manifest per `references/live-serp-remediation.md` § Manifest spec before proceeding |
+| Vendor proprietary score named as the success metric | **source agent** with feedback: replace with an AI-surface Measurement query per `references/live-serp-remediation.md` § Anti-pattern A |
 
 ### Common Failure Patterns
 
@@ -172,3 +189,4 @@ Before returning your output:
 - [ ] Verdict is binary (PASS or FAIL) — no "conditional pass" or "soft fail"
 - [ ] Hedge language in the evaluated document is caught and flagged
 - [ ] Mode coverage is verified against the active mode's requirements
+- [ ] AI-SEO mode: Retrieval-Layer Gates (above) are all evaluated; per-finding schema, evidence class, P1-not-hypothesis, no-private-prompt, technical-blocker, vendor-score-chasing, and manifest checks are explicitly walked

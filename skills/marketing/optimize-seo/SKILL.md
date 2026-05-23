@@ -141,9 +141,9 @@ Full template + finding format (Issue / Impact / Evidence / Fix / Priority) + pe
 
 ## Anti-Patterns
 
-13 patterns (9 SEO-specific + 4 cross-cutting marketing-stack) with detection rules, bad/good examples, and per-pattern agent ownership verified against critic-agent.md Rewrite Routing: `references/anti-patterns.md` [ANTI-PATTERN].
+17 patterns (9 SEO-specific + 4 retrieval-layer + 4 cross-cutting marketing-stack) with detection rules, bad/good examples, and per-pattern agent ownership verified against critic-agent.md Rewrite Routing: `references/anti-patterns.md` [ANTI-PATTERN].
 
-Most common in practice: "Consider improving" (gate 3 hedge-language), "Do SEO" without diagnosis (no mode chosen), Ignoring third-party presence for AI SEO (gate 8 — third-party drives ~6.5x more AI citations than owned).
+Most common in practice: "Consider improving" (gate 3 hedge-language), "Do SEO" without diagnosis (no mode chosen), Ignoring third-party presence for AI SEO (gate 8 — third-party drives ~6.5x more AI citations than owned), AI-SEO work before technical crawl/index fixes (#13 — retrieval-layer optimization on uncrawlable pages is wasted work).
 
 ---
 
@@ -171,7 +171,7 @@ End-to-end Route A walkthrough (Pre-Dispatch → parallel Layer 1 → merge → 
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/seo-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, ai-seo, programmatic-seo, competitor-pages, schema-reference, aso, platform-search}.md`
+- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, technical-crawler-checklist, ai-seo, retrieval-layer-seo, live-serp-remediation, programmatic-seo, competitor-pages, schema-reference, aso, platform-search}.md`. Shared: `references/_shared/evidence-classes.md` (canonical: `skills/marketing/_shared/evidence-classes.md`, shared with `monitor-aeo`).
 - **Platform intelligence** (loaded by ai-presence-agent, programmatic-template-agent, comparison-page-agent, aso-keyword-agent, aso-listing-agent when their mode is active): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13). Agent-to-section map in `references/platform-search.md`.
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
 - **Agents:** 15 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 10-item quality gate + 11-row Rewrite Routing Table.

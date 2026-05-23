@@ -185,6 +185,6 @@ End-to-end Route Z walkthrough (Pre-Dispatch → Layer 0 → parallel Layer 1 �
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/aeo-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{evidence-classes, provider-matrix, llms-readiness}.md`
-- **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
+- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{provider-matrix, llms-readiness}.md`
+- **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, evidence-classes}.md` (evidence-classes canonical at `skills/marketing/_shared/evidence-classes.md`, shared with `optimize-seo`)
 - **Agents:** 8 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 8-item quality gate + Rewrite Routing Table.
