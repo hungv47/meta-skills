@@ -42,18 +42,18 @@ metadata:
 
 ## Output
 
-`.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` — single main artifact, structured per the template below.
+`.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` — single main artifact, structured per the template below.
 
 Always written alongside `brief.md`:
-- `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-implementation.md` — paste-ready prompt for any coding agent (Claude Code / Cursor / Codex / Opus / Gemini / GPT). Stack auto-detected from repo (frameworks → that stack; no framework → pure HTML/CSS/Vanilla JS, single index.html). Motion stack from `brand/DESIGN.md` (silent → GSAP+ScrollTrigger+Lenis). Includes verbatim Asset Placeholder Rule so coding agents never invent stock-photo URLs.
+- `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-implementation.md` — paste-ready prompt for any coding agent (Claude Code / Cursor / Codex / Opus / Gemini / GPT). Stack auto-detected from repo (frameworks → that stack; no framework → pure HTML/CSS/Vanilla JS, single index.html). Motion stack from `brand/DESIGN.md` (silent → GSAP+ScrollTrigger+Lenis). Includes verbatim Asset Placeholder Rule so coding agents never invent stock-photo URLs.
 
 Optional companions if `target_handoff` lists them:
-- `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-claude-design.md` — verbatim prompt block for claude.ai/design
-- `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-figma.md` — design spec for designer in Figma
-- `.forsvn/artifacts/mkt/lp-brief/[slug]/handoff-designer.md` — narrative brief for human designer
+- `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-claude-design.md` — verbatim prompt block for claude.ai/design
+- `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-figma.md` — design spec for designer in Figma
+- `.forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-designer.md` — narrative brief for human designer
 
 Per-slot artifacts (written by downstream media-briefing skills, not by brief-landing-page itself):
-- `.forsvn/artifacts/mkt/lp-brief/[slug]/asset-slots/{slot-id}.prompt.md` — per-asset generation prompt (written by `brief-graphic` today; future media-briefing skills like motion-brief / 3d-brief / video-brief as they ship). Slots with `route: pending-media-skill` have no prompt file yet — the implementation prompt renders them as solid-color placeholders until a media-briefing skill catches up.
+- `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/{slot-id}.prompt.md` — per-asset generation prompt (written by `brief-graphic` today; future media-briefing skills like motion-brief / 3d-brief / video-brief as they ship). Slots with `route: pending-media-skill` have no prompt file yet — the implementation prompt renders them as solid-color placeholders until a media-briefing skill catches up.
 
 ## Quality Gate
 
@@ -106,7 +106,7 @@ Step 0 → L1 (evidence-anchor ∥ brand-anchor) → L1.5 (hypothesis) → ★ G
        → L2 (architecture) → ★ Gate 2
        → L3 (section-spec) → L3.5 (asset-slot) → L4 (handoff)
        → L5 (conversion-critic ∥ brand-voice-critic) → critic merge → ★ Gate 3
-       → write brief.md + handoff/* + asset-slots/* to .forsvn/artifacts/mkt/lp-brief/[slug]/
+       → write brief.md + handoff/* + asset-slots/* to .forsvn/artifacts/mkt/brief-landing-page/[slug]/
 ```
 
 Per-layer dispatch tables (Layer 1 / Layer 1.5 / Layer 2 / Layer 3 / Layer 3.5 / Layer 4 with Pass-These-Inputs + Reference-Files columns) + Approval Gate user-response handling for all 3 gates + single-agent fallback live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE].
@@ -225,15 +225,15 @@ DONE_WITH_CONCERNS is the floor. No silent FAIL outputs — every critic concern
 **STOP.** Present the full brief + critic merge: brief preview (hypothesis title, section count, asset-slot count, hand-off target), **Conversion critic** verdict + score, **Brand-voice critic** verdict + score, concerns to monitor. Close with: *Approve, request revisions, or reject.*
 
 User responses:
-- "Approve" → write brief to `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` (with version subfolder if rev), status DONE
+- "Approve" → write brief to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (with version subfolder if rev), status DONE
 - "Revise X" → re-dispatch named layer with feedback (1 cycle)
-- "Reject" → save as `.forsvn/artifacts/mkt/lp-brief/[slug]/rejected.md`, exit BLOCKED
+- "Reject" → save as `.forsvn/artifacts/mkt/brief-landing-page/[slug]/rejected.md`, exit BLOCKED
 
 ---
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`)
+- **Path:** `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`)
 - **Always-emitted companion:** `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected at write time)
 - **Optional companions:** `handoff-{claude-design,figma,designer}.md` per `target_handoff`
 - **Per-slot artifacts** (written by downstream `brief-graphic`, not brief-landing-page): `asset-slots/{slot-id}.prompt.md`
@@ -246,7 +246,7 @@ User responses:
 
 Full artifact template byte-identical + per-section format rules + companion file conventions: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
-> Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/lp-brief/[slug]/v[N]/brief.md`, preserve prior versions.
+> Re-run with `--rev=N`: write to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/v[N]/brief.md`, preserve prior versions.
 
 ---
 

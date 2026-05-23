@@ -135,7 +135,7 @@ production_mode: live-action | motion-graphic | mixed
 market: <region>
 hero_platform: tiktok | reels | shorts | x | linkedin
 variants: [list]
-research_artifact: .forsvn/artifacts/research/short-form-research/[slug].md
+research_artifact: .forsvn/artifacts/research/research-shortform/[slug].md
 research_trend_signals_date: YYYY-MM-DD
 research_mechanics_date: YYYY-MM-DD
 campaign_tie_in: <slug or null>

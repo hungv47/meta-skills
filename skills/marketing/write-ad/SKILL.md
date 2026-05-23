@@ -116,7 +116,7 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1 strategist solo w
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md` (final draft), `[audience-temp]-[date]-[slug].rationale.md` (angle + framing + per-variant rationale), `[audience-temp]-[date]-[slug].critic-score.md` (7-dim scorecard per variant + total + regression)
+- **Paths:** `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md` (final draft), `[audience-temp]-[date]-[slug].rationale.md` (angle + framing + per-variant rationale), `[audience-temp]-[date]-[slug].critic-score.md` (7-dim scorecard per variant + total + regression)
 - **Lifecycle:** `pipeline` — overwrite on re-run for same (audience-temp, date, slug-tail); explicit `-v2` suffix when version-history preservation needed; new audience-temp on same day = different prefix = different file
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `network`, `surface`, `audience_temp`, `creative_format`, `production_model`, `conversion_event`, `critic_total` + nested `critic_per_variant: {hero, variant_a, variant_b}`
 - **Consumed by:** human reader (Route A), `plan-campaign` (Route B — reads `critic_total`, `critic_per_variant.hero`, `audience_temp`, `creative_format`, `conversion_event` for budget allocation)
@@ -178,7 +178,7 @@ After receiving the artifact:
 
 ## Worked Example
 
-End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day trial, trial_start conversion, dedicated creative, in-house production, 3 distinct variants: outcome-first / scale+social-proof / authority+mechanism, format-checker REVISION_REQUIRED on char-cap + health-claim disclaimer, composer revised, critic PASS aggregate 168/210 with per-variant 58/56/54, terminal humanmaxxing per variant with `protected_tokens` incl. URL, post-humanmaxxing Specificity regression passes per variant) + cycle-2 FAIL variant + Format-Checker REVISION_REQUIRED path + Route B called-by-campaign-plan snippet: [`references/examples/ad-copy-walkthrough.md`](references/examples/ad-copy-walkthrough.md) [EXAMPLE].
+End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day trial, trial_start conversion, dedicated creative, in-house production, 3 distinct variants: outcome-first / scale+social-proof / authority+mechanism, format-checker REVISION_REQUIRED on char-cap + health-claim disclaimer, composer revised, critic PASS aggregate 168/210 with per-variant 58/56/54, terminal humanmaxxing per variant with `protected_tokens` incl. URL, post-humanmaxxing Specificity regression passes per variant) + cycle-2 FAIL variant + Format-Checker REVISION_REQUIRED path + Route B called-by-campaign-plan snippet: [`references/examples/write-ad-walkthrough.md`](references/examples/write-ad-walkthrough.md) [EXAMPLE].
 
 ---
 
@@ -188,7 +188,7 @@ End-to-end Route A walkthrough (MealKit cold-traffic subscription app — 14-day
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/ad-copy-walkthrough.md` [EXAMPLE]
+- **Example:** `references/examples/write-ad-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{rubric, policy-floor, format-spec, examples, message-transmutation}.md`, `references/ad-intelligence/{meta-retargeting, meta-cold-traffic, creative-cadence}.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, copywriting-research-workflow}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles

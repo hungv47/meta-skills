@@ -112,7 +112,7 @@ research-shortform (research stack)
 plan-campaign → .forsvn/artifacts/mkt/plan-campaign/[slug].md → consumed by brief-landing-page, write-outreach, optimize-seo
 
 write-copy → .forsvn/artifacts/mkt/write-copy/[slug].md → consumed by humanize, polish-vn
-humanize → .forsvn/artifacts/mkt/humanize/[slug].md → final-stage polish
+humanize → .forsvn/artifacts/mkt/humanmaxxing/[slug].md → final-stage polish
 polish-vn → .forsvn/artifacts/mkt/polish-vn/[slug].md → Vietnamese register polish
 
 brief-landing-page → .forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md → owns landing-page construction + conversion-principles gate; consumed by brief-graphic (per asset slot) and external designer/image-gen

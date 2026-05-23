@@ -1,5 +1,3 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
-
 # Worked Example — OG Image for an Async-First PM Tool Launch Post
 
 > End-to-end design-brief walkthrough — Pre-Dispatch (hard gate + Cold Start) → Step 0.5 Route Detection → Layer 1 parallel → Layer 1.5 brief-synth → Approval Gate 1 → Layer 2 prompt-craft → Layer 3 critic → Approval Gate 2 → artifact + ASSETS.md tick.
@@ -299,10 +297,10 @@ Skill ends with: "Ran in --fast mode; rerun without the flag for 3-concept varie
 
 When `brief-landing-page` is producing a landing-page brief and needs a per-asset brief for the hero slot:
 
-1. lp-brief invokes design-brief with: "Need brief for hero asset slot, image-gen route preferred, slot spec at `.forsvn/artifacts/mkt/lp-brief/async-launch-lp/asset-slots/hero.md`."
+1. lp-brief invokes design-brief with: "Need brief for hero asset slot, image-gen route preferred, slot spec at `.forsvn/artifacts/mkt/brief-landing-page/async-launch-lp/asset-slots/hero.md`."
 2. Orchestrator reads slot spec → extracts asset type + dimensions + copy placement + brand-anchor pre-fills.
 3. Hard gate passes (brand artifacts already loaded by lp-brief, but design-brief verifies independently).
 4. Warm Start: 4 of 5 dimensions resolved from slot spec; only constraint Q remains (asks lp-brief's orchestrator inline).
 5. Layer 1 + 1.5 + Gate 1 + Layer 2 + Layer 3 + Gate 2 all run as standard.
-6. Artifact written at `.forsvn/artifacts/mkt/design-briefs/lp-async-launch-hero-2026-05-18.md` with `consumed: [.forsvn/artifacts/mkt/lp-brief/async-launch-lp/asset-slots/hero.md]` in frontmatter.
+6. Artifact written at `.forsvn/artifacts/mkt/design-briefs/lp-async-launch-hero-2026-05-18.md` with `consumed: [.forsvn/artifacts/mkt/brief-landing-page/async-launch-lp/asset-slots/hero.md]` in frontmatter.
 7. lp-brief consumes the design-brief artifact path back at its own Approval Gate.

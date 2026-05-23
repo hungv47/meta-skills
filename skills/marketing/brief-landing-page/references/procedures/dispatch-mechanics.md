@@ -127,9 +127,9 @@ Each FAIL includes `fix direction` naming the responsible agent (section-spec fo
 
 | User response | Action |
 |---|---|
-| "Approve" | Write brief to `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` (with version subfolder if rev). Status DONE. |
+| "Approve" | Write brief to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (with version subfolder if rev). Status DONE. |
 | "Revise X" | Re-dispatch named layer with feedback (1 cycle) |
-| "Reject" | Save as `.forsvn/artifacts/mkt/lp-brief/[slug]/rejected.md`, exit BLOCKED |
+| "Reject" | Save as `.forsvn/artifacts/mkt/brief-landing-page/[slug]/rejected.md`, exit BLOCKED |
 
 ## Routing diagram (full Route A pipeline, end-to-end)
 
@@ -158,7 +158,7 @@ L5 PARALLEL: conversion-critic + brand-voice-critic → merge verdict
   ↓
 ★ Gate 3 (Final Brief Acceptance — user approves, revises 1 cycle, or rejects to BLOCKED)
   ↓
-Write artifacts to .forsvn/artifacts/mkt/lp-brief/[slug]/
+Write artifacts to .forsvn/artifacts/mkt/brief-landing-page/[slug]/
 ```
 
 Route B uses the same dispatch — Layer 1 evidence-anchor additionally reads current page state and any post-launch evidence. Route C (`--rev=N`) reads prior brief at `v[N-1]/brief.md` BEFORE L1, runs L1 to diff prior brief against fresh inputs, continues Route A/B from L1.5.

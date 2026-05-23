@@ -66,7 +66,7 @@ version: 1
 date: [today]
 status: done | done_with_concerns | blocked | needs_context
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md OR variant path]
+source_brief: [.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md OR variant path]
 target_platforms: [list — e.g., tiktok, reels, shorts]
 aspect: [9:16 | 1:1 | 16:9 | 4:5 | custom-WxH]
 length_seconds: [N]

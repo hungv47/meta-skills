@@ -23,7 +23,7 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. **Latest matching `.forsvn/artifacts/research/short-form-research/[slug].md`** from `.forsvn/index/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
+1. **Latest matching `.forsvn/artifacts/research/research-shortform/[slug].md`** from `.forsvn/index/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
    - Missing → emit: "No short-form-research artifact for this market. Run `research-shortform` first, or proceed with platform references only (briefs will lack current trend signals). [Run upstream / Proceed without]"
    - Trend signals stale (>30d) → emit: "Trend signals are X days old. Re-run research, or proceed with stale trends? Briefs may bet on decayed patterns. [Re-run / Proceed]"
    - Mechanics stale (>180d) → strongly recommend re-run; user can override with concerns flag.
@@ -38,7 +38,7 @@ load_class: PROCEDURE
 
 ```
 Found context for short-form-brief:
-- research artifact: .forsvn/artifacts/research/short-form-research/[slug].md
+- research artifact: .forsvn/artifacts/research/research-shortform/[slug].md
   (trends 8d ago, mechanics 22d ago — fresh)
 - brand_mode: founder (from BRAND.md archetype)
 - market: VN (from research artifact)

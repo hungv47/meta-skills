@@ -128,7 +128,7 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1a + 1b two-stage s
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/mkt/cold-outreach/[slug].md` (final draft), `[slug].rationale.md` (angle + framework + CTA logic), `[slug].critic-score.md` (5-dim scorecard)
+- **Paths:** `.forsvn/artifacts/mkt/write-outreach/[slug].md` (final draft), `[slug].rationale.md` (angle + framework + CTA logic), `[slug].critic-score.md` (5-dim scorecard)
 - **Lifecycle:** `pipeline` — overwrite on re-run for same (target, channel, touch); increment touch suffix in slug for new touches in a multi-touch sequence
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `channel`, `mode`, `touch`, `route`, `critic_total`
 - **Consumed by:** human reader (Route A/B), `plan-campaign` (Route C — reads `critic_total`, `touch`, `route`, `mode`, `channel`, `status` for sequencing next touches)
@@ -182,7 +182,7 @@ After receiving the message: send, wait for reply or cadence (7-14 days typical)
 
 ## Worked Example
 
-End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO target, signal-strength 4, framework's four-step framework, critic PASS cycle 1 at 44/50, terminal humanmaxxing with `protected_tokens=["Ramp","9 days","4 days","Acme"]`, post-humanmaxxing Specificity regression passes) + FAIL-handling cycle-2 variant + voice-auditor BLOCKED path + Route B (reply) snippet: [`references/examples/cold-outreach-walkthrough.md`](references/examples/cold-outreach-walkthrough.md) [EXAMPLE].
+End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO target, signal-strength 4, framework's four-step framework, critic PASS cycle 1 at 44/50, terminal humanmaxxing with `protected_tokens=["Ramp","9 days","4 days","Acme"]`, post-humanmaxxing Specificity regression passes) + FAIL-handling cycle-2 variant + voice-auditor BLOCKED path + Route B (reply) snippet: [`references/examples/write-outreach-walkthrough.md`](references/examples/write-outreach-walkthrough.md) [EXAMPLE].
 
 ---
 
@@ -192,7 +192,7 @@ End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO targe
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/cold-outreach-walkthrough.md` [EXAMPLE]
+- **Example:** `references/examples/write-outreach-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/channels/{email, linkedin, twitter, imessage, platform-proposals}.md`, `references/modes/{services, saas, partnership, community}.md`, `references/frameworks/{structures, personalization-signals, ctas, objections, saraev-four-step}.md`, `references/proof-types.md`
 - **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
 - **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles

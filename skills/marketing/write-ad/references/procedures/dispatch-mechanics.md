@@ -58,7 +58,7 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
 4b. Format-checker REVISION_REQUIRED on policy/substantiation → re-dispatch composer with the named violation; do not consume a critic cycle.
 5. TERMINAL: invoke `humanmaxxing` per variant with `content-type: "short-outbound"` (Light strip on AI telltales only, Full sender voice, 0-10% compression — ad copy is already tight; further compression kills specificity)
 6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved variant.
-7. Write artifacts to `.forsvn/artifacts/mkt/ad-copy/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
+7. Write artifacts to `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
 8. Deliver hero + 2 variants + rationale inline; show scorecard only if user asks or any dim scored 6-7 OR if creative_format=repurposed-ugc (variant-level ceiling warning prominent in artifact)
 ```
 

@@ -14,7 +14,7 @@ lp-brief is the page-level orchestrator between strategy and design — it produ
 
 The orchestrator coordinates 9 specialized sub-agents across 5 layers + 3 approval gates: **Layer 1 parallel** (evidence-anchor + brand-anchor) lays the signal foundation; **Layer 1.5** generates 3 hypothesis candidates with the 3Q rubric (Visual / Falsifiable / Uniquely Ours); **Approval Gate 1** picks one. **Layer 2** produces architecture (surface rhythm + section list + ASCII diagram + scroll velocity); **Approval Gate 2** approves it. **Layer 3** writes the per-section spec; **Layer 3.5** materializes named asset slots (consumes section-spec slot IDs — sequential, not parallel, to prevent ID drift). **Layer 4** composes hand-off prompts (always emits `handoff-implementation.md`; optionally `handoff-claude-design.md` / `handoff-figma.md` / `handoff-designer.md`). **Layer 5** runs 2 critics in parallel (conversion + brand-voice); **Approval Gate 3** is the user's final say.
 
-This skill is the canonical producer of `.forsvn/artifacts/mkt/lp-brief/[slug]/brief.md` + always-emitted `handoff-implementation.md`. Per-asset generation prompts at `asset-slots/[slot-id].prompt.md` are written by downstream media-briefing skills (`brief-graphic` today; future motion-brief / 3d-brief / video-brief as they ship).
+This skill is the canonical producer of `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` + always-emitted `handoff-implementation.md`. Per-asset generation prompts at `asset-slots/[slot-id].prompt.md` are written by downstream media-briefing skills (`brief-graphic` today; future motion-brief / 3d-brief / video-brief as they ship).
 
 ## Why this skill exists at all
 
@@ -52,7 +52,7 @@ The artifact IS the contract — a 14-section body schema with a 12-field frontm
 - **Layer 3.5:** asset-slot-agent runs *after* section-spec (sequential, not parallel) because slot IDs originate in section-spec's per-section asset references. Parallel execution would guarantee ID drift.
 - **Layer 4:** handoff-agent composes hand-off prompt blocks. Always emits `handoff-implementation.md` (universal coding-agent prompt; stack auto-detected at write time; falls back to pure HTML/CSS/Vanilla JS; motion stack from DESIGN.md or GSAP+ScrollTrigger+Lenis default; verbatim Asset Placeholder Rule from `references/handoff-formats.md`). Optionally emits `handoff-{claude-design,figma,designer}.md` per `target_handoff`.
 - **Layer 5 (parallel):** conversion-critic + brand-voice-critic run in parallel against the assembled brief. Both return binary PASS/FAIL with per-FAIL `fix direction` naming the responsible agent (section-spec for copy/structure, asset-slot for asset, handoff for hand-off-only, brand-anchor for digest correction). Max 2 cycles total.
-- **Approval Gate 3:** user sees the brief preview + critic merge. Approve → write artifacts to `.forsvn/artifacts/mkt/lp-brief/[slug]/`. Revise X → re-dispatch named layer (1 cycle). Reject → save as `rejected.md`, exit BLOCKED.
+- **Approval Gate 3:** user sees the brief preview + critic merge. Approve → write artifacts to `.forsvn/artifacts/mkt/brief-landing-page/[slug]/`. Revise X → re-dispatch named layer (1 cycle). Reject → save as `rejected.md`, exit BLOCKED.
 
 **Three routes by page state.**
 

@@ -47,7 +47,7 @@ date: [today]
 status: done | done_with_concerns | blocked | needs_context
 mode: shortform | app-preview        # WS4 — discriminator; required
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md OR variants path OR hand-written video-brief path OR .forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md]
+source_brief: [.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md OR variants path OR hand-written video-brief path OR .forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md]
 target_platforms: [list — e.g., tiktok, reels, shorts]    # shortform mode
 surface: [app-store | onboarding | website | social]      # app-preview mode only — omit in shortform
 aspect: [9:16 | 1:1 | 16:9 | 4:5 | 2:3 | custom-WxH]
