@@ -1,0 +1,36 @@
+# Routing signals for monitor-aeo. Source of truth — compiled into hooks/skill-registry.json
+# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+promptSignals:
+  phrases:
+    - "aeo monitor"
+    - "ai citation check"
+    - "monitor ai search"
+    - "ai overview tracking"
+    - "ai referral traffic"
+    - "ai search visibility"
+    - "cited domain share"
+    - "llms.txt check"
+    - "indexnow"
+  allOf:
+    - [monitor, aeo]
+    - [ai, citation]
+    - [ai, overview]
+    - [track, citation]
+    - [ai, snapshot]
+  anyOf:
+    - "aeo"
+    - "geo"
+    - "monitor"
+    - "citation"
+    - "snapshot"
+    - "referral"
+    - "perplexity"
+    - "chatgpt"
+    - "indexnow"
+    - "llms.txt"
+  noneOf:
+    - "seo audit"
+    - "keyword research"
+    - "rewrite the page"
+    - "fix the page"
+  minScore: 6
