@@ -11,8 +11,8 @@
 //
 // Usage: bun scripts/test-forsvn-preview.ts   (exits 0 on pass, 1 on fail)
 
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, appendFileSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync, appendFileSync, unlinkSync } from "node:fs";
+import { join, dirname, basename } from "node:path";
 import { tmpdir } from "node:os";
 import { spawn, type ChildProcess } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -28,7 +28,8 @@ await run("refuse: decision_state ≠ pending", refuseWrongState);
 await run("refuse: target file is dirty", refuseDirtyTree);
 await run("protocol: 400 on malformed payload (missing decision_state)", malformedPayload);
 await run("protocol: 409 on duplicate POST /done after success", duplicatePost);
-await run("traversal: /assets/../escape returns 403", traversalReject);
+await run("path traversal: ../escape outside projectRoot is rejected", traversalReject);
+await run("relative paths: HTML's <link href=\"../tokens.css\"> resolves to a real file", relativePathServing);
 
 const failed = results.filter((r) => !r.ok);
 for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name}${r.message ? ` — ${r.message}` : ""}`);
@@ -158,30 +159,67 @@ async function duplicatePost(): Promise<void> {
 
 async function traversalReject(): Promise<void> {
   const ctx = setupProject();
-  // Drop a sibling file in the artifacts dir so the traversal attempt has a
-  // real target to point at.
-  const sensitiveDir = join(ctx.root, ".forsvn", "artifacts");
-  writeFileSync(join(sensitiveDir, "secret.txt"), "do not serve");
+  // A file under projectRoot is fetchable at its mirrored URL path; a file
+  // OUTSIDE projectRoot must not be reachable even via decoded `../` escapes.
+  const insideRel = ".forsvn/artifacts/sibling.txt";
+  writeFileSync(join(ctx.root, insideRel), "inside-project");
+  const outside = join(dirname(ctx.root), `outside-${Date.now()}.txt`);
+  writeFileSync(outside, "do not serve");
 
   const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
   const url = await waitForUrl(ctx);
   const cfg = await fetchPreviewConfig(url);
 
-  // /assets/secret.txt is in the SAME dir as the HTML — should be readable
-  // (sanity check the asset path works).
-  const sameDir = await fetch(`${url}assets/secret.txt`);
-  if (sameDir.status !== 200) throw new Error(`sibling asset should be readable; got ${sameDir.status}`);
+  try {
+    // Inside the project at its real URL path — must be readable (sanity).
+    const inside = await fetch(`${url}${insideRel}`);
+    if (inside.status !== 200) throw new Error(`project-rooted file should be readable at /${insideRel}; got ${inside.status}`);
 
-  // /assets/../foo — must 403 (literal `..` in path).
-  const traverse = await fetch(`${url}assets/..%2Fpackage.json`);
-  if (traverse.status === 200) throw new Error(`/.. traversal returned 200 — path-traversal guard failed`);
-  if (traverse.status !== 403 && traverse.status !== 404) throw new Error(`/.. traversal returned ${traverse.status}; expected 403 or 404`);
+    // Escape via decoded `..` — must NOT serve the outside file.
+    const escape = await fetch(`${url}..%2F${encodeURIComponent(basename(outside))}`);
+    if (escape.status === 200) throw new Error(`/.. traversal returned 200 — path-traversal guard failed`);
+    if (escape.status !== 403 && escape.status !== 404) throw new Error(`/.. traversal returned ${escape.status}; expected 403 or 404`);
 
-  // Exit cleanly so the test runner can move on.
-  await postDone(url, { token: cfg.token, decision_state: "approved" });
-  const exit = await onExit(child, 8000);
-  assertEq(exit.code, 0, `CLI should exit 0`);
-  ctx.cleanup();
+    // Exit cleanly so the test runner can move on.
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, `CLI should exit 0`);
+  } finally {
+    try { unlinkSync(outside); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function relativePathServing(): Promise<void> {
+  // Mirrors the exemplar layout: HTML at <root>/references/_html/exemplars/foo.html
+  // with `<link href="../tokens.css">`, where tokens.css lives at
+  // <root>/references/_html/tokens.css. This exercises the relative-URL flow
+  // browsers use — `..` from the HTML's URL must resolve to a real file under
+  // the project root.
+  const ctx = setupExemplarLayout();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+
+  try {
+    // The CLI's banner URL ends with the htmlUrlPath; we extract just the
+    // origin for sibling fetches.
+    const origin = url.replace(/\/$/, "");
+
+    // Browser would resolve `../tokens.css` from /references/_html/exemplars/foo.html
+    // to /references/_html/tokens.css — assert that's served.
+    const tokens = await fetch(`${origin}/references/_html/tokens.css`);
+    assertEq(tokens.status, 200, `tokens.css should be served at the documented relative path; got ${tokens.status}`);
+    const body = await tokens.text();
+    assertMatches(body, /relative-path-test/, "served tokens.css should contain test marker");
+
+    // Done so the CLI can exit.
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
+  } finally {
+    ctx.cleanup();
+  }
 }
 
 // =========================================================================
@@ -251,6 +289,59 @@ Body text.
     cleanup: () => { try { rmSync(root, { recursive: true, force: true }); } catch {} },
   };
   return ctx;
+}
+
+function setupExemplarLayout(): Ctx {
+  const root = mkdtempSync(join(tmpdir(), "forsvn-preview-rel-"));
+  const slug = "exemplar";
+  // tokens.css one level above the HTML, mirrors references/_html/exemplars/foo.html
+  // → references/_html/tokens.css.
+  const tokensPath = join(root, "references", "_html", "tokens.css");
+  const mdPath = join(root, "references", "_html", "exemplars", `${slug}.md`);
+  const htmlPath = join(root, "references", "_html", "exemplars", `${slug}.html`);
+  writeAt(tokensPath, "/* relative-path-test marker */\n:root { --x: 1; }\n");
+  writeAt(mdPath, `---
+skill: create-brand
+version: 1
+date: 2026-05-26
+status: done
+stack: mkt
+lifecycle: canonical
+summary: "Synthetic relative-path test"
+decision_state: pending
+review_surface: html
+---
+
+Body.
+`);
+  writeAt(htmlPath, `<!doctype html>
+<html data-stack="water">
+<head>
+  <title>exemplar · create-brand · 2026-05-26</title>
+  <link rel="stylesheet" href="../tokens.css">
+</head>
+<body>
+  <header class="topbar"><span class="decision-pill" data-state="pending">pending</span></header>
+  <aside class="left-controls"></aside>
+  <main class="stage">stage</main>
+  <footer class="footer"><a href="roughdraft://open?path=x"></a></footer>
+  <script type="application/json" id="preview-config">{"static":true}</script>
+  <script type="application/json" id="artifact-data">{"decision_state":"pending","skill":"create-brand","stack":"mkt"}</script>
+</body>
+</html>`);
+
+  bunGit(root, ["init", "--quiet"]);
+  bunGit(root, ["config", "user.email", "test@example.com"]);
+  bunGit(root, ["config", "user.name", "test"]);
+  bunGit(root, ["add", "."]);
+  bunGit(root, ["commit", "--quiet", "-m", "seed"]);
+
+  return {
+    root, slug, mdPath, htmlPath,
+    stdoutBuf: { text: "" },
+    stderrBuf: { text: "" },
+    cleanup: () => { try { rmSync(root, { recursive: true, force: true }); } catch {} },
+  };
 }
 
 function startCli(ctx: Ctx, args: string[]): ChildProcess {
