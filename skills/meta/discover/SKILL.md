@@ -142,13 +142,13 @@ Full output formats (operator-grade spec with 5 mandatory sections, Light-depth 
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/specs/<slug>.md` (working draft, created only when user asks to save).
+- **Path:** `.forsvn/artifacts/meta-discover-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; working draft, created only when user asks to save).
 - **Lifecycle:** `spec` — working draft, edited iteratively until promoted to task-breakdown or system-architecture.
-- **Frontmatter:** `skill`, `version`, `date`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode` (idea-stage / plan-review), `plan-review-mode` (when applicable), `light_spec` (true for compact format). Full template: [`references/procedures/output-formats.md`](references/procedures/output-formats.md).
+- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=md), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode` (idea-stage / plan-review), `plan-review-mode` (when applicable), `light_spec` (true for compact format). Full template: [`references/procedures/output-formats.md`](references/procedures/output-formats.md).
 - **Required sections (Medium/Deep):** Premise Challenge · Dream State Mapping · Decided Approach · Implementation Alternatives (min 2-3) · Temporal Interrogation · Key Decisions · Edge Cases · Failure Conditions · Out of Scope · Open Questions · Open Branches (operator-overridden, only if `status: done_with_concerns`) · Implementation Notes · Verdict. **Light-depth saves skip 5 mandatory sections** (Premise Challenge, Dream State Mapping, Implementation Alternatives, Temporal Interrogation, Verdict) — compact format with `light_spec: true`.
 - **Consumed by:** operator (audit trail) · `breakdown-tasks` (decomposes Decided Approach + Key Decisions) · `architect-system` · `review-work` (scope-drift detection).
 - **Side effect (idea-stage only):** spawns `agents/idea-critic.md` once at Step 2.7.
-- **Review-gated:** `review_state` defaults to `pending`. `status` and `review_state` are independent. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+- **Review-gated:** `decision_state` defaults to `pending` (enum: `pending \| approved \| denied \| suggested \| not_required`). `status` and `decision_state` are independent. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
 
 ## Context Resolution Order
 
