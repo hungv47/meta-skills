@@ -17,6 +17,15 @@ Roughdraft is a single-file Markdown review UI. It is not the artifact database,
 loop engine, manifest, or approval ledger. One `roughdraft open` opens exactly
 one `.md` file; its durable state is that file.
 
+**v2 routing note (2026-05-26).** When `review_surface: html`, the default
+capture path is the in-page form on the HTML twin, served by
+`bun scripts/forsvn-preview.ts` (see [[reviewable-artifact-contract]] §
+"Review surface"). Roughdraft remains the escape hatch for reviewers who
+prefer inline CriticMarkup — opening the MD directly in Roughdraft and
+ticking the Review Gate body block writes `decision_state` the same way
+this protocol describes. When `review_surface: md`, Roughdraft is the only
+path (no HTML preview is emitted).
+
 ---
 
 ## When to open Roughdraft — opt-in per invocation
