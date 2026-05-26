@@ -15,11 +15,12 @@ html, body {
 
 body {
   display: grid;
-  grid-template-rows: var(--chrome-topbar-h) 1fr var(--chrome-footer-h);
+  grid-template-rows: var(--chrome-topbar-h) 1fr auto var(--chrome-footer-h);
   grid-template-columns: var(--chrome-left-w) 1fr;
   grid-template-areas:
     "topbar topbar"
     "left   stage"
+    "capture capture"
     "footer footer";
   min-height: 100vh;
 }
@@ -223,13 +224,129 @@ body {
 }
 .footer-meta { flex: 1; color: var(--chrome-text-muted); }
 
+/* ============ DECISION CAPTURE (v2 — WS-V3) ============
+   Form is always present in markup. Activated by chrome.js when
+   preview-config carries a token (CLI running) and artifact-data is pending.
+   When inactive, the form is display:none — the rest of the chrome is unchanged. */
+.decision-capture {
+  grid-area: capture;
+  display: none;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--chrome-panel);
+  border-top: 1px solid var(--chrome-border);
+}
+.decision-capture[data-active="true"] { display: flex; }
+.decision-capture fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid var(--chrome-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 0;
+  min-width: 200px;
+}
+.decision-capture legend {
+  font: 500 11px/1 var(--chrome-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+  padding: 0 4px;
+}
+.decision-capture label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 400 13px/1.3 var(--chrome-sans);
+  color: var(--chrome-text);
+  cursor: pointer;
+}
+.decision-capture label > span { user-select: none; }
+.decision-capture input[type="radio"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--chrome-text-muted);
+  background: transparent;
+  margin: 0;
+  cursor: pointer;
+  transition: border-color var(--t-hover) var(--ease), background var(--t-hover) var(--ease);
+}
+.decision-capture input[type="radio"]:checked {
+  border-color: var(--chrome-accent);
+  background: radial-gradient(circle, var(--chrome-accent) 0 4px, transparent 5px);
+}
+.decision-capture .decision-comments {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 500 11px/1 var(--chrome-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+}
+.decision-capture textarea {
+  flex: 1;
+  resize: vertical;
+  min-height: 60px;
+  padding: 8px 10px;
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-border);
+  border-radius: 4px;
+  color: var(--chrome-text);
+  font: 400 13px/1.4 var(--chrome-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.decision-capture textarea:focus {
+  outline: none;
+  border-color: var(--chrome-accent);
+}
+.decision-capture .decision-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.decision-capture .decision-done {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: 1px solid var(--chrome-accent);
+  background: var(--chrome-accent);
+  color: var(--brand-void);
+  font: 600 13px/1 var(--chrome-sans);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: filter var(--t-hover) var(--ease);
+}
+.decision-capture .decision-done:hover { filter: brightness(1.08); }
+.decision-capture .decision-done:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+.decision-capture .decision-status {
+  font: 500 11.5px/1.3 var(--chrome-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+  align-self: center;
+}
+.decision-capture .decision-status[data-tone="error"] { color: #fbbf24; }
+.decision-capture .decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
+
 /* ============ RESPONSIVE FALLBACK ============ */
 @media (max-width: 800px) {
   body {
     grid-template-columns: 1fr;
-    grid-template-rows: var(--chrome-topbar-h) auto 1fr var(--chrome-footer-h);
-    grid-template-areas: "topbar" "left" "stage" "footer";
+    grid-template-rows: var(--chrome-topbar-h) auto 1fr auto var(--chrome-footer-h);
+    grid-template-areas: "topbar" "left" "stage" "capture" "footer";
   }
   .left-controls { border-right: none; border-bottom: 1px solid var(--chrome-border); max-height: 240px; }
   .stage { padding: 24px; }
+  .decision-capture { flex-direction: column; }
 }
