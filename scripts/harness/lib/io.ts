@@ -1,21 +1,23 @@
 // Shared IO helpers — single source for paths the harness uses.
 // Resolves paths relative to the meta-skills repo root (where .claude-plugin/ lives).
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync, appendFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 // Walk up from this file until we find the repo root — the dir holding
 // .claude-plugin/marketplace.json (the definitive single-repo signature; tracked,
 // unlike the gitignored .forsvn/). Falls back to cwd if nothing matches.
 export function repoRoot(): string {
-  let dir = dirname(new URL(import.meta.url).pathname);
+  const startDir = dirname(fileURLToPath(import.meta.url));
+  let dir = startDir;
   for (let i = 0; i < 8; i++) {
     if (existsSync(join(dir, ".claude-plugin", "marketplace.json"))) return dir;
     dir = dirname(dir);
   }
   // Couldn't locate the repo root from the script path — fall back to cwd but tell the
   // operator. Silent fallback would cause hard-to-debug failures (paths resolve wrong).
-  console.error(`[harness] WARNING: could not locate the meta-skills repo root from ${dirname(new URL(import.meta.url).pathname)}; falling back to cwd ${process.cwd()}.`);
+  console.error(`[harness] WARNING: could not locate the meta-skills repo root from ${startDir}; falling back to cwd ${process.cwd()}.`);
   return process.cwd();
 }
 
@@ -83,11 +85,6 @@ export function fileStats(path: string): { exists: boolean; chars: number; lines
   } catch {
     return { exists: false, chars: 0, lines: 0, bytes: 0 };
   }
-}
-
-export function listFiles(dir: string): string[] {
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir).map((f) => join(dir, f));
 }
 
 export function logDebug(msg: string) {

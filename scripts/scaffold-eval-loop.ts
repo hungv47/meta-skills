@@ -14,18 +14,15 @@ import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 
-const domainIdx = args.indexOf("--domain");
-const domain = domainIdx !== -1 && args[domainIdx + 1] ? args[domainIdx + 1] : "marketing";
-if (!["marketing", "product", "research"].includes(domain)) {
-  console.error(`Invalid --domain ${JSON.stringify(domain)}. Expected one of: marketing, product, research`);
-  process.exit(1);
+if (args.indexOf("--domain") !== -1) {
+  console.warn("[scaffold-eval-loop] --domain is deprecated and ignored — loops are domain-neutral.");
 }
 
 const noSync = args.includes("--no-sync");
 const positional = args.filter((a, i) => !a.startsWith("--") && args[i - 1] !== "--domain");
 const name = positional[0];
 if (!name) {
-  console.error('Usage: scaffold-eval-loop.ts "<loop name or slug>" [--domain marketing|product|research] [--no-sync] [project-root]');
+  console.error('Usage: scaffold-eval-loop.ts "<loop name or slug>" [--no-sync] [project-root]');
   process.exit(1);
 }
 
