@@ -1,8 +1,13 @@
 # Routing + capability metadata for prioritize.
 promptSignals:
+  # `"what should we build next"` removed — it's a superstring of discover's
+  # `"what should we build"`, so both phrases tied at +6 on any prompt with
+  # "what should we build next". prioritize now requires explicit ranking
+  # intent (`"what to build first"`, `"rank the options"`, `"ice score"`,
+  # etc.). Bare anyOf `"solution"` also removed — too broad; `"which solution"`
+  # phrase covers the strong case.
   phrases:
     - "what to build first"
-    - "what should we build next"
     - "which to build first"
     - "prioritize initiatives"
     - "ice score"
@@ -17,7 +22,6 @@ promptSignals:
     - "prioritize"
     - "ice"
     - "initiative"
-    - "solution"
     - "trade-off"
   noneOf:
     - "market research"

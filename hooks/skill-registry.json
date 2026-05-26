@@ -159,10 +159,23 @@
         "what skill should i use",
         "i don't know",
         "help me",
-        "continue",
-        "resume",
         "pick up where i left off",
+        "pick this back up",
         "what was i working on",
+        "resume the work",
+        "resume work",
+        "resume working on",
+        "resume the initiative",
+        "resume the project",
+        "resume my session",
+        "resume my work",
+        "let's resume",
+        "let me resume",
+        "continue working on",
+        "continue the work",
+        "continue this session",
+        "let's continue",
+        "let me continue",
         "launch this",
         "ship this",
         "/forsvn"
@@ -176,12 +189,10 @@
         "i'm new",
         "help me launch",
         "help me ship",
-        "what should i do next",
-        "resume",
-        "continue"
+        "what should i do next"
       ],
       "noneOf": [],
-      "minScore": 3
+      "minScore": 6
     },
     "review-work": {
       "phrases": [
@@ -263,7 +274,7 @@
         "unit test",
         "model training"
       ],
-      "minScore": 5
+      "minScore": 6
     },
     "diagnose": {
       "phrases": [
@@ -299,7 +310,7 @@
         "what should we build",
         "scope this",
         "clarify requirements",
-        "i have an idea"
+        "i have an idea for"
       ],
       "minScore": 6
     },
@@ -397,7 +408,6 @@
     "prioritize": {
       "phrases": [
         "what to build first",
-        "what should we build next",
         "which to build first",
         "prioritize initiatives",
         "ice score",
@@ -424,7 +434,6 @@
         "prioritize",
         "ice",
         "initiative",
-        "solution",
         "trade-off"
       ],
       "noneOf": [
@@ -593,11 +602,6 @@
           "preview"
         ],
         [
-          "app",
-          "store",
-          "preview"
-        ],
-        [
           "feature",
           "demo"
         ],
@@ -631,8 +635,14 @@
         "social video",
         "short-form",
         "hook variations",
-        "publish",
-        "render"
+        "publish to social",
+        "publish to instagram",
+        "publish to linkedin",
+        "publish to x",
+        "publish to tiktok",
+        "render the asset",
+        "render asset",
+        "image generation"
       ],
       "minScore": 6
     },
@@ -693,6 +703,7 @@
         "design tokens",
         "user flow",
         "wireframe",
+        "redesign brief",
         "landing page redesign"
       ],
       "minScore": 6

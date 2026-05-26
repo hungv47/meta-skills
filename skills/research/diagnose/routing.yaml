@@ -24,7 +24,12 @@ promptSignals:
     - "what should we build"
     - "scope this"
     - "clarify requirements"
-    - "i have an idea"
+    # "i have an idea" was too broad — hard-suppressed legitimate diagnose
+    # asks that happened to start with that idiom ("i have an idea — why is
+    # X dropping?"). Tightened to "i have an idea for" which is the actual
+    # discover-intent pattern (proposing a new thing); leaves diagnose asks
+    # that use "i have an idea" conversationally intact.
+    - "i have an idea for"
   minScore: 6
 
 capability:

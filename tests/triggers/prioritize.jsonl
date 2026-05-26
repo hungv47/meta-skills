@@ -8,3 +8,5 @@
 {"prompt": "build a buyer persona for our new ICP", "expect": "skip", "reason": "noneOf \"buyer persona\" hard-suppress"}
 {"prompt": "scope this new feature so we know what to build", "expect": "skip", "reason": "discover territory; no prioritize phrases trigger"}
 {"prompt": "break this initiative into engineering tasks", "expect": "skip", "reason": "breakdown-tasks intent; anyOf \"initiative\" only +1 — below minScore 6"}
+{"prompt": "what should we build next quarter for the new vertical", "expect": "skip", "reason": "regression test: previously triggered prioritize (+6) via phrase 'what should we build next', tying with discover. After removing that superstring phrase, this scoping prompt routes cleanly to discover"}
+{"prompt": "score the solution we already shipped", "expect": "skip", "reason": "regression test: previously triggered via anyOf 'solution' contributing +1; now removed since 'which solution' phrase covers the strong case"}
