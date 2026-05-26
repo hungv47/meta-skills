@@ -64,15 +64,15 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path (standalone only):** `.forsvn/artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` (dated, slug-suffixed, immutable per-run)
+- **Path (standalone only):** `.forsvn/artifacts/meta-debate-agents-[YYYY-MM-DD]-<slug>.md` (flat v2 grammar; dated, slug-suffixed, immutable per-run)
 - **Path (sub-routine):** none — inline synthesis to caller
 - **Lifecycle:** `decision` (operator-committed strategic choice; accumulates as audit trail; never overwritten)
-- **Frontmatter fields:** `skill`, `produced_by`, `version`, `date`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode`, `agents`, `rounds` (debate only), `provenance` (skill + run_date + empty input_artifacts/config_sources + null output_eval). Full template: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
+- **Frontmatter fields:** `skill`, `produced_by`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=html for standalone; =none for sub-routine), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode`, `agents`, `rounds` (debate only), `provenance` (skill + run_date + empty input_artifacts/config_sources + null output_eval). Full template: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 - **Required sections (debate):** Participants, Consensus, Key Disagreements, Recommended Action, Unresolved Risks, Debate Highlights
 - **Required sections (poll):** Consensus, Divergences, Outliers, Raw Data, High-Variance Flags
 - **Consumed by:** operator (decision audit trail). No machine consumer in v1. Future skills MAY read prior decisions for precedent (e.g., `prioritize` checking past `debate-agents` outcomes for similar choices) — none do today.
 - **Eval workspace:** none (decisions are committed, not measured-and-revised).
-- **Review:** Review-gated artifact — applies to **standalone** invocations only (the dated `decisions/` file). Sub-routine invocations produce no persisted artifact, so review is n/a. For a standalone run, write the review frontmatter (`review_state` / `review_tool` / `reviewed_at` / `reviewer`) and the `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run the review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `review_state` defaults to `pending`. `status` (skill quality gate) and `review_state` (human acceptance) are independent — `status: done` + `review_state: pending` is valid.
+- **Review:** Review-gated artifact — applies to **standalone** invocations only (the dated decision file). Sub-routine invocations produce no persisted artifact, so review is n/a. For a standalone run, write the review frontmatter (`decision_state` / `review_surface` / `review_tool` / `reviewed_at` / `reviewer`) and the `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); when `review_surface: html` (the standalone default for AIR-stack debates), emit the co-located HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md); run the review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `decision_state` defaults to `pending` (enum: `pending \| approved \| denied \| suggested \| not_required`). `status` (skill quality gate) and `decision_state` (human acceptance) are independent — `status: done` + `decision_state: pending` is valid.
 
 ## Pre-Dispatch
 

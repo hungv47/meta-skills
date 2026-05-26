@@ -28,3 +28,6 @@ scripts/private/
 
 # Local-only push configuration — not for distribution
 /PUSH.md
+
+# Local-only migration audit trail (scripts/migrate-artifacts-flat.ts --apply)
+/migration-report-*.json

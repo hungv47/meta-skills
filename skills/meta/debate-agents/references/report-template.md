@@ -23,7 +23,9 @@ produced_by: agents-panel
 version: {skill-version}     # matches running skill's metadata.version (currently 2.0.0)
 date: {YYYY-MM-DD}
 status: done | done_with_concerns | blocked | needs_context
-review_state: pending      # pending | approved | rejected | changes_requested | not_required
+stack: meta
+review_surface: html       # html | md | none — html for standalone, none for sub-routine
+decision_state: pending    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed

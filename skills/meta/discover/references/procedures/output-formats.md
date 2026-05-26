@@ -34,7 +34,9 @@ skill: discover
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
-review_state: pending      # pending | approved | rejected | changes_requested | not_required
+stack: meta
+review_surface: md         # html | md | none
+decision_state: pending    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
@@ -173,7 +175,9 @@ skill: discover
 version: 1
 date: {{today}}
 status: done | done_with_concerns | blocked | needs_context
-review_state: pending      # pending | approved | rejected | changes_requested | not_required
+stack: meta
+review_surface: md         # html | md | none
+decision_state: pending    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
