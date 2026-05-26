@@ -53,7 +53,7 @@ Gate 10 (Brief Alignment) is critic-agent-only. Full 10-gate rubric in `agents/c
 
 - **Paths:** `research/icp-research.md` (canonical audience record) + `research/product-context.md` (canonical foundational record — research-icp IS the producer).
 - **Lifecycle:** `canonical` — edited in place by humans; on re-run rename prior to `research/icp-research.v[N].md` and increment.
-- **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`.
+- **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`, `stack` (=research), `review_surface` (=html — gated canonical artifact gets the EARTH-themed HTML preview while `decision_state: pending`), `decision_state`. See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
 - **Required body sections (in order — cross-stack contract):** Persona 1 (Demographics + Pain Profile + Decision Psychology + Habitat Map) · Persona 2 (if applicable, max 2) · Top 3 Emotional Drivers · Red Flags · Next Step. Full template (60+ lines): [`references/format-conventions.md`](references/format-conventions.md).
 - **Optional sections:** Segment Rationale (3+ segments surfaced, 2 cut per Gate 3) · Known Issues (critic FAILed twice and artifact ships with annotations).
 - **Side effects (mandatory on PASS / done_with_concerns):**

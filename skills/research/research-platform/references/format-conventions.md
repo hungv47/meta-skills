@@ -36,7 +36,7 @@ coverage_per_platform:                  # one entry per in-scope platform
   ...
 ```
 
-`coverage_per_platform` and `evidence_sources_logged` are mechanically derived from the evidence-intake records — they must not drift from the body. The artifact is `pipeline` lifecycle; review fields are absent (a pipeline artifact defaults to `review_state: not_required` — see the stack's reviewable-artifact contract; this skill does not opt in).
+`coverage_per_platform` and `evidence_sources_logged` are mechanically derived from the evidence-intake records — they must not drift from the body. The artifact is `pipeline` lifecycle; review fields are absent (a pipeline artifact defaults to `decision_state: not_required` — see the stack's reviewable-artifact contract; this skill does not opt in).
 
 ## Metric-citation format
 

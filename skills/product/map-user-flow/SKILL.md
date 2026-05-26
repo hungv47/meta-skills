@@ -82,9 +82,9 @@ If `research/product-context.md` `date` is >30 days old, recommend re-running `r
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/product/flow/<flow-name>.md` (one file per flow); `.forsvn/artifacts/product/flow/index.md` auto-generated when ≥2 distinct slugs exist (excluding `.v[N]` versioned files).
+- **Path:** `.forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<flow-name>.md` (flat v2 grammar; one file per flow; an index artifact auto-generated when ≥2 distinct slugs exist, excluding `.v[N]` versioned files).
 - **Lifecycle:** `pipeline` (regenerated on re-run via rename-and-replace).
-- **Frontmatter fields (baseline):** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `flow_name` (matches filename slug), `platforms` (explicit list). **Step 7.5 additions** (manifest-sync conformance; backfilled going forward): `lifecycle`, `produced_by`, `provenance`.
+- **Frontmatter fields (baseline):** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=product), `review_surface` (=html — selection-heavy flow artifacts get the FIRE-themed HTML preview while `decision_state: pending`; see `references/_html/exemplars/fire-map-user-flow.html` for the pattern), `decision_state`, `flow_name` (matches filename slug), `platforms` (explicit list). **Step 7.5 additions** (manifest-sync conformance; backfilled going forward): `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** Context, Target Platforms & Surfaces, Flow Diagram, Per-Surface Entry Points, Screen Inventory, Screen Wireframes, Per-Surface Mini-Frames, Critical Edge-State Variants, Coverage Map, Surface Coverage Map, Edge Cases Handled, Per-Surface Edge States, Validation Summary. Sub-flows + Next Step when applicable.
 - **Consumed by:** `architect-system` (reads every flow for API design), `breakdown-tasks` (reads flows to scope decomposition), `forsvn` (reads index.md for state detection), `review-work` (post-implementation verification).
 - Full per-flow template + index.md template + filename + version-increment rule: [`references/report-template.md`](references/report-template.md) [PROCEDURE].

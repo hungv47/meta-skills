@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en" data-stack="earth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICP — solo studio operator · research-icp · 2026-05-26</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../chrome.css">
+
+  <style>
+    /* EARTH register — light mode (only stack on cream). Book-page columns,
+       dense reading. Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
+    .stage {
+      background-image:
+        radial-gradient(circle at 50% 0%, rgba(120,90,50,0.04), transparent 60%),
+        repeating-linear-gradient(0deg, transparent 0 28px, rgba(120,90,50,0.02) 28px 29px);
+    }
+    .dossier-head {
+      max-width: var(--max-measure);
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--stage-border);
+      margin-bottom: 32px;
+    }
+    .dossier-head .meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 8px;
+    }
+    .dossier-head h1 {
+      font-family: var(--font-head);
+      font-size: 52px;
+      font-weight: 700;
+      font-variation-settings: "opsz" 96;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px 0;
+      color: var(--stage-fg);
+    }
+    .dossier-head .lede {
+      font-family: var(--font-body);
+      font-size: 18px;
+      line-height: 1.55;
+      font-weight: 400;
+      color: var(--fg-muted);
+      max-width: 56ch;
+    }
+
+    .columns {
+      column-count: 2;
+      column-gap: 56px;
+      column-rule: 1px solid var(--stage-border);
+      max-width: 1100px;
+    }
+    .columns h2 {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      column-span: all;
+      padding-top: 32px;
+      border-top: 1px solid var(--stage-border);
+      color: var(--stage-fg);
+    }
+    .columns p {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.65;
+      margin: 0 0 1em 0;
+      orphans: 3;
+      widows: 3;
+      color: var(--stage-fg);
+    }
+    .columns .first-letter::first-letter {
+      font-family: var(--font-head);
+      font-size: 56px;
+      float: left;
+      line-height: 0.85;
+      padding: 4px 8px 0 0;
+      font-weight: 700;
+      color: var(--stage-accent);
+    }
+    .columns sup {
+      font-size: 0.7em;
+      color: var(--stage-accent);
+      cursor: help;
+      vertical-align: super;
+    }
+
+    .pull-quote {
+      font-family: var(--font-head);
+      font-style: italic;
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--stage-fg);
+      border-left: 3px solid var(--stage-accent-2);
+      padding: 8px 0 8px 20px;
+      margin: 24px 0;
+      break-inside: avoid;
+      font-weight: 500;
+    }
+    .pull-quote cite {
+      display: block;
+      margin-top: 8px;
+      font-style: normal;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+
+    .facts-table {
+      width: 100%;
+      border-collapse: collapse;
+      max-width: 720px;
+      margin: 32px 0;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--stage-fg);
+    }
+    .facts-table th,
+    .facts-table td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--stage-border);
+    }
+    .facts-table thead th {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      border-bottom-width: 1px;
+      border-bottom-color: var(--border-strong);
+      background: rgba(120,90,50,0.05);
+    }
+    .facts-table tbody tr:hover { background: rgba(120,90,50,0.03); }
+    .source-weight {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--stage-accent);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .source-weight.weak { background: var(--stage-accent-2); opacity: 0.5; }
+
+    .footnotes {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--stage-border);
+      max-width: var(--max-measure);
+      font-family: var(--font-body);
+      font-size: 13.5px;
+      color: var(--fg-muted);
+    }
+    .footnotes ol {
+      list-style: decimal;
+      padding-left: 1.4em;
+      margin: 0;
+    }
+    .footnotes ol li {
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .footnotes ol li::marker { color: var(--stage-accent); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
+    <span class="brand-divider" aria-hidden="true"></span>
+    <span class="stack-chip">EARTH</span>
+    <span class="topbar-meta"><strong>research-icp</strong> · 2026-05-26 · solo-studio-operator</span>
+    <span class="decision-pill" data-state="pending">pending</span>
+  </header>
+
+  <aside class="left-controls">
+    <div class="control-group" data-picker-group>
+      <h2>Personas</h2>
+      <button class="picker-item" data-picker-value="solo-studio" aria-selected="true">Solo studio operator</button>
+      <button class="picker-item" data-picker-value="small-agency" aria-selected="false">Small agency (2–5)</button>
+      <button class="picker-item" data-picker-value="builder-engineer" aria-selected="false">Builder-engineer</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Compare</h2>
+      <button type="button" data-toggle="comparison">Side-by-side · off</button>
+    </div>
+
+    <div class="control-group">
+      <h2>View</h2>
+      <button type="button" data-toggle="density">Density · book</button>
+      <button type="button" data-toggle="citations">Citation weights · on</button>
+      <button type="button" data-toggle="columns">Two-column · on</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Export</h2>
+      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <section class="dossier-head">
+      <div class="meta">RESEARCH · ICP · n=23 interviews · 2026-04 to 2026-05</div>
+      <h1>The solo studio operator</h1>
+      <p class="lede">A working senior — engineer, designer, or product lead — running a one-person studio. Ships product weekly. Hates ceremony. Buys tools that compress effort, not tools that promise transformation.</p>
+    </section>
+
+    <table class="facts-table">
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Value</th>
+          <th>Source weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Tenure</td><td>8–18 years professional</td><td><span class="source-weight"></span>strong · n=20</td></tr>
+        <tr><td>Annual revenue</td><td>$80k – $400k</td><td><span class="source-weight"></span>strong · n=18</td></tr>
+        <tr><td>Tools/month spend</td><td>$140 – $480</td><td><span class="source-weight"></span>strong · n=23</td></tr>
+        <tr><td>Daily working hours</td><td>5–8 (deep), 2–3 (shallow)</td><td><span class="source-weight weak"></span>moderate · n=13</td></tr>
+        <tr><td>Vacation taken last 12 mo.</td><td>median 9 days</td><td><span class="source-weight weak"></span>moderate · n=11</td></tr>
+        <tr><td>Decision authority</td><td>full · 23/23</td><td><span class="source-weight"></span>strong · n=23</td></tr>
+      </tbody>
+    </table>
+
+    <div class="columns">
+
+      <h2>What they're trying to do</h2>
+
+      <p class="first-letter">They are trying to build something specific in a market they understand, on a timeline measured in weeks, with a team of one. They use the word "compress" unprompted<sup>1</sup>. They are not interested in being told what to do. They are interested in being given fewer reasons to context-switch.</p>
+
+      <p>The closer a tool's onboarding looks to a SaaS funnel — pricing page, signup, drip campaign, in-app tour — the lower the chance they finish onboarding. They downloaded it because they saw it work on someone they trust, and they want to feel the cut within ten minutes<sup>2</sup>.</p>
+
+      <div class="pull-quote">
+        I don't need a workflow. I need the next five minutes to feel slightly less like wading. The thing in my way is never the feature — it's the seventeen tabs.
+        <cite>Operator interview #14 · senior product lead · solo studio · 2026-04-22</cite>
+      </div>
+
+      <p>What they buy and what they keep using are different things. Adoption-stickiness correlates with two patterns: (a) the tool removes a recurring decision (file naming, code conventions, sales-email tone), and (b) the tool's output is grep-able and editable in their existing environment rather than locked behind its own app<sup>3</sup>.</p>
+
+      <h2>What they will pay for</h2>
+
+      <p>Willingness-to-pay clusters at $40–$60 per tool, per month, for a tool that compresses ≥30 minutes of recurring effort. Above $99 the framing flips — they expect "platform" affordances (team seats, audit log, SLAs) they actively don't want.</p>
+
+      <p>They will pay annually if the tool is in the stack 12 months later. They will not pay annually upfront. They will pay $200–$400 lifetime for something that <em>composes</em>: doesn't require ongoing sync, lives on their machine, doesn't expire.</p>
+
+      <h2>What they won't tolerate</h2>
+
+      <p>They won't tolerate a tool that talks about itself more than it talks about the work. Marketing copy that uses "AI-powered" without showing AI working triggers immediate skepticism<sup>4</sup>. They notice when a tool tries to be everything; it makes the tool feel cheap.</p>
+
+      <p>They are intolerant of friction at the precise moment they were ready to use the thing: a re-auth prompt, an unannounced UI change, a setting that moved. The threshold for cancellation is one bad surprise.</p>
+
+    </div>
+
+    <div class="footnotes">
+      <ol>
+        <li>"Compress" appears unprompted in 17/23 transcripts. Verb form ("compress this") more common than noun form ("compression").</li>
+        <li>Mean time-from-install to first felt value across 14 successful adoptions: 7 min 42 sec. The 5 abandoned trials all averaged &gt; 22 min before any felt value.</li>
+        <li>Adoption-stickiness measure: % of weekly active use 6 weeks post-install. Two-pattern cohort: 71%. Off-pattern cohort: 19%.</li>
+        <li>Operator #06 verbatim: "If I have to read the homepage three times to understand what it does, it does nothing."</li>
+      </ol>
+    </div>
+  </main>
+
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
+    <fieldset class="decision-radio">
+      <legend>Decision</legend>
+      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
+      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
+      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
+    </fieldset>
+    <label class="decision-comments">
+      <span>Comments (optional)</span>
+      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
+    </label>
+    <div class="decision-actions">
+      <span class="decision-status" aria-live="polite"></span>
+      <button type="submit" class="decision-done">Done</button>
+    </div>
+  </form>
+
+  <footer class="footer">
+    <a class="footer-action" data-roughdraft-link
+       href="roughdraft://open?path=research%2Ficp-research.md">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">Solo Studio Operator · 23 interviews · decision: pending</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <script type="application/json" id="preview-config">{"static":true}</script>
+  <script type="application/json" id="artifact-data">{
+  "skill": "research-icp",
+  "version": 1,
+  "date": "2026-05-26",
+  "status": "done",
+  "stack": "research",
+  "lifecycle": "canonical",
+  "summary": "Solo studio operator — senior, ships weekly, hates ceremony",
+  "decision_state": "pending",
+  "review_surface": "html"
+}</script>
+  <script src="../chrome.js"></script>
+</body>
+</html>

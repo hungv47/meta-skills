@@ -73,15 +73,22 @@ const SUPPORT_REFS = {
   "evidence-classes.md": "skills/marketing/_shared/evidence-classes.md",
   "copywriting-research-workflow.md": "skills/marketing/write-copy/references/research-workflow.md",
   "clipping-and-live.md": "skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md",
+  "review-surface-design.md": "references/review-surface-design.md",
+  "review-surface-template.md": "references/review-surface-template.md",
+  "html-output-critic.md": "references/html-output-critic.md",
 };
 
 // Single-file shared scripts. name -> canonical source path (repo-relative).
+// The key is the destination's path beneath the skill's `scripts/` dir; nested
+// names (e.g. "lib/path-parser.ts") drop into a `scripts/lib/` subdir.
 const SUPPORT_SCRIPTS = {
   "bootstrap-experience.ts": "scripts/bootstrap-experience.ts",
   "manifest-sync.ts": "scripts/manifest-sync.ts",
+  "lib/path-parser.ts": "scripts/lib/path-parser.ts",
   "append-loop-result.ts": "scripts/append-loop-result.ts",
   "scaffold-eval-loop.ts": "scripts/scaffold-eval-loop.ts",
   "update-quality-dashboard.ts": "scripts/update-quality-dashboard.ts",
+  "forsvn-preview.ts": "scripts/forsvn-preview.ts",
 };
 
 // Whole-directory mirrors. dest label under references/_shared/ -> source dir.
@@ -91,6 +98,12 @@ const SUPPORT_TREES = {
   "brand-system": "skills/marketing/create-brand/references",
   "ad-intelligence": "skills/marketing/write-ad/references/ad-intelligence",
   "platform-intelligence": "references/platform-intelligence",
+  // Review-surface chrome assets (base.html template + tokens.css + chrome.css +
+  // chrome.js). Skills that emit `review_surface: html` need these alongside
+  // their forsvn-preview.ts copy so the packaged skill is self-contained. The
+  // exemplars/ subdir is excluded by the mirror walker (it's reference content
+  // for maintainers, not run-time material).
+  "_html": "references/_html",
 };
 
 // Out-of-sync support files found in --check mode.
@@ -126,12 +139,17 @@ function skillDirs() {
 
 function textCorpus(dir) {
   return walk(dir)
-    .filter((path) => /\.(md|sh|py|ts|js|mjs)$/.test(path))
+    .filter((path) => /\.(md|sh|py|ts|js|mjs|css|html)$/.test(path))
     // Trigger on the skill's own authored content only — skip generated support
-    // capsules (references/_shared/ + scripts/). If a generated mirror's internal
-    // cross-references counted, generation would cascade and never reach a
-    // fixpoint: a mirror that mentions another shared file would pull it in too.
-    .filter((path) => !path.includes("/references/_shared/") && !path.includes("/scripts/"))
+    // capsules (references/_shared/, references/_html/, scripts/). If a
+    // generated mirror's internal cross-references counted, generation would
+    // cascade and never reach a fixpoint: a mirror that mentions another
+    // shared file (or its source-of-truth comment) would pull it in too.
+    .filter((path) =>
+      !path.includes("/references/_shared/") &&
+      !path.includes("/references/_html/") &&
+      !path.includes("/scripts/")
+    )
     .map((path) => readFileSync(path, "utf8"))
     .join("\n");
 }
@@ -189,21 +207,26 @@ function isGeneratedTree(destDir) {
 }
 
 // Files a tree mirror should contain: the source dir wholesale, minus any
-// _shared/ subtree. A source skill's own _shared/ is itself generated — copying
-// it would make the mirror order-dependent (a mirror-of-a-mirror that is only
-// correct if the source skill synced first) and nothing cites the nested files.
-function treeSourceFiles(srcDir) {
-  return walk(srcDir).filter((abs) => !abs.includes("/_shared/"));
+// generated subtree and minus maintainer-only reference content. The label is
+// the SUPPORT_TREES key being mirrored — when it matches one of the generated
+// dir names, we keep walking *into* it (it IS the source); otherwise we skip
+// it so a source skill's own generated `_html/` or `_shared/` doesn't ride
+// along as a mirror-of-a-mirror.
+function treeSourceFiles(srcDir, label) {
+  return walk(srcDir)
+    .filter((abs) => label === "_shared" || !abs.includes("/_shared/"))
+    .filter((abs) => label === "_html" || !abs.includes("/_html/"))
+    .filter((abs) => !abs.includes("/exemplars/"));
 }
 
-function checkTree(srcRel, srcDir, destDir) {
+function checkTree(srcRel, srcDir, destDir, label) {
   const destRel = relative(ROOT, destDir);
   if (!existsSync(destDir)) {
     drift.push(`missing  ${destRel}/ (whole tree)`);
     return;
   }
   const expected = new Set();
-  for (const abs of treeSourceFiles(srcDir)) {
+  for (const abs of treeSourceFiles(srcDir, label)) {
     const rel = relative(srcDir, abs);
     expected.add(rel);
     const destFile = join(destDir, rel);
@@ -228,12 +251,12 @@ function checkTree(srcRel, srcDir, destDir) {
   }
 }
 
-function copyGeneratedTree(srcRel, destDir) {
+function copyGeneratedTree(srcRel, destDir, label) {
   const srcDir = join(ROOT, srcRel);
   if (resolve(srcDir) === resolve(destDir)) return;
 
   if (CHECK) {
-    checkTree(srcRel, srcDir, destDir);
+    checkTree(srcRel, srcDir, destDir, label);
     return;
   }
   if (!isGeneratedTree(destDir)) {
@@ -241,7 +264,7 @@ function copyGeneratedTree(srcRel, destDir) {
   }
   rmSync(destDir, { recursive: true, force: true });
   mkdirSync(destDir, { recursive: true });
-  for (const abs of treeSourceFiles(srcDir)) {
+  for (const abs of treeSourceFiles(srcDir, label)) {
     const dest = join(destDir, relative(srcDir, abs));
     mkdirSync(dirname(dest), { recursive: true });
     if (/\.(md|sh|py|ts|js|mjs)$/.test(abs)) {
@@ -272,12 +295,54 @@ function pruneOrphanRefs(dir, wantRefs) {
   }
 }
 
+// Remove tree mirrors a skill no longer triggers. Checks every directory that
+// could hold a generated tree (under `_shared/` and the special `_html` slot)
+// and removes anything carrying the `.generated-support` marker whose absolute
+// path isn't in `wantTrees`. Hand-authored dirs (no marker) are left alone.
+// In --check mode a stale tree is recorded as drift.
+function pruneOrphanTrees(dir, wantTrees) {
+  const candidates = [];
+  const sharedDir = join(dir, "references", "_shared");
+  if (existsSync(sharedDir)) {
+    for (const entry of readdirSync(sharedDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) candidates.push(join(sharedDir, entry.name));
+    }
+  }
+  const htmlDir = join(dir, "references", "_html");
+  if (existsSync(htmlDir)) candidates.push(htmlDir);
+
+  for (const candidate of candidates) {
+    if (!existsSync(join(candidate, GENERATED_MARKER))) continue;
+    if (wantTrees.has(candidate)) continue;
+    if (CHECK) drift.push(`orphan   ${relative(ROOT, candidate)}/ (whole tree)`);
+    else rmSync(candidate, { recursive: true, force: true });
+  }
+}
+
+// Scripts that are PRUNED when a previous run added them but the current
+// corpus no longer triggers. Legacy scripts (manifest-sync.ts,
+// bootstrap-experience.ts, …) stay protected by the existing-copy sweep —
+// they pre-date the citation-driven regime and aren't safe to remove. The
+// v2-introduced forsvn-preview.ts has no legacy install base, so it's safe
+// to prune when its trigger goes away.
+const PRUNABLE_SCRIPTS = new Set(["forsvn-preview.ts"]);
+
 function syncSkill(dir) {
   const corpus = textCorpus(dir);
   const wantRefs = new Set();
+  const wantTrees = new Set();
+  const wantScripts = new Set();
   const addRef = (name) => {
     wantRefs.add(name);
     ensureReference(dir, name);
+  };
+  const addScript = (name) => {
+    wantScripts.add(name);
+    ensureScript(dir, name);
+  };
+  const addTree = (label, destDir) => {
+    wantTrees.add(destDir);
+    copyGeneratedTree(SUPPORT_TREES[label], destDir, label);
   };
 
   if (/pre-dispatch-protocol/.test(corpus)) {
@@ -287,6 +352,8 @@ function syncSkill(dir) {
   if (/manifest-spec|manifest-sync/.test(corpus)) {
     addRef("manifest-spec.md");
     ensureScript(dir, "manifest-sync.ts");
+    // manifest-sync.ts imports `./lib/path-parser` — ship the dependency.
+    ensureScript(dir, "lib/path-parser.ts");
   }
   if (/eval-loop-spec/.test(corpus)) addRef("eval-loop-spec.md");
   if (/quality-feedback-protocol/.test(corpus)) addRef("quality-feedback-protocol.md");
@@ -317,30 +384,72 @@ function syncSkill(dir) {
   if (/scaffold-eval-loop/.test(corpus)) ensureScript(dir, "scaffold-eval-loop.ts");
   if (/update-quality-dashboard/.test(corpus)) ensureScript(dir, "update-quality-dashboard.ts");
 
+  // Review-surface package — skills that emit `review_surface: html` (or
+  // describe the option in prose) ship the forsvn-preview CLI, the chrome
+  // assets it serves, and the spec docs that describe the contract. Without
+  // these, an installed/self-contained skill can't run its documented review
+  // flow (the skill-local roughdraft-review-protocol.md mirror cites
+  // `scripts/forsvn-preview.ts` directly).
+  //
+  // Each alternate is a positive declaration the skill emits / supports html;
+  // we deliberately avoid the looser "review_surface near html" pattern
+  // because skills that declare `review_surface: md  # html | md | none`
+  // would false-positive on the enum comment.
+  if (
+    /review_surface:\s*html/.test(corpus) ||                  // YAML / inline-code form
+    /`review_surface`\s*\(=\s*html/i.test(corpus) ||          // prose form: `review_surface` (=html ...)
+    /opt[\s.-]+into\s*`html`/i.test(corpus) ||                // explicit opt-in (write-docs)
+    /forsvn-preview/.test(corpus) ||
+    /review-surface-(design|template)/.test(corpus) ||
+    /html-output-critic/.test(corpus) ||
+    /references\/_html\b/.test(corpus)
+  ) {
+    addRef("review-surface-design.md");
+    addRef("review-surface-template.md");
+    addRef("html-output-critic.md");
+    addScript("forsvn-preview.ts");
+    addTree("_html", join(dir, "references", "_html"));
+  }
+
   // Existing-copy sweep. Skill folders that have a packaged copy of a support
   // script but no citation in the corpus (vendored before the citation-driven
   // regime) must still ship the canonical version — `.claude-plugin/plugin.json`
   // packages whole skill dirs, so any stale copy would ship the old behavior to
   // users. Drift in these files is caught by `--check`.
+  // PRUNABLE_SCRIPTS are the exception: when present-but-not-wanted, they were
+  // added by a prior over-matched sync and should be removed (not re-emitted).
   for (const scriptName of Object.keys(SUPPORT_SCRIPTS)) {
     const destAbs = join(dir, "scripts", scriptName);
-    if (existsSync(destAbs)) ensureScript(dir, scriptName);
+    if (!existsSync(destAbs)) continue;
+    if (PRUNABLE_SCRIPTS.has(scriptName) && !wantScripts.has(scriptName)) {
+      if (CHECK) drift.push(`orphan   ${relative(ROOT, destAbs)}`);
+      else rmSync(destAbs);
+      continue;
+    }
+    ensureScript(dir, scriptName);
+  }
+  // Dependency closure: manifest-sync.ts imports ./lib/path-parser. Skills that
+  // ship one must ship the other (otherwise the packaged manifest-sync errors
+  // with `Cannot find module './lib/path-parser'` on first invocation).
+  if (existsSync(join(dir, "scripts", "manifest-sync.ts"))) {
+    ensureScript(dir, "lib/path-parser.ts");
   }
 
   if (/_shared\/design-brief|design-brief\/references/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["design-brief"], join(dir, "references", "_shared", "design-brief"));
+    addTree("design-brief", join(dir, "references", "_shared", "design-brief"));
   }
   if (/_shared\/brand-system|brand-system\/references/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["brand-system"], join(dir, "references", "_shared", "brand-system"));
+    addTree("brand-system", join(dir, "references", "_shared", "brand-system"));
   }
   if (/platform-intelligence/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["platform-intelligence"], join(dir, "references", "_shared", "platform-intelligence"));
+    addTree("platform-intelligence", join(dir, "references", "_shared", "platform-intelligence"));
   }
   if (/ad-intelligence/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["ad-intelligence"], join(dir, "references", "_shared", "ad-intelligence"));
+    addTree("ad-intelligence", join(dir, "references", "_shared", "ad-intelligence"));
   }
 
   pruneOrphanRefs(dir, wantRefs);
+  pruneOrphanTrees(dir, wantTrees);
   return relative(ROOT, dir);
 }
 

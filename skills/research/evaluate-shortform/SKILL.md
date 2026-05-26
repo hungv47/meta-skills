@@ -51,9 +51,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md` (one file per cycle; single platform, single brief)
+- **Path:** `.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md` (one file per cycle; single platform, single brief — loop-internal artifacts retain the loop tree; flat v2 grammar applies only to `.forsvn/artifacts/`)
 - **Lifecycle:** `evaluation` (per loop spec; lives inside the marketing eval-loop workspace)
-- **Frontmatter fields:** `type`, `status`, `date`, `cycle`, `loop`, `post_url`, `brief_path`, `catalog_path`, `catalog_freshness`, `topic`, `market`, `platform`, `rubric_version`, `rubric_status`, `weighting`, `scores` (full schema in Output Artifact Structure below)
+- **Frontmatter fields:** `skill`, `type`, `status`, `date`, `stack` (=research), `review_surface` (=none — evaluation lifecycle defaults to `decision_state: not_required`), `cycle`, `loop`, `post_url`, `brief_path`, `catalog_path`, `catalog_freshness`, `topic`, `market`, `platform`, `rubric_version`, `rubric_status`, `weighting`, `scores` (full schema in Output Artifact Structure below; cross-stack v2 contract in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md))
 - **Required sections (in order):** TL;DR · Observation · Brief vs Observed · Rubric Scores (v0.1, provisional) · Pattern-Log Entry · Open Risks & Caveats · Recommendations for next cycle / catalog
 - **Side effects:** append row to `.forsvn/loops/[slug]/results.tsv` via `bun scripts/append-loop-result.ts`; call `bun scripts/manifest-sync.ts` after artifact write (both mandatory per `procedures/dispatch-mechanics.md`)
 - **Consumed by:** future `research-shortform` re-runs (mine pattern-log entries to update catalogs); gap-gate analysis (eventual); operator audit

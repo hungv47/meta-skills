@@ -1375,7 +1375,7 @@
         ],
         "critic_required_when": [
           "Idea-stage mode: idea-critic gate at Step 2.7 (auto-on; skip records override in spec frontmatter).",
-          "Saving a spec at Step 7 (review-gated, review_state defaults to pending)."
+          "Saving a spec at Step 7 (review-gated, decision_state defaults to pending)."
         ]
       },
       "load": {

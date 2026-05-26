@@ -68,7 +68,7 @@ capability:
       - "Never — discover does not run multi-agent itself; it invokes /debate-agents as a sub-routine at Step 5 if a decision needs panels."
     critic_required_when:
       - "Idea-stage mode: idea-critic gate at Step 2.7 (auto-on; skip records override in spec frontmatter)."
-      - "Saving a spec at Step 7 (review-gated, review_state defaults to pending)."
+      - "Saving a spec at Step 7 (review-gated, decision_state defaults to pending)."
 
   load:
     always:

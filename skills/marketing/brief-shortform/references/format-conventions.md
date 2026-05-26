@@ -123,7 +123,9 @@ Per the Output Artifact Structure block in SKILL.md body. Required fields (in th
 type: short-form-brief
 role: hero | variant
 status: done | done_with_concerns | blocked | needs_context
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
@@ -146,7 +148,7 @@ polish_chain_applied: vn-tone | humanmaxxing | none
 
 For variant artifacts, `role: variant` and additional field `variant_platform: <platform>`. The four review fields apply to the **hero `brief.md`** only — variant artifacts do not carry them.
 
-The `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). The short-form brief is a `pipeline` artifact, so `review_state` defaults to `not_required` — most briefs are regenerable drafts. The fields and the `## Review Gate` body section ship in the hero template so the operator (or an eval loop) can opt a run into review by setting `review_state: pending`; the procedure for running that review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). The fields are flat (the `manifest-sync` parser reads flat YAML) and additive/orthogonal to the existing schema.
+The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). The short-form brief is a `pipeline` artifact, so `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The fields and the `## Review Gate` body section ship in the hero template so the operator (or an eval loop) can opt a run into review by setting `decision_state: pending`; the procedure for running that review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). The fields are flat (the `manifest-sync` parser reads flat YAML) and additive/orthogonal to the existing schema.
 
 ## Body section headers (verbatim)
 
@@ -184,7 +186,7 @@ The hero `brief.md` ends with a `## Review Gate` block as its final section, aft
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); the procedure for running a review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). The short-form brief is a `pipeline` artifact, so frontmatter `review_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the hero template so the operator (or a loop) can opt a run into review by setting `review_state: pending`. The operator checks exactly one box; the agent reads it to set `review_state`. The block and review fields are additive and orthogonal — downstream consumers match sections by H2 heading, so a new trailing heading does not affect them.
+This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); the procedure for running a review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). The short-form brief is a `pipeline` artifact, so frontmatter `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the hero template so the operator (or a loop) can opt a run into review by setting `decision_state: pending`. The operator checks exactly one box; the agent reads it to set `decision_state`. The block and review fields are additive and orthogonal — downstream consumers match sections by H2 heading, so a new trailing heading does not affect them.
 
 ## When critic catches a format violation
 

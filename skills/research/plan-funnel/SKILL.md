@@ -43,9 +43,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/targets-[YYYY-MM-DD].md` (one per initiative-set; re-run renames prior to `targets.v[N].md` and increments)
+- **Path:** `.forsvn/artifacts/meta-plan-funnel-<YYYY-MM-DD>-targets-<slug>.md` (flat v2 grammar; one per initiative-set; re-run renames prior with `.v[N]` suffix)
 - **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy)
-- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status block below)
+- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status block below), `stack` (=meta), `review_surface` (=none — snapshot lifecycle defaults to `decision_state: not_required`). See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
 - **Required sections (in order — cross-stack contract):** Funnel Stages · Target Table · Channel → Funnel Stage Map · Three-Outcome Validation · Validation · Baselines (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
 - **Optional sections (append only when applicable):** Aspirational Target Flags · Pricing Health Signals · Known Issues · Change Log
 - **Side effects:** append baselines + growth motion + unit economics to `experience/business.md` per Write-back map in `procedures/pre-dispatch.md` (stable user-profile state worth carrying forward; mandatory on PASS or done_with_concerns)

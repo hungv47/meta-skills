@@ -49,7 +49,7 @@ Critic agent verifies before delivery. 11th item (Feature matrix Stakes/Diff cla
 
 - **Path:** `research/market-research.md` (canonical, top-level).
 - **Lifecycle:** `canonical` — edited in place by humans; on re-run rename prior to `research/market-research.v[N].md` and increment.
-- **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`.
+- **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`, `stack` (=research), `review_surface` (=html — gated canonical artifact gets the EARTH-themed HTML preview while `decision_state: pending`), `decision_state`. See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
 - **Required body sections (in order — cross-stack contract):** Scope · Market Trends · Market Sizing (if applicable per route) · User & Consumer Landscape · Competitive Landscape (6 sub-sections: Overview / Adjacent / Feature Comparison / Pricing / Positioning Map / Community & Mindshare) · Gaps & Opportunities (Gap Analysis 4-dimension + Top 3 Opportunities) · Limitations & Confidence · Next Step. Full template (~90 lines) + Scope Calibration tables: [`references/format-conventions.md`](references/format-conventions.md).
 - **Optional sections:** Known Issues (when critic FAILed twice and artifact ships with `[REVIEWER NOTE]` annotations).
 - **Side effects (mandatory on PASS / done_with_concerns):**

@@ -15,7 +15,9 @@ Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md`
 type: app-preview-brief
 role: hero
 status: done | done_with_concerns | blocked | needs_context
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed

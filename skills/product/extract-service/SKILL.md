@@ -136,9 +136,9 @@ The 8 Critical Gates + the operator-approval gate fire in fallback mode regardle
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/product/extract-service/[date]-[slug].md` (re-run same slug same day → append `-v[N]`).
+- **Path:** `.forsvn/artifacts/product-extract-service-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; re-run same slug same day → append `.v[N]` suffix).
 - **Lifecycle:** `snapshot` (dated, immutable record of one extraction run).
-- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `lifecycle`, `produced_by`, `provenance`.
+- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=product), `review_surface` (=none — snapshot defaults to `decision_state: not_required`), `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **One artifact, two halves:** the **Migration Plan** (service interface + caller order — written before the approval gate) and the **Applied Migration** report (per-caller results + validation + critic verdict — appended after). A plan-only outcome ships just the first half.
 - **Consumed by:** `review-work` (when reviewing migration-touched code), `clean-artifacts` (filename staleness scan), operator (history audit).
 - Full template: [`references/report-template.md`](references/report-template.md) [PROCEDURE].

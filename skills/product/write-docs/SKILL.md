@@ -68,7 +68,7 @@ Warm Start + Cold Start + route-locked Pre-Dispatch (Routes D + E override Q1+Q2
 - **Path (Route E — Release Notes):** `CHANGELOG.md` (prepend new entry); optionally also GitHub Release body draft to stdout via `--gh-release`.
 - **Path (Audit Mode):** no writes — produces audit report inline.
 - **Lifecycle:** varies by doc-type — see [`references/report-template.md`](references/report-template.md) "Lifecycle by doc-type" (README/User Guide/Config/Tutorial/Ship Log = canonical; API Reference = pipeline; Release Notes = snapshot).
-- **Frontmatter (baseline):** `skill`, `version`, `date`, `status`, `audience`, `doc-type`. Backfilled additions: `lifecycle`, `produced_by`, `provenance`.
+- **Frontmatter (baseline):** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=md by default; project-level canonical docs may opt into `html` for FIRE-themed preview), `decision_state`, `audience`, `doc-type`. Backfilled additions: `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Consumed by:** all 12+ downstream skills (Ship Log → `research/product-context.md` feeds create-brand, write-copy, optimize-seo, architect-system, etc.); users on `/plugin update` (Release Notes → CHANGELOG.md); `clean-code` + `review-work` + `architect-system` (read docs for drift detection).
 
 Full templates + filename + version-increment rule: [`references/report-template.md`](references/report-template.md).

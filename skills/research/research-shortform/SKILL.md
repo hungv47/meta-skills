@@ -52,9 +52,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/research/research-shortform/[slug].md` (one artifact per topic+market+platform-set)
+- **Path:** `.forsvn/artifacts/research-research-shortform-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one artifact per topic+market+platform-set)
 - **Lifecycle:** `pipeline` (per `research-skills/CLAUDE.md`; canonical-paths.md notes this is borderline-canonical — consumed cross-stack — but pipeline classification preserved verbatim for backwards-compat; refresh trigger handled by freshness windows, not manifest archival)
-- **Frontmatter fields:** `type`, `status`, `date`, `topic`, `market`, `platforms_analyzed`, `platform_mechanics_date`, `mechanics_sources_verified[]`, `trend_signals_date`, `sample_size_per_platform`, `icp_referenced` (full schema in Output Artifact Structure below)
+- **Frontmatter fields:** `skill`, `type`, `status`, `date`, `stack` (=research), `review_surface` (=md — pipeline defaults to `decision_state: not_required`), `topic`, `market`, `platforms_analyzed`, `platform_mechanics_date`, `mechanics_sources_verified[]`, `trend_signals_date`, `sample_size_per_platform`, `icp_referenced` (full schema in Output Artifact Structure below; cross-stack v2 contract in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md))
 - **Required sections (in order):** TL;DR · Audience Fit · Per-Platform Findings · Cross-Platform Comparison · Trending Audio (conditional) · Recommendations for short-form-brief · Open Risks & Caveats · What This Research Doesn't Cover
 - **Consumed by:** `brief-shortform` (marketing-skills) per-asset, reads §6 Recommendations + frontmatter sample-size flags; `evaluate-shortform` (research-skills) cycle-N scorer, reads frontmatter + §3 Per-Platform Findings to score published posts against the catalog
 - **Cross-stack contract:** schema changes require atomic update of BOTH consumers — never silently drift the frontmatter or section order (per `anti-patterns.md` row "Cross-stack contract drift")

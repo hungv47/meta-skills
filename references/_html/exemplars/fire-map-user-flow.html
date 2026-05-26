@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en" data-stack="fire">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conquis onboarding flow · map-user-flow · 2026-05-26</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../chrome.css">
+
+  <style>
+    /* FIRE register — solid borders + accent glow, snappy motion.
+       Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
+    .stage-intro h1 {
+      font-family: var(--font-head);
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px 0;
+      color: var(--stage-fg);
+    }
+    .stage-intro p {
+      font-family: var(--font-body);
+      color: var(--fg-muted);
+      max-width: 60ch;
+    }
+    .stage-intro .meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stage-accent);
+      margin-bottom: 8px;
+    }
+
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 32px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .step {
+      flex: 0 0 220px;
+      background: var(--bg-elevated);
+      border: 2px solid var(--stage-border);
+      border-radius: 6px;
+      padding: 18px;
+      position: relative;
+      transition: border-color var(--t-snap) var(--ease), box-shadow var(--t-snap) var(--ease);
+    }
+    .step:hover { border-color: var(--stage-accent); box-shadow: var(--shadow-glow); }
+    .step + .step { margin-left: 36px; }
+    .step + .step::before {
+      content: "→";
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--stage-accent);
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .step .num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stage-accent);
+      margin-bottom: 4px;
+    }
+    .step h3 {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      margin: 0 0 8px 0;
+      color: var(--stage-fg);
+    }
+    .step p {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: var(--fg-muted);
+      margin: 0 0 12px 0;
+      line-height: 1.45;
+    }
+    .step .metric {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--stage-accent-2);
+      letter-spacing: 0.05em;
+      border-top: 1px solid var(--stage-border);
+      padding-top: 8px;
+    }
+
+    .edges {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 40px;
+    }
+    .edge {
+      background: var(--bg-elevated);
+      border-left: 2px solid var(--stage-accent);
+      padding: 16px;
+      border-radius: 0 4px 4px 0;
+    }
+    .edge.warn { border-left-color: var(--stage-accent-2); }
+    .edge h4 {
+      font-family: var(--font-head);
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+      color: var(--stage-fg);
+    }
+    .edge p {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: var(--fg-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .edge .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      background: color-mix(in srgb, var(--stage-accent) 15%, transparent);
+      color: var(--stage-accent);
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+    .edge.warn .tag {
+      background: color-mix(in srgb, var(--stage-accent-2) 15%, transparent);
+      color: var(--stage-accent-2);
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 700;
+      margin: 48px 0 8px 0;
+      color: var(--stage-fg);
+    }
+    .section-title + .section-sub {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
+    <span class="brand-divider" aria-hidden="true"></span>
+    <span class="stack-chip">FIRE</span>
+    <span class="topbar-meta"><strong>map-user-flow</strong> · 2026-05-26 · conquis-onboarding</span>
+    <span class="decision-pill" data-state="pending">pending</span>
+  </header>
+
+  <aside class="left-controls">
+    <div class="control-group" data-picker-group>
+      <h2>Flows</h2>
+      <button class="picker-item" data-picker-value="onboarding" aria-selected="true">Onboarding (default)</button>
+      <button class="picker-item" data-picker-value="capture" aria-selected="false">First capture</button>
+      <button class="picker-item" data-picker-value="export" aria-selected="false">Export &amp; share</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Compare</h2>
+      <button type="button" data-toggle="comparison">Diff against last week</button>
+    </div>
+
+    <div class="control-group">
+      <h2>View</h2>
+      <button type="button" data-toggle="density">Density · loose</button>
+      <button type="button" data-toggle="edges">Show edge cases · on</button>
+      <button type="button" data-toggle="grid">8px grid · off</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Export</h2>
+      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <section class="stage-intro">
+      <div class="meta">PRODUCT · MAP-USER-FLOW · 2026-05-26</div>
+      <h1>Conquis onboarding</h1>
+      <p>Five steps from install to first captured decision. Side panels show edge cases that block the happy path — review these before marking the flow as ship-ready.</p>
+    </section>
+
+    <h2 class="section-title">Happy path</h2>
+    <p class="section-sub">Median: 4 min 12 sec · target ≤ 5 min</p>
+
+    <div class="flow">
+      <div class="step">
+        <div class="num">01</div>
+        <h3>Install &amp; first launch</h3>
+        <p>App opens directly to capture canvas. No splash, no tutorial.</p>
+        <div class="metric">target: &lt; 8s cold start</div>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h3>Operator intent</h3>
+        <p>Single prompt: "What are you trying to ship?" — free-text, captured to context.</p>
+        <div class="metric">conv 92% (single-screen)</div>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h3>First conversation</h3>
+        <p>Captures verbal answer → renders structured decision card live.</p>
+        <div class="metric">avg 1 min 45s · 3 cards</div>
+      </div>
+      <div class="step">
+        <div class="num">04</div>
+        <h3>Review &amp; commit</h3>
+        <p>Operator approves / edits / discards each card. Approved → working memory.</p>
+        <div class="metric">conv 88% (multi-card)</div>
+      </div>
+      <div class="step">
+        <div class="num">05</div>
+        <h3>Hand-off</h3>
+        <p>Cards exported as ready prompt for IDE / Claude / Cursor / Codex.</p>
+        <div class="metric">target: 1-click to clipboard</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Edge cases</h2>
+    <p class="section-sub">Block ship until each has a documented branch</p>
+
+    <div class="edges">
+      <div class="edge warn">
+        <span class="tag">Warn · open</span>
+        <h4>Mic permission denied</h4>
+        <p>iOS path requires Settings round-trip; fall back to text-only capture with a one-line nudge.</p>
+      </div>
+      <div class="edge">
+        <span class="tag">Solved</span>
+        <h4>Network loss mid-capture</h4>
+        <p>Local-first capture buffers in IndexedDB; sync resumes on reconnect.</p>
+      </div>
+      <div class="edge warn">
+        <span class="tag">Warn · open</span>
+        <h4>Empty intent</h4>
+        <p>Operator hits "continue" without typing — currently does nothing. Need: nudge + recent-intent recall.</p>
+      </div>
+      <div class="edge">
+        <span class="tag">Solved</span>
+        <h4>Multi-language input</h4>
+        <p>VN/EN detected per utterance; both render in the same card with language tags.</p>
+      </div>
+      <div class="edge">
+        <span class="tag">Solved</span>
+        <h4>Long capture (&gt; 10 min)</h4>
+        <p>Cards collapse into clusters; operator can expand any cluster on review.</p>
+      </div>
+      <div class="edge warn">
+        <span class="tag">Warn · open</span>
+        <h4>External app intent</h4>
+        <p>Operator says "send this to Linear" — clipboard path is wired; deep integration deferred.</p>
+      </div>
+    </div>
+  </main>
+
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
+    <fieldset class="decision-radio">
+      <legend>Decision</legend>
+      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
+      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
+      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
+    </fieldset>
+    <label class="decision-comments">
+      <span>Comments (optional)</span>
+      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
+    </label>
+    <div class="decision-actions">
+      <span class="decision-status" aria-live="polite"></span>
+      <button type="submit" class="decision-done">Done</button>
+    </div>
+  </form>
+
+  <footer class="footer">
+    <a class="footer-action" data-roughdraft-link
+       href="roughdraft://open?path=.forsvn%2Fartifacts%2Fproduct-map-user-flow-2026-05-26-conquis-onboarding.md">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">Conquis Onboarding · 5 steps · 3 open edge cases</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <script type="application/json" id="preview-config">{"static":true}</script>
+  <script type="application/json" id="artifact-data">{
+  "skill": "map-user-flow",
+  "version": 1,
+  "date": "2026-05-26",
+  "status": "done_with_concerns",
+  "stack": "product",
+  "lifecycle": "pipeline",
+  "summary": "Conquis onboarding — 5-step happy path, 3 open edge cases",
+  "decision_state": "pending",
+  "review_surface": "html"
+}</script>
+  <script src="../chrome.js"></script>
+</body>
+</html>

@@ -32,7 +32,9 @@ skill: brief-graphic
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
@@ -55,8 +57,8 @@ sacred_respected: [list of sacred elements honored]
 | `version` | Integer; increment on re-run with same slug (preserves history via `[slug].v[N].md` rename) |
 | `date` | ISO `YYYY-MM-DD`; the date the brief was approved at Gate 2, not the date rendering completes |
 | `status` | One of the four values; **never** omit, never invent new values |
-| `review_state` | Human-review state per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). `pipeline` artifact → defaults to `not_required`; the operator or a loop opts a run into review by setting `pending`. One of: `pending` / `approved` / `rejected` / `changes_requested` / `not_required` |
-| `review_tool` | Review surface — `roughdraft` (default) / `inline` / `none`. Pairs with `review_state` |
+| `decision_state` | Human-review state per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). `pipeline` artifact → defaults to `not_required`; the operator or a loop opts a run into review by setting `pending`. One of: `pending` / `approved` / `rejected` / `suggested` / `not_required` |
+| `review_tool` | Review surface — `roughdraft` (default) / `inline` / `none`. Pairs with `decision_state` |
 | `reviewed_at` | ISO `YYYY-MM-DD` — empty until a review is recorded |
 | `reviewer` | Who recorded the review — empty until reviewed |
 | `downstream_route` | One of the four route values — drives the Layer 2 agent + the Downstream Handoff Block schema below |
@@ -157,7 +159,7 @@ Every brief ends with a `## Review Gate` block — the final body section, after
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); the procedure for running a review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). brief-graphic produces a `pipeline` artifact, so the frontmatter `review_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the template so the operator (or a loop) can opt a run into review by setting `review_state: pending`. The operator checks exactly one box; the agent reads it to set `review_state`. The block and fields are additive and orthogonal — downstream consumers jump to sections by heading match, so a new trailing heading does not affect them.
+This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); the procedure for running a review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). brief-graphic produces a `pipeline` artifact, so the frontmatter `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the template so the operator (or a loop) can opt a run into review by setting `decision_state: pending`. The operator checks exactly one box; the agent reads it to set `decision_state`. The block and fields are additive and orthogonal — downstream consumers jump to sections by heading match, so a new trailing heading does not affect them.
 
 ## Re-run convention
 
@@ -189,7 +191,7 @@ Before the orchestrator writes the artifact:
 - Hierarchy section has exactly 3 ranks (focal point + supporting + tertiary)
 - Copy Placement section present iff brief carries copy (matches `Source copy:` field)
 - Critic Report present with PASS / FAIL / DONE_WITH_CONCERNS verdict
-- `## Review Gate` block present as the final body section; four review frontmatter fields present (`review_state` defaults to `not_required` for this `pipeline` artifact)
+- `## Review Gate` block present as the final body section; four review frontmatter fields present (`decision_state` defaults to `not_required` for this `pipeline` artifact)
 
 ## Critic verdict file (optional)
 

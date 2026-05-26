@@ -128,6 +128,25 @@ A single artifact MAY carry both variants under separate keys (`provenance_extra
 
 ---
 
+## Stack + provenance fields (every artifact, v2)
+
+Three flat fields tell consumers which stack produced this and which surface
+carries the review. Required on every artifact written under the v2 contract.
+
+| Field | Type | Required | Example |
+|---|---|---|---|
+| `stack` | enum `meta \| mkt \| product \| research` | yes | `mkt` |
+| `skills_involved` | list of kebab-case skill slugs | optional (multi-skill pipelines) | `[research-icp, create-brand]` |
+| `review_surface` | enum `html \| md \| none` | yes | `html` |
+
+`stack` is mandatory because the v2 path grammar is flat
+(`.forsvn/artifacts/<stack>-<skill>-<date>-<slug>.<ext>`) and consumers can no
+longer infer stack from path depth. `skills_involved` enumerates every
+contributing skill in a multi-skill pipeline; `skill:` (the primary producer)
+stays as before. `review_surface` declares which surface this artifact uses
+(`html` = HTML preview emitted alongside MD while `decision_state: pending`;
+`md` = Markdown only; `none` = `decision_state: not_required`).
+
 ## Review fields (reviewable artifacts)
 
 Artifacts whose lifecycle requires human sign-off carry four flat review fields.
@@ -135,17 +154,17 @@ Full semantics: [[reviewable-artifact-contract]].
 
 | Field | Type | Example |
 |---|---|---|
-| `review_state` | enum | `pending` \| `approved` \| `rejected` \| `changes_requested` \| `not_required` |
+| `decision_state` | enum | `pending` \| `approved` \| `denied` \| `suggested` \| `not_required` |
 | `review_tool` | enum | `roughdraft` \| `inline` \| `none` |
 | `reviewed_at` | ISO `YYYY-MM-DD` or empty | `2026-05-22` |
 | `reviewer` | string or empty | `operator` |
 
 Fields are flat by design — `manifest-sync.ts` parses flat YAML only. Absent or
-unrecognized `review_state` normalizes to `not_required`, so legacy artifacts
-index unchanged. `manifest-sync` indexes `review_state` into a Review column in
-`artifact-index.md`.
+unrecognized `decision_state` normalizes to `not_required`, so legacy artifacts
+index unchanged. `manifest-sync` indexes `decision_state` into a Decision column
+in `artifact-index.md`.
 
-**When to set `review_state: pending`** — by lifecycle:
+**When to set `decision_state: pending`** — by lifecycle:
 
 | Lifecycle | Default |
 |---|---|
@@ -159,15 +178,18 @@ Reviewable artifacts also carry a `## Review Gate` body block:
 ````markdown
 ## Review Gate
 - [ ] Approve
-- [ ] Reject
+- [ ] Deny
 - [ ] Suggest changes
 
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ````
 
+The human checks exactly one box; the agent reads it to set `decision_state`:
+Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`.
+
 CriticMarkup review notes live in the **body**, never in frontmatter. `status`
-(skill quality gate) and `review_state` (human acceptance) are independent —
-`status: done` with `review_state: pending` is valid and expected.
+(skill quality gate) and `decision_state` (human acceptance) are independent —
+`status: done` with `decision_state: pending` is valid and expected.
 
 ---
 
@@ -181,6 +203,8 @@ skill: review-work
 version: 1
 date: 2026-05-16
 status: done
+stack: meta
+review_surface: none
 ---
 
 # Fresh-Eyes Review: <slug>
@@ -188,7 +212,9 @@ status: done
 ...
 ```
 
-Four required fields. No selection fields because the artifact is one-shot (read once, archive).
+Four required fields plus the two v2 mandatories (`stack`, `review_surface`). No
+selection fields because the artifact is one-shot (read once, archive). No
+`decision_state` because terminal snapshots default to `not_required`.
 
 ---
 
@@ -202,6 +228,8 @@ skill: run-eval-loop
 version: 1
 date: 2026-05-16
 status: done
+stack: meta
+review_surface: md
 summary: "[loop] tiktok hold-rate improvement loop"
 purpose: "Operating program for measurable hold-rate strategy -> execution -> evaluation"
 lifecycle: loop
@@ -225,11 +253,17 @@ skill: debate-agents
 version: 1
 date: 2026-05-16
 status: done
+stack: meta
+review_surface: md
 summary: "Decision: ship Conquis desktop $59 single-tier pricing"
 purpose: "Operator-committed pricing decision after 3-perspective debate"
 lifecycle: decision
 use_when: "Reading the rationale behind the $59 single-tier choice"
 upstream: "discover spec, market-research"
+decision_state: approved
+review_tool: roughdraft
+reviewed_at: 2026-05-16
+reviewer: operator
 ---
 ```
 
@@ -241,6 +275,8 @@ skill: review-work
 version: 1
 date: 2026-05-16
 status: done_with_concerns
+stack: meta
+review_surface: none
 summary: "Fresh-eyes on eval-loop refactor (FIXED 2 inline, 1 deferred)"
 purpose: "Independent QA review of eval-loop body-diet refactor"
 lifecycle: snapshot
@@ -257,14 +293,45 @@ skill: write-copy
 version: 1
 date: 2026-05-16
 status: done
+stack: mkt
+review_surface: md
 summary: "Hero copy variants for conquis-desktop landing v3"
 purpose: "Three hero-section copy variants scored against rubric"
 lifecycle: pipeline
 use_when: "Reviewing or selecting between Conquis desktop hero copy candidates"
-upstream: "brand-system BRAND.md, lp-brief"
+upstream: "brand/BRAND.md, brief-landing-page output"
 downstream: "humanmaxxing (terminal pass)"
 ---
 ```
+
+**Reviewable canonical artifact** (`create-brand`, HTML preview surface):
+
+```yaml
+---
+skill: create-brand
+version: 1
+date: 2026-05-26
+status: done
+stack: mkt
+skills_involved: [research-icp, create-brand]
+summary: "FORSVN brand identity — Pure Void palette, Bricolage + Be Vietnam Pro typography"
+purpose: "Canonical brand identity record for downstream marketing + design work"
+lifecycle: canonical
+use_when: "Grounding any voice, visual, or token decision for FORSVN"
+do_not_use_when: "The audience or positioning has materially changed since this was produced"
+upstream: "research/icp-research.md, operator interview"
+downstream: "write-copy, write-ad, write-social, brief-landing-page"
+decision_state: pending
+review_surface: html
+review_tool: roughdraft
+reviewed_at:
+reviewer:
+---
+```
+
+While `decision_state: pending`, a co-located HTML preview lives at the same
+flat path with extension `.html` — see [[reviewable-artifact-contract]] for the
+review-surface lifecycle.
 
 ---
 
@@ -284,6 +351,15 @@ When the schema needs to change:
 4. Run a full-stack regression sweep via the harness before merging
 
 Do not change one skill's frontmatter without ripple coordination.
+
+### v2 schema (2026-05-26)
+
+The v2 schema renamed `review_state` → `decision_state` (with enum values
+`rejected` → `denied` and `changes_requested` → `suggested`) and added the
+mandatory `stack` + `review_surface` fields plus the optional `skills_involved`
+list. Legacy artifacts that still carry `review_state` are tolerated by
+`manifest-sync` (one-line warning per artifact, normalized to the new field
+name) until the migration script runs.
 
 ---
 

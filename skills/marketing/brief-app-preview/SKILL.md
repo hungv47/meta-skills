@@ -113,11 +113,11 @@ Mechanics (how to spawn agents, parallel/sequential tables, single-agent fallbac
 - **Output root:** `.forsvn/artifacts/mkt/app-preview-brief/[slug]/`
 - **Files (4):** `brief.md` · `assets.md` · `crop-map.md` · `handoff-produce-video.md`
 - **Lifecycle:** `pipeline` — one artifact set per (feature, surface, market); re-run on feature pivot or surface change
-- **Frontmatter fields (brief.md):** `type`, `role`, `status`, `review_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count` (full schema in `references/format-conventions.md`)
+- **Frontmatter fields (brief.md):** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count` (full schema in `references/format-conventions.md`)
 - **Body sections (brief.md, 12, in order):** TL;DR for the Editor · Feature Promise · Source Inventory · Beat Sequence · Crop / Mask Plan · Interaction Choreography · Motion Spec · Caption Pack · Pointer + Audio Plan · Platform Spec · What NOT To Do · Handoff to produce-video
 - **Consumed by:** `produce-video` (via `handoff-produce-video.md`) — emits the runtime scaffolds; never `brief-shortform`, never `publish-social`
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" + `produce-video`'s `video-brief-schema.md` extension for app-preview inputs (WS4 will land that extension)
-- **Review:** This `pipeline` artifact carries the review machinery but `review_state` defaults to `not_required`. Operator opts a run into review by setting `review_state: pending`. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. Review machinery applies to `brief.md` only — not to `assets.md`, `crop-map.md`, or `handoff-produce-video.md`.
+- **Review:** This `pipeline` artifact carries the review machinery but `decision_state` defaults to `not_required`. Operator opts a run into review by setting `decision_state: pending`. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. Review machinery applies to `brief.md` only — not to `assets.md`, `crop-map.md`, or `handoff-produce-video.md`.
 
 Full template + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
@@ -130,7 +130,7 @@ Full template + per-section format rules + crop-rectangle notation + interaction
 type: app-preview-brief
 role: hero
 status: done | done_with_concerns | blocked | needs_context
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
@@ -150,7 +150,7 @@ critic_loop_count: [1 | 2]
 ---
 ```
 
-The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per `references/_shared/reviewable-artifact-contract.md`. This is a `pipeline` artifact → `review_state` defaults to `not_required`.
+The four `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per `references/_shared/reviewable-artifact-contract.md`. This is a `pipeline` artifact → `decision_state` defaults to `not_required`.
 
 ---
 

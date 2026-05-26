@@ -52,9 +52,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/research/platform-evidence/[slug].md` (one artifact per account scope + platform set)
+- **Path:** `.forsvn/artifacts/research-research-platform-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one artifact per account scope + platform set)
 - **Lifecycle:** `pipeline` (per `research-skills/CLAUDE.md` taxonomy — regenerable, point-in-time; refresh is governed by the two freshness windows, not manifest archival). Evidence is re-measured on re-run, never amended in place.
-- **Frontmatter fields:** `type`, `status`, `date`, `account_scope`, `platforms_analyzed`, `metrics_window_date`, `algorithm_context_date`, `evidence_sources_logged`, `coverage_per_platform` (full schema in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
+- **Frontmatter fields:** `skill`, `type`, `status`, `date`, `stack` (=research), `review_surface` (=md — pipeline defaults to `decision_state: not_required`), `account_scope`, `platforms_analyzed`, `metrics_window_date`, `algorithm_context_date`, `evidence_sources_logged`, `coverage_per_platform` (full schema in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]; cross-stack contract in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md))
 - **Required body sections (in order — cross-stack contract):** TL;DR · Evidence Base · Per-Platform Evidence · Cross-Platform Comparison · Recommendations · Missing Evidence & How to Close It · Open Risks & Caveats · What This Evidence Doesn't Cover
 - **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
   - Write `.forsvn/artifacts/research/platform-evidence/[slug].md`

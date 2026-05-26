@@ -10,6 +10,7 @@
 
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync, mkdirSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, basename } from "node:path";
+import { parseArtifactPath } from "./lib/path-parser";
 
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
 const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-archive") ?? process.cwd();
@@ -20,16 +21,28 @@ const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
-const VALID_REVIEW_STATES = new Set(["pending", "approved", "rejected", "changes_requested", "not_required"]);
+const VALID_DECISION_STATES = new Set(["pending", "approved", "denied", "suggested", "not_required"]);
+const VALID_REVIEW_SURFACES = new Set(["html", "md", "none"]);
+const VALID_STACKS = new Set(["meta", "mkt", "product", "research"]);
+// Legacy v1 -> v2 review enum migration. Read with a per-artifact warning.
+const LEGACY_REVIEW_STATE_MAP: Record<string, string> = {
+  pending: "pending",
+  approved: "approved",
+  rejected: "denied",
+  changes_requested: "suggested",
+  not_required: "not_required",
+};
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
 const LIFECYCLE_SORT_ORDER = ["canonical", "loop", "loop-context", "learning", "anchor", "registry", "decision", "spec", "strategy", "execution", "evaluation", "pipeline", "snapshot", "archive", ""];
 
-type Frontmatter = Record<string, string | number | boolean>;
+type Frontmatter = Record<string, string | number | boolean | string[]>;
 type ArtifactEntry = {
   produced_by: string;
   produced_at: string;
   status: string;
   schema_version: number;
+  stack: string;
+  skills_involved: string[];
   stale_after_days: number;
   stale: boolean;
   title: string;
@@ -43,7 +56,8 @@ type ArtifactEntry = {
   upstream: string;
   downstream: string;
   decision_status: string;
-  review_state: string;
+  decision_state: string;
+  review_surface: string;
   review_tool: string;
   reviewed_at: string;
   reviewer: string;
@@ -52,8 +66,9 @@ type ArtifactEntry = {
 };
 
 // Minimal flat-YAML frontmatter parser. Handles `key: value`, optional quoting,
-// and integer coercion. Anything more exotic (lists, nested maps) is ignored —
-// the spec keeps frontmatter flat by design.
+// integer coercion, and one inline-array form (`[a, b, c]`) used for the v2
+// `skills_involved` field. Anything more exotic (nested maps, multi-line lists)
+// is ignored — the spec keeps frontmatter flat by design.
 function parseFrontmatter(content: string): Frontmatter | null {
   // Closing `---` must be at start of a line (not mid-body), preventing a
   // markdown horizontal rule from being read as a false closing delimiter.
@@ -63,8 +78,22 @@ function parseFrontmatter(content: string): Frontmatter | null {
   for (const line of match[1].split(/\r?\n/)) {
     const m = line.match(/^([a-zA-Z_][\w-]*)\s*:\s*(.*)$/);
     if (!m) continue;
-    let v: string | number | boolean = m[2].trim();
-    if (typeof v === "string") {
+    const raw = m[2].trim();
+    let v: string | number | boolean | string[] = raw;
+    if (raw.startsWith("[") && raw.endsWith("]")) {
+      // Inline array of unquoted-or-quoted scalars. No nesting, no commas
+      // inside values. Matches v2 `skills_involved: [foo, bar]` usage.
+      const body = raw.slice(1, -1).trim();
+      v = body.length === 0
+        ? []
+        : body.split(",").map((part) => {
+            const t = part.trim();
+            if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+              return t.slice(1, -1);
+            }
+            return t;
+          }).filter((s) => s.length > 0);
+    } else if (typeof v === "string") {
       if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
         v = v.slice(1, -1);
       }
@@ -159,7 +188,17 @@ function numberField(fm: Frontmatter | null, key: string, fallback: number): num
 
 function textField(fm: Frontmatter | null, key: string): string {
   const v = fm?.[key];
+  if (Array.isArray(v)) return "";
   return typeof v === "string" || typeof v === "number" || typeof v === "boolean" ? String(v).trim() : "";
+}
+
+function listField(fm: Frontmatter | null, key: string): string[] {
+  const v = fm?.[key];
+  if (Array.isArray(v)) return v.map((s) => String(s).trim()).filter(Boolean);
+  if (typeof v === "string" && v.length > 0) {
+    return v.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  return [];
 }
 
 function inferTitle(rel: string, content: string, fm: Frontmatter | null): string {
@@ -218,8 +257,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
   const renderRows = (rows: Array<[string, ArtifactEntry]>): string => {
     if (rows.length === 0) return "_None._\n";
     return [
-      "| Artifact | Type | Why it exists | Use when | Status | Review | Lineage |",
-      "|---|---|---|---|---|---|---|",
+      "| Stack | Artifact | Type | Why it exists | Use when | Status | Decision | Surface | Lineage |",
+      "|---|---|---|---|---|---|---|---|---|",
       ...rows.map(([path, entry]) => {
         const why = entry.purpose || entry.summary || entry.title;
         const useWhen = entry.use_when || (entry.lifecycle === "snapshot" ? "Point-in-time audit trail; read only when investigating that run." : "");
@@ -231,8 +270,9 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
           entry.downstream ? `downstream: ${entry.downstream}` : "",
         ].filter(Boolean);
         const status = `${entry.status}${entry.stale ? " / stale" : ""}`;
-        const review = entry.review_state === "not_required" ? "—" : entry.review_state;
-        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(review)} | ${formatCell(lineageParts.join("; "))} |`;
+        const decision = entry.decision_state === "not_required" ? "—" : entry.decision_state;
+        const surface = entry.review_surface === "none" ? "—" : entry.review_surface;
+        return `| ${formatCell(entry.stack)} | \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(decision)} | ${formatCell(surface)} | ${formatCell(lineageParts.join("; "))} |`;
       }),
     ].join("\n") + "\n";
   };
@@ -291,7 +331,8 @@ for (const base of ARTIFACT_ROOTS) {
     }
 
     const fm = parseFrontmatter(content);
-    const skill = (fm?.skill as string | undefined) ?? inferProducer(rel);
+    const parsedPath = parseArtifactPath(rel);
+    const skill = (fm?.skill as string | undefined) ?? parsedPath.skill ?? inferProducer(rel);
     const producedAt = normalizeDate(fm?.date, stat.mtime);
     const rawStatus = (fm?.status as string | undefined) ?? "done";
     const isArchived = rel.includes("/.archive/");
@@ -303,17 +344,51 @@ for (const base of ARTIFACT_ROOTS) {
     const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
     const summary = textField(fm, "summary");
 
-    // Review state — flat frontmatter (see references/reviewable-artifact-contract.md).
-    // Absent or unrecognized values normalize to "not_required" so legacy artifacts
-    // without a review layer still index cleanly.
-    const rawReviewState = textField(fm, "review_state");
-    const reviewState = !rawReviewState
-      ? "not_required"
-      : VALID_REVIEW_STATES.has(rawReviewState)
-        ? rawReviewState
-        : "not_required";
-    if (rawReviewState && !VALID_REVIEW_STATES.has(rawReviewState) && !isArchived) {
-      warnings.push(`${rel}: unknown review_state ${JSON.stringify(rawReviewState)} normalized to "not_required"`);
+    // Stack — frontmatter wins; fall back to flat-filename prefix (legacy
+    // nested paths also encode stack as segment 2); else empty.
+    const rawStack = textField(fm, "stack");
+    const stack = rawStack && VALID_STACKS.has(rawStack)
+      ? rawStack
+      : (parsedPath.stack ?? "");
+    if (rawStack && !VALID_STACKS.has(rawStack) && !isArchived) {
+      warnings.push(`${rel}: unknown stack ${JSON.stringify(rawStack)} dropped`);
+    }
+
+    // skills_involved — list of contributing skills for multi-skill pipelines.
+    const skillsInvolved = listField(fm, "skills_involved");
+
+    // decision_state — v2 enum (renamed from review_state). Legacy v1 values
+    // are mapped through LEGACY_REVIEW_STATE_MAP with a one-line warning.
+    const rawDecisionState = textField(fm, "decision_state");
+    const rawLegacyReviewState = textField(fm, "review_state");
+    let decisionState: string;
+    if (rawDecisionState) {
+      decisionState = VALID_DECISION_STATES.has(rawDecisionState) ? rawDecisionState : "not_required";
+      if (!VALID_DECISION_STATES.has(rawDecisionState) && !isArchived) {
+        warnings.push(`${rel}: unknown decision_state ${JSON.stringify(rawDecisionState)} normalized to "not_required"`);
+      }
+    } else if (rawLegacyReviewState) {
+      decisionState = LEGACY_REVIEW_STATE_MAP[rawLegacyReviewState] ?? "not_required";
+      if (!isArchived) {
+        warnings.push(`${rel}: legacy review_state ${JSON.stringify(rawLegacyReviewState)} migrated to decision_state ${JSON.stringify(decisionState)}`);
+      }
+    } else {
+      decisionState = "not_required";
+    }
+
+    // review_surface — frontmatter wins; else infer from co-located HTML twin
+    // (path-parser only sees the .md side here; check sibling existence) or
+    // fall back to "md" when a decision is gated and "none" otherwise.
+    const rawReviewSurface = textField(fm, "review_surface");
+    const htmlTwinExists = file.endsWith(".md") && existsSync(file.replace(/\.md$/, ".html"));
+    let reviewSurface: string;
+    if (rawReviewSurface && VALID_REVIEW_SURFACES.has(rawReviewSurface)) {
+      reviewSurface = rawReviewSurface;
+    } else if (rawReviewSurface && !isArchived) {
+      warnings.push(`${rel}: unknown review_surface ${JSON.stringify(rawReviewSurface)} dropped`);
+      reviewSurface = htmlTwinExists ? "html" : (decisionState === "not_required" ? "none" : "md");
+    } else {
+      reviewSurface = htmlTwinExists ? "html" : (decisionState === "not_required" ? "none" : "md");
     }
 
     artifacts[rel] = {
@@ -321,6 +396,8 @@ for (const base of ARTIFACT_ROOTS) {
       produced_at: producedAt,
       status,
       schema_version: schemaVersion,
+      stack,
+      skills_involved: skillsInvolved,
       stale_after_days: staleAfterDays,
       stale: isStale(producedAt, staleAfterDays),
       title: inferTitle(rel, content, fm),
@@ -334,7 +411,8 @@ for (const base of ARTIFACT_ROOTS) {
       upstream: textField(fm, "upstream"),
       downstream: textField(fm, "downstream"),
       decision_status: textField(fm, "decision_status"),
-      review_state: reviewState,
+      decision_state: decisionState,
+      review_surface: reviewSurface,
       review_tool: textField(fm, "review_tool"),
       reviewed_at: textField(fm, "reviewed_at"),
       reviewer: textField(fm, "reviewer"),
