@@ -26,10 +26,12 @@ const ROOT = (() => {
 // inline literal font name must come from the FORSVN unified stack (Bricolage
 // Grotesque + Be Vietnam Pro + JetBrains Mono) or be a generic fallback. The
 // preferred form is `font-family: var(--font-head|body|mono)`; literals are
-// allowed but flagged when they drift outside the brand.
+// allowed but flagged when they drift outside the brand. Per acceptance gate
+// § 8 #3, exemplar grep should return only Bricolage / Be Vietnam Pro /
+// JetBrains Mono — legacy v1 families (Inter Tight, Fraunces, Sora,
+// Newsreader, Plus Jakarta Sans, Manrope) are intentionally NOT in this set.
 const UNIFIED_FONT_FRAGMENTS = [
   "Bricolage Grotesque", "Be Vietnam Pro", "JetBrains Mono",
-  "Inter Tight", "Inter",       // documented fallbacks in tokens.css var stacks
   "SF Mono", "ui-monospace",
   "system-ui", "-apple-system",
   "sans-serif", "serif", "monospace",
@@ -86,6 +88,16 @@ function collectHtml(dir: string, out: string[], skipRe?: RegExp): void {
 }
 
 function lint(file: string, html: string): void {
+  // Strip <pre>, <code>, <!-- ... -->, and <script type="application/json">
+  // blocks before the check #6 regexes so a documentation example or JSON
+  // string containing the literal text "<form" doesn't false-positive. The
+  // other checks (1-5, 7-10) still operate on the full source.
+  const html6 = html
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<pre\b[\s\S]*?<\/pre>/gi, "")
+    .replace(/<code\b[\s\S]*?<\/code>/gi, "")
+    .replace(/<script type="application\/json"[\s\S]*?<\/script>/gi, "");
+
   // Check 1 — Five-region layout
   for (const sel of ['class="topbar"', 'class="left-controls"', 'class="stage"', 'class="footer"', 'id="artifact-data"']) {
     if (!html.includes(sel)) issues.push({ check: 1, file, message: `missing required region (${sel})`, severity: "hard" });
@@ -136,8 +148,11 @@ function lint(file: string, html: string): void {
   // Check 6 — Decision capture allowed only via the documented forsvn preview
   // localhost contract (v2): <form id="decision-capture"> with action that's
   // a javascript: noop or /done, plus a #preview-config script block. Any
-  // other <form>, onclick, fetch, XHR, or WebSocket = hard fail.
-  const forms = [...html.matchAll(/<form\b([^>]*)>/gi)];
+  // other <form>, onclick, fetch, XHR, or WebSocket = hard fail. Operates on
+  // html6 (with <pre>/<code>/comments/JSON-script blocks stripped) so doc
+  // examples and JSON strings don't false-positive.
+  const forms = [...html6.matchAll(/<form\b([^>]*)>/gi)];
+  let decisionCaptureCount = 0;
   for (const m of forms) {
     const attrs = m[1];
     const idMatch = attrs.match(/\bid\s*=\s*"([^"]+)"/i);
@@ -145,6 +160,7 @@ function lint(file: string, html: string): void {
       issues.push({ check: 6, file, message: `<form> with id=${JSON.stringify(idMatch?.[1] ?? "<none>")} — only id="decision-capture" is allowed`, severity: "hard" });
       continue;
     }
+    decisionCaptureCount++;
     const actionMatch = attrs.match(/\baction\s*=\s*"([^"]+)"/i);
     if (actionMatch) {
       const action = actionMatch[1].trim();
@@ -159,14 +175,32 @@ function lint(file: string, html: string): void {
       issues.push({ check: 6, file, message: `<form id="decision-capture"> present but no <script id="preview-config"> block`, severity: "hard" });
     }
   }
+  if (decisionCaptureCount > 1) {
+    issues.push({ check: 6, file, message: `multiple <form id="decision-capture"> elements (${decisionCaptureCount}) — only one allowed per page`, severity: "hard" });
+  }
+  // Static (emitter-time) preview-config must declare {"static":true}. The
+  // forsvn-preview CLI overwrites the placeholder at serve time; a checked-in
+  // HTML with any other config (e.g. {"endpoint":"https://attacker/done"})
+  // would activate chrome.js's decision-capture against a remote target.
+  const previewCfg = html.match(/<script type="application\/json" id="preview-config">([\s\S]*?)<\/script>/);
+  if (previewCfg) {
+    try {
+      const cfg = JSON.parse(previewCfg[1]);
+      if (cfg.static !== true) {
+        issues.push({ check: 6, file, message: `static <script id="preview-config"> must declare {"static":true}; the CLI rewrites this at serve time`, severity: "hard" });
+      }
+    } catch {
+      issues.push({ check: 6, file, message: `<script id="preview-config"> is not valid JSON`, severity: "hard" });
+    }
+  }
   // No inline onclick attributes anywhere (chrome.js binds via data-* hooks).
-  if (/\bonclick\s*=/i.test(html)) {
+  if (/\bonclick\s*=/i.test(html6)) {
     issues.push({ check: 6, file, message: `inline onclick handler present (use chrome.js data-* bindings)`, severity: "hard" });
   }
   // Any fetch / XHR / WebSocket targeting anything other than 127.0.0.1 or
   // localhost = hard fail. The decision-capture form sends to a config-driven
   // endpoint at runtime; static HTML must not name a remote target.
-  const fetchTargets = [...html.matchAll(/\bfetch\s*\(\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
+  const fetchTargets = [...html6.matchAll(/\bfetch\s*\(\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
   for (const target of fetchTargets) {
     if (!/^(\/|https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/)/.test(target)) {
       issues.push({ check: 6, file, message: `fetch() target ${JSON.stringify(target)} is not localhost/relative`, severity: "hard" });

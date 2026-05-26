@@ -16,8 +16,8 @@
 //   2   server error (port bind, IO)
 //   124 idle timeout (no Done click within 10 min)
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync } from "node:fs";
-import { join, dirname, basename, resolve, relative } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync } from "node:fs";
+import { join, dirname, basename, resolve, relative, sep } from "node:path";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 
@@ -46,12 +46,11 @@ async function main(): Promise<number> {
     return 1;
   }
   const htmlPath = resolve(positional[0]);
-  const mdPath = htmlPath.replace(/\.html$/, ".md");
-
   if (!htmlPath.endsWith(".html")) {
     err(`expected an .html file, got ${htmlPath}`);
     return 1;
   }
+  const mdPath = htmlPath.replace(/\.html$/, ".md");
   if (!existsSync(htmlPath)) {
     err(`HTML preview not found: ${htmlPath}`);
     return 1;
@@ -94,6 +93,7 @@ async function main(): Promise<number> {
   const url = `http://${HOST}:${port}/`;
   log(`forsvn preview · serving ${relative(projectRoot, htmlPath)} at ${url}`);
   log(`csrf token = ${token.slice(0, 8)}…  (full token wired into page config)`);
+  log(`security · bound to 127.0.0.1 only; local-trust model — any process on this host can read the token from GET / and POST a decision. Don't run on shared boxes.`);
 
   if (!flagNoOpen) openBrowser(url);
 
@@ -107,7 +107,10 @@ async function main(): Promise<number> {
     }, IDLE_TIMEOUT_MS);
   });
 
-  server.stop(true);
+  // Graceful stop — let any in-flight response finish before tearing down. The
+  // queueMicrotask in /done already ordered the 200 ahead of this, but graceful
+  // mode eliminates the timing race entirely with no UX cost.
+  await server.stop();
 
   if (!result.ok) {
     if (flagJson) console.log(JSON.stringify({ ok: false, reason: result.reason }));
@@ -181,20 +184,33 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
 
     if (req.method === "GET" && url.pathname.startsWith("/assets/")) {
       // Serve sibling static files (chrome.css, chrome.js, tokens.css) relative
-      // to the HTML's directory. Resolve and verify the result stays inside.
+      // to the HTML's directory. Realpath BOTH sides so a symlinked tmpdir
+      // (macOS /var → /private/var) doesn't 403 legitimate reads, AND a
+      // symlink *inside* htmlDir pointing outside still gets rejected.
       const assetRel = url.pathname.replace(/^\/assets\//, "");
-      const assetAbs = resolve(htmlDir, assetRel);
-      if (!assetAbs.startsWith(realpathSync(htmlDir))) {
+      if (assetRel.includes("..") || assetRel.startsWith("/")) {
         return new Response("forbidden", { status: 403, headers: noStore });
       }
+      const assetAbs = resolve(htmlDir, assetRel);
       if (!existsSync(assetAbs) || statSync(assetAbs).isDirectory()) {
         return new Response("not found", { status: 404, headers: noStore });
       }
-      const body = readFileSync(assetAbs);
-      return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(assetAbs) } });
+      const canonicalAsset = realpathSync(assetAbs);
+      const canonicalRoot = realpathSync(htmlDir);
+      if (canonicalAsset !== canonicalRoot && !canonicalAsset.startsWith(canonicalRoot + sep)) {
+        return new Response("forbidden", { status: 403, headers: noStore });
+      }
+      const body = readFileSync(canonicalAsset);
+      return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(canonicalAsset) } });
     }
 
     if (req.method === "POST" && url.pathname === "/done") {
+      // One-shot: if a prior /done already won, return 409 instead of letting
+      // duplicate clicks race the same promise.
+      if (!state.resolve) {
+        return jsonResp(409, { error: "decision already recorded" }, noStore);
+      }
+
       let body: unknown;
       try { body = await req.json(); }
       catch { return jsonResp(400, { error: "invalid JSON body" }, noStore); }
@@ -217,11 +233,13 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         ok.variant = payload.variant.trim();
       }
 
-      // Defer the resolve until after the response goes out, so the browser
-      // sees a 200 before the server stops.
+      // Claim the slot now so any concurrent POST returns 409 above. Defer the
+      // resolve so the browser sees the 200 before server.stop() fires.
+      const resolveFn = state.resolve;
+      state.resolve = undefined;
       queueMicrotask(() => {
         if (state.idleTimer) clearTimeout(state.idleTimer);
-        state.resolve?.({ ok: true, payload: ok });
+        resolveFn({ ok: true, payload: ok });
       });
       return jsonResp(200, { ok: true }, noStore);
     }
@@ -235,13 +253,15 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
 function injectPreviewConfig(html: string, config: { token: string; port: string | number; endpoint: string; mdPath: string }): string {
   const json = JSON.stringify(config);
   const tagRe = /<script type="application\/json" id="preview-config">[\s\S]*?<\/script>/;
-  if (tagRe.test(html)) {
-    return html.replace(tagRe, `<script type="application/json" id="preview-config">${escapeForScript(json)}</script>`);
+  if (!tagRe.test(html)) {
+    throw new Error("HTML preview is missing <script id=\"preview-config\"> placeholder — emitter is non-compliant");
   }
-  // Fallback: insert before </body>.
-  return html.replace(/<\/body>/i, `<script type="application/json" id="preview-config">${escapeForScript(json)}</script>\n</body>`);
+  return html.replace(tagRe, `<script type="application/json" id="preview-config">${escapeForScript(json)}</script>`);
 }
 
+// Escape the </script close-tag (HTML5 parser ignores everything else inside
+// <script type="application/json">; U+2028/U+2029 are valid JSON and parse
+// fine via JSON.parse in modern browsers — no defensive escape needed).
 function escapeForScript(json: string): string {
   return json.replace(/<\/script/gi, "<\\/script");
 }
@@ -309,8 +329,28 @@ function appendCommentBlock(body: string, block: string): string {
 function archiveHtml(projectRoot: string, htmlPath: string): string {
   const archiveDir = join(projectRoot, ARCHIVE_REL);
   if (!existsSync(archiveDir)) mkdirSync(archiveDir, { recursive: true });
-  const dest = join(archiveDir, basename(htmlPath));
-  renameSync(htmlPath, dest);
+
+  // If a prior archive exists for this slug, append the current ISO timestamp
+  // so we never silently overwrite a previous decision record.
+  let dest = join(archiveDir, basename(htmlPath));
+  if (existsSync(dest)) {
+    const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const name = basename(htmlPath).replace(/\.html$/, "");
+    dest = join(archiveDir, `${name}.${stamp}.html`);
+  }
+
+  try {
+    renameSync(htmlPath, dest);
+  } catch (e: unknown) {
+    // EXDEV — cross-filesystem rename (rare but happens when the archive dir
+    // is on a different mount). Fall back to copy+unlink.
+    if ((e as NodeJS.ErrnoException)?.code === "EXDEV") {
+      copyFileSync(htmlPath, dest);
+      unlinkSync(htmlPath);
+    } else {
+      throw e;
+    }
+  }
   return relative(projectRoot, dest);
 }
 
@@ -320,9 +360,12 @@ function runManifestSync(projectRoot: string): void {
     log(`(manifest-sync skipped — ${relative(projectRoot, script)} not found)`);
     return;
   }
-  const result = spawnSync("bun", [script, projectRoot], { stdio: "inherit" });
+  // Capture stdio so the sub-process output doesn't interleave with the
+  // CLI's structured logs (which break --json consumers that pop() the last
+  // stdout line).
+  const result = spawnSync("bun", [script, projectRoot], { encoding: "utf8" });
   if (result.status !== 0) {
-    log(`(manifest-sync exited ${result.status}; check logs)`);
+    log(`(manifest-sync exited ${result.status}; stderr: ${(result.stderr || "").slice(0, 200)})`);
   }
 }
 
@@ -339,8 +382,19 @@ function findProjectRoot(startPath: string): string {
 
 function gitIsDirty(projectRoot: string, filePath: string): boolean {
   const rel = relative(projectRoot, filePath);
+  // Files outside any git checkout (or in a directory git refuses to operate on)
+  // skip the dirty check — there's no working-tree contract to honor.
+  const check = spawnSync("git", ["-C", projectRoot, "rev-parse", "--is-inside-work-tree"], { encoding: "utf8" });
+  if (check.status !== 0) return false;
+  // Files ignored by .gitignore (e.g. .forsvn/artifacts/ in some setups) also
+  // skip — git won't report them as dirty regardless of disk state, so the
+  // check would silently no-op. Better to be explicit and skip them.
+  const ignored = spawnSync("git", ["-C", projectRoot, "check-ignore", "--quiet", rel], { encoding: "utf8" });
+  if (ignored.status === 0) return false;
   const result = spawnSync("git", ["-C", projectRoot, "status", "--porcelain", "--", rel], { encoding: "utf8" });
-  if (result.status !== 0) return false;
+  // If git itself errored on a tracked, non-ignored path, treat as dirty so
+  // the caller fails closed rather than silently bypassing the safety check.
+  if (result.status !== 0) return true;
   return result.stdout.trim().length > 0;
 }
 
