@@ -20,6 +20,7 @@ const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
+const VALID_REVIEW_STATES = new Set(["pending", "approved", "rejected", "changes_requested", "not_required"]);
 const GENERIC_H1_TITLES = new Set(["Review Chain Report", "Report", "Artifact"]);
 const LIFECYCLE_SORT_ORDER = ["canonical", "loop", "loop-context", "learning", "anchor", "registry", "decision", "spec", "strategy", "execution", "evaluation", "pipeline", "snapshot", "archive", ""];
 
@@ -42,6 +43,10 @@ type ArtifactEntry = {
   upstream: string;
   downstream: string;
   decision_status: string;
+  review_state: string;
+  review_tool: string;
+  reviewed_at: string;
+  reviewer: string;
   size_bytes: number;
   frontmatter_present: boolean;
 };
@@ -123,6 +128,7 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/artifacts\/mkt\/write-social\//, "write-social"],
     [/^\.forsvn\/artifacts\/product\/flow\//, "map-user-flow"],
     [/^\.forsvn\/artifacts\/research\/research-shortform/, "research-shortform"],
+    [/^\.forsvn\/artifacts\/research\/platform-evidence/, "research-platform"],
     [/^\.forsvn\/artifacts\/research\/evaluate-shortform/, "evaluate-shortform"],
     [/^\.forsvn\/loops\/[^/]+\/program\.md$/, "run-eval-loop"],
     [/^\.forsvn\/loops\/[^/]+\/context\.md$/, "run-eval-loop"],
@@ -212,8 +218,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
   const renderRows = (rows: Array<[string, ArtifactEntry]>): string => {
     if (rows.length === 0) return "_None._\n";
     return [
-      "| Artifact | Type | Why it exists | Use when | Status | Lineage |",
-      "|---|---|---|---|---|---|",
+      "| Artifact | Type | Why it exists | Use when | Status | Review | Lineage |",
+      "|---|---|---|---|---|---|---|",
       ...rows.map(([path, entry]) => {
         const why = entry.purpose || entry.summary || entry.title;
         const useWhen = entry.use_when || (entry.lifecycle === "snapshot" ? "Point-in-time audit trail; read only when investigating that run." : "");
@@ -225,7 +231,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
           entry.downstream ? `downstream: ${entry.downstream}` : "",
         ].filter(Boolean);
         const status = `${entry.status}${entry.stale ? " / stale" : ""}`;
-        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(lineageParts.join("; "))} |`;
+        const review = entry.review_state === "not_required" ? "—" : entry.review_state;
+        return `| \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(review)} | ${formatCell(lineageParts.join("; "))} |`;
       }),
     ].join("\n") + "\n";
   };
@@ -296,6 +303,19 @@ for (const base of ARTIFACT_ROOTS) {
     const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
     const summary = textField(fm, "summary");
 
+    // Review state — flat frontmatter (see references/reviewable-artifact-contract.md).
+    // Absent or unrecognized values normalize to "not_required" so legacy artifacts
+    // without a review layer still index cleanly.
+    const rawReviewState = textField(fm, "review_state");
+    const reviewState = !rawReviewState
+      ? "not_required"
+      : VALID_REVIEW_STATES.has(rawReviewState)
+        ? rawReviewState
+        : "not_required";
+    if (rawReviewState && !VALID_REVIEW_STATES.has(rawReviewState) && !isArchived) {
+      warnings.push(`${rel}: unknown review_state ${JSON.stringify(rawReviewState)} normalized to "not_required"`);
+    }
+
     artifacts[rel] = {
       produced_by: skill,
       produced_at: producedAt,
@@ -314,6 +334,10 @@ for (const base of ARTIFACT_ROOTS) {
       upstream: textField(fm, "upstream"),
       downstream: textField(fm, "downstream"),
       decision_status: textField(fm, "decision_status"),
+      review_state: reviewState,
+      review_tool: textField(fm, "review_tool"),
+      reviewed_at: textField(fm, "reviewed_at"),
+      reviewer: textField(fm, "reviewer"),
       size_bytes: stat.size,
       frontmatter_present: fm !== null,
     };

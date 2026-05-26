@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // append-loop-result — validate and append one row to a loop results.tsv.
-// See meta-skills/references/eval-loop-spec.md for the ledger contract.
+// See references/_shared/eval-loop-spec.md for the ledger contract.
 //
 // Usage:
 //   bun append-loop-result.ts <loop-slug> \
@@ -49,8 +50,8 @@ if (!STATUSES.has(status)) {
 if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
   fail(`Invalid --date ${JSON.stringify(date)}. Expected YYYY-MM-DD.`);
 }
-if (opts.domain && !["marketing", "product", "research"].includes(opts.domain)) {
-  fail(`Invalid --domain ${JSON.stringify(opts.domain)}. Expected one of: marketing, product, research`);
+if (opts.domain !== undefined) {
+  console.warn("[append-loop-result] --domain is deprecated and ignored — loop folders are domain-neutral.");
 }
 if (artifact.startsWith("/") || artifact.split("/").includes("..")) {
   fail("--artifact must be a safe path relative to the loop folder.");
@@ -179,7 +180,7 @@ function fail(message: string): never {
 
 function usage(code: number): never {
   console.error(
-    "Usage: append-loop-result.ts <loop-slug> --artifact <evals/file.md> --metric <name> --value <value> --baseline <value> --status <keep|discard|watch|blocked> --description <text> [--cycle N] [--date YYYY-MM-DD] [--domain marketing|product|research] [--root path]",
+    "Usage: append-loop-result.ts <loop-slug> --artifact <evals/file.md> --metric <name> --value <value> --baseline <value> --status <keep|discard|watch|blocked> --description <text> [--cycle N] [--date YYYY-MM-DD] [--root path]",
   );
   process.exit(code);
 }

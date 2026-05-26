@@ -14,6 +14,32 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { MARKER_PATH, EVENTS_DIR, appendJsonl, logDebug } from "./lib/io";
 
+// Extract a text representation of a tool_response. Tool result shapes vary
+// across tools and SDK versions — string, {content: string}, {text: string},
+// {file: {content: string}}, or [{type, text}] array (CC multi-block content).
+// Falls back to JSON-stringifying the envelope so we always emit *some* size.
+//
+// Options control the priority order between callers:
+//   preferText=true  → check tres.text before tres.content (Agent/Task shape)
+//   preferText=false → check tres.content before tres.text (Read shape)
+//   checkFile=true   → also check tres.file?.content (Read shape only)
+function extractResponseText(
+  tres: any,
+  opts: { preferText?: boolean; checkFile?: boolean } = {},
+): string {
+  if (typeof tres === "string") return tres;
+  if (opts.preferText && typeof tres?.text === "string") return tres.text;
+  if (typeof tres?.content === "string") return tres.content;
+  if (typeof tres?.text === "string") return tres.text;
+  if (opts.checkFile && typeof tres?.file?.content === "string") return tres.file.content;
+  if (Array.isArray(tres?.content)) {
+    return tres.content
+      .map((c: any) => (typeof c?.text === "string" ? c.text : ""))
+      .join("");
+  }
+  return JSON.stringify(tres ?? "");
+}
+
 async function main() {
   // Fast path — no marker, no work.
   if (!existsSync(MARKER_PATH)) return;
@@ -53,19 +79,7 @@ async function main() {
     case "Read": {
       const filePath = tin.file_path ?? tin.filePath;
       if (filePath) event.file_path = filePath;
-      // Tool response shape varies. Try in order: string, {content}, {text}, {file.content},
-      // [{type, text}] array (CC multi-block content), fall back to stringified envelope.
-      let content = "";
-      if (typeof tres === "string") content = tres;
-      else if (typeof tres.content === "string") content = tres.content;
-      else if (typeof tres.text === "string") content = tres.text;
-      else if (typeof tres.file?.content === "string") content = tres.file.content;
-      else if (Array.isArray(tres.content)) {
-        content = tres.content
-          .map((c: any) => (typeof c?.text === "string" ? c.text : ""))
-          .join("");
-      }
-      else content = JSON.stringify(tres ?? "");
+      const content = extractResponseText(tres, { checkFile: true });
       event.file_chars = content.length;
       event.file_lines = content.split("\n").length;
       event.tool_response_size = content.length;
@@ -86,17 +100,7 @@ async function main() {
       event.subagent_description = (tin.description ?? "").slice(0, 200);
       const prompt = typeof tin.prompt === "string" ? tin.prompt : JSON.stringify(tin.prompt ?? "");
       event.subagent_prompt_chars = prompt.length;
-      let outText: string;
-      if (typeof tres === "string") outText = tres;
-      else if (typeof tres.text === "string") outText = tres.text;
-      else if (typeof tres.content === "string") outText = tres.content;
-      else if (Array.isArray(tres.content)) {
-        outText = tres.content
-          .map((c: any) => (typeof c?.text === "string" ? c.text : ""))
-          .join("");
-      }
-      else outText = JSON.stringify(tres ?? "");
-      event.subagent_output_chars = outText.length;
+      event.subagent_output_chars = extractResponseText(tres, { preferText: true }).length;
       break;
     }
     case "Bash": {

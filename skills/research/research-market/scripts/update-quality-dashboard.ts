@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // update-quality-dashboard — create or update lightweight quality telemetry.
-// See meta-skills/references/quality-dashboard-spec.md.
+// See references/_shared/quality-dashboard-spec.md.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync, lstatSync, realpathSync } from "node:fs";
 import { join, resolve } from "node:path";
