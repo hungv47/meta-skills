@@ -1,5 +1,8 @@
-# Routing signals for research-icp. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for research-icp.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "customer profile"
@@ -23,3 +26,72 @@ promptSignals:
     - "market size"
     - "tam"
   minScore: 6
+
+capability:
+  id: research-icp
+  domain: research
+  public: true
+  command: /research-icp
+  summary: "Build canonical audience, ICP, persona, pain, VoC, and habitat context for downstream work."
+  aliases:
+    - icp
+    - audience
+    - persona
+    - voc
+
+  route:
+    use_when:
+      - "User asks who the customer is, who buys this, or which audience to target."
+      - "Downstream marketing, brand, product, or strategy work lacks audience context."
+      - "User needs voice-of-customer evidence, personas, pain profile, or habitat mapping."
+    not_when:
+      - "Competitive landscape or market sizing -> research-market."
+      - "Root-cause business diagnosis -> diagnose."
+      - "Campaign/channel plan from known audience -> plan-campaign."
+    prerequisites:
+      recommended:
+        - ".forsvn/context/product-context.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Known single persona and enough existing context for quick refinement."
+      - "User explicitly requests a fast hypothesis and accepts lower evidence depth."
+    multi_when:
+      - "Canonical audience record is missing, stale, or materially changing."
+      - "Need VoC, habitat, pain, and decision psychology evidence."
+      - "Output will feed brand, campaign, copy, landing page, or product strategy."
+    critic_required_when:
+      - "Writing or updating research/icp-research.md."
+      - "Any shipped persona claim has fewer than five independent evidence sources."
+      - "User asks to use the result as canonical downstream context."
+
+  load:
+    always:
+      - "references/procedures/pre-dispatch.md"
+      - "references/format-conventions.md"
+      - "references/confidence-and-bias.md"
+    when:
+      - if: "collecting voice-of-customer evidence"
+        read:
+          - "references/voice-of-customer.md"
+          - "references/customer-interviews.md"
+      - if: "mapping communities or channels"
+        read:
+          - "references/habitat-mapping.md"
+      - if: "dispatching agents"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "quality gate or failure review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "research/icp-research.md"
+        lifecycle: canonical
+        produced_when: "Audience research reaches DONE or DONE_WITH_CONCERNS."
+      - path: "research/product-context.md"
+        lifecycle: canonical
+        produced_when: "Audience research resolves product context."

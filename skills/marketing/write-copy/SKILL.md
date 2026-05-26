@@ -1,176 +1,93 @@
 ---
 name: write-copy
-description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and full-page section copy — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Use to draft or critique landing-page and direct-response copy. Not for AI-sounding cleanup (use humanmaxxing), search/AI-citation optimization (use optimize-seo), brand voice guidelines (use create-brand), landing-page architecture (use brief-landing-page), social posts (use write-social), or paid-ad copy (use write-ad)."
+description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, taglines, and landing-page sections — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Not for AI-sounding cleanup (humanmaxxing), search/AI-citation (optimize-seo), brand voice (create-brand), landing-page architecture (brief-landing-page), social posts (write-social), or paid-ad copy (write-ad)."
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.0.0"
+  version: "2.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
 
 # Write Copy — Orchestrator
 
-*Communication — Horizontal. Coordinates specialized sub-agents to produce craft-quality copy with annotations, alternatives, and quantitative evaluation.*
+Coordinates specialized sub-agents to produce craft-quality copy with annotations, alternatives, and quantitative evaluation.
 
-**Core Question:** "Is every key line visual, falsifiable, and uniquely ours?"
+**Core question:** Is every key line visual, falsifiable, and uniquely ours?
 
-> Why this skill exists, philosophy, methodology, principles, page-specific guidance, when NOT to use, what it pulls from elsewhere, history: [`references/playbook.md`](references/playbook.md) [PLAYBOOK].
+Capability metadata (routes, prerequisites, orchestration, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Routing logic, agent manifest, and full dispatch pseudocode live in [`references/agent-manifest.md`](references/agent-manifest.md).
 
-## Critical Gates — Read First
+## Critical Gates — load first
 
-1. **Argument Engineering before word-choice.** Audience + the one shift + Unique Mechanism + belief sequence must be resolved in Pre-Dispatch BEFORE any agent dispatches. Skipping these produces generic copy that scores well on V/F but fails on U.
+These five gates are the safety floor; `--fast` does not skip them.
+
+1. **Argument Engineering before word-choice.** Audience + the one shift + Unique Mechanism + belief sequence must be resolved in Pre-Dispatch BEFORE any agent dispatches. Skipping these produces generic copy that scores V/F but fails U.
 2. **V/F/U is per-line, not per-piece.** Every key line gets scored 1-5 on Visual / Falsifiable / Uniquely-Ours. Average ≥3.5 PASS; below 3.0 on any single dimension FAIL regardless of average.
-3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F scores. Critic auto-fail.
+3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F. Critic auto-fail.
 4. **Trigger density 3-4 for persuasion-heavy copy.** 0-2 = WEAK (FAIL → psychology-agent adds primary lever). 5-6 = GURU-ENERGY (FAIL → psychology-agent cuts lowest-load-bearing trigger).
-5. **Route classification at Step 1.** Single key line → Route A (one agent + critic). Full page → Route B (Layer 1 parallel + Merge + variant + Layer 2 sequential + critic). Called by brief-landing-page / plan-campaign → Route C (caller picks agents).
+5. **Route classification at Step 1.** Single key line → Route A. Full page → Route B. Called by `brief-landing-page` / `plan-campaign` → Route C (caller picks agents).
 
-## Quality Gate
+## Quality Gate — critic checklist
 
-Before delivering, the **critic agent** verifies:
+Before delivering, the critic agent verifies:
 
 - [ ] Every key line passes the Three-Question Test: visual? falsifiable? uniquely ours?
-- [ ] Hook and body choices form an airtight argument: the reader can see the old belief, new belief, proof, Unique Mechanism, and next action without a logical gap
-- [ ] Rubric score averages ≥3.5 across V/F/U for all key lines
-- [ ] Every key line passes the Competitor Swap Test (swap in competitor name — if it still works, rewrite)
-- [ ] 3-5 variations generated per key line, best selected with top 2-3 presented as alternatives
+- [ ] Hook + body form an airtight argument: old belief, new belief, proof, Unique Mechanism, next action — no logical gap
+- [ ] Rubric average ≥3.5 across V/F/U for all key lines
+- [ ] Every key line passes the Competitor Swap Test
+- [ ] 3-5 variations per key line, best selected with top 2-3 as alternatives
 - [ ] Every key line annotated: rule that drove the choice, cut alternative, rubric score
-- [ ] CTA follows formula: [action verb] + [what they get] (not "Learn More" or "Click Here")
-- [ ] Every headline/hook contains concrete nouns or specific numbers (no abstract "better," "innovative," "leading")
-
----
+- [ ] CTA follows formula: [action verb] + [what they get] — not "Learn More" / "Click Here"
+- [ ] Every headline/hook contains concrete nouns or specific numbers — no abstract "better," "innovative," "leading"
 
 ## Before Starting
 
-Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load brand voice + audience + Unique Mechanism, identify any prior write-copy artifact for the same slug, check freshness windows on ICP / product-context (>30d → recommend `research-icp` re-run with soft gate).
+Run `references/_shared/before-starting-check.md`. Required context:
 
 | Artifact | Source | Required? |
 |---|---|---|
 | `research/icp-research.md` | research-icp | Recommended — VoC + pain language |
-| `research/product-context.md` | research-icp | Recommended — voice adjectives + Unique Mechanism (if persisted) |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — if copy is part of broader campaign (Route C) |
+| `research/product-context.md` | research-icp | Recommended — voice adjectives + Unique Mechanism |
 | `brand/BRAND.md` | create-brand | Recommended — voice rules + lexicon |
-| `.forsvn/experience/{audience,product,goals}.md` | (any skill) | Optional — `Goals — copy shift` / `Product — unique mechanism` keys if user previously persisted |
+| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — Route C |
+| `.forsvn/experience/{audience,product,goals}.md` | (any skill) | Optional — persisted keys |
 
-## Pre-Dispatch
+## Pre-Dispatch + Mode
 
-Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]).
+Run canonical Pre-Dispatch (`references/procedures/pre-dispatch.md`). Needed dimensions: surface, audience, the one shift, unique proof, Unique Mechanism, belief sequence, traffic source.
 
-**Needed dimensions:** surface (page / email / social / headline / CTA / etc.), audience, the one shift (what should reader believe after?), unique proof (what can you say nobody else can?), Unique Mechanism (the proprietary "how" that makes the offer different and better), belief sequence (what the reader must accept before the CTA feels obvious), traffic source (if applicable).
+Default English; other languages need adapted idioms. `--fast` collapses Layer 1 to sequential, skips variant-agent, skips Layer 2 psychology + zero-risk (keeps voice + critic). `--seven-sweeps` / `--high-stakes` adds Seven Sweeps completion critic + Expert Panel Scoring (`references/seven-sweeps.md`).
 
-Full read-order + Warm/Cold Start prompts (7-question Cold Start) + write-back (6 questions) + Pre-Writing Assembly + hard-block conditions + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+## Routes
 
-**Language:** default English. If another language specified, note in pre-writing — agent instructions are optimized for English copy; other languages may need adapted idioms and cultural references.
-
-## Mode Resolution
-
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag collapses Layer 1 parallel (hook + body + cta + social-proof) to sequential dispatch, skips variant-agent, and skips Layer 2's psychology-agent + zero-risk-agent (keeps voice-agent + critic only). **`--fast` does NOT skip Cold Start or Critical Gates 1-5** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
-
-`--seven-sweeps` / `--high-stakes` upward flag turns on the optional Seven Sweeps completion critic dim and the Expert Panel Scoring pass — see [`references/seven-sweeps.md`](references/seven-sweeps.md). Default invocations skip both; standard Layer-2 sequential (voice → psychology → zero-risk → critic) already runs the 7 passes distributed across agents.
-
----
-
-## Agent Manifest
-
-| Agent | Layer | File | Focus |
-|-------|-------|------|-------|
-| Hook Agent | 1 (parallel) | `agents/hook-agent.md` | Headlines, hooks, taglines, subject lines — Argument Engineering lead plus 3-5 variations with 3Q scoring |
-| Body Agent | 1 (parallel) | `agents/body-agent.md` | Problem/Solution/How It Works or 6 Necessary Beliefs architecture |
-| CTA Agent | 1 (parallel) | `agents/cta-agent.md` | CTA variations per placement with risk reversal |
-| Social Proof Agent | 1 (parallel) | `agents/social-proof-agent.md` | Testimonials, stats, logos, credibility signals, Discovery Story |
-| Variant Agent | 1.5 (post-merge) | `agents/variant-agent.md` | A/B alternatives for key sections |
-| Voice Agent | 2 (sequential) | `agents/voice-agent.md` | Clarity + brand voice consistency, AI slop removal |
-| Psychology Agent | 2 (sequential) | `agents/psychology-agent.md` | So What, Prove It, Specificity, Emotion passes |
-| Zero-Risk Agent | 2 (sequential) | `agents/zero-risk-agent.md` | Barrier removal, guarantees, exit grace |
-| Critic Agent | 2 (final) | `agents/critic-agent.md` | Rubric scoring, 3Q test, annotation, PASS/FAIL |
-
-### Shared References (read by multiple agents)
-
-- **Frameworks** (`references/`): `headline-formulas.md` (hook — includes objection-to-hook patterns), `page-sections.md` (body + social-proof), `emotional-triggers.md` (psychology + hook + critic), `belief-disruption.md` (psychology + hook, TOF only), `lead-magnet-stack.md` (hook + social-proof + cta, lead-magnet posts — includes DM-capture mechanics), `lifecycle-sequences.md` (abandoned-cart + post-purchase + win-back sequence copy patterns), `research-workflow.md` (Pre-Dispatch step 1), `discovery-story.md` (social-proof mechanism-led trust), `seven-sweeps.md` (unified 7-pass editing framework — names which agents own each sweep, defines back-checking protocol between sweeps, canonical word-level-cut list, optional Expert Panel Scoring high-stakes mode, optional critic dim when `--seven-sweeps`/`--high-stakes` mode is requested)
-
----
-
-## Routing + Dispatch
-
-Three routes — Route A (single key line), Route B (full-page copy), Route C (called by another skill).
-
-```
-ROUTE A (single key line):
-  1. Pre-Dispatch (per procedures/pre-dispatch.md)
-  2. Dispatch ONE agent (hook-agent OR cta-agent)
-  3. Dispatch: critic-agent
-  4. Critic FAIL → re-dispatch the original agent with feedback (max 2 cycles)
-  5. Deliver annotated key lines
-
-ROUTE B (full-page copy):
-  1. Pre-Dispatch
-  2. LAYER 1 — IN PARALLEL: hook + body + cta + social-proof
-  3. MERGE — assemble into page structure (Awareness-building OR Direct-Response narrative per body-agent)
-  4. Dispatch: variant-agent (on merged output)
-  5. LAYER 2 — SEQUENTIAL: voice → psychology → zero-risk → critic
-  6. Critic FAIL → re-dispatch named agent(s) with feedback (max 2 cycles)
-  7. Deliver final artifact
-
-ROUTE C (called by brief-landing-page or plan-campaign):
-  1. Pre-Dispatch: read context from calling skill's artifacts
-  2. Dispatch the Layer 1 agent(s) the caller named
-  3. Dispatch: critic-agent
-  4. Return annotated output to calling skill (no standalone artifact)
-```
-
-Mechanics (how to spawn agents, single-agent fallback, Layer 1 parallel dispatch, Merge Step with both narrative section-order tables + assembly rules + conflict resolution, variant-agent post-merge, Layer 2 sequential pipeline, critic gate + rewrite loop, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
-
----
+Three routes — A (single key line), B (full page), C (called by another skill). Full pseudocode + agent manifest in [`references/agent-manifest.md`](references/agent-manifest.md). Spawn mechanics in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 
 ## Artifact Contract
 
 - **Path (Route A/B):** `.forsvn/artifacts/mkt/content/[slug].copy.md`
-- **Path (Route C):** no standalone artifact — annotated copy embedded in calling skill's artifact
-- **Lifecycle:** `pipeline` — on re-run for same slug, rename existing to `[slug].copy.v[N].md` and create new with incremented version
+- **Path (Route C):** no standalone artifact — annotated copy embedded in caller's artifact
+- **Lifecycle:** pipeline — on re-run for same slug, rename existing to `[slug].copy.v[N].md` and create new with incremented version
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`
-- **Body sections (in order):** descriptive metadata block (Date / Audience / Awareness Stage / Traffic Source) · Pre-Writing 5-item block · Key Lines (Route A) OR section-by-section copy (Route B) · A/B Variants (Route B only)
-- **Consumed by:** human reader (Route A/B), `brief-landing-page` (Route C — reads pre_writing.unique_mechanism + key_lines.\*.score for next-section refinements), `plan-campaign` (Route C — reads surface + audience for campaign coherence)
-- **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Pre-Writing block format" + § "Key Lines block format" — never silently drift
+- **Body sections (in order):** descriptive metadata · Pre-Writing 5-item block · Key Lines (Route A) OR section-by-section copy (Route B) · A/B Variants (Route B only)
+- **Schema drift rule:** changes require atomic update of `format-conventions.md` § "Frontmatter field order" / § "Pre-Writing block format" / § "Key Lines block format"
 
-Full template + per-section format rules (slug derivation, Pre-Writing block format, Key Lines block format with V/F/U scoring, A/B Variants block format, re-run convention) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
----
+Full template + per-section format rules in [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Anti-Patterns
 
-Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. 5 orchestrator-level rows (skipping pre-writing, dispatching all for single key line, ignoring critic FAIL, wrong-agent re-dispatch, >2 rewrite cycles) + 4 pipeline-level rows (voice-too-early, psychology trigger-density miss, zero-risk over-application, variant gratuity) + 4 cross-cutting marketing-stack rows (Route C context drop, brand-system absent → voice fabrication, humanmaxxing chain skipped for AI-sounding, artifact schema drift).
-
----
+Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships. 5 orchestrator rows + 4 pipeline rows + 4 cross-cutting marketing-stack rows.
 
 ## Completion Status
 
-Every run ends with explicit status:
-- **DONE** — copy written for the requested surface (Route A or B), critic PASS, voice consistent with brand
-- **DONE_WITH_CONCERNS** — copy delivered but critic flagged secondary issues (specificity thin, social-proof weak, voice slightly off); concerns annotated
-- **BLOCKED** — brief is fundamentally contradictory (e.g., audience and offer don't align); needs user reconciliation before any agent dispatch
-- **NEEDS_CONTEXT** — brand voice or audience undefined and not derivable from the brief; recommend `create-brand` or `research-icp`
+- **DONE** — copy written, critic PASS, voice consistent with brand
+- **DONE_WITH_CONCERNS** — delivered with critic-flagged secondary issues (specificity thin, social-proof weak, voice slightly off); concerns annotated
+- **BLOCKED** — brief is fundamentally contradictory (audience and offer don't align); needs user reconciliation
+- **NEEDS_CONTEXT** — brand voice or audience undefined and not derivable; recommend `create-brand` or `research-icp`
 
 ## Next Step
 
-Run `humanmaxxing` to refine voice and compress. Seven Sweeps (Layer 2 cumulative) runs BEFORE humanmaxxing — humanmaxxing is the terminal polish pass, not a replacement for the sweeps. See [`references/seven-sweeps.md`](references/seven-sweeps.md) § "When NOT to run Seven Sweeps" for cases where the full pass is skipped.
-
----
+Run `humanmaxxing` to refine voice and compress. Seven Sweeps (Layer 2 cumulative) runs BEFORE humanmaxxing — humanmaxxing is the terminal polish pass. See `references/seven-sweeps.md` § "When NOT to run Seven Sweeps".
 
 ## Worked Example
 
-End-to-end Route B walkthrough (StatusZero landing page — async standup replacement for engineering managers, LinkedIn ads cold traffic, full Layer 1 parallel + Merge + variant + Layer 2 sequential + critic PASS at 4.4 V/F/U average) + cycle-2 FAIL variant (Competitor Swap Test failure on hero, hook-agent re-anchors on Unique Mechanism, cycle 2 PASS) + Route A single-key-line snippet + Route C called-by-brief-landing-page snippet: [`references/examples/write-copy-walkthrough.md`](references/examples/write-copy-walkthrough.md) [EXAMPLE].
-
----
-
-## References
-
-- **Playbook:** `references/playbook.md` [PLAYBOOK]
-- **Format:** `references/format-conventions.md` [PROCEDURE]
-- **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
-- **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/write-copy-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch): `references/{headline-formulas, page-sections, emotional-triggers, belief-disruption, lead-magnet-stack, lifecycle-sequences, research-workflow, discovery-story}.md`
-- **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
-- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
-- **Agents:** 9 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical V/F/U rubric + trigger-density gate + Authenticity filter + re-dispatch routing table.
-- `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits
+End-to-end Route B walkthrough + cycle-2 FAIL variant + Route A snippet + Route C snippet: [`references/examples/write-copy-walkthrough.md`](references/examples/write-copy-walkthrough.md).

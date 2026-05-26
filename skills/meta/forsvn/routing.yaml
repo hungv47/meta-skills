@@ -1,5 +1,8 @@
-# Routing signals for forsvn. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for forsvn.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "where do i start"
@@ -27,3 +30,60 @@ promptSignals:
     - "resume"
     - "continue"
   minScore: 3
+
+capability:
+  id: forsvn
+  domain: meta
+  public: true
+  command: /forsvn
+  summary: "Front door that classifies vague work, reads project state, and routes to the right FORSVN capability."
+  aliases:
+    - front-door
+    - route
+    - resume
+    - launch
+
+  route:
+    use_when:
+      - "User does not know which FORSVN skill to invoke."
+      - "User asks to resume, continue, launch, ship, or decide where to start."
+      - "Request is vague, multi-domain, or needs a short next-action chain."
+    not_when:
+      - "User already named the exact direct skill to invoke."
+      - "User wants a deep multi-perspective argument -> debate-agents."
+      - "User wants a full scoping interview -> discover."
+    prerequisites:
+      recommended:
+        - ".forsvn/context/product-context.md"
+      hard: []
+
+  orchestration:
+    default: single
+    single_when:
+      - "Classifying one user request or summarizing current project state."
+      - "Resuming a known prior session."
+    multi_when:
+      - "Never dispatches multi-agent itself; it proposes a chain of downstream capabilities."
+    critic_required_when:
+      - "Routing changes would write or rewrite canonical project state."
+      - "The proposed chain would affect brand, architecture, revenue, security, or data."
+
+  load:
+    always:
+      - "references/chains/research.md"
+      - "references/chains/marketing.md"
+      - "references/chains/product.md"
+      - "references/chains/meta.md"
+    when:
+      - if: "workspace has no .forsvn state"
+        read:
+          - "templates/README.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/routing/last-session.md"
+        lifecycle: anchor
+        produced_when: "Every routed or awaiting-user invocation."
+      - path: ".forsvn/routing/history/YYYY-MM-DD-HHMMSS-[intent].md"
+        lifecycle: snapshot
+        produced_when: "Every routed or awaiting-user invocation."

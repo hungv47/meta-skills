@@ -1,5 +1,8 @@
-# Routing signals for plan-campaign. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for plan-campaign.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "marketing plan"
@@ -24,3 +27,63 @@ promptSignals:
     - "headline"
     - "tagline"
   minScore: 6
+
+capability:
+  id: plan-campaign
+  domain: marketing
+  public: true
+  command: /plan-campaign
+  summary: "Build an integrated marketing plan — growth motion, messaging pillars, per-channel angles across 9 channels, content calendar, budget allocation, phased GTM timeline."
+  aliases:
+    - imc-plan
+    - gtm-plan
+    - campaign-strategy
+
+  route:
+    use_when:
+      - "User needs a campaign strategy or GTM plan grounded in ICP research."
+      - "9-channel angle allocation + content calendar + budget split needed."
+      - "Phased GTM timeline across multiple weeks/months."
+    not_when:
+      - "Numeric funnel targets -> plan-funnel."
+      - "Search-channel strategy only -> optimize-seo."
+      - "Landing-page architecture -> brief-landing-page."
+      - "Writing the actual copy -> write-copy / write-ad / write-social."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+      hard:
+        - "research/icp-research.md"
+        - "research/product-context.md"
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast collapses to leaner pipeline; safety gates still fire."
+    multi_when:
+      - "Default — multi-agent (pillar + per-channel angle agents + calendar + budget + critic)."
+      - "9 channels covered; each gets a per-channel angle scored against pillar coherence."
+    critic_required_when:
+      - "Always — canonical campaign-plan.md consumed by 5+ downstream skills."
+      - "Pillar coherence + channel-habitat fit + capacity-honesty gates."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic routing"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/campaign-plan.md"
+        lifecycle: canonical
+        produced_when: "Critic PASS; single artifact per run (overwrite on re-run unless version preservation requested via `campaign-plan.v[N].md`)."

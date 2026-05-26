@@ -1,5 +1,4 @@
-# Routing signals for evaluate-shortform. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for evaluate-shortform.
 promptSignals:
   phrases:
     - "score this post"
@@ -23,3 +22,64 @@ promptSignals:
     - "blog post"
     - "podcast"
   minScore: 5
+
+capability:
+  id: evaluate-shortform
+  domain: research
+  public: true
+  command: /evaluate-shortform
+  summary: "Score a published short-form video against its brief-shortform hypothesis inside an eval loop — completion, hold, save, share, comment-quality + brief-fit. One platform per cycle."
+  aliases:
+    - shortform-eval
+    - video-eval
+    - post-publish-review
+
+  route:
+    use_when:
+      - "User asks to evaluate a published short-form video against its brief."
+      - "Loop exists; cycle N needs scoring for one short-form post on one platform."
+    not_when:
+      - "Loop does not exist yet -> run-eval-loop."
+      - "Organic text/image/carousel post -> evaluate-content."
+      - "Paid-ad video -> evaluate-ad."
+      - "Writing the next-cycle brief -> brief-shortform."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+        - "research/icp-research.md"
+      hard:
+        - ".forsvn/loops/[slug]/program.md"
+        - ".forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single metric ingest only."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+    critic_required_when:
+      - "Always — brief-fit gate (did the post actually execute the brief?)."
+      - "Hold-curve + completion gate (no vanity-metric inflation)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Per-platform metric definitions"
+        read:
+          - "references/_shared/platform-intelligence/"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one cycle = one post = one artifact + one ledger row."
+      - path: ".forsvn/loops/[slug]/results.tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended via `append-loop-result.ts` on critic PASS."

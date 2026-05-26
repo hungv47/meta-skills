@@ -1,5 +1,4 @@
-# Routing signals for produce-asset. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for produce-asset.
 promptSignals:
   phrases:
     - "produce asset"
@@ -28,3 +27,62 @@ promptSignals:
     - "design system"
     - "publish"
   minScore: 6
+
+capability:
+  id: produce-asset
+  domain: marketing
+  public: true
+  command: /produce-asset
+  summary: "Turn brief-graphic into render-ready prompts + asset manifest. Tool-agnostic — emits prompts tuned for chosen image engine (Midjourney / DALL·E / Imagen / Figma / designer)."
+  aliases:
+    - asset-produce
+    - image-prompt
+    - render-prompt
+
+  route:
+    use_when:
+      - "Design brief exists and you need production-ready prompts."
+      - "Asset manifest emission for downstream rendering."
+      - "Multi-platform asset variants from a single brief."
+    not_when:
+      - "Copy that goes in the asset -> write-copy."
+      - "The brief itself -> brief-graphic."
+      - "Publishing the rendered asset -> publish-social."
+      - "Rendering happens upstream / inside an image engine — not in this stack."
+    prerequisites:
+      recommended:
+        - "brand/DESIGN.md"
+        - "brand/BRAND.md"
+      hard:
+        - ".forsvn/artifacts/mkt/design-briefs/[slug].md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single platform; --fast collapses to single-pass."
+    multi_when:
+      - "Multi-platform variants; per-platform prompt + manifest emission."
+    critic_required_when:
+      - "Always — tool-agnostic export-mode floor (no API keys / no rendering)."
+      - "Brand-mark fidelity gate (no hallucinated logos / tokens)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/production-pattern.md"
+    when:
+      - if: "Asset format / per-engine emission rules"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; canonical asset manifest."
+      - path: ".forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[platform].md"
+        lifecycle: pipeline
+        produced_when: "Per-platform prompt file (one per target engine)."

@@ -1,5 +1,8 @@
-# Routing signals for create-brand. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for create-brand.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "brand identity"
@@ -25,3 +28,90 @@ promptSignals:
     - "asset brief"
     - "single asset"
   minScore: 6
+
+capability:
+  id: create-brand
+  domain: marketing
+  public: true
+  command: /create-brand
+  summary: "Build a brand identity system as BRAND.md (story, voice, archetype), DESIGN.md (AI-readable design tokens), and ASSETS.md (per-platform inventory)."
+  aliases:
+    - brand
+    - design-system
+    - identity
+    - archetype
+
+  route:
+    use_when:
+      - "User asks to define or rebrand a product's identity, voice, archetype, or visual system."
+      - "User needs an AI-readable design system (palettes, tokens, components, motion)."
+      - "Per-platform asset inventory needs to be produced from a brand spec."
+    not_when:
+      - "Marketing copy or headlines -> write-copy."
+      - "User journey or screen flow -> map-user-flow."
+      - "Campaign / channel planning -> plan-campaign."
+      - "Audience or ICP research -> research-icp."
+      - "Single asset render only -> produce-asset."
+    prerequisites:
+      recommended:
+        - "research/product-context.md"
+        - "research/icp-research.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "MVP, early-stage; user requests Quick Brand (Route A)."
+      - "Refining one tightly-bounded section (taglines only, type system only) with known context."
+    multi_when:
+      - "Full brand system across 8 agents (Route B)."
+      - "Established product, rebrand, or canonical brand-of-record artifact."
+    critic_required_when:
+      - "Any BRAND.md, DESIGN.md, or ASSETS.md write — canonical artifact."
+      - "Re-run on top of an existing brand folder."
+      - "External-facing identity, design tokens, or platform asset inventory."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Pre-Dispatch (Warm/Cold Start, platform enumeration)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer 1 dispatch (parallel agents)"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+          - "references/agent-manifest.md"
+      - if: "Token architecture / component tokens"
+        read:
+          - "references/token-architecture.md"
+          - "references/token-templates.md"
+          - "references/component-tokens.md"
+          - "references/component-patterns.md"
+      - if: "Narrative tension or persona sustainability gates"
+        read:
+          - "references/narrative-tension.md"
+      - if: "ASSETS.md projection (Step 8.5)"
+        read:
+          - "references/assets-inventory.md"
+      - if: "Step 9d brand-kit board"
+        read:
+          - "references/brand-kit-rendering.md"
+      - if: "Critic / anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+          - "references/ai-slop-detection.md"
+
+  outputs:
+    artifacts:
+      - path: "brand/BRAND.md"
+        lifecycle: canonical
+        produced_when: "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
+      - path: "brand/DESIGN.md"
+        lifecycle: canonical
+        produced_when: "Route B completes Layer 2 critic PASS."
+      - path: "brand/ASSETS.md"
+        lifecycle: canonical
+        produced_when: "Route B completes Step 8.5 ASSETS projection."

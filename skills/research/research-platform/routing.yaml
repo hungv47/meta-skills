@@ -1,5 +1,4 @@
-# Routing signals for research-platform. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for research-platform.
 promptSignals:
   phrases:
     - "platform analytics"
@@ -24,3 +23,62 @@ promptSignals:
     - "competitive analysis"
     - "market size"
   minScore: 6
+
+capability:
+  id: research-platform
+  domain: research
+  public: true
+  command: /research-platform
+  summary: "Owned-account analytics — engagement, follower growth, post performance, attribution from operator's accounts (not market trends)."
+  aliases:
+    - platform-analytics
+    - owned-analytics
+    - account-performance
+
+  route:
+    use_when:
+      - "User asks about their own social account performance."
+      - "Engagement / follower-growth / per-post metrics from the operator's accounts."
+      - "Pre-eval evidence collection before evaluate-content / evaluate-shortform cycles."
+    not_when:
+      - "What's working / trending across the market -> research-shortform."
+      - "Competitor analysis or market sizing -> research-market."
+      - "Single-cycle eval against a brief -> evaluate-content / evaluate-shortform."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single-platform pull (X only, LinkedIn only)."
+    multi_when:
+      - "Multi-platform sweep (X + LinkedIn + IG + TikTok) with cross-platform synthesis."
+    critic_required_when:
+      - "Sample-size confidence floor (low impressions → flag)."
+      - "Cross-platform comparison gate (no apples-to-oranges metrics)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (platform credentials, scope, window)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Per-platform metric definitions"
+        read:
+          - "references/platforms/"
+      - if: "Evidence protocol + scoring rubrics"
+        read:
+          - "references/evidence-protocol.md"
+          - "references/scoring-rubrics.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "End of platform-analytics pull; dated, immutable snapshot."

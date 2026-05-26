@@ -1,5 +1,8 @@
-# Routing signals for monitor-aeo. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for monitor-aeo.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "aeo monitor"
@@ -34,3 +37,62 @@ promptSignals:
     - "rewrite the page"
     - "fix the page"
   minScore: 6
+
+capability:
+  id: monitor-aeo
+  domain: marketing
+  public: true
+  command: /monitor-aeo
+  summary: "Monitor AI-search visibility — provider/query citation checks, AI Overview, Bing/IndexNow, AI referral traffic, llms.txt status, competitor cited-domain share. Dated snapshots."
+  aliases:
+    - aeo
+    - geo
+    - ai-citation-check
+    - ai-visibility
+
+  route:
+    use_when:
+      - "User needs evidence whether AI systems mention or cite a brand/site."
+      - "Provider/query citation checks across answer engines + generative-search surfaces."
+      - "Dated snapshot reports for trend tracking."
+      - "Competitor cited-domain share analysis."
+    not_when:
+      - "Deciding SEO strategy or rewriting pages -> optimize-seo."
+      - "Technical-audit remediation -> not this skill."
+      - "Keyword research / classical SERP analysis -> optimize-seo."
+    prerequisites:
+      recommended:
+        - "research/product-context.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "Single-mode invocation (e.g., `--mode=llms-txt` only); --fast collapses to single-pass."
+    multi_when:
+      - "Default — multi-mode dispatch (provider-citation + AI-overview + IndexNow + referral-traffic + llms-txt + competitor-share)."
+      - "Snapshot generation across 6 evidence classes."
+    critic_required_when:
+      - "Always — evidence-class taxonomy + 8-item quality gate."
+      - "Fabricated citation auto-FAIL; un-sourced trend claims auto-FAIL."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, mode selection)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic routing"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/monitor-aeo/[YYYY-MM-DD]-[slug].md"
+        lifecycle: snapshot
+        produced_when: "End of monitoring run; dated, immutable snapshot."
