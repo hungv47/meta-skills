@@ -22,7 +22,7 @@
 //   bun scripts/migrate-artifacts-flat.ts --apply        # apply
 //   bun scripts/migrate-artifacts-flat.ts --apply --root /path/to/project
 
-import { readdirSync, readFileSync, writeFileSync, statSync, existsSync, mkdirSync, renameSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync, statSync, existsSync, mkdirSync, renameSync, rmdirSync } from "node:fs";
 import { join, relative, dirname, basename } from "node:path";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -166,7 +166,9 @@ for (const plan of plans) {
 }
 
 // Cross-artifact reference update: walk every .md under tracked roots and
-// rewrite frontmatter values that contain a renamed path.
+// rewrite frontmatter values that contain a renamed path. Use a path-boundary
+// regex so we don't partial-match a renamed path that's a prefix of an unrelated
+// path (e.g. `a/b.md` should not rewrite inside `a/b.md.bak` or `a/b.md-old`).
 if (APPLY && renameMap.size > 0) {
   const allMd = walkAll(ROOT);
   for (const abs of allMd) {
@@ -174,11 +176,13 @@ if (APPLY && renameMap.size > 0) {
     let next = text;
     for (const [oldPath, newPath] of renameMap) {
       if (next.includes(oldPath)) {
-        next = next.split(oldPath).join(newPath);
+        next = next.replace(pathBoundaryRe(oldPath), newPath);
       }
     }
     if (next !== text) writeFileSync(abs, next);
   }
+  // Cleanup: remove empty legacy subdirectories left behind by the rename.
+  rmEmptyDirs(join(ROOT, ".forsvn/artifacts"));
 }
 
 // Write migration report.
@@ -335,4 +339,37 @@ function lastIndexMatching(lines: string[], re: RegExp): number {
 function stripQuotes(v: string): string {
   if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) return v.slice(1, -1);
   return v;
+}
+
+/**
+ * Build a regex that matches `path` only when it's NOT part of a longer path.
+ * Path-continuation characters are letters/digits/`-`/`_`/`.`/`/`. Anything
+ * outside that set (quotes, whitespace, comma, paren, end-of-string) is a safe
+ * boundary. Lookahead-only — we don't anchor the left side because a renamed
+ * path's first character may itself be a path-character.
+ */
+function pathBoundaryRe(path: string): RegExp {
+  const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`${escaped}(?![A-Za-z0-9_\\-./])`, "g");
+}
+
+/**
+ * Recursively rmdir every empty directory under `root`, bottom-up. Files and
+ * non-empty directories untouched. The migration leaves empty legacy stack
+ * folders (e.g. `.forsvn/artifacts/meta/records/`) after `git mv`; this cleans
+ * them so future readers don't mistake the carcass for live state.
+ */
+function rmEmptyDirs(root: string): void {
+  if (!existsSync(root)) return;
+  for (const entry of readdirSync(root, { withFileTypes: true })) {
+    if (!entry.isDirectory()) continue;
+    if (entry.name === ".archive") continue;
+    const sub = join(root, entry.name);
+    rmEmptyDirs(sub);
+    try {
+      if (readdirSync(sub).length === 0) rmdirSync(sub);
+    } catch {
+      // not empty, or got recreated mid-walk; skip
+    }
+  }
 }
