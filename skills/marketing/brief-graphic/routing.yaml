@@ -42,6 +42,12 @@ promptSignals:
     - "design tokens"
     - "user flow"
     - "wireframe"
+    # `"design brief"` phrase substring-matches inside `"redesign brief"`
+    # (rede-SIGN-BRIEF), making brief-graphic falsely win on prompts that
+    # belong to brief-landing-page. The reverse — "redesign the design brief
+    # for the graphic" — keeps a legit brief-graphic prompt clean because
+    # "redesign brief" is not contiguous there.
+    - "redesign brief"
     - "landing page redesign"
   minScore: 6
 

@@ -4,6 +4,12 @@
 #   - references/capability-index.json by `bun scripts/build-capability-index.ts`
 # NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
+  # Bare `"continue"` and `"resume"` used to be phrases here, scoring +6 on
+  # any sentence containing them ("we should resume work after lunch", "let's
+  # continue this discussion"). Replaced with context-anchored variants that
+  # require an explicit work / session / initiative anchor. minScore raised
+  # from 3 (which was functionally inert — no allOf groups, anyOf capped at
+  # +2 — phrases auto-fire at +6) to the standard 6.
   phrases:
     - "where do i start"
     - "what should i do"
@@ -11,10 +17,23 @@ promptSignals:
     - "what skill should i use"
     - "i don't know"
     - "help me"
-    - "continue"
-    - "resume"
     - "pick up where i left off"
+    - "pick this back up"
     - "what was i working on"
+    - "resume the work"
+    - "resume work"
+    - "resume working on"
+    - "resume the initiative"
+    - "resume the project"
+    - "resume my session"
+    - "resume my work"
+    - "let's resume"
+    - "let me resume"
+    - "continue working on"
+    - "continue the work"
+    - "continue this session"
+    - "let's continue"
+    - "let me continue"
     - "launch this"
     - "ship this"
     - "/forsvn"
@@ -27,9 +46,7 @@ promptSignals:
     - "help me launch"
     - "help me ship"
     - "what should i do next"
-    - "resume"
-    - "continue"
-  minScore: 3
+  minScore: 6
 
 capability:
   id: forsvn

@@ -3,6 +3,7 @@
 {"prompt": "help me think through the onboarding requirements", "expect": "trigger", "reason": "phrase 'help me think through' +6 + anyOf 'requirements'"}
 {"prompt": "clarify requirements for the checkout redesign", "expect": "trigger", "reason": "phrase + allOf [clarify, requirements] + anyOf hits"}
 {"prompt": "what should we build for the new onboarding flow", "expect": "trigger", "reason": "phrase 'what should we build' +6 — prioritize phrase 'what should we build next' not substring"}
+{"prompt": "what should we build next quarter for the new vertical", "expect": "trigger", "reason": "regression test: previously tied with prioritize at +6 (prioritize had 'what should we build next' as a phrase, a superstring of discover's 'what should we build'). After removing the superstring from prioritize, discover wins cleanly on this scoping prompt"}
 {"prompt": "why is conversion dropping on the pricing page", "expect": "skip", "reason": "noneOf 'why is' hard-suppresses discover; diagnose wins"}
 {"prompt": "diagnose the metric decline in trial signups", "expect": "skip", "reason": "noneOf 'diagnose' + 'metric decline' suppress discover; diagnose wins"}
 {"prompt": "competitive analysis of our top three rivals", "expect": "skip", "reason": "noneOf 'competitive analysis' + 'competitor' suppress discover"}

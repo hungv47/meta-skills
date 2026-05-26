@@ -16,8 +16,11 @@ promptSignals:
     - "interaction storyboard"
     - "ui motion brief"
   allOf:
+    # [app, store, preview] removed — fired on "publish the app preview to the
+    # store" because the three words appeared in any order. The phrase
+    # "app store preview" already covers the intended App-Store-screenshot
+    # intent at +6.
     - [app, preview]
-    - [app, store, preview]
     - [feature, demo]
     - [onboarding, video]
     - [ui, motion]
@@ -38,8 +41,20 @@ promptSignals:
     - "social video"
     - "short-form"
     - "hook variations"
-    - "publish"
-    - "render"
+    # Bare `"publish"` / `"render"` removed — they fired on routine words in
+    # otherwise-legitimate brief prompts. Verb-anchored suppressors below
+    # target the actual deflect-to-publish-social / produce-asset / produce-
+    # video intents. With allOf [app, store, preview] also removed, the
+    # remaining threshold suffices for the typical "publish the app preview
+    # to the store" / "render the app preview video from this brief" cases.
+    - "publish to social"
+    - "publish to instagram"
+    - "publish to linkedin"
+    - "publish to x"
+    - "publish to tiktok"
+    - "render the asset"
+    - "render asset"
+    - "image generation"
   minScore: 6
 
 capability:

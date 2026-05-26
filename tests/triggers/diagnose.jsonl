@@ -6,5 +6,6 @@
 {"prompt": "what should we build next quarter to grow", "expect": "skip", "reason": "noneOf \"what should we build\" hard-suppress — prioritize territory"}
 {"prompt": "do market research on our competitive landscape", "expect": "skip", "reason": "noneOf \"competitor analysis\" not triggered but \"market size\" similarly; main reason: no diagnose phrases hit"}
 {"prompt": "scope this new feature idea before we build it", "expect": "skip", "reason": "noneOf \"scope this\" hard-suppress — discover territory"}
-{"prompt": "i have an idea for a new dashboard", "expect": "skip", "reason": "noneOf \"i have an idea\" hard-suppress (per diagnose noneOf list)"}
+{"prompt": "i have an idea for a new dashboard", "expect": "skip", "reason": "noneOf 'i have an idea for' hard-suppress (tightened from bare 'i have an idea' — still catches the discover-intent pattern)"}
+{"prompt": "i have an idea — why is conversion dropping on the pricing page", "expect": "trigger", "reason": "regression test: previously hard-suppressed by noneOf 'i have an idea' even though this is a legit diagnose ask using the idiom conversationally. After tightening noneOf to 'i have an idea for', the phrase 'why is' +6 wins for diagnose"}
 {"prompt": "model the funnel and unit economics for next year", "expect": "skip", "reason": "plan-funnel intent — no diagnose phrases"}

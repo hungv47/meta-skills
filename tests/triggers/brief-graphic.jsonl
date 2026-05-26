@@ -6,4 +6,5 @@
 {"prompt": "build a brand identity from scratch", "expect": "skip", "reason": "noneOf 'brand identity' suppresses — belongs to create-brand"}
 {"prompt": "set up our design system tokens", "expect": "skip", "reason": "noneOf 'design system' and 'design tokens' suppress"}
 {"prompt": "map the user flow for onboarding", "expect": "skip", "reason": "noneOf 'user flow' suppresses"}
-{"prompt": "redesign our landing page hero", "expect": "skip", "reason": "noneOf 'landing page redesign'? Wait — substring 'landing page redesign' not present. But phrase 'banner design' substring? No. Score low?"}
+{"prompt": "redesign our landing page hero", "expect": "skip", "reason": "no brief-graphic phrase or allOf hits cleanly; brief-landing-page wins"}
+{"prompt": "redesign brief for the marketing site", "expect": "skip", "reason": "regression test: previously brief-graphic falsely won 10 vs 7 because phrase 'design brief' substring-matched inside 'redesign brief' (rede-SIGN-BRIEF). After adding noneOf 'redesign brief' to brief-graphic, this routes to brief-landing-page instead"}

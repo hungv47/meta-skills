@@ -27,7 +27,9 @@ promptSignals:
     - "code benchmark"
     - "unit test"
     - "model training"
-  minScore: 5
+  # Bumped from 5 to the standard 6 for consistency across the stack.
+  # Phrases at +6 still auto-fire; allOf groups at +4 alone never triggered.
+  minScore: 6
 
 capability:
   id: run-eval-loop
