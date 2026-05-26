@@ -56,6 +56,27 @@
     {{stage_html}}
   </main>
 
+  <!-- Decision capture (WS-V3). Always present in markup. chrome.js activates
+       it only when the `forsvn preview` CLI has injected a token into the
+       preview-config block AND the artifact's decision_state is "pending".
+       Otherwise the form stays display:none — the page reads as read-only. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
+    <fieldset class="decision-radio">
+      <legend>Decision</legend>
+      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
+      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
+      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
+    </fieldset>
+    <label class="decision-comments">
+      <span>Comments (optional)</span>
+      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
+    </label>
+    <div class="decision-actions">
+      <span class="decision-status" aria-live="polite"></span>
+      <button type="submit" class="decision-done">Done</button>
+    </div>
+  </form>
+
   <footer class="footer">
     <a class="footer-action" data-roughdraft-link
        href="roughdraft://open?path={{md_path}}">

@@ -1,6 +1,7 @@
 // chrome.js — minimal client-side behaviors for the review-surface chrome.
-// No frameworks, no state mutation that isn't UI-only. The HTML preview is
-// read-only; the only outbound action is the Roughdraft deeplink.
+// v2 (2026-05-26): adds decision-capture controller that posts the operator's
+// decision to the `forsvn preview` CLI on 127.0.0.1 / localhost. When no CLI
+// is running (preview-config has {static:true}), the form stays inert.
 
 (function () {
   "use strict";
@@ -18,7 +19,6 @@
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(function () { flash(btn, "copied"); });
         } else {
-          // Fallback for environments without clipboard API.
           var ta = document.createElement("textarea");
           ta.value = text;
           document.body.appendChild(ta);
@@ -47,7 +47,6 @@
         item.addEventListener("click", function () {
           items.forEach(function (i) { i.setAttribute("aria-selected", "false"); });
           item.setAttribute("aria-selected", "true");
-          // Dispatch a CustomEvent so per-skill stage code can react.
           var detail = item.getAttribute("data-picker-value");
           group.dispatchEvent(new CustomEvent("picker:change", { detail: detail, bubbles: true }));
         });
@@ -56,20 +55,117 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Open-in-Roughdraft deeplink. The link is already in the markup; this just
-  // gives a small confirmation flash so the operator knows the click landed.
+  // Open-in-Roughdraft deeplink. Escape hatch — works whether or not the
+  // `forsvn preview` CLI is running.
   // ---------------------------------------------------------------------------
   function attachRoughdraftLink() {
     document.querySelectorAll("[data-roughdraft-link]").forEach(function (a) {
-      a.addEventListener("click", function () {
-        flash(a, "opening…");
+      a.addEventListener("click", function () { flash(a, "opening…"); });
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Decision capture. Reads #preview-config + #artifact-data. When the CLI is
+  // running (config has token + endpoint) AND the artifact is pending, the
+  // form is activated and POSTs JSON to /done on submit. Any other case keeps
+  // the form display:none — chrome stays read-only.
+  // ---------------------------------------------------------------------------
+  function attachDecisionCapture() {
+    var form = document.getElementById("decision-capture");
+    if (!form) return;
+
+    var config = readJsonScript("preview-config") || {};
+    var artifact = readJsonScript("artifact-data") || {};
+    var state = artifact.decision_state;
+    var hasCli = !config.static && typeof config.token === "string" && typeof config.endpoint === "string";
+
+    if (!hasCli || state !== "pending") {
+      // Stay inert — the surface is static, or the decision is already settled.
+      return;
+    }
+
+    form.setAttribute("data-active", "true");
+
+    var status = form.querySelector(".decision-status");
+    var doneBtn = form.querySelector(".decision-done");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var picked = form.querySelector('input[name="decision"]:checked');
+      if (!picked) {
+        if (status) {
+          status.textContent = "pick a decision";
+          status.setAttribute("data-tone", "error");
+        }
+        return;
+      }
+      var payload = {
+        token: config.token,
+        decision_state: picked.value,
+      };
+      var ta = form.querySelector('textarea[name="comments"]');
+      if (ta && ta.value.trim().length > 0) payload.comments = ta.value.trim();
+      var variantPicker = document.querySelector('[data-picker-group] .picker-item[aria-selected="true"]');
+      if (variantPicker) {
+        var v = variantPicker.getAttribute("data-picker-value");
+        if (v) payload.variant = v;
+      }
+
+      if (doneBtn) doneBtn.disabled = true;
+      if (status) {
+        status.textContent = "submitting…";
+        status.removeAttribute("data-tone");
+      }
+
+      // Local-only postback to the `forsvn preview` CLI's /done endpoint —
+      // documented contract per references/review-surface-design.md § 3.
+      fetch(config.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).then(function (resp) {
+        if (resp.ok) {
+          if (status) {
+            status.textContent = "decision recorded · server exiting…";
+            status.setAttribute("data-tone", "ok");
+          }
+          var pill = document.querySelector(".decision-pill");
+          if (pill) {
+            pill.setAttribute("data-state", payload.decision_state);
+            pill.textContent = payload.decision_state;
+          }
+          form.setAttribute("data-active", "false");
+        } else {
+          resp.text().then(function (t) {
+            if (status) {
+              status.textContent = "server rejected: " + t.slice(0, 80);
+              status.setAttribute("data-tone", "error");
+            }
+            if (doneBtn) doneBtn.disabled = false;
+          });
+        }
+      }).catch(function (e) {
+        if (status) {
+          status.textContent = "network error — is the CLI still running?";
+          status.setAttribute("data-tone", "error");
+        }
+        if (doneBtn) doneBtn.disabled = false;
       });
     });
   }
 
+  function readJsonScript(id) {
+    var el = document.getElementById(id);
+    if (!el) return null;
+    try { return JSON.parse(el.textContent || "null"); }
+    catch (_) { return null; }
+  }
+
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { attachCopy(); attachPickers(); attachRoughdraftLink(); });
+    document.addEventListener("DOMContentLoaded", function () {
+      attachCopy(); attachPickers(); attachRoughdraftLink(); attachDecisionCapture();
+    });
   } else {
-    attachCopy(); attachPickers(); attachRoughdraftLink();
+    attachCopy(); attachPickers(); attachRoughdraftLink(); attachDecisionCapture();
   }
 })();

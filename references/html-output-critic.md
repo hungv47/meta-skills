@@ -41,7 +41,7 @@ served their purpose.
 | 3 | **Decision-state pill** present in topbar and matches MD frontmatter | Operator sees stale state | hard fail |
 | 4 | **Roughdraft deeplink** in footer (`href` starts with `roughdraft://open?path=`) | Operator can't return to MD review | hard fail |
 | 5 | **WCAG AA contrast** (4.5:1 minimum on body text against its background) | Unreadable on certain monitors | hard fail |
-| 6 | **No decision capture** — no `<form>`, no `<button onclick>` that mutates persistent state, no postback. The only external action is the `roughdraft://` deeplink | Decision capture drift | hard fail |
+| 6 | **Decision capture only through the documented `forsvn preview` localhost contract** — allowed: one `<form id="decision-capture">` with `action="javascript:void(0)"` (or `/done`/`http://127.0.0.1:.../done`) plus a `<script id="preview-config">` block. Forbidden: any other `<form>`, inline `onclick=`, `fetch()` to a non-localhost target, `XMLHttpRequest`, or `WebSocket` | Decision capture drift or unbounded postback | hard fail |
 | 7 | **Tokens.css imported** via `<link rel="stylesheet" href="…tokens.css">`; no inline `:root { --bg: … }` overrides for chrome tokens | Element drift between skills | hard fail |
 | 8 | **Stage typography uses element's `--font-head` / `--font-body`** (system-font-only fallback is allowed where the documented stack provides it; mixing fonts across elements is not) | Visual incoherence between exemplars | soft fail |
 | 9 | **Motion is CSS only** — no `<script src>` referencing GSAP / motion-one / animejs / lottie / popmotion; one inline `<script>` block (max) wired to `data-toggle` attributes is allowed | Bundle bloat; preview becomes a runtime, not a static artifact | hard fail |
@@ -65,7 +65,7 @@ render the HTML; it parses the source via regex against the markup contract.
 | 3 | `<span class="decision-pill" data-state="(pending\|approved\|denied\|suggested)">` matches the same value as `decision_state` in the `#artifact-data` JSON block |
 | 4 | `href="roughdraft://open?path=…"` present in `.footer` markup |
 | 5 | Tokens.css computed contrasts (chrome + stack pairs) precomputed in this rubric; checked by element. New per-page inline color overrides flagged separately (manual review). |
-| 6 | No `<form`, no `onclick=` (allow whitelisted `data-toggle`/`data-copy-source` chrome.js bindings), no `fetch(`/`XMLHttpRequest`/`new WebSocket` |
+| 6 | Allowed: `<form id="decision-capture">` whose `action` is `javascript:void(0)` / `/done` / `http(s)://(127.0.0.1\|localhost)(:port)?/done`, paired with a `<script id="preview-config">` block (chrome.js activates the form when the config carries a `token` + `endpoint`). Any other `<form>` element = fail. No inline `onclick=` (use `data-toggle`/`data-copy-source` instead). `fetch()` targets must be relative (`/done`) or `127.0.0.1`/`localhost`. `XMLHttpRequest` and `new WebSocket` always forbidden. |
 | 7 | `<link rel="stylesheet" href=` contains `tokens.css`; no `<style>` block that defines `--chrome-bg` / `--chrome-panel` / `--chrome-border` / `--chrome-text` |
 | 8 | Per-element CSS `font-family:` in inline `<style>` only references the documented font names for that element |
 | 9 | No `<script src="…(gsap\|motion-one\|animejs\|lottie\|popmotion)…">` |
@@ -78,8 +78,9 @@ render the HTML; it parses the source via regex against the markup contract.
 1. **Skill author copies brand-explore.html shape, forgets the topbar** → check 1 fails.
 2. **Skill loads water tokens for a product artifact** → check 2 fails (wrong `data-stack`) or check 7 fails (inline override).
 3. **Skill stamps `decision_state: approved` in the HTML pill but MD says `pending`** → check 3 fails (mirror inconsistency).
-4. **Skill adds an "Approve" button to the HTML** → check 6 fails.
-5. **Skill drops in GSAP for a fancy reveal** → check 9 fails.
+4. **Skill adds a second `<form>` to the page** (analytics, copy-via-POST, etc.) → check 6 fails — only `<form id="decision-capture">` is allowed.
+5. **Skill hardcodes a remote `fetch()` target** (e.g. `https://analytics.example.com`) → check 6 fails — fetch must be relative or localhost.
+6. **Skill drops in GSAP for a fancy reveal** → check 9 fails.
 
 Each of these is a real failure mode the rubric was designed against.
 

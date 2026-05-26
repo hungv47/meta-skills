@@ -22,12 +22,23 @@ const ROOT = (() => {
   return process.cwd();
 })();
 
-// Allowed stage-font name fragments per stack (chrome fonts — Inter, JetBrains Mono — are always allowed).
+// v2 — typography is unified across all stacks. Same allowlist everywhere; any
+// inline literal font name must come from the FORSVN unified stack (Bricolage
+// Grotesque + Be Vietnam Pro + JetBrains Mono) or be a generic fallback. The
+// preferred form is `font-family: var(--font-head|body|mono)`; literals are
+// allowed but flagged when they drift outside the brand.
+const UNIFIED_FONT_FRAGMENTS = [
+  "Bricolage Grotesque", "Be Vietnam Pro", "JetBrains Mono",
+  "Inter Tight", "Inter",       // documented fallbacks in tokens.css var stacks
+  "SF Mono", "ui-monospace",
+  "system-ui", "-apple-system",
+  "sans-serif", "serif", "monospace",
+];
 const STACK_FONT_FRAGMENTS: Record<string, string[]> = {
-  air:   ["Inter Tight", "Inter", "JetBrains Mono", "system-ui", "monospace", "sans-serif", "-apple-system"],
-  water: ["Fraunces", "Plus Jakarta Sans", "Inter", "JetBrains Mono", "Times New Roman", "serif", "sans-serif", "monospace"],
-  fire:  ["Sora", "Manrope", "Inter", "JetBrains Mono", "sans-serif", "monospace"],
-  earth: ["Newsreader", "EB Garamond", "Times New Roman", "Inter", "JetBrains Mono", "serif", "sans-serif", "monospace"],
+  air:   UNIFIED_FONT_FRAGMENTS,
+  water: UNIFIED_FONT_FRAGMENTS,
+  fire:  UNIFIED_FONT_FRAGMENTS,
+  earth: UNIFIED_FONT_FRAGMENTS,
 };
 const FORBIDDEN_SCRIPT_LIBS = ["gsap", "motion-one", "animejs", "lottie", "popmotion"];
 
@@ -122,15 +133,50 @@ function lint(file: string, html: string): void {
     issues.push({ check: 5, file, message: `${colorAgainstBg.length} inline color/background pairs — review for AA contrast manually`, severity: "soft" });
   }
 
-  // Check 6 — No decision capture
-  if (/<form\b/i.test(html)) {
-    issues.push({ check: 6, file, message: `<form> element present (HTML preview must be read-only)`, severity: "hard" });
+  // Check 6 — Decision capture allowed only via the documented forsvn preview
+  // localhost contract (v2): <form id="decision-capture"> with action that's
+  // a javascript: noop or /done, plus a #preview-config script block. Any
+  // other <form>, onclick, fetch, XHR, or WebSocket = hard fail.
+  const forms = [...html.matchAll(/<form\b([^>]*)>/gi)];
+  for (const m of forms) {
+    const attrs = m[1];
+    const idMatch = attrs.match(/\bid\s*=\s*"([^"]+)"/i);
+    if (!idMatch || idMatch[1] !== "decision-capture") {
+      issues.push({ check: 6, file, message: `<form> with id=${JSON.stringify(idMatch?.[1] ?? "<none>")} — only id="decision-capture" is allowed`, severity: "hard" });
+      continue;
+    }
+    const actionMatch = attrs.match(/\baction\s*=\s*"([^"]+)"/i);
+    if (actionMatch) {
+      const action = actionMatch[1].trim();
+      const allowed = action === "javascript:void(0)" || action === "#" || /^\/done$/.test(action) || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/done$/.test(action);
+      if (!allowed) {
+        issues.push({ check: 6, file, message: `<form id="decision-capture"> action ${JSON.stringify(action)} not allowed (must be javascript:void(0) or /done on localhost)`, severity: "hard" });
+      }
+    }
+    // The form must coexist with a #preview-config block — chrome.js needs it
+    // to know whether to activate the form.
+    if (!/<script type="application\/json" id="preview-config">/.test(html)) {
+      issues.push({ check: 6, file, message: `<form id="decision-capture"> present but no <script id="preview-config"> block`, severity: "hard" });
+    }
   }
+  // No inline onclick attributes anywhere (chrome.js binds via data-* hooks).
   if (/\bonclick\s*=/i.test(html)) {
     issues.push({ check: 6, file, message: `inline onclick handler present (use chrome.js data-* bindings)`, severity: "hard" });
   }
-  if (/\bfetch\s*\(/.test(html) || /\bXMLHttpRequest\b/.test(html) || /\bnew\s+WebSocket\b/.test(html)) {
-    issues.push({ check: 6, file, message: `network calls present (HTML preview must be static)`, severity: "hard" });
+  // Any fetch / XHR / WebSocket targeting anything other than 127.0.0.1 or
+  // localhost = hard fail. The decision-capture form sends to a config-driven
+  // endpoint at runtime; static HTML must not name a remote target.
+  const fetchTargets = [...html.matchAll(/\bfetch\s*\(\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
+  for (const target of fetchTargets) {
+    if (!/^(\/|https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/)/.test(target)) {
+      issues.push({ check: 6, file, message: `fetch() target ${JSON.stringify(target)} is not localhost/relative`, severity: "hard" });
+    }
+  }
+  if (/\bXMLHttpRequest\b/.test(html)) {
+    issues.push({ check: 6, file, message: `XMLHttpRequest reference present (use fetch() to /done only)`, severity: "hard" });
+  }
+  if (/\bnew\s+WebSocket\b/.test(html)) {
+    issues.push({ check: 6, file, message: `WebSocket reference present (HTML preview must be HTTP-only)`, severity: "hard" });
   }
 
   // Check 7 — Tokens.css imported; no chrome-token overrides
