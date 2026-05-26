@@ -41,9 +41,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/diagnose-[YYYY-MM-DD].md` (one per metric; re-run renames prior to `diagnose.v[N].md` and increments)
+- **Path:** `.forsvn/artifacts/meta-diagnose-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one per metric; re-run renames prior with `.v[N]` suffix and increments)
 - **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy)
-- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below)
+- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below), `stack` (=meta — diagnose produces meta-stack records), `review_surface` (=none — snapshot lifecycle defaults to `decision_state: not_required`). See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
 - **Required body sections (in order — cross-stack contract):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
 - **Optional sections (append only when applicable):** Known Issues · Change Log
 - **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
