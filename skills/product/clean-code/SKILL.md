@@ -55,9 +55,9 @@ Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`).
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md` (re-run same slug same day → append `-v[N]`)
+- **Path:** `.forsvn/artifacts/meta-clean-code-<YYYY-MM-DD>-cleanup-<slug>.md` (flat v2 grammar; re-run same slug same day → append `.v[N]` suffix). Stack is `meta` (cleanup records are meta-stack snapshots, like diagnose); skill is in product/ because its consumers are product-side.
 - **Lifecycle:** `snapshot` (dated, immutable record of one cleanup run)
-- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `lifecycle`, `produced_by`, `provenance`
+- **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=meta), `review_surface` (=none — snapshot defaults to `decision_state: not_required`), `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** Scope, Changes Made (≥1 subsection populated), Validation, Critic Verdict. Manual Verification Needed + Rollback when applicable.
 - **Consumed by:** `clean-artifacts` (skill, scans filenames for staleness), `review-work` (when reviewing cleanup-touched code), operator (history audit).
 - Full template: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
