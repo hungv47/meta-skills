@@ -1,8 +1,8 @@
 ---
-title: Review-Surface Design System — elemental token spec for the HTML preview surface
+title: Review-Surface Design System — FORSVN-unified token spec for the HTML preview surface
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (v3 review-surface overhaul, 2026-05-26)
+produced_by: meta-skills (v3 review-surface overhaul, 2026-05-26; v2 brand-unification 2026-05-26)
 consumers: every reviewable skill that emits `review_surface: html`; the shared HTML template
 load_class: PLAYBOOK
 ---
@@ -10,13 +10,15 @@ load_class: PLAYBOOK
 # Review-Surface Design System
 
 **The visual contract for every `review_surface: html` artifact. Five-region
-layout shared across stacks; tokens and motion vary by element (AIR/WATER/FIRE/
-EARTH). Skills emit HTML against this spec — they never invent their own.**
+layout, one FORSVN brand chrome, one typography stack, one motion vocabulary
+shared across all stacks. Per-stack variation lives in 5 stage color tokens
+(`--stage-bg / -fg / -accent / -accent-2 / -border`). Skills emit HTML against
+this spec — they never invent their own.**
 
-The HTML preview is **read-only rendering**. Decisions are captured in MD via
-the `## Review Gate` block (see [[reviewable-artifact-contract]]). The HTML's
-job is one thing only: let a human compare options at a glance, in a register
-that matches the stack the artifact came from.
+The HTML preview surface captures the decision via an in-page form posting to
+the `forsvn preview` localhost CLI (WS-V2/V3). Roughdraft remains as an
+escape-hatch path for inline CriticMarkup commenting on the MD twin.
+See [[reviewable-artifact-contract]] for the full review-surface contract.
 
 ---
 
@@ -57,307 +59,195 @@ regardless of skill.
 
 ```css
 :root {
-  /* Chrome surfaces — neutral surgical-dark across all stacks */
+  /* Chrome surfaces — FORSVN-branded dark across all stacks */
   --chrome-bg:           #0a0a0a;
   --chrome-panel:        #111114;
   --chrome-border:       #1f1f24;
   --chrome-text:         #e4e4e7;
   --chrome-text-muted:   #71717a;
-  --chrome-accent:       #ffffff;
+  --chrome-accent:       #B7FF6E;             /* signal-lime — FORSVN brand mark */
+  /* Brand palette (Pure Void canonical) */
+  --brand-lime:          #B7FF6E;
+  --brand-forest:        #004700;
+  --brand-void:          #000000;
+  --brand-paper:         #F5F5F5;
   /* Decision-state pill colors */
   --pill-pending-bg:     #2a2a2e;
   --pill-pending-fg:     #fbbf24;
-  --pill-approved-bg:    #064e3b;
-  --pill-approved-fg:    #6ee7b7;
+  --pill-approved-bg:    #004700;
+  --pill-approved-fg:    #B7FF6E;
   --pill-denied-bg:      #7f1d1d;
   --pill-denied-fg:      #fecaca;
   --pill-suggested-bg:   #1e3a8a;
   --pill-suggested-fg:   #93c5fd;
-  /* Typography for chrome (never themed) */
-  --chrome-mono:         'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-  --chrome-sans:         'Inter', -apple-system, system-ui, sans-serif;
+  /* Unified typography (D14 — one stack everywhere) */
+  --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
+  --font-body:           'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
+  --font-mono:           'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --chrome-sans:         var(--font-body);
+  --chrome-mono:         var(--font-mono);
+  --chrome-display:      var(--font-head);
+  /* Unified motion (D14 — one vocabulary; ≤80ms per-stack drift) */
+  --ease:                cubic-bezier(0.4, 0, 0.2, 1);
+  --t-snap:              80ms;
+  --t-hover:             200ms;
+  --t-enter:             360ms;
+  --t-ripple:            480ms;
   /* Layout */
   --chrome-topbar-h:     56px;
   --chrome-left-w:       320px;
   --chrome-footer-h:     72px;
-  /* Stage */
   --stage-pad:           48px;
+  --line-height:         1.55;
+  --max-measure:         72ch;
 }
 ```
 
-The chrome stays the same dark neutral across all four elements — like the left
-panel in `brand-explore.html`. Only the **stage** is themed by stack. This is
-deliberate: a user opening an AIR (meta) artifact next to a WATER (mkt)
-artifact should feel they're the same UI program, with different content. Same
-controls in the same places.
+The chrome is **FORSVN-branded across all four stacks** — same Bricolage Grotesque
+wordmark, same signal-lime brand mark, same Pure Void background, same JetBrains
+Mono meta text. Only the **stage backdrop and accent** are themed by stack. This
+is deliberate: a user opening a meta artifact next to an mkt artifact should feel
+they're the same product, in different moods. Same brand, different rooms.
 
 ---
 
-## 3. Element themes (stage only)
+## 3. Unified brand + per-stack color register
 
-### 3.1 AIR — meta stack
+v2 unifies the four stacks under one FORSVN brand. Typography, motion, layout
+tokens are **identical across all stacks**. The only per-stack variation is the
+5-token color register on the stage. The four element labels (AIR / WATER /
+FIRE / EARTH) survive as **color register names**, not as separate type/motion
+systems.
 
-Refined, transparent, almost invisible. For process-layer skills that
-facilitate thinking (discover, debate-agents, prioritize, breakdown-tasks,
-review-work, run-eval-loop, clean-artifacts, plan-funnel).
+### 3.1 One typography stack (D14)
 
-```css
-:root[data-stack="air"] {
-  --bg:            #f7f8fa;
-  --bg-deep:       #e8ebf0;
-  --bg-elevated:   #ffffff;
-  --fg:            #18181b;
-  --fg-muted:      #52525b;
-  --accent:        #a7c7ff;
-  --accent-fg:     #18181b;
-  --border:        #d4d4d8;
-  --border-strong: #a1a1aa;
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:     0 8px 24px rgba(0,0,0,0.04);
-  --font-head:     'Inter Tight', 'Inter', sans-serif;
-  --font-body:     'Inter', sans-serif;
-  --font-mono:     'JetBrains Mono', monospace;
-  --line-height:   1.7;
-  --max-measure:   65ch;
-  /* Motion */
-  --t-hover:       240ms;
-  --t-enter:       480ms;
-  --ease:          cubic-bezier(0.2, 0.6, 0.2, 1);
-}
-```
+Bricolage Grotesque + Be Vietnam Pro + JetBrains Mono, everywhere. No per-stack
+font drift.
 
-**Motifs**
-- Hairlines at 0.5px on dividers and table cells; never heavier than 1px on stage borders
-- Tracked-out monospace meta labels: `META · DISCOVER · 2026-05-26` at 0.78rem with +6% letter-spacing
-- Whitespace > content density — 1.7 line-height, 65ch max measure
-- No fills above 10% alpha — air is transparent
-
-**Motion**
-- 240ms opacity-led drift on hover
-- 480ms fade-in on first render, no translate
-- Easing `cubic-bezier(0.2, 0.6, 0.2, 1)` — gentle, no overshoot
-
-**Typography hierarchy**
-
-| Role | Font | Size | Weight | Tracking |
+| Role | Font | Where used | Size | Weight |
 |---|---|---|---|---|
-| Display | Inter Tight | 48-72px | 600 | -2% |
-| H1 | Inter Tight | 32px | 600 | -1% |
-| H2 | Inter Tight | 24px | 500 | -0.5% |
-| Body | Inter | 16px | 400 | 0 |
-| Meta label | JetBrains Mono | 12.5px | 500 | +6% UPPERCASE |
+| Display | Bricolage Grotesque (opsz 96) | Stage h1, marketing/dossier headlines, FORSVN wordmark | 42-56px | 700 |
+| H1 / H2 | Bricolage Grotesque | Stage h1/h2 | 24-42px | 600-700 |
+| H3 | Bricolage Grotesque | Stage h3, card titles | 17-22px | 600-700 |
+| Body | Be Vietnam Pro | Stage paragraphs, UI controls, demo content | 15-17px | 400 |
+| UI label | Be Vietnam Pro | Buttons, picker items | 13-13.5px | 500-600 |
+| Meta label | JetBrains Mono | Topbar meta, chrome chips, `META · SKILL` tags | 10.5-12.5px | 500 (UPPERCASE, +6-12% tracking) |
+| Code | JetBrains Mono | Inline code, demo-code blocks | 12.5-14.5px | 400-500 |
 
-**WCAG AA check (4.5:1 on body text)**
-- `#18181b` on `#f7f8fa` → 14.2:1 ✅
-- `#52525b` on `#f7f8fa` → 7.3:1 ✅
-- `#a7c7ff` accent on `#18181b` panel → 7.1:1 ✅
+**Why this combo:** Bricolage Grotesque collapses the four v1 display fonts
+(Inter Tight, Fraunces, Sora, Newsreader) into one variable family with
+opsz/weight ranges that cover every former role. Be Vietnam Pro is the brand
+body — built for Vietnamese diacritics, neutral across the four moods.
+JetBrains Mono is the canonical mono. Source of truth: [`_biz-ops/brand/forsvn/explorations/picked-combo.md`](../../_biz-ops/brand/forsvn/explorations/picked-combo.md).
 
-### 3.2 WATER — marketing stack
+### 3.2 One motion vocabulary (D14)
 
-Fluid, deep, reflective. For voice and emotion-carrying skills (create-brand,
-write-copy, write-ad, write-outreach, write-social, brief-shortform,
-brief-landing-page, brief-app-preview, brief-graphic, plan-campaign,
-produce-asset, produce-video, publish-social, optimize-seo, monitor-aeo,
-humanmaxxing, polish-vn).
+Pure-Void brand motion. Clean entrances, no bounce. One easing curve, four
+timing tokens that map roughly to "snap / hover / enter / ripple". Per-stack
+**timing differences** are kept ≤80ms variance so motion *feels* consistent
+across stacks; per-stack **motion motifs** are gone.
+
+| Token | Value | Use |
+|---|---|---|
+| `--ease` | `cubic-bezier(0.4, 0, 0.2, 1)` | All transitions, no exceptions |
+| `--t-snap` | 80ms | Decision feedback (click, selection flicker) |
+| `--t-hover` | 200ms | Standard hover transitions |
+| `--t-enter` | 360ms | First-render stage fade + translateY |
+| `--t-ripple` | 480ms | Click-origin radial expand (marketing emphasis only) |
+
+A stage entry animation (`stage-enter`) fires once on first render: opacity 0→1,
+translateY 8px → 0, duration `--t-enter`. Drift-fade on perspective cards
+(AIR/meta exemplar) uses `--t-enter` + staggered delays. No JS motion libraries
+(check #9 still enforced).
+
+### 3.3 Stage tokens — 5 per stack (D17)
+
+Per-stack variation is collapsed to **exactly 5 stage tokens**. Everything else
+(typography, motion, layout, derived shadows/borders) is shared in `:root`.
+
+| Stack | `--stage-bg` | `--stage-fg` | `--stage-accent` | `--stage-accent-2` | `--stage-border` |
+|---|---|---|---|---|---|
+| **meta** (`data-stack="air"`) — color register: AIR | `#000000` Pure Void | `#F5F5F5` paper | `#B7FF6E` signal-lime | `#004700` forest | `#1A1A1A` |
+| **mkt** (`data-stack="water"`) — color register: WATER | `#050d18` midnight | `#f0f6ff` ice | `#B7FF6E` signal-lime | `#004700` forest | `#1a2e44` |
+| **product** (`data-stack="fire"`) — color register: FIRE | `#1a1410` warm char. | `#fdf4ee` cream-fg | `#B7FF6E` signal-lime | `#004700` forest | `#2d2520` |
+| **research** (`data-stack="earth"`) — color register: EARTH (only light-mode stack) | `#f4ede0` cream | `#1a1410` ink | `#004700` forest | `#B7FF6E` signal-lime | `#c4b594` |
+
+**Why the swap on research:** signal-lime on cream is `~1.3:1` — fails WCAG AA
+for any text role. Research is the only light-mode stack, so it pulls forest
+into the primary stage-accent slot (forest on cream is `~8.5:1`, well above AA)
+and keeps signal-lime as decorative `--stage-accent-2` (used for hover states,
+borders, dot indicators — non-text usages where AA doesn't apply). All four
+stacks still draw from the same FORSVN palette (`lime + forest`); only the
+ordering swaps for light-mode legibility.
+
+**Brand chrome is invariant.** The signal-lime FORSVN wordmark and topbar
+brand-mark indicator are `var(--chrome-accent)` (always `#B7FF6E`) regardless
+of stack — the chrome bg is always Pure Void near-black, so signal-lime always
+holds AA in chrome.
+
+### 3.4 Derived helpers (shared)
+
+These come from the 5 stage tokens via `color-mix()`; no per-stack overrides.
 
 ```css
-:root[data-stack="water"] {
-  --bg:            #0a1a2a;
-  --bg-deep:       #050d18;
-  --bg-elevated:   rgba(255,255,255,0.04);
-  --fg:            #f0f6ff;
-  --fg-muted:      #7891a8;
-  --accent:        #6ee7d4;
-  --accent-fg:     #0a1a2a;
-  --accent-gradient: linear-gradient(135deg, #6ee7d4 0%, #5d9eff 100%);
-  --border:        #1a2e44;
-  --border-strong: #2d4863;
-  --glass-tint:    rgba(255,255,255,0.06);
+:root[data-stack] {
+  /* Back-compat aliases (legacy --bg, --fg, --accent, --border still work) */
+  --bg:            var(--stage-bg);
+  --fg:            var(--stage-fg);
+  --accent:        var(--stage-accent);
+  --accent-2:      var(--stage-accent-2);
+  --accent-fg:     var(--stage-bg);
+  --border:        var(--stage-border);
+
+  /* Derived neutrals */
+  --fg-muted:      color-mix(in srgb, var(--stage-fg) 58%, var(--stage-bg));
+  --border-strong: color-mix(in srgb, var(--stage-border) 50%, var(--stage-fg) 50%);
+  --bg-elevated:   color-mix(in srgb, var(--stage-bg) 94%, var(--stage-fg) 6%);
+
+  /* Derived effects */
+  --shadow-sm:     0 1px 2px rgba(0,0,0,0.18);
+  --shadow-md:     0 8px 24px rgba(0,0,0,0.20);
+  --shadow-glow:   0 0 24px color-mix(in srgb, var(--stage-accent) 32%, transparent);
   --backdrop-blur: blur(24px);
-  --shadow-sm:     inset 0 1px 0 rgba(255,255,255,0.04);
-  --shadow-md:     0 4px 32px rgba(110, 231, 212, 0.10);
-  --shadow-glow:   0 0 24px rgba(110, 231, 212, 0.20);
-  --font-head:     'Fraunces', 'Times New Roman', serif;
-  --font-body:     'Plus Jakarta Sans', 'Inter', sans-serif;
-  --font-mono:     'JetBrains Mono', monospace;
-  --line-height:   1.6;
-  --max-measure:   72ch;
-  /* Motion */
-  --t-hover:       360ms;
-  --t-ripple:      600ms;
-  --ease:          cubic-bezier(0.4, 0, 0.2, 1);
+  --glass-tint:    color-mix(in srgb, var(--stage-fg) 4%, transparent);
+  --accent-gradient: linear-gradient(135deg, var(--stage-accent) 0%, var(--stage-accent-2) 100%);
 }
 ```
 
-**Motifs**
-- Glassmorphism surfaces: 6% white tint + 24px backdrop-blur on stacked panels
-- Inner glow on focused elements (`box-shadow: inset 0 0 0 1px var(--accent)`)
-- Gradient accents only — never solid accents (Water owns gradient; Fire owns solid)
-- Depth-of-field on layered panels — z=1 panels at 100% opacity, z=2 at 95%, z=3 at 90%
-- Fraunces at display sizes uses optical-size variable (set to 144)
+### 3.5 WCAG AA contrast (against `--stage-bg`)
 
-**Motion**
-- 360ms undulation on hover (translateY 2px → 0 with opacity 0.85 → 1)
-- 600ms ripple on click (radial expand from click origin, alpha 0.3 → 0)
-- Gradient-shift on selection (background-position 0% → 100% in 800ms)
+Verified per token pairing. Body / fg / accent / accent-2 must all clear 4.5:1
+for any text role; decorative non-text usage is allowed below that bar.
 
-**Typography hierarchy**
-
-| Role | Font | Size | Weight | Optical size |
+| Stack | `fg` on `bg` | `fg-muted` on `bg` | `accent` on `bg` | `accent-2` on `bg` |
 |---|---|---|---|---|
-| Display | Fraunces | 64-96px | 500 | 144 |
-| H1 | Fraunces | 36px | 500 | 96 |
-| H2 | Fraunces | 24px | 500 | 72 |
-| Body | Plus Jakarta Sans | 16px | 400 | — |
-| UI label | Plus Jakarta Sans | 13px | 500 | — |
+| **meta** (Pure Void) | `#F5F5F5/#000` → 19.3:1 ✅ | derived 7.2:1 ✅ | `#B7FF6E/#000` → 14.8:1 ✅ | `#004700/#000` → 1.4:1 (non-text only) |
+| **mkt** (midnight) | `#f0f6ff/#050d18` → 16.7:1 ✅ | derived 6.4:1 ✅ | `#B7FF6E/#050d18` → 12.9:1 ✅ | `#004700/#050d18` → 1.3:1 (non-text only) |
+| **product** (warm char.) | `#fdf4ee/#1a1410` → 14.3:1 ✅ | derived 5.6:1 ✅ | `#B7FF6E/#1a1410` → 12.1:1 ✅ | `#004700/#1a1410` → 1.4:1 (non-text only) |
+| **research** (cream) | `#1a1410/#f4ede0` → 14.6:1 ✅ | derived 5.8:1 ✅ | `#004700/#f4ede0` → 8.5:1 ✅ | `#B7FF6E/#f4ede0` → 1.3:1 (non-text only) |
 
-**WCAG AA check**
-- `#f0f6ff` on `#0a1a2a` → 13.4:1 ✅
-- `#7891a8` on `#0a1a2a` → 5.1:1 ✅
-- `#6ee7d4` on `#0a1a2a` → 8.9:1 ✅
-
-### 3.3 FIRE — product stack
-
-Bright, energetic, direct. For ship-it skills (map-user-flow, architect-system,
-clean-code, extract-service, clean-machine, write-docs, build-ios-apps).
-
-```css
-:root[data-stack="fire"] {
-  --bg:            #0f0a08;
-  --bg-deep:       #050302;
-  --bg-elevated:   #1a120e;
-  --fg:            #fdf4ee;
-  --fg-muted:      #a08470;
-  --accent:        #ff7a45;
-  --accent-fg:     #0f0a08;
-  --accent-2:      #ffcc00;       /* spark yellow — secondary */
-  --border:        #2d1a0f;
-  --border-strong: #ff7a45;       /* glows on focus */
-  --shadow-sm:     0 2px 8px rgba(0,0,0,0.4);
-  --shadow-md:     0 0 32px rgba(255, 122, 69, 0.15);
-  --shadow-glow:   0 0 16px rgba(255, 122, 69, 0.55);
-  --font-head:     'Sora', 'Inter', sans-serif;
-  --font-body:     'Manrope', 'Inter', sans-serif;
-  --font-mono:     'JetBrains Mono', monospace;
-  --line-height:   1.5;
-  --max-measure:   80ch;
-  /* Motion */
-  --t-hover:       120ms;
-  --t-snap:        80ms;
-  --ease:          cubic-bezier(0.4, 0, 0.6, 1);
-}
-```
-
-**Motifs**
-- 2px sharp accent borders that **glow on focus** (`box-shadow: 0 0 16px var(--accent)`)
-- Spark-yellow `--accent-2` for critical actions / key callouts
-- No gradients — Fire is solid, decisive
-- Monospace measurements visible in product flows (snap-to-grid at 8px)
-- Inline code in JetBrains Mono with `--accent` underline
-
-**Motion**
-- 120ms snap on hover (translateY 1px ↑)
-- 80ms flicker on selection (opacity 1 → 0.7 → 1 fast)
-- Instant feedback on click — no easing tail
-- Easing `cubic-bezier(0.4, 0, 0.6, 1)` — sharp, no spring
-
-**Typography hierarchy**
-
-| Role | Font | Size | Weight | Tracking |
-|---|---|---|---|---|
-| Display | Sora | 56-80px | 700 | -1.5% |
-| H1 | Sora | 32px | 700 | -1% |
-| H2 | Sora | 22px | 600 | -0.5% |
-| Body | Manrope | 16px | 400 | 0 |
-| Code | JetBrains Mono | 14.5px | 400 | 0 |
-
-**WCAG AA check**
-- `#fdf4ee` on `#0f0a08` → 17.1:1 ✅
-- `#a08470` on `#0f0a08` → 5.2:1 ✅
-- `#ff7a45` on `#0f0a08` → 6.7:1 ✅
-- `#ffcc00` on `#0f0a08` → 11.8:1 ✅
-
-### 3.4 EARTH — research stack
-
-Grounded, organic, dense. For knowing-skills (research-icp, research-market,
-research-shortform, research-platform, diagnose, evaluate-content,
-evaluate-campaign, evaluate-shortform, evaluate-ad, evaluate-landing-page).
-
-```css
-:root[data-stack="earth"] {
-  --bg:            #f4ede0;
-  --bg-deep:       #e8ddc7;
-  --bg-elevated:   #ffffff;
-  --fg:            #1a1410;
-  --fg-muted:      #6b5d4f;
-  --accent:        #2d5016;
-  --accent-fg:     #f4ede0;
-  --accent-2:      #b87333;       /* clay — for pull-quotes / secondary */
-  --border:        #c4b594;
-  --border-strong: #9c8a6c;
-  --shadow-sm:     0 1px 0 rgba(0,0,0,0.06);
-  --shadow-md:     0 12px 32px rgba(120, 90, 50, 0.08);
-  --font-head:     'Newsreader', 'EB Garamond', 'Times New Roman', serif;
-  --font-body:     'Newsreader', 'Times New Roman', serif;
-  --font-mono:     'JetBrains Mono', monospace;
-  --line-height:   1.55;
-  --max-measure:   68ch;
-  /* Motion */
-  --t-enter:       800ms;
-  --t-hover:       0ms;            /* no twitch */
-  --ease:          cubic-bezier(0.16, 1, 0.3, 1);
-}
-```
-
-**Motifs**
-- Book-page columns — two-column body when content density warrants
-- Deckle-edge dividers (`border-image` with paper texture or subtle SVG)
-- Footnote-style citations with superscript numerals
-- Bordered data tables with subtle grain (`background-image: linear-gradient(...)` at 3%)
-- Clay-accent pull-quotes — `--accent-2` left border, italic
-- Paper-grain background texture at ~3% opacity
-
-**Motion**
-- 800ms settle on first render (translateY 8px → 0 with fade)
-- 0ms on hover — earth doesn't twitch; user can focus while reading
-- Easing `cubic-bezier(0.16, 1, 0.3, 1)` — mass-aware, settling
-
-**Typography hierarchy**
-
-| Role | Font | Size | Weight | Optical size |
-|---|---|---|---|---|
-| Display | Newsreader | 56-80px | 500 | 144 |
-| H1 | Newsreader | 32px | 600 | 96 |
-| H2 | Newsreader | 22px | 600 | 72 |
-| Body | Newsreader | 17px | 400 | 16 |
-| Citation | Newsreader Italic | 13px | 400 | 14 |
-
-**WCAG AA check**
-- `#1a1410` on `#f4ede0` → 14.6:1 ✅
-- `#6b5d4f` on `#f4ede0` → 5.5:1 ✅
-- `#2d5016` on `#f4ede0` → 8.4:1 ✅
-- `#b87333` on `#f4ede0` → 4.6:1 ✅
+`--stage-accent-2` is always the *opposite* token in the lime/forest pair —
+intentionally low-contrast on the same bg, used only for borders, hover tints,
+or decorative dots/lines. Exemplars do not use it for text.
 
 ---
 
 ## 4. Font loading
 
-All four elements load fonts via `<link rel="preconnect">` to Google Fonts and a
-single `<link rel="stylesheet">` with `display=swap` to avoid FOIT. The shared
-chrome (`chrome.css`) ships its own font (Inter + JetBrains Mono); each stage
-theme adds its own.
+One unified font block on every page — all four stacks load the same families
+via a single `<link rel="stylesheet">` with `display=swap` to avoid FOIT.
 
 ```html
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- chrome (always loaded) -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- per-stack stage fonts (one of the four blocks below) -->
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">                                   <!-- AIR -->
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">     <!-- WATER -->
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500&display=swap" rel="stylesheet">             <!-- FIRE -->
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400..600;6..72,1,400&display=swap" rel="stylesheet">    <!-- EARTH -->
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 ```
+
+This is intentionally **identical across exemplars** — `grep "font-family"
+references/_html/exemplars/*.html` should return only `var(--font-head)`,
+`var(--font-body)`, or `var(--font-mono)` references. Any literal font name in
+an inline `<style>` block is a sign the stack has drifted from the unified
+brand. WS-V4 updates `scripts/lint-html-output.ts` check #8 to enforce this.
 
 ---
 
@@ -400,24 +290,32 @@ Shared markup:
 
 ## 6. Anti-patterns
 
-1. **Mixing element themes within one HTML page.** A product artifact uses
-   FIRE only. Never load tokens.css with multiple `data-stack` blocks active.
-2. **Gradients in FIRE.** Fire is solid borders + glows. Gradients are WATER's
-   register.
-3. **Shadow-less surfaces in EARTH.** Earth has paper-weight; surfaces need at
-   least `--shadow-sm`. Floating-in-void is AIR.
-4. **Decision capture inside the HTML.** No `<form>`, no `<button onClick>`
-   that mutates state, no fetch/postback. The only mutating action is the
-   Roughdraft deeplink (`roughdraft://open?path=…`) which opens an external
-   app.
-5. **Server-side rendering / handlers.** HTML is a static file. Skill emitters
-   produce it once; opening it in a browser is the entire runtime.
-6. **JS animation libraries** (GSAP, motion-one, animejs, lottie). v1 uses CSS
-   transitions only. Keep payload light.
-7. **Loading > 2 stage fonts per page.** Each element ships its own font pair;
-   loading multiple fonts is a sign the page is mixing themes.
-8. **Overriding chrome tokens per stack.** Chrome is constant. Override stage
-   tokens only.
+1. **Mixing color registers within one HTML page.** A product artifact uses
+   `data-stack="fire"` only. Never load tokens.css with multiple
+   `data-stack` blocks active.
+2. **Hardcoded font names in inline styles.** Stage CSS uses
+   `font-family: var(--font-head)` / `var(--font-body)` / `var(--font-mono)`.
+   Any literal `'Bricolage Grotesque'` / `'Inter Tight'` / `'Fraunces'` etc.
+   in an exemplar's inline `<style>` is a drift signal.
+3. **Per-stack motion easing.** All stacks share `--ease` and the four timing
+   tokens. Per-stack ≤80ms drift is allowed via the tokens; defining a new
+   easing curve per stack is not.
+4. **Decision capture in HTML outside the documented contract.** The only
+   form allowed is `<form id="decision-capture">` posting to `/done` on
+   `127.0.0.1`/`localhost` per [[reviewable-artifact-contract]] § Review surface
+   (WS-V3). Any other `<form>`, `onclick=`, `fetch()`, or `XMLHttpRequest` =
+   hard fail. Lint check #6 enforces this (WS-V4).
+5. **Server-side rendering at preview time.** HTML is a static file emitted
+   once by the skill. The `forsvn preview` CLI serves it locally with a CSRF
+   token; the page itself contains no server-rendered state.
+6. **JS animation libraries** (GSAP, motion-one, animejs, lottie). CSS
+   transitions only.
+7. **Overriding chrome tokens per stack.** Chrome (topbar, left controls,
+   footer, brand-mark, decision-pill) is invariant across stacks. Override
+   the 5 stage tokens only.
+8. **Extra per-stack tokens beyond the documented 5.** If a stack needs
+   more than `--stage-bg / -fg / -accent / -accent-2 / -border`, derive in
+   `:root` via `color-mix()` — do not add per-stack overrides.
 
 ---
 

@@ -1,6 +1,6 @@
 /* chrome.css — constant chrome regions for the review-surface HTML preview.
-   Topbar + left controls + decision footer. Stage is themed by stack via
-   tokens.css; chrome stays neutral surgical-dark across all stacks. */
+   v2 (2026-05-26): FORSVN brand chrome — Bricolage Grotesque wordmark + signal-lime
+   accent in topbar across all stacks. Typography unified per D14. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -36,6 +36,36 @@ body {
   font-family: var(--chrome-mono);
   font-size: 12.5px;
 }
+
+/* FORSVN brand mark — wordmark in Bricolage Grotesque ExtraBold + signal-lime */
+.brand-mark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--chrome-display);
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  color: var(--chrome-accent);
+  text-decoration: none;
+  user-select: none;
+}
+.brand-mark::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--chrome-accent);
+  border-radius: 2px;
+  align-self: center;
+  margin-right: 2px;
+}
+.brand-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--chrome-border);
+  margin: 0 4px;
+}
+
 .stack-chip {
   display: inline-flex;
   align-items: center;
@@ -44,16 +74,19 @@ body {
   border-radius: 3px;
   background: var(--chrome-panel);
   border: 1px solid var(--chrome-border);
+  font-family: var(--chrome-mono);
+  font-size: 11.5px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 500;
+  color: var(--chrome-text);
 }
 .stack-chip::before {
   content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--accent, #fff);
+  background: var(--stage-accent, var(--chrome-accent));
 }
 .topbar-meta {
   flex: 1;
@@ -105,7 +138,7 @@ body {
   color: var(--chrome-text);
   font: 400 13px/1.4 var(--chrome-sans);
   cursor: pointer;
-  transition: border-color 150ms ease;
+  transition: border-color var(--t-hover) var(--ease);
 }
 .left-controls button + button,
 .left-controls .picker-item + .picker-item { margin-top: 6px; }
@@ -113,35 +146,37 @@ body {
 .left-controls .picker-item:hover { border-color: var(--chrome-text-muted); }
 .left-controls .picker-item[aria-selected="true"] { border-color: var(--chrome-accent); background: #19191e; }
 
-/* ============ STAGE (themed) ============ */
+/* ============ STAGE (themed by stack) ============ */
 .stage {
   grid-area: stage;
-  background: var(--bg, #181818);
-  color: var(--fg, #fff);
+  background: var(--stage-bg, #181818);
+  color: var(--stage-fg, #fff);
   padding: var(--stage-pad);
   overflow-y: auto;
-  font-family: var(--font-body, var(--chrome-sans));
-  line-height: var(--line-height, 1.6);
-  animation: stage-enter var(--t-enter, 480ms) var(--ease, ease-out);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: var(--line-height);
+  animation: stage-enter var(--t-enter) var(--ease);
 }
 @keyframes stage-enter {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.stage h1, .stage h2, .stage h3 {
+.stage h1, .stage h2, .stage h3, .stage h4 {
   font-family: var(--font-head);
+  font-weight: 600;
   margin: 0 0 0.6em 0;
   letter-spacing: -0.01em;
 }
-.stage h1 { font-size: 36px; }
-.stage h2 { font-size: 22px; margin-top: 1.4em; }
-.stage h3 { font-size: 17px; margin-top: 1.2em; }
+.stage h1 { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; }
+.stage h2 { font-size: 24px; margin-top: 1.4em; }
+.stage h3 { font-size: 18px; margin-top: 1.2em; }
 .stage p  { max-width: var(--max-measure); margin: 0 0 1em 0; }
 .stage code,
-.stage pre { font-family: var(--font-mono, var(--chrome-mono)); }
+.stage pre { font-family: var(--font-mono); }
 .stage pre {
   background: var(--bg-elevated, rgba(0,0,0,0.06));
-  border: 1px solid var(--border, #2a2a2a);
+  border: 1px solid var(--stage-border, #2a2a2a);
   border-radius: 6px;
   padding: 12px 16px;
   overflow-x: auto;
@@ -172,11 +207,20 @@ body {
   text-decoration: none;
   font-weight: 500;
   letter-spacing: 0.04em;
-  transition: border-color 150ms ease;
+  font-family: var(--chrome-mono);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: border-color var(--t-hover) var(--ease);
 }
 .footer-action:hover { border-color: var(--chrome-text); }
-.footer-action.primary { background: var(--chrome-text); color: var(--chrome-bg); border-color: var(--chrome-text); }
-.footer-action.primary:hover { background: #f4f4f5; }
+.footer-action.primary {
+  background: var(--chrome-accent);
+  color: var(--brand-void);
+  border-color: var(--chrome-accent);
+}
+.footer-action.primary:hover {
+  filter: brightness(1.08);
+}
 .footer-meta { flex: 1; color: var(--chrome-text-muted); }
 
 /* ============ RESPONSIVE FALLBACK ============ */
