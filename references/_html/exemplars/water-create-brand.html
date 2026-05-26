@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en" data-stack="water">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FORSVN Brand Identity · create-brand · 2026-05-26</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../chrome.css">
+
+  <style>
+    /* WATER stage — glassmorphism, depth, gradients */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      max-width: 1280px;
+    }
+    .palette-card {
+      position: relative;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      backdrop-filter: var(--backdrop-blur);
+      box-shadow: var(--shadow-md), var(--shadow-sm);
+      overflow: hidden;
+    }
+    .palette-card::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: var(--accent-gradient);
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    .palette-card h3 {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-variation-settings: "opsz" 96;
+      margin: 0 0 4px 0;
+    }
+    .palette-card .palette-meta {
+      color: var(--fg-muted);
+      font-size: 12.5px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .swatch-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .swatch {
+      flex: 1;
+      aspect-ratio: 2/1;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8px 10px;
+      font: 500 11px/1.2 var(--font-mono);
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: transform var(--t-hover) var(--ease);
+    }
+    .swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+    .swatch .swatch-label { opacity: 0.85; }
+
+    .sample-block {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .sample-block.preview-dark { background: #000; color: #fff; }
+    .sample-block.preview-dark .display { color: #B7FF6E; }
+    .display {
+      font-family: 'Fraunces', serif;
+      font-variation-settings: "opsz" 144;
+      font-weight: 500;
+      font-size: 56px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px 0;
+    }
+    .body-sample { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; line-height: 1.55; opacity: 0.85; }
+    .stress {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14.5px;
+      color: var(--fg);
+      background: rgba(110, 231, 212, 0.06);
+      padding: 10px 14px;
+      border-left: 2px solid var(--accent);
+      margin-top: 12px;
+      border-radius: 0 4px 4px 0;
+    }
+    .stress .label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .component-matrix {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .component-matrix > div {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px;
+    }
+    .component-matrix .label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--fg-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .demo-btn-primary {
+      display: inline-block;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      font: 500 13.5px/1 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+    }
+    .demo-btn-secondary {
+      display: inline-block;
+      padding: 9px 17px;
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      font: 500 13.5px/1 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+    .demo-input {
+      width: 100%;
+      padding: 9px 12px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--fg);
+      font: 400 13.5px/1.4 'Plus Jakarta Sans', sans-serif;
+    }
+    .demo-code {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 10px;
+      color: var(--accent);
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .demo-card-mini {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+    }
+    .demo-card-mini .title { font: 600 13px/1.2 'Plus Jakarta Sans', sans-serif; margin-bottom: 3px; }
+    .demo-card-mini .desc  { font: 400 11.5px/1.4 'Plus Jakarta Sans', sans-serif; color: var(--fg-muted); }
+
+    .verdict-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .verdict {
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .verdict.pass { background: rgba(110, 231, 212, 0.18); color: #6ee7d4; border: 1px solid rgba(110, 231, 212, 0.35); }
+    .verdict.warn { background: rgba(251, 191, 36, 0.18); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
+    .verdict-meta { color: var(--fg-muted); }
+
+    .meta-stamp {
+      position: absolute; top: 24px; right: 24px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--fg-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stage-intro {
+      max-width: var(--max-measure);
+      padding: 8px 0 24px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .stage-intro h1 {
+      font-family: var(--font-head);
+      font-size: 48px;
+      font-variation-settings: "opsz" 144;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px 0;
+    }
+    .stage-intro p {
+      font-family: var(--font-body);
+      color: var(--fg-muted);
+      max-width: 60ch;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="stack-chip">WATER</span>
+    <span class="topbar-meta"><strong>create-brand</strong> · 2026-05-26 · forsvn-pure-void</span>
+    <span class="decision-pill" data-state="pending">pending</span>
+  </header>
+
+  <aside class="left-controls">
+    <div class="control-group" data-picker-group>
+      <h2>Variants</h2>
+      <button class="picker-item" data-picker-value="pure-void" aria-selected="true">
+        Pure Void <span style="color:var(--chrome-text-muted);font-size:11px;">· black · signal-lime</span>
+      </button>
+      <button class="picker-item" data-picker-value="forest" aria-selected="false">
+        Forest <span style="color:var(--chrome-text-muted);font-size:11px;">· #0a1a0e · #ffd166</span>
+      </button>
+      <button class="picker-item" data-picker-value="ink-paper" aria-selected="false">
+        Ink &amp; Paper <span style="color:var(--chrome-text-muted);font-size:11px;">· #1a1410 · #b87333</span>
+      </button>
+    </div>
+
+    <div class="control-group">
+      <h2>Compare</h2>
+      <button type="button" data-toggle="comparison">Side-by-side (on)</button>
+    </div>
+
+    <div class="control-group">
+      <h2>View</h2>
+      <button type="button" data-toggle="density">Density · loose</button>
+      <button type="button" data-toggle="vn-stress">Vietnamese stress · on</button>
+      <button type="button" data-toggle="grid">8px grid overlay</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Export</h2>
+      <button type="button" data-copy-source="tokens-tailwind">Copy Tailwind config</button>
+      <button type="button" data-copy-source="tokens-shadcn">Copy shadcn theme</button>
+      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <section class="stage-intro">
+      <h1>FORSVN brand exploration</h1>
+      <p>Two palette candidates against the same display, body, Vietnamese stress, and component samples. Pick the one that feels right — your decision is captured in the Markdown twin via Roughdraft.</p>
+    </section>
+
+    <div class="palette-grid">
+
+      <!-- Variant A: Pure Void -->
+      <article class="palette-card">
+        <h3>Pure Void</h3>
+        <div class="palette-meta">Variant A · proposed canonical</div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#000000;color:#B7FF6E;"><span class="swatch-label">#000000</span><strong>bg</strong></div>
+          <div class="swatch" style="background:#B7FF6E;color:#000;"><span class="swatch-label">#B7FF6E</span><strong>accent</strong></div>
+          <div class="swatch" style="background:#F4F4F5;color:#000;"><span class="swatch-label">#F4F4F5</span><strong>fg</strong></div>
+          <div class="swatch" style="background:#27272A;color:#fff;"><span class="swatch-label">#27272A</span><strong>panel</strong></div>
+        </div>
+
+        <div class="sample-block preview-dark">
+          <h4 class="display">Build the&nbsp;quiet&nbsp;machine.</h4>
+          <p class="body-sample">A studio for tools that compress effort. Sharp surfaces, signal-only chrome, voice that sounds like the operator — not a brand book.</p>
+          <div class="stress">
+            <span class="label">VN diacritic stress · 16px</span>
+            Đẹp đẽ kỳ lạ, chững chạc giữa biển nhiễu. Tóc rối nắng, sương lệ ngọn cỏ. Quẹo lựa rượu nồng nỗi nhớ.
+          </div>
+        </div>
+
+        <div class="component-matrix">
+          <div>
+            <span class="label">Buttons</span>
+            <button class="demo-btn-primary" style="background:#B7FF6E;color:#000;">Begin</button>
+            <button class="demo-btn-secondary" style="border-color:#B7FF6E;color:#B7FF6E;">Continue</button>
+          </div>
+          <div>
+            <span class="label">Input</span>
+            <input class="demo-input" placeholder="What are you building?" style="border-color:#27272A;color:#F4F4F5;background:#0a0a0a;">
+          </div>
+          <div>
+            <span class="label">Code</span>
+            <code class="demo-code" style="color:#B7FF6E;background:#0a0a0a;">bun forsvn discover</code>
+          </div>
+          <div class="demo-card-mini" style="background:#0a0a0a;border-color:#27272A;">
+            <div class="title" style="color:#F4F4F5;">Operator capture</div>
+            <div class="desc">23 conversations · 14 decisions · 6 specs locked</div>
+          </div>
+        </div>
+
+        <div class="verdict-row">
+          <span class="verdict pass">WCAG AA · pass</span>
+          <span class="verdict-meta">accent on bg = 14.8:1 · fg on bg = 17.0:1</span>
+        </div>
+      </article>
+
+      <!-- Variant B: Forest -->
+      <article class="palette-card">
+        <h3>Forest</h3>
+        <div class="palette-meta">Variant B · alternative</div>
+
+        <div class="swatch-row">
+          <div class="swatch" style="background:#0a1a0e;color:#ffd166;"><span class="swatch-label">#0a1a0e</span><strong>bg</strong></div>
+          <div class="swatch" style="background:#ffd166;color:#0a1a0e;"><span class="swatch-label">#ffd166</span><strong>accent</strong></div>
+          <div class="swatch" style="background:#e8f0e2;color:#0a1a0e;"><span class="swatch-label">#e8f0e2</span><strong>fg</strong></div>
+          <div class="swatch" style="background:#1a2e1f;color:#e8f0e2;"><span class="swatch-label">#1a2e1f</span><strong>panel</strong></div>
+        </div>
+
+        <div class="sample-block" style="background:#0a1a0e;color:#e8f0e2;">
+          <h4 class="display" style="color:#ffd166;">Build the&nbsp;quiet&nbsp;machine.</h4>
+          <p class="body-sample" style="color:#e8f0e2;">A studio for tools that compress effort. Sharp surfaces, signal-only chrome, voice that sounds like the operator — not a brand book.</p>
+          <div class="stress" style="background:rgba(255,209,102,0.07);border-left-color:#ffd166;">
+            <span class="label" style="color:#ffd166;">VN diacritic stress · 16px</span>
+            Đẹp đẽ kỳ lạ, chững chạc giữa biển nhiễu. Tóc rối nắng, sương lệ ngọn cỏ. Quẹo lựa rượu nồng nỗi nhớ.
+          </div>
+        </div>
+
+        <div class="component-matrix">
+          <div>
+            <span class="label">Buttons</span>
+            <button class="demo-btn-primary" style="background:#ffd166;color:#0a1a0e;">Begin</button>
+            <button class="demo-btn-secondary" style="border-color:#ffd166;color:#ffd166;">Continue</button>
+          </div>
+          <div>
+            <span class="label">Input</span>
+            <input class="demo-input" placeholder="What are you building?" style="border-color:#1a2e1f;color:#e8f0e2;background:#0a1a0e;">
+          </div>
+          <div>
+            <span class="label">Code</span>
+            <code class="demo-code" style="color:#ffd166;background:#0a1a0e;">bun forsvn discover</code>
+          </div>
+          <div class="demo-card-mini" style="background:#0a1a0e;border-color:#1a2e1f;">
+            <div class="title" style="color:#e8f0e2;">Operator capture</div>
+            <div class="desc">23 conversations · 14 decisions · 6 specs locked</div>
+          </div>
+        </div>
+
+        <div class="verdict-row">
+          <span class="verdict pass">WCAG AA · pass</span>
+          <span class="verdict-meta">accent on bg = 11.2:1 · fg on bg = 13.6:1</span>
+        </div>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a class="footer-action primary" data-roughdraft-link
+       href="roughdraft://open?path=.forsvn%2Fartifacts%2Fmkt-create-brand-2026-05-26-forsvn-pure-void.md">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">FORSVN Brand Identity · decision: pending · last regenerated 2026-05-26T08:24Z</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <!-- ====================================================================== -->
+  <!-- Exportable token blocks (hidden from view, used by Copy buttons)         -->
+  <!-- ====================================================================== -->
+  <script type="application/json" id="artifact-data">{
+  "skill": "create-brand",
+  "version": 1,
+  "date": "2026-05-26",
+  "status": "done",
+  "stack": "mkt",
+  "skills_involved": ["research-icp", "create-brand"],
+  "lifecycle": "canonical",
+  "summary": "FORSVN brand identity — Pure Void palette, Bricolage Grotesque + Be Vietnam Pro typography",
+  "decision_state": "pending",
+  "review_surface": "html",
+  "review_tool": "roughdraft"
+}</script>
+  <pre id="tokens-tailwind" hidden>// tailwind.config.ts extend block
+export default {
+  theme: {
+    extend: {
+      colors: {
+        bg:     '#000000',
+        fg:     '#F4F4F5',
+        panel:  '#27272A',
+        accent: '#B7FF6E',
+      },
+      fontFamily: {
+        display: ['Fraunces', 'serif'],
+        body:    ['Plus Jakarta Sans', 'sans-serif'],
+        mono:    ['JetBrains Mono', 'monospace'],
+      },
+    },
+  },
+};
+</pre>
+  <pre id="tokens-shadcn" hidden>/* globals.css :root block — shadcn convention */
+:root {
+  --background: 0 0% 0%;
+  --foreground: 240 5% 96%;
+  --card:       240 4% 16%;
+  --primary:    88 100% 71%;     /* #B7FF6E */
+  --primary-foreground: 0 0% 0%;
+  --border:     240 4% 16%;
+  --ring:       88 100% 71%;
+}
+</pre>
+  <script src="../chrome.js"></script>
+</body>
+</html>

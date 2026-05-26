@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en" data-stack="air">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pricing decision: Conquis desktop · debate-agents · 2026-05-26</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../tokens.css">
+  <link rel="stylesheet" href="../chrome.css">
+
+  <style>
+    .meta-label {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+    }
+    .perspectives {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 0.5px solid var(--border-strong);
+      border-bottom: 0.5px solid var(--border-strong);
+      margin-top: 24px;
+    }
+    .perspective {
+      padding: 32px 24px;
+      border-right: 0.5px solid var(--border);
+      animation: drift-fade 480ms var(--ease) backwards;
+    }
+    .perspective:nth-child(1) { animation-delay: 0ms; }
+    .perspective:nth-child(2) { animation-delay: 80ms; }
+    .perspective:nth-child(3) { animation-delay: 160ms; border-right: none; }
+    @keyframes drift-fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .perspective h2 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 8px 0 6px 0;
+    }
+    .perspective h2 + .meta-label { display: block; margin-bottom: 18px; }
+    .perspective .position {
+      font: 500 14.5px/1.5 var(--font-body);
+      color: var(--fg);
+      margin: 0 0 16px 0;
+    }
+    .perspective .arg-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .perspective .arg-list li {
+      padding: 8px 0;
+      border-top: 0.5px solid var(--border);
+      font-size: 13.5px;
+      color: var(--fg-muted);
+    }
+    .perspective .arg-list li::before {
+      content: "→ ";
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .verdict-block {
+      max-width: var(--max-measure);
+      margin: 40px 0 24px 0;
+      padding: 24px;
+      background: var(--bg-elevated);
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+    }
+    .verdict-block .meta-label { margin-bottom: 8px; }
+    .verdict-block h3 {
+      font-family: var(--font-head);
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0 0 12px 0;
+    }
+    .verdict-block p { margin: 0; color: var(--fg-muted); }
+
+    .stage-intro h1 {
+      font-family: var(--font-head);
+      font-size: 42px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px 0;
+    }
+    .stage-intro p { color: var(--fg-muted); max-width: 60ch; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="stack-chip">AIR</span>
+    <span class="topbar-meta"><strong>debate-agents</strong> · 2026-05-26 · conquis-desktop-pricing</span>
+    <span class="decision-pill" data-state="pending">pending</span>
+  </header>
+
+  <aside class="left-controls">
+    <div class="control-group" data-picker-group>
+      <h2>Perspectives</h2>
+      <button class="picker-item" data-picker-value="all" aria-selected="true">All three</button>
+      <button class="picker-item" data-picker-value="growth" aria-selected="false">Growth only</button>
+      <button class="picker-item" data-picker-value="finance" aria-selected="false">Finance only</button>
+      <button class="picker-item" data-picker-value="user" aria-selected="false">User only</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Compare</h2>
+      <button type="button" data-toggle="comparison">Show consensus → off</button>
+    </div>
+
+    <div class="control-group">
+      <h2>View</h2>
+      <button type="button" data-toggle="density">Density · loose</button>
+      <button type="button" data-toggle="arguments">Arguments · expanded</button>
+    </div>
+
+    <div class="control-group">
+      <h2>Export</h2>
+      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <section class="stage-intro">
+      <h1>Pricing decision · Conquis desktop</h1>
+      <p>Three perspectives, run in parallel against the same brief. Each landed on a number; read the rationale side-by-side, then capture the decision in Roughdraft.</p>
+    </section>
+
+    <section class="perspectives">
+
+      <article class="perspective">
+        <span class="meta-label">Perspective · 01</span>
+        <h2>Growth</h2>
+        <span class="meta-label">Pursues breadth and acquisition velocity</span>
+        <p class="position"><strong>$29 single-tier.</strong> Low friction, broad install base, depend on volume + future expand-monetization.</p>
+        <ul class="arg-list">
+          <li>Trial-to-paid lift estimated at +18% vs. $49</li>
+          <li>Search-term competitive zone is $19–$39</li>
+          <li>Volume creates training data for v2 personalization</li>
+        </ul>
+      </article>
+
+      <article class="perspective">
+        <span class="meta-label">Perspective · 02</span>
+        <h2>Finance</h2>
+        <span class="meta-label">Pursues unit-economic sustainability</span>
+        <p class="position"><strong>$59 single-tier.</strong> Margin headroom for support, CAC payback in 4 mo., room to discount for enterprise.</p>
+        <ul class="arg-list">
+          <li>Current CAC ≈ $42; $29 requires 2-yr payback at 35% churn</li>
+          <li>Avoids race-to-bottom commitment</li>
+          <li>Anchors a future $99 tier with no migration friction</li>
+        </ul>
+      </article>
+
+      <article class="perspective">
+        <span class="meta-label">Perspective · 03</span>
+        <h2>User</h2>
+        <span class="meta-label">Pursues felt-value alignment</span>
+        <p class="position"><strong>$49 single-tier.</strong> Operators self-report willingness-to-pay $40–60; sub-$50 reads as utility, super-$50 reads as platform.</p>
+        <ul class="arg-list">
+          <li>14/20 interviewed operators named a number in $40–60</li>
+          <li>$59 triggers "is this a SaaS" hesitation in 4/20</li>
+          <li>$29 triggers "is this real" hesitation in 5/20</li>
+        </ul>
+      </article>
+
+    </section>
+
+    <section class="verdict-block">
+      <span class="meta-label">Operator decision · committed</span>
+      <h3>$59 single-tier — Finance + User compromise</h3>
+      <p>Finance's CAC math holds; user's willingness-to-pay supports it; growth concedes that volume can come from a discounted enterprise track. Revisit at month 3 if trial-to-paid lands under 18%.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a class="footer-action primary" data-roughdraft-link
+       href="roughdraft://open?path=.forsvn%2Fartifacts%2Fmeta-debate-agents-2026-05-26-conquis-desktop-pricing.md">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">Conquis Desktop Pricing · decision: pending · 3 perspectives reconciled</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <script type="application/json" id="artifact-data">{
+  "skill": "debate-agents",
+  "version": 1,
+  "date": "2026-05-26",
+  "status": "done",
+  "stack": "meta",
+  "lifecycle": "decision",
+  "summary": "Conquis desktop pricing: $59 single-tier (Finance + User compromise)",
+  "decision_state": "pending",
+  "review_surface": "html"
+}</script>
+  <script src="../chrome.js"></script>
+</body>
+</html>

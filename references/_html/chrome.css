@@ -1,0 +1,191 @@
+/* chrome.css — constant chrome regions for the review-surface HTML preview.
+   Topbar + left controls + decision footer. Stage is themed by stack via
+   tokens.css; chrome stays neutral surgical-dark across all stacks. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--chrome-sans);
+  color: var(--chrome-text);
+  background: var(--chrome-bg);
+}
+
+body {
+  display: grid;
+  grid-template-rows: var(--chrome-topbar-h) 1fr var(--chrome-footer-h);
+  grid-template-columns: var(--chrome-left-w) 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "left   stage"
+    "footer footer";
+  min-height: 100vh;
+}
+
+/* ============ TOPBAR ============ */
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--chrome-border);
+  font-family: var(--chrome-mono);
+  font-size: 12.5px;
+}
+.stack-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: var(--chrome-panel);
+  border: 1px solid var(--chrome-border);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.stack-chip::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent, #fff);
+}
+.topbar-meta {
+  flex: 1;
+  color: var(--chrome-text-muted);
+  letter-spacing: 0.04em;
+}
+.topbar-meta strong { color: var(--chrome-text); font-weight: 500; }
+
+/* ============ DECISION PILL ============ */
+.decision-pill {
+  display: inline-flex;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font: 500 12px/1 var(--chrome-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.decision-pill[data-state="pending"]   { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   animation: pill-shimmer 1.5s ease-in-out infinite; }
+.decision-pill[data-state="approved"]  { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
+.decision-pill[data-state="denied"]    { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
+.decision-pill[data-state="suggested"] { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
+@keyframes pill-shimmer { 0%, 100% { opacity: 1 } 50% { opacity: 0.6 } }
+
+/* ============ LEFT CONTROLS ============ */
+.left-controls {
+  grid-area: left;
+  background: var(--chrome-bg);
+  border-right: 1px solid var(--chrome-border);
+  padding: 24px;
+  overflow-y: auto;
+}
+.left-controls h2 {
+  font: 500 11px/1.4 var(--chrome-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--chrome-text-muted);
+  margin: 0 0 12px 0;
+}
+.left-controls .control-group + .control-group { margin-top: 28px; }
+.left-controls button,
+.left-controls .picker-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--chrome-panel);
+  border: 1px solid var(--chrome-border);
+  border-radius: 4px;
+  color: var(--chrome-text);
+  font: 400 13px/1.4 var(--chrome-sans);
+  cursor: pointer;
+  transition: border-color 150ms ease;
+}
+.left-controls button + button,
+.left-controls .picker-item + .picker-item { margin-top: 6px; }
+.left-controls button:hover,
+.left-controls .picker-item:hover { border-color: var(--chrome-text-muted); }
+.left-controls .picker-item[aria-selected="true"] { border-color: var(--chrome-accent); background: #19191e; }
+
+/* ============ STAGE (themed) ============ */
+.stage {
+  grid-area: stage;
+  background: var(--bg, #181818);
+  color: var(--fg, #fff);
+  padding: var(--stage-pad);
+  overflow-y: auto;
+  font-family: var(--font-body, var(--chrome-sans));
+  line-height: var(--line-height, 1.6);
+  animation: stage-enter var(--t-enter, 480ms) var(--ease, ease-out);
+}
+@keyframes stage-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stage h1, .stage h2, .stage h3 {
+  font-family: var(--font-head);
+  margin: 0 0 0.6em 0;
+  letter-spacing: -0.01em;
+}
+.stage h1 { font-size: 36px; }
+.stage h2 { font-size: 22px; margin-top: 1.4em; }
+.stage h3 { font-size: 17px; margin-top: 1.2em; }
+.stage p  { max-width: var(--max-measure); margin: 0 0 1em 0; }
+.stage code,
+.stage pre { font-family: var(--font-mono, var(--chrome-mono)); }
+.stage pre {
+  background: var(--bg-elevated, rgba(0,0,0,0.06));
+  border: 1px solid var(--border, #2a2a2a);
+  border-radius: 6px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  font-size: 13.5px;
+}
+
+/* ============ DECISION FOOTER ============ */
+.footer {
+  grid-area: footer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: var(--chrome-bg);
+  border-top: 1px solid var(--chrome-border);
+  font-family: var(--chrome-mono);
+  font-size: 12.5px;
+}
+.footer-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--chrome-panel);
+  border: 1px solid var(--chrome-border);
+  border-radius: 4px;
+  color: var(--chrome-text);
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: border-color 150ms ease;
+}
+.footer-action:hover { border-color: var(--chrome-text); }
+.footer-action.primary { background: var(--chrome-text); color: var(--chrome-bg); border-color: var(--chrome-text); }
+.footer-action.primary:hover { background: #f4f4f5; }
+.footer-meta { flex: 1; color: var(--chrome-text-muted); }
+
+/* ============ RESPONSIVE FALLBACK ============ */
+@media (max-width: 800px) {
+  body {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--chrome-topbar-h) auto 1fr var(--chrome-footer-h);
+    grid-template-areas: "topbar" "left" "stage" "footer";
+  }
+  .left-controls { border-right: none; border-bottom: 1px solid var(--chrome-border); max-height: 240px; }
+  .stage { padding: 24px; }
+}
