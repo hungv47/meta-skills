@@ -234,10 +234,16 @@ Output: `references/capability-index.json` — deterministic, committed.
 Strict (run before merge — migration is complete, missing `capability`
 sections are hard errors). There is no in-repo GitHub Actions workflow today;
 the maintainer runs these locally as a pre-merge gate, and any external CI
-(if added later) should run the same six commands:
+(if added later) should run the full pre-merge command set:
 
 ```bash
 bun scripts/validate-routing.ts --require-all
+bun scripts/build-capability-index.ts --check
+node hooks/build-registry.mjs --check
+bun scripts/verify-counts.ts
+node scripts/sync-skill-support.mjs --check
+bun scripts/eval-triggers.ts --require-all
+node hooks/test-router.mjs
 ```
 
 Trigger evals (run before merge — routing changes must keep
@@ -279,9 +285,9 @@ Soft-fail (warn until `--require-all`):
 
 **Fold complete (2026-05-26).** All 43 skills carry `routing.yaml` v2 with both
 `promptSignals` and `capability:` sections. Standalone `capability.yaml` files
-deleted as part of the fold. CI runs `bun scripts/validate-routing.ts
---require-all` so a missing capability section is now a hard error, not a
-warning.
+deleted as part of the fold. The pre-merge gate runs
+`bun scripts/validate-routing.ts --require-all` so a missing capability
+section is now a hard error, not a warning.
 
 What this section was for: tracking which skills had been folded during the
 phased migration. The phased migration is done; this section is retained as a
