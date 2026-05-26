@@ -84,6 +84,16 @@
       return;
     }
 
+    // Defense in depth: the endpoint MUST be the localhost contract documented
+    // in references/review-surface-design.md § 3. If a malicious skill (or
+    // tampered preview-config) names a remote target, refuse to activate so
+    // the reviewer's comments never leave the local machine.
+    if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/done$/.test(config.endpoint)) {
+      // eslint-disable-next-line no-console
+      if (typeof console !== "undefined") console.warn("[forsvn] preview-config.endpoint is not a localhost /done URL; decision-capture stays inert", config.endpoint);
+      return;
+    }
+
     form.setAttribute("data-active", "true");
 
     var status = form.querySelector(".decision-status");

@@ -110,6 +110,12 @@ body {
 .decision-pill[data-state="denied"]    { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
 .decision-pill[data-state="suggested"] { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
 @keyframes pill-shimmer { 0%, 100% { opacity: 1 } 50% { opacity: 0.6 } }
+/* Respect reduced-motion — the pill stays in its idle state instead of running
+   the infinite shimmer (a11y + battery for forgotten review tabs). */
+@media (prefers-reduced-motion: reduce) {
+  .decision-pill[data-state="pending"] { animation: none; }
+  .stage { animation: none; }
+}
 
 /* ============ LEFT CONTROLS ============ */
 .left-controls {
