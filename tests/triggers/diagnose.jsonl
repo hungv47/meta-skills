@@ -1,0 +1,11 @@
+{"prompt": "why is our activation rate declining this quarter", "expect": "trigger", "reason": "phrase \"why is\" +6"}
+{"prompt": "diagnose the metric decline in our signup funnel", "expect": "trigger", "reason": "phrase \"metric decline\" +6, anyOf \"diagnose\" +1 and \"metric decline\" +1 (capped +2)"}
+{"prompt": "find the root cause of last month's churn spike", "expect": "trigger", "reason": "phrase \"root cause\" +6"}
+{"prompt": "what is causing our conversion drop and build a hypothesis tree", "expect": "trigger", "reason": "phrase \"what is causing\" +6, anyOf \"hypothesis\" +1"}
+{"prompt": "what went wrong with retention and give me a logic tree", "expect": "trigger", "reason": "phrase \"what went wrong\" +6, anyOf \"logic tree\" +1"}
+{"prompt": "what should we build next quarter to grow", "expect": "skip", "reason": "noneOf \"what should we build\" hard-suppress — prioritize territory"}
+{"prompt": "do market research on our competitive landscape", "expect": "skip", "reason": "noneOf \"competitor analysis\" not triggered but \"market size\" similarly; main reason: no diagnose phrases hit"}
+{"prompt": "scope this new feature idea before we build it", "expect": "skip", "reason": "noneOf \"scope this\" hard-suppress — discover territory"}
+{"prompt": "i have an idea for a new dashboard", "expect": "skip", "reason": "noneOf 'i have an idea for' hard-suppress (tightened from bare 'i have an idea' — still catches the discover-intent pattern)"}
+{"prompt": "i have an idea — why is conversion dropping on the pricing page", "expect": "trigger", "reason": "regression test: previously hard-suppressed by noneOf 'i have an idea' even though this is a legit diagnose ask using the idiom conversationally. After tightening noneOf to 'i have an idea for', the phrase 'why is' +6 wins for diagnose"}
+{"prompt": "model the funnel and unit economics for next year", "expect": "skip", "reason": "plan-funnel intent — no diagnose phrases"}

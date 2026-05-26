@@ -1,0 +1,10 @@
+{"prompt": "break this down into tasks for the sprint", "expect": "trigger", "reason": "phrase 'break this down' +6 + allOf [break, down, tasks] +4"}
+{"prompt": "create a task list for the auth feature", "expect": "trigger", "reason": "phrase 'task list' +6 + allOf [task, list] +4"}
+{"prompt": "sprint planning for the next two weeks", "expect": "trigger", "reason": "phrase 'sprint planning' +6 + anyOf hit"}
+{"prompt": "decompose this initiative into subtasks", "expect": "trigger", "reason": "phrase 'decompose this' +6 + anyOf 'decompose'"}
+{"prompt": "acceptance criteria for the checkout flow", "expect": "trigger", "reason": "phrase 'acceptance criteria' +6 + anyOf hit"}
+{"prompt": "fresh eyes on my pull request", "expect": "skip", "reason": "noneOf 'fresh eyes' suppresses breakdown-tasks; review-work wins"}
+{"prompt": "code review of the auth module", "expect": "skip", "reason": "noneOf 'code review' suppresses breakdown-tasks; review-work wins"}
+{"prompt": "scope this feature before we build", "expect": "skip", "reason": "noneOf 'scope this' suppresses breakdown-tasks; discover wins"}
+{"prompt": "what should we build for the dashboard", "expect": "skip", "reason": "noneOf 'what should we build' suppresses breakdown-tasks; discover wins"}
+{"prompt": "explain the existing plan to me", "expect": "skip", "reason": "read-the-plan intent, no breakdown phrases or allOf hits"}

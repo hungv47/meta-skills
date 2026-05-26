@@ -1,5 +1,4 @@
-# Routing signals for diagnose. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for diagnose.
 promptSignals:
   phrases:
     - "root cause"
@@ -25,5 +24,70 @@ promptSignals:
     - "what should we build"
     - "scope this"
     - "clarify requirements"
-    - "i have an idea"
+    # "i have an idea" was too broad — hard-suppressed legitimate diagnose
+    # asks that happened to start with that idiom ("i have an idea — why is
+    # X dropping?"). Tightened to "i have an idea for" which is the actual
+    # discover-intent pattern (proposing a new thing); leaves diagnose asks
+    # that use "i have an idea" conversationally intact.
+    - "i have an idea for"
   minScore: 6
+
+capability:
+  id: diagnose
+  domain: research
+  public: true
+  command: /diagnose
+  summary: "Diagnose a business problem or metric decline — hypothesis tree, root-cause analysis, if/then/because reasoning chain, ranked hypotheses with falsifiable tests."
+  aliases:
+    - root-cause
+    - hypothesis-tree
+    - metric-decline-diagnosis
+
+  route:
+    use_when:
+      - "A metric is underperforming and you need to diagnose root causes."
+      - "User asks 'why is X declining' or 'what went wrong'."
+      - "Need a hypothesis tree before deciding what to build (Strategy track entry point alongside research-market)."
+    not_when:
+      - "Market sizing / competitor analysis -> research-market."
+      - "Customer personas / VoC -> research-icp."
+      - "Know the problem, need solutions -> prioritize."
+      - "Fuzzy requirements / new idea -> discover."
+    prerequisites:
+      recommended:
+        - "research/product-context.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single-metric, narrow scope; --fast forces single-pass."
+    multi_when:
+      - "Cross-functional diagnosis (acquisition + activation + retention)."
+    critic_required_when:
+      - "Always — if/then/because reasoning gate; no unsourced root causes."
+      - "Falsifiable test per hypothesis; ranked by impact + confidence."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, metric / window / baseline)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Logic-tree examples + Watanabe framework"
+        read:
+          - "references/logic-tree-examples.md"
+          - "references/watanabe-framework.md"
+      - if: "Format conventions"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review (correlational reasoning, story-on-noise)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "research/diagnose.md"
+        lifecycle: canonical
+        produced_when: "Critic PASS; canonical diagnosis record (rename prior to `research/diagnose.v[N].md` on re-run)."

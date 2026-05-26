@@ -1,5 +1,8 @@
-# Routing signals for extract-service. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for extract-service.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "extract a service"
@@ -25,3 +28,61 @@ promptSignals:
     - "system design"
     - "write documentation"
   minScore: 6
+
+capability:
+  id: extract-service
+  domain: product
+  public: true
+  command: /extract-service
+  summary: "Lift repeated operational mechanics (SDK / API / file-system / network logic copy-pasted across handlers) into a shared service layer — stepwise migration with verification."
+  aliases:
+    - service-extraction
+    - refactor-shared-logic
+    - dedupe-handlers
+
+  route:
+    use_when:
+      - "Same operational 'how' recurs across 2+ callers."
+      - "Migration from N callers to one shared service layer is needed."
+      - "Observable behavior must not change (purely structural)."
+    not_when:
+      - "Behavioral cleanup or dead code -> clean-code."
+      - "Designing a system from scratch -> architect-system."
+      - "Code-level refactor without N-caller duplication -> clean-code."
+      - "Documentation only -> write-docs."
+    prerequisites:
+      recommended:
+        - "architecture/system-architecture.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "Single-file extraction; --fast collapses to inline pass."
+    multi_when:
+      - "Default — survey + extract + migrate + verify agents."
+      - "Cross-file migration plan with per-caller verification."
+    critic_required_when:
+      - "Always — behavior-preservation gate (test pass + diff review)."
+      - "Migration plan checkpoint before applying first caller."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (scope detection, N-caller threshold)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Service-layer pattern + migration checklist"
+        read:
+          - "references/service-layer-pattern.md"
+          - "references/migration-checklist.md"
+      - if: "Anti-pattern review (premature extraction, behavior drift)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/product/extract-service/[date]-[slug].md"
+        lifecycle: snapshot
+        produced_when: "End of migration (DONE / DONE_WITH_CONCERNS); re-run same slug same day appends `-v[N]`."

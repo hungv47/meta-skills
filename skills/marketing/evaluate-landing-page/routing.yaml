@@ -1,5 +1,8 @@
-# Routing signals for evaluate-landing-page. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for evaluate-landing-page.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "landing page eval"
@@ -38,3 +41,65 @@ promptSignals:
     - "design brief"
     - "single asset"
   minScore: 6
+
+capability:
+  id: evaluate-landing-page
+  domain: marketing
+  public: true
+  command: /evaluate-landing-page
+  summary: "Score a launched landing page from real performance evidence inside an eval loop. Writes cycle eval snapshot + appends results ledger. Post-launch CRO."
+  aliases:
+    - lp-eval
+    - cro-eval
+    - landing-page-eval
+
+  route:
+    use_when:
+      - "User asks to evaluate a launched landing page with real metrics."
+      - "Loop exists; cycle N needs scoring for one URL."
+      - "Post-launch CRO backed by analytics, experiment results, recordings, form-funnel data."
+    not_when:
+      - "Designing the next page brief or a redesign -> brief-landing-page."
+      - "Channel-strategy questions -> plan-campaign."
+      - "Generic best-practice audits without measurement evidence -> out of scope."
+      - "Scaffolding the loop itself -> run-eval-loop."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+        - "research/icp-research.md"
+      hard:
+        - ".forsvn/loops/[slug]/program.md"
+        - ".forsvn/loops/[slug]/context.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Metric ingest only (no funnel-step diagnosis needed)."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+    critic_required_when:
+      - "Always — eval artifact + ledger row are canonical loop state."
+
+  load:
+    always:
+      - "references/_shared/eval-loop-spec.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic revision cycle"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Critic override / anti-pattern review"
+        read:
+          - "references/_shared/critic-override-protocol.md"
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one cycle = one page = one artifact + one ledger row."
+      - path: ".forsvn/loops/[slug]/results.tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended via `append-loop-result.ts` on critic PASS."

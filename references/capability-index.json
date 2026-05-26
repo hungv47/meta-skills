@@ -1,0 +1,4389 @@
+{
+  "version": 1,
+  "schema": "references/capability-schema.md",
+  "capabilities": {
+    "architect-system": {
+      "id": "architect-system",
+      "domain": "product",
+      "public": true,
+      "command": "/architect-system",
+      "summary": "Design a technical blueprint covering stack, schema, APIs, infrastructure, scaling, and security.",
+      "aliases": [
+        "architecture",
+        "system-design",
+        "tech-stack",
+        "schema"
+      ],
+      "route": {
+        "use_when": [
+          "User asks for system architecture, tech stack, database schema, API design, or deployment plan.",
+          "A product or feature needs a durable technical blueprint before implementation.",
+          "A major scale, migration, or integration decision needs explicit tradeoffs."
+        ],
+        "not_when": [
+          "Requirements are still fuzzy -> discover.",
+          "User journey or screen flow -> map-user-flow.",
+          "Code-level cleanup -> clean-code.",
+          "Extract repeated implementation mechanics -> extract-service."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            ".forsvn/artifacts/meta/specs/[slug].md",
+            ".forsvn/artifacts/product/flow/[slug].md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Simple product with fewer than three user types and fewer than five data entities.",
+          "User supplied stack and only needs a bounded architecture pass."
+        ],
+        "multi_when": [
+          "Greenfield or migration blueprint with unclear stack, schema, APIs, deployment, and scaling needs.",
+          "Architecture becomes the canonical system record.",
+          "Security, compliance, scale, or integration risk is material."
+        ],
+        "critic_required_when": [
+          "Writing or updating architecture/system-architecture.md.",
+          "Architecture affects auth, data, external dependencies, deployment, or security.",
+          "User asks for tradeoff review."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/pre-dispatch-prompts.md",
+          "references/report-template.md",
+          "references/dependency-classification.md"
+        ],
+        "when": [
+          {
+            "if": "choosing stack",
+            "read": [
+              "references/tech-stack-patterns.md",
+              "references/tech-stack-matrix.md"
+            ]
+          },
+          {
+            "if": "schema or persistence design",
+            "read": [
+              "references/database-patterns.md"
+            ]
+          },
+          {
+            "if": "API or auth design",
+            "read": [
+              "references/api-patterns.md",
+              "references/auth-patterns.md"
+            ]
+          },
+          {
+            "if": "deployment or infrastructure design",
+            "read": [
+              "references/deployment-patterns.md"
+            ]
+          },
+          {
+            "if": "security or scaling risk",
+            "read": [
+              "references/security-patterns.md",
+              "references/failure-modes.md"
+            ]
+          },
+          {
+            "if": "quality gate or failure review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "architecture/system-architecture.md",
+            "lifecycle": "canonical",
+            "produced_when": "Architecture reaches DONE or DONE_WITH_CONCERNS."
+          }
+        ]
+      },
+      "source": "skills/product/architect-system/routing.yaml",
+      "skill_path": "skills/product/architect-system"
+    },
+    "breakdown-tasks": {
+      "id": "breakdown-tasks",
+      "domain": "meta",
+      "public": true,
+      "command": "/breakdown-tasks",
+      "summary": "Decompose a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order. For AI agents or human engineers.",
+      "aliases": [
+        "decompose",
+        "task-breakdown",
+        "sprint-plan",
+        "work-breakdown"
+      ],
+      "route": {
+        "use_when": [
+          "Requirements clear (spec or architecture exists); need an execution plan.",
+          "Risk-first ordering needed for implementation.",
+          "Acceptance criteria + task dependencies needed."
+        ],
+        "not_when": [
+          "Requirements unclear -> discover.",
+          "Designing architecture from scratch -> architect-system.",
+          "Code review after building -> review-work.",
+          "Writing docs -> write-docs."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/artifacts/meta/specs/<slug>.md",
+            "architecture/system-architecture.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Small scope (<10 tasks); --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Larger initiative with cross-domain dependencies."
+        ],
+        "critic_required_when": [
+          "Risk-first ordering check (highest-risk task is not last).",
+          "Dependency graph has no cycles."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (spec read, scope detection)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Acceptance criteria + dependency patterns",
+            "read": [
+              "references/acceptance-criteria.md",
+              "references/dependency-patterns.md"
+            ]
+          },
+          {
+            "if": "Task format + sizing examples",
+            "read": [
+              "references/task-format.md",
+              "references/sizing-examples.md"
+            ]
+          },
+          {
+            "if": "Execution protocol",
+            "read": [
+              "references/execution-protocol.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (premature decomposition, missing dependencies)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/tasks.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; canonical task list for the initiative."
+          }
+        ]
+      },
+      "source": "skills/meta/breakdown-tasks/routing.yaml",
+      "skill_path": "skills/meta/breakdown-tasks"
+    },
+    "brief-app-preview": {
+      "id": "brief-app-preview",
+      "domain": "marketing",
+      "public": true,
+      "command": "/brief-app-preview",
+      "summary": "Production-ready brief for app onboarding / App Store preview / feature-demo video — UI beats from screenshots, interaction choreography, motion rules, produce-video handoff.",
+      "aliases": [
+        "app-preview-brief",
+        "feature-demo-brief",
+        "onboarding-video-brief"
+      ],
+      "route": {
+        "use_when": [
+          "Screenshots exist and goal is to show a product feature in action.",
+          "App Store preview / onboarding video / feature-demo brief needed.",
+          "Composition over real UI screenshots (no synthesis)."
+        ],
+        "not_when": [
+          "Generic short-form social video -> brief-shortform.",
+          "Rendering the video -> produce-video.",
+          "Static visual asset -> brief-graphic.",
+          "No screenshots available; greenfield social video -> brief-shortform."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "brand/DESIGN.md",
+            "research/icp-research.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast collapses to leaner single-pass; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — multi-agent (feature-anchor + crop-map + caption-band + interaction-choreography + critic) with 6 hard gates."
+        ],
+        "critic_required_when": [
+          "Always — 6 hard gates (screenshot grounding, interaction vocabulary, mask transforms, pointer fidelity, caption-band geometry, brand-source declaration)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, screenshot inventory)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic routing",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; main artifact."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — per-shot spec for produce-video."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/app-preview-brief/[slug]/assets.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — source-ID-to-path map."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/app-preview-brief/[slug]/crop-map.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — crop justifications."
+          }
+        ]
+      },
+      "source": "skills/marketing/brief-app-preview/routing.yaml",
+      "skill_path": "skills/marketing/brief-app-preview"
+    },
+    "brief-graphic": {
+      "id": "brief-graphic",
+      "domain": "marketing",
+      "public": true,
+      "command": "/brief-graphic",
+      "summary": "Produce a graphic-design brief for a single visual asset — social posts, thumbnails, banners, OOH, OG cards. Does NOT render — emits prompt or designer-handoff spec.",
+      "aliases": [
+        "design-brief",
+        "graphic-brief",
+        "asset-brief"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to spec a single visual asset for production.",
+          "Image-gen prompt needed (Midjourney / Imagen / DALL·E / Claude Design / Ideogram / Veo / Suno).",
+          "Designer-handoff spec needed (Figma, print)."
+        ],
+        "not_when": [
+          "Brand identity / design system / tokens -> create-brand.",
+          "Whole-page redesign -> brief-landing-page.",
+          "Copy that goes IN the asset -> write-copy.",
+          "User flow / wireframe -> map-user-flow."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/ASSETS.md",
+            ".forsvn/artifacts/mkt/content/[slug].copy.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md",
+            "research/icp-research.md"
+          ],
+          "hard": [
+            "brand/BRAND.md",
+            "brand/DESIGN.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "--fast collapses Layer 1 parallel into single inline pass + Layer 1.5 to 1 brief + skips Approval Gate 1."
+        ],
+        "multi_when": [
+          "Default — Layer 1 parallel (brand-anchor + concept + copy-anchor) → Layer 1.5 brief-synth → Approval Gate 1 → Layer 2 (route-dependent) → Layer 3 critic → Approval Gate 2."
+        ],
+        "critic_required_when": [
+          "Always — 8-dim Visual Rubric + 13-pattern Generic-AI-Aesthetic Detector.",
+          "Sacred-element compliance gate fires every cycle."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Hard gate (brand artifacts present) + Cold Start",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Step 0.5 Route Detection",
+            "read": [
+              "references/asset-types.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch (parallel agents)",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Platform-aware spec (IG / LinkedIn / FB / YT / X / OOH / banner)",
+            "read": [
+              "references/platform-modules.md"
+            ]
+          },
+          {
+            "if": "Image-gen prompts (image-gen / template-pack routes)",
+            "read": [
+              "references/prompt-patterns.md"
+            ]
+          },
+          {
+            "if": "Critic / rubric + AI-Aesthetic Detector",
+            "read": [
+              "references/visual-rubric.md",
+              "references/failure-modes.md",
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/design-briefs/[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Approval Gate 2 PASS; default overwrite on re-run."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/design-briefs/[slug]-rejected.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Approval Gate 2 reject."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/design-briefs/[slug]-candidates.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Approval Gate 1 stop (paused-candidate exit)."
+          }
+        ]
+      },
+      "source": "skills/marketing/brief-graphic/routing.yaml",
+      "skill_path": "skills/marketing/brief-graphic"
+    },
+    "brief-landing-page": {
+      "id": "brief-landing-page",
+      "domain": "marketing",
+      "public": true,
+      "command": "/brief-landing-page",
+      "summary": "Generate a campaign-grade brief for a conversion landing page — hypothesis, architecture, per-section spec, asset slots, hand-off prompts.",
+      "aliases": [
+        "lp-brief",
+        "landing-page",
+        "page-brief",
+        "redesign-brief"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to plan or redesign a conversion landing page.",
+          "User needs a designer-ready brief (Claude Design / Figma / human / coding agent).",
+          "Post-launch evidence triggers a redesign (Route B)."
+        ],
+        "not_when": [
+          "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-eval-loop).",
+          "Single visual asset spec -> brief-graphic.",
+          "Page exists but conversion is fine; just needs headline variations -> write-copy.",
+          "Non-conversion pages (blog, docs hub, navigation hub) -> out of scope.",
+          "Programmatic-SEO templates (industries/:slug, compare/:vs) -> out of scope for v1."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md",
+            "research/product-context.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md"
+          ],
+          "hard": [
+            "brand/BRAND.md",
+            "brand/DESIGN.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast flag forces single-agent execution per layer (Approval Gates still fire)."
+        ],
+        "multi_when": [
+          "Default — 9 agents across L1 parallel / L1.5 hypothesis / L2 architecture / L3 section-spec / L3.5 asset-slot / L4 handoff / L5 critic gate.",
+          "Route B redesign with evidence anchoring.",
+          "Re-run with --rev=N."
+        ],
+        "critic_required_when": [
+          "Always — both critics (conversion + brand-voice) PASS-gate every brief before write.",
+          "DONE_WITH_CONCERNS is the floor; no silent FAIL outputs."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Hard-gate check (brand artifacts present)",
+            "read": [
+              "references/_shared/reviewable-artifact-contract.md"
+            ]
+          },
+          {
+            "if": "Pre-Dispatch (Cold Start, page-state / evidence intake)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer 1 dispatch (evidence + brand anchors)",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Layer 1.5 hypothesis generation / scoring",
+            "read": [
+              "references/hypothesis-rubric.md"
+            ]
+          },
+          {
+            "if": "Layer 2 architecture / scroll rhythm",
+            "read": [
+              "references/surface-rhythm.md",
+              "references/section-templates.md"
+            ]
+          },
+          {
+            "if": "Layer 3-4 section spec / handoff prompts / asset slots",
+            "read": [
+              "references/conversion-principles.md",
+              "references/handoff-formats.md",
+              "references/design-handoff-prompting.md"
+            ]
+          },
+          {
+            "if": "Layer 5 critic gate / failure analysis",
+            "read": [
+              "references/anti-patterns.md",
+              "references/failure-modes.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Approval Gate 3 PASS; versioned re-runs to v[N]/brief.md."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-implementation.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always-emitted companion (universal coding-agent prompt, stack auto-detected)."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-claude-design.md",
+            "lifecycle": "pipeline",
+            "produced_when": "target_handoff lists claude-design."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-figma.md",
+            "lifecycle": "pipeline",
+            "produced_when": "target_handoff lists figma."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-designer.md",
+            "lifecycle": "pipeline",
+            "produced_when": "target_handoff lists designer."
+          }
+        ]
+      },
+      "source": "skills/marketing/brief-landing-page/routing.yaml",
+      "skill_path": "skills/marketing/brief-landing-page"
+    },
+    "brief-shortform": {
+      "id": "brief-shortform",
+      "domain": "marketing",
+      "public": true,
+      "command": "/brief-shortform",
+      "summary": "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + max 2 variants per run. Live-action + motion-graphic.",
+      "aliases": [
+        "shortform-brief",
+        "video-brief",
+        "storyboard",
+        "shoot-brief"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to turn a video angle / topic into a shootable brief.",
+          "Short-form video (TikTok / Reels / Shorts / X / LinkedIn) needs production spec.",
+          "1 hero + per-platform variants requested."
+        ],
+        "not_when": [
+          "Static visual asset -> brief-graphic.",
+          "Organic social copy without video -> write-social.",
+          "Paid ad creative -> write-ad.",
+          "Long-form video (>60s) -> out of scope.",
+          "Rendering / scaffolds -> produce-video."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/artifacts/research/research-shortform/[slug].md",
+            "research/icp-research.md",
+            "brand/BRAND.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast collapses to Layer 1 + 1.5 single-pass via single-agent fallback (skips Layer 2 — no critic, no platform-tailor)."
+        ],
+        "multi_when": [
+          "Default — 9 agents (Layer 1 parallel + Layer 1.5 parallel + Layer 2 sequential).",
+          "Multi-platform invocation adds `platform-tailor-agent` for TRUE RECUT variants."
+        ],
+        "critic_required_when": [
+          "Always — 4-sub-critic gate (Hook / Production / Algorithm-fit / Brand-fit); all 4 PASS required; max 2 rewrite cycles.",
+          "Variants are TRUE RECUTS, not caption-resizes — orchestrator rejects caption-only resizing."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, VN auto-routing for polish chain)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + spawn mechanics + critic routing",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Hook archetypes by platform",
+            "read": [
+              "references/hook-archetypes.md"
+            ]
+          },
+          {
+            "if": "Storyboard grammar (shot/scene list, timing, framing)",
+            "read": [
+              "references/storyboard-grammar.md"
+            ]
+          },
+          {
+            "if": "Caption + CTA + hashtag rules",
+            "read": [
+              "references/caption-cta-rules.md"
+            ]
+          },
+          {
+            "if": "Live-action vs motion-graphic production modes",
+            "read": [
+              "references/production-modes.md"
+            ]
+          },
+          {
+            "if": "Platform intelligence (format / algorithm / mechanics)",
+            "read": [
+              "references/_shared/platform-intelligence/"
+            ]
+          },
+          {
+            "if": "Polish chain (vn-tone | humanmaxxing | none)",
+            "read": [
+              "references/polish-chain.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Hero brief — Layer 2 critic PASS / DONE_WITH_CONCERNS."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/brief-shortform/[slug]/variants/[platform].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Per-platform variant (TRUE RECUT) emitted by platform-tailor-agent."
+          }
+        ]
+      },
+      "source": "skills/marketing/brief-shortform/routing.yaml",
+      "skill_path": "skills/marketing/brief-shortform"
+    },
+    "build-ios-apps": {
+      "id": "build-ios-apps",
+      "domain": "product",
+      "public": true,
+      "command": "/build-ios-apps",
+      "summary": "Build, sign, install, and publish iOS apps via the Chorus Vibecode signing service. Vendored from Chorus; sole exception to the multi-agent quality bar.",
+      "aliases": [
+        "ios",
+        "iphone",
+        "swift",
+        "testflight",
+        "app-store"
+      ],
+      "route": {
+        "use_when": [
+          "User wants to build, sign, install, or publish a Swift / SwiftUI iOS app.",
+          "User asks to test an app on a real iPhone or push a preview build to chat.",
+          "User asks to register a device, authenticate with Apple, submit for review, or push to TestFlight / App Store."
+        ],
+        "not_when": [
+          "Building or shipping non-iOS targets (Android, web, server) -> use the matching product skill.",
+          "Designing iOS app architecture or feature flow before any build is needed -> architect-system / map-user-flow.",
+          "Generic Swift code review or cleanup -> clean-code."
+        ],
+        "prerequisites": {
+          "recommended": [],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Every invocation. This skill wraps the ./ios-cli pipeline; orchestration weight lives in the CLI, not in agents."
+        ],
+        "multi_when": [
+          "Never. Vendored Chorus skill intentionally bypasses the multi-agent quality bar; do not fan out."
+        ],
+        "critic_required_when": [
+          "Never under normal use. Build/sign failures surface as ios-cli exit codes and Xcode logs, not as critic gates."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/capabilities.md",
+          "references/gotchas.md"
+        ],
+        "when": [
+          {
+            "if": "user is publishing to App Store or TestFlight",
+            "read": [
+              "references/publishing.md",
+              "references/publishing-readiness.md",
+              "references/publishing-production.md",
+              "references/publishing-testflight.md",
+              "references/publishing-gotchas.md",
+              "references/screenshots.md"
+            ]
+          },
+          {
+            "if": "user is registering a device or syncing UDIDs with Apple",
+            "read": [
+              "references/device-registration.md"
+            ]
+          },
+          {
+            "if": "calling ios-cli endpoints directly or debugging signing-service responses",
+            "read": [
+              "references/api-reference.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": []
+      },
+      "source": "skills/product/build-ios-apps/routing.yaml",
+      "skill_path": "skills/product/build-ios-apps"
+    },
+    "clean-artifacts": {
+      "id": "clean-artifacts",
+      "domain": "meta",
+      "public": true,
+      "command": "/clean-artifacts",
+      "summary": "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes).",
+      "aliases": [
+        "groom-artifacts",
+        "prune-artifacts",
+        "archive-stale"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to groom or clean `.forsvn/artifacts/`.",
+          "Pre-release sweep across pipeline + snapshot artifacts.",
+          "Artifact tree feels stale; classification needed before action."
+        ],
+        "not_when": [
+          "Cleaning code -> clean-code.",
+          "Cleaning machine state / dotfolders / packages -> clean-machine.",
+          "Free up disk space -> clean-machine."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/experience/technical.md"
+          ],
+          "hard": [
+            ".forsvn/index/manifest.json"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Always — single-agent orchestrator with built-in critic gate as sub-routine.",
+          "--fast collapses orchestration weight but NOT Critical Gates (HARD-NEVER, critic gate, MOVE-not-delete)."
+        ],
+        "multi_when": [
+          "Never — single-agent skill by design; critic is in-procedure, not a separate dispatch."
+        ],
+        "critic_required_when": [
+          "Always — critic spot-checks 5 random STALE/ORPHAN candidates by grepping references before any per-category prompt.",
+          "Live reference found → BLOCKED (no confirmation prompt); references surfaced for operator review."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md",
+          "references/_shared/manifest-spec.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch Cold Start",
+            "read": [
+              "references/procedures/cold-start.md"
+            ]
+          },
+          {
+            "if": "Runner decision tree (sanity-check, walk, classify, critic gate, build table, dry-run/apply)",
+            "read": [
+              "references/procedures/runner.md"
+            ]
+          },
+          {
+            "if": "Classification taxonomy + rule order",
+            "read": [
+              "references/cleanup-rules.md"
+            ]
+          },
+          {
+            "if": "Artifact write / report template",
+            "read": [
+              "references/report-template.md"
+            ]
+          },
+          {
+            "if": "Critic FAIL escalation / anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of run (dry-run or apply); dated, immutable per-run audit record."
+          },
+          {
+            "path": ".forsvn/artifacts/.archive/[YYYY-MM-DD]/",
+            "lifecycle": "ephemeral",
+            "produced_when": "`--apply` confirms per-category move; mirrors source path inside dated archive folder."
+          }
+        ]
+      },
+      "source": "skills/meta/clean-artifacts/routing.yaml",
+      "skill_path": "skills/meta/clean-artifacts"
+    },
+    "clean-code": {
+      "id": "clean-code",
+      "domain": "product",
+      "public": true,
+      "command": "/clean-code",
+      "summary": "Audit + refactor existing code for readability, maintainability, dead-code removal — without changing behavior. Produces meta/records cleanup record + applies fixes in-place.",
+      "aliases": [
+        "refactor",
+        "dead-code",
+        "code-cleanup"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to clean up existing code, remove dead code, improve readability.",
+          "AI-slop / over-engineered code needs taming.",
+          "Refactor without behavior change."
+        ],
+        "not_when": [
+          "Diagnosing business problems -> diagnose.",
+          "Designing a system from scratch -> architect-system.",
+          "Writing missing documentation -> write-docs.",
+          "Service-layer extraction -> extract-service."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "architecture/system-architecture.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Small diff or single-file cleanup; --fast forces single-agent."
+        ],
+        "multi_when": [
+          "Multi-file refactor with behavior-preservation gate."
+        ],
+        "critic_required_when": [
+          "Always — behavior preservation (test pass + no public API change)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of cleanup run; dated immutable record."
+          }
+        ]
+      },
+      "source": "skills/product/clean-code/routing.yaml",
+      "skill_path": "skills/product/clean-code"
+    },
+    "clean-machine": {
+      "id": "clean-machine",
+      "domain": "product",
+      "public": true,
+      "command": "/clean-machine",
+      "summary": "Audit + clean a developer's machine — dotfolders, caches, language toolchains, package globals — with per-target risk surfacing and explicit confirmation.",
+      "aliases": [
+        "machine-cleanup",
+        "home-cleanup",
+        "fresh-start"
+      ],
+      "route": {
+        "use_when": [
+          "New laptop setup; need to start clean.",
+          "Disk is full or near-full; need to free space.",
+          "After trying many AI tools; need to remove abandoned ones.",
+          "Before passing the machine to someone else."
+        ],
+        "not_when": [
+          "Source code cleanup -> clean-code.",
+          "Triaging Documents / Downloads / Desktop user files -> human review, not automation.",
+          "Tool ownership unclear AND owning tool can't be identified -> NEEDS_CONTEXT first."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/experience/technical.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Operator points at one specific folder; single-target fallback.",
+          "--fast flag forces single-agent regardless of scope."
+        ],
+        "multi_when": [
+          "Default — 7 agents (dotfolder + runtime + cache + package-inventory scanners parallel; orphan-detection; safe-nuke; critic).",
+          "Multi-target cleanup (home / caches / runtimes / packages / all)."
+        ],
+        "critic_required_when": [
+          "Always — golden-rules compliance + no user-data deletion + no auth surprise.",
+          "Bulk-action pause triggers (>10GB reclaim, >5 consecutive rejections)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm/Cold Start)",
+            "read": [
+              "references/pre-dispatch-prompts.md"
+            ]
+          },
+          {
+            "if": "Layer 1 scan + tool identification",
+            "read": [
+              "references/agent-manifest.md",
+              "references/classification-vocabulary.md",
+              "references/tool-ownership-map.md",
+              "references/tool-ownership-heuristics.md"
+            ]
+          },
+          {
+            "if": "Critical Gate 2 — auth credential detection",
+            "read": [
+              "references/auth-credential-patterns.md"
+            ]
+          },
+          {
+            "if": "Layer 3 safe-nuke / critic-FAIL handling / bulk-action triggers",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Artifact write",
+            "read": [
+              "references/report-template.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of cleanup session (DONE or DONE_WITH_CONCERNS); dated immutable record."
+          }
+        ]
+      },
+      "source": "skills/product/clean-machine/routing.yaml",
+      "skill_path": "skills/product/clean-machine"
+    },
+    "create-brand": {
+      "id": "create-brand",
+      "domain": "marketing",
+      "public": true,
+      "command": "/create-brand",
+      "summary": "Build a brand identity system as BRAND.md (story, voice, archetype), DESIGN.md (AI-readable design tokens), and ASSETS.md (per-platform inventory).",
+      "aliases": [
+        "brand",
+        "design-system",
+        "identity",
+        "archetype"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to define or rebrand a product's identity, voice, archetype, or visual system.",
+          "User needs an AI-readable design system (palettes, tokens, components, motion).",
+          "Per-platform asset inventory needs to be produced from a brand spec."
+        ],
+        "not_when": [
+          "Marketing copy or headlines -> write-copy.",
+          "User journey or screen flow -> map-user-flow.",
+          "Campaign / channel planning -> plan-campaign.",
+          "Audience or ICP research -> research-icp.",
+          "Single asset render only -> produce-asset."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            "research/icp-research.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "MVP, early-stage; user requests Quick Brand (Route A).",
+          "Refining one tightly-bounded section (taglines only, type system only) with known context."
+        ],
+        "multi_when": [
+          "Full brand system across 8 agents (Route B).",
+          "Established product, rebrand, or canonical brand-of-record artifact."
+        ],
+        "critic_required_when": [
+          "Any BRAND.md, DESIGN.md, or ASSETS.md write — canonical artifact.",
+          "Re-run on top of an existing brand folder.",
+          "External-facing identity, design tokens, or platform asset inventory."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm/Cold Start, platform enumeration)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer 1 dispatch (parallel agents)",
+            "read": [
+              "references/procedures/dispatch-mechanics.md",
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Token architecture / component tokens",
+            "read": [
+              "references/token-architecture.md",
+              "references/token-templates.md",
+              "references/component-tokens.md",
+              "references/component-patterns.md"
+            ]
+          },
+          {
+            "if": "Narrative tension or persona sustainability gates",
+            "read": [
+              "references/narrative-tension.md"
+            ]
+          },
+          {
+            "if": "ASSETS.md projection (Step 8.5)",
+            "read": [
+              "references/assets-inventory.md"
+            ]
+          },
+          {
+            "if": "Step 9d brand-kit board",
+            "read": [
+              "references/brand-kit-rendering.md"
+            ]
+          },
+          {
+            "if": "Critic / anti-pattern review",
+            "read": [
+              "references/anti-patterns.md",
+              "references/ai-slop-detection.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "brand/BRAND.md",
+            "lifecycle": "canonical",
+            "produced_when": "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
+          },
+          {
+            "path": "brand/DESIGN.md",
+            "lifecycle": "canonical",
+            "produced_when": "Route B completes Layer 2 critic PASS."
+          },
+          {
+            "path": "brand/ASSETS.md",
+            "lifecycle": "canonical",
+            "produced_when": "Route B completes Step 8.5 ASSETS projection."
+          }
+        ]
+      },
+      "source": "skills/marketing/create-brand/routing.yaml",
+      "skill_path": "skills/marketing/create-brand"
+    },
+    "debate-agents": {
+      "id": "debate-agents",
+      "domain": "meta",
+      "public": true,
+      "command": "/debate-agents",
+      "summary": "Multi-perspective debate panel — spawns 3-5 agents with distinct stances, surfaces tradeoffs, recommends with reasoning. Use for high-stakes decisions with no clear winner.",
+      "aliases": [
+        "debate",
+        "perspectives",
+        "panel",
+        "pros-and-cons"
+      ],
+      "route": {
+        "use_when": [
+          "Decision is expensive to reverse + 2+ viable approaches with non-obvious tradeoffs.",
+          "User wants pressure-test thinking on a strategic / architectural / design choice.",
+          "Called as sub-routine by /discover at Step 5."
+        ],
+        "not_when": [
+          "Clear best answer from context -> just decide.",
+          "Quality check on shipped work -> review-work.",
+          "Decomposing scope -> breakdown-tasks.",
+          "Scoping fuzzy requirements -> discover."
+        ],
+        "prerequisites": {
+          "recommended": [],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "Never — debate is multi-agent by design (minimum 3 stances)."
+        ],
+        "multi_when": [
+          "Default — 3-5 agents with distinct stances + synthesis + critic."
+        ],
+        "critic_required_when": [
+          "Always — synthesis must surface real disagreements, not collapse to consensus.",
+          "Decision summary must name the tradeoff matrix + recommended path + reversibility cost."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Debate procedure + stance selection",
+            "read": [
+              "references/procedures/"
+            ]
+          },
+          {
+            "if": "Report template",
+            "read": [
+              "references/report-template.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (fake consensus, premature synthesis)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/debates/[date]-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of debate; dated immutable record with full transcript + synthesis."
+          }
+        ]
+      },
+      "source": "skills/meta/debate-agents/routing.yaml",
+      "skill_path": "skills/meta/debate-agents"
+    },
+    "diagnose": {
+      "id": "diagnose",
+      "domain": "research",
+      "public": true,
+      "command": "/diagnose",
+      "summary": "Diagnose a business problem or metric decline — hypothesis tree, root-cause analysis, if/then/because reasoning chain, ranked hypotheses with falsifiable tests.",
+      "aliases": [
+        "root-cause",
+        "hypothesis-tree",
+        "metric-decline-diagnosis"
+      ],
+      "route": {
+        "use_when": [
+          "A metric is underperforming and you need to diagnose root causes.",
+          "User asks 'why is X declining' or 'what went wrong'.",
+          "Need a hypothesis tree before deciding what to build (Strategy track entry point alongside research-market)."
+        ],
+        "not_when": [
+          "Market sizing / competitor analysis -> research-market.",
+          "Customer personas / VoC -> research-icp.",
+          "Know the problem, need solutions -> prioritize.",
+          "Fuzzy requirements / new idea -> discover."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-metric, narrow scope; --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Cross-functional diagnosis (acquisition + activation + retention)."
+        ],
+        "critic_required_when": [
+          "Always — if/then/because reasoning gate; no unsourced root causes.",
+          "Falsifiable test per hypothesis; ranked by impact + confidence."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, metric / window / baseline)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Logic-tree examples + Watanabe framework",
+            "read": [
+              "references/logic-tree-examples.md",
+              "references/watanabe-framework.md"
+            ]
+          },
+          {
+            "if": "Format conventions",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (correlational reasoning, story-on-noise)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "research/diagnose.md",
+            "lifecycle": "canonical",
+            "produced_when": "Critic PASS; canonical diagnosis record (rename prior to `research/diagnose.v[N].md` on re-run)."
+          }
+        ]
+      },
+      "source": "skills/research/diagnose/routing.yaml",
+      "skill_path": "skills/research/diagnose"
+    },
+    "discover": {
+      "id": "discover",
+      "domain": "meta",
+      "public": true,
+      "command": "/discover",
+      "summary": "Conversational discovery — turn a vague idea, feature, or task into shared clarity through adaptive interviewing. Outputs inline or saved spec.",
+      "aliases": [
+        "clarify",
+        "scope",
+        "idea-stage",
+        "plan-review"
+      ],
+      "route": {
+        "use_when": [
+          "User has a vague idea or feature and needs scope before building.",
+          "User wants to test or review an existing plan / sketch / ADR / spec (plan-review mode).",
+          "Implementation revealed the spec was wrong; needs re-scoping."
+        ],
+        "not_when": [
+          "User wants multi-perspective debate on a decided question -> debate-agents.",
+          "User wants to decompose a known scope into tasks -> breakdown-tasks.",
+          "User wants to diagnose a metric decline -> diagnose.",
+          "User wants competitive landscape or market sizing -> research-market."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/context/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Conversational discovery is single-agent by design.",
+          "Idea-critic agent is the one sub-dispatch (Step 2.7 on idea-stage)."
+        ],
+        "multi_when": [
+          "Never — discover does not run multi-agent itself; it invokes /debate-agents as a sub-routine at Step 5 if a decision needs panels."
+        ],
+        "critic_required_when": [
+          "Idea-stage mode: idea-critic gate at Step 2.7 (auto-on; skip records override in spec frontmatter).",
+          "Saving a spec at Step 7 (review-gated, review_state defaults to pending)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Step 1 context gathering / operator-craft stance load",
+            "read": [
+              "references/procedures/context-gathering.md",
+              "references/operator-playbooks/"
+            ]
+          },
+          {
+            "if": "Step 2.5 mode detection - plan-review picked",
+            "read": [
+              "references/procedures/plan-review-modes.md"
+            ]
+          },
+          {
+            "if": "Step 2.7 idea-critic gate (idea-stage)",
+            "read": [
+              "references/procedures/idea-critic-dispatch.md"
+            ]
+          },
+          {
+            "if": "Step 4 conversation — interview techniques + communication discipline",
+            "read": [
+              "references/procedures/interview-techniques.md",
+              "references/procedures/communication-discipline.md"
+            ]
+          },
+          {
+            "if": "Coverage zone hits data/state, errors, UX, security, performance, integration, business logic, or intent alignment",
+            "read": [
+              "references/question-bank.md"
+            ]
+          },
+          {
+            "if": "Step 7 save (operator-grade spec / Light-depth / Contract format)",
+            "read": [
+              "references/procedures/output-formats.md",
+              "references/_shared/reviewable-artifact-contract.md"
+            ]
+          },
+          {
+            "if": "Resolution-exit edge cases / banned-phrase or false-resolution doubt",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/specs/<slug>.md",
+            "lifecycle": "spec",
+            "produced_when": "User explicitly asks to save, OR session is ending and decisions would be lost, OR output is needed by someone outside this conversation."
+          }
+        ]
+      },
+      "source": "skills/meta/discover/routing.yaml",
+      "skill_path": "skills/meta/discover"
+    },
+    "evaluate-ad": {
+      "id": "evaluate-ad",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-ad",
+      "summary": "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue) inside an eval loop. One cycle per audience-temp.",
+      "aliases": [
+        "ad-eval",
+        "meta-ad-eval",
+        "creative-fatigue-check"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a launched Meta ad cycle with real performance metrics.",
+          "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "Writing new ad creative -> write-ad.",
+          "Channel-mix retrospective across campaigns -> plan-campaign.",
+          "Campaign-level multi-channel scoring -> evaluate-campaign.",
+          "Organic post performance -> evaluate-content.",
+          "Landing-page performance -> evaluate-landing-page.",
+          "Non-Meta ad platforms -> out of scope at v1."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/icp-research.md",
+            "research/product-context.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Metric ingest only (no creative-fatigue diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Creative-fatigue or audience-saturation signal disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Creative-Fatigue table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one audience-temp = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this creative — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-ad/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-ad"
+    },
+    "evaluate-campaign": {
+      "id": "evaluate-campaign",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-campaign",
+      "summary": "Score a launched multi-channel campaign from real metrics inside an existing eval loop — verdict, per-channel breakdown, unit economics. Aggregate-only, one cycle = whole campaign.",
+      "aliases": [
+        "campaign-eval",
+        "retro",
+        "post-launch-review"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a launched campaign cycle (post-launch review with metrics).",
+          "Loop exists; cycle N needs to be scored against the source plan-campaign hypothesis."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "User wants to plan or re-plan the campaign -> plan-campaign.",
+          "Single ad performance -> evaluate-ad.",
+          "Single organic post performance -> evaluate-content.",
+          "Single landing page performance -> evaluate-landing-page.",
+          "Single short-form video performance -> evaluate-shortform."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/icp-research.md",
+            "research/product-context.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Metric ingest only (no channel-mix diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Channel-mix or unit-economics signal disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Channel-Mix table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle ends with one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this campaign — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-campaign/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-campaign"
+    },
+    "evaluate-content": {
+      "id": "evaluate-content",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-content",
+      "summary": "Score a published organic post (text / image / carousel) from real metrics inside an existing eval loop — one primary platform per cycle, verdict + engagement-quality diagnosis.",
+      "aliases": [
+        "content-eval",
+        "post-eval",
+        "post-publish-review"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a published organic post (text / image / carousel) against its write-social brief's hypothesis.",
+          "Loop exists; cycle N needs scoring for one primary platform."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "Short-form video -> evaluate-shortform.",
+          "Paid-ad performance -> evaluate-ad.",
+          "Writing next-cycle copy -> write-social."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/icp-research.md",
+            "research/product-context.md",
+            ".forsvn/artifacts/mkt/published-social/[slug]/manifest.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Metric ingest only (no engagement-quality diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Engagement-quality or cross-platform signal disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Engagement-Quality table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one primary platform = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this exact content — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-content/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-content"
+    },
+    "evaluate-landing-page": {
+      "id": "evaluate-landing-page",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-landing-page",
+      "summary": "Score a launched landing page from real performance evidence inside an eval loop. Writes cycle eval snapshot + appends results ledger. Post-launch CRO.",
+      "aliases": [
+        "lp-eval",
+        "cro-eval",
+        "landing-page-eval"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a launched landing page with real metrics.",
+          "Loop exists; cycle N needs scoring for one URL.",
+          "Post-launch CRO backed by analytics, experiment results, recordings, form-funnel data."
+        ],
+        "not_when": [
+          "Designing the next page brief or a redesign -> brief-landing-page.",
+          "Channel-strategy questions -> plan-campaign.",
+          "Generic best-practice audits without measurement evidence -> out of scope.",
+          "Scaffolding the loop itself -> run-eval-loop."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/icp-research.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Metric ingest only (no funnel-step diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Critic override / anti-pattern review",
+            "read": [
+              "references/_shared/critic-override-protocol.md",
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one page = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-landing-page/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-landing-page"
+    },
+    "evaluate-shortform": {
+      "id": "evaluate-shortform",
+      "domain": "research",
+      "public": true,
+      "command": "/evaluate-shortform",
+      "summary": "Score a published short-form video against its brief-shortform hypothesis inside an eval loop — completion, hold, save, share, comment-quality + brief-fit. One platform per cycle.",
+      "aliases": [
+        "shortform-eval",
+        "video-eval",
+        "post-publish-review"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a published short-form video against its brief.",
+          "Loop exists; cycle N needs scoring for one short-form post on one platform."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "Organic text/image/carousel post -> evaluate-content.",
+          "Paid-ad video -> evaluate-ad.",
+          "Writing the next-cycle brief -> brief-shortform."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/icp-research.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single metric ingest only."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — brief-fit gate (did the post actually execute the brief?).",
+          "Hold-curve + completion gate (no vanity-metric inflation)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Per-platform metric definitions",
+            "read": [
+              "references/_shared/platform-intelligence/"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one post = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          }
+        ]
+      },
+      "source": "skills/research/evaluate-shortform/routing.yaml",
+      "skill_path": "skills/research/evaluate-shortform"
+    },
+    "extract-service": {
+      "id": "extract-service",
+      "domain": "product",
+      "public": true,
+      "command": "/extract-service",
+      "summary": "Lift repeated operational mechanics (SDK / API / file-system / network logic copy-pasted across handlers) into a shared service layer — stepwise migration with verification.",
+      "aliases": [
+        "service-extraction",
+        "refactor-shared-logic",
+        "dedupe-handlers"
+      ],
+      "route": {
+        "use_when": [
+          "Same operational 'how' recurs across 2+ callers.",
+          "Migration from N callers to one shared service layer is needed.",
+          "Observable behavior must not change (purely structural)."
+        ],
+        "not_when": [
+          "Behavioral cleanup or dead code -> clean-code.",
+          "Designing a system from scratch -> architect-system.",
+          "Code-level refactor without N-caller duplication -> clean-code.",
+          "Documentation only -> write-docs."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "architecture/system-architecture.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "Single-file extraction; --fast collapses to inline pass."
+        ],
+        "multi_when": [
+          "Default — survey + extract + migrate + verify agents.",
+          "Cross-file migration plan with per-caller verification."
+        ],
+        "critic_required_when": [
+          "Always — behavior-preservation gate (test pass + diff review).",
+          "Migration plan checkpoint before applying first caller."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (scope detection, N-caller threshold)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Service-layer pattern + migration checklist",
+            "read": [
+              "references/service-layer-pattern.md",
+              "references/migration-checklist.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (premature extraction, behavior drift)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/product/extract-service/[date]-[slug].md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of migration (DONE / DONE_WITH_CONCERNS); re-run same slug same day appends `-v[N]`."
+          }
+        ]
+      },
+      "source": "skills/product/extract-service/routing.yaml",
+      "skill_path": "skills/product/extract-service"
+    },
+    "forsvn": {
+      "id": "forsvn",
+      "domain": "meta",
+      "public": true,
+      "command": "/forsvn",
+      "summary": "Front door that classifies vague work, reads project state, and routes to the right FORSVN capability.",
+      "aliases": [
+        "front-door",
+        "route",
+        "resume",
+        "launch"
+      ],
+      "route": {
+        "use_when": [
+          "User does not know which FORSVN skill to invoke.",
+          "User asks to resume, continue, launch, ship, or decide where to start.",
+          "Request is vague, multi-domain, or needs a short next-action chain."
+        ],
+        "not_when": [
+          "User already named the exact direct skill to invoke.",
+          "User wants a deep multi-perspective argument -> debate-agents.",
+          "User wants a full scoping interview -> discover."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/context/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Classifying one user request or summarizing current project state.",
+          "Resuming a known prior session."
+        ],
+        "multi_when": [
+          "Never dispatches multi-agent itself; it proposes a chain of downstream capabilities."
+        ],
+        "critic_required_when": [
+          "Routing changes would write or rewrite canonical project state.",
+          "The proposed chain would affect brand, architecture, revenue, security, or data."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/chains/research.md",
+          "references/chains/marketing.md",
+          "references/chains/product.md",
+          "references/chains/meta.md"
+        ],
+        "when": [
+          {
+            "if": "workspace has no .forsvn state",
+            "read": [
+              "templates/README.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/routing/last-session.md",
+            "lifecycle": "anchor",
+            "produced_when": "Every routed or awaiting-user invocation."
+          },
+          {
+            "path": ".forsvn/routing/history/YYYY-MM-DD-HHMMSS-[intent].md",
+            "lifecycle": "snapshot",
+            "produced_when": "Every routed or awaiting-user invocation."
+          }
+        ]
+      },
+      "source": "skills/meta/forsvn/routing.yaml",
+      "skill_path": "skills/meta/forsvn"
+    },
+    "humanmaxxing": {
+      "id": "humanmaxxing",
+      "domain": "marketing",
+      "public": true,
+      "command": "/humanmaxxing",
+      "summary": "Strip AI tells, inject brand voice, and compress existing text so it reads human-written — 15%+ word reduction with zero idea loss + optional detector-resistance pass.",
+      "aliases": [
+        "humanize",
+        "polish",
+        "ai-strip",
+        "voice-injection"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to humanize, strip AI patterns from, or compress existing copy.",
+          "Terminal polish pass on AI-drafted text before shipping.",
+          "Detector-sensitive content (admissions, applications, high-stakes public) needs resistance verification."
+        ],
+        "not_when": [
+          "Writing new copy from scratch -> write-copy.",
+          "Brand voice of record -> create-brand.",
+          "Vietnamese-tone polish -> polish-vn."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md",
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Text <200 words (Route A — pattern-only).",
+          "User asks for AI-tells removal only, no compression."
+        ],
+        "multi_when": [
+          "Text 200+ words (Route B — full pipeline; pattern-scanner + voice-extractor + strip + soul-injection + compression + critic).",
+          "Detector-resistance pass requested or pangram detector_mode is set."
+        ],
+        "critic_required_when": [
+          "Always — critic-agent runs after strip + soul-injection + compression.",
+          "Detector-resistance verification gate (high-stakes public content)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm/Cold Start)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Route A or B dispatch",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Pattern scanning (47 AI patterns)",
+            "read": [
+              "references/ai-patterns.md"
+            ]
+          },
+          {
+            "if": "Voice injection / soul-injection",
+            "read": [
+              "references/voice-injection.md",
+              "references/human-writing-stylebook.md"
+            ]
+          },
+          {
+            "if": "Compression (sentence / paragraph / section)",
+            "read": [
+              "references/conciseness-rules.md"
+            ]
+          },
+          {
+            "if": "Detector-resistance pass",
+            "read": [
+              "references/detector-resistance.md"
+            ]
+          },
+          {
+            "if": "Protected-token regression (Route C from write-outreach / write-ad)",
+            "read": [
+              "references/regression-suite.md"
+            ]
+          },
+          {
+            "if": "Critic / anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/content/[slug].humanmaxxed.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Route A or B; re-run renames prior to `[slug].humanmaxxed.v[N].md`."
+          }
+        ]
+      },
+      "source": "skills/marketing/humanmaxxing/routing.yaml",
+      "skill_path": "skills/marketing/humanmaxxing"
+    },
+    "map-user-flow": {
+      "id": "map-user-flow",
+      "domain": "product",
+      "public": true,
+      "command": "/map-user-flow",
+      "summary": "Map user journeys, screen flows, and interaction transitions for a product or feature — ASCII/Mermaid diagrams + per-screen spec + state-transition table.",
+      "aliases": [
+        "user-flow",
+        "screen-flow",
+        "journey-map",
+        "ux-flow"
+      ],
+      "route": {
+        "use_when": [
+          "User asks for a user-journey or screen-flow map.",
+          "Need state-transition table or wireframe-flow before brief-graphic / architect-system.",
+          "Onboarding / signup / checkout flow needs mapping."
+        ],
+        "not_when": [
+          "Brand identity -> create-brand.",
+          "API design / database schema -> architect-system.",
+          "Visual asset spec -> brief-graphic.",
+          "Conversion landing page -> brief-landing-page."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md",
+            "brand/BRAND.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-flow map (e.g., onboarding only); --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Multi-flow map (onboarding + main app + settings + edge states)."
+        ],
+        "critic_required_when": [
+          "Always — every state transition has a trigger; every screen has a purpose."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (audience + scope + platform)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Pre-dispatch prompts + research checklist",
+            "read": [
+              "references/pre-dispatch-prompts.md",
+              "references/research-checklist.md"
+            ]
+          },
+          {
+            "if": "Platform touchpoints",
+            "read": [
+              "references/platform-touchpoints.md"
+            ]
+          },
+          {
+            "if": "Dispatch protocol + report template",
+            "read": [
+              "references/dispatch-protocol.md",
+              "references/report-template.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (orphan states, transition-without-trigger)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/product/flow/[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; flow map artifact."
+          }
+        ]
+      },
+      "source": "skills/product/map-user-flow/routing.yaml",
+      "skill_path": "skills/product/map-user-flow"
+    },
+    "monitor-aeo": {
+      "id": "monitor-aeo",
+      "domain": "marketing",
+      "public": true,
+      "command": "/monitor-aeo",
+      "summary": "Monitor AI-search visibility — provider/query citation checks, AI Overview, Bing/IndexNow, AI referral traffic, llms.txt status, competitor cited-domain share. Dated snapshots.",
+      "aliases": [
+        "aeo",
+        "geo",
+        "ai-citation-check",
+        "ai-visibility"
+      ],
+      "route": {
+        "use_when": [
+          "User needs evidence whether AI systems mention or cite a brand/site.",
+          "Provider/query citation checks across answer engines + generative-search surfaces.",
+          "Dated snapshot reports for trend tracking.",
+          "Competitor cited-domain share analysis."
+        ],
+        "not_when": [
+          "Deciding SEO strategy or rewriting pages -> optimize-seo.",
+          "Technical-audit remediation -> not this skill.",
+          "Keyword research / classical SERP analysis -> optimize-seo."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "Single-mode invocation (e.g., `--mode=llms-txt` only); --fast collapses to single-pass."
+        ],
+        "multi_when": [
+          "Default — multi-mode dispatch (provider-citation + AI-overview + IndexNow + referral-traffic + llms-txt + competitor-share).",
+          "Snapshot generation across 6 evidence classes."
+        ],
+        "critic_required_when": [
+          "Always — evidence-class taxonomy + 8-item quality gate.",
+          "Fabricated citation auto-FAIL; un-sourced trend claims auto-FAIL."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, mode selection)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic routing",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/monitor-aeo/[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of monitoring run; dated, immutable snapshot."
+          }
+        ]
+      },
+      "source": "skills/marketing/monitor-aeo/routing.yaml",
+      "skill_path": "skills/marketing/monitor-aeo"
+    },
+    "optimize-seo": {
+      "id": "optimize-seo",
+      "domain": "marketing",
+      "public": true,
+      "command": "/optimize-seo",
+      "summary": "SEO + AEO + ASO strategy and page rewrites — keyword research, technical audit, content gaps, link strategy, AI-citation optimization.",
+      "aliases": [
+        "seo",
+        "aeo",
+        "aso",
+        "search-optimization"
+      ],
+      "route": {
+        "use_when": [
+          "Search-channel strategy or page rewrites for organic search.",
+          "Technical SEO audit (Core Web Vitals, schema, sitemaps, robots).",
+          "Content-gap analysis + keyword targeting.",
+          "AEO / AI-citation optimization (`llms.txt`, structured data for AI).",
+          "ASO (App Store Optimization) keyword + description."
+        ],
+        "not_when": [
+          "Monitoring AI-search visibility (citation checks, snapshots) -> monitor-aeo.",
+          "Landing-page conversion audit -> evaluate-landing-page.",
+          "Brand identity -> create-brand.",
+          "Channel-mix strategy (not search-only) -> plan-campaign."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md",
+            "research/product-context.md",
+            "brand/BRAND.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-mode invocation (keyword research only; technical audit only)."
+        ],
+        "multi_when": [
+          "Default — multi-mode (keyword + technical + content + link + AEO)."
+        ],
+        "critic_required_when": [
+          "Always — keyword-intent gate, technical-audit gate, AEO-readiness gate."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, mode selection)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Technical SEO audit / crawler checklist",
+            "read": [
+              "references/technical-audit.md",
+              "references/technical-crawler-checklist.md"
+            ]
+          },
+          {
+            "if": "AEO / AI-citation / retrieval-layer SEO",
+            "read": [
+              "references/ai-seo.md",
+              "references/retrieval-layer-seo.md"
+            ]
+          },
+          {
+            "if": "ASO patterns",
+            "read": [
+              "references/aso.md"
+            ]
+          },
+          {
+            "if": "Programmatic SEO (industries/:slug, compare/:vs)",
+            "read": [
+              "references/programmatic-seo.md"
+            ]
+          },
+          {
+            "if": "Schema markup / structured data",
+            "read": [
+              "references/schema-reference.md"
+            ]
+          },
+          {
+            "if": "Live-SERP remediation",
+            "read": [
+              "references/live-serp-remediation.md"
+            ]
+          },
+          {
+            "if": "Competitor page analysis",
+            "read": [
+              "references/competitor-pages.md"
+            ]
+          },
+          {
+            "if": "Platform-search (App Store, YouTube, Amazon)",
+            "read": [
+              "references/platform-search.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/optimize-seo/[YYYY-MM-DD]-<slug>.md",
+            "lifecycle": "pipeline",
+            "produced_when": "End of SEO/AEO/ASO run; per-run report with recommendations."
+          }
+        ]
+      },
+      "source": "skills/marketing/optimize-seo/routing.yaml",
+      "skill_path": "skills/marketing/optimize-seo"
+    },
+    "plan-campaign": {
+      "id": "plan-campaign",
+      "domain": "marketing",
+      "public": true,
+      "command": "/plan-campaign",
+      "summary": "Build an integrated marketing plan — growth motion, messaging pillars, per-channel angles across 9 channels, content calendar, budget allocation, phased GTM timeline.",
+      "aliases": [
+        "imc-plan",
+        "gtm-plan",
+        "campaign-strategy"
+      ],
+      "route": {
+        "use_when": [
+          "User needs a campaign strategy or GTM plan grounded in ICP research.",
+          "9-channel angle allocation + content calendar + budget split needed.",
+          "Phased GTM timeline across multiple weeks/months."
+        ],
+        "not_when": [
+          "Numeric funnel targets -> plan-funnel.",
+          "Search-channel strategy only -> optimize-seo.",
+          "Landing-page architecture -> brief-landing-page.",
+          "Writing the actual copy -> write-copy / write-ad / write-social."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md"
+          ],
+          "hard": [
+            "research/icp-research.md",
+            "research/product-context.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast collapses to leaner pipeline; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — multi-agent (pillar + per-channel angle agents + calendar + budget + critic).",
+          "9 channels covered; each gets a per-channel angle scored against pillar coherence."
+        ],
+        "critic_required_when": [
+          "Always — canonical campaign-plan.md consumed by 5+ downstream skills.",
+          "Pillar coherence + channel-habitat fit + capacity-honesty gates."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic routing",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/campaign-plan.md",
+            "lifecycle": "canonical",
+            "produced_when": "Critic PASS; single artifact per run (overwrite on re-run unless version preservation requested via `campaign-plan.v[N].md`)."
+          }
+        ]
+      },
+      "source": "skills/marketing/plan-campaign/routing.yaml",
+      "skill_path": "skills/marketing/plan-campaign"
+    },
+    "plan-funnel": {
+      "id": "plan-funnel",
+      "domain": "research",
+      "public": true,
+      "command": "/plan-funnel",
+      "summary": "Numeric funnel + unit-economics model — conversion rates, traffic targets, LTV/CAC, revenue targets, sensitivity bands. Drives downstream channel-mix + budget decisions.",
+      "aliases": [
+        "funnel-model",
+        "unit-economics",
+        "growth-targets"
+      ],
+      "route": {
+        "use_when": [
+          "Need numeric funnel targets (traffic → leads → customers → revenue).",
+          "Unit economics modeling (LTV, CAC, payback, gross margin).",
+          "Sensitivity bands on a growth model."
+        ],
+        "not_when": [
+          "Market sizing / competitive landscape -> research-market.",
+          "Diagnosing a metric decline -> diagnose.",
+          "Force-ranking initiatives -> prioritize.",
+          "Campaign / channel planning -> plan-campaign."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/market-research.md",
+            "research/product-context.md",
+            "research/diagnose.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-segment funnel; --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Multi-segment / multi-channel funnel with cross-channel sensitivity."
+        ],
+        "critic_required_when": [
+          "Always — every rate has a source + sensitivity band; no opinion-only numbers.",
+          "Math sanity-check (funnel multiplications consistent, LTV/CAC unit-aligned)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Funnel models + unit economics",
+            "read": [
+              "references/funnel-models.md",
+              "references/unit-economics.md"
+            ]
+          },
+          {
+            "if": "Industry benchmarks + stress tests",
+            "read": [
+              "references/benchmarks.md",
+              "references/stress-tests.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (unsourced rates, missing sensitivity)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/records/targets-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "Critic PASS; numeric funnel + sensitivity bands."
+          }
+        ]
+      },
+      "source": "skills/research/plan-funnel/routing.yaml",
+      "skill_path": "skills/research/plan-funnel"
+    },
+    "polish-vn": {
+      "id": "polish-vn",
+      "domain": "marketing",
+      "public": true,
+      "command": "/polish-vn",
+      "summary": "Polish Vietnamese-market copy — register calibration (bro / báo chí / formal), idiom + cultural references, AI-translation tells removed. Terminal pass.",
+      "aliases": [
+        "vietnamese-polish",
+        "vn-tone",
+        "vn-localize"
+      ],
+      "route": {
+        "use_when": [
+          "Vietnamese-market copy needs polish for native readers.",
+          "Auto-routed when `--polish-chain vn-tone` is set.",
+          "Bro-tone / báo-chí-tone / formal register calibration."
+        ],
+        "not_when": [
+          "English copy -> humanmaxxing.",
+          "Translation from scratch -> out of scope (assumes Vietnamese input).",
+          "Brand voice of record -> create-brand."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/BRAND.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Short text (<200 words); --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Long-form Vietnamese content with multiple register zones."
+        ],
+        "critic_required_when": [
+          "Always — register-consistency + idiom-correctness + AI-translation-tells gate."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (register selection)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "VN tone corpus + translation artifacts",
+            "read": [
+              "references/vn-tone-corpus.md",
+              "references/translation-artifacts.md"
+            ]
+          },
+          {
+            "if": "Format conventions",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (translation tells, register drift)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/content/[slug].vn-polished.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Route A or B; re-run renames prior to `[slug].vn-polished.v[N].md`."
+          }
+        ]
+      },
+      "source": "skills/marketing/polish-vn/routing.yaml",
+      "skill_path": "skills/marketing/polish-vn"
+    },
+    "prioritize": {
+      "id": "prioritize",
+      "domain": "research",
+      "public": true,
+      "command": "/prioritize",
+      "summary": "Brainstorm strategic solutions when the problem is known — generate initiatives, force-rank with ICE, surface trade-offs with evidence, draw a cut line with kill criteria.",
+      "aliases": [
+        "ice-prioritize",
+        "rank-initiatives",
+        "strategic-options"
+      ],
+      "route": {
+        "use_when": [
+          "Problem or goal is already clear; need to decide what to build first.",
+          "Force-ranked initiatives with ICE (Impact × Confidence × Effort).",
+          "Strategic options need a cut line + kill criteria."
+        ],
+        "not_when": [
+          "Diagnosing the problem itself -> diagnose.",
+          "Engineering task list from a known initiative -> breakdown-tasks.",
+          "Numeric funnel targets -> plan-funnel.",
+          "Technical architecture for a chosen initiative -> architect-system."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/market-research.md",
+            "research/diagnose.md",
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Small option set (<5 initiatives); --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Larger option set with cross-domain dependencies; ICE scoring + trade-off matrix."
+        ],
+        "critic_required_when": [
+          "Always — evidence-backed ICE (no opinion-only scores).",
+          "Cut line + kill criteria explicit per ranked initiative."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "ICE scoring rubric + initiative planning",
+            "read": [
+              "references/ice-scoring-rubric.md",
+              "references/initiative-planning.md",
+              "references/initiative-types.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (vanity-impact, sunk-cost-confidence)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/sketches/prioritize-<slug>.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; ranked-initiative sketch + cut line + kill criteria."
+          }
+        ]
+      },
+      "source": "skills/research/prioritize/routing.yaml",
+      "skill_path": "skills/research/prioritize"
+    },
+    "produce-asset": {
+      "id": "produce-asset",
+      "domain": "marketing",
+      "public": true,
+      "command": "/produce-asset",
+      "summary": "Turn brief-graphic into render-ready prompts + asset manifest. Tool-agnostic — emits prompts tuned for chosen image engine (Midjourney / DALL·E / Imagen / Figma / designer).",
+      "aliases": [
+        "asset-produce",
+        "image-prompt",
+        "render-prompt"
+      ],
+      "route": {
+        "use_when": [
+          "Design brief exists and you need production-ready prompts.",
+          "Asset manifest emission for downstream rendering.",
+          "Multi-platform asset variants from a single brief."
+        ],
+        "not_when": [
+          "Copy that goes in the asset -> write-copy.",
+          "The brief itself -> brief-graphic.",
+          "Publishing the rendered asset -> publish-social.",
+          "Rendering happens upstream / inside an image engine — not in this stack."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "brand/DESIGN.md",
+            "brand/BRAND.md"
+          ],
+          "hard": [
+            ".forsvn/artifacts/mkt/design-briefs/[slug].md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single platform; --fast collapses to single-pass."
+        ],
+        "multi_when": [
+          "Multi-platform variants; per-platform prompt + manifest emission."
+        ],
+        "critic_required_when": [
+          "Always — tool-agnostic export-mode floor (no API keys / no rendering).",
+          "Brand-mark fidelity gate (no hallucinated logos / tokens)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/production-pattern.md"
+        ],
+        "when": [
+          {
+            "if": "Asset format / per-engine emission rules",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; canonical asset manifest."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[platform].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Per-platform prompt file (one per target engine)."
+          }
+        ]
+      },
+      "source": "skills/marketing/produce-asset/routing.yaml",
+      "skill_path": "skills/marketing/produce-asset"
+    },
+    "produce-video": {
+      "id": "produce-video",
+      "domain": "marketing",
+      "public": true,
+      "command": "/produce-video",
+      "summary": "Turn a video brief into a multi-runtime export bundle — manifest, per-shot prompts, HyperFrames + Remotion scaffolds, Vercel AI CLI README. Two modes: shortform + app-preview.",
+      "aliases": [
+        "video-bundle",
+        "video-scaffold",
+        "app-preview-render"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to produce a video bundle from a brief-shortform artifact.",
+          "User asks to produce an app-preview video bundle from a brief-app-preview handoff.",
+          "Schema-compliant hand-written video-brief needs scaffolds emitted."
+        ],
+        "not_when": [
+          "Writing the brief itself -> brief-shortform or brief-app-preview.",
+          "Publishing the rendered video -> publish-social.",
+          "Evaluating a rendered video's performance -> evaluate-shortform / evaluate-content.",
+          "Caller asks for `--publish`, `--render`, or `--auto-run` -> BLOCKED (this stack does not invoke render engines)."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md"
+          ],
+          "hard": [
+            "brand/BRAND.md",
+            "brand/DESIGN.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Lean 2-agent dispatch (prompt-author + critic) is the design — never multi-agent for this skill."
+        ],
+        "multi_when": [
+          "Never — per-shot parallelism and long-video narrative coherence are out of scope (mirrors shared production-pattern.md)."
+        ],
+        "critic_required_when": [
+          "Always — critic-agent enforces 4 gates (shortform) or 7 gates (app-preview) before bundle ships.",
+          "Critic FAIL on hard gates → re-dispatch prompt-author (max 2 cycles)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/production-pattern.md",
+          "references/video-brief-schema.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (mode detection from brief frontmatter)",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Route A shortform dispatch",
+            "read": [
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Route B app-preview dispatch (composition operations, mask transforms)",
+            "read": [
+              "references/agent-manifest.md",
+              "references/_shared/platform-intelligence/"
+            ]
+          },
+          {
+            "if": "Critic / anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/produced-videos/[slug]/manifest.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS; always emitted as canonical runtime-agnostic contract."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/produced-videos/[slug]/scenes/[shot-id].md",
+            "lifecycle": "pipeline",
+            "produced_when": "One file per shot — visual + OST + voice spec."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/produced-videos/[slug]/hyperframes/scaffold.html",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — HyperFrames composition scaffold + inlined scenes JSON."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/produced-videos/[slug]/remotion/scaffold.tsx",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — Remotion composition scaffold."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/produced-videos/[slug]/vercel-ai-cli.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted (shortform); collapsed in app-preview mode."
+          }
+        ]
+      },
+      "source": "skills/marketing/produce-video/routing.yaml",
+      "skill_path": "skills/marketing/produce-video"
+    },
+    "publish-social": {
+      "id": "publish-social",
+      "domain": "marketing",
+      "public": true,
+      "command": "/publish-social",
+      "summary": "Turn write-social copy into a publishing bundle — per-platform drafts, scheduler imports (Typefully/Buffer/Hootsuite/CSV), or live posting behind a two-stage gate.",
+      "aliases": [
+        "publish",
+        "schedule-social",
+        "social-publish"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to schedule, draft, or publish finished social copy.",
+          "User needs scheduler-import files (Typefully / Buffer / Hootsuite / generic CSV).",
+          "User invokes `--mode=publish` to post live (two-stage gate fires)."
+        ],
+        "not_when": [
+          "Writing the copy itself -> write-social.",
+          "Image / carousel media generation -> produce-asset.",
+          "Video media generation -> produce-video.",
+          "Landing-page placement -> brief-landing-page."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/artifacts/mkt/produce-asset/[slug]/manifest.md",
+            ".forsvn/artifacts/mkt/produce-video/[slug]/manifest.md"
+          ],
+          "hard": [
+            ".forsvn/artifacts/mkt/write-social/[slug]/*.md",
+            "brand/BRAND.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Route A — export-only (no credentials detected). Single formatter pass.",
+          "Single platform draft refresh."
+        ],
+        "multi_when": [
+          "Route C — browser-automation drafts across 8 non-X platforms (sequential, 3s pacing).",
+          "Route D — `--mode=publish` across multiple platforms (formatter → critic → two-stage gate → automation → orchestrator dim 8)."
+        ],
+        "critic_required_when": [
+          "Always — 8-dim rubric runs before delivery (export/draft) or before the publish gate fires (publish).",
+          "Any bundle emission writes a canonical artifact under .forsvn/artifacts/mkt/published-social/."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/format-conventions.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (target-platform resolution, credentials probe)",
+            "read": [
+              "references/procedures/pre-dispatch.md",
+              "references/platform-credentials.md"
+            ]
+          },
+          {
+            "if": "Per-platform formatting",
+            "read": [
+              "references/scheduler-formats.md",
+              "references/platforms/"
+            ]
+          },
+          {
+            "if": "Route C browser-automation draft",
+            "read": [
+              "references/confirmation-gate.md",
+              "references/automation-flows/",
+              "references/session-cookie-export.md"
+            ]
+          },
+          {
+            "if": "Route D `--mode=publish`",
+            "read": [
+              "references/publish-confirmation-gate.md"
+            ]
+          },
+          {
+            "if": "Critic / 8-dim rubric",
+            "read": [
+              "references/rubric.md",
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/manifest.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Bundle ships (DONE or DONE_WITH_CONCERNS)."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/platforms/[platform].md",
+            "lifecycle": "pipeline",
+            "produced_when": "One file per target platform — body, hashtags, CTA, media ref, formatting."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/typefully.json",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted in export/draft bundle."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/buffer.csv",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted in export/draft bundle."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/hootsuite.csv",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted in export/draft bundle."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/generic.csv",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted in export/draft bundle."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/published-social/[slug]/README.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — operator step-by-step per route."
+          }
+        ]
+      },
+      "source": "skills/marketing/publish-social/routing.yaml",
+      "skill_path": "skills/marketing/publish-social"
+    },
+    "research-icp": {
+      "id": "research-icp",
+      "domain": "research",
+      "public": true,
+      "command": "/research-icp",
+      "summary": "Build canonical audience, ICP, persona, pain, VoC, and habitat context for downstream work.",
+      "aliases": [
+        "icp",
+        "audience",
+        "persona",
+        "voc"
+      ],
+      "route": {
+        "use_when": [
+          "User asks who the customer is, who buys this, or which audience to target.",
+          "Downstream marketing, brand, product, or strategy work lacks audience context.",
+          "User needs voice-of-customer evidence, personas, pain profile, or habitat mapping."
+        ],
+        "not_when": [
+          "Competitive landscape or market sizing -> research-market.",
+          "Root-cause business diagnosis -> diagnose.",
+          "Campaign/channel plan from known audience -> plan-campaign."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/context/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Known single persona and enough existing context for quick refinement.",
+          "User explicitly requests a fast hypothesis and accepts lower evidence depth."
+        ],
+        "multi_when": [
+          "Canonical audience record is missing, stale, or materially changing.",
+          "Need VoC, habitat, pain, and decision psychology evidence.",
+          "Output will feed brand, campaign, copy, landing page, or product strategy."
+        ],
+        "critic_required_when": [
+          "Writing or updating research/icp-research.md.",
+          "Any shipped persona claim has fewer than five independent evidence sources.",
+          "User asks to use the result as canonical downstream context."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/procedures/pre-dispatch.md",
+          "references/format-conventions.md",
+          "references/confidence-and-bias.md"
+        ],
+        "when": [
+          {
+            "if": "collecting voice-of-customer evidence",
+            "read": [
+              "references/voice-of-customer.md",
+              "references/customer-interviews.md"
+            ]
+          },
+          {
+            "if": "mapping communities or channels",
+            "read": [
+              "references/habitat-mapping.md"
+            ]
+          },
+          {
+            "if": "dispatching agents",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "quality gate or failure review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "research/icp-research.md",
+            "lifecycle": "canonical",
+            "produced_when": "Audience research reaches DONE or DONE_WITH_CONCERNS."
+          },
+          {
+            "path": "research/product-context.md",
+            "lifecycle": "canonical",
+            "produced_when": "Audience research resolves product context."
+          }
+        ]
+      },
+      "source": "skills/research/research-icp/routing.yaml",
+      "skill_path": "skills/research/research-icp"
+    },
+    "research-market": {
+      "id": "research-market",
+      "domain": "research",
+      "public": true,
+      "command": "/research-market",
+      "summary": "Map market landscape, competitors, TAM/SAM/SOM sizing, whitespace opportunities — every claim sourced, adjacent competitors checked, sizing shown with methodology.",
+      "aliases": [
+        "market-research",
+        "competitive-analysis",
+        "market-sizing",
+        "whitespace"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to position a product, survey a competitive field, or scope a new market.",
+          "Fundraising market section needed.",
+          "Strategy track entry point (`parallel-with` /diagnose)."
+        ],
+        "not_when": [
+          "Building customer personas / VoC -> research-icp.",
+          "Planning marketing campaigns -> plan-campaign.",
+          "Diagnosing a specific business problem -> diagnose.",
+          "Prioritizing what to build from market data -> prioritize."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            "research/diagnose.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Quick validation only (Route A); single-pass critic.",
+          "--fast forces Route A (skips sizing + opportunity)."
+        ],
+        "multi_when": [
+          "Route B (product positioning, default) — 7 agents across L1 parallel + L2 sequential.",
+          "Route C (fundraising / market entry) — all 4 L1 agents at enhanced depth + sizing REQUIRED.",
+          "--deep forces Route C."
+        ],
+        "critic_required_when": [
+          "Always — 11-item rubric + adjacent-competitor floor + sizing methodology check.",
+          "TAM/SAM/SOM without methodology auto-FAIL."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, Q1-Q5)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Competitor analysis methodology",
+            "read": [
+              "references/competitor-analysis-framework.md"
+            ]
+          },
+          {
+            "if": "Market sizing (TAM/SAM/SOM)",
+            "read": [
+              "references/market-sizing-guide.md"
+            ]
+          },
+          {
+            "if": "Gap analysis / opportunity identification",
+            "read": [
+              "references/gap-analysis-template.md"
+            ]
+          },
+          {
+            "if": "Confidence labeling on findings",
+            "read": [
+              "references/_shared/confidence-labeling.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Scope Calibration",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "research/market-research.md",
+            "lifecycle": "canonical",
+            "produced_when": "Critic PASS; on re-run rename prior to `research/market-research.v[N].md` and increment."
+          }
+        ]
+      },
+      "source": "skills/research/research-market/routing.yaml",
+      "skill_path": "skills/research/research-market"
+    },
+    "research-platform": {
+      "id": "research-platform",
+      "domain": "research",
+      "public": true,
+      "command": "/research-platform",
+      "summary": "Owned-account analytics — engagement, follower growth, post performance, attribution from operator's accounts (not market trends).",
+      "aliases": [
+        "platform-analytics",
+        "owned-analytics",
+        "account-performance"
+      ],
+      "route": {
+        "use_when": [
+          "User asks about their own social account performance.",
+          "Engagement / follower-growth / per-post metrics from the operator's accounts.",
+          "Pre-eval evidence collection before evaluate-content / evaluate-shortform cycles."
+        ],
+        "not_when": [
+          "What's working / trending across the market -> research-shortform.",
+          "Competitor analysis or market sizing -> research-market.",
+          "Single-cycle eval against a brief -> evaluate-content / evaluate-shortform."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-platform pull (X only, LinkedIn only)."
+        ],
+        "multi_when": [
+          "Multi-platform sweep (X + LinkedIn + IG + TikTok) with cross-platform synthesis."
+        ],
+        "critic_required_when": [
+          "Sample-size confidence floor (low impressions → flag).",
+          "Cross-platform comparison gate (no apples-to-oranges metrics)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (platform credentials, scope, window)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Per-platform metric definitions",
+            "read": [
+              "references/platforms/"
+            ]
+          },
+          {
+            "if": "Evidence protocol + scoring rubrics",
+            "read": [
+              "references/evidence-protocol.md",
+              "references/scoring-rubrics.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "End of platform-analytics pull; dated, immutable snapshot."
+          }
+        ]
+      },
+      "source": "skills/research/research-platform/routing.yaml",
+      "skill_path": "skills/research/research-platform"
+    },
+    "research-shortform": {
+      "id": "research-shortform",
+      "domain": "research",
+      "public": true,
+      "command": "/research-shortform",
+      "summary": "Discover what's working on short-form platforms — hook archetypes, trending audio, platform mechanics. Per-platform sourced catalog.",
+      "aliases": [
+        "shortform-research",
+        "viral-hook-research",
+        "platform-trends"
+      ],
+      "route": {
+        "use_when": [
+          "Before briefing short-form content, find current viral patterns.",
+          "Refresh stale platform intelligence (>30d trends or >180d mechanics).",
+          "Hook-archetype mining for a specific topic / market."
+        ],
+        "not_when": [
+          "Long-form video -> parked (out of scope).",
+          "Static visuals -> brief-graphic.",
+          "Audience research -> research-icp.",
+          "Campaign planning -> plan-campaign."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-platform sweep; --fast forces single-pass."
+        ],
+        "multi_when": [
+          "Multi-platform sweep (TikTok + Reels + Shorts)."
+        ],
+        "critic_required_when": [
+          "Always — every claim sourced to a specific platform doc / third-party study / pattern-derived note.",
+          "Stale-source flag (>30d for trends, >180d for mechanics)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Per-platform clipping/live + confidence labeling",
+            "read": [
+              "references/_shared/clipping-and-live.md",
+              "references/_shared/confidence-labeling.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (fabricated trends, unsourced viral claims)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/research/research-shortform/[slug].md",
+            "lifecycle": "snapshot",
+            "produced_when": "Critic PASS; dated per-platform catalog."
+          }
+        ]
+      },
+      "source": "skills/research/research-shortform/routing.yaml",
+      "skill_path": "skills/research/research-shortform"
+    },
+    "review-work": {
+      "id": "review-work",
+      "domain": "meta",
+      "public": true,
+      "command": "/review-work",
+      "summary": "Run an independent post-implementation review for code, artifacts, plans, or shipped work.",
+      "aliases": [
+        "review",
+        "code-review",
+        "fresh-eyes",
+        "quality-check"
+      ],
+      "route": {
+        "use_when": [
+          "User asks for review, code review, fresh eyes, quality check, or missed risks.",
+          "Implementation is complete enough to compare against a plan, diff, or artifact contract.",
+          "A canonical or external-facing artifact needs a critic pass before shipping."
+        ],
+        "not_when": [
+          "User wants multiple perspectives before deciding -> debate-agents.",
+          "User wants to clarify requirements before building -> discover.",
+          "User wants frontend design critique specifically -> relevant design skill outside this stack only if explicitly requested."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/index/manifest.json"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Small diff or single artifact with clear acceptance criteria.",
+          "User asks for a quick risk pass."
+        ],
+        "multi_when": [
+          "Large branch, multi-file implementation, or cross-domain artifact set.",
+          "Security, data, revenue, brand, or product architecture risk is material.",
+          "Review must compare implementation against a plan, spec, and artifact contract."
+        ],
+        "critic_required_when": [
+          "Always; this capability is the critic gate."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/playbook.md",
+          "references/report-template.md",
+          "references/noise-filter.md"
+        ],
+        "when": [
+          {
+            "if": "quality risks or known review failure modes are ambiguous",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "Review writes a dated, immutable per-run report artifact."
+          }
+        ]
+      },
+      "source": "skills/meta/review-work/routing.yaml",
+      "skill_path": "skills/meta/review-work"
+    },
+    "run-eval-loop": {
+      "id": "run-eval-loop",
+      "domain": "meta",
+      "public": true,
+      "command": "/run-eval-loop",
+      "summary": "Scaffold + own an evaluation loop workspace — program.md, context.md, results.tsv schema, learnings.md ledger. Owns loop setup; per-cycle eval skills own scoring.",
+      "aliases": [
+        "eval-loop",
+        "improvement-loop",
+        "experiment-ledger"
+      ],
+      "route": {
+        "use_when": [
+          "Need a measurable initiative scaffold (campaign / page / content series).",
+          "Define program.md + context.md + results.tsv schema.",
+          "Set up the durable learning ledger."
+        ],
+        "not_when": [
+          "Scoring a specific cycle -> evaluate-{ad/content/landing-page/campaign/shortform}.",
+          "Writing the next-cycle brief -> the relevant brief-* skill.",
+          "Diagnosing a metric decline -> diagnose."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md",
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Loop setup is single-agent (scaffold + critic on the schema)."
+        ],
+        "multi_when": [
+          "Never — per-cycle scoring is delegated to evaluate-* sibling skills."
+        ],
+        "critic_required_when": [
+          "Schema validation (results.tsv columns match per-eval-skill requirements).",
+          "Guardrail / kill-criteria + auto-fail thresholds explicit in program.md."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, scope + primary metric)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Loop-folder scaffold + program.md schema (eval-loop-spec covers it)",
+            "read": [
+              "references/_shared/eval-loop-spec.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/program.md",
+            "lifecycle": "loop",
+            "produced_when": "Loop scaffolded — declares primary metric + guardrails + kill criteria."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/context.md",
+            "lifecycle": "loop-context",
+            "produced_when": "Loop scaffolded — declares ICP + product + competitor context."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "Loop scaffolded — 8-column header written; per-cycle rows appended by evaluate-* siblings."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "learning",
+            "produced_when": "Loop scaffolded — durable learning ledger (empty at start; per-cycle promotes by evaluate-* siblings)."
+          }
+        ]
+      },
+      "source": "skills/meta/run-eval-loop/routing.yaml",
+      "skill_path": "skills/meta/run-eval-loop"
+    },
+    "write-ad": {
+      "id": "write-ad",
+      "domain": "marketing",
+      "public": true,
+      "command": "/write-ad",
+      "summary": "Write and evaluate Meta paid-ad copy (retargeting + cold-traffic) — audience-temperature-aware framing, hard char-cap enforcement, policy compliance, 7-dim rubric.",
+      "aliases": [
+        "ad-copy",
+        "meta-ads",
+        "paid-social-copy"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to write Meta (Facebook / Instagram) paid-ad copy.",
+          "Hero + 2 variants needed for an audience-temp (retargeting OR cold).",
+          "Audience-temp + offer + creative-format are known or can be elicited."
+        ],
+        "not_when": [
+          "Landing-page headlines -> write-copy.",
+          "Cold-outreach DMs -> write-outreach.",
+          "Organic social posts -> write-social.",
+          "Channel-mix strategy -> plan-campaign.",
+          "Non-Meta channels (Google / LinkedIn / TikTok / Search / YouTube ads) -> out of scope at v1."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            "research/icp-research.md",
+            "brand/BRAND.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast flag forces a leaner pipeline; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — 5 agents (strategist + composer + format-checker + voice-auditor + critic) + terminal humanmaxxing per variant.",
+          "Hero + 2 variants per artifact (3 distinct angle archetypes + 3 distinct anchor proofs)."
+        ],
+        "critic_required_when": [
+          "Always — 7-dim rubric + per-variant scorecards before delivery.",
+          "Post-humanmaxxing Specificity regression re-runs critic Specificity dim per variant."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Format-checker hard gate / Meta-specific spec",
+            "read": [
+              "references/format-spec.md",
+              "references/policy-floor.md"
+            ]
+          },
+          {
+            "if": "Strategist angle / audience-temp framing",
+            "read": [
+              "references/ad-intelligence/meta-retargeting.md",
+              "references/ad-intelligence/meta-cold-traffic.md",
+              "references/ad-intelligence/creative-cadence.md",
+              "references/message-transmutation.md"
+            ]
+          },
+          {
+            "if": "Critic / 7-dim rubric scoring",
+            "read": [
+              "references/rubric.md",
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Examples for hero + variant patterns",
+            "read": [
+              "references/examples.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Hero + Variant A + Variant B drafted, critic + format-checker + humanmaxxing-regression PASS."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].rationale.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Angle + framing + per-variant rationale companion (always emitted)."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].critic-score.md",
+            "lifecycle": "pipeline",
+            "produced_when": "7-dim scorecard per variant + total + regression (always emitted)."
+          }
+        ]
+      },
+      "source": "skills/marketing/write-ad/routing.yaml",
+      "skill_path": "skills/marketing/write-ad"
+    },
+    "write-copy": {
+      "id": "write-copy",
+      "domain": "marketing",
+      "public": true,
+      "command": "/write-copy",
+      "summary": "Draft and critique persuasive copy for headlines, hooks, CTAs, taglines, and landing-page sections.",
+      "aliases": [
+        "copy",
+        "headline",
+        "hook",
+        "cta"
+      ],
+      "route": {
+        "use_when": [
+          "User asks for headline, hook, CTA, tagline, or section copy.",
+          "User asks to critique persuasive copy with alternatives.",
+          "Landing-page, direct-response, or conversion copy needs V/F/U scoring."
+        ],
+        "not_when": [
+          "Social platform posts -> write-social.",
+          "Paid ad copy -> write-ad.",
+          "AI-sounding cleanup or final human polish -> humanmaxxing.",
+          "Landing-page structure or wire brief -> brief-landing-page."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            "research/icp-research.md",
+            "brand/BRAND.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single key line such as one headline, CTA, tagline, subject line, or hook.",
+          "Audience, proof, offer, and voice are already known.",
+          "User asks for a quick draft or critique."
+        ],
+        "multi_when": [
+          "Full page, campaign surface, or multiple section copy.",
+          "The one shift, proof, belief sequence, or Unique Mechanism is unresolved.",
+          "Output is external-facing and likely to be reused."
+        ],
+        "critic_required_when": [
+          "External-facing copy.",
+          "Any artifact written under .forsvn/artifacts.",
+          "User asks for critique, review, scoring, or alternatives."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/procedures/pre-dispatch.md",
+          "references/format-conventions.md"
+        ],
+        "when": [
+          {
+            "if": "headline, hook, tagline, or subject line",
+            "read": [
+              "references/headline-formulas.md"
+            ]
+          },
+          {
+            "if": "full page or landing section copy",
+            "read": [
+              "references/page-sections.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "psychology or persuasion depth matters",
+            "read": [
+              "references/emotional-triggers.md",
+              "references/belief-disruption.md"
+            ]
+          },
+          {
+            "if": "high-stakes, seven-sweeps, or expert-panel requested",
+            "read": [
+              "references/seven-sweeps.md"
+            ]
+          },
+          {
+            "if": "quality gate or failure review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/content/[slug].copy.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Route A or Route B writes standalone copy."
+          }
+        ]
+      },
+      "source": "skills/marketing/write-copy/routing.yaml",
+      "skill_path": "skills/marketing/write-copy"
+    },
+    "write-docs": {
+      "id": "write-docs",
+      "domain": "product",
+      "public": true,
+      "command": "/write-docs",
+      "summary": "Generate documentation from a codebase — READMEs, API references, setup guides, runbooks, ship logs, release notes — with consistent structure and terminology.",
+      "aliases": [
+        "docs",
+        "readme",
+        "api-reference",
+        "ship-log",
+        "release-notes"
+      ],
+      "route": {
+        "use_when": [
+          "Codebase needs new docs or a refresh (README, user guide, API reference, config guide, tutorial).",
+          "After PRs that modify env vars, API routes, or configuration (Route C — Sync).",
+          "Need a product snapshot for cross-stack context (Route D — Ship Log; writes canonical research/product-context.md).",
+          "Need a CHANGELOG entry for an imminent release (Route E — Release Notes).",
+          "Auditing existing docs for staleness (Audit mode; no writing)."
+        ],
+        "not_when": [
+          "Specifying what to build -> discover.",
+          "Restructuring code for readability -> clean-code.",
+          "Visual brand identity for docs site -> create-brand.",
+          "Single-page conversion surface -> brief-landing-page."
+        ],
+        "prerequisites": {
+          "recommended": [
+            ".forsvn/experience/technical.md",
+            "research/product-context.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Small project (<20 files) auto-downgrades to Single-Agent Fallback.",
+          "--fast forces Single-Agent Fallback."
+        ],
+        "multi_when": [
+          "Default — 6 agents (scanner + concept-extractor + audience-profiler parallel; writer; staleness-checker; critic).",
+          "Monorepo detected; per-package docs needed."
+        ],
+        "critic_required_when": [
+          "Always — 6 standard critical gates fire on every run (route-specific gates for Routes D + E).",
+          "Safety gates supersede `--fast`."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/pre-dispatch-protocol.md",
+          "references/_shared/mode-resolver.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, route-locked Pre-Dispatch for D + E)",
+            "read": [
+              "references/pre-dispatch-prompts.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic routing",
+            "read": [
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Default route writer-template",
+            "read": [
+              "references/doc-template.md"
+            ]
+          },
+          {
+            "if": "Route C — Sync (git diff → targeted updates)",
+            "read": [
+              "references/modes/sync.md"
+            ]
+          },
+          {
+            "if": "Route D — Ship Log (canonical research/product-context.md + merge-mode check)",
+            "read": [
+              "references/modes/ship-log.md",
+              "references/ship-log-template.md"
+            ]
+          },
+          {
+            "if": "Route E — Release Notes (CHANGELOG + GH Release + convention-enforcing critic gates)",
+            "read": [
+              "references/modes/release-notes.md"
+            ]
+          },
+          {
+            "if": "Audit mode (staleness-only, no writes, security-priority ranking)",
+            "read": [
+              "references/modes/audit.md"
+            ]
+          },
+          {
+            "if": "Artifact write / lifecycle by doc-type",
+            "read": [
+              "references/report-template.md"
+            ]
+          },
+          {
+            "if": "Critic FAIL / anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "README.md",
+            "lifecycle": "canonical",
+            "produced_when": "Default route — project README; lifecycle per doc-type table in `report-template.md`."
+          },
+          {
+            "path": "docs/<topic>.md",
+            "lifecycle": "canonical",
+            "produced_when": "Default route — user guide / config / tutorial under docs/."
+          },
+          {
+            "path": "research/product-context.md",
+            "lifecycle": "canonical",
+            "produced_when": "Route D — Ship Log writes canonical cross-stack artifact (merge-mode check required)."
+          },
+          {
+            "path": "CHANGELOG.md",
+            "lifecycle": "snapshot",
+            "produced_when": "Route E — Release Notes prepends a new entry; optionally `--gh-release` prints GitHub Release body."
+          }
+        ]
+      },
+      "source": "skills/product/write-docs/routing.yaml",
+      "skill_path": "skills/product/write-docs"
+    },
+    "write-outreach": {
+      "id": "write-outreach",
+      "domain": "marketing",
+      "public": true,
+      "command": "/write-outreach",
+      "summary": "Cold outreach — email, LinkedIn, Twitter/X, iMessage/SMS, platform proposals. Signal-based personalization + channel craft + 5-dim rubric. First-touch + reply-to-inbound modes.",
+      "aliases": [
+        "cold-outreach",
+        "cold-email",
+        "cold-dm",
+        "prospecting-message"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to draft an individual cold outreach message.",
+          "User asks to critique outreach or write a reply to an inbound prospect.",
+          "First-touch, follow-up touch 2+, or breakup-mode reply needed."
+        ],
+        "not_when": [
+          "Campaign orchestration / sequence design -> plan-campaign.",
+          "Landing-page or headline copy -> write-copy.",
+          "Paid-ad copy -> write-ad.",
+          "Newsletter / lifecycle / drip / transactional -> out of scope.",
+          "Sourcing / list-building -> out of scope."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/product-context.md",
+            "research/icp-research.md",
+            ".forsvn/artifacts/mkt/campaign-plan.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast forces a leaner pipeline; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — strategist + composer + voice-auditor + critic + terminal humanmaxxing.",
+          "First-touch compose + touch 2+ + reply-to-inbound modes share the same pipeline."
+        ],
+        "critic_required_when": [
+          "Always — 5-dim rubric (Peer voice / Signal connection / CTA friction / You>me ratio / Specificity).",
+          "Post-humanmaxxing Specificity regression re-runs critic Specificity dim.",
+          "Reply-mode breakup gate — never argue with a 'no' (auto-fail re-pitches after clear rejection)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Per-channel craft (email / LinkedIn / Twitter / iMessage / Upwork / Fiverr)",
+            "read": [
+              "references/channels/"
+            ]
+          },
+          {
+            "if": "Signal-based personalization / proof types",
+            "read": [
+              "references/proof-types.md"
+            ]
+          },
+          {
+            "if": "5-dim rubric / scoring frameworks",
+            "read": [
+              "references/frameworks/"
+            ]
+          },
+          {
+            "if": "Reply / breakup / follow-up modes",
+            "read": [
+              "references/modes/"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Worked examples",
+            "read": [
+              "references/examples/"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic + terminal humanmaxxing PASS."
+          },
+          {
+            "path": ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].critic-score.md",
+            "lifecycle": "pipeline",
+            "produced_when": "5-dim scorecard + post-humanmaxxing regression (always emitted)."
+          }
+        ]
+      },
+      "source": "skills/marketing/write-outreach/routing.yaml",
+      "skill_path": "skills/marketing/write-outreach"
+    },
+    "write-social": {
+      "id": "write-social",
+      "domain": "marketing",
+      "public": true,
+      "command": "/write-social",
+      "summary": "Platform-native social copy (hook variants + body + CTA + format spec) for tiktok / reels / shorts / x / linkedin. Single-platform per artifact. 5-dim rubric.",
+      "aliases": [
+        "social-copy",
+        "post-copy",
+        "social-hook"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to write organic social copy or hook variants for ONE platform.",
+          "User asks for platform-native short-form caption / post / thread copy."
+        ],
+        "not_when": [
+          "Paid Meta / Google / LinkedIn ad copy -> write-ad.",
+          "Full short-form video brief with storyboard -> brief-shortform.",
+          "Landing-page copy, headlines, taglines -> write-copy.",
+          "LinkedIn articles, Substack, blog (long-form) -> write-copy or optimize-seo.",
+          "Vietnamese-market polish -> polish-vn (terminal pass).",
+          "AI-pattern stripping post-generation -> humanmaxxing (terminal pass)."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "research/icp-research.md",
+            "research/product-context.md",
+            ".forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md"
+          ],
+          "hard": [
+            "brand/BRAND.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single sequential graph (copywriter → format-checker → critic) is the design.",
+          "--fast collapses format-check revision loop to ZERO (single-pass; hard-cap violation → FORMAT_FAIL immediately)."
+        ],
+        "multi_when": [
+          "Default — 3 agents (copywriter + format-checker + critic) per single-platform artifact.",
+          "--deep bumps format-check revision loop to MAX 2 cycles."
+        ],
+        "critic_required_when": [
+          "Always — critic gate is single-pass on the 5-dim rubric.",
+          "Discrimination test (weak brief MUST score <25; strong brief MUST score ≥35) runs every cycle."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md",
+          "references/_shared/mode-resolver.md",
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Write-back)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch (copywriter → format-checker → critic)",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Per-platform Hook Taxonomy + format constraints",
+            "read": [
+              "references/_shared/platform-intelligence/"
+            ]
+          },
+          {
+            "if": "Critic scoring / format-check rules",
+            "read": [
+              "references/rubric.md",
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Strong / weak examples",
+            "read": [
+              "references/examples.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/mkt/copy/[platform]-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS / DONE_WITH_CONCERNS / FAIL (FAIL artifacts ship with annotations per locked decision; NOT written on FORMAT_FAIL or NEEDS_CONTEXT)."
+          }
+        ]
+      },
+      "source": "skills/marketing/write-social/routing.yaml",
+      "skill_path": "skills/marketing/write-social"
+    }
+  }
+}

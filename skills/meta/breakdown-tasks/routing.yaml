@@ -1,5 +1,4 @@
-# Routing signals for breakdown-tasks. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for breakdown-tasks.
 promptSignals:
   phrases:
     - "break this down"
@@ -26,3 +25,69 @@ promptSignals:
     - "what should we build"
     - "fresh eyes"
   minScore: 6
+
+capability:
+  id: breakdown-tasks
+  domain: meta
+  public: true
+  command: /breakdown-tasks
+  summary: "Decompose a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order. For AI agents or human engineers."
+  aliases:
+    - decompose
+    - task-breakdown
+    - sprint-plan
+    - work-breakdown
+
+  route:
+    use_when:
+      - "Requirements clear (spec or architecture exists); need an execution plan."
+      - "Risk-first ordering needed for implementation."
+      - "Acceptance criteria + task dependencies needed."
+    not_when:
+      - "Requirements unclear -> discover."
+      - "Designing architecture from scratch -> architect-system."
+      - "Code review after building -> review-work."
+      - "Writing docs -> write-docs."
+    prerequisites:
+      recommended:
+        - ".forsvn/artifacts/meta/specs/<slug>.md"
+        - "architecture/system-architecture.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Small scope (<10 tasks); --fast forces single-pass."
+    multi_when:
+      - "Larger initiative with cross-domain dependencies."
+    critic_required_when:
+      - "Risk-first ordering check (highest-risk task is not last)."
+      - "Dependency graph has no cycles."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (spec read, scope detection)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Acceptance criteria + dependency patterns"
+        read:
+          - "references/acceptance-criteria.md"
+          - "references/dependency-patterns.md"
+      - if: "Task format + sizing examples"
+        read:
+          - "references/task-format.md"
+          - "references/sizing-examples.md"
+      - if: "Execution protocol"
+        read:
+          - "references/execution-protocol.md"
+      - if: "Anti-pattern review (premature decomposition, missing dependencies)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/tasks.md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; canonical task list for the initiative."

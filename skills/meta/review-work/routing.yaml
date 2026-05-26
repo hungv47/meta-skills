@@ -1,5 +1,8 @@
-# Routing signals for review-work. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for review-work.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "review this"
@@ -28,3 +31,57 @@ promptSignals:
     - "design review"
     - "scope review"
   minScore: 6
+
+capability:
+  id: review-work
+  domain: meta
+  public: true
+  command: /review-work
+  summary: "Run an independent post-implementation review for code, artifacts, plans, or shipped work."
+  aliases:
+    - review
+    - code-review
+    - fresh-eyes
+    - quality-check
+
+  route:
+    use_when:
+      - "User asks for review, code review, fresh eyes, quality check, or missed risks."
+      - "Implementation is complete enough to compare against a plan, diff, or artifact contract."
+      - "A canonical or external-facing artifact needs a critic pass before shipping."
+    not_when:
+      - "User wants multiple perspectives before deciding -> debate-agents."
+      - "User wants to clarify requirements before building -> discover."
+      - "User wants frontend design critique specifically -> relevant design skill outside this stack only if explicitly requested."
+    prerequisites:
+      recommended:
+        - ".forsvn/index/manifest.json"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Small diff or single artifact with clear acceptance criteria."
+      - "User asks for a quick risk pass."
+    multi_when:
+      - "Large branch, multi-file implementation, or cross-domain artifact set."
+      - "Security, data, revenue, brand, or product architecture risk is material."
+      - "Review must compare implementation against a plan, spec, and artifact contract."
+    critic_required_when:
+      - "Always; this capability is the critic gate."
+
+  load:
+    always:
+      - "references/playbook.md"
+      - "references/report-template.md"
+      - "references/noise-filter.md"
+    when:
+      - if: "quality risks or known review failure modes are ambiguous"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "Review writes a dated, immutable per-run report artifact."

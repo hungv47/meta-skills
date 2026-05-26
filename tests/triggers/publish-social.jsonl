@@ -1,0 +1,10 @@
+{"prompt": "publish social bundle for X and linkedin this week", "expect": "trigger", "reason": "phrase 'publish social' +6 plus allOf [publish, social]"}
+{"prompt": "schedule the post across all platforms with a Typefully draft", "expect": "trigger", "reason": "phrases 'schedule post' +6 and 'Typefully draft' +6 plus allOf [schedule, post]"}
+{"prompt": "draft tweets from the finished thread and prep a Buffer import", "expect": "trigger", "reason": "phrases 'draft tweets' +6 and 'Buffer import' +6"}
+{"prompt": "post on linkedin and instagram from the write-social slug", "expect": "trigger", "reason": "phrases 'post on linkedin' +6 and 'post on Instagram' +6"}
+{"prompt": "build a scheduler import for Hootsuite from finished copy", "expect": "trigger", "reason": "phrases 'scheduler import' +6 and 'Hootsuite import' +6"}
+{"prompt": "write the social post copy for tiktok and reels", "expect": "skip", "reason": "writing intent routes to write-social, not publishing"}
+{"prompt": "generate image assets for the carousel post", "expect": "skip", "reason": "noneOf 'image generation' suppresses; produce-asset territory"}
+{"prompt": "audit our landing page conversion funnel", "expect": "skip", "reason": "noneOf 'landing page' suppresses; CRO territory"}
+{"prompt": "define our brand voice and design system", "expect": "skip", "reason": "noneOf 'design system' suppresses; create-brand territory"}
+{"prompt": "draft tweets from this thread copy and prep a Buffer import", "expect": "trigger", "reason": "regression test: previously suppressed by noneOf 'ad copy' which matched 'thread copy' via substring (thre-AD-COPy contains 'ad cop'). After changing to verb-anchored noneOf ('write ad copy'), legit 'thread copy' prompts route correctly."}

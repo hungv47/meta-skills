@@ -159,10 +159,23 @@
         "what skill should i use",
         "i don't know",
         "help me",
-        "continue",
-        "resume",
         "pick up where i left off",
+        "pick this back up",
         "what was i working on",
+        "resume the work",
+        "resume work",
+        "resume working on",
+        "resume the initiative",
+        "resume the project",
+        "resume my session",
+        "resume my work",
+        "let's resume",
+        "let me resume",
+        "continue working on",
+        "continue the work",
+        "continue this session",
+        "let's continue",
+        "let me continue",
         "launch this",
         "ship this",
         "/forsvn"
@@ -176,12 +189,10 @@
         "i'm new",
         "help me launch",
         "help me ship",
-        "what should i do next",
-        "resume",
-        "continue"
+        "what should i do next"
       ],
       "noneOf": [],
-      "minScore": 3
+      "minScore": 6
     },
     "review-work": {
       "phrases": [
@@ -263,7 +274,7 @@
         "unit test",
         "model training"
       ],
-      "minScore": 5
+      "minScore": 6
     },
     "diagnose": {
       "phrases": [
@@ -299,36 +310,56 @@
         "what should we build",
         "scope this",
         "clarify requirements",
-        "i have an idea"
+        "i have an idea for"
       ],
       "minScore": 6
     },
     "evaluate-shortform": {
       "phrases": [
-        "score this post",
-        "evaluate the post",
-        "post-publish review",
         "did the brief work",
         "short-form eval",
+        "shortform eval",
         "eval cycle",
-        "feedback loop"
+        "feedback loop",
+        "score this shortform",
+        "score this short",
+        "score the reel",
+        "score the tiktok",
+        "score the youtube short",
+        "evaluate the shortform",
+        "evaluate the reel",
+        "evaluate the tiktok",
+        "did the shortform land",
+        "did the reel perform"
       ],
       "allOf": [
         [
           "eval",
-          "post"
+          "shortform"
+        ],
+        [
+          "eval",
+          "short-form"
+        ],
+        [
+          "eval",
+          "reel"
+        ],
+        [
+          "eval",
+          "tiktok"
         ],
         [
           "score",
-          "brief"
+          "brief",
+          "shortform"
         ]
       ],
       "anyOf": [
         "post vs brief",
         "did it land",
         "eval cycle",
-        "feedback loop",
-        "post-publish"
+        "feedback loop"
       ],
       "noneOf": [
         "long-form",
@@ -377,9 +408,11 @@
     "prioritize": {
       "phrases": [
         "what to build first",
-        "what should we build next",
         "which to build first",
         "prioritize initiatives",
+        "prioritize the options",
+        "prioritize these options",
+        "prioritize the list",
         "ice score",
         "which solution",
         "strategic options",
@@ -404,7 +437,6 @@
         "prioritize",
         "ice",
         "initiative",
-        "solution",
         "trade-off"
       ],
       "noneOf": [
@@ -573,11 +605,6 @@
           "preview"
         ],
         [
-          "app",
-          "store",
-          "preview"
-        ],
-        [
           "feature",
           "demo"
         ],
@@ -611,8 +638,14 @@
         "social video",
         "short-form",
         "hook variations",
-        "publish",
-        "render"
+        "publish to social",
+        "publish to instagram",
+        "publish to linkedin",
+        "publish to x",
+        "publish to tiktok",
+        "render the asset",
+        "render asset",
+        "image generation"
       ],
       "minScore": 6
     },
@@ -673,6 +706,7 @@
         "design tokens",
         "user flow",
         "wireframe",
+        "redesign brief",
         "landing page redesign"
       ],
       "minScore": 6
@@ -1053,11 +1087,20 @@
     "monitor-aeo": {
       "phrases": [
         "aeo monitor",
+        "monitor aeo",
         "ai citation check",
+        "ai citation tracking",
+        "track ai citation",
+        "monitor ai citation",
         "monitor ai search",
         "ai overview tracking",
+        "track ai overview",
+        "monitor ai overview",
+        "ai overview presence",
         "ai referral traffic",
         "ai search visibility",
+        "ai snapshot tracking",
+        "track ai snapshot",
         "cited domain share",
         "llms.txt check",
         "indexnow"
@@ -1175,16 +1218,36 @@
     },
     "polish-vn": {
       "phrases": [
-        "vietnamese",
-        "tiếng việt",
         "polish vietnamese",
+        "polish the vietnamese",
+        "vietnamese polish",
+        "vietnamese tone",
+        "vietnamese register",
+        "vietnamese localization",
+        "localize to vietnamese",
         "vn tone",
+        "vn polish",
+        "fix the vietnamese",
+        "clean up the vietnamese",
+        "tiếng việt",
         "dịch sang tiếng việt"
       ],
       "allOf": [
         [
           "vietnamese",
           "tone"
+        ],
+        [
+          "vietnamese",
+          "register"
+        ],
+        [
+          "vietnamese",
+          "polish"
+        ],
+        [
+          "vietnamese",
+          "localize"
         ]
       ],
       "anyOf": [
@@ -1196,7 +1259,9 @@
       "noneOf": [
         "english copy",
         "humanize this",
-        "translate"
+        "translate",
+        "write vietnamese",
+        "draft vietnamese"
       ],
       "minScore": 6
     },
@@ -1236,10 +1301,16 @@
         "image generation prompt"
       ],
       "noneOf": [
-        "design brief",
-        "graphic brief",
+        "write a design brief",
+        "draft a design brief",
+        "create a design brief",
+        "write a graphic brief",
+        "draft a graphic brief",
+        "write a brief for",
         "design system",
-        "publish"
+        "publish to social",
+        "publish to the",
+        "publish this asset"
       ],
       "minScore": 6
     },
@@ -1355,7 +1426,9 @@
       "noneOf": [
         "design system",
         "landing page",
-        "ad copy",
+        "write ad copy",
+        "write the ad copy",
+        "draft ad copy",
         "image generation"
       ],
       "minScore": 6
@@ -1556,6 +1629,71 @@
         "user flow",
         "brand identity",
         "wireframe"
+      ],
+      "minScore": 6
+    },
+    "build-ios-apps": {
+      "phrases": [
+        "build an ios app",
+        "build the ios app",
+        "build my ios app",
+        "build this ios app",
+        "build ios app",
+        "build an iphone app",
+        "build my iphone app",
+        "build this iphone app",
+        "build a swift app",
+        "build my swift app",
+        "build this swift app",
+        "build this app on my iphone",
+        "build this app and install",
+        "test on my iphone",
+        "test on my phone",
+        "test on iphone",
+        "put this on my iphone",
+        "put this on my phone",
+        "put this app on my iphone",
+        "put this app on my phone",
+        "ship it to my iphone",
+        "ship this to my iphone",
+        "ship this to my phone",
+        "ship to testflight",
+        "install on device",
+        "install on iphone",
+        "install on my iphone",
+        "install this app",
+        "install this app on my iphone",
+        "install this app on my phone",
+        "install this on my iphone",
+        "install this on my phone",
+        "install it on my iphone",
+        "install it on my phone",
+        "publish to app store",
+        "publish to the app store",
+        "publish to testflight",
+        "submit my app to app store",
+        "submit to app store",
+        "submit my app for review",
+        "push to testflight",
+        "send for app store review",
+        "send to apple for review",
+        "register device with apple",
+        "apple developer auth",
+        "/build-ios-apps"
+      ],
+      "allOf": [],
+      "anyOf": [],
+      "noneOf": [
+        "android",
+        "kotlin",
+        "react native",
+        "review this",
+        "review the",
+        "code review",
+        "refactor",
+        "explain how",
+        "architecture of",
+        "design pattern"
       ],
       "minScore": 6
     },

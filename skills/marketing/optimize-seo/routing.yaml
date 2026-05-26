@@ -1,5 +1,4 @@
-# Routing signals for optimize-seo. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for optimize-seo.
 promptSignals:
   phrases:
     - "seo audit"
@@ -23,3 +22,86 @@ promptSignals:
     - "landing page audit"
     - "cro"
   minScore: 6
+
+capability:
+  id: optimize-seo
+  domain: marketing
+  public: true
+  command: /optimize-seo
+  summary: "SEO + AEO + ASO strategy and page rewrites — keyword research, technical audit, content gaps, link strategy, AI-citation optimization."
+  aliases:
+    - seo
+    - aeo
+    - aso
+    - search-optimization
+
+  route:
+    use_when:
+      - "Search-channel strategy or page rewrites for organic search."
+      - "Technical SEO audit (Core Web Vitals, schema, sitemaps, robots)."
+      - "Content-gap analysis + keyword targeting."
+      - "AEO / AI-citation optimization (`llms.txt`, structured data for AI)."
+      - "ASO (App Store Optimization) keyword + description."
+    not_when:
+      - "Monitoring AI-search visibility (citation checks, snapshots) -> monitor-aeo."
+      - "Landing-page conversion audit -> evaluate-landing-page."
+      - "Brand identity -> create-brand."
+      - "Channel-mix strategy (not search-only) -> plan-campaign."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+        - "research/product-context.md"
+        - "brand/BRAND.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single-mode invocation (keyword research only; technical audit only)."
+    multi_when:
+      - "Default — multi-mode (keyword + technical + content + link + AEO)."
+    critic_required_when:
+      - "Always — keyword-intent gate, technical-audit gate, AEO-readiness gate."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, mode selection)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Technical SEO audit / crawler checklist"
+        read:
+          - "references/technical-audit.md"
+          - "references/technical-crawler-checklist.md"
+      - if: "AEO / AI-citation / retrieval-layer SEO"
+        read:
+          - "references/ai-seo.md"
+          - "references/retrieval-layer-seo.md"
+      - if: "ASO patterns"
+        read:
+          - "references/aso.md"
+      - if: "Programmatic SEO (industries/:slug, compare/:vs)"
+        read:
+          - "references/programmatic-seo.md"
+      - if: "Schema markup / structured data"
+        read:
+          - "references/schema-reference.md"
+      - if: "Live-SERP remediation"
+        read:
+          - "references/live-serp-remediation.md"
+      - if: "Competitor page analysis"
+        read:
+          - "references/competitor-pages.md"
+      - if: "Platform-search (App Store, YouTube, Amazon)"
+        read:
+          - "references/platform-search.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/optimize-seo/[YYYY-MM-DD]-<slug>.md"
+        lifecycle: pipeline
+        produced_when: "End of SEO/AEO/ASO run; per-run report with recommendations."

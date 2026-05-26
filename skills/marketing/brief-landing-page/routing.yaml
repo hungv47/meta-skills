@@ -1,5 +1,8 @@
-# Routing signals for brief-landing-page. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for brief-landing-page.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "page brief"
@@ -31,3 +34,98 @@ promptSignals:
     - "experiment results"
     - "conversion rate"
   minScore: 6
+
+capability:
+  id: brief-landing-page
+  domain: marketing
+  public: true
+  command: /brief-landing-page
+  summary: "Generate a campaign-grade brief for a conversion landing page — hypothesis, architecture, per-section spec, asset slots, hand-off prompts."
+  aliases:
+    - lp-brief
+    - landing-page
+    - page-brief
+    - redesign-brief
+
+  route:
+    use_when:
+      - "User asks to plan or redesign a conversion landing page."
+      - "User needs a designer-ready brief (Claude Design / Figma / human / coding agent)."
+      - "Post-launch evidence triggers a redesign (Route B)."
+    not_when:
+      - "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-eval-loop)."
+      - "Single visual asset spec -> brief-graphic."
+      - "Page exists but conversion is fine; just needs headline variations -> write-copy."
+      - "Non-conversion pages (blog, docs hub, navigation hub) -> out of scope."
+      - "Programmatic-SEO templates (industries/:slug, compare/:vs) -> out of scope for v1."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+        - "research/product-context.md"
+        - ".forsvn/artifacts/mkt/campaign-plan.md"
+      hard:
+        - "brand/BRAND.md"
+        - "brand/DESIGN.md"
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast flag forces single-agent execution per layer (Approval Gates still fire)."
+    multi_when:
+      - "Default — 9 agents across L1 parallel / L1.5 hypothesis / L2 architecture / L3 section-spec / L3.5 asset-slot / L4 handoff / L5 critic gate."
+      - "Route B redesign with evidence anchoring."
+      - "Re-run with --rev=N."
+    critic_required_when:
+      - "Always — both critics (conversion + brand-voice) PASS-gate every brief before write."
+      - "DONE_WITH_CONCERNS is the floor; no silent FAIL outputs."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Hard-gate check (brand artifacts present)"
+        read:
+          - "references/_shared/reviewable-artifact-contract.md"
+      - if: "Pre-Dispatch (Cold Start, page-state / evidence intake)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer 1 dispatch (evidence + brand anchors)"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Layer 1.5 hypothesis generation / scoring"
+        read:
+          - "references/hypothesis-rubric.md"
+      - if: "Layer 2 architecture / scroll rhythm"
+        read:
+          - "references/surface-rhythm.md"
+          - "references/section-templates.md"
+      - if: "Layer 3-4 section spec / handoff prompts / asset slots"
+        read:
+          - "references/conversion-principles.md"
+          - "references/handoff-formats.md"
+          - "references/design-handoff-prompting.md"
+      - if: "Layer 5 critic gate / failure analysis"
+        read:
+          - "references/anti-patterns.md"
+          - "references/failure-modes.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md"
+        lifecycle: pipeline
+        produced_when: "Approval Gate 3 PASS; versioned re-runs to v[N]/brief.md."
+      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-implementation.md"
+        lifecycle: pipeline
+        produced_when: "Always-emitted companion (universal coding-agent prompt, stack auto-detected)."
+      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-claude-design.md"
+        lifecycle: pipeline
+        produced_when: "target_handoff lists claude-design."
+      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-figma.md"
+        lifecycle: pipeline
+        produced_when: "target_handoff lists figma."
+      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-designer.md"
+        lifecycle: pipeline
+        produced_when: "target_handoff lists designer."

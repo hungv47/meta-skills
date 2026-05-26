@@ -1,5 +1,4 @@
-# Routing signals for clean-code. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for clean-code.
 promptSignals:
   phrases:
     - "dead code"
@@ -21,3 +20,55 @@ promptSignals:
     - "system design"
     - "write documentation"
   minScore: 6
+
+capability:
+  id: clean-code
+  domain: product
+  public: true
+  command: /clean-code
+  summary: "Audit + refactor existing code for readability, maintainability, dead-code removal — without changing behavior. Produces meta/records cleanup record + applies fixes in-place."
+  aliases:
+    - refactor
+    - dead-code
+    - code-cleanup
+
+  route:
+    use_when:
+      - "User asks to clean up existing code, remove dead code, improve readability."
+      - "AI-slop / over-engineered code needs taming."
+      - "Refactor without behavior change."
+    not_when:
+      - "Diagnosing business problems -> diagnose."
+      - "Designing a system from scratch -> architect-system."
+      - "Writing missing documentation -> write-docs."
+      - "Service-layer extraction -> extract-service."
+    prerequisites:
+      recommended:
+        - "architecture/system-architecture.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Small diff or single-file cleanup; --fast forces single-agent."
+    multi_when:
+      - "Multi-file refactor with behavior-preservation gate."
+    critic_required_when:
+      - "Always — behavior preservation (test pass + no public API change)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "End of cleanup run; dated immutable record."

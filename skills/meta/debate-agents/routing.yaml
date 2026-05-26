@@ -1,5 +1,4 @@
-# Routing signals for debate-agents. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for debate-agents.
 promptSignals:
   phrases:
     - "debate this"
@@ -23,3 +22,59 @@ promptSignals:
     - "decompose"
     - "scope this"
   minScore: 6
+
+capability:
+  id: debate-agents
+  domain: meta
+  public: true
+  command: /debate-agents
+  summary: "Multi-perspective debate panel — spawns 3-5 agents with distinct stances, surfaces tradeoffs, recommends with reasoning. Use for high-stakes decisions with no clear winner."
+  aliases:
+    - debate
+    - perspectives
+    - panel
+    - pros-and-cons
+
+  route:
+    use_when:
+      - "Decision is expensive to reverse + 2+ viable approaches with non-obvious tradeoffs."
+      - "User wants pressure-test thinking on a strategic / architectural / design choice."
+      - "Called as sub-routine by /discover at Step 5."
+    not_when:
+      - "Clear best answer from context -> just decide."
+      - "Quality check on shipped work -> review-work."
+      - "Decomposing scope -> breakdown-tasks."
+      - "Scoping fuzzy requirements -> discover."
+    prerequisites:
+      recommended: []
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "Never — debate is multi-agent by design (minimum 3 stances)."
+    multi_when:
+      - "Default — 3-5 agents with distinct stances + synthesis + critic."
+    critic_required_when:
+      - "Always — synthesis must surface real disagreements, not collapse to consensus."
+      - "Decision summary must name the tradeoff matrix + recommended path + reversibility cost."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Debate procedure + stance selection"
+        read:
+          - "references/procedures/"
+      - if: "Report template"
+        read:
+          - "references/report-template.md"
+      - if: "Anti-pattern review (fake consensus, premature synthesis)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/debates/[date]-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "End of debate; dated immutable record with full transcript + synthesis."

@@ -1,5 +1,8 @@
-# Routing signals for clean-machine. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for clean-machine.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "clean up my machine"
@@ -29,3 +32,72 @@ promptSignals:
     - "refactor"
     - "documentation"
   minScore: 6
+
+capability:
+  id: clean-machine
+  domain: product
+  public: true
+  command: /clean-machine
+  summary: "Audit + clean a developer's machine — dotfolders, caches, language toolchains, package globals — with per-target risk surfacing and explicit confirmation."
+  aliases:
+    - machine-cleanup
+    - home-cleanup
+    - fresh-start
+
+  route:
+    use_when:
+      - "New laptop setup; need to start clean."
+      - "Disk is full or near-full; need to free space."
+      - "After trying many AI tools; need to remove abandoned ones."
+      - "Before passing the machine to someone else."
+    not_when:
+      - "Source code cleanup -> clean-code."
+      - "Triaging Documents / Downloads / Desktop user files -> human review, not automation."
+      - "Tool ownership unclear AND owning tool can't be identified -> NEEDS_CONTEXT first."
+    prerequisites:
+      recommended:
+        - ".forsvn/experience/technical.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Operator points at one specific folder; single-target fallback."
+      - "--fast flag forces single-agent regardless of scope."
+    multi_when:
+      - "Default — 7 agents (dotfolder + runtime + cache + package-inventory scanners parallel; orphan-detection; safe-nuke; critic)."
+      - "Multi-target cleanup (home / caches / runtimes / packages / all)."
+    critic_required_when:
+      - "Always — golden-rules compliance + no user-data deletion + no auth surprise."
+      - "Bulk-action pause triggers (>10GB reclaim, >5 consecutive rejections)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Pre-Dispatch (Warm/Cold Start)"
+        read:
+          - "references/pre-dispatch-prompts.md"
+      - if: "Layer 1 scan + tool identification"
+        read:
+          - "references/agent-manifest.md"
+          - "references/classification-vocabulary.md"
+          - "references/tool-ownership-map.md"
+          - "references/tool-ownership-heuristics.md"
+      - if: "Critical Gate 2 — auth credential detection"
+        read:
+          - "references/auth-credential-patterns.md"
+      - if: "Layer 3 safe-nuke / critic-FAIL handling / bulk-action triggers"
+        read:
+          - "references/anti-patterns.md"
+      - if: "Artifact write"
+        read:
+          - "references/report-template.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "End of cleanup session (DONE or DONE_WITH_CONCERNS); dated immutable record."
