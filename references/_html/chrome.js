@@ -89,8 +89,7 @@
     // tampered preview-config) names a remote target, refuse to activate so
     // the reviewer's comments never leave the local machine.
     if (!/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/done$/.test(config.endpoint)) {
-      // eslint-disable-next-line no-console
-      if (typeof console !== "undefined") console.warn("[forsvn] preview-config.endpoint is not a localhost /done URL; decision-capture stays inert", config.endpoint);
+      console.warn("[forsvn] preview-config.endpoint is not a localhost /done URL; decision-capture stays inert", config.endpoint);
       return;
     }
 
@@ -154,7 +153,7 @@
             if (doneBtn) doneBtn.disabled = false;
           });
         }
-      }).catch(function (e) {
+      }).catch(function () {
         if (status) {
           status.textContent = "network error — is the CLI still running?";
           status.setAttribute("data-tone", "error");

@@ -151,7 +151,7 @@ body {
 .left-controls .picker-item + .picker-item { margin-top: 6px; }
 .left-controls button:hover,
 .left-controls .picker-item:hover { border-color: var(--chrome-text-muted); }
-.left-controls .picker-item[aria-selected="true"] { border-color: var(--chrome-accent); background: #19191e; }
+.left-controls .picker-item[aria-selected="true"] { border-color: var(--chrome-accent); background: var(--chrome-panel); }
 
 /* ============ STAGE (themed by stack) ============ */
 .stage {
@@ -230,10 +230,11 @@ body {
 }
 .footer-meta { flex: 1; color: var(--chrome-text-muted); }
 
-/* ============ DECISION CAPTURE (v2 — WS-V3) ============
-   Form is always present in markup. Activated by chrome.js when
-   preview-config carries a token (CLI running) and artifact-data is pending.
-   When inactive, the form is display:none — the rest of the chrome is unchanged. */
+/* ============ DECISION CAPTURE ============
+   Form is always present in markup; activated by chrome.js only when the
+   `forsvn preview` CLI has injected a token + endpoint and the artifact is
+   still pending. Otherwise the form is display:none and the chrome reads
+   read-only. */
 .decision-capture {
   grid-area: capture;
   display: none;
@@ -342,7 +343,7 @@ body {
   color: var(--chrome-text-muted);
   align-self: center;
 }
-.decision-capture .decision-status[data-tone="error"] { color: #fbbf24; }
+.decision-capture .decision-status[data-tone="error"] { color: var(--pill-pending-fg); }
 .decision-capture .decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
 
 /* ============ RESPONSIVE FALLBACK ============ */

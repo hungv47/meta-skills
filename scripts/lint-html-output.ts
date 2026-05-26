@@ -22,27 +22,19 @@ const ROOT = (() => {
   return process.cwd();
 })();
 
-// v2 — typography is unified across all stacks. Same allowlist everywhere; any
-// inline literal font name must come from the FORSVN unified stack (Bricolage
-// Grotesque + Be Vietnam Pro + JetBrains Mono) or be a generic fallback. The
-// preferred form is `font-family: var(--font-head|body|mono)`; literals are
-// allowed but flagged when they drift outside the brand. Per acceptance gate
-// § 8 #3, exemplar grep should return only Bricolage / Be Vietnam Pro /
-// JetBrains Mono — legacy v1 families (Inter Tight, Fraunces, Sora,
-// Newsreader, Plus Jakarta Sans, Manrope) are intentionally NOT in this set.
-const UNIFIED_FONT_FRAGMENTS = [
+// Allowlist = unified FORSVN stack + generic fallbacks. v1 per-stack families
+// (Inter Tight, Fraunces, Sora, Newsreader, Plus Jakarta Sans, Manrope) are
+// intentionally NOT in this set per acceptance gate § 8 #3.
+const ALLOWED_FONT_FRAGMENTS = [
   "Bricolage Grotesque", "Be Vietnam Pro", "JetBrains Mono",
   "SF Mono", "ui-monospace",
   "system-ui", "-apple-system",
   "sans-serif", "serif", "monospace",
 ];
-const STACK_FONT_FRAGMENTS: Record<string, string[]> = {
-  air:   UNIFIED_FONT_FRAGMENTS,
-  water: UNIFIED_FONT_FRAGMENTS,
-  fire:  UNIFIED_FONT_FRAGMENTS,
-  earth: UNIFIED_FONT_FRAGMENTS,
-};
 const FORBIDDEN_SCRIPT_LIBS = ["gsap", "motion-one", "animejs", "lottie", "popmotion"];
+const MAX_INLINE_COLOR_PAIRS = 8;
+const LOCALHOST_DONE_RE = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/done$/;
+const LOCALHOST_FETCH_RE = /^(\/|https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/)/;
 
 type Issue = { check: number; file: string; message: string; severity: "hard" | "soft" };
 const issues: Issue[] = [];
@@ -112,16 +104,13 @@ function lint(file: string, html: string): void {
 
   // Check 3 — decision pill matches frontmatter mirror
   const pillMatch = html.match(/<span class="decision-pill" data-state="(pending|approved|denied|suggested)"/);
-  const jsonMatch = html.match(/<script type="application\/json" id="artifact-data">([\s\S]*?)<\/script>/);
-  let fmDecisionState: string | undefined;
-  if (jsonMatch) {
-    try {
-      const data = JSON.parse(jsonMatch[1]);
-      fmDecisionState = typeof data.decision_state === "string" ? data.decision_state : undefined;
-    } catch {
-      issues.push({ check: 1, file, message: `#artifact-data is not valid JSON`, severity: "hard" });
-    }
+  const artifactData = readJsonScript(html, "artifact-data");
+  if (artifactData.parseError) {
+    issues.push({ check: 1, file, message: `#artifact-data is not valid JSON`, severity: "hard" });
   }
+  const fmDecisionState = typeof artifactData.parsed?.decision_state === "string"
+    ? (artifactData.parsed.decision_state as string)
+    : undefined;
   if (!pillMatch && fmDecisionState && fmDecisionState !== "not_required") {
     issues.push({ check: 3, file, message: `decision-pill missing while frontmatter decision_state=${fmDecisionState}`, severity: "hard" });
   } else if (pillMatch && fmDecisionState && pillMatch[1] !== fmDecisionState) {
@@ -141,7 +130,7 @@ function lint(file: string, html: string): void {
   // *might* break contrast. Hard analysis lives in the design-spec WCAG table.
   // Soft fail when the file uses inline `color:` against `background:` raw hex pairs.
   const colorAgainstBg = [...html.matchAll(/style="[^"]*color:\s*(#[0-9a-fA-F]{3,6})[^"]*background[^:]*:\s*(#[0-9a-fA-F]{3,6})/g)];
-  if (colorAgainstBg.length > 8) {
+  if (colorAgainstBg.length > MAX_INLINE_COLOR_PAIRS) {
     issues.push({ check: 5, file, message: `${colorAgainstBg.length} inline color/background pairs — review for AA contrast manually`, severity: "soft" });
   }
 
@@ -164,7 +153,7 @@ function lint(file: string, html: string): void {
     const actionMatch = attrs.match(/\baction\s*=\s*"([^"]+)"/i);
     if (actionMatch) {
       const action = actionMatch[1].trim();
-      const allowed = action === "javascript:void(0)" || action === "#" || /^\/done$/.test(action) || /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/done$/.test(action);
+      const allowed = action === "javascript:void(0)" || action === "#" || /^\/done$/.test(action) || LOCALHOST_DONE_RE.test(action);
       if (!allowed) {
         issues.push({ check: 6, file, message: `<form id="decision-capture"> action ${JSON.stringify(action)} not allowed (must be javascript:void(0) or /done on localhost)`, severity: "hard" });
       }
@@ -182,16 +171,11 @@ function lint(file: string, html: string): void {
   // forsvn-preview CLI overwrites the placeholder at serve time; a checked-in
   // HTML with any other config (e.g. {"endpoint":"https://attacker/done"})
   // would activate chrome.js's decision-capture against a remote target.
-  const previewCfg = html.match(/<script type="application\/json" id="preview-config">([\s\S]*?)<\/script>/);
-  if (previewCfg) {
-    try {
-      const cfg = JSON.parse(previewCfg[1]);
-      if (cfg.static !== true) {
-        issues.push({ check: 6, file, message: `static <script id="preview-config"> must declare {"static":true}; the CLI rewrites this at serve time`, severity: "hard" });
-      }
-    } catch {
-      issues.push({ check: 6, file, message: `<script id="preview-config"> is not valid JSON`, severity: "hard" });
-    }
+  const previewCfg = readJsonScript(html, "preview-config");
+  if (previewCfg.parseError) {
+    issues.push({ check: 6, file, message: `<script id="preview-config"> is not valid JSON`, severity: "hard" });
+  } else if (previewCfg.parsed && (previewCfg.parsed as { static?: unknown }).static !== true) {
+    issues.push({ check: 6, file, message: `static <script id="preview-config"> must declare {"static":true}; the CLI rewrites this at serve time`, severity: "hard" });
   }
   // No inline onclick attributes anywhere (chrome.js binds via data-* hooks).
   if (/\bonclick\s*=/i.test(html6)) {
@@ -202,7 +186,7 @@ function lint(file: string, html: string): void {
   // endpoint at runtime; static HTML must not name a remote target.
   const fetchTargets = [...html6.matchAll(/\bfetch\s*\(\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
   for (const target of fetchTargets) {
-    if (!/^(\/|https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?\/)/.test(target)) {
+    if (!LOCALHOST_FETCH_RE.test(target)) {
       issues.push({ check: 6, file, message: `fetch() target ${JSON.stringify(target)} is not localhost/relative`, severity: "hard" });
     }
   }
@@ -226,13 +210,12 @@ function lint(file: string, html: string): void {
 
   // Check 8 — Stage typography uses element fonts
   if (stack) {
-    const allowed = STACK_FONT_FRAGMENTS[stack];
     const fontFamilyDecls = [...html.matchAll(/font-family\s*:\s*([^;\n}]+)/g)].map((m) => m[1]);
     for (const decl of fontFamilyDecls) {
       const sample = decl.replace(/['"]/g, "").trim();
       if (sample.length === 0) continue;
       if (sample.startsWith("var(")) continue;
-      const usesAllowed = allowed.some((frag) => sample.includes(frag));
+      const usesAllowed = ALLOWED_FONT_FRAGMENTS.some((frag) => sample.includes(frag));
       if (!usesAllowed) {
         issues.push({ check: 8, file, message: `font-family ${JSON.stringify(sample)} not allowed for stack=${stack}`, severity: "soft" });
       }
@@ -254,4 +237,15 @@ function lint(file: string, html: string): void {
   } else if (!/.+ · [a-z][a-z0-9-]* · \d{4}-\d{2}-\d{2}\s*$/.test(titleMatch[1])) {
     issues.push({ check: 10, file, message: `<title> ${JSON.stringify(titleMatch[1])} does not match "<artifact-title> · <skill> · <date>" pattern`, severity: "soft" });
   }
+}
+
+// Read a <script type="application/json" id="..."> block from HTML and parse
+// its JSON body. Returns `{parsed}` on success, `{parseError: true}` if the
+// tag exists but JSON.parse threw, `{}` if the tag is absent.
+function readJsonScript(html: string, id: string): { parsed?: unknown; parseError?: boolean } {
+  const re = new RegExp(`<script type="application/json" id="${id}">([\\s\\S]*?)</script>`);
+  const m = html.match(re);
+  if (!m) return {};
+  try { return { parsed: JSON.parse(m[1]) }; }
+  catch { return { parseError: true }; }
 }

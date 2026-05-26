@@ -24,11 +24,15 @@ import { spawn, spawnSync } from "node:child_process";
 const HOST = "127.0.0.1";
 const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
 const ARCHIVE_REL = ".forsvn/artifacts/.archive";
-const VALID_DECISIONS = new Set(["approved", "denied", "suggested"]);
+const TOKEN_BYTES = 16;                      // = 32 hex chars in the wire format
+const MAX_ROOT_WALK_DEPTH = 12;              // upper bound when probing for .git/.forsvn
+
+const VALID_DECISIONS = ["approved", "denied", "suggested"] as const;
+type Decision = typeof VALID_DECISIONS[number];
 
 type Payload = {
   token: string;
-  decision_state: "approved" | "denied" | "suggested";
+  decision_state: Decision;
   comments?: string;
   variant?: string;
 };
@@ -81,7 +85,7 @@ async function main(): Promise<number> {
   }
 
   const htmlSource = readFileSync(htmlPath, "utf8");
-  const token = randomBytes(16).toString("hex");
+  const token = randomBytes(TOKEN_BYTES).toString("hex");
 
   const server = Bun.serve({
     hostname: HOST,
@@ -107,9 +111,8 @@ async function main(): Promise<number> {
     }, IDLE_TIMEOUT_MS);
   });
 
-  // Graceful stop — let any in-flight response finish before tearing down. The
-  // queueMicrotask in /done already ordered the 200 ahead of this, but graceful
-  // mode eliminates the timing race entirely with no UX cost.
+  // Graceful stop — let any in-flight response (including the deferred /done
+  // resolve) drain before the socket closes.
   await server.stop();
 
   if (!result.ok) {
@@ -215,22 +218,22 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
       try { body = await req.json(); }
       catch { return jsonResp(400, { error: "invalid JSON body" }, noStore); }
 
-      const payload = body as Partial<Payload>;
-      if (typeof payload.token !== "string" || !constantTimeEqual(payload.token, token)) {
+      const raw = body as Record<string, unknown>;
+      if (typeof raw.token !== "string" || !constantTimeEqual(raw.token, token)) {
         return jsonResp(403, { error: "bad token" }, noStore);
       }
-      if (typeof payload.decision_state !== "string" || !VALID_DECISIONS.has(payload.decision_state)) {
-        return jsonResp(400, { error: "decision_state must be approved | denied | suggested" }, noStore);
+      if (typeof raw.decision_state !== "string" || !(VALID_DECISIONS as readonly string[]).includes(raw.decision_state)) {
+        return jsonResp(400, { error: `decision_state must be ${VALID_DECISIONS.join(" | ")}` }, noStore);
       }
-      const ok: Payload = {
+      const parsed: Payload = {
         token,
-        decision_state: payload.decision_state as Payload["decision_state"],
+        decision_state: raw.decision_state as Decision,
       };
-      if (typeof payload.comments === "string" && payload.comments.trim().length > 0) {
-        ok.comments = payload.comments.trim();
+      if (typeof raw.comments === "string" && raw.comments.trim().length > 0) {
+        parsed.comments = raw.comments.trim();
       }
-      if (typeof payload.variant === "string" && payload.variant.trim().length > 0) {
-        ok.variant = payload.variant.trim();
+      if (typeof raw.variant === "string" && raw.variant.trim().length > 0) {
+        parsed.variant = raw.variant.trim();
       }
 
       // Claim the slot now so any concurrent POST returns 409 above. Defer the
@@ -239,7 +242,7 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
       state.resolve = undefined;
       queueMicrotask(() => {
         if (state.idleTimer) clearTimeout(state.idleTimer);
-        resolveFn({ ok: true, payload: ok });
+        resolveFn({ ok: true, payload: parsed });
       });
       return jsonResp(200, { ok: true }, noStore);
     }
@@ -371,7 +374,7 @@ function runManifestSync(projectRoot: string): void {
 
 function findProjectRoot(startPath: string): string {
   let dir = dirname(resolve(startPath));
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < MAX_ROOT_WALK_DEPTH; i++) {
     if (existsSync(join(dir, ".git")) || existsSync(join(dir, ".forsvn"))) return dir;
     const parent = dirname(dir);
     if (parent === dir) break;
@@ -403,9 +406,11 @@ function openBrowser(url: string): void {
     process.platform === "darwin" ? "open" :
     process.platform === "win32" ? "start" :
     "xdg-open";
+  // spawn can throw synchronously on a malformed cmd path (rare with literal
+  // strings); the async ENOENT case fires as an 'error' event we don't wait on.
   try {
     spawn(cmd, [url], { stdio: "ignore", detached: true }).unref();
-  } catch (e) {
+  } catch {
     log(`(could not open browser automatically; visit ${url} manually)`);
   }
 }
