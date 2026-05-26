@@ -1,7 +1,8 @@
 /* tokens.css — design tokens for the review-surface HTML preview.
-   Generated from references/review-surface-design.md § 2-3.
-   Constant chrome lives in :root. Element themes activate via
-   <html data-stack="air|water|fire|earth"> on the page root. */
+   v2 (2026-05-26): unified FORSVN brand. One typography stack, one motion
+   vocabulary, signal-lime brand accent in chrome. Per-stack variation lives
+   in the 5 stage tokens (--stage-bg/-fg/-accent/-accent-2/-border).
+   Source of truth: references/review-surface-design.md § 3. */
 
 :root {
   /* ============ Chrome (constant across stacks) ============ */
@@ -10,123 +11,110 @@
   --chrome-border:       #1f1f24;
   --chrome-text:         #e4e4e7;
   --chrome-text-muted:   #71717a;
-  --chrome-accent:       #ffffff;
+  --chrome-accent:       #B7FF6E;             /* signal-lime — FORSVN brand mark */
 
+  /* ============ Brand palette (Pure Void canonical) ============ */
+  --brand-lime:          #B7FF6E;
+  --brand-forest:        #004700;
+  --brand-void:          #000000;
+  --brand-paper:         #F5F5F5;
+
+  /* ============ Decision pill colors ============ */
   --pill-pending-bg:     #2a2a2e;
   --pill-pending-fg:     #fbbf24;
-  --pill-approved-bg:    #064e3b;
-  --pill-approved-fg:    #6ee7b7;
+  --pill-approved-bg:    #004700;
+  --pill-approved-fg:    #B7FF6E;
   --pill-denied-bg:      #7f1d1d;
   --pill-denied-fg:      #fecaca;
   --pill-suggested-bg:   #1e3a8a;
   --pill-suggested-fg:   #93c5fd;
 
-  --chrome-mono:         'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-  --chrome-sans:         'Inter', -apple-system, system-ui, sans-serif;
+  /* ============ Unified typography (D14 — one stack everywhere) ============ */
+  --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
+  --font-body:           'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
+  --font-mono:           'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --chrome-sans:         var(--font-body);
+  --chrome-mono:         var(--font-mono);
+  --chrome-display:      var(--font-head);
 
+  /* ============ Unified motion (D14 — one vocabulary; ≤80ms per-stack drift) ============ */
+  --ease:                cubic-bezier(0.4, 0, 0.2, 1);
+  --t-snap:              80ms;
+  --t-hover:             200ms;
+  --t-enter:             360ms;
+  --t-ripple:            480ms;
+
+  /* ============ Layout ============ */
   --chrome-topbar-h:     56px;
   --chrome-left-w:       320px;
   --chrome-footer-h:     72px;
   --stage-pad:           48px;
+  --line-height:         1.55;
+  --max-measure:         72ch;
 }
 
-/* ============ AIR — meta ============ */
+/* ============ Stage tokens — 5 per stack (D17) ============ */
+/* meta · AIR color register — signal-lime on Pure Void near-black */
 :root[data-stack="air"] {
-  --bg:             #f7f8fa;
-  --bg-deep:        #e8ebf0;
-  --bg-elevated:    #ffffff;
-  --fg:             #18181b;
-  --fg-muted:       #52525b;
-  --accent:         #a7c7ff;
-  --accent-fg:      #18181b;
-  --border:         #d4d4d8;
-  --border-strong:  #a1a1aa;
-  --shadow-sm:      0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:      0 8px 24px rgba(0,0,0,0.04);
-  --shadow-glow:    0 0 24px rgba(167, 199, 255, 0.30);
-  --font-head:      'Inter Tight', 'Inter', sans-serif;
-  --font-body:      'Inter', sans-serif;
-  --font-mono:      'JetBrains Mono', monospace;
-  --line-height:    1.7;
-  --max-measure:    65ch;
-  --t-hover:        240ms;
-  --t-enter:        480ms;
-  --ease:           cubic-bezier(0.2, 0.6, 0.2, 1);
+  --stage-bg:            #000000;
+  --stage-fg:            #F5F5F5;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #1A1A1A;
 }
 
-/* ============ WATER — marketing ============ */
+/* mkt · WATER color register — signal-lime on midnight blue tint */
 :root[data-stack="water"] {
-  --bg:             #0a1a2a;
-  --bg-deep:        #050d18;
-  --bg-elevated:    rgba(255,255,255,0.04);
-  --fg:             #f0f6ff;
-  --fg-muted:       #7891a8;
-  --accent:         #6ee7d4;
-  --accent-fg:      #0a1a2a;
-  --accent-gradient: linear-gradient(135deg, #6ee7d4 0%, #5d9eff 100%);
-  --border:         #1a2e44;
-  --border-strong:  #2d4863;
-  --glass-tint:     rgba(255,255,255,0.06);
-  --backdrop-blur:  blur(24px);
-  --shadow-sm:      inset 0 1px 0 rgba(255,255,255,0.04);
-  --shadow-md:      0 4px 32px rgba(110, 231, 212, 0.10);
-  --shadow-glow:    0 0 24px rgba(110, 231, 212, 0.20);
-  --font-head:      'Fraunces', 'Times New Roman', serif;
-  --font-body:      'Plus Jakarta Sans', 'Inter', sans-serif;
-  --font-mono:      'JetBrains Mono', monospace;
-  --line-height:    1.6;
-  --max-measure:    72ch;
-  --t-hover:        360ms;
-  --t-ripple:       600ms;
-  --ease:           cubic-bezier(0.4, 0, 0.2, 1);
+  --stage-bg:            #050d18;
+  --stage-fg:            #f0f6ff;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #1a2e44;
 }
 
-/* ============ FIRE — product ============ */
+/* product · FIRE color register — signal-lime on warm charcoal tint */
 :root[data-stack="fire"] {
-  --bg:             #0f0a08;
-  --bg-deep:        #050302;
-  --bg-elevated:    #1a120e;
-  --fg:             #fdf4ee;
-  --fg-muted:       #a08470;
-  --accent:         #ff7a45;
-  --accent-fg:      #0f0a08;
-  --accent-2:       #ffcc00;
-  --border:         #2d1a0f;
-  --border-strong:  #ff7a45;
-  --shadow-sm:      0 2px 8px rgba(0,0,0,0.4);
-  --shadow-md:      0 0 32px rgba(255, 122, 69, 0.15);
-  --shadow-glow:    0 0 16px rgba(255, 122, 69, 0.55);
-  --font-head:      'Sora', 'Inter', sans-serif;
-  --font-body:      'Manrope', 'Inter', sans-serif;
-  --font-mono:      'JetBrains Mono', monospace;
-  --line-height:    1.5;
-  --max-measure:    80ch;
-  --t-hover:        120ms;
-  --t-snap:         80ms;
-  --ease:           cubic-bezier(0.4, 0, 0.6, 1);
+  --stage-bg:            #1a1410;
+  --stage-fg:            #fdf4ee;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #2d2520;
 }
 
-/* ============ EARTH — research ============ */
+/* research · EARTH color register — forest on cream (only light-mode stack;
+   signal-lime stays as decorative accent-2; lime-on-cream fails AA for text) */
 :root[data-stack="earth"] {
-  --bg:             #f4ede0;
-  --bg-deep:        #e8ddc7;
-  --bg-elevated:    #ffffff;
-  --fg:             #1a1410;
-  --fg-muted:       #6b5d4f;
-  --accent:         #2d5016;
-  --accent-fg:      #f4ede0;
-  --accent-2:       #b87333;
-  --border:         #c4b594;
-  --border-strong:  #9c8a6c;
-  --shadow-sm:      0 1px 0 rgba(0,0,0,0.06);
-  --shadow-md:      0 12px 32px rgba(120, 90, 50, 0.08);
-  --shadow-glow:    0 12px 32px rgba(120, 90, 50, 0.15);
-  --font-head:      'Newsreader', 'EB Garamond', 'Times New Roman', serif;
-  --font-body:      'Newsreader', 'Times New Roman', serif;
-  --font-mono:      'JetBrains Mono', monospace;
-  --line-height:    1.55;
-  --max-measure:    68ch;
-  --t-enter:        800ms;
-  --t-hover:        0ms;
-  --ease:           cubic-bezier(0.16, 1, 0.3, 1);
+  --stage-bg:            #f4ede0;
+  --stage-fg:            #1a1410;
+  --stage-accent:        #004700;
+  --stage-accent-2:      #B7FF6E;
+  --stage-border:        #c4b594;
+}
+
+/* ============ Derived helpers + back-compat aliases ============ */
+/* All stacks share the same derivation rules; per-stack values come from the
+   5 stage tokens above via color-mix(). Old --bg/--fg/--accent/--border names
+   alias to --stage-* so existing exemplar styles keep working. */
+:root[data-stack] {
+  /* Back-compat aliases */
+  --bg:                  var(--stage-bg);
+  --fg:                  var(--stage-fg);
+  --accent:              var(--stage-accent);
+  --accent-2:            var(--stage-accent-2);
+  --accent-fg:           var(--stage-bg);
+  --border:              var(--stage-border);
+
+  /* Derived neutrals */
+  --fg-muted:            color-mix(in srgb, var(--stage-fg) 58%, var(--stage-bg));
+  --border-strong:       color-mix(in srgb, var(--stage-border) 50%, var(--stage-fg) 50%);
+  --bg-deep:             color-mix(in srgb, var(--stage-bg) 92%, #000000 8%);
+  --bg-elevated:         color-mix(in srgb, var(--stage-bg) 94%, var(--stage-fg) 6%);
+
+  /* Derived effects */
+  --shadow-sm:           0 1px 2px rgba(0,0,0,0.18);
+  --shadow-md:           0 8px 24px rgba(0,0,0,0.20);
+  --shadow-glow:         0 0 24px color-mix(in srgb, var(--stage-accent) 32%, transparent);
+  --backdrop-blur:       blur(24px);
+  --glass-tint:          color-mix(in srgb, var(--stage-fg) 4%, transparent);
+  --accent-gradient:     linear-gradient(135deg, var(--stage-accent) 0%, var(--stage-accent-2) 100%);
 }

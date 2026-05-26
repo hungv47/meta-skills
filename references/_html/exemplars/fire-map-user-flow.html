@@ -7,27 +7,33 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../tokens.css">
   <link rel="stylesheet" href="../chrome.css">
 
   <style>
+    /* FIRE register — solid borders + accent glow, snappy motion.
+       Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
     .stage-intro h1 {
       font-family: var(--font-head);
       font-size: 48px;
       font-weight: 700;
-      letter-spacing: -0.015em;
+      letter-spacing: -0.02em;
       margin: 0 0 8px 0;
+      color: var(--stage-fg);
     }
-    .stage-intro p { color: var(--fg-muted); max-width: 60ch; }
+    .stage-intro p {
+      font-family: var(--font-body);
+      color: var(--fg-muted);
+      max-width: 60ch;
+    }
     .stage-intro .meta {
       font-family: var(--font-mono);
       font-size: 11.5px;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--stage-accent);
       margin-bottom: 8px;
     }
 
@@ -42,13 +48,13 @@
     .step {
       flex: 0 0 220px;
       background: var(--bg-elevated);
-      border: 2px solid var(--border);
+      border: 2px solid var(--stage-border);
       border-radius: 6px;
       padding: 18px;
       position: relative;
       transition: border-color var(--t-snap) var(--ease), box-shadow var(--t-snap) var(--ease);
     }
-    .step:hover { border-color: var(--border-strong); box-shadow: var(--shadow-glow); }
+    .step:hover { border-color: var(--stage-accent); box-shadow: var(--shadow-glow); }
     .step + .step { margin-left: 36px; }
     .step + .step::before {
       content: "→";
@@ -56,7 +62,7 @@
       left: -28px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--accent);
+      color: var(--stage-accent);
       font-family: var(--font-mono);
       font-size: 22px;
       font-weight: 700;
@@ -66,15 +72,16 @@
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--stage-accent);
       margin-bottom: 4px;
     }
     .step h3 {
       font-family: var(--font-head);
       font-size: 17px;
       font-weight: 700;
-      letter-spacing: -0.5%;
+      letter-spacing: -0.005em;
       margin: 0 0 8px 0;
+      color: var(--stage-fg);
     }
     .step p {
       font-family: var(--font-body);
@@ -86,9 +93,9 @@
     .step .metric {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--accent-2);
+      color: var(--stage-accent-2);
       letter-spacing: 0.05em;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--stage-border);
       padding-top: 8px;
     }
 
@@ -100,19 +107,25 @@
     }
     .edge {
       background: var(--bg-elevated);
-      border-left: 2px solid var(--accent);
+      border-left: 2px solid var(--stage-accent);
       padding: 16px;
       border-radius: 0 4px 4px 0;
     }
-    .edge.warn { border-left-color: var(--accent-2); }
+    .edge.warn { border-left-color: var(--stage-accent-2); }
     .edge h4 {
       font-family: var(--font-head);
       font-size: 14px;
       font-weight: 700;
       margin: 0 0 4px 0;
-      color: var(--fg);
+      color: var(--stage-fg);
     }
-    .edge p { font-family: var(--font-body); font-size: 12.5px; color: var(--fg-muted); line-height: 1.5; margin: 0; }
+    .edge p {
+      font-family: var(--font-body);
+      font-size: 12.5px;
+      color: var(--fg-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
     .edge .tag {
       display: inline-block;
       font-family: var(--font-mono);
@@ -120,18 +133,22 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 2px 6px;
-      background: rgba(255, 122, 69, 0.15);
-      color: var(--accent);
+      background: color-mix(in srgb, var(--stage-accent) 15%, transparent);
+      color: var(--stage-accent);
       border-radius: 2px;
       margin-bottom: 8px;
     }
-    .edge.warn .tag { background: rgba(255, 204, 0, 0.15); color: var(--accent-2); }
+    .edge.warn .tag {
+      background: color-mix(in srgb, var(--stage-accent-2) 15%, transparent);
+      color: var(--stage-accent-2);
+    }
 
     .section-title {
       font-family: var(--font-head);
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       margin: 48px 0 8px 0;
+      color: var(--stage-fg);
     }
     .section-title + .section-sub {
       font-family: var(--font-mono);
@@ -146,6 +163,8 @@
 <body>
 
   <header class="topbar">
+    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
+    <span class="brand-divider" aria-hidden="true"></span>
     <span class="stack-chip">FIRE</span>
     <span class="topbar-meta"><strong>map-user-flow</strong> · 2026-05-26 · conquis-onboarding</span>
     <span class="decision-pill" data-state="pending">pending</span>
@@ -258,7 +277,7 @@
   </main>
 
   <footer class="footer">
-    <a class="footer-action primary" data-roughdraft-link
+    <a class="footer-action" data-roughdraft-link
        href="roughdraft://open?path=.forsvn%2Fartifacts%2Fproduct-map-user-flow-2026-05-26-conquis-onboarding.md">
       Open in Roughdraft →
     </a>
@@ -266,6 +285,7 @@
     <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
   </footer>
 
+  <script type="application/json" id="preview-config">{"static":true}</script>
   <script type="application/json" id="artifact-data">{
   "skill": "map-user-flow",
   "version": 1,

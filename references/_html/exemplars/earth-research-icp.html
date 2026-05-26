@@ -7,14 +7,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400..600;6..72,1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../tokens.css">
   <link rel="stylesheet" href="../chrome.css">
 
   <style>
-    body { background: var(--bg, #f4ede0); }
+    /* EARTH register — light mode (only stack on cream). Book-page columns,
+       dense reading. Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
     .stage {
       background-image:
         radial-gradient(circle at 50% 0%, rgba(120,90,50,0.04), transparent 60%),
@@ -23,7 +23,7 @@
     .dossier-head {
       max-width: var(--max-measure);
       padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--stage-border);
       margin-bottom: 32px;
     }
     .dossier-head .meta {
@@ -37,17 +37,17 @@
     .dossier-head h1 {
       font-family: var(--font-head);
       font-size: 52px;
-      font-weight: 500;
-      font-variation-settings: "opsz" 144;
-      letter-spacing: -0.01em;
+      font-weight: 700;
+      font-variation-settings: "opsz" 96;
+      letter-spacing: -0.02em;
       margin: 0 0 12px 0;
+      color: var(--stage-fg);
     }
     .dossier-head .lede {
-      font-family: var(--font-head);
-      font-style: italic;
+      font-family: var(--font-body);
       font-size: 18px;
       line-height: 1.55;
-      font-variation-settings: "opsz" 24;
+      font-weight: 400;
       color: var(--fg-muted);
       max-width: 56ch;
     }
@@ -55,7 +55,7 @@
     .columns {
       column-count: 2;
       column-gap: 56px;
-      column-rule: 0.5px solid var(--border);
+      column-rule: 1px solid var(--stage-border);
       max-width: 1100px;
     }
     .columns h2 {
@@ -65,15 +65,17 @@
       margin: 0 0 8px 0;
       column-span: all;
       padding-top: 32px;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--stage-border);
+      color: var(--stage-fg);
     }
     .columns p {
       font-family: var(--font-body);
-      font-size: 17px;
-      line-height: 1.55;
+      font-size: 16px;
+      line-height: 1.65;
       margin: 0 0 1em 0;
       orphans: 3;
       widows: 3;
+      color: var(--stage-fg);
     }
     .columns .first-letter::first-letter {
       font-family: var(--font-head);
@@ -81,11 +83,12 @@
       float: left;
       line-height: 0.85;
       padding: 4px 8px 0 0;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--stage-accent);
     }
     .columns sup {
       font-size: 0.7em;
-      color: var(--accent);
+      color: var(--stage-accent);
       cursor: help;
       vertical-align: super;
     }
@@ -95,11 +98,12 @@
       font-style: italic;
       font-size: 22px;
       line-height: 1.4;
-      color: var(--fg);
-      border-left: 3px solid var(--accent-2);
+      color: var(--stage-fg);
+      border-left: 3px solid var(--stage-accent-2);
       padding: 8px 0 8px 20px;
       margin: 24px 0;
       break-inside: avoid;
+      font-weight: 500;
     }
     .pull-quote cite {
       display: block;
@@ -119,12 +123,13 @@
       margin: 32px 0;
       font-family: var(--font-body);
       font-size: 15px;
+      color: var(--stage-fg);
     }
     .facts-table th,
     .facts-table td {
       text-align: left;
       padding: 12px 16px;
-      border-bottom: 0.5px solid var(--border);
+      border-bottom: 1px solid var(--stage-border);
     }
     .facts-table thead th {
       font-family: var(--font-mono);
@@ -142,16 +147,16 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--stage-accent);
       margin-right: 6px;
       vertical-align: middle;
     }
-    .source-weight.weak { background: var(--accent-2); opacity: 0.5; }
+    .source-weight.weak { background: var(--stage-accent-2); opacity: 0.5; }
 
     .footnotes {
       margin-top: 56px;
       padding-top: 20px;
-      border-top: 0.5px solid var(--border);
+      border-top: 1px solid var(--stage-border);
       max-width: var(--max-measure);
       font-family: var(--font-body);
       font-size: 13.5px;
@@ -166,12 +171,14 @@
       margin-bottom: 6px;
       line-height: 1.5;
     }
-    .footnotes ol li::marker { color: var(--accent); }
+    .footnotes ol li::marker { color: var(--stage-accent); }
   </style>
 </head>
 <body>
 
   <header class="topbar">
+    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
+    <span class="brand-divider" aria-hidden="true"></span>
     <span class="stack-chip">EARTH</span>
     <span class="topbar-meta"><strong>research-icp</strong> · 2026-05-26 · solo-studio-operator</span>
     <span class="decision-pill" data-state="pending">pending</span>
@@ -268,7 +275,7 @@
   </main>
 
   <footer class="footer">
-    <a class="footer-action primary" data-roughdraft-link
+    <a class="footer-action" data-roughdraft-link
        href="roughdraft://open?path=research%2Ficp-research.md">
       Open in Roughdraft →
     </a>
@@ -276,6 +283,7 @@
     <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
   </footer>
 
+  <script type="application/json" id="preview-config">{"static":true}</script>
   <script type="application/json" id="artifact-data">{
   "skill": "research-icp",
   "version": 1,
