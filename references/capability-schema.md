@@ -246,13 +246,17 @@ bun scripts/eval-triggers.ts --require-all
 node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts
 bun scripts/lint-html-output.ts
+bun scripts/test-forsvn-preview.ts
 ```
 
-Last two added by the review-surface overhaul (2026-05-26):
+Bottom three added by the review-surface overhaul (2026-05-26):
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
 `bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree if it
-flags legacy paths) and `lint-html-output` enforces the 10-check rubric
-on every review-surface HTML preview ([[html-output-critic]]).
+flags legacy paths); `lint-html-output` enforces the 10-check rubric
+on every review-surface HTML preview ([[html-output-critic]]); and
+`test-forsvn-preview` runs the end-to-end decision-capture flow through
+the `bun scripts/forsvn-preview.ts` CLI (added by v2; see
+[[reviewable-artifact-contract]] § "Review surface").
 
 Trigger evals (run before merge — routing changes must keep
 `tests/triggers/` fixtures green, and `--require-all` ensures every skill

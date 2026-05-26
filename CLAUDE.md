@@ -100,7 +100,7 @@ Don't add new top-level folders without clearing that canonical bar. Folder spra
 
 Everything else lives flat under `.forsvn/artifacts/` using the v2 filename grammar `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>` (md for the durable artifact, html for the review preview while `decision_state: pending`). See `references/artifact-contract-template.md` for the frontmatter contract and `references/review-surface-design.md` for the per-stack elemental theming (meta=AIR, mkt=WATER, product=FIRE, research=EARTH).
 
-## Pre-merge gate (9 commands)
+## Pre-merge gate (10 commands)
 
 Run before merging any PR that touches skills, routing, capabilities, or artifacts. The canonical list lives in `references/capability-schema.md` § "Validation". Summary:
 
@@ -114,6 +114,9 @@ bun scripts/eval-triggers.ts --require-all
 node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts        # added by review-surface overhaul (2026-05-26)
 bun scripts/lint-html-output.ts           # added by review-surface overhaul (2026-05-26)
+bun scripts/test-forsvn-preview.ts        # added by review-surface v2 (2026-05-26)
 ```
 
 If `lint-artifact-paths` reports legacy paths under `.forsvn/artifacts/`, run `bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree to bring them to the flat v2 grammar.
+
+When `review_surface: html`, the operator can preview + capture the decision with `bun scripts/forsvn-preview.ts <path>.html` — Bun-served localhost CSRF-protected. Roughdraft stays as the escape-hatch path for MD-first reviewers.

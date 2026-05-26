@@ -26,7 +26,7 @@ double-brace placeholders that emitters substitute. Required placeholders:
 
 | Placeholder | Filled with | Source |
 |---|---|---|
-| `{{stack}}` | `air \| water \| fire \| earth` | Artifact frontmatter `stack` |
+| `{{stack}}` | `air \| water \| fire \| earth` (color register) | Artifact frontmatter `stack` (`meta`→air, `mkt`→water, `product`→fire, `research`→earth) |
 | `{{title}}` | Display title | First H1 or `title:` frontmatter |
 | `{{skill}}` | Producing skill slug | Frontmatter `skill` |
 | `{{date}}` | `YYYY-MM-DD` | Frontmatter `date` |
@@ -35,31 +35,32 @@ double-brace placeholders that emitters substitute. Required placeholders:
 | `{{tokens_css_href}}` | Relative path to `tokens.css` | Usually `./tokens.css` (copied alongside) |
 | `{{chrome_css_href}}` | Relative path to `chrome.css` | Usually `./chrome.css` |
 | `{{chrome_js_src}}` | Relative path to `chrome.js` | Usually `./chrome.js` |
-| `{{stage_fonts_link}}` | Per-stack `<link>` for the stage's font pair | See § 2 |
-| `{{md_path}}` | Repo-relative path to the `.md` twin | URL-encoded, for `roughdraft://open?path=…` |
-| `{{artifact_data_json}}` | JSON mirror of MD frontmatter | Used by Copy-as-JSON action |
+| `{{md_path}}` | Repo-relative path to the `.md` twin | URL-encoded, for `roughdraft://open?path=…` escape-hatch link |
+| `{{artifact_data_json}}` | JSON mirror of MD frontmatter | Used by Copy-as-JSON action + chrome.js decision-capture activation check |
+| `{{preview_config_json}}` | `{"static":true}` at emit time | `forsvn preview` CLI overwrites this with `{token, port, endpoint, mdPath}` at runtime (WS-V2) |
 | `{{left_controls_html}}` | Per-skill controls block | See § 3 |
 | `{{stage_html}}` | Per-skill center stage content | See § 4 |
 
+v2 dropped the per-stack `{{stage_fonts_link}}` placeholder — all stacks load
+the same FORSVN unified font block, baked into `base.html` itself. Skills no
+longer pick a stage font block; the only per-stack choice is the `data-stack`
+attribute on `<html>`.
+
 ---
 
-## 2. Per-stack font link blocks
+## 2. Font loading (unified)
 
-Substitute exactly one of these for `{{stage_fonts_link}}`:
+One block on every page — same across all four stacks. Baked into `base.html`;
+emitters don't substitute anything here.
 
 ```html
-<!-- AIR -->
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&display=swap" rel="stylesheet">
-<!-- WATER -->
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500&family=Plus+Jakarta+Sans:wght@400;500&display=swap" rel="stylesheet">
-<!-- FIRE -->
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500&display=swap" rel="stylesheet">
-<!-- EARTH -->
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400..600;6..72,1,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 ```
 
-Chrome fonts (Inter + JetBrains Mono) are loaded unconditionally — never strip
-that link.
+If you find yourself adding another font link to the page, the emitter has
+drifted — check [[review-surface-design]] § 3.1 first.
 
 ---
 
@@ -114,15 +115,24 @@ HTML/CSS the design spec permits, with these constraints:
 - One inline `<script>` block max, for **read-only** view-mode toggles wired
   to `data-toggle` attributes
 
-**Forbidden:**
-- `<form>` elements
-- `<button>` with `onclick` that mutates persistent state
-- Any `fetch()` / `XMLHttpRequest` / WebSocket
-- External script imports beyond the chrome fonts + the three local CSS/JS
-  files
-- Mixing element themes within one page (no swapping `data-stack` at runtime)
+**Allowed in the chrome only (template-owned, not skill-owned):**
+- One `<form id="decision-capture">` with `action="javascript:void(0)"`,
+  paired with a `<script id="preview-config">` JSON block. The form is the
+  v2 decision-capture surface (WS-V3); chrome.js activates it when the
+  `forsvn preview` CLI has injected a token + endpoint into the config.
+  Skills don't add forms — the template carries this one.
 
-These forbiddens are enforced by `scripts/lint-html-output.ts` (added in WS-10).
+**Forbidden in skill stages:**
+- Additional `<form>` elements beyond the chrome's `#decision-capture`
+- `<button>` with inline `onclick=` (use `data-toggle` / `data-copy-source`)
+- Any `fetch()` / `XMLHttpRequest` / `WebSocket` targeting anything other
+  than `127.0.0.1` or `localhost` (the only legitimate target is the
+  `forsvn preview` CLI's `/done` endpoint, which chrome.js handles)
+- External script imports beyond the unified font block + the three local
+  CSS/JS files
+- Mixing color registers within one page (no swapping `data-stack` at runtime)
+
+These forbiddens are enforced by `scripts/lint-html-output.ts`.
 
 ---
 
@@ -151,12 +161,16 @@ function renderReviewSurface(args: RenderArgs): string;
 
 The function:
 1. Reads `references/_html/base.html`.
-2. String-substitutes the placeholders.
-3. Selects the correct `{{stage_fonts_link}}` block from § 2.
-4. Returns the assembled HTML string.
+2. String-substitutes the placeholders, including
+   `{{preview_config_json}}` → `{"static":true}` (the `forsvn preview` CLI
+   rewrites this at runtime — emit-time HTML is static).
+3. Returns the assembled HTML string.
 
 Output path follows the flat-artifact grammar — the HTML twin sits beside the
-MD: `.forsvn/artifacts/<stack>-<skill>-<date>-<slug>.html`.
+MD: `.forsvn/artifacts/<stack>-<skill>-<date>-<slug>.html`. To open it for
+review, the operator runs `bun scripts/forsvn-preview.ts <path>.html`; on Done,
+the CLI writes `decision_state` back into the MD frontmatter and archives the
+HTML to `.forsvn/artifacts/.archive/`.
 
 ---
 
@@ -168,10 +182,15 @@ MD: `.forsvn/artifacts/<stack>-<skill>-<date>-<slug>.html`.
    href="./tokens.css">`. Inline imports defeat caching and break the linter.
 3. **Adding control groups beyond the four.** Operators learn the surface once.
 4. **Per-skill JS for standard interactions.** Picker selection, copy-to-clipboard,
-   and Roughdraft link flash are in chrome.js. Don't duplicate.
-5. **Per-skill animation libraries.** v1 motion is CSS transitions only.
-6. **Forgetting the `<script type="application/json" id="artifact-data">`
-   block.** Copy-as-JSON needs it; manifest consumers can also read it.
+   decision-capture wiring, and Roughdraft link flash are in chrome.js.
+   Don't duplicate.
+5. **Per-skill animation libraries.** Motion is CSS transitions only.
+6. **Forgetting the `<script type="application/json" id="artifact-data">` or
+   `id="preview-config">` blocks.** chrome.js reads both to decide whether to
+   activate decision-capture; the manifest consumer also reads artifact-data.
+7. **Adding a second `<form>` (analytics, copy-to-server, anything).** Only
+   the chrome's `#decision-capture` is allowed — anything else is a hard lint
+   fail.
 
 ---
 

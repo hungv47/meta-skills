@@ -118,18 +118,34 @@ The HTML is a **rendering** of the MD frontmatter + body, themed by stack
 
 1. Skill writes MD with `decision_state: pending`, `review_surface: html`.
 2. Skill renders the HTML twin via `renderReviewSurface(stack, stagePartial, data)`.
-3. Operator opens `.html` in a browser for visual comparison and opens `.md` in
-   Roughdraft to tick the Review Gate + leave CriticMarkup.
-4. When `decision_state` resolves (`approved` / `denied` / `suggested`), the
-   `.html` is moved to `.forsvn/artifacts/.archive/<original-filename>.html`.
-5. The MD stays at the canonical path; `manifest-sync` re-indexes.
+3. Operator opens the preview by running
+   `bun scripts/forsvn-preview.ts .forsvn/artifacts/<slug>.html`. The CLI
+   starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port),
+   injects the token into the page's `#preview-config` block, opens the
+   browser, and blocks. (Roughdraft is the escape hatch — see below.)
+4. Operator clicks one of approve / deny / suggest changes in the in-page
+   `<form id="decision-capture">`, optionally writes comments, clicks Done.
+   The page POSTs `{token, decision_state, comments?, variant?}` to `/done`.
+5. CLI validates the CSRF token, rewrites the MD frontmatter
+   (`decision_state`, `reviewed_at`, `reviewer`), appends a `## Reviewer notes`
+   block if comments were submitted, moves the `.html` to
+   `.forsvn/artifacts/.archive/<original-filename>.html`, runs `manifest-sync`,
+   and exits 0.
+6. The MD stays at the canonical path; the manifest is re-indexed.
 
-**The HTML never captures decisions.** No form, no postback, no mutating button.
-It contains only: a read-only decision-state pill, comparison/preview affordances
-for the artifact's content, and a Roughdraft deeplink in the footer
-(`roughdraft://open?path=<url-encoded path>`). Decision capture stays in MD via
-the Review Gate block. If the HTML is deleted, regenerate it from MD on the
-next emit — nothing is lost.
+**Roughdraft remains the escape hatch.** The HTML footer still carries a
+`roughdraft://open?path=…` deeplink. If the reviewer prefers inline
+CriticMarkup commenting they open the MD in Roughdraft instead of clicking Done
+— `decision_state` still gets recorded the same way (via the Review Gate body
+block in [[roughdraft-review-protocol]]) and the HTML archives on the next
+`manifest-sync`.
+
+**The HTML's decision-capture form is the ONLY postback target allowed.** No
+other `<form>`, no `fetch()` to remote hosts, no analytics — see
+[[html-output-critic]] check #6. The form is **always rendered** but inert by
+default; chrome.js activates it only when the CLI has injected a token and the
+artifact's `decision_state` is still `pending`. Opening the HTML directly in a
+browser (no CLI running) shows a read-only preview — the form stays hidden.
 
 ---
 
@@ -221,12 +237,17 @@ Do not restate the field semantics in the SKILL.md — cite this file.
    `not_required`; gating them adds friction with no payoff.
 5. **A Roughdraft sidecar store.** The Markdown file is the record. Do not
    create a parallel review database.
-6. **Decision capture in the HTML preview.** The HTML is read-only visualization
-   — no `<form>`, no postback, no mutating button beyond the Roughdraft
-   deeplink. Decisions are captured in MD via the Review Gate block.
+6. **Decision capture outside the documented `forsvn preview` contract.** The
+   HTML may capture a decision only via the chrome's `<form id="decision-capture">`
+   posting to the `forsvn preview` CLI on `127.0.0.1` / `localhost`. Any other
+   form, remote `fetch()`, or analytics ping = hard lint fail. Decisions still
+   land in MD frontmatter; the CLI is just the transport. (Roughdraft + the
+   Review Gate body block is the equivalent flow for MD-first reviewers.)
 7. **Leaving the HTML twin in place after the gate resolves.** Move it to
    `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`. The MD is
-   the durable record.
+   the durable record. The `forsvn preview` CLI does this automatically; if
+   you've captured a decision via Roughdraft, run `manifest-sync` so the
+   archival pass picks up the resolved state.
 
 ---
 
