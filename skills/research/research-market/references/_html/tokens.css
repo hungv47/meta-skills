@@ -1,0 +1,120 @@
+/* tokens.css — design tokens for the review-surface HTML preview.
+   v2 (2026-05-26): unified FORSVN brand. One typography stack, one motion
+   vocabulary, signal-lime brand accent in chrome. Per-stack variation lives
+   in the 5 stage tokens (--stage-bg/-fg/-accent/-accent-2/-border).
+   Source of truth: references/review-surface-design.md § 3. */
+
+:root {
+  /* ============ Chrome (constant across stacks) ============ */
+  --chrome-bg:           #0a0a0a;
+  --chrome-panel:        #111114;
+  --chrome-border:       #1f1f24;
+  --chrome-text:         #e4e4e7;
+  --chrome-text-muted:   #71717a;
+  --chrome-accent:       #B7FF6E;             /* signal-lime — FORSVN brand mark */
+
+  /* ============ Brand palette (Pure Void canonical) ============ */
+  --brand-lime:          #B7FF6E;
+  --brand-forest:        #004700;
+  --brand-void:          #000000;
+  --brand-paper:         #F5F5F5;
+
+  /* ============ Decision pill colors ============ */
+  --pill-pending-bg:     #2a2a2e;
+  --pill-pending-fg:     #fbbf24;
+  --pill-approved-bg:    #004700;
+  --pill-approved-fg:    #B7FF6E;
+  --pill-denied-bg:      #7f1d1d;
+  --pill-denied-fg:      #fecaca;
+  --pill-suggested-bg:   #1e3a8a;
+  --pill-suggested-fg:   #93c5fd;
+
+  /* ============ Unified typography (D14 — one stack everywhere) ============ */
+  --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
+  --font-body:           'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
+  --font-mono:           'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --chrome-sans:         var(--font-body);
+  --chrome-mono:         var(--font-mono);
+  --chrome-display:      var(--font-head);
+
+  /* ============ Unified motion (D14 — one vocabulary; ≤80ms per-stack drift) ============ */
+  --ease:                cubic-bezier(0.4, 0, 0.2, 1);
+  --t-snap:              80ms;
+  --t-hover:             200ms;
+  --t-enter:             360ms;
+  --t-ripple:            480ms;
+
+  /* ============ Layout ============ */
+  --chrome-topbar-h:     56px;
+  --chrome-left-w:       320px;
+  --chrome-footer-h:     72px;
+  --stage-pad:           48px;
+  --line-height:         1.55;
+  --max-measure:         72ch;
+}
+
+/* ============ Stage tokens — 5 per stack (D17) ============ */
+/* meta · AIR color register — signal-lime on Pure Void near-black */
+:root[data-stack="air"] {
+  --stage-bg:            #000000;
+  --stage-fg:            #F5F5F5;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #1A1A1A;
+}
+
+/* mkt · WATER color register — signal-lime on midnight blue tint */
+:root[data-stack="water"] {
+  --stage-bg:            #050d18;
+  --stage-fg:            #f0f6ff;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #1a2e44;
+}
+
+/* product · FIRE color register — signal-lime on warm charcoal tint */
+:root[data-stack="fire"] {
+  --stage-bg:            #1a1410;
+  --stage-fg:            #fdf4ee;
+  --stage-accent:        #B7FF6E;
+  --stage-accent-2:      #004700;
+  --stage-border:        #2d2520;
+}
+
+/* research · EARTH color register — forest on cream (only light-mode stack;
+   signal-lime stays as decorative accent-2; lime-on-cream fails AA for text) */
+:root[data-stack="earth"] {
+  --stage-bg:            #f4ede0;
+  --stage-fg:            #1a1410;
+  --stage-accent:        #004700;
+  --stage-accent-2:      #B7FF6E;
+  --stage-border:        #c4b594;
+}
+
+/* ============ Derived helpers + back-compat aliases ============ */
+/* All stacks share the same derivation rules; per-stack values come from the
+   5 stage tokens above via color-mix(). Old --bg/--fg/--accent/--border names
+   alias to --stage-* so existing exemplar styles keep working. */
+:root[data-stack] {
+  /* Back-compat aliases */
+  --bg:                  var(--stage-bg);
+  --fg:                  var(--stage-fg);
+  --accent:              var(--stage-accent);
+  --accent-2:            var(--stage-accent-2);
+  --accent-fg:           var(--stage-bg);
+  --border:              var(--stage-border);
+
+  /* Derived neutrals */
+  --fg-muted:            color-mix(in srgb, var(--stage-fg) 58%, var(--stage-bg));
+  --border-strong:       color-mix(in srgb, var(--stage-border) 50%, var(--stage-fg) 50%);
+  --bg-deep:             color-mix(in srgb, var(--stage-bg) 92%, #000000 8%);
+  --bg-elevated:         color-mix(in srgb, var(--stage-bg) 94%, var(--stage-fg) 6%);
+
+  /* Derived effects */
+  --shadow-sm:           0 1px 2px rgba(0,0,0,0.18);
+  --shadow-md:           0 8px 24px rgba(0,0,0,0.20);
+  --shadow-glow:         0 0 24px color-mix(in srgb, var(--stage-accent) 32%, transparent);
+  --backdrop-blur:       blur(24px);
+  --glass-tint:          color-mix(in srgb, var(--stage-fg) 4%, transparent);
+  --accent-gradient:     linear-gradient(135deg, var(--stage-accent) 0%, var(--stage-accent-2) 100%);
+}
