@@ -25,6 +25,33 @@ const SKILL_DIRS = [
   "skills/product",
 ];
 
+// Split on commas at depth-0, respecting single/double quotes and nested
+// brackets. Mirror of scripts/lib/simple-yaml.ts splitTopLevelCommas — the
+// two parsers must stay in lockstep on quoted-comma handling; the parity
+// test in scripts/test-yaml-parser.ts asserts this.
+function splitTopLevelCommas(input) {
+  const out = [];
+  let depth = 0;
+  let quote = null;
+  let start = 0;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (quote) {
+      if (ch === quote && input[i - 1] !== "\\") quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; continue; }
+    if (ch === "[") { depth++; continue; }
+    if (ch === "]") { depth--; continue; }
+    if (ch === "," && depth === 0) {
+      out.push(input.slice(start, i));
+      start = i + 1;
+    }
+  }
+  out.push(input.slice(start));
+  return out;
+}
+
 /**
  * Minimal YAML frontmatter parser for promptSignals.
  * Handles the specific structure we need without a YAML library:
@@ -101,8 +128,11 @@ export function parsePromptSignals(frontmatter) {
             const arr = JSON.parse(value);
             signals.allOf.push(arr);
           } catch {
-            // Try parsing as comma-separated without brackets
-            const terms = value.slice(1, -1).split(",").map((t) => t.trim().replace(/^["']|["']$/g, ""));
+            // Fallback: single-quoted form (`['a,b', 'c,d']`) or bareword
+            // arrays (`[a, b]`). Use the quote-aware splitter so embedded
+            // commas inside quotes don't shred the tokens.
+            const terms = splitTopLevelCommas(value.slice(1, -1))
+              .map((t) => t.trim().replace(/^["']|["']$/g, ""));
             signals.allOf.push(terms);
           }
         } else {

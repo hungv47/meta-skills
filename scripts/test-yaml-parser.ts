@@ -101,13 +101,27 @@ const parityInputs: { name: string; yaml: string }[] = [
     ].join("\n"),
   },
   {
-    name: "inline-array allOf with quoted comma — the case the parser fix targets",
+    name: "inline-array allOf with double-quoted comma (JSON.parse path on .mjs side)",
     yaml: [
       "promptSignals:",
       "  phrases:",
       '    - "a"',
       "  allOf:",
       '    - ["weight,1", "weight,2"]',
+      "  anyOf: []",
+      "  noneOf: []",
+      "  minScore: 6",
+      "",
+    ].join("\n"),
+  },
+  {
+    name: "inline-array allOf with single-quoted comma (fallback splitter path on .mjs side)",
+    yaml: [
+      "promptSignals:",
+      "  phrases:",
+      '    - "a"',
+      "  allOf:",
+      "    - ['weight,1', 'weight,2']",
       "  anyOf: []",
       "  noneOf: []",
       "  minScore: 6",

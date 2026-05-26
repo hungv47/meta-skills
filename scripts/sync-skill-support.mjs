@@ -317,6 +317,16 @@ function syncSkill(dir) {
   if (/scaffold-eval-loop/.test(corpus)) ensureScript(dir, "scaffold-eval-loop.ts");
   if (/update-quality-dashboard/.test(corpus)) ensureScript(dir, "update-quality-dashboard.ts");
 
+  // Existing-copy sweep. Skill folders that have a packaged copy of a support
+  // script but no citation in the corpus (vendored before the citation-driven
+  // regime) must still ship the canonical version — `.claude-plugin/plugin.json`
+  // packages whole skill dirs, so any stale copy would ship the old behavior to
+  // users. Drift in these files is caught by `--check`.
+  for (const scriptName of Object.keys(SUPPORT_SCRIPTS)) {
+    const destAbs = join(dir, "scripts", scriptName);
+    if (existsSync(destAbs)) ensureScript(dir, scriptName);
+  }
+
   if (/_shared\/design-brief|design-brief\/references/.test(corpus)) {
     copyGeneratedTree(SUPPORT_TREES["design-brief"], join(dir, "references", "_shared", "design-brief"));
   }
