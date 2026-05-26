@@ -1,5 +1,8 @@
-# Routing signals for clean-artifacts. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for clean-artifacts.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "clean up .forsvn/artifacts"
@@ -28,3 +31,72 @@ promptSignals:
     - "uninstall"
     - "dotfolder"
   minScore: 6
+
+capability:
+  id: clean-artifacts
+  domain: meta
+  public: true
+  command: /clean-artifacts
+  summary: "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes)."
+  aliases:
+    - groom-artifacts
+    - prune-artifacts
+    - archive-stale
+
+  route:
+    use_when:
+      - "User asks to groom or clean `.forsvn/artifacts/`."
+      - "Pre-release sweep across pipeline + snapshot artifacts."
+      - "Artifact tree feels stale; classification needed before action."
+    not_when:
+      - "Cleaning code -> clean-code."
+      - "Cleaning machine state / dotfolders / packages -> clean-machine."
+      - "Free up disk space -> clean-machine."
+    prerequisites:
+      recommended:
+        - ".forsvn/experience/technical.md"
+      hard:
+        - ".forsvn/index/manifest.json"
+
+  orchestration:
+    default: single
+    single_when:
+      - "Always — single-agent orchestrator with built-in critic gate as sub-routine."
+      - "--fast collapses orchestration weight but NOT Critical Gates (HARD-NEVER, critic gate, MOVE-not-delete)."
+    multi_when:
+      - "Never — single-agent skill by design; critic is in-procedure, not a separate dispatch."
+    critic_required_when:
+      - "Always — critic spot-checks 5 random STALE/ORPHAN candidates by grepping references before any per-category prompt."
+      - "Live reference found → BLOCKED (no confirmation prompt); references surfaced for operator review."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+      - "references/_shared/manifest-spec.md"
+    when:
+      - if: "Pre-Dispatch Cold Start"
+        read:
+          - "references/procedures/cold-start.md"
+      - if: "Runner decision tree (sanity-check, walk, classify, critic gate, build table, dry-run/apply)"
+        read:
+          - "references/procedures/runner.md"
+      - if: "Classification taxonomy + rule order"
+        read:
+          - "references/cleanup-rules.md"
+      - if: "Artifact write / report template"
+        read:
+          - "references/report-template.md"
+      - if: "Critic FAIL escalation / anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "End of run (dry-run or apply); dated, immutable per-run audit record."
+      - path: ".forsvn/artifacts/.archive/[YYYY-MM-DD]/"
+        lifecycle: ephemeral
+        produced_when: "`--apply` confirms per-category move; mirrors source path inside dated archive folder."

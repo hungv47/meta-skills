@@ -122,9 +122,9 @@ provenance:
   output_eval: <path or null until eval runs>
 ```
 
-Producers: every generative skill in scope of brief 05's eval loop. Consumer: `evaluate-*` skills (read `input_artifacts` to ground scoring), promotion script (reads `output_eval` to walk the artifact → eval → learning chain), `manifest-sync` (indexes `skill` + `run_date`).
+Producers: every generative skill in scope of an eval loop. Consumer: `evaluate-*` skills (read `input_artifacts` to ground scoring), promotion script (reads `output_eval` to walk the artifact → eval → learning chain), `manifest-sync` (indexes `skill` + `run_date`).
 
-Brief 05 (`implementation-roadmap/execution-evaluation/brief-pack/05-evaluation-learning-loop.md § Provenance`) is the source of this variant. Currently emitted by: `brief-landing-page` (LP demo loop). Will expand to: `brief-shortform`, `write-copy`, `write-ad`, `plan-campaign` as the eval-loop substrate grows.
+The eval-loop contract is the source of this variant. It is emitted by skills whose output is expected to be scored by a downstream `evaluate-*` command.
 
 A single artifact MAY carry both variants under separate keys (`provenance_extraction:` and `provenance_generation:`) if it was extracted from a source AND is generation-evaluatable, but this is rare — typically extraction-provenance artifacts are canonical refs and aren't evaluated.
 

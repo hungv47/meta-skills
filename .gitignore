@@ -18,6 +18,10 @@ IDEA.md
 implementation-roadmap/
 autoresearch/
 roughdraft/
+references/internal/
+references/private/
+scripts/internal/
+scripts/private/
 
 # Internal release guideline — maintainer process, not distributed
 /RELEASING.md

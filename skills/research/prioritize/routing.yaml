@@ -1,5 +1,4 @@
-# Routing signals for prioritize. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for prioritize.
 promptSignals:
   phrases:
     - "what to build first"
@@ -24,3 +23,63 @@ promptSignals:
     - "market research"
     - "buyer persona"
   minScore: 6
+
+capability:
+  id: prioritize
+  domain: research
+  public: true
+  command: /prioritize
+  summary: "Brainstorm strategic solutions when the problem is known — generate initiatives, force-rank with ICE, surface trade-offs with evidence, draw a cut line with kill criteria."
+  aliases:
+    - ice-prioritize
+    - rank-initiatives
+    - strategic-options
+
+  route:
+    use_when:
+      - "Problem or goal is already clear; need to decide what to build first."
+      - "Force-ranked initiatives with ICE (Impact × Confidence × Effort)."
+      - "Strategic options need a cut line + kill criteria."
+    not_when:
+      - "Diagnosing the problem itself -> diagnose."
+      - "Engineering task list from a known initiative -> breakdown-tasks."
+      - "Numeric funnel targets -> plan-funnel."
+      - "Technical architecture for a chosen initiative -> architect-system."
+    prerequisites:
+      recommended:
+        - "research/market-research.md"
+        - "research/diagnose.md"
+        - "research/product-context.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Small option set (<5 initiatives); --fast forces single-pass."
+    multi_when:
+      - "Larger option set with cross-domain dependencies; ICE scoring + trade-off matrix."
+    critic_required_when:
+      - "Always — evidence-backed ICE (no opinion-only scores)."
+      - "Cut line + kill criteria explicit per ranked initiative."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "ICE scoring rubric + initiative planning"
+        read:
+          - "references/ice-scoring-rubric.md"
+          - "references/initiative-planning.md"
+          - "references/initiative-types.md"
+      - if: "Anti-pattern review (vanity-impact, sunk-cost-confidence)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/sketches/prioritize-<slug>.md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; ranked-initiative sketch + cut line + kill criteria."

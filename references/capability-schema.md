@@ -1,0 +1,270 @@
+# Capability Schema (routing.yaml v2)
+
+`routing.yaml` is the single source of truth for machine-readable routing,
+orchestration, lazy-load, and output-contract policy for each skill package.
+
+It is not loaded into model context by default. It is consumed by:
+
+- `hooks/build-registry.mjs` → `hooks/skill-registry.json` (prompt-submit
+  trigger heuristic).
+- `scripts/build-capability-index.ts` → `references/capability-index.json`
+  (routing, orchestration, load map, outputs — used by `/forsvn`, validators,
+  docs generators).
+- `scripts/validate-routing.ts` (structure, path resolution, contract checks).
+
+Two generated artifacts, one source file per skill. Edit `routing.yaml`, then
+rebuild both.
+
+## File Location
+
+```text
+skills/<domain>/<skill>/routing.yaml
+```
+
+The package shape stays the same:
+
+```text
+skills/<domain>/<skill>/
+  SKILL.md
+  routing.yaml          # this file
+  agents/
+  references/
+  scripts/
+  examples/
+```
+
+`capability.yaml` is deprecated. Pilot files have been folded into the matching
+`routing.yaml`.
+
+## Top-Level Shape
+
+```yaml
+# section 1 — prompt-trigger heuristic (consumed by build-registry.mjs)
+promptSignals:
+  phrases: [...]
+  allOf: [[...]]
+  anyOf: [...]
+  noneOf: [...]
+  minScore: 6
+
+# section 2 — capability metadata (consumed by build-capability-index.ts)
+capability:
+  id: write-copy
+  domain: marketing
+  public: true
+  command: /write-copy
+  summary: "..."
+  aliases: [copy, headline]
+
+  route:
+    use_when: [...]
+    not_when: [...]
+    prerequisites:
+      recommended: [...]
+      hard: [...]
+
+  orchestration:
+    default: auto
+    single_when: [...]
+    multi_when: [...]
+    critic_required_when: [...]
+
+  load:
+    always: [...]
+    when:
+      - if: "..."
+        read: [...]
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/..."
+        lifecycle: pipeline
+        produced_when: "..."
+```
+
+`promptSignals` and `capability` are sibling top-level keys. Skills can have
+`promptSignals` without `capability` during migration; the validator warns on
+missing `capability` unless `--require-all` is passed.
+
+## promptSignals Section
+
+Unchanged from v1. See existing `routing.yaml` files for examples.
+
+| Field | Type | Purpose |
+|---|---|---|
+| `phrases` | `string[]` | Literal trigger phrases. |
+| `allOf` | `string[][]` | Each inner array is an AND group of substrings. |
+| `anyOf` | `string[]` | Any substring matches. |
+| `noneOf` | `string[]` | Disqualifies routing if any matches. |
+| `minScore` | `number` | Threshold for the heuristic to suggest the skill. |
+
+## capability Section
+
+### Identity
+
+```yaml
+capability:
+  id: write-copy
+  domain: marketing
+  public: true
+  command: /write-copy
+  summary: "Draft and critique persuasive copy."
+  aliases: [copy, headline]
+```
+
+Required: `id`, `domain`, `public`, `summary`.
+
+- `id` must match the skill directory name.
+- `domain` must be one of `meta`, `research`, `marketing`, `product`.
+- `public: true` means the skill is installed and user-invocable.
+- `summary` is a concise product-facing label (≤180 chars).
+- `command` is required when `public: true`.
+- `aliases` is product/router shorthand, not user-visible doctrine.
+
+### Route Policy
+
+```yaml
+route:
+  use_when:
+    - "User asks for headline, hook, CTA, tagline, or section copy."
+  not_when:
+    - "Social platform posts -> write-social."
+  prerequisites:
+    recommended:
+      - "research/product-context.md"
+    hard:
+      - "research/icp-research.md"
+```
+
+Rules:
+
+- `use_when` describes positive triggers in plain English.
+- `not_when` must name adjacent capabilities this skill should not steal.
+- `prerequisites.recommended` warn but do not block.
+- `prerequisites.hard` block unless the user explicitly overrides.
+
+### Orchestration Policy
+
+```yaml
+orchestration:
+  default: auto
+  single_when:
+    - "Single key line."
+  multi_when:
+    - "Full page or campaign surface."
+  critic_required_when:
+    - "External-facing output."
+```
+
+`default` is one of `single`, `multi`, `auto`.
+
+Shared scoring rubric (lives in skill docs, not here):
+
+| Score | Route |
+|---|---|
+| 0-3 | single-agent |
+| 4-7 | single-agent + critic |
+| 8+  | multi-agent + critic |
+
+Hard rule: `--fast` can reduce orchestration weight, but cannot skip hard
+context gates or required critic floors.
+
+### Load Map
+
+```yaml
+load:
+  always:
+    - "references/procedures/pre-dispatch.md"
+  when:
+    - if: "surface includes headline or hook"
+      read:
+        - "references/headline-formulas.md"
+```
+
+Rules:
+
+- Paths are relative to the skill package unless they start with `skills/` or
+  `references/` from repo root, or `.forsvn/`, `research/`, `brand/`,
+  `architecture/`.
+- `always` should stay short — every entry is paid on every invocation.
+- `when.if` is a plain-English condition the agent evaluates at dispatch time.
+
+### Outputs
+
+```yaml
+outputs:
+  artifacts:
+    - path: ".forsvn/artifacts/mkt/content/[slug].copy.md"
+      lifecycle: pipeline
+      produced_when: "Route A or Route B."
+```
+
+Rules:
+
+- Artifact paths use repo/project-relative paths.
+- Every artifact written by a skill must use manifest-compatible frontmatter
+  (see `references/manifest-spec.md`).
+- `lifecycle` should match the manifest spec's vocabulary.
+
+## Generated Index
+
+Build:
+
+```bash
+bun scripts/build-capability-index.ts
+```
+
+Check (CI):
+
+```bash
+bun scripts/build-capability-index.ts --check
+```
+
+Output: `references/capability-index.json` — deterministic, committed.
+
+## Validation
+
+Validate (pilot mode — missing `capability` sections warn):
+
+```bash
+bun scripts/validate-routing.ts
+```
+
+Strict (after migration):
+
+```bash
+bun scripts/validate-routing.ts --require-all
+```
+
+Hard-fail conditions (always):
+
+- malformed `capability` section,
+- `id` mismatch with directory name,
+- `domain` mismatch with parent directory,
+- missing `summary` on a present capability section,
+- public capability without `command`,
+- empty `route.use_when` or `route.not_when`,
+- invalid `orchestration.default`,
+- empty `orchestration.single_when` / `multi_when` / `critic_required_when`,
+- load path that does not resolve,
+- artifact path / lifecycle / produced_when empty.
+
+Soft-fail (warn until `--require-all`):
+
+- skill has no `capability` section.
+- `summary` over 180 chars.
+
+## Migration State
+
+Pilot (folded 2026-05-26):
+
+- `skills/meta/forsvn/routing.yaml`
+- `skills/research/research-icp/routing.yaml`
+- `skills/marketing/write-copy/routing.yaml`
+- `skills/product/architect-system/routing.yaml`
+- `skills/meta/review-work/routing.yaml`
+
+Standalone `capability.yaml` files deleted as part of the fold.
+
+Remaining skills carry `promptSignals` only. Phases 3 and 4 extend the
+`capability` section to the rest of the stack.

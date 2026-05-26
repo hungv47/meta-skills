@@ -2,12 +2,12 @@
 title: Before-Starting Check — pre-execution read pattern every skill applies
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (Phase 1C; Phase 2 refactors adopt into each skill body)
+produced_by: forsvn-skills
 provenance:
-  derived_from: implementation-roadmap/execution-evaluation/briefs.md § 1.1 (auto-draft + "Before Starting" check)
+  derived_from: shared pre-execution context-read convention
   complements: meta-skills/references/pre-dispatch-protocol.md (this is a pre-step of that protocol's "Read before asking")
   authored_at: 2026-05-16
-consumers: every skill (the pre-pre-dispatch step Phase 2 refactors add to each SKILL.md body)
+consumers: every skill
 load_class: PLAYBOOK
 ---
 
@@ -21,17 +21,17 @@ This is the *pre-Pre-Dispatch step* — what to read on disk so Pre-Dispatch kno
 
 ## The check (4 steps, in order)
 
-### Step 1 — Read canonical-paths.md (once per session)
+### Step 1 — Read the skill contract (once per session)
 
 Verify the skill knows its own artifact contract:
 
 ```
-Read: implementation-roadmap/canonical-paths.md (if present in repo)
-Confirm: skill's declared output path matches the canonical inventory.
+Read: the invoking skill's SKILL.md frontmatter and routing.yaml (capability section if present).
+Confirm: the declared output path matches the skill's documented artifact contract.
 If mismatch: stop. Surface "artifact path drift" to operator before proceeding.
 ```
 
-If `canonical-paths.md` doesn't exist (e.g., user installed only one skill via `npx skills add`), skip — the per-skill SKILL.md is the authoritative contract.
+If the command is routed through `/forsvn`, treat `skills/meta/forsvn/routing.yaml` and the generated `references/capability-index.json` as the routing contract. The per-skill SKILL.md remains authoritative for artifact output; the capability section in `routing.yaml` declares the machine-readable mirror that the index ships to consumers.
 
 ### Step 2 — Read the foundation files (per skill domain)
 
@@ -147,4 +147,5 @@ Skill-specific details (which sections required, which experience dimensions rea
 - [[mode-resolver]] — `--fast` behavior contract
 - [[anti-sycophancy]] — why soft-NEEDS_CONTEXT is failure
 - [[artifact-contract-template]] — frontmatter conventions for the files this check reads
-- `implementation-roadmap/canonical-paths.md` — Step 1 read target
+- `skills/meta/forsvn/routing.yaml` — `/forsvn` capability + prompt-signal routing contract
+- `references/capability-index.json` — generated machine-readable capability registry

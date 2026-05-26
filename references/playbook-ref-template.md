@@ -1,18 +1,18 @@
 ---
-title: Playbook Ref Template — structural template for per-skill references/playbook.md
+title: Playbook Ref Template - structural template for per-skill references/playbook.md
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (authored once; consumed by every Phase 2 refactor)
+produced_by: forsvn-skills
 provenance:
-  authored_for: implementation-roadmap v6 locked-decision #9 (playbook voice via refs, not body bloat)
+  authored_for: shared playbook reference convention
   authored_at: 2026-05-16
-consumers: every skill being refactored in Phase 2 (currently 34 of 35 skills)
+consumers: per-skill references/playbook.md authors
 load_class: PLAYBOOK
 ---
 
 # Playbook Ref Template
 
-**Locked decision #9 from `implementation-roadmap/README.md`: SKILL.md bodies stay lean (router); team wisdom lives in `references/playbook.md` and supplemental refs with explicit load-class tags so agents load by need and humans read by choice.**
+**Authoring rule:** SKILL.md bodies stay lean; team wisdom lives in `references/playbook.md` and supplemental refs with explicit load-class tags so agents load by need and humans read by choice.
 
 This template defines what goes in `references/playbook.md` for any skill, the **load-class tag convention** for cite hooks, and the voice guide that keeps playbook content teachable instead of bureaucratic.
 

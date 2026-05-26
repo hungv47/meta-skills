@@ -1,5 +1,8 @@
-# Routing signals for humanmaxxing. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for humanmaxxing.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "sounds like ai"
@@ -22,3 +25,81 @@ promptSignals:
     - "brand identity"
     - "design system"
   minScore: 6
+
+capability:
+  id: humanmaxxing
+  domain: marketing
+  public: true
+  command: /humanmaxxing
+  summary: "Strip AI tells, inject brand voice, and compress existing text so it reads human-written — 15%+ word reduction with zero idea loss + optional detector-resistance pass."
+  aliases:
+    - humanize
+    - polish
+    - ai-strip
+    - voice-injection
+
+  route:
+    use_when:
+      - "User asks to humanize, strip AI patterns from, or compress existing copy."
+      - "Terminal polish pass on AI-drafted text before shipping."
+      - "Detector-sensitive content (admissions, applications, high-stakes public) needs resistance verification."
+    not_when:
+      - "Writing new copy from scratch -> write-copy."
+      - "Brand voice of record -> create-brand."
+      - "Vietnamese-tone polish -> polish-vn."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+        - "research/product-context.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Text <200 words (Route A — pattern-only)."
+      - "User asks for AI-tells removal only, no compression."
+    multi_when:
+      - "Text 200+ words (Route B — full pipeline; pattern-scanner + voice-extractor + strip + soul-injection + compression + critic)."
+      - "Detector-resistance pass requested or pangram detector_mode is set."
+    critic_required_when:
+      - "Always — critic-agent runs after strip + soul-injection + compression."
+      - "Detector-resistance verification gate (high-stakes public content)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Pre-Dispatch (Warm/Cold Start)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Route A or B dispatch"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Pattern scanning (47 AI patterns)"
+        read:
+          - "references/ai-patterns.md"
+      - if: "Voice injection / soul-injection"
+        read:
+          - "references/voice-injection.md"
+          - "references/human-writing-stylebook.md"
+      - if: "Compression (sentence / paragraph / section)"
+        read:
+          - "references/conciseness-rules.md"
+      - if: "Detector-resistance pass"
+        read:
+          - "references/detector-resistance.md"
+      - if: "Protected-token regression (Route C from write-outreach / write-ad)"
+        read:
+          - "references/regression-suite.md"
+      - if: "Critic / anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/content/[slug].humanmaxxed.md"
+        lifecycle: pipeline
+        produced_when: "Route A or B; re-run renames prior to `[slug].humanmaxxed.v[N].md`."

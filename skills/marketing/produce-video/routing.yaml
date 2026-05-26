@@ -1,5 +1,8 @@
-# Routing signals for produce-video. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for produce-video.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "produce video"
@@ -41,3 +44,78 @@ promptSignals:
     - "publish"
     - "evaluate"
   minScore: 6
+
+capability:
+  id: produce-video
+  domain: marketing
+  public: true
+  command: /produce-video
+  summary: "Turn a video brief into a multi-runtime export bundle — manifest, per-shot prompts, HyperFrames + Remotion scaffolds, Vercel AI CLI README. Two modes: shortform + app-preview."
+  aliases:
+    - video-bundle
+    - video-scaffold
+    - app-preview-render
+
+  route:
+    use_when:
+      - "User asks to produce a video bundle from a brief-shortform artifact."
+      - "User asks to produce an app-preview video bundle from a brief-app-preview handoff."
+      - "Schema-compliant hand-written video-brief needs scaffolds emitted."
+    not_when:
+      - "Writing the brief itself -> brief-shortform or brief-app-preview."
+      - "Publishing the rendered video -> publish-social."
+      - "Evaluating a rendered video's performance -> evaluate-shortform / evaluate-content."
+      - "Caller asks for `--publish`, `--render`, or `--auto-run` -> BLOCKED (this stack does not invoke render engines)."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+      hard:
+        - "brand/BRAND.md"
+        - "brand/DESIGN.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Lean 2-agent dispatch (prompt-author + critic) is the design — never multi-agent for this skill."
+    multi_when:
+      - "Never — per-shot parallelism and long-video narrative coherence are out of scope (mirrors shared production-pattern.md)."
+    critic_required_when:
+      - "Always — critic-agent enforces 4 gates (shortform) or 7 gates (app-preview) before bundle ships."
+      - "Critic FAIL on hard gates → re-dispatch prompt-author (max 2 cycles)."
+
+  load:
+    always:
+      - "references/_shared/production-pattern.md"
+      - "references/video-brief-schema.md"
+    when:
+      - if: "Pre-Dispatch (mode detection from brief frontmatter)"
+        read:
+          - "references/format-conventions.md"
+      - if: "Route A shortform dispatch"
+        read:
+          - "references/agent-manifest.md"
+      - if: "Route B app-preview dispatch (composition operations, mask transforms)"
+        read:
+          - "references/agent-manifest.md"
+          - "references/_shared/platform-intelligence/"
+      - if: "Critic / anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/produced-videos/[slug]/manifest.md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; always emitted as canonical runtime-agnostic contract."
+      - path: ".forsvn/artifacts/mkt/produced-videos/[slug]/scenes/[shot-id].md"
+        lifecycle: pipeline
+        produced_when: "One file per shot — visual + OST + voice spec."
+      - path: ".forsvn/artifacts/mkt/produced-videos/[slug]/hyperframes/scaffold.html"
+        lifecycle: pipeline
+        produced_when: "Always emitted — HyperFrames composition scaffold + inlined scenes JSON."
+      - path: ".forsvn/artifacts/mkt/produced-videos/[slug]/remotion/scaffold.tsx"
+        lifecycle: pipeline
+        produced_when: "Always emitted — Remotion composition scaffold."
+      - path: ".forsvn/artifacts/mkt/produced-videos/[slug]/vercel-ai-cli.md"
+        lifecycle: pipeline
+        produced_when: "Always emitted (shortform); collapsed in app-preview mode."

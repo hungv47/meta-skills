@@ -1,0 +1,96 @@
+# Routing + capability metadata for build-ios-apps.
+#
+# This skill is the sole intentional exception to the forsvn-skills multi-agent
+# quality bar (authored by the Chorus team and vendored unmodified). It still
+# carries a capability section so it surfaces in the generated routing registry
+# at references/capability-index.json.
+promptSignals:
+  phrases:
+    - "build ios"
+    - "build an ios app"
+    - "ios app"
+    - "swift app"
+    - "test on device"
+    - "test on my phone"
+    - "test on iphone"
+    - "put this on my phone"
+    - "put this on my iphone"
+    - "ship it to my iphone"
+    - "install on device"
+    - "install on iphone"
+    - "register device"
+    - "apple developer auth"
+    - "publish to app store"
+    - "submit my app"
+    - "push to testflight"
+    - "send for review"
+    - "send for app store review"
+    - "/build-ios-apps"
+  anyOf:
+    - "ios"
+    - "iphone"
+    - "swift"
+    - "swiftui"
+    - "app store"
+    - "testflight"
+    - "xcode"
+  noneOf:
+    - "android"
+    - "kotlin"
+    - "react native"
+  minScore: 3
+
+capability:
+  id: build-ios-apps
+  domain: product
+  public: true
+  command: /build-ios-apps
+  summary: "Build, sign, install, and publish iOS apps via the Chorus Vibecode signing service. Vendored from Chorus; sole exception to the multi-agent quality bar."
+  aliases:
+    - ios
+    - iphone
+    - swift
+    - testflight
+    - app-store
+
+  route:
+    use_when:
+      - "User wants to build, sign, install, or publish a Swift / SwiftUI iOS app."
+      - "User asks to test an app on a real iPhone or push a preview build to chat."
+      - "User asks to register a device, authenticate with Apple, submit for review, or push to TestFlight / App Store."
+    not_when:
+      - "Building or shipping non-iOS targets (Android, web, server) -> use the matching product skill."
+      - "Designing iOS app architecture or feature flow before any build is needed -> architect-system / map-user-flow."
+      - "Generic Swift code review or cleanup -> clean-code."
+    prerequisites:
+      recommended: []
+      hard: []
+
+  orchestration:
+    default: single
+    single_when:
+      - "Every invocation. This skill wraps the ./ios-cli pipeline; orchestration weight lives in the CLI, not in agents."
+    multi_when:
+      - "Never. Vendored Chorus skill intentionally bypasses the multi-agent quality bar; do not fan out."
+    critic_required_when:
+      - "Never under normal use. Build/sign failures surface as ios-cli exit codes and Xcode logs, not as critic gates."
+
+  load:
+    always:
+      - "references/capabilities.md"
+      - "references/gotchas.md"
+    when:
+      - if: "user is publishing to App Store or TestFlight"
+        read:
+          - "references/publishing.md"
+          - "references/publishing-readiness.md"
+          - "references/publishing-production.md"
+          - "references/publishing-testflight.md"
+          - "references/publishing-gotchas.md"
+          - "references/screenshots.md"
+      - if: "user is registering a device or syncing UDIDs with Apple"
+        read:
+          - "references/device-registration.md"
+      - if: "calling ios-cli endpoints directly or debugging signing-service responses"
+        read:
+          - "references/api-reference.md"

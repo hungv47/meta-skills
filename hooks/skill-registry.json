@@ -1559,6 +1559,46 @@
       ],
       "minScore": 6
     },
+    "build-ios-apps": {
+      "phrases": [
+        "build ios",
+        "build an ios app",
+        "ios app",
+        "swift app",
+        "test on device",
+        "test on my phone",
+        "test on iphone",
+        "put this on my phone",
+        "put this on my iphone",
+        "ship it to my iphone",
+        "install on device",
+        "install on iphone",
+        "register device",
+        "apple developer auth",
+        "publish to app store",
+        "submit my app",
+        "push to testflight",
+        "send for review",
+        "send for app store review",
+        "/build-ios-apps"
+      ],
+      "allOf": [],
+      "anyOf": [
+        "ios",
+        "iphone",
+        "swift",
+        "swiftui",
+        "app store",
+        "testflight",
+        "xcode"
+      ],
+      "noneOf": [
+        "android",
+        "kotlin",
+        "react native"
+      ],
+      "minScore": 3
+    },
     "clean-code": {
       "phrases": [
         "dead code",

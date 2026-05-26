@@ -1,5 +1,8 @@
-# Routing signals for brief-app-preview. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for brief-app-preview.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "app preview brief"
@@ -38,3 +41,67 @@ promptSignals:
     - "publish"
     - "render"
   minScore: 6
+
+capability:
+  id: brief-app-preview
+  domain: marketing
+  public: true
+  command: /brief-app-preview
+  summary: "Production-ready brief for app onboarding / App Store preview / feature-demo video — UI beats from screenshots, interaction choreography, motion rules, produce-video handoff."
+  aliases:
+    - app-preview-brief
+    - feature-demo-brief
+    - onboarding-video-brief
+
+  route:
+    use_when:
+      - "Screenshots exist and goal is to show a product feature in action."
+      - "App Store preview / onboarding video / feature-demo brief needed."
+      - "Composition over real UI screenshots (no synthesis)."
+    not_when:
+      - "Generic short-form social video -> brief-shortform."
+      - "Rendering the video -> produce-video."
+      - "Static visual asset -> brief-graphic."
+      - "No screenshots available; greenfield social video -> brief-shortform."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+        - "brand/DESIGN.md"
+        - "research/icp-research.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast collapses to leaner single-pass; safety gates still fire."
+    multi_when:
+      - "Default — multi-agent (feature-anchor + crop-map + caption-band + interaction-choreography + critic) with 6 hard gates."
+    critic_required_when:
+      - "Always — 6 hard gates (screenshot grounding, interaction vocabulary, mask transforms, pointer fidelity, caption-band geometry, brand-source declaration)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, screenshot inventory)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic routing"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; main artifact."
+      - path: ".forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md"
+        lifecycle: pipeline
+        produced_when: "Always emitted — per-shot spec for produce-video."
+      - path: ".forsvn/artifacts/mkt/app-preview-brief/[slug]/assets.md"
+        lifecycle: pipeline
+        produced_when: "Always emitted — source-ID-to-path map."
+      - path: ".forsvn/artifacts/mkt/app-preview-brief/[slug]/crop-map.md"
+        lifecycle: pipeline
+        produced_when: "Always emitted — crop justifications."
