@@ -42,6 +42,14 @@ const issues: Issue[] = [];
 const targets: string[] = [];
 collectHtml(join(ROOT, "references/_html/exemplars"), targets);
 collectHtml(join(ROOT, ".forsvn/artifacts"), targets, /\.archive\//);
+// Canonical top-level roots — skills emit `review_surface: html` here too
+// (brand identity of record, system architecture of record, ICP/market dossiers).
+// Without these in the scan set, a `brand/BRAND.html` or
+// `architecture/system-architecture.html` could ship without passing the
+// 10-check rubric.
+collectHtml(join(ROOT, "brand"), targets);
+collectHtml(join(ROOT, "architecture"), targets);
+collectHtml(join(ROOT, "research"), targets);
 
 for (const abs of targets) {
   const rel = relative(ROOT, abs).split("\\").join("/");

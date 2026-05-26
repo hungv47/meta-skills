@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
 // forsvn-preview — local preview server for review-surface HTML twins.
 // Spawns a CSRF-protected Bun.serve() on 127.0.0.1, opens the browser to the
 // HTML preview, blocks until POST /done writes the decision back to MD
