@@ -41,9 +41,9 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md` (one per root cause; re-run renames prior to `prioritize.v[N].md` and increments)
+- **Path:** `.forsvn/artifacts/meta-prioritize-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one per root cause; re-run renames prior with `.v[N]` suffix)
 - **Lifecycle:** `sketch` (per `agent-skills/CLAUDE.md` taxonomy)
-- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below)
+- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below), `stack` (=meta), `review_surface` (=none — sketch lifecycle defaults to `decision_state: not_required`). See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
 - **Required body sections (in order — cross-stack contract):** Phase 1 (Initiatives, 5-10 + 2-4 unconventional) · Phase 2 (Forced Ranking, ICE Scoring table, Decisions table) · Cut line declaration · Next Step block (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
 - **Optional sections (append only when applicable):** Known Issues · Revisited Out-of-Scope · Change Log
 - **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
