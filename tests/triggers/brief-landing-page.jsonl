@@ -1,0 +1,9 @@
+{"prompt": "draft a landing page brief for our pricing launch", "expect": "trigger", "reason": "phrase 'landing page brief' +6, 'landing page' +6, allOf [page,brief] +4, allOf [draft,brief] +4"}
+{"prompt": "we need a new landing page brief for the agentic launch", "expect": "trigger", "reason": "phrase 'new landing page' +6, 'landing page' +6, 'landing page brief' +6"}
+{"prompt": "give me an lp brief with hero section and section spec", "expect": "trigger", "reason": "phrase 'lp brief' +6, anyOf 'hero section','section spec' +2"}
+{"prompt": "draft a page brief covering the page architecture", "expect": "trigger", "reason": "phrase 'page brief' +6, allOf [page,brief] +4, allOf [draft,brief] +4, anyOf 'page architecture' +1"}
+{"prompt": "campaign brief for our new landing page launch", "expect": "trigger", "reason": "phrase 'campaign brief' +6, 'new landing page' +6, 'landing page' +6"}
+{"prompt": "review the experiment results from our landing page test", "expect": "skip", "reason": "noneOf 'experiment results' suppresses brief-landing-page"}
+{"prompt": "audit our landing page analytics for the last 30 days", "expect": "skip", "reason": "noneOf 'audit' and 'analytics' suppress brief-landing-page"}
+{"prompt": "draft a blog post for our launch", "expect": "skip", "reason": "noneOf 'blog post' suppresses"}
+{"prompt": "write a docs page about our api", "expect": "skip", "reason": "noneOf 'docs page' suppresses"}

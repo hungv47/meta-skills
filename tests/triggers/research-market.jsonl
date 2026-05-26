@@ -1,0 +1,10 @@
+{"prompt": "do market research for our new B2B product launch", "expect": "trigger", "reason": "phrase \"market research\" +6"}
+{"prompt": "run a competitive analysis on the top 5 players in our space", "expect": "trigger", "reason": "phrase \"competitive analysis\" +6"}
+{"prompt": "estimate the tam sam som for our category", "expect": "trigger", "reason": "phrase \"tam sam som\" +6"}
+{"prompt": "map the market landscape and find whitespace opportunities", "expect": "trigger", "reason": "phrase \"market landscape\" +6, anyOf \"whitespace\" +1"}
+{"prompt": "what is our market size and competitor analysis for fundraising", "expect": "trigger", "reason": "phrase \"market size\" +6 and \"competitor analysis\" +6"}
+{"prompt": "build a buyer persona for our existing customers", "expect": "skip", "reason": "noneOf \"buyer persona\" hard-suppress — research-icp territory"}
+{"prompt": "who is our customer and what do they need", "expect": "skip", "reason": "ICP intent, no market signals — research-market scores 0"}
+{"prompt": "diagnose why retention metrics dropped this quarter", "expect": "skip", "reason": "diagnose intent — no market-research phrases"}
+{"prompt": "plan our content calendar across channels", "expect": "skip", "reason": "campaign planning — no research-market phrases"}
+{"prompt": "write social copy for our product launch on tiktok", "expect": "skip", "reason": "copy task — no market research signals"}

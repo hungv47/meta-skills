@@ -1,0 +1,9 @@
+{"prompt": "this sounds like ai — humanize this draft", "expect": "trigger", "reason": "phrase 'sounds like ai' +6, 'humanize this' +6, anyOf 'humanize' +1"}
+{"prompt": "remove ai patterns from this copy", "expect": "trigger", "reason": "phrase 'remove ai patterns' +6, allOf [ai,pattern] +4"}
+{"prompt": "make it sound human and less robotic", "expect": "trigger", "reason": "phrase 'make it sound human' +6, 'too robotic'-adjacent, allOf [sound,human] +4, anyOf 'robotic' +1"}
+{"prompt": "this is ai slop — clean it up", "expect": "trigger", "reason": "phrase 'ai slop' +6"}
+{"prompt": "the draft is too robotic and sounds like ai — fix it", "expect": "trigger", "reason": "phrase 'sounds like ai' +6, 'too robotic' +6, anyOf 'robotic','ai-sounding' +2"}
+{"prompt": "write fresh copy from scratch for our hero", "expect": "skip", "reason": "no humanmaxxing signal — belongs to write-copy"}
+{"prompt": "build our brand identity from scratch", "expect": "skip", "reason": "noneOf 'brand identity' suppresses"}
+{"prompt": "set up our design system from tokens", "expect": "skip", "reason": "noneOf 'design system' suppresses"}
+{"prompt": "polish this vietnamese copy for native readers", "expect": "skip", "reason": "no humanmaxxing signal — belongs to polish-vn"}

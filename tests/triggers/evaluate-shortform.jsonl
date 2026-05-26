@@ -1,0 +1,10 @@
+{"prompt": "run a short-form eval on our last tiktok post", "expect": "trigger", "reason": "phrase \"short-form eval\" +6 (unique to evaluate-shortform)"}
+{"prompt": "did the brief work for our reels launch", "expect": "trigger", "reason": "phrase \"did the brief work\" +6 (unique to evaluate-shortform)"}
+{"prompt": "score this short against its brief and run the feedback loop", "expect": "trigger", "reason": "phrase \"score this short\" +6 (shortform-anchored); phrase \"feedback loop\" +6 — total +12. The old phrasing \"score this post\" was removed from evaluate-shortform to end the evaluate-content collision; this is the natural shortform-specific replacement."}
+{"prompt": "run the eval cycle for cycle 3 of our shortform loop", "expect": "trigger", "reason": "phrase \"eval cycle\" +6, anyOf \"eval cycle\" +1 \"feedback loop\"-no"}
+{"prompt": "post-publish review on our shorts video with eval cycle results", "expect": "trigger", "reason": "phrase \"post-publish review\" +6 (also evaluate-content) + \"eval cycle\" +6 — total +12 vs evaluate-content +6"}
+{"prompt": "write a long-form blog post about our launch", "expect": "skip", "reason": "noneOf \"long-form\" and \"blog post\" hard-suppress"}
+{"prompt": "evaluate our facebook ad creative for the quarter", "expect": "skip", "reason": "evaluate-ad intent; no eval-shortform phrases"}
+{"prompt": "create an eval loop for our content strategy", "expect": "skip", "reason": "run-eval-loop intent; no evaluate-shortform phrases (loop not eval cycle)"}
+{"prompt": "podcast review and feedback for episode 12", "expect": "skip", "reason": "noneOf \"podcast\" hard-suppress"}
+{"prompt": "write the brief-shortform for next quarter's tiktok", "expect": "skip", "reason": "brief-shortform intent; no evaluate-shortform phrases"}

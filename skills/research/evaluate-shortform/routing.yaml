@@ -1,22 +1,37 @@
 # Routing + capability metadata for evaluate-shortform.
 promptSignals:
+  # Phrases require an explicit short-form anchor. "score this post" /
+  # "evaluate the post" / "post-publish review" used to live here AND in
+  # evaluate-content, forcing ties on generic post prompts. Generic post
+  # evaluation now belongs entirely to evaluate-content; this skill requires
+  # a shortform / reel / tiktok / youtube short anchor.
   phrases:
-    - "score this post"
-    - "evaluate the post"
-    - "post-publish review"
     - "did the brief work"
     - "short-form eval"
+    - "shortform eval"
     - "eval cycle"
     - "feedback loop"
+    - "score this shortform"
+    - "score this short"
+    - "score the reel"
+    - "score the tiktok"
+    - "score the youtube short"
+    - "evaluate the shortform"
+    - "evaluate the reel"
+    - "evaluate the tiktok"
+    - "did the shortform land"
+    - "did the reel perform"
   allOf:
-    - [eval, post]
-    - [score, brief]
+    - [eval, shortform]
+    - [eval, short-form]
+    - [eval, reel]
+    - [eval, tiktok]
+    - [score, brief, shortform]
   anyOf:
     - "post vs brief"
     - "did it land"
     - "eval cycle"
     - "feedback loop"
-    - "post-publish"
   noneOf:
     - "long-form"
     - "blog post"

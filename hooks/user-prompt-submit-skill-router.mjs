@@ -52,10 +52,13 @@ function checkRegistryStaleness(registryPath) {
     let entries;
     try { entries = readdirSync(join(root, dir)); } catch { continue; }
     for (const entry of entries) {
+      // Registry is built from routing.yaml (promptSignals). SKILL.md mtime
+      // is irrelevant to routing-registry freshness — checking it produced
+      // false negatives whenever someone edited only routing.yaml.
       try {
-        const skillMtime = statSync(join(root, dir, entry, "SKILL.md")).mtimeMs;
-        if (skillMtime > registryMtime) {
-          process.stderr.write(`[skill-router] Registry may be stale: ${dir}/${entry}/SKILL.md is newer. Run: node hooks/build-registry.mjs\n`);
+        const routingMtime = statSync(join(root, dir, entry, "routing.yaml")).mtimeMs;
+        if (routingMtime > registryMtime) {
+          process.stderr.write(`[skill-router] Registry may be stale: ${dir}/${entry}/routing.yaml is newer. Run: node hooks/build-registry.mjs\n`);
           return;
         }
       } catch { continue; }

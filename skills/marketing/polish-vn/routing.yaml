@@ -1,13 +1,28 @@
 # Routing + capability metadata for polish-vn.
 promptSignals:
+  # Bare `"vietnamese"` phrase used to score +6 on any vietnamese mention,
+  # including write-from-scratch / translate intents the route.not_when
+  # explicitly excludes. Phrases now require an explicit polish / tone /
+  # localization / register verb to co-occur with the language anchor.
   phrases:
-    - "vietnamese"
-    - "tiếng việt"
     - "polish vietnamese"
+    - "polish the vietnamese"
+    - "vietnamese polish"
+    - "vietnamese tone"
+    - "vietnamese register"
+    - "vietnamese localization"
+    - "localize to vietnamese"
     - "vn tone"
+    - "vn polish"
+    - "fix the vietnamese"
+    - "clean up the vietnamese"
+    - "tiếng việt"
     - "dịch sang tiếng việt"
   allOf:
     - [vietnamese, tone]
+    - [vietnamese, register]
+    - [vietnamese, polish]
+    - [vietnamese, localize]
   anyOf:
     - "tiếng việt"
     - "bro tone"
@@ -17,6 +32,8 @@ promptSignals:
     - "english copy"
     - "humanize this"
     - "translate"
+    - "write vietnamese"
+    - "draft vietnamese"
   minScore: 6
 
 capability:

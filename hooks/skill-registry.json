@@ -305,30 +305,50 @@
     },
     "evaluate-shortform": {
       "phrases": [
-        "score this post",
-        "evaluate the post",
-        "post-publish review",
         "did the brief work",
         "short-form eval",
+        "shortform eval",
         "eval cycle",
-        "feedback loop"
+        "feedback loop",
+        "score this shortform",
+        "score this short",
+        "score the reel",
+        "score the tiktok",
+        "score the youtube short",
+        "evaluate the shortform",
+        "evaluate the reel",
+        "evaluate the tiktok",
+        "did the shortform land",
+        "did the reel perform"
       ],
       "allOf": [
         [
           "eval",
-          "post"
+          "shortform"
+        ],
+        [
+          "eval",
+          "short-form"
+        ],
+        [
+          "eval",
+          "reel"
+        ],
+        [
+          "eval",
+          "tiktok"
         ],
         [
           "score",
-          "brief"
+          "brief",
+          "shortform"
         ]
       ],
       "anyOf": [
         "post vs brief",
         "did it land",
         "eval cycle",
-        "feedback loop",
-        "post-publish"
+        "feedback loop"
       ],
       "noneOf": [
         "long-form",
@@ -1053,11 +1073,20 @@
     "monitor-aeo": {
       "phrases": [
         "aeo monitor",
+        "monitor aeo",
         "ai citation check",
+        "ai citation tracking",
+        "track ai citation",
+        "monitor ai citation",
         "monitor ai search",
         "ai overview tracking",
+        "track ai overview",
+        "monitor ai overview",
+        "ai overview presence",
         "ai referral traffic",
         "ai search visibility",
+        "ai snapshot tracking",
+        "track ai snapshot",
         "cited domain share",
         "llms.txt check",
         "indexnow"
@@ -1175,16 +1204,36 @@
     },
     "polish-vn": {
       "phrases": [
-        "vietnamese",
-        "tiếng việt",
         "polish vietnamese",
+        "polish the vietnamese",
+        "vietnamese polish",
+        "vietnamese tone",
+        "vietnamese register",
+        "vietnamese localization",
+        "localize to vietnamese",
         "vn tone",
+        "vn polish",
+        "fix the vietnamese",
+        "clean up the vietnamese",
+        "tiếng việt",
         "dịch sang tiếng việt"
       ],
       "allOf": [
         [
           "vietnamese",
           "tone"
+        ],
+        [
+          "vietnamese",
+          "register"
+        ],
+        [
+          "vietnamese",
+          "polish"
+        ],
+        [
+          "vietnamese",
+          "localize"
         ]
       ],
       "anyOf": [
@@ -1196,7 +1245,9 @@
       "noneOf": [
         "english copy",
         "humanize this",
-        "translate"
+        "translate",
+        "write vietnamese",
+        "draft vietnamese"
       ],
       "minScore": 6
     },
@@ -1236,10 +1287,16 @@
         "image generation prompt"
       ],
       "noneOf": [
-        "design brief",
-        "graphic brief",
+        "write a design brief",
+        "draft a design brief",
+        "create a design brief",
+        "write a graphic brief",
+        "draft a graphic brief",
+        "write a brief for",
         "design system",
-        "publish"
+        "publish to social",
+        "publish to the",
+        "publish this asset"
       ],
       "minScore": 6
     },
@@ -1355,7 +1412,9 @@
       "noneOf": [
         "design system",
         "landing page",
-        "ad copy",
+        "write ad copy",
+        "write the ad copy",
+        "draft ad copy",
         "image generation"
       ],
       "minScore": 6
@@ -1561,43 +1620,52 @@
     },
     "build-ios-apps": {
       "phrases": [
-        "build ios",
         "build an ios app",
-        "ios app",
-        "swift app",
-        "test on device",
+        "build the ios app",
+        "build my ios app",
+        "build ios app",
+        "build an iphone app",
+        "build my iphone app",
+        "build a swift app",
+        "build my swift app",
+        "test on my iphone",
         "test on my phone",
         "test on iphone",
-        "put this on my phone",
         "put this on my iphone",
+        "put this on my phone",
         "ship it to my iphone",
+        "ship to testflight",
         "install on device",
         "install on iphone",
-        "register device",
-        "apple developer auth",
+        "install on my iphone",
         "publish to app store",
-        "submit my app",
+        "publish to the app store",
+        "publish to testflight",
+        "submit my app to app store",
+        "submit to app store",
+        "submit my app for review",
         "push to testflight",
-        "send for review",
         "send for app store review",
+        "send to apple for review",
+        "register device with apple",
+        "apple developer auth",
         "/build-ios-apps"
       ],
       "allOf": [],
-      "anyOf": [
-        "ios",
-        "iphone",
-        "swift",
-        "swiftui",
-        "app store",
-        "testflight",
-        "xcode"
-      ],
+      "anyOf": [],
       "noneOf": [
         "android",
         "kotlin",
-        "react native"
+        "react native",
+        "review this",
+        "review the",
+        "code review",
+        "refactor",
+        "explain how",
+        "architecture of",
+        "design pattern"
       ],
-      "minScore": 3
+      "minScore": 6
     },
     "clean-code": {
       "phrases": [

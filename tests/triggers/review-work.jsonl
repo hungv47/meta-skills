@@ -1,0 +1,10 @@
+{"prompt": "code review for the auth module changes", "expect": "trigger", "reason": "phrase 'code review' +6 + allOf [review, code] +4 + anyOf 'review'"}
+{"prompt": "fresh eyes on my pull request please", "expect": "trigger", "reason": "phrase 'fresh eyes' +6 + anyOf 'fresh eyes'"}
+{"prompt": "review my code on the migration branch", "expect": "trigger", "reason": "phrase 'review my code' +6 + allOf [review, code] +4"}
+{"prompt": "check my work on the data migration", "expect": "trigger", "reason": "phrase 'check my work' +6"}
+{"prompt": "quality check on the shipped feature", "expect": "trigger", "reason": "phrase 'quality check' +6 + allOf [quality, check] +4"}
+{"prompt": "review the plan before i build", "expect": "skip", "reason": "noneOf 'review the plan' suppresses review-work; discover/architect territory"}
+{"prompt": "review the spec we drafted last week", "expect": "skip", "reason": "noneOf 'review the spec' suppresses review-work"}
+{"prompt": "review the brief from marketing", "expect": "skip", "reason": "noneOf 'review the brief' suppresses review-work"}
+{"prompt": "design review of the landing page mocks", "expect": "skip", "reason": "noneOf 'design review' suppresses review-work"}
+{"prompt": "debate this decision with multiple perspectives", "expect": "skip", "reason": "noneOf 'debate' + 'perspectives' suppress review-work; debate-agents wins"}

@@ -1,0 +1,10 @@
+{"prompt": "what to build first this quarter from these five initiatives", "expect": "trigger", "reason": "phrase \"what to build first\" +6, anyOf \"initiative\" +1"}
+{"prompt": "give me ice scores for the strategic options on the table", "expect": "trigger", "reason": "phrase \"ice score\" +6 and \"strategic options\" +6, anyOf \"ice\" + cap"}
+{"prompt": "prioritize initiatives across product and growth", "expect": "trigger", "reason": "phrase \"prioritize initiatives\" +6, anyOf \"prioritize\" +1 and \"initiative\" +1"}
+{"prompt": "rank the options with trade-off analysis", "expect": "trigger", "reason": "phrase \"rank the options\" +6, anyOf \"trade-off\" +1"}
+{"prompt": "which solution should we prioritize first", "expect": "trigger", "reason": "phrase \"which solution\" +6, anyOf \"solution\" +1 and \"prioritize\" +1"}
+{"prompt": "diagnose why our north-star metric is declining", "expect": "skip", "reason": "diagnose intent — no prioritize phrases hit"}
+{"prompt": "do market research on our competitive landscape", "expect": "skip", "reason": "noneOf \"market research\" hard-suppress"}
+{"prompt": "build a buyer persona for our new ICP", "expect": "skip", "reason": "noneOf \"buyer persona\" hard-suppress"}
+{"prompt": "scope this new feature so we know what to build", "expect": "skip", "reason": "discover territory; no prioritize phrases trigger"}
+{"prompt": "break this initiative into engineering tasks", "expect": "skip", "reason": "breakdown-tasks intent; anyOf \"initiative\" only +1 — below minScore 6"}
