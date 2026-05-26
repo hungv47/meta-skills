@@ -139,12 +139,17 @@ function skillDirs() {
 
 function textCorpus(dir) {
   return walk(dir)
-    .filter((path) => /\.(md|sh|py|ts|js|mjs)$/.test(path))
+    .filter((path) => /\.(md|sh|py|ts|js|mjs|css|html)$/.test(path))
     // Trigger on the skill's own authored content only — skip generated support
-    // capsules (references/_shared/ + scripts/). If a generated mirror's internal
-    // cross-references counted, generation would cascade and never reach a
-    // fixpoint: a mirror that mentions another shared file would pull it in too.
-    .filter((path) => !path.includes("/references/_shared/") && !path.includes("/scripts/"))
+    // capsules (references/_shared/, references/_html/, scripts/). If a
+    // generated mirror's internal cross-references counted, generation would
+    // cascade and never reach a fixpoint: a mirror that mentions another
+    // shared file (or its source-of-truth comment) would pull it in too.
+    .filter((path) =>
+      !path.includes("/references/_shared/") &&
+      !path.includes("/references/_html/") &&
+      !path.includes("/scripts/")
+    )
     .map((path) => readFileSync(path, "utf8"))
     .join("\n");
 }
@@ -290,12 +295,54 @@ function pruneOrphanRefs(dir, wantRefs) {
   }
 }
 
+// Remove tree mirrors a skill no longer triggers. Checks every directory that
+// could hold a generated tree (under `_shared/` and the special `_html` slot)
+// and removes anything carrying the `.generated-support` marker whose absolute
+// path isn't in `wantTrees`. Hand-authored dirs (no marker) are left alone.
+// In --check mode a stale tree is recorded as drift.
+function pruneOrphanTrees(dir, wantTrees) {
+  const candidates = [];
+  const sharedDir = join(dir, "references", "_shared");
+  if (existsSync(sharedDir)) {
+    for (const entry of readdirSync(sharedDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) candidates.push(join(sharedDir, entry.name));
+    }
+  }
+  const htmlDir = join(dir, "references", "_html");
+  if (existsSync(htmlDir)) candidates.push(htmlDir);
+
+  for (const candidate of candidates) {
+    if (!existsSync(join(candidate, GENERATED_MARKER))) continue;
+    if (wantTrees.has(candidate)) continue;
+    if (CHECK) drift.push(`orphan   ${relative(ROOT, candidate)}/ (whole tree)`);
+    else rmSync(candidate, { recursive: true, force: true });
+  }
+}
+
+// Scripts that are PRUNED when a previous run added them but the current
+// corpus no longer triggers. Legacy scripts (manifest-sync.ts,
+// bootstrap-experience.ts, …) stay protected by the existing-copy sweep —
+// they pre-date the citation-driven regime and aren't safe to remove. The
+// v2-introduced forsvn-preview.ts has no legacy install base, so it's safe
+// to prune when its trigger goes away.
+const PRUNABLE_SCRIPTS = new Set(["forsvn-preview.ts"]);
+
 function syncSkill(dir) {
   const corpus = textCorpus(dir);
   const wantRefs = new Set();
+  const wantTrees = new Set();
+  const wantScripts = new Set();
   const addRef = (name) => {
     wantRefs.add(name);
     ensureReference(dir, name);
+  };
+  const addScript = (name) => {
+    wantScripts.add(name);
+    ensureScript(dir, name);
+  };
+  const addTree = (label, destDir) => {
+    wantTrees.add(destDir);
+    copyGeneratedTree(SUPPORT_TREES[label], destDir, label);
   };
 
   if (/pre-dispatch-protocol/.test(corpus)) {
@@ -337,17 +384,31 @@ function syncSkill(dir) {
   if (/scaffold-eval-loop/.test(corpus)) ensureScript(dir, "scaffold-eval-loop.ts");
   if (/update-quality-dashboard/.test(corpus)) ensureScript(dir, "update-quality-dashboard.ts");
 
-  // Review-surface package — skills that emit `review_surface: html` ship the
-  // forsvn-preview CLI, the chrome assets it serves, and the spec docs that
-  // describe the contract. Without these, an installed/self-contained skill
-  // can't run its documented review flow (the skill-local roughdraft-review
-  // -protocol.md mirror cites `scripts/forsvn-preview.ts` directly).
-  if (/review_surface:\s*html|forsvn-preview|review-surface-(design|template)|html-output-critic/.test(corpus)) {
+  // Review-surface package — skills that emit `review_surface: html` (or
+  // describe the option in prose) ship the forsvn-preview CLI, the chrome
+  // assets it serves, and the spec docs that describe the contract. Without
+  // these, an installed/self-contained skill can't run its documented review
+  // flow (the skill-local roughdraft-review-protocol.md mirror cites
+  // `scripts/forsvn-preview.ts` directly).
+  //
+  // Each alternate is a positive declaration the skill emits / supports html;
+  // we deliberately avoid the looser "review_surface near html" pattern
+  // because skills that declare `review_surface: md  # html | md | none`
+  // would false-positive on the enum comment.
+  if (
+    /review_surface:\s*html/.test(corpus) ||                  // YAML / inline-code form
+    /`review_surface`\s*\(=\s*html/i.test(corpus) ||          // prose form: `review_surface` (=html ...)
+    /opt[\s.-]+into\s*`html`/i.test(corpus) ||                // explicit opt-in (write-docs)
+    /forsvn-preview/.test(corpus) ||
+    /review-surface-(design|template)/.test(corpus) ||
+    /html-output-critic/.test(corpus) ||
+    /references\/_html\b/.test(corpus)
+  ) {
     addRef("review-surface-design.md");
     addRef("review-surface-template.md");
     addRef("html-output-critic.md");
-    ensureScript(dir, "forsvn-preview.ts");
-    copyGeneratedTree(SUPPORT_TREES["_html"], join(dir, "references", "_html"), "_html");
+    addScript("forsvn-preview.ts");
+    addTree("_html", join(dir, "references", "_html"));
   }
 
   // Existing-copy sweep. Skill folders that have a packaged copy of a support
@@ -355,9 +416,17 @@ function syncSkill(dir) {
   // regime) must still ship the canonical version — `.claude-plugin/plugin.json`
   // packages whole skill dirs, so any stale copy would ship the old behavior to
   // users. Drift in these files is caught by `--check`.
+  // PRUNABLE_SCRIPTS are the exception: when present-but-not-wanted, they were
+  // added by a prior over-matched sync and should be removed (not re-emitted).
   for (const scriptName of Object.keys(SUPPORT_SCRIPTS)) {
     const destAbs = join(dir, "scripts", scriptName);
-    if (existsSync(destAbs)) ensureScript(dir, scriptName);
+    if (!existsSync(destAbs)) continue;
+    if (PRUNABLE_SCRIPTS.has(scriptName) && !wantScripts.has(scriptName)) {
+      if (CHECK) drift.push(`orphan   ${relative(ROOT, destAbs)}`);
+      else rmSync(destAbs);
+      continue;
+    }
+    ensureScript(dir, scriptName);
   }
   // Dependency closure: manifest-sync.ts imports ./lib/path-parser. Skills that
   // ship one must ship the other (otherwise the packaged manifest-sync errors
@@ -367,19 +436,20 @@ function syncSkill(dir) {
   }
 
   if (/_shared\/design-brief|design-brief\/references/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["design-brief"], join(dir, "references", "_shared", "design-brief"), "design-brief");
+    addTree("design-brief", join(dir, "references", "_shared", "design-brief"));
   }
   if (/_shared\/brand-system|brand-system\/references/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["brand-system"], join(dir, "references", "_shared", "brand-system"), "brand-system");
+    addTree("brand-system", join(dir, "references", "_shared", "brand-system"));
   }
   if (/platform-intelligence/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["platform-intelligence"], join(dir, "references", "_shared", "platform-intelligence"), "platform-intelligence");
+    addTree("platform-intelligence", join(dir, "references", "_shared", "platform-intelligence"));
   }
   if (/ad-intelligence/.test(corpus)) {
-    copyGeneratedTree(SUPPORT_TREES["ad-intelligence"], join(dir, "references", "_shared", "ad-intelligence"), "ad-intelligence");
+    addTree("ad-intelligence", join(dir, "references", "_shared", "ad-intelligence"));
   }
 
   pruneOrphanRefs(dir, wantRefs);
+  pruneOrphanTrees(dir, wantTrees);
   return relative(ROOT, dir);
 }
 

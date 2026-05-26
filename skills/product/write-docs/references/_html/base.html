@@ -1,0 +1,96 @@
+<!doctype html>
+<!--
+  base.html — the structural template for every review-surface HTML preview.
+  v2 (2026-05-26): unified FORSVN brand chrome; one typography stack across
+  all four element registers; ships an in-page decision-capture component
+  (wired by chrome.js to the `forsvn preview` localhost CLI per WS-V2/V3).
+  Skill emitters string-replace the {{...}} placeholders.
+
+  Placeholders:
+    {{stack}}             — air | water | fire | earth (mandatory color register)
+    {{title}}             — artifact title
+    {{skill}}             — kebab-case skill slug
+    {{date}}              — YYYY-MM-DD
+    {{slug}}              — kebab-case artifact slug
+    {{decision_state}}    — pending | approved | denied | suggested | not_required
+    {{tokens_css_href}}   — path to tokens.css (typically "./tokens.css")
+    {{chrome_css_href}}   — path to chrome.css
+    {{chrome_js_src}}     — path to chrome.js
+    {{md_path}}           — repo-relative path to the .md artifact (for the Roughdraft deeplink)
+    {{artifact_data_json}}— JSON blob mirroring the MD frontmatter
+    {{left_controls_html}}— per-skill control panel (variant picker, view toggles, export)
+    {{stage_html}}        — per-skill center stage content
+    {{preview_config_json}}— JSON consumed by chrome.js + `forsvn preview` CLI.
+                             Pending preview: `{"token":"...","port":N,"mdPath":"..."}`.
+                             Static / archived: `{"static":true}` — capture form hidden.
+-->
+<html lang="en" data-stack="{{stack}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}} · {{skill}} · {{date}}</title>
+
+  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{tokens_css_href}}">
+  <link rel="stylesheet" href="{{chrome_css_href}}">
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
+    <span class="brand-divider" aria-hidden="true"></span>
+    <span class="stack-chip">{{stack}}</span>
+    <span class="topbar-meta"><strong>{{skill}}</strong> · {{date}} · {{slug}}</span>
+    <span class="decision-pill" data-state="{{decision_state}}">{{decision_state}}</span>
+  </header>
+
+  <aside class="left-controls">
+    {{left_controls_html}}
+  </aside>
+
+  <main class="stage">
+    {{stage_html}}
+  </main>
+
+  <!-- Decision capture (WS-V3). Always present in markup. chrome.js activates
+       it only when the `forsvn preview` CLI has injected a token into the
+       preview-config block AND the artifact's decision_state is "pending".
+       Otherwise the form stays display:none — the page reads as read-only. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
+    <fieldset class="decision-radio">
+      <legend>Decision</legend>
+      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
+      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
+      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
+    </fieldset>
+    <label class="decision-comments">
+      <span>Comments (optional)</span>
+      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
+    </label>
+    <div class="decision-actions">
+      <span class="decision-status" aria-live="polite"></span>
+      <button type="submit" class="decision-done">Done</button>
+    </div>
+  </form>
+
+  <footer class="footer">
+    <a class="footer-action" data-roughdraft-link
+       href="roughdraft://open?path={{md_path}}">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">{{title}} · decision: {{decision_state}}</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <!-- Preview-config: populated by `forsvn preview` CLI at runtime (WS-V2).
+       When this artifact is opened directly (no CLI), the `static` flag tells
+       chrome.js to render the decision-capture form as read-only. -->
+  <script type="application/json" id="preview-config">{{preview_config_json}}</script>
+  <script type="application/json" id="artifact-data">{{artifact_data_json}}</script>
+  <script src="{{chrome_js_src}}"></script>
+</body>
+</html>
