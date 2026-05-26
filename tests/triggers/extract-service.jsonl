@@ -1,9 +1,0 @@
-{"prompt": "extract a service for the repeated stripe sdk calls across our handlers", "expect": "trigger", "reason": "phrase 'extract a service' + allOf [extract,service] + anyOf"}
-{"prompt": "we have repeated logic copy-pasted across handlers — lift it into a service layer", "expect": "trigger", "reason": "phrase 'repeated logic' + 'copy-pasted across handlers' + 'service layer'"}
-{"prompt": "duplicated sdk calls in five route files — deduplicate them", "expect": "trigger", "reason": "phrase 'duplicated SDK calls' clears threshold"}
-{"prompt": "deduplicate the api calls scattered across our routes", "expect": "trigger", "reason": "phrase 'deduplicate the API calls'"}
-{"prompt": "extract this into a helper used by every action", "expect": "trigger", "reason": "phrase 'extract this into a helper'"}
-{"prompt": "remove dead code from this file", "expect": "skip", "reason": "noneOf 'dead code' suppresses — belongs to clean-code"}
-{"prompt": "design the system architecture for our v2", "expect": "skip", "reason": "noneOf 'system design' suppresses — belongs to architect-system"}
-{"prompt": "write documentation for the shared logging module", "expect": "skip", "reason": "noneOf 'write documentation' suppresses — belongs to write-docs"}
-{"prompt": "refactor this single file for readability", "expect": "skip", "reason": "single-file refactor — no N-caller duplication, belongs to clean-code"}

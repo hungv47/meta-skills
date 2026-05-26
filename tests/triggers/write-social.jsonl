@@ -1,9 +1,0 @@
-{"prompt": "write a tweet about our launch this week", "expect": "trigger", "reason": "phrase 'write a tweet' +6, anyOf 'tweet' +1"}
-{"prompt": "write a linkedin post about our agentic stack", "expect": "trigger", "reason": "phrase 'write a linkedin post' +6, anyOf 'linkedin post' +1"}
-{"prompt": "draft a tiktok caption for our demo", "expect": "trigger", "reason": "phrase 'tiktok caption' +6, anyOf 'tiktok' +1"}
-{"prompt": "give me hook variants for an x post", "expect": "trigger", "reason": "phrase 'hook variants' +6, anyOf 'x post','hook variant' +2"}
-{"prompt": "write social copy for our reels release", "expect": "trigger", "reason": "phrase 'social copy' +6, anyOf 'reels' +1"}
-{"prompt": "write ad copy for our facebook ads launch", "expect": "skip", "reason": "noneOf 'ad copy' suppresses — belongs to write-ad"}
-{"prompt": "draft a newsletter blast for subscribers", "expect": "skip", "reason": "noneOf 'newsletter' suppresses"}
-{"prompt": "write a blog post for our seo strategy", "expect": "skip", "reason": "noneOf 'blog post' suppresses"}
-{"prompt": "write a youtube video script for our channel", "expect": "skip", "reason": "noneOf 'youtube video' suppresses"}

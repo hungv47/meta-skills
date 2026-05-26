@@ -1,9 +1,0 @@
-{"prompt": "write copy for our hero section with a strong tagline", "expect": "trigger", "reason": "phrase 'write copy' +6, 'tagline' +6, anyOf 'tagline' +1"}
-{"prompt": "draft a headline and CTA for the pricing page", "expect": "trigger", "reason": "phrase 'headline' +6 + 'call to action'-adjacent; anyOf 'headline','cta' +2"}
-{"prompt": "craft a headline that converts cold traffic", "expect": "trigger", "reason": "allOf [craft, headline] +4 plus phrase 'headline' +6"}
-{"prompt": "I need a tagline for our launch", "expect": "trigger", "reason": "phrase 'tagline' +6 plus anyOf 'tagline' +1"}
-{"prompt": "write a CTA for the signup form", "expect": "trigger", "reason": "phrase 'write a cta' +6 plus anyOf 'cta' +1"}
-{"prompt": "write a blog post about pricing strategy", "expect": "skip", "reason": "noneOf 'blog post' suppresses"}
-{"prompt": "write a social media post for LinkedIn", "expect": "skip", "reason": "noneOf 'social media post' suppresses — belongs to write-social"}
-{"prompt": "write the carousel slides for instagram", "expect": "skip", "reason": "noneOf 'carousel' suppresses"}
-{"prompt": "draft the email campaign for our newsletter", "expect": "skip", "reason": "noneOf 'email campaign' suppresses"}

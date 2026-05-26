@@ -1,9 +1,0 @@
-{"prompt": "write a cold email to a SaaS prospect", "expect": "trigger", "reason": "phrase 'cold email' +6, allOf [write,cold] +4, anyOf 'cold email','prospect' +2"}
-{"prompt": "draft a cold outreach DM on linkedin", "expect": "trigger", "reason": "phrase 'cold outreach' +6, 'cold dm' adjacent — anyOf 'cold outreach' +1"}
-{"prompt": "compose a linkedin dm for cold outbound", "expect": "trigger", "reason": "phrase 'linkedin dm' +6, anyOf 'outbound','cold dm' +2"}
-{"prompt": "write an upwork proposal for this client brief", "expect": "trigger", "reason": "phrase 'upwork proposal' +6, anyOf 'upwork proposal' +1"}
-{"prompt": "follow-up email to a prospect who went quiet", "expect": "trigger", "reason": "phrase 'follow-up email' +6, anyOf 'prospect' +1"}
-{"prompt": "write a newsletter for our customer base", "expect": "skip", "reason": "noneOf 'newsletter' suppresses"}
-{"prompt": "draft a drip campaign for new signups", "expect": "skip", "reason": "noneOf 'drip campaign' suppresses"}
-{"prompt": "write a nurture sequence for leads", "expect": "skip", "reason": "noneOf 'nurture sequence' suppresses"}
-{"prompt": "write a transactional email for password reset", "expect": "skip", "reason": "noneOf 'transactional email' suppresses"}

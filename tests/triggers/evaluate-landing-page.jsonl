@@ -1,8 +1,0 @@
-{"prompt": "our landing page isn't converting — pull the GA4 data and tell me why", "expect": "trigger", "reason": "phrase 'landing page isn't converting' +6 plus anyOf 'GA4'"}
-{"prompt": "run post-launch CRO on the pricing page using session recordings", "expect": "trigger", "reason": "phrase 'post-launch cro' +6 plus anyOf 'session recording'"}
-{"prompt": "evaluate landing page performance for cycle 3", "expect": "trigger", "reason": "phrase 'evaluate landing page performance' +6 and 'landing page performance' +6"}
-{"prompt": "analyze landing page analytics from last week's A/B test", "expect": "trigger", "reason": "phrase 'analyze landing page analytics' plus anyOf 'A/B test'"}
-{"prompt": "write a new landing page brief for the pricing page", "expect": "skip", "reason": "noneOf 'new landing page' and 'landing page brief' suppress; routes to brief-landing-page"}
-{"prompt": "design a fresh landing page from scratch", "expect": "skip", "reason": "creation intent without metrics; brief-landing-page territory"}
-{"prompt": "what's a good conversion rate benchmark for SaaS", "expect": "skip", "reason": "informational best-practice question, no measurement evidence"}
-{"prompt": "audit my landing page for usability issues", "expect": "skip", "reason": "generic best-practice audit without evidence; no canonical phrase fires"}

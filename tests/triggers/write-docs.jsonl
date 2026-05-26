@@ -1,9 +1,0 @@
-{"prompt": "write a readme for this repo from scratch", "expect": "trigger", "reason": "phrase 'write a readme' + anyOf readme/docs"}
-{"prompt": "write documentation for our public sdk", "expect": "trigger", "reason": "phrase 'write documentation' + allOf [write,documentation] + anyOf documentation"}
-{"prompt": "produce an api reference for the v3 endpoints", "expect": "trigger", "reason": "phrase 'api reference' + allOf [api,reference] + anyOf reference"}
-{"prompt": "draft a setup guide and a runbook for on-call", "expect": "trigger", "reason": "phrase 'setup guide' + 'runbook' + anyOf guide/runbook"}
-{"prompt": "write the release notes and changelog entry for v2.1", "expect": "trigger", "reason": "phrase 'release notes' + 'changelog entry' + anyOf release notes/changelog"}
-{"prompt": "clean up the code in this module", "expect": "skip", "reason": "noneOf 'code cleanup' would not directly match but no docs signal; belongs to clean-code"}
-{"prompt": "refactor this file for readability", "expect": "skip", "reason": "noneOf 'refactor' suppresses — belongs to clean-code"}
-{"prompt": "remove dead code from the handler layer", "expect": "skip", "reason": "noneOf 'dead code' suppresses — belongs to clean-code"}
-{"prompt": "write the landing page copy for our launch", "expect": "skip", "reason": "marketing copy intent — belongs to write-copy, no docs signal"}

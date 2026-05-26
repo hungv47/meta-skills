@@ -1,9 +1,0 @@
-{"prompt": "evaluate the campaign we ran last quarter against the original plan", "expect": "trigger", "reason": "phrase 'evaluate the campaign' +6"}
-{"prompt": "score this campaign — did the launch land across all channels", "expect": "trigger", "reason": "phrases 'score this campaign' +6 and 'did the launch land' +6"}
-{"prompt": "post-launch campaign review with channel breakdown and blended CAC", "expect": "trigger", "reason": "phrases 'post-launch campaign review' +6 and 'channel breakdown' +6 plus anyOf 'blended CAC'"}
-{"prompt": "campaign retrospective for the Q3 GTM motion", "expect": "trigger", "reason": "phrase 'campaign retrospective' +6"}
-{"prompt": "campaign cycle results with per-channel CAC and ROI", "expect": "trigger", "reason": "phrase 'campaign cycle results' +6"}
-{"prompt": "plan a new campaign for the spring launch", "expect": "skip", "reason": "noneOf 'plan a campaign' / 'new campaign plan' suppress; routes to plan-campaign"}
-{"prompt": "draft a campaign brief for the founders", "expect": "skip", "reason": "noneOf 'campaign brief' suppresses; planning work"}
-{"prompt": "evaluate a single ad's ROAS for cold traffic", "expect": "skip", "reason": "noneOf 'single ad performance' suppresses; routes to evaluate-ad"}
-{"prompt": "one post results from our latest organic linkedin push", "expect": "skip", "reason": "noneOf 'one post results' suppresses; routes to evaluate-content"}

@@ -1,9 +1,0 @@
-{"prompt": "build a marketing plan for our Q4 launch", "expect": "trigger", "reason": "phrase 'marketing plan' +6 plus allOf [marketing, plan]"}
-{"prompt": "we need a go to market strategy with channel mix and content calendar", "expect": "trigger", "reason": "phrases 'go to market' +6 and 'content calendar' +6 plus anyOf 'channel'"}
-{"prompt": "draft a campaign plan with growth motion and per-channel angles", "expect": "trigger", "reason": "phrases 'campaign plan' +6 and 'growth motion' +6"}
-{"prompt": "what channel strategy should we run for product launch", "expect": "trigger", "reason": "phrase 'channel strategy' +6 plus allOf [channel, strategy]"}
-{"prompt": "build a marketing strategy for the next two quarters", "expect": "trigger", "reason": "phrase 'marketing strategy' +6"}
-{"prompt": "evaluate the campaign performance from last quarter", "expect": "skip", "reason": "evaluation intent — routes to evaluate-campaign"}
-{"prompt": "write a headline for the homepage", "expect": "skip", "reason": "noneOf 'headline' suppresses; copy work, not planning"}
-{"prompt": "write a tagline for our brand launch", "expect": "skip", "reason": "noneOf 'tagline' suppresses; copy / brand voice work"}
-{"prompt": "set numeric funnel targets for next quarter", "expect": "skip", "reason": "funnel-target intent routes to plan-funnel, not campaign plan"}

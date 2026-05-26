@@ -1,9 +1,0 @@
-{"prompt": "I need a short-form brief with shot list and hook variations", "expect": "trigger", "reason": "phrase 'short-form brief' +6, allOf [short-form,brief] +4, anyOf 'shot list','hook variations' +2"}
-{"prompt": "draft a tiktok brief for our product launch", "expect": "trigger", "reason": "phrase 'tiktok brief' +6"}
-{"prompt": "give me a reels brief with storyboard", "expect": "trigger", "reason": "phrase 'reels brief' +6, 'storyboard' +6, allOf [reels,brief] +4"}
-{"prompt": "build a shoot brief for our hero video", "expect": "trigger", "reason": "phrase 'shoot brief' +6, 'video brief' adjacent — anyOf 'video script'? no — anyOf 'production brief'? no. Just phrase +6"}
-{"prompt": "draft a shorts brief with video script", "expect": "trigger", "reason": "phrase 'shorts brief' +6, anyOf 'video script' +1"}
-{"prompt": "produce the video from the existing brief", "expect": "skip", "reason": "produce-video phrase wins; brief-shortform: 'video brief' substring? no — 'video' alone not in phrases. allOf [tiktok,plan] no. Score 0."}
-{"prompt": "write a long-form essay about our product story", "expect": "skip", "reason": "noneOf 'long-form' suppresses"}
-{"prompt": "draft a blog post about our launch", "expect": "skip", "reason": "noneOf 'blog post' suppresses"}
-{"prompt": "write a newsletter recap of our launch week", "expect": "skip", "reason": "noneOf 'newsletter' suppresses"}

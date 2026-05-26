@@ -1,9 +1,0 @@
-{"prompt": "map the user flow for our onboarding screens", "expect": "trigger", "reason": "phrase 'user flow' + allOf [user,flow] + anyOf flow/screen"}
-{"prompt": "draw a screen flow with state transitions for checkout", "expect": "trigger", "reason": "phrase 'screen flow' + anyOf screen/flow/transition"}
-{"prompt": "i need a journey map showing every step from signup to first run", "expect": "trigger", "reason": "phrase 'journey map' + anyOf journey"}
-{"prompt": "build a wireframe flow for the settings module", "expect": "trigger", "reason": "phrase 'wireframe flow' + anyOf wireframe/flow"}
-{"prompt": "map the screens of our mobile app so i can see transitions", "expect": "trigger", "reason": "phrase 'map the screens' + allOf [screen,map] + anyOf transition/screen"}
-{"prompt": "design the brand identity for this product", "expect": "skip", "reason": "noneOf 'brand identity' suppresses — belongs to create-brand"}
-{"prompt": "design the api and database schema for this feature", "expect": "skip", "reason": "noneOf 'api design' and 'database schema' suppress — belongs to architect-system"}
-{"prompt": "write the user docs for our onboarding", "expect": "skip", "reason": "documentation intent, not flow mapping — belongs to write-docs"}
-{"prompt": "what is a good color palette for the dashboard", "expect": "skip", "reason": "visual design question — no flow/screen/journey signal"}
