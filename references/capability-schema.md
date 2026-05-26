@@ -231,15 +231,18 @@ Output: `references/capability-index.json` — deterministic, committed.
 
 ## Validation
 
-Strict (default in CI — migration is complete, missing `capability` sections
-are hard errors):
+Strict (run before merge — migration is complete, missing `capability`
+sections are hard errors). There is no in-repo GitHub Actions workflow today;
+the maintainer runs these locally as a pre-merge gate, and any external CI
+(if added later) should run the same six commands:
 
 ```bash
 bun scripts/validate-routing.ts --require-all
 ```
 
-Trigger evals (default in CI — routing changes must keep `tests/triggers/`
-fixtures green, and `--require-all` ensures every skill has a fixture file):
+Trigger evals (run before merge — routing changes must keep
+`tests/triggers/` fixtures green, and `--require-all` ensures every skill
+has a fixture file):
 
 ```bash
 bun scripts/eval-triggers.ts --require-all

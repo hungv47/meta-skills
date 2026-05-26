@@ -8,3 +8,6 @@
 {"prompt": "explain how testflight provisioning profiles work", "expect": "skip", "reason": "informational question, not a build/publish action"}
 {"prompt": "what is the design pattern for ios coordinators", "expect": "skip", "reason": "architecture-pattern question, not a build action"}
 {"prompt": "build an android app for habit tracking", "expect": "skip", "reason": "Android build, not iOS — noneOf catches"}
+{"prompt": "build this ios app and install it on my phone", "expect": "trigger", "reason": "regression test for recall: previously missed because phrases required exact 'an'/'the'/'my' variants. After adding 'build this ios app' phrase + 'install it on my phone' phrase, this natural composition triggers (+12)"}
+{"prompt": "install this app on my iphone for testing", "expect": "trigger", "reason": "regression test for recall: phrases 'install on iphone' and 'install on my iphone' are not substrings of 'install this app on my iphone'. After adding 'install this app on my iphone' phrase, this triggers (+6)"}
+{"prompt": "install this on my phone so I can try it", "expect": "trigger", "reason": "regression test for recall: 'install this on my phone' phrase now covers the 'this on my phone' shape that the 'this app' variants don't reach"}
