@@ -1,0 +1,9 @@
+{"prompt": "remove all the dead code from this repo", "expect": "trigger", "reason": "phrase 'dead code' + allOf [dead,code] + anyOf dead code"}
+{"prompt": "do a full code audit and remove unused imports", "expect": "trigger", "reason": "phrase 'code audit' + phrase 'remove unused' + anyOf unused"}
+{"prompt": "refactor this module to drop the ai slop", "expect": "trigger", "reason": "phrase 'refactor this' + anyOf refactor"}
+{"prompt": "clean up the code in src/handlers without changing behavior", "expect": "trigger", "reason": "phrase 'clean up the code' + anyOf cleanup"}
+{"prompt": "there's a lot of ai slop in code i wrote yesterday — tidy it", "expect": "trigger", "reason": "phrase 'ai slop in code' clears threshold"}
+{"prompt": "design the system architecture for this product", "expect": "skip", "reason": "noneOf 'system design' suppresses — belongs to architect-system"}
+{"prompt": "write documentation for the new module", "expect": "skip", "reason": "noneOf 'write documentation' suppresses — belongs to write-docs"}
+{"prompt": "extract the duplicated sdk setup into a shared service layer", "expect": "skip", "reason": "service extraction intent — belongs to extract-service, no clean-code phrase"}
+{"prompt": "free up disk space on my mac", "expect": "skip", "reason": "machine cleanup, not code cleanup"}

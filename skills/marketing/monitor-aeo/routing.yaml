@@ -4,13 +4,26 @@
 #   - references/capability-index.json by `bun scripts/build-capability-index.ts`
 # NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
+  # Phrases promoted from allOf so natural prompts ("track ai overview presence",
+  # "ai citation tracking", etc.) can clear minScore on a single match. allOf
+  # groups still cover composite intent, but they score +4 alone — below
+  # threshold 6 — so they had to be backed by a phrase to be useful.
   phrases:
     - "aeo monitor"
+    - "monitor aeo"
     - "ai citation check"
+    - "ai citation tracking"
+    - "track ai citation"
+    - "monitor ai citation"
     - "monitor ai search"
     - "ai overview tracking"
+    - "track ai overview"
+    - "monitor ai overview"
+    - "ai overview presence"
     - "ai referral traffic"
     - "ai search visibility"
+    - "ai snapshot tracking"
+    - "track ai snapshot"
     - "cited domain share"
     - "llms.txt check"
     - "indexnow"

@@ -5,40 +5,53 @@
 # carries a capability section so it surfaces in the generated routing registry
 # at references/capability-index.json.
 promptSignals:
+  # Action + platform required. Bare "ios" / "swift" / "xcode" used to fire on
+  # review / architecture / explain prompts because they are vocabulary, not
+  # intent. Every phrase below carries an explicit build / ship / install /
+  # publish / submit / register / test-on verb co-located with a platform noun.
   phrases:
-    - "build ios"
     - "build an ios app"
-    - "ios app"
-    - "swift app"
-    - "test on device"
+    - "build the ios app"
+    - "build my ios app"
+    - "build ios app"
+    - "build an iphone app"
+    - "build my iphone app"
+    - "build a swift app"
+    - "build my swift app"
+    - "test on my iphone"
     - "test on my phone"
     - "test on iphone"
-    - "put this on my phone"
     - "put this on my iphone"
+    - "put this on my phone"
     - "ship it to my iphone"
+    - "ship to testflight"
     - "install on device"
     - "install on iphone"
-    - "register device"
-    - "apple developer auth"
+    - "install on my iphone"
     - "publish to app store"
-    - "submit my app"
+    - "publish to the app store"
+    - "publish to testflight"
+    - "submit my app to app store"
+    - "submit to app store"
+    - "submit my app for review"
     - "push to testflight"
-    - "send for review"
     - "send for app store review"
+    - "send to apple for review"
+    - "register device with apple"
+    - "apple developer auth"
     - "/build-ios-apps"
-  anyOf:
-    - "ios"
-    - "iphone"
-    - "swift"
-    - "swiftui"
-    - "app store"
-    - "testflight"
-    - "xcode"
   noneOf:
     - "android"
     - "kotlin"
     - "react native"
-  minScore: 3
+    - "review this"
+    - "review the"
+    - "code review"
+    - "refactor"
+    - "explain how"
+    - "architecture of"
+    - "design pattern"
+  minScore: 6
 
 capability:
   id: build-ios-apps

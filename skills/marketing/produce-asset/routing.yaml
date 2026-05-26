@@ -21,11 +21,22 @@ promptSignals:
     - "DALL-E prompt"
     - "Imagen prompt"
     - "image generation prompt"
+  # noneOf must target intent ("write the brief", "publish it"), not bare nouns.
+  # The old `"design brief"` / `"graphic brief"` entries self-suppressed any
+  # legitimate "produce asset from this design brief" request — the natural
+  # phrasing for the skill's primary use case. Same for bare `"publish"`,
+  # which fired on routine words.
   noneOf:
-    - "design brief"
-    - "graphic brief"
+    - "write a design brief"
+    - "draft a design brief"
+    - "create a design brief"
+    - "write a graphic brief"
+    - "draft a graphic brief"
+    - "write a brief for"
     - "design system"
-    - "publish"
+    - "publish to social"
+    - "publish to the"
+    - "publish this asset"
   minScore: 6
 
 capability:

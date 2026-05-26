@@ -183,9 +183,16 @@ load:
 
 Rules:
 
-- Paths are relative to the skill package unless they start with `skills/` or
-  `references/` from repo root, or `.forsvn/`, `research/`, `brand/`,
-  `architecture/`.
+- **Bare paths** (`references/...`, `agents/...`, `procedures/...`, etc.) resolve
+  to the skill package first; the validator falls back to repo-root only to
+  support synced `_shared/` files that re-point at top-level `references/`.
+  Authors should keep `always` / `when.read` paths skill-local; treat repo-root
+  fallback as a transition affordance, not a target.
+- **Repo-root paths** must be prefixed with `skills/` (e.g. another skill's
+  reference). The validator resolves these against the repo root only.
+- **Project-state paths** under `.forsvn/`, `research/`, `brand/`, or
+  `architecture/` are skipped by load-path validation — they're written at
+  runtime by other skills, not shipped with the package.
 - `always` should stay short — every entry is paid on every invocation.
 - `when.if` is a plain-English condition the agent evaluates at dispatch time.
 
@@ -224,16 +231,27 @@ Output: `references/capability-index.json` — deterministic, committed.
 
 ## Validation
 
-Validate (pilot mode — missing `capability` sections warn):
-
-```bash
-bun scripts/validate-routing.ts
-```
-
-Strict (after migration):
+Strict (default in CI — migration is complete, missing `capability` sections
+are hard errors):
 
 ```bash
 bun scripts/validate-routing.ts --require-all
+```
+
+Trigger evals (default in CI — routing changes must keep `tests/triggers/`
+fixtures green, and `--require-all` ensures every skill has a fixture file):
+
+```bash
+bun scripts/eval-triggers.ts --require-all
+```
+
+Bare invocation (no flag) is retained for local exploration on in-progress
+branches where a new skill hasn't yet had its capability section added — it
+soft-warns instead of hard-failing. New skills must clear `--require-all`
+before merge.
+
+```bash
+bun scripts/validate-routing.ts
 ```
 
 Hard-fail conditions (always):
@@ -256,15 +274,12 @@ Soft-fail (warn until `--require-all`):
 
 ## Migration State
 
-Pilot (folded 2026-05-26):
+**Fold complete (2026-05-26).** All 43 skills carry `routing.yaml` v2 with both
+`promptSignals` and `capability:` sections. Standalone `capability.yaml` files
+deleted as part of the fold. CI runs `bun scripts/validate-routing.ts
+--require-all` so a missing capability section is now a hard error, not a
+warning.
 
-- `skills/meta/forsvn/routing.yaml`
-- `skills/research/research-icp/routing.yaml`
-- `skills/marketing/write-copy/routing.yaml`
-- `skills/product/architect-system/routing.yaml`
-- `skills/meta/review-work/routing.yaml`
-
-Standalone `capability.yaml` files deleted as part of the fold.
-
-Remaining skills carry `promptSignals` only. Phases 3 and 4 extend the
-`capability` section to the rest of the stack.
+What this section was for: tracking which skills had been folded during the
+phased migration. The phased migration is done; this section is retained as a
+historical anchor so future readers can locate the merge point.

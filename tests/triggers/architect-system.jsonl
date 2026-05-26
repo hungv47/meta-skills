@@ -1,0 +1,9 @@
+{"prompt": "pick the tech stack and infrastructure plan for our new saas", "expect": "trigger", "reason": "phrase 'tech stack' + 'infrastructure plan' + allOf [tech,stack]"}
+{"prompt": "design the database schema for a multi-tenant billing system", "expect": "trigger", "reason": "phrase 'database schema' + anyOf schema/database"}
+{"prompt": "do the api design for our v2 endpoints", "expect": "trigger", "reason": "phrase 'api design' + anyOf api"}
+{"prompt": "we need a system design that covers stack, schema and deployment", "expect": "trigger", "reason": "phrase 'system design' + anyOf schema/deployment"}
+{"prompt": "create the architecture design and deployment plan before we build", "expect": "trigger", "reason": "phrase 'architecture design' + anyOf architecture/deployment"}
+{"prompt": "implement the login endpoint in the existing codebase", "expect": "skip", "reason": "feature implementation request — no architecture/stack signal"}
+{"prompt": "refactor this file to remove dead code", "expect": "skip", "reason": "code cleanup — belongs to clean-code, no architecture signal"}
+{"prompt": "map the user journey for onboarding", "expect": "skip", "reason": "noneOf 'user flow' would not catch this exact phrase but no architecture signal either; belongs to map-user-flow"}
+{"prompt": "design a wireframe for the dashboard", "expect": "skip", "reason": "noneOf 'wireframe' suppresses — visual/UX, not architecture"}

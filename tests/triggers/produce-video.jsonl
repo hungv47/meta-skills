@@ -1,0 +1,9 @@
+{"prompt": "produce video from the shortform brief — emit hyperframes scaffold", "expect": "trigger", "reason": "phrases 'produce video' +6 and 'hyperframes scaffold' +6"}
+{"prompt": "render video from brief and give me the manifest", "expect": "trigger", "reason": "phrases 'render video' +6 and 'video manifest' +6 plus allOf [render, video, brief]"}
+{"prompt": "build the video export bundle with remotion scaffold", "expect": "trigger", "reason": "phrases 'video export bundle' +6 and 'remotion scaffold' +6"}
+{"prompt": "render the app preview from the brief-app-preview handoff", "expect": "trigger", "reason": "phrase 'render the app preview' +6 plus allOf [render, app, preview]"}
+{"prompt": "scaffold the app preview composition and produce video manifest", "expect": "trigger", "reason": "phrases 'scaffold the app preview' +6 and 'video manifest' +6 plus 'produce video' +6"}
+{"prompt": "write the short-form brief for tiktok and reels", "expect": "skip", "reason": "noneOf 'short-form brief' suppresses; brief-shortform territory"}
+{"prompt": "brief the app preview for our v3 launch", "expect": "skip", "reason": "noneOf 'brief the app preview' suppresses; brief-app-preview territory"}
+{"prompt": "publish the rendered video to youtube and tiktok", "expect": "skip", "reason": "noneOf 'publish' suppresses; publish-social territory"}
+{"prompt": "evaluate our short-form video performance from last week", "expect": "skip", "reason": "noneOf 'evaluate' suppresses; evaluate-shortform territory"}

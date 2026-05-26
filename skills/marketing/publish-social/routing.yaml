@@ -33,10 +33,15 @@ promptSignals:
     - "Hootsuite"
     - "schedule on"
     - "draft on"
+  # noneOf entries must target intent, not bare nouns. The old `"ad copy"`
+  # entry fired on `"thread copy"` via substring (thre-AD-COPy contains "ad
+  # copy"), suppressing legit publish prompts. Use verb-anchored alternatives.
   noneOf:
     - "design system"
     - "landing page"
-    - "ad copy"
+    - "write ad copy"
+    - "write the ad copy"
+    - "draft ad copy"
     - "image generation"
   minScore: 6
 

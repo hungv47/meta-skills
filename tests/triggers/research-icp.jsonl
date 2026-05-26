@@ -1,0 +1,10 @@
+{"prompt": "build a buyer persona for our SaaS product", "expect": "trigger", "reason": "phrase \"buyer persona\" +6 — primary ICP intent"}
+{"prompt": "who is my customer for this productivity app", "expect": "trigger", "reason": "phrase \"who is my customer\" +6"}
+{"prompt": "define the ideal customer for our B2B tool", "expect": "trigger", "reason": "phrase \"ideal customer\" +6"}
+{"prompt": "research our target audience and gather voc evidence", "expect": "trigger", "reason": "phrase \"target audience\" +6, anyOf \"voc\" +1"}
+{"prompt": "do audience research and map customer segments by demographic", "expect": "trigger", "reason": "phrase \"customer segment\" +6, allOf [audience, research] +4, anyOf \"demographic\" +1"}
+{"prompt": "what's our pricing strategy going to be next year", "expect": "skip", "reason": "pricing strategy — not ICP territory, no ICP signals"}
+{"prompt": "do competitor analysis for our market", "expect": "skip", "reason": "noneOf \"competitor analysis\" hard-suppress"}
+{"prompt": "what's our market size and tam", "expect": "skip", "reason": "noneOf \"tam\" and \"market size\" hard-suppress — research-market territory"}
+{"prompt": "diagnose why activation dropped last month", "expect": "skip", "reason": "diagnose intent, no ICP phrases — research-icp scores 0"}
+{"prompt": "write copy for our landing page hero", "expect": "skip", "reason": "copy task, not audience research"}

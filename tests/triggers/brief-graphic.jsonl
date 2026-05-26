@@ -1,0 +1,9 @@
+{"prompt": "draft a design brief for a launch graphic", "expect": "trigger", "reason": "phrase 'design brief' +6, allOf [design,brief] +4, anyOf 'graphic' +1"}
+{"prompt": "I need a graphic brief for our og image", "expect": "trigger", "reason": "phrase 'graphic brief' +6, 'og image' +6, allOf [graphic,brief] +4"}
+{"prompt": "create a midjourney prompt for our hero image banner", "expect": "trigger", "reason": "phrase 'hero image' +6, 'banner design'-adjacent, anyOf 'midjourney','banner' +2"}
+{"prompt": "asset brief for an instagram carousel design", "expect": "trigger", "reason": "phrase 'asset brief' +6, 'carousel design' +6, allOf [asset,brief] +4, anyOf 'carousel' +1"}
+{"prompt": "create a thumbnail for our youtube video upload", "expect": "trigger", "reason": "phrase 'thumbnail' +6, anyOf 'thumbnail' +1"}
+{"prompt": "build a brand identity from scratch", "expect": "skip", "reason": "noneOf 'brand identity' suppresses — belongs to create-brand"}
+{"prompt": "set up our design system tokens", "expect": "skip", "reason": "noneOf 'design system' and 'design tokens' suppress"}
+{"prompt": "map the user flow for onboarding", "expect": "skip", "reason": "noneOf 'user flow' suppresses"}
+{"prompt": "redesign our landing page hero", "expect": "skip", "reason": "noneOf 'landing page redesign'? Wait — substring 'landing page redesign' not present. But phrase 'banner design' substring? No. Score low?"}

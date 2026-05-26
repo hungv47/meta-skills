@@ -1,0 +1,9 @@
+{"prompt": "clean up my machine — i have abandoned tools from a dozen experiments", "expect": "trigger", "reason": "phrase 'clean up my machine' + anyOf abandoned tools"}
+{"prompt": "free up disk space on this laptop, it's almost full", "expect": "trigger", "reason": "phrase 'free up disk space' + anyOf disk space"}
+{"prompt": "audit my dotfolders and tell me what is safe to remove", "expect": "trigger", "reason": "phrase 'audit my dotfolders' + anyOf dotfolder"}
+{"prompt": "fresh start dev machine before i hand it off", "expect": "trigger", "reason": "phrase 'fresh start dev machine' + anyOf fresh start"}
+{"prompt": "uninstall what i don't use anymore from this mac", "expect": "trigger", "reason": "phrase 'uninstall what i don't use' + anyOf uninstall"}
+{"prompt": "do a code review on this pr", "expect": "skip", "reason": "noneOf 'code review' suppresses — belongs to review-work"}
+{"prompt": "refactor the storage module to remove unused fields", "expect": "skip", "reason": "noneOf 'refactor' suppresses — belongs to clean-code"}
+{"prompt": "write documentation for our installer", "expect": "skip", "reason": "noneOf 'documentation' suppresses — belongs to write-docs"}
+{"prompt": "clean up the artifacts piling up in .forsvn/artifacts", "expect": "skip", "reason": "artifact-tree grooming — belongs to clean-artifacts (meta), not machine cleanup"}
