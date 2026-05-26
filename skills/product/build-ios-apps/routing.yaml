@@ -10,24 +10,47 @@ promptSignals:
   # intent. Every phrase below carries an explicit build / ship / install /
   # publish / submit / register / test-on verb co-located with a platform noun.
   phrases:
+    # Build verb + iOS/iPhone/Swift noun in natural variants. "this" / "the" /
+    # "my" / "a" / "an" all get explicit coverage because the scorer is
+    # substring-only, so "build this ios app" isn't a substring of any of the
+    # "an"/"the"/"my" variants.
     - "build an ios app"
     - "build the ios app"
     - "build my ios app"
+    - "build this ios app"
     - "build ios app"
     - "build an iphone app"
     - "build my iphone app"
+    - "build this iphone app"
     - "build a swift app"
     - "build my swift app"
+    - "build this swift app"
+    - "build this app on my iphone"
+    - "build this app and install"
+    # Test-on-device intent
     - "test on my iphone"
     - "test on my phone"
     - "test on iphone"
     - "put this on my iphone"
     - "put this on my phone"
+    - "put this app on my iphone"
+    - "put this app on my phone"
     - "ship it to my iphone"
+    - "ship this to my iphone"
+    - "ship this to my phone"
+    # Install / sign / TestFlight
     - "ship to testflight"
     - "install on device"
     - "install on iphone"
     - "install on my iphone"
+    - "install this app"
+    - "install this app on my iphone"
+    - "install this app on my phone"
+    - "install this on my iphone"
+    - "install this on my phone"
+    - "install it on my iphone"
+    - "install it on my phone"
+    # App Store distribution / review
     - "publish to app store"
     - "publish to the app store"
     - "publish to testflight"
