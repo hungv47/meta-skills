@@ -14,17 +14,14 @@
 //   bun scripts/lint-html-output.ts --root /path
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join, relative, basename } from "node:path";
+import { join, relative } from "node:path";
 
-const ROOT_ARG = (() => {
+const ROOT = (() => {
   const idx = process.argv.indexOf("--root");
   if (idx > -1 && process.argv[idx + 1]) return process.argv[idx + 1];
   return process.cwd();
 })();
-const ROOT = ROOT_ARG;
 
-const VALID_STACKS = ["air", "water", "fire", "earth"];
-const VALID_STATES = ["pending", "approved", "denied", "suggested", "not_required"];
 // Allowed stage-font name fragments per stack (chrome fonts — Inter, JetBrains Mono — are always allowed).
 const STACK_FONT_FRAGMENTS: Record<string, string[]> = {
   air:   ["Inter Tight", "Inter", "JetBrains Mono", "system-ui", "monospace", "sans-serif", "-apple-system"],

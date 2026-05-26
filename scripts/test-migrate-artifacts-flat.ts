@@ -42,6 +42,7 @@ date: 2026-05-26
 status: done
 lifecycle: pipeline
 upstream: ".forsvn/artifacts/meta/records/2026-05-26-fresh-eyes.md"
+note: "decoy refers to .forsvn/artifacts/meta/records/2026-05-26-fresh-eyes.md.bak (should NOT be rewritten)"
 ---
 
 # Hero copy
@@ -98,7 +99,28 @@ review_surface: md
   // Cross-artifact reference updated.
   const newHeroContent = readFileSync(join(root, newHero), "utf8");
   assert(newHeroContent.includes(newFreshEyes), "hero copy upstream rewritten to new path");
-  assert(!newHeroContent.includes("meta/records/2026-05-26-fresh-eyes.md"), "old path gone from hero upstream");
+  assert(
+    !newHeroContent.includes("artifacts/meta/records/2026-05-26-fresh-eyes.md\""),
+    "old path (with closing quote) gone from hero upstream",
+  );
+  // Path-boundary discipline: the decoy `.bak` suffix must survive intact.
+  assert(
+    newHeroContent.includes(".bak"),
+    "the .bak decoy must remain — path-boundary regex must not rewrite a prefix-match",
+  );
+  // Empty legacy dirs cleaned.
+  assert(
+    !existsSync(join(root, ".forsvn/artifacts/meta/records")),
+    "empty legacy meta/records/ directory cleaned by rmEmptyDirs",
+  );
+  assert(
+    !existsSync(join(root, ".forsvn/artifacts/mkt/copy")),
+    "empty legacy mkt/copy/ directory cleaned by rmEmptyDirs",
+  );
+  assert(
+    existsSync(join(root, ".forsvn/artifacts/.archive")),
+    ".archive/ preserved (not pruned)",
+  );
 
   // Migration report written.
   const today = new Date().toISOString().slice(0, 10);

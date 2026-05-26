@@ -88,8 +88,8 @@ export function buildFlatPath(args: {
   }
   const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
   if (!cleanSlug) throw new Error(`buildFlatPath: empty slug after normalization (${JSON.stringify(slug)})`);
-  if (cleanSlug.length > 60) {
-    throw new Error(`buildFlatPath: slug exceeds 60 chars after normalization (${cleanSlug})`);
+  if (cleanSlug.length > 50) {
+    throw new Error(`buildFlatPath: slug exceeds 50 chars after normalization (${cleanSlug})`);
   }
   return `.forsvn/artifacts/${stack}-${skill}-${date}-${cleanSlug}.${ext}`;
 }
