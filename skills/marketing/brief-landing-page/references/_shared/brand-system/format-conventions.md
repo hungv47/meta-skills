@@ -36,11 +36,14 @@ Required fields on every file:
 
 ```yaml
 ---
+skill: create-brand
 file: BRAND.md | DESIGN.md | ASSETS.md
 version: [integer, increments on re-run; ASSETS.md stays at 1 unless explicitly fresh-inventory'd]
 date: [ISO YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
-review_state: pending         # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
+stack: mkt
+review_surface: html          # BRAND.md / DESIGN.md → html · ASSETS.md → none
+decision_state: pending       # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
 review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
 reviewer:                     # who recorded the review — empty until reviewed
@@ -53,17 +56,17 @@ last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 
 ### Review fields (human-review layer)
 
-The four review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. `status` (skill quality gate) and `review_state` (human acceptance) are independent.
+The review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. WATER-themed HTML preview spec: `references/_shared/review-surface-design.md` + `references/_shared/review-surface-template.md`. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
 
-Per-file `review_state` default:
+Per-file defaults:
 
-| File | `review_state` default | `review_tool` default | `## Review Gate` body block | Why |
-|---|---|---|---|---|
-| BRAND.md | `pending` | `roughdraft` | Yes — final section | Authored canonical brand-of-record; needs a human gate before it is trusted |
-| DESIGN.md | `pending` | `roughdraft` | Yes — final section | Authored canonical design-of-record; needs a human gate before it is trusted |
-| ASSETS.md | `not_required` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored; a projected file is not a review candidate |
+| File | `decision_state` | `review_surface` | `review_tool` | `## Review Gate` body block | Why |
+|---|---|---|---|---|---|
+| BRAND.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical brand-of-record; needs a human gate; WATER HTML preview for visual comparison |
+| DESIGN.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical design-of-record; same |
+| ASSETS.md | `not_required` | `none` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored |
 
-`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md, when a review completes the agent reads the checked `## Review Gate` box and sets `review_state` (Approve → `approved`, Reject → `rejected`, Suggest changes → `changes_requested`), then fills `reviewed_at` + `reviewer`.
+`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
 
 **Cross-stack note — review fields are exempt from the downstream-caller update rule.** The "Cross-stack contract" section below requires atomic downstream-caller updates on schema change. The four review fields are the deliberate exception: they are additive and orthogonal, and every downstream caller consumes brand content by heading match without parsing frontmatter review fields. Adding them updates only this file — no downstream caller is touched.
 
@@ -164,9 +167,9 @@ BRAND.md and DESIGN.md each end with a `## Review Gate` block as their final sec
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-This block ships in the BRAND.md and DESIGN.md templates (`artifact-templates.md`). It is review machinery, not brand/design content — the "11 sections" counts above are unchanged. The reviewer checks exactly one box; the agent reads it and sets `review_state` per the per-file table in "Review fields" above, then fills `reviewed_at` + `reviewer`. Review procedure: `references/_shared/roughdraft-review-protocol.md`.
+This block ships in the BRAND.md and DESIGN.md templates (`artifact-templates.md`). It is review machinery, not brand/design content — the "11 sections" counts above are unchanged. The reviewer checks exactly one box; the agent reads it and sets `decision_state` per the per-file table in "Review fields" above, then fills `reviewed_at` + `reviewer`. Review procedure: `references/_shared/roughdraft-review-protocol.md`.
 
-**ASSETS.md does NOT carry a `## Review Gate` block.** ASSETS.md is a deterministic projection — auto-scanned and regenerated each run, not human-authored — so it is not a review candidate. It carries the four review fields with `review_state: not_required` + `review_tool: none` (see "Review fields" above) but no body block.
+**ASSETS.md does NOT carry a `## Review Gate` block.** ASSETS.md is a deterministic projection — auto-scanned and regenerated each run, not human-authored — so it is not a review candidate. It carries the review fields with `decision_state: not_required` + `review_surface: none` + `review_tool: none` (see "Review fields" above) but no body block.
 
 ## ASSETS.md structure (5 fixed + per-platform, Route B only)
 

@@ -24,7 +24,9 @@ skill: plan-campaign
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-review_state: not_required    # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft       # roughdraft | inline | none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
 reviewer:                     # who recorded the review — empty until reviewed
@@ -37,7 +39,7 @@ reviewer:                     # who recorded the review — empty until reviewed
 | `version` | Integer; increment when re-running with preserved history (see Re-run convention) |
 | `date` | ISO `YYYY-MM-DD`; the date the orchestrator started the run, not the date the campaign launches |
 | `status` | One of the four values; **never** omit, never invent new values |
-| `review_state` | Human acceptance state. Defaults to `not_required` — this is a `pipeline` artifact and most runs are regenerable drafts. The operator or a loop opts a run into review by setting `pending`. Independent of `status` (skill quality gate). Field semantics: `references/_shared/reviewable-artifact-contract.md`. |
+| `decision_state` | Human acceptance state. Defaults to `not_required` — this is a `pipeline` artifact and most runs are regenerable drafts. The operator or a loop opts a run into review by setting `pending`. Independent of `status` (skill quality gate). Field semantics: `references/_shared/reviewable-artifact-contract.md`. |
 | `review_tool` | `roughdraft` (default) / `inline` / `none`. Where the review happens. |
 | `reviewed_at` | ISO `YYYY-MM-DD`; empty until a human review is recorded. |
 | `reviewer` | Who recorded the review; empty until reviewed. |
@@ -136,7 +138,7 @@ The campaign-plan artifact ends with a `## Review Gate` section — the final bo
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-This `pipeline` artifact ships the block in every run, but `review_state` defaults to `not_required` — most campaign plans are regenerable drafts. The operator (or a loop) opts a run into review by setting `review_state: pending` in frontmatter and running the review per `references/_shared/roughdraft-review-protocol.md`. When a review completes, the agent reads the checked box, sets `review_state` accordingly (Approve → `approved`, Reject → `rejected`, Suggest changes → `changes_requested`), and fills `reviewed_at` + `reviewer`. Field semantics: `references/_shared/reviewable-artifact-contract.md`.
+This `pipeline` artifact ships the block in every run, but `decision_state` defaults to `not_required` — most campaign plans are regenerable drafts. The operator (or a loop) opts a run into review by setting `decision_state: pending` in frontmatter and running the review per `references/_shared/roughdraft-review-protocol.md`. When a review completes, the agent reads the checked box, sets `decision_state` accordingly (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), and fills `reviewed_at` + `reviewer`. Field semantics: `references/_shared/reviewable-artifact-contract.md`.
 
 ## Re-run convention
 

@@ -62,7 +62,9 @@ skill: brief-landing-page
 version: 1
 date: [today]
 status: [done | done_with_concerns | blocked | needs_context]
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
@@ -94,7 +96,7 @@ provenance:
 
 Date format: ISO `YYYY-MM-DD`. `target_handoff` accepts a single value, list, or `null` — null skips the optional Hand-Off (Specialty Targets) section entirely; the implementation prompt companion is the universal default and always emitted regardless.
 
-The four `review_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). This is a `pipeline` artifact, so `review_state` defaults to `not_required` — most briefs are regenerable drafts. The fields and the `## Review Gate` body block ship in the template so the operator (or an eval loop) can opt a run into review by setting `review_state: pending`; the procedure for running that review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). Review fields apply to the main `brief.md` artifact only — not the `handoff-*.md` companions or `asset-slots/*.prompt.md` files. They are flat by design (the `manifest-sync` parser reads flat YAML) and additive/orthogonal to the existing schema — adding them does not change how downstream consumers read the brief.
+The four `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). This is a `pipeline` artifact, so `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The fields and the `## Review Gate` body block ship in the template so the operator (or an eval loop) can opt a run into review by setting `decision_state: pending`; the procedure for running that review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). Review fields apply to the main `brief.md` artifact only — not the `handoff-*.md` companions or `asset-slots/*.prompt.md` files. They are flat by design (the `manifest-sync` parser reads flat YAML) and additive/orthogonal to the existing schema — adding them does not change how downstream consumers read the brief.
 
 ## Body section structure (15 sections, in order)
 
@@ -126,7 +128,9 @@ skill: brief-landing-page
 version: 1
 date: [today]
 status: [done | done_with_concerns | blocked | needs_context]
-review_state: not_required # pending | approved | rejected | changes_requested | not_required
+stack: mkt
+review_surface: md         # html | md | none
+decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
