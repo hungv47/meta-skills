@@ -65,9 +65,9 @@ Warm Start + Cold Start prompts: [`references/pre-dispatch-prompts.md`](referenc
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md`.
+- **Path:** `.forsvn/artifacts/meta-clean-machine-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; stack is `meta` — machine-cleanup records are meta-stack snapshots).
 - **Lifecycle:** `snapshot` — dated, immutable record of one cleanup run.
-- **Frontmatter:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `total_reclaimed`, `lifecycle`, `produced_by`, `provenance`.
+- **Frontmatter:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=meta), `review_surface` (=none — snapshot defaults to `decision_state: not_required`), `total_reclaimed`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** Scope, Summary. Targets Nuked + Targets Kept + Side Effects Fixed + Re-Auth Commands + Manual Follow-ups when applicable. Critic Verdict optional.
 - **Consumed by:** `clean-artifacts` (staleness signal scanning), `forsvn` (state detection), operator (history audit).
 

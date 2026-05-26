@@ -15,7 +15,7 @@ load_class: PROCEDURE
 ## Frontmatter
 
 Baseline required fields: `skill`, `version`, `date`, `status`.
-Review fields (human-review layer, per `references/_shared/reviewable-artifact-contract.md`): `review_state`, `review_tool`, `reviewed_at`, `reviewer`. This is a `canonical` artifact, so `review_state` defaults to `pending` — a human gate is required before `status: done` is fully trusted. `status` (skill quality gate) and `review_state` (human acceptance) are independent.
+Review fields (human-review layer, per `references/_shared/reviewable-artifact-contract.md`): `decision_state`, `review_tool`, `reviewed_at`, `reviewer`. This is a `canonical` artifact, so `decision_state` defaults to `pending` — a human gate is required before `status: done` is fully trusted. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
 Step 7.5 additions (manifest-sync conformance; backfilled going forward): `lifecycle`, `produced_by`, `provenance`.
 
 ```yaml
@@ -24,7 +24,9 @@ skill: architect-system
 version: {N}
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-review_state: pending      # pending | approved | rejected | changes_requested | not_required
+stack: product
+review_surface: html       # canonical architecture gets the FIRE-themed HTML preview
+decision_state: pending    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
