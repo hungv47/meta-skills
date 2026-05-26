@@ -5,6 +5,31 @@ type ParsedLine = {
   text: string;
 };
 
+// Split on commas at depth-0, respecting single/double quotes and nested brackets.
+// `[a, "b,c", [d, e]]` → `[' a', ' "b,c"', ' [d, e]']` (whitespace preserved; caller trims).
+function splitTopLevelCommas(input: string): string[] {
+  const out: string[] = [];
+  let depth = 0;
+  let quote: '"' | "'" | null = null;
+  let start = 0;
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (quote) {
+      if (ch === quote && input[i - 1] !== "\\") quote = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { quote = ch; continue; }
+    if (ch === "[") { depth++; continue; }
+    if (ch === "]") { depth--; continue; }
+    if (ch === "," && depth === 0) {
+      out.push(input.slice(start, i));
+      start = i + 1;
+    }
+  }
+  out.push(input.slice(start));
+  return out;
+}
+
 function parseScalar(raw: string): YamlValue {
   const value = raw.trim();
   if (value === "") return "";
@@ -21,7 +46,7 @@ function parseScalar(raw: string): YamlValue {
   if (value.startsWith("[") && value.endsWith("]")) {
     const inner = value.slice(1, -1).trim();
     if (!inner) return [];
-    return inner.split(",").map((part) => parseScalar(part.trim()));
+    return splitTopLevelCommas(inner).map((part) => parseScalar(part.trim()));
   }
   return value;
 }
