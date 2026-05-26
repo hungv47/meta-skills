@@ -6,7 +6,7 @@ platform: <linkedin | tiktok | reels | shorts | x | youtube>
 schema_version: 1
 last_verified: <YYYY-MM-DD>
 verifier: <hungv47 | agent-name>
-source_basis: "Internal research synthesis; raw source ledger intentionally omitted from public skill package."
+source_basis: "Per-claim categorical citations inline (platform docs, third-party studies, [pattern-derived]). URL-level master ledger not maintained — promote to URL citations as claims are re-verified."
 status: draft | reviewed | stale
 ---
 

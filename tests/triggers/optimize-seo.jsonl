@@ -1,0 +1,9 @@
+{"prompt": "run an seo audit on our pricing page", "expect": "trigger", "reason": "phrase 'seo audit' +6 plus allOf [seo, audit]"}
+{"prompt": "do keyword research for our developer-tool category", "expect": "trigger", "reason": "phrase 'keyword research' +6 plus allOf [keyword, research]"}
+{"prompt": "improve our search ranking for the comparison pages", "expect": "trigger", "reason": "phrase 'search ranking' +6 plus anyOf 'ranking' / 'search'"}
+{"prompt": "we need app store optimization for our iOS launch", "expect": "trigger", "reason": "phrase 'app store optimization' +6 plus anyOf 'aso'"}
+{"prompt": "do a search optimization pass on the marketing site", "expect": "trigger", "reason": "phrase 'search optimization' +6"}
+{"prompt": "monitor ai search visibility across perplexity and chatgpt", "expect": "skip", "reason": "noneOf doesn't suppress but monitor-aeo wins; this skill expects skip-or-lose"}
+{"prompt": "audit our landing page conversion funnel", "expect": "skip", "reason": "noneOf 'landing page audit' / 'cro' suppress; evaluate-landing-page territory"}
+{"prompt": "track ai citations for our brand across answer engines", "expect": "skip", "reason": "AEO monitoring intent — routes to monitor-aeo, not optimize-seo"}
+{"prompt": "review our homepage CRO performance", "expect": "skip", "reason": "noneOf 'cro' suppresses"}

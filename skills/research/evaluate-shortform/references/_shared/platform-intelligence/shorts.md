@@ -6,7 +6,7 @@ platform: shorts
 schema_version: 1
 last_verified: 2026-05-08
 verifier: internal
-source_basis: "Internal research synthesis; raw source ledger intentionally omitted from public skill package."
+source_basis: "Per-claim categorical citations inline (platform docs, third-party studies, [pattern-derived]). URL-level master ledger not maintained — promote to URL citations as claims are re-verified."
 status: draft
 ---
 

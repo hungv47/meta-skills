@@ -1,14 +1,28 @@
-# Routing signals for polish-vn. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for polish-vn.
 promptSignals:
+  # Bare `"vietnamese"` phrase used to score +6 on any vietnamese mention,
+  # including write-from-scratch / translate intents the route.not_when
+  # explicitly excludes. Phrases now require an explicit polish / tone /
+  # localization / register verb to co-occur with the language anchor.
   phrases:
-    - "vietnamese"
-    - "tiếng việt"
     - "polish vietnamese"
+    - "polish the vietnamese"
+    - "vietnamese polish"
+    - "vietnamese tone"
+    - "vietnamese register"
+    - "vietnamese localization"
+    - "localize to vietnamese"
     - "vn tone"
+    - "vn polish"
+    - "fix the vietnamese"
+    - "clean up the vietnamese"
+    - "tiếng việt"
     - "dịch sang tiếng việt"
   allOf:
     - [vietnamese, tone]
+    - [vietnamese, register]
+    - [vietnamese, polish]
+    - [vietnamese, localize]
   anyOf:
     - "tiếng việt"
     - "bro tone"
@@ -18,4 +32,64 @@ promptSignals:
     - "english copy"
     - "humanize this"
     - "translate"
+    - "write vietnamese"
+    - "draft vietnamese"
   minScore: 6
+
+capability:
+  id: polish-vn
+  domain: marketing
+  public: true
+  command: /polish-vn
+  summary: "Polish Vietnamese-market copy — register calibration (bro / báo chí / formal), idiom + cultural references, AI-translation tells removed. Terminal pass."
+  aliases:
+    - vietnamese-polish
+    - vn-tone
+    - vn-localize
+
+  route:
+    use_when:
+      - "Vietnamese-market copy needs polish for native readers."
+      - "Auto-routed when `--polish-chain vn-tone` is set."
+      - "Bro-tone / báo-chí-tone / formal register calibration."
+    not_when:
+      - "English copy -> humanmaxxing."
+      - "Translation from scratch -> out of scope (assumes Vietnamese input)."
+      - "Brand voice of record -> create-brand."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Short text (<200 words); --fast forces single-pass."
+    multi_when:
+      - "Long-form Vietnamese content with multiple register zones."
+    critic_required_when:
+      - "Always — register-consistency + idiom-correctness + AI-translation-tells gate."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (register selection)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "VN tone corpus + translation artifacts"
+        read:
+          - "references/vn-tone-corpus.md"
+          - "references/translation-artifacts.md"
+      - if: "Format conventions"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review (translation tells, register drift)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/content/[slug].vn-polished.md"
+        lifecycle: pipeline
+        produced_when: "Route A or B; re-run renames prior to `[slug].vn-polished.v[N].md`."

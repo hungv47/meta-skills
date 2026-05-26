@@ -1,5 +1,4 @@
-# Routing signals for map-user-flow. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for map-user-flow.
 promptSignals:
   phrases:
     - "user flow"
@@ -23,3 +22,68 @@ promptSignals:
     - "api design"
     - "database schema"
   minScore: 6
+
+capability:
+  id: map-user-flow
+  domain: product
+  public: true
+  command: /map-user-flow
+  summary: "Map user journeys, screen flows, and interaction transitions for a product or feature — ASCII/Mermaid diagrams + per-screen spec + state-transition table."
+  aliases:
+    - user-flow
+    - screen-flow
+    - journey-map
+    - ux-flow
+
+  route:
+    use_when:
+      - "User asks for a user-journey or screen-flow map."
+      - "Need state-transition table or wireframe-flow before brief-graphic / architect-system."
+      - "Onboarding / signup / checkout flow needs mapping."
+    not_when:
+      - "Brand identity -> create-brand."
+      - "API design / database schema -> architect-system."
+      - "Visual asset spec -> brief-graphic."
+      - "Conversion landing page -> brief-landing-page."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+        - "brand/BRAND.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single-flow map (e.g., onboarding only); --fast forces single-pass."
+    multi_when:
+      - "Multi-flow map (onboarding + main app + settings + edge states)."
+    critic_required_when:
+      - "Always — every state transition has a trigger; every screen has a purpose."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch (audience + scope + platform)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Pre-dispatch prompts + research checklist"
+        read:
+          - "references/pre-dispatch-prompts.md"
+          - "references/research-checklist.md"
+      - if: "Platform touchpoints"
+        read:
+          - "references/platform-touchpoints.md"
+      - if: "Dispatch protocol + report template"
+        read:
+          - "references/dispatch-protocol.md"
+          - "references/report-template.md"
+      - if: "Anti-pattern review (orphan states, transition-without-trigger)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/product/flow/[slug].md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS; flow map artifact."

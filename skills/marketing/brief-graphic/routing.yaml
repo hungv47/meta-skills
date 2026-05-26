@@ -1,5 +1,8 @@
-# Routing signals for brief-graphic. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for brief-graphic.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "design brief"
@@ -39,5 +42,92 @@ promptSignals:
     - "design tokens"
     - "user flow"
     - "wireframe"
+    # `"design brief"` phrase substring-matches inside `"redesign brief"`
+    # (rede-SIGN-BRIEF), making brief-graphic falsely win on prompts that
+    # belong to brief-landing-page. The reverse — "redesign the design brief
+    # for the graphic" — keeps a legit brief-graphic prompt clean because
+    # "redesign brief" is not contiguous there.
+    - "redesign brief"
     - "landing page redesign"
   minScore: 6
+
+capability:
+  id: brief-graphic
+  domain: marketing
+  public: true
+  command: /brief-graphic
+  summary: "Produce a graphic-design brief for a single visual asset — social posts, thumbnails, banners, OOH, OG cards. Does NOT render — emits prompt or designer-handoff spec."
+  aliases:
+    - design-brief
+    - graphic-brief
+    - asset-brief
+
+  route:
+    use_when:
+      - "User asks to spec a single visual asset for production."
+      - "Image-gen prompt needed (Midjourney / Imagen / DALL·E / Claude Design / Ideogram / Veo / Suno)."
+      - "Designer-handoff spec needed (Figma, print)."
+    not_when:
+      - "Brand identity / design system / tokens -> create-brand."
+      - "Whole-page redesign -> brief-landing-page."
+      - "Copy that goes IN the asset -> write-copy."
+      - "User flow / wireframe -> map-user-flow."
+    prerequisites:
+      recommended:
+        - "brand/ASSETS.md"
+        - ".forsvn/artifacts/mkt/content/[slug].copy.md"
+        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - "research/icp-research.md"
+      hard:
+        - "brand/BRAND.md"
+        - "brand/DESIGN.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "--fast collapses Layer 1 parallel into single inline pass + Layer 1.5 to 1 brief + skips Approval Gate 1."
+    multi_when:
+      - "Default — Layer 1 parallel (brand-anchor + concept + copy-anchor) → Layer 1.5 brief-synth → Approval Gate 1 → Layer 2 (route-dependent) → Layer 3 critic → Approval Gate 2."
+    critic_required_when:
+      - "Always — 8-dim Visual Rubric + 13-pattern Generic-AI-Aesthetic Detector."
+      - "Sacred-element compliance gate fires every cycle."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Hard gate (brand artifacts present) + Cold Start"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Step 0.5 Route Detection"
+        read:
+          - "references/asset-types.md"
+      - if: "Layer dispatch (parallel agents)"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Platform-aware spec (IG / LinkedIn / FB / YT / X / OOH / banner)"
+        read:
+          - "references/platform-modules.md"
+      - if: "Image-gen prompts (image-gen / template-pack routes)"
+        read:
+          - "references/prompt-patterns.md"
+      - if: "Critic / rubric + AI-Aesthetic Detector"
+        read:
+          - "references/visual-rubric.md"
+          - "references/failure-modes.md"
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/design-briefs/[slug].md"
+        lifecycle: pipeline
+        produced_when: "Approval Gate 2 PASS; default overwrite on re-run."
+      - path: ".forsvn/artifacts/mkt/design-briefs/[slug]-rejected.md"
+        lifecycle: pipeline
+        produced_when: "Approval Gate 2 reject."
+      - path: ".forsvn/artifacts/mkt/design-briefs/[slug]-candidates.md"
+        lifecycle: pipeline
+        produced_when: "Approval Gate 1 stop (paused-candidate exit)."

@@ -1,0 +1,10 @@
+{"prompt": "score this post — did the carousel land with the audience", "expect": "trigger", "reason": "phrases 'score this post' +6 and 'did the carousel land' +6"}
+{"prompt": "post-publish review of our linkedin carousel, save rate looks high", "expect": "trigger", "reason": "phrases 'post-publish review' +6 and 'save rate' +6"}
+{"prompt": "evaluate the post we published last week — content eval for the linkedin carousel", "expect": "trigger", "reason": "phrases 'evaluate the post' +6 and 'content eval' +6 stack for top-match"}
+{"prompt": "engagement results from the organic content cycle", "expect": "trigger", "reason": "phrases 'engagement results' +6 and 'organic post results' adjacent"}
+{"prompt": "content eval for cycle 4 — primary platform was linkedin", "expect": "trigger", "reason": "phrase 'content eval' +6"}
+{"prompt": "write a new post for instagram this week", "expect": "skip", "reason": "noneOf 'write a post' / 'new social copy' suppress; routes to write-social"}
+{"prompt": "draft a content brief for next month", "expect": "skip", "reason": "noneOf 'content brief' suppresses; brief work"}
+{"prompt": "evaluate our short-form video performance on tiktok", "expect": "skip", "reason": "noneOf 'short-form video' suppresses; routes to evaluate-shortform"}
+{"prompt": "how did our facebook ad perform this week", "expect": "skip", "reason": "noneOf 'ad performance' suppresses; routes to evaluate-ad"}
+{"prompt": "evaluate the post we published last week on instagram", "expect": "trigger", "reason": "regression test: previously evaluate-shortform won (10 vs 6) because it duplicated 'evaluate the post' phrase. After removing duplicate phrases from evaluate-shortform, evaluate-content now wins cleanly on generic post-eval intent."}

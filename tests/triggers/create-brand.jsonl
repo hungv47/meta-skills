@@ -1,0 +1,8 @@
+{"prompt": "build a brand identity for my new fintech startup", "expect": "trigger", "reason": "phrase 'brand identity' hits +6"}
+{"prompt": "we need a design system with typography and color tokens", "expect": "trigger", "reason": "phrase 'design system' +6 plus anyOf 'typography' / 'color system'"}
+{"prompt": "create brand guidelines and a brand book for the team", "expect": "trigger", "reason": "phrases 'brand guidelines' and 'brand book' both hit"}
+{"prompt": "define our brand voice and visual identity", "expect": "trigger", "reason": "phrases 'brand voice' and 'visual identity' both hit"}
+{"prompt": "evaluate this brand and tell me if it's working", "expect": "skip", "reason": "evaluation intent, not creation; no canonical phrase fires"}
+{"prompt": "rebrand our landing page with new headlines", "expect": "skip", "reason": "landing-page rewrite belongs to brief-landing-page / write-copy"}
+{"prompt": "write marketing copy for the homepage", "expect": "skip", "reason": "copywriting intent — routes to write-copy, not brand creation"}
+{"prompt": "audit my landing page conversion rate", "expect": "skip", "reason": "noneOf 'landing page audit' / 'conversion rate' suppresses"}

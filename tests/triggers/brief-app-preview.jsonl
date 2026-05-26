@@ -1,0 +1,9 @@
+{"prompt": "draft an app preview brief for our app store listing", "expect": "trigger", "reason": "phrase 'app preview brief' +6, 'app store preview'-adjacent, allOf [app,preview] +4, anyOf 'app preview' +1"}
+{"prompt": "build an onboarding video brief from these screenshots", "expect": "trigger", "reason": "phrase 'onboarding video brief' +6, allOf [onboarding,video] +4, anyOf 'onboarding','screenshot' +2"}
+{"prompt": "create a feature demo brief with interaction beats", "expect": "trigger", "reason": "phrase 'feature demo brief' +6, allOf [feature,demo] +4, anyOf 'feature demo','interaction beat' +2"}
+{"prompt": "draft a ui motion brief for our product demo video", "expect": "trigger", "reason": "phrase 'ui motion brief' +6, 'product demo video' +6, allOf [ui,motion] +4"}
+{"prompt": "give me a screen recording brief for the new flow", "expect": "trigger", "reason": "phrase 'screen recording brief' +6, anyOf 'screen recording' +1"}
+{"prompt": "draft a tiktok video brief for our app", "expect": "skip", "reason": "noneOf 'tiktok' suppresses brief-app-preview"}
+{"prompt": "render the app preview video from this brief", "expect": "skip", "reason": "score +5 (allOf [app, preview] +4 + anyOf 'app preview' +1) is below minScore 6 — bare 'render' noneOf removed; threshold suffices"}
+{"prompt": "schedule the app preview post on linkedin tomorrow", "expect": "skip", "reason": "regression test: previously suppressed via bare 'publish' noneOf. After removing bare 'publish' (it fired on routine words), this prompt scores only +5 (allOf [app, preview] +4 + anyOf 'app preview' +1), below threshold 6 — and publish-social won't fire either since 'schedule social' / 'post on linkedin' aren't contiguous substrings"}
+{"prompt": "give me hook variations for our short-form launch", "expect": "skip", "reason": "noneOf 'hook variations' and 'short-form' both suppress"}

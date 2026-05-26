@@ -1,0 +1,10 @@
+{"prompt": "model the funnel for our acquisition flow this year", "expect": "trigger", "reason": "phrase \"funnel model\" not exact but \"model the funnel\" +6"}
+{"prompt": "build a funnel model with sensitivity bands for next year", "expect": "trigger", "reason": "phrase \"funnel model\" +6"}
+{"prompt": "set growth targets and unit economics for the new product", "expect": "trigger", "reason": "phrase \"growth targets\" +6 and \"unit economics\" +6"}
+{"prompt": "calculate our ltv cac ratio and payback period", "expect": "trigger", "reason": "phrase \"ltv cac\" +6, anyOf \"ltv\"/\"cac\" cap +2"}
+{"prompt": "how much traffic do we need to hit our revenue target", "expect": "trigger", "reason": "phrase \"how much traffic do we need\" +6 and \"revenue target\" +6"}
+{"prompt": "diagnose why our conversion rate is dropping", "expect": "skip", "reason": "noneOf \"diagnose\" hard-suppress"}
+{"prompt": "what should we build to improve onboarding", "expect": "skip", "reason": "noneOf \"what should we build\" hard-suppress"}
+{"prompt": "size the market and run a competitor analysis", "expect": "skip", "reason": "noneOf \"market size\" and \"competitor\" hard-suppress"}
+{"prompt": "research our target audience and pain points", "expect": "skip", "reason": "ICP intent; no plan-funnel phrases"}
+{"prompt": "plan a marketing campaign across channels", "expect": "skip", "reason": "plan-campaign intent; no funnel/unit-economics phrases"}

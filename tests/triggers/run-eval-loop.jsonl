@@ -1,0 +1,10 @@
+{"prompt": "set up an eval loop for our landing page experiments", "expect": "trigger", "reason": "phrase 'eval loop' +6 — meets minScore 5"}
+{"prompt": "scaffold an improvement loop for campaign iteration", "expect": "trigger", "reason": "phrase 'improvement loop' +6 + anyOf 'campaign iteration'"}
+{"prompt": "create a loop workspace for the new initiative", "expect": "trigger", "reason": "two phrases hit: 'create a loop' +6 and 'loop workspace' +6"}
+{"prompt": "i need an experiment ledger for these tests", "expect": "trigger", "reason": "phrase 'experiment ledger' +6"}
+{"prompt": "where should evals live in the repo", "expect": "trigger", "reason": "phrase 'where should evals live' +6"}
+{"prompt": "score this campaign performance", "expect": "skip", "reason": "evaluate-campaign territory; no run-eval-loop phrase or anyOf hit"}
+{"prompt": "evaluate the post engagement results", "expect": "skip", "reason": "evaluate-content territory; no eval-loop scaffold phrases"}
+{"prompt": "write a unit test for this function", "expect": "skip", "reason": "noneOf 'unit test' suppresses run-eval-loop"}
+{"prompt": "run a code benchmark on the parser", "expect": "skip", "reason": "noneOf 'code benchmark' suppresses run-eval-loop"}
+{"prompt": "diagnose why the trial conversion dropped", "expect": "skip", "reason": "no run-eval-loop signals; diagnose wins"}

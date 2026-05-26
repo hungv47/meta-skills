@@ -1,5 +1,8 @@
-# Routing signals for write-social. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for write-social.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "write a tweet"
@@ -35,3 +38,78 @@ promptSignals:
     - "youtube video"
     - "blog post"
   minScore: 5
+
+capability:
+  id: write-social
+  domain: marketing
+  public: true
+  command: /write-social
+  summary: "Platform-native social copy (hook variants + body + CTA + format spec) for tiktok / reels / shorts / x / linkedin. Single-platform per artifact. 5-dim rubric."
+  aliases:
+    - social-copy
+    - post-copy
+    - social-hook
+
+  route:
+    use_when:
+      - "User asks to write organic social copy or hook variants for ONE platform."
+      - "User asks for platform-native short-form caption / post / thread copy."
+    not_when:
+      - "Paid Meta / Google / LinkedIn ad copy -> write-ad."
+      - "Full short-form video brief with storyboard -> brief-shortform."
+      - "Landing-page copy, headlines, taglines -> write-copy."
+      - "LinkedIn articles, Substack, blog (long-form) -> write-copy or optimize-seo."
+      - "Vietnamese-market polish -> polish-vn (terminal pass)."
+      - "AI-pattern stripping post-generation -> humanmaxxing (terminal pass)."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+        - "research/product-context.md"
+        - ".forsvn/artifacts/mkt/short-form-brief/[slug]/brief.md"
+      hard:
+        - "brand/BRAND.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single sequential graph (copywriter → format-checker → critic) is the design."
+      - "--fast collapses format-check revision loop to ZERO (single-pass; hard-cap violation → FORMAT_FAIL immediately)."
+    multi_when:
+      - "Default — 3 agents (copywriter + format-checker + critic) per single-platform artifact."
+      - "--deep bumps format-check revision loop to MAX 2 cycles."
+    critic_required_when:
+      - "Always — critic gate is single-pass on the 5-dim rubric."
+      - "Discrimination test (weak brief MUST score <25; strong brief MUST score ≥35) runs every cycle."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/mode-resolver.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Write-back)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch (copywriter → format-checker → critic)"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Per-platform Hook Taxonomy + format constraints"
+        read:
+          - "references/_shared/platform-intelligence/"
+      - if: "Critic scoring / format-check rules"
+        read:
+          - "references/rubric.md"
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+      - if: "Strong / weak examples"
+        read:
+          - "references/examples.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/copy/[platform]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS / DONE_WITH_CONCERNS / FAIL (FAIL artifacts ship with annotations per locked decision; NOT written on FORMAT_FAIL or NEEDS_CONTEXT)."

@@ -1,5 +1,8 @@
-# Routing signals for discover. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for discover.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "what should we build"
@@ -28,3 +31,77 @@ promptSignals:
     - "why is"
     - "diagnose"
   minScore: 6
+
+capability:
+  id: discover
+  domain: meta
+  public: true
+  command: /discover
+  summary: "Conversational discovery — turn a vague idea, feature, or task into shared clarity through adaptive interviewing. Outputs inline or saved spec."
+  aliases:
+    - clarify
+    - scope
+    - idea-stage
+    - plan-review
+
+  route:
+    use_when:
+      - "User has a vague idea or feature and needs scope before building."
+      - "User wants to test or review an existing plan / sketch / ADR / spec (plan-review mode)."
+      - "Implementation revealed the spec was wrong; needs re-scoping."
+    not_when:
+      - "User wants multi-perspective debate on a decided question -> debate-agents."
+      - "User wants to decompose a known scope into tasks -> breakdown-tasks."
+      - "User wants to diagnose a metric decline -> diagnose."
+      - "User wants competitive landscape or market sizing -> research-market."
+    prerequisites:
+      recommended:
+        - ".forsvn/context/product-context.md"
+      hard: []
+
+  orchestration:
+    default: single
+    single_when:
+      - "Conversational discovery is single-agent by design."
+      - "Idea-critic agent is the one sub-dispatch (Step 2.7 on idea-stage)."
+    multi_when:
+      - "Never — discover does not run multi-agent itself; it invokes /debate-agents as a sub-routine at Step 5 if a decision needs panels."
+    critic_required_when:
+      - "Idea-stage mode: idea-critic gate at Step 2.7 (auto-on; skip records override in spec frontmatter)."
+      - "Saving a spec at Step 7 (review-gated, review_state defaults to pending)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/mode-resolver.md"
+    when:
+      - if: "Step 1 context gathering / operator-craft stance load"
+        read:
+          - "references/procedures/context-gathering.md"
+          - "references/operator-playbooks/"
+      - if: "Step 2.5 mode detection - plan-review picked"
+        read:
+          - "references/procedures/plan-review-modes.md"
+      - if: "Step 2.7 idea-critic gate (idea-stage)"
+        read:
+          - "references/procedures/idea-critic-dispatch.md"
+      - if: "Step 4 conversation — interview techniques + communication discipline"
+        read:
+          - "references/procedures/interview-techniques.md"
+          - "references/procedures/communication-discipline.md"
+      - if: "Coverage zone hits data/state, errors, UX, security, performance, integration, business logic, or intent alignment"
+        read:
+          - "references/question-bank.md"
+      - if: "Step 7 save (operator-grade spec / Light-depth / Contract format)"
+        read:
+          - "references/procedures/output-formats.md"
+          - "references/_shared/reviewable-artifact-contract.md"
+      - if: "Resolution-exit edge cases / banned-phrase or false-resolution doubt"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/meta/specs/<slug>.md"
+        lifecycle: spec
+        produced_when: "User explicitly asks to save, OR session is ending and decisions would be lost, OR output is needed by someone outside this conversation."

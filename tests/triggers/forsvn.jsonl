@@ -1,0 +1,12 @@
+{"prompt": "where do i start with this project", "expect": "trigger", "reason": "primary front-door phrase + anyOf hit"}
+{"prompt": "what should i do next on the campaign", "expect": "trigger", "reason": "phrase 'what should i do' + anyOf 'what should i do next'"}
+{"prompt": "resume the initiative i was working on", "expect": "trigger", "reason": "phrase 'resume the initiative' +6 — context-anchored after bare 'resume' was removed from phrases (it used to fire on any sentence containing 'resume')"}
+{"prompt": "we should resume work after lunch and continue on the new dashboard", "expect": "trigger", "reason": "phrases 'resume work' +6 and 'continue on'-adjacent — workflow-resume intent legitimately routes through forsvn"}
+{"prompt": "let me know if you want to continue this discussion later", "expect": "skip", "reason": "regression test: bare 'continue' phrase used to fire +6 on any sentence containing it. After removal, 'continue this discussion' has no forsvn signals and scores 0"}
+{"prompt": "help me ship this to launch", "expect": "trigger", "reason": "ship this phrase + anyOf help me ship"}
+{"prompt": "/forsvn", "expect": "trigger", "reason": "direct slash invocation phrase"}
+{"prompt": "build an ios app for tracking habits", "expect": "skip", "reason": "clear iOS build intent — belongs to build-ios-apps; no forsvn signals"}
+{"prompt": "review my code for the auth module", "expect": "skip", "reason": "review-work territory; no forsvn signals"}
+{"prompt": "diagnose why our signups dropped last week", "expect": "skip", "reason": "diagnose territory; no forsvn front-door phrases"}
+{"prompt": "explain how testflight provisioning works", "expect": "skip", "reason": "informational question, no forsvn phrases or anyOf hits"}
+{"prompt": "scope this new feature before we build", "expect": "skip", "reason": "discover territory; no forsvn signals"}

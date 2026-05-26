@@ -1,0 +1,9 @@
+{"prompt": "write ad copy for our retargeting campaign on meta ads", "expect": "trigger", "reason": "phrase 'ad copy' +6, 'meta ads' +6, allOf [write,ad] +4, anyOf 'meta ads','retargeting' +2"}
+{"prompt": "draft primary text for our facebook ads", "expect": "trigger", "reason": "phrase 'primary text' +6, 'facebook ads' +6, anyOf 'facebook ads','primary text' +2"}
+{"prompt": "I need ad creative for instagram ads cold-traffic", "expect": "trigger", "reason": "phrase 'ad creative' +6, 'instagram ads' +6"}
+{"prompt": "write an ad for paid social", "expect": "trigger", "reason": "phrase 'paid social' +6, allOf [write,ad] +4"}
+{"prompt": "compose ad headline variants for retargeting ads", "expect": "trigger", "reason": "phrase 'ad headline' +6, 'retargeting ads' +6"}
+{"prompt": "write copy for our google ads campaign", "expect": "skip", "reason": "noneOf 'google ads' suppresses — out of scope"}
+{"prompt": "draft linkedin ads creative", "expect": "skip", "reason": "noneOf 'linkedin ads' suppresses"}
+{"prompt": "write tiktok ads for q4", "expect": "skip", "reason": "noneOf 'tiktok ads' suppresses"}
+{"prompt": "write organic linkedin posts for our launch", "expect": "skip", "reason": "no ad/meta signal; belongs to write-social"}

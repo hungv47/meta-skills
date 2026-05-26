@@ -1,5 +1,8 @@
-# Routing signals for write-outreach. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for write-outreach.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "cold email"
@@ -30,3 +33,84 @@ promptSignals:
     - "nurture sequence"
     - "transactional email"
   minScore: 6
+
+capability:
+  id: write-outreach
+  domain: marketing
+  public: true
+  command: /write-outreach
+  summary: "Cold outreach — email, LinkedIn, Twitter/X, iMessage/SMS, platform proposals. Signal-based personalization + channel craft + 5-dim rubric. First-touch + reply-to-inbound modes."
+  aliases:
+    - cold-outreach
+    - cold-email
+    - cold-dm
+    - prospecting-message
+
+  route:
+    use_when:
+      - "User asks to draft an individual cold outreach message."
+      - "User asks to critique outreach or write a reply to an inbound prospect."
+      - "First-touch, follow-up touch 2+, or breakup-mode reply needed."
+    not_when:
+      - "Campaign orchestration / sequence design -> plan-campaign."
+      - "Landing-page or headline copy -> write-copy."
+      - "Paid-ad copy -> write-ad."
+      - "Newsletter / lifecycle / drip / transactional -> out of scope."
+      - "Sourcing / list-building -> out of scope."
+    prerequisites:
+      recommended:
+        - "research/product-context.md"
+        - "research/icp-research.md"
+        - ".forsvn/artifacts/mkt/campaign-plan.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast forces a leaner pipeline; safety gates still fire."
+    multi_when:
+      - "Default — strategist + composer + voice-auditor + critic + terminal humanmaxxing."
+      - "First-touch compose + touch 2+ + reply-to-inbound modes share the same pipeline."
+    critic_required_when:
+      - "Always — 5-dim rubric (Peer voice / Signal connection / CTA friction / You>me ratio / Specificity)."
+      - "Post-humanmaxxing Specificity regression re-runs critic Specificity dim."
+      - "Reply-mode breakup gate — never argue with a 'no' (auto-fail re-pitches after clear rejection)."
+
+  load:
+    always:
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Per-channel craft (email / LinkedIn / Twitter / iMessage / Upwork / Fiverr)"
+        read:
+          - "references/channels/"
+      - if: "Signal-based personalization / proof types"
+        read:
+          - "references/proof-types.md"
+      - if: "5-dim rubric / scoring frameworks"
+        read:
+          - "references/frameworks/"
+      - if: "Reply / breakup / follow-up modes"
+        read:
+          - "references/modes/"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+      - if: "Worked examples"
+        read:
+          - "references/examples/"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Critic + terminal humanmaxxing PASS."
+      - path: ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].critic-score.md"
+        lifecycle: pipeline
+        produced_when: "5-dim scorecard + post-humanmaxxing regression (always emitted)."

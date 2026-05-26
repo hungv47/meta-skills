@@ -1,0 +1,9 @@
+{"prompt": "ROAS dropped on our retargeting ad — should we kill this creative", "expect": "trigger", "reason": "phrases 'ROAS dropped' +6 and 'should we keep this creative' adjacent + anyOf 'ROAS'"}
+{"prompt": "evaluate meta ad performance for cycle 2 cold traffic", "expect": "trigger", "reason": "phrase 'evaluate meta ad' +6 plus 'ad performance' implied via anyOf"}
+{"prompt": "we have creative fatigue on the cold-audience ad set", "expect": "trigger", "reason": "phrase 'creative fatigue' +6 plus anyOf 'creative fatigue'"}
+{"prompt": "CPA going up on the facebook ad — what's the diagnosis", "expect": "trigger", "reason": "phrase 'CPA going up' +6 plus anyOf 'CPA'"}
+{"prompt": "ad eval for the prospecting campaign this week", "expect": "trigger", "reason": "phrase 'ad eval' +6"}
+{"prompt": "write new ad copy for our retargeting campaign", "expect": "skip", "reason": "noneOf 'new ad copy' / 'write an ad' suppress; routes to write-ad"}
+{"prompt": "draft an ad brief for the next creative cycle", "expect": "skip", "reason": "noneOf 'ad brief' suppresses; brief work, not eval"}
+{"prompt": "score our whole campaign across channels", "expect": "skip", "reason": "campaign-level intent — should route to evaluate-campaign"}
+{"prompt": "evaluate engagement on our linkedin post", "expect": "skip", "reason": "organic post evaluation routes to evaluate-content"}

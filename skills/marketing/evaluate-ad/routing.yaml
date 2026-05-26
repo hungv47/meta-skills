@@ -1,5 +1,8 @@
-# Routing signals for evaluate-ad. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for evaluate-ad.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "ad eval"
@@ -37,3 +40,87 @@ promptSignals:
     - "write an ad"
     - "ad creative brief"
   minScore: 6
+
+capability:
+  id: evaluate-ad
+  domain: marketing
+  public: true
+  command: /evaluate-ad
+  summary: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue) inside an eval loop. One cycle per audience-temp."
+  aliases:
+    - ad-eval
+    - meta-ad-eval
+    - creative-fatigue-check
+
+  route:
+    use_when:
+      - "User asks to evaluate a launched Meta ad cycle with real performance metrics."
+      - "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
+    not_when:
+      - "Loop does not exist yet -> run-eval-loop."
+      - "Writing new ad creative -> write-ad."
+      - "Channel-mix retrospective across campaigns -> plan-campaign."
+      - "Campaign-level multi-channel scoring -> evaluate-campaign."
+      - "Organic post performance -> evaluate-content."
+      - "Landing-page performance -> evaluate-landing-page."
+      - "Non-Meta ad platforms -> out of scope at v1."
+    prerequisites:
+      recommended:
+        - "brand/BRAND.md"
+        - "research/icp-research.md"
+        - "research/product-context.md"
+      hard:
+        - ".forsvn/loops/[slug]/program.md"
+        - ".forsvn/loops/[slug]/context.md"
+        - ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Metric ingest only (no creative-fatigue diagnosis needed)."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+      - "Creative-fatigue or audience-saturation signal disputed; needs the full layer."
+    critic_required_when:
+      - "Always — eval artifact + ledger row are canonical loop state."
+      - "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+
+  load:
+    always:
+      - "references/_shared/eval-loop-spec.md"
+      - "references/_shared/evaluation-loop-rubric.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, hard-block checks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic revision cycle"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Rubric scoring"
+        read:
+          - "references/rubric.md"
+      - if: "Artifact write / Evidence + Creative-Fatigue table format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Critic override (operator ships despite FAIL)"
+        read:
+          - "references/_shared/critic-override-protocol.md"
+      - if: "Quality feedback / dashboard updates"
+        read:
+          - "references/_shared/quality-dashboard-spec.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one cycle = one audience-temp = one artifact + one ledger row."
+      - path: ".forsvn/loops/[slug]/results.tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended via `append-loop-result.ts` on critic PASS."
+      - path: ".forsvn/loops/[slug]/learnings.md"
+        lifecycle: evaluation
+        produced_when: "ONLY for high-confidence keep/discard lessons that generalize beyond this creative — critic gates promotion."

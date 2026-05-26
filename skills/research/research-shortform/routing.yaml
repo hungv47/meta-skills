@@ -1,5 +1,4 @@
-# Routing signals for research-shortform. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for research-shortform.
 promptSignals:
   phrases:
     - "what's working on tiktok"
@@ -23,3 +22,60 @@ promptSignals:
     - "podcast"
     - "blog post"
   minScore: 6
+
+capability:
+  id: research-shortform
+  domain: research
+  public: true
+  command: /research-shortform
+  summary: "Discover what's working on short-form platforms — hook archetypes, trending audio, platform mechanics. Per-platform sourced catalog."
+  aliases:
+    - shortform-research
+    - viral-hook-research
+    - platform-trends
+
+  route:
+    use_when:
+      - "Before briefing short-form content, find current viral patterns."
+      - "Refresh stale platform intelligence (>30d trends or >180d mechanics)."
+      - "Hook-archetype mining for a specific topic / market."
+    not_when:
+      - "Long-form video -> parked (out of scope)."
+      - "Static visuals -> brief-graphic."
+      - "Audience research -> research-icp."
+      - "Campaign planning -> plan-campaign."
+    prerequisites:
+      recommended:
+        - "research/icp-research.md"
+      hard: []
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single-platform sweep; --fast forces single-pass."
+    multi_when:
+      - "Multi-platform sweep (TikTok + Reels + Shorts)."
+    critic_required_when:
+      - "Always — every claim sourced to a specific platform doc / third-party study / pattern-derived note."
+      - "Stale-source flag (>30d for trends, >180d for mechanics)."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+    when:
+      - if: "Pre-Dispatch"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Per-platform clipping/live + confidence labeling"
+        read:
+          - "references/_shared/clipping-and-live.md"
+          - "references/_shared/confidence-labeling.md"
+      - if: "Anti-pattern review (fabricated trends, unsourced viral claims)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/research/research-shortform/[slug].md"
+        lifecycle: snapshot
+        produced_when: "Critic PASS; dated per-platform catalog."

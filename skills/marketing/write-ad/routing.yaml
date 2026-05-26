@@ -1,5 +1,8 @@
-# Routing signals for write-ad. Source of truth — compiled into hooks/skill-registry.json
-# by `node hooks/build-registry.mjs`. NOT loaded into model context. Edit here, then rebuild.
+# Routing + capability metadata for write-ad.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
 promptSignals:
   phrases:
     - "ad copy"
@@ -29,3 +32,85 @@ promptSignals:
     - "search ads"
     - "youtube ads"
   minScore: 6
+
+capability:
+  id: write-ad
+  domain: marketing
+  public: true
+  command: /write-ad
+  summary: "Write and evaluate Meta paid-ad copy (retargeting + cold-traffic) — audience-temperature-aware framing, hard char-cap enforcement, policy compliance, 7-dim rubric."
+  aliases:
+    - ad-copy
+    - meta-ads
+    - paid-social-copy
+
+  route:
+    use_when:
+      - "User asks to write Meta (Facebook / Instagram) paid-ad copy."
+      - "Hero + 2 variants needed for an audience-temp (retargeting OR cold)."
+      - "Audience-temp + offer + creative-format are known or can be elicited."
+    not_when:
+      - "Landing-page headlines -> write-copy."
+      - "Cold-outreach DMs -> write-outreach."
+      - "Organic social posts -> write-social."
+      - "Channel-mix strategy -> plan-campaign."
+      - "Non-Meta channels (Google / LinkedIn / TikTok / Search / YouTube ads) -> out of scope at v1."
+    prerequisites:
+      recommended:
+        - "research/product-context.md"
+        - "research/icp-research.md"
+        - "brand/BRAND.md"
+        - ".forsvn/artifacts/mkt/campaign-plan.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast flag forces a leaner pipeline; safety gates still fire."
+    multi_when:
+      - "Default — 5 agents (strategist + composer + format-checker + voice-auditor + critic) + terminal humanmaxxing per variant."
+      - "Hero + 2 variants per artifact (3 distinct angle archetypes + 3 distinct anchor proofs)."
+    critic_required_when:
+      - "Always — 7-dim rubric + per-variant scorecards before delivery."
+      - "Post-humanmaxxing Specificity regression re-runs critic Specificity dim per variant."
+
+  load:
+    always:
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Format-checker hard gate / Meta-specific spec"
+        read:
+          - "references/format-spec.md"
+          - "references/policy-floor.md"
+      - if: "Strategist angle / audience-temp framing"
+        read:
+          - "references/ad-intelligence/meta-retargeting.md"
+          - "references/ad-intelligence/meta-cold-traffic.md"
+          - "references/ad-intelligence/creative-cadence.md"
+          - "references/message-transmutation.md"
+      - if: "Critic / 7-dim rubric scoring"
+        read:
+          - "references/rubric.md"
+          - "references/anti-patterns.md"
+      - if: "Examples for hero + variant patterns"
+        read:
+          - "references/examples.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Hero + Variant A + Variant B drafted, critic + format-checker + humanmaxxing-regression PASS."
+      - path: ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].rationale.md"
+        lifecycle: pipeline
+        produced_when: "Angle + framing + per-variant rationale companion (always emitted)."
+      - path: ".forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].critic-score.md"
+        lifecycle: pipeline
+        produced_when: "7-dim scorecard per variant + total + regression (always emitted)."

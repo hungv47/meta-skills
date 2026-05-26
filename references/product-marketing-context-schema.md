@@ -2,11 +2,11 @@
 title: Product-Marketing Context Schema — 12-section spec for research/product-context.md
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (Phase 1C spec; icp-research adopts in Phase 2)
+produced_by: forsvn-skills
 provenance:
-  source: implementation-roadmap/execution-evaluation/briefs.md § 1.1 (IDEA-5 §1, Corey Haines product-marketing skill)
+  source: product-marketing context convention
   extracted_at: 2026-05-16
-consumers: every marketing and product skill (reads via before-starting-check); icp-research (writes per this schema)
+consumers: every marketing and product skill (reads via before-starting-check); /forsvn icp (writes per this schema)
 load_class: PLAYBOOK
 ---
 
@@ -14,7 +14,7 @@ load_class: PLAYBOOK
 
 **A single 12-section context file at `research/product-context.md` that every marketing and product skill reads before asking any questions. Eliminates redundant cold starts across skills.**
 
-This is the schema spec. The producer is `research-icp` (per [canonical-paths.md](../../implementation-roadmap/canonical-paths.md)). The Phase 2 icp-research refactor will adopt this schema; until then, the existing partial context file is the source.
+This is the schema spec. The producer is `/forsvn icp` (legacy substrate: `research-icp`). Consuming marketing and product skills use this file to decide whether enough product, audience, and positioning context exists before cold-starting.
 
 **Per-project caveat:** `research/product-context.md` materializes per-project where the stack is installed, not in the agent-skills repo itself. When skills run from the agent-skills repo (maintainer context, no host project), absent product-context.md is expected — treat as fresh-project bootstrap, do not short-circuit. See [before-starting-check.md](before-starting-check.md) § "Short-circuit conditions" for the full caveat.
 
@@ -315,4 +315,4 @@ The check is the contract. Skills that re-ask questions answered in product-cont
 - [[pre-dispatch-protocol]] — the canonical Pre-Dispatch contract this fits into
 - [[artifact-contract-template]] — frontmatter schema (this file extends it with `sections_completed`, `confidence`, `last_validated`)
 - [[shared-critic-rubrics]] § "Audience Specificity" + § "Mechanism Distinctness" — critic dimensions that read this file
-- `implementation-roadmap/canonical-paths.md` — confirms icp-research as the sole producer
+- `/forsvn icp` — sole producer for `research/product-context.md`
