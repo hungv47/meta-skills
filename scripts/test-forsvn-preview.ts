@@ -30,6 +30,7 @@ await run("protocol: 400 on malformed payload (missing decision_state)", malform
 await run("protocol: 409 on duplicate POST /done after success", duplicatePost);
 await run("path traversal: ../escape outside projectRoot is rejected", traversalReject);
 await run("relative paths: HTML's <link href=\"../tokens.css\"> resolves to a real file", relativePathServing);
+await run("bundled assets: chrome assets load for a user-project preview with no co-located assets", bundledChromeAssetsFallback);
 
 const failed = results.filter((r) => !r.ok);
 for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name}${r.message ? ` — ${r.message}` : ""}`);
@@ -143,10 +144,23 @@ async function duplicatePost(): Promise<void> {
   const r1 = await postDone(url, { token: cfg.token, decision_state: "suggested" });
   assertEq(r1.status, 200, "first /done should 200");
 
-  // Second POST may race with shutdown — but if it lands, must be 409, never 200.
+  // Second POST may race with the graceful shutdown that the first POST kicked
+  // off. Three acceptable outcomes: 409 (server still up, slot already claimed),
+  // connection refused (server has closed the listener), or hung connection
+  // that we abort. The one outcome we forbid is 200 — that would mean two
+  // valid decisions landed for one preview session.
   let r2: Response | null = null;
-  try { r2 = await postDone(url, { token: cfg.token, decision_state: "approved" }); }
-  catch { /* server already stopped — acceptable */ }
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort(), 1500);
+  try {
+    r2 = await fetch(`${url}done`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: cfg.token, decision_state: "approved" }),
+      signal: ac.signal,
+    });
+  } catch { /* connection refused or aborted — acceptable */ }
+  clearTimeout(t);
   if (r2) {
     if (r2.status === 200) throw new Error(`second /done returned 200 — duplicate decision race not guarded`);
     if (r2.status !== 409) throw new Error(`second /done returned ${r2.status}; expected 409 or connection-refused`);
@@ -289,6 +303,99 @@ Body text.
     cleanup: () => { try { rmSync(root, { recursive: true, force: true }); } catch {} },
   };
   return ctx;
+}
+
+async function bundledChromeAssetsFallback(): Promise<void> {
+  // Reproduces the reviewer's flagged scenario: a skill emits a canonical
+  // preview at <userProject>/brand/BRAND.html that references `./tokens.css`,
+  // but the user's project has no tokens.css co-located with the artifact.
+  // The CLI must fall back to its bundled chrome assets so the form chrome
+  // still loads.
+  const ctx = setupCanonicalBrandLayout();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+
+  try {
+    const origin = url.replace(/\/$/, "");
+    // The browser resolves `./tokens.css` from /brand/BRAND.html → /brand/tokens.css.
+    // tokens.css does NOT exist at <userProject>/brand/tokens.css; CLI must serve
+    // the bundled copy from its install dir.
+    const tokens = await fetch(`${origin}/brand/tokens.css`);
+    assertEq(tokens.status, 200, `bundled tokens.css should be served via fallback; got ${tokens.status}`);
+    const body = await tokens.text();
+    // Sanity: should be the real tokens.css, not an empty 200.
+    assertMatches(body, /--font-head|--stage-bg/, "served tokens.css should look like the real chrome tokens");
+
+    // Sibling assets too — same flow.
+    const chromeCss = await fetch(`${origin}/brand/chrome.css`);
+    assertEq(chromeCss.status, 200, `bundled chrome.css should be served via fallback; got ${chromeCss.status}`);
+    const chromeJs = await fetch(`${origin}/brand/chrome.js`);
+    assertEq(chromeJs.status, 200, `bundled chrome.js should be served via fallback; got ${chromeJs.status}`);
+
+    // An unknown-basename request should still 404 — fallback is closed-set.
+    const random = await fetch(`${origin}/brand/whatever-not-bundled.txt`);
+    assertEq(random.status, 404, "non-bundled asset should still 404");
+
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+function setupCanonicalBrandLayout(): Ctx {
+  // Mimics a `create-brand` canonical emit: brand/BRAND.html (top-level
+  // canonical root, NOT under .forsvn/artifacts) with `./tokens.css` style
+  // hrefs and no chrome assets in the user's project tree.
+  const root = mkdtempSync(join(tmpdir(), "forsvn-preview-bundled-"));
+  const mdPath = join(root, "brand", "BRAND.md");
+  const htmlPath = join(root, "brand", "BRAND.html");
+  writeAt(mdPath, `---
+skill: create-brand
+version: 1
+date: 2026-05-26
+status: done
+stack: mkt
+lifecycle: canonical
+summary: "Canonical brand identity (test fixture)"
+decision_state: pending
+review_surface: html
+---
+
+# Brand
+`);
+  writeAt(htmlPath, `<!doctype html>
+<html data-stack="water">
+<head>
+  <title>BRAND · create-brand · 2026-05-26</title>
+  <link rel="stylesheet" href="./tokens.css">
+  <link rel="stylesheet" href="./chrome.css">
+</head>
+<body>
+  <header class="topbar"><span class="decision-pill" data-state="pending">pending</span></header>
+  <aside class="left-controls"></aside>
+  <main class="stage">stage</main>
+  <footer class="footer"><a href="roughdraft://open?path=x"></a></footer>
+  <script type="application/json" id="preview-config">{"static":true}</script>
+  <script type="application/json" id="artifact-data">{"decision_state":"pending","skill":"create-brand","stack":"mkt"}</script>
+  <script src="./chrome.js"></script>
+</body>
+</html>`);
+
+  bunGit(root, ["init", "--quiet"]);
+  bunGit(root, ["config", "user.email", "test@example.com"]);
+  bunGit(root, ["config", "user.name", "test"]);
+  bunGit(root, ["add", "."]);
+  bunGit(root, ["commit", "--quiet", "-m", "seed"]);
+
+  return {
+    root, slug: "BRAND", mdPath, htmlPath,
+    stdoutBuf: { text: "" },
+    stderrBuf: { text: "" },
+    cleanup: () => { try { rmSync(root, { recursive: true, force: true }); } catch {} },
+  };
 }
 
 function setupExemplarLayout(): Ctx {

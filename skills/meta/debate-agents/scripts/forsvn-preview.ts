@@ -19,6 +19,7 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync } from "node:fs";
 import { join, dirname, basename, resolve, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 
@@ -27,6 +28,18 @@ const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
 const ARCHIVE_REL = ".forsvn/artifacts/.archive";
 const TOKEN_BYTES = 16;                      // = 32 hex chars in the wire format
 const MAX_ROOT_WALK_DEPTH = 12;              // upper bound when probing for .git/.forsvn
+
+// The chrome assets (tokens.css, chrome.css, chrome.js) are bundled alongside
+// the CLI — at the repo root in source, at the skill folder when the skill is
+// packaged via sync-skill-support. A skill-emitted artifact like
+// `<userProject>/brand/BRAND.html` references `./tokens.css`, which the
+// browser resolves to a URL the user's project doesn't have on disk. When
+// the project-rooted lookup misses, fall back to serving the bundled asset
+// by basename so the form chrome loads without forcing every emitter to
+// copy assets next to its artifact.
+const CLI_INSTALL_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
+const BUNDLED_CHROME_DIR = join(CLI_INSTALL_ROOT, "references", "_html");
+const BUNDLED_CHROME_ASSETS = new Set(["tokens.css", "chrome.css", "chrome.js", "base.html"]);
 
 const VALID_DECISIONS = ["approved", "denied", "suggested"] as const;
 type Decision = typeof VALID_DECISIONS[number];
@@ -213,15 +226,29 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         return new Response("forbidden", { status: 403, headers: noStore });
       }
       const abs = resolve(projectRoot, rel);
-      if (!existsSync(abs) || statSync(abs).isDirectory()) {
-        return new Response("not found", { status: 404, headers: noStore });
+      const insideProject = existsSync(abs) && !statSync(abs).isDirectory();
+      if (insideProject) {
+        const canonical = realpathSync(abs);
+        if (canonical !== canonicalProjectRoot && !canonical.startsWith(canonicalProjectRoot + sep)) {
+          return new Response("forbidden", { status: 403, headers: noStore });
+        }
+        const body = readFileSync(canonical);
+        return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(canonical) } });
       }
-      const canonical = realpathSync(abs);
-      if (canonical !== canonicalProjectRoot && !canonical.startsWith(canonicalProjectRoot + sep)) {
-        return new Response("forbidden", { status: 403, headers: noStore });
+      // Project-rooted lookup missed. If the request is for a bundled chrome
+      // asset by basename (tokens.css / chrome.css / chrome.js / base.html),
+      // serve it from the CLI's install dir so skill-emitted previews like
+      // `<userProject>/brand/BRAND.html` with `<link href="./tokens.css">`
+      // resolve cleanly without forcing every emitter to co-locate assets.
+      const base = basename(rel);
+      if (BUNDLED_CHROME_ASSETS.has(base)) {
+        const bundled = join(BUNDLED_CHROME_DIR, base);
+        if (existsSync(bundled) && !statSync(bundled).isDirectory()) {
+          const body = readFileSync(bundled);
+          return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(bundled) } });
+        }
       }
-      const body = readFileSync(canonical);
-      return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(canonical) } });
+      return new Response("not found", { status: 404, headers: noStore });
     }
 
     if (req.method === "POST" && url.pathname === "/done") {
