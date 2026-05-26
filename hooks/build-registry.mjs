@@ -35,7 +35,7 @@ const SKILL_DIRS = [
  *     noneOf: [...]
  *     minScore: 6
  */
-function parsePromptSignals(frontmatter) {
+export function parsePromptSignals(frontmatter) {
   const lines = frontmatter.split("\n");
   let inPromptSignals = false;
   let currentField = null;
@@ -115,7 +115,7 @@ function parsePromptSignals(frontmatter) {
   return signals;
 }
 
-function extractFrontmatter(content) {
+export function extractFrontmatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   return match ? match[1] : null;
 }
@@ -201,4 +201,9 @@ function main() {
   console.log(`[build-registry] Wrote ${count} skills to ${outPath}`);
 }
 
-main();
+// Only run `main()` when invoked as a script — not when imported by tests
+// or other tooling. Without this guard, importing the parser exports would
+// trigger a registry rewrite as a side effect.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}

@@ -10,11 +10,11 @@
 // Usage: bun scripts/test-yaml-parser.ts   (exits 0 on pass, 1 on fail)
 
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
-import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseSimpleYaml } from "./lib/simple-yaml";
+// @ts-ignore — .mjs module without ambient types
+import { parsePromptSignals } from "../hooks/build-registry.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BUILD_REGISTRY = join(__dirname, "..", "hooks", "build-registry.mjs");
@@ -74,18 +74,17 @@ for (const tc of cases) {
   }
 }
 
-// Parity test: both parsers must agree on routing.yaml-style promptSignals
-// (build-registry parses .mjs-side; simple-yaml parses .ts-side). They are
-// two implementations of the same grammar — drift between them silently
-// corrupts the skill registry vs. capability-index.
-const tmp = mkdtempSync(join(tmpdir(), "yaml-parity-"));
-try {
-  const skillsDir = join(tmp, "skills", "meta", "fake-skill");
-  mkdirSync(skillsDir, { recursive: true });
-  writeFileSync(join(skillsDir, "SKILL.md"), '---\nname: fake-skill\n---\n');
-  writeFileSync(
-    join(skillsDir, "routing.yaml"),
-    [
+// Parity test: directly invoke both parsers on the same routing.yaml input
+// and compare. They are two implementations of the same grammar; drift
+// between them silently corrupts the skill registry vs. capability-index.
+// `parsePromptSignals` (.mjs, used by hooks/skill-registry.json) returns an
+// object shaped like { phrases, allOf, anyOf, noneOf, minScore }; the .ts
+// parser returns the same shape under `.promptSignals` when fed the full
+// routing.yaml. Compare both.
+const parityInputs: { name: string; yaml: string }[] = [
+  {
+    name: "baseline routing.yaml shape (block lists + inline-array allOf)",
+    yaml: [
       "promptSignals:",
       "  phrases:",
       '    - "alpha"',
@@ -100,74 +99,84 @@ try {
       "  minScore: 6",
       "",
     ].join("\n"),
-  );
-
-  // Run the .mjs parser via build-registry's --check fallback (it always
-  // computes the registry from disk before comparing). We synth a fake repo
-  // and read the output via direct exec, then mirror with simple-yaml.
-  // Easier: import build-registry's parsePromptSignals via a temporary entry.
-  // Simplest: shell out to node and parse stdout.
-  const helperPath = join(tmp, "extract.mjs");
-  writeFileSync(
-    helperPath,
-    [
-      "import { readFileSync } from 'node:fs';",
-      "import { join } from 'node:path';",
-      "const mod = await import(" + JSON.stringify(BUILD_REGISTRY.replace(/\\/g, "/")) + ");",
-      // build-registry.mjs runs `main()` at import time. That's fine — it
-      // writes to its own hooks/skill-registry.json, NOT into our tmp. We
-      // only need its parsePromptSignals export, which it does not export.
-      // Fall back: re-parse with a copy of the .mjs parser logic inlined.
-      "process.exit(0);",
+  },
+  {
+    name: "inline-array allOf with quoted comma — the case the parser fix targets",
+    yaml: [
+      "promptSignals:",
+      "  phrases:",
+      '    - "a"',
+      "  allOf:",
+      '    - ["weight,1", "weight,2"]',
+      "  anyOf: []",
+      "  noneOf: []",
+      "  minScore: 6",
+      "",
     ].join("\n"),
-  );
+  },
+  {
+    name: "minScore default (7 when omitted on .ts side, 6 on .mjs side)",
+    // NOTE: this case is asymmetric by design — parsers use different
+    // defaults when minScore is absent. We probe with minScore present
+    // to assert structural parity only.
+    yaml: [
+      "promptSignals:",
+      "  phrases:",
+      '    - "single"',
+      "  allOf: []",
+      "  anyOf: []",
+      "  noneOf: []",
+      "  minScore: 8",
+      "",
+    ].join("\n"),
+  },
+];
 
-  // Direct approach: invoke build-registry on our synth repo by setting
-  // ROOT via an env override. But it uses __dirname relative to itself, not
-  // configurable. So we test parity by asserting the .ts parser produces
-  // the same canonical shape the .mjs parser would have produced for this
-  // input — verified by reading the existing hooks/skill-registry.json.
-  const routingRaw = readFileSync(join(skillsDir, "routing.yaml"), "utf8");
-  const tsParsed = parseSimpleYaml(routingRaw) as { promptSignals: Record<string, unknown> };
-  const tsSignals = tsParsed.promptSignals;
+for (const tc of parityInputs) {
+  const tsAll = parseSimpleYaml(tc.yaml) as { promptSignals: Record<string, unknown> };
+  const tsSignals = tsAll.promptSignals;
+  const mjsSignals = parsePromptSignals(tc.yaml);
 
-  const expectedSignals = {
-    phrases: ["alpha", "beta gamma"],
-    allOf: [["code", "cleanup"], ["dead", "code"]],
-    anyOf: ["refactor"],
-    noneOf: ["system design"],
-    minScore: 6,
-  };
+  // Normalize: .mjs `parsePromptSignals` always emits the 5 keys even if
+  // empty; the .ts parser surfaces only what's declared. Compare on the
+  // common-keys union, treating missing as empty/default.
+  const normalized = (sig: any) => ({
+    phrases: sig?.phrases ?? [],
+    allOf: sig?.allOf ?? [],
+    anyOf: sig?.anyOf ?? [],
+    noneOf: sig?.noneOf ?? [],
+    minScore: sig?.minScore ?? null,
+  });
 
-  const gotJson = JSON.stringify(tsSignals);
-  const expJson = JSON.stringify(expectedSignals);
-  if (gotJson !== expJson) {
-    console.error("[FAIL] parity: simple-yaml does not match the build-registry.mjs canonical promptSignals shape");
-    console.error(`  expected: ${expJson}`);
-    console.error(`  got:      ${gotJson}`);
+  const ts = normalized(tsSignals);
+  const mjs = normalized(mjsSignals);
+  const tsJson = JSON.stringify(ts);
+  const mjsJson = JSON.stringify(mjs);
+  if (tsJson !== mjsJson) {
+    console.error(`[FAIL] parity (${tc.name}): simple-yaml and build-registry.mjs disagree`);
+    console.error(`  simple-yaml (.ts): ${tsJson}`);
+    console.error(`  build-registry (.mjs): ${mjsJson}`);
     failed++;
   } else {
-    console.log("[PASS] parity: simple-yaml produces the canonical promptSignals shape for routing.yaml input");
+    console.log(`[PASS] parity (${tc.name}): both parsers produce ${tsJson}`);
   }
+}
 
-  // Sanity: confirm hooks/build-registry.mjs --check still passes against
-  // the real repo (registry stays in sync). Defends against changes to the
-  // .ts parser that would silently diverge from the .mjs parser.
-  const check = spawnSync("node", [BUILD_REGISTRY, "--check"], { encoding: "utf8" });
-  if (check.status !== 0) {
-    console.error("[FAIL] hooks/build-registry.mjs --check failed:");
-    console.error(check.stdout);
-    console.error(check.stderr);
-    failed++;
-  } else {
-    console.log("[PASS] hooks/build-registry.mjs --check (registry is current)");
-  }
-} finally {
-  rmSync(tmp, { recursive: true, force: true });
+// Sanity: confirm hooks/build-registry.mjs --check still passes against the
+// real repo (registry stays in sync). Defends against changes to either
+// parser that would silently diverge from the committed registry.
+const check = spawnSync("node", [BUILD_REGISTRY, "--check"], { encoding: "utf8" });
+if (check.status !== 0) {
+  console.error("[FAIL] hooks/build-registry.mjs --check failed:");
+  console.error(check.stdout);
+  console.error(check.stderr);
+  failed++;
+} else {
+  console.log("[PASS] hooks/build-registry.mjs --check (registry is current)");
 }
 
 if (failed > 0) {
   console.error(`\n[test-yaml-parser] ${failed} failure(s)`);
   process.exit(1);
 }
-console.log(`\n[test-yaml-parser] PASS — ${cases.length + 2} assertions`);
+console.log(`\n[test-yaml-parser] PASS — ${cases.length + parityInputs.length + 1} assertions`);
