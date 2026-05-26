@@ -1,0 +1,132 @@
+/* tokens.css — design tokens for the review-surface HTML preview.
+   Generated from references/review-surface-design.md § 2-3.
+   Constant chrome lives in :root. Element themes activate via
+   <html data-stack="air|water|fire|earth"> on the page root. */
+
+:root {
+  /* ============ Chrome (constant across stacks) ============ */
+  --chrome-bg:           #0a0a0a;
+  --chrome-panel:        #111114;
+  --chrome-border:       #1f1f24;
+  --chrome-text:         #e4e4e7;
+  --chrome-text-muted:   #71717a;
+  --chrome-accent:       #ffffff;
+
+  --pill-pending-bg:     #2a2a2e;
+  --pill-pending-fg:     #fbbf24;
+  --pill-approved-bg:    #064e3b;
+  --pill-approved-fg:    #6ee7b7;
+  --pill-denied-bg:      #7f1d1d;
+  --pill-denied-fg:      #fecaca;
+  --pill-suggested-bg:   #1e3a8a;
+  --pill-suggested-fg:   #93c5fd;
+
+  --chrome-mono:         'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+  --chrome-sans:         'Inter', -apple-system, system-ui, sans-serif;
+
+  --chrome-topbar-h:     56px;
+  --chrome-left-w:       320px;
+  --chrome-footer-h:     72px;
+  --stage-pad:           48px;
+}
+
+/* ============ AIR — meta ============ */
+:root[data-stack="air"] {
+  --bg:             #f7f8fa;
+  --bg-deep:        #e8ebf0;
+  --bg-elevated:    #ffffff;
+  --fg:             #18181b;
+  --fg-muted:       #52525b;
+  --accent:         #a7c7ff;
+  --accent-fg:      #18181b;
+  --border:         #d4d4d8;
+  --border-strong:  #a1a1aa;
+  --shadow-sm:      0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:      0 8px 24px rgba(0,0,0,0.04);
+  --shadow-glow:    0 0 24px rgba(167, 199, 255, 0.30);
+  --font-head:      'Inter Tight', 'Inter', sans-serif;
+  --font-body:      'Inter', sans-serif;
+  --font-mono:      'JetBrains Mono', monospace;
+  --line-height:    1.7;
+  --max-measure:    65ch;
+  --t-hover:        240ms;
+  --t-enter:        480ms;
+  --ease:           cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+/* ============ WATER — marketing ============ */
+:root[data-stack="water"] {
+  --bg:             #0a1a2a;
+  --bg-deep:        #050d18;
+  --bg-elevated:    rgba(255,255,255,0.04);
+  --fg:             #f0f6ff;
+  --fg-muted:       #7891a8;
+  --accent:         #6ee7d4;
+  --accent-fg:      #0a1a2a;
+  --accent-gradient: linear-gradient(135deg, #6ee7d4 0%, #5d9eff 100%);
+  --border:         #1a2e44;
+  --border-strong:  #2d4863;
+  --glass-tint:     rgba(255,255,255,0.06);
+  --backdrop-blur:  blur(24px);
+  --shadow-sm:      inset 0 1px 0 rgba(255,255,255,0.04);
+  --shadow-md:      0 4px 32px rgba(110, 231, 212, 0.10);
+  --shadow-glow:    0 0 24px rgba(110, 231, 212, 0.20);
+  --font-head:      'Fraunces', 'Times New Roman', serif;
+  --font-body:      'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-mono:      'JetBrains Mono', monospace;
+  --line-height:    1.6;
+  --max-measure:    72ch;
+  --t-hover:        360ms;
+  --t-ripple:       600ms;
+  --ease:           cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============ FIRE — product ============ */
+:root[data-stack="fire"] {
+  --bg:             #0f0a08;
+  --bg-deep:        #050302;
+  --bg-elevated:    #1a120e;
+  --fg:             #fdf4ee;
+  --fg-muted:       #a08470;
+  --accent:         #ff7a45;
+  --accent-fg:      #0f0a08;
+  --accent-2:       #ffcc00;
+  --border:         #2d1a0f;
+  --border-strong:  #ff7a45;
+  --shadow-sm:      0 2px 8px rgba(0,0,0,0.4);
+  --shadow-md:      0 0 32px rgba(255, 122, 69, 0.15);
+  --shadow-glow:    0 0 16px rgba(255, 122, 69, 0.55);
+  --font-head:      'Sora', 'Inter', sans-serif;
+  --font-body:      'Manrope', 'Inter', sans-serif;
+  --font-mono:      'JetBrains Mono', monospace;
+  --line-height:    1.5;
+  --max-measure:    80ch;
+  --t-hover:        120ms;
+  --t-snap:         80ms;
+  --ease:           cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* ============ EARTH — research ============ */
+:root[data-stack="earth"] {
+  --bg:             #f4ede0;
+  --bg-deep:        #e8ddc7;
+  --bg-elevated:    #ffffff;
+  --fg:             #1a1410;
+  --fg-muted:       #6b5d4f;
+  --accent:         #2d5016;
+  --accent-fg:      #f4ede0;
+  --accent-2:       #b87333;
+  --border:         #c4b594;
+  --border-strong:  #9c8a6c;
+  --shadow-sm:      0 1px 0 rgba(0,0,0,0.06);
+  --shadow-md:      0 12px 32px rgba(120, 90, 50, 0.08);
+  --shadow-glow:    0 12px 32px rgba(120, 90, 50, 0.15);
+  --font-head:      'Newsreader', 'EB Garamond', 'Times New Roman', serif;
+  --font-body:      'Newsreader', 'Times New Roman', serif;
+  --font-mono:      'JetBrains Mono', monospace;
+  --line-height:    1.55;
+  --max-measure:    68ch;
+  --t-enter:        800ms;
+  --t-hover:        0ms;
+  --ease:           cubic-bezier(0.16, 1, 0.3, 1);
+}

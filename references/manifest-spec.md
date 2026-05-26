@@ -10,7 +10,7 @@ Three failure modes this spec prevents:
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/{meta,mkt,product,research}/`, measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
+Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/` (flat path grammar: `<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`; legacy nested paths `{meta,mkt,product,research}/{kind}/` are tolerated by the back-compat parser), measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
@@ -26,10 +26,12 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
   "updated_at": "2026-05-07T14:32:11.000Z",
   "artifacts": {
     "research/icp-research.md": {
-      "produced_by": "icp-research",
+      "produced_by": "research-icp",
       "produced_at": "2026-04-12",
       "status": "done",
       "schema_version": 1,
+      "stack": "research",
+      "skills_involved": [],
       "stale_after_days": 90,
       "stale": false,
       "title": "ICP Research",
@@ -43,7 +45,8 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "upstream": "operator interview, product source material",
       "downstream": "brand-system, campaign-plan, copywriting, system-architecture",
       "decision_status": "",
-      "review_state": "approved",
+      "decision_state": "approved",
+      "review_surface": "md",
       "review_tool": "roughdraft",
       "reviewed_at": "2026-04-12",
       "reviewer": "operator",
@@ -51,10 +54,12 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "frontmatter_present": true
     },
     ".forsvn/loops/pricing-page/program.md": {
-      "produced_by": "eval-loop",
+      "produced_by": "run-eval-loop",
       "produced_at": "2026-05-13",
       "status": "done",
       "schema_version": 1,
+      "stack": "meta",
+      "skills_involved": [],
       "stale_after_days": 90,
       "stale": false,
       "title": "Pricing Page Program",
@@ -66,23 +71,28 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
       "supersedes": "",
       "superseded_by": "",
       "upstream": "operator intent, analytics baseline",
-      "downstream": "lp-brief, copywriting, lp-eval",
+      "downstream": "brief-landing-page, write-copy, evaluate-landing-page",
       "decision_status": "",
-      "review_state": "not_required",
+      "decision_state": "not_required",
+      "review_surface": "none",
       "review_tool": "none",
       "reviewed_at": "",
       "reviewer": "",
       "size_bytes": 7342,
       "frontmatter_present": true
     },
-    ".forsvn/artifacts/meta/records/diagnose-*.md": {
+    ".forsvn/artifacts/meta-diagnose-2026-05-01-trial-conversion-drop.md": {
       "produced_by": "diagnose",
       "produced_at": "2026-05-01",
       "status": "done_with_concerns",
       "schema_version": 1,
+      "stack": "meta",
+      "skills_involved": [],
       "stale_after_days": 30,
       "stale": false,
       "summary": "Trial-to-paid conversion dropped 40% in March; root cause: onboarding email regression",
+      "decision_state": "pending",
+      "review_surface": "md",
       "size_bytes": 12104,
       "frontmatter_present": true
     }
@@ -124,9 +134,12 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `superseded_by` — path or slug that replaces this artifact. Consumers should prefer the replacement.
 - `upstream` — comma-separated sources or prerequisite artifacts that fed this one.
 - `downstream` — comma-separated skills or artifacts expected to consume this one.
-- `decision_status` — optional decision state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts.
-- `review_state` — human-review state: `pending | approved | rejected | changes_requested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Full semantics in [[reviewable-artifact-contract]].
-- `review_tool` — review surface: `roughdraft | inline | none`. From frontmatter; empty string when absent.
+- `decision_status` — optional decision-record state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts. **Not** the same as `decision_state` — `decision_status` is the strategic-record stance; `decision_state` is the human-review acceptance state.
+- `stack` — `meta | mkt | product | research`. From frontmatter; derived from the flat-filename prefix (`<stack>-<skill>-...`) when frontmatter is missing, and from the second path segment for legacy nested paths.
+- `skills_involved` — list of kebab-case skill slugs that contributed to producing this artifact. From frontmatter; defaults to `[]`.
+- `decision_state` — human-review state: `pending | approved | denied | suggested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Legacy `review_state` field is read with a one-line warning and surfaced under `decision_state`. Full semantics in [[reviewable-artifact-contract]].
+- `review_surface` — `html | md | none`. Which surface this artifact uses for review. From frontmatter; defaults to `md` for legacy artifacts when `decision_state` is set, `none` otherwise.
+- `review_tool` — review tool: `roughdraft | inline | none`. From frontmatter; empty string when absent.
 - `reviewed_at` — date the review was recorded (`YYYY-MM-DD`). Empty until reviewed.
 - `reviewer` — who recorded the review. Empty until reviewed.
 - `size_bytes` — file size, useful for sanity checks.
@@ -151,6 +164,8 @@ skill: research-icp
 version: 1
 date: 2026-05-07
 status: done
+stack: research
+review_surface: md
 stale_after_days: 90
 summary: "Engineering managers, mid-size SaaS, 50-200 engineers"
 purpose: "Canonical audience record for downstream skills"
@@ -168,9 +183,15 @@ downstream: "brand-system, campaign-plan, copywriting, system-architecture"
 - `version` — schema version of this artifact type. Start at `1`. Bump when you change the artifact's structure in a breaking way.
 - `date` — `YYYY-MM-DD` (or ISO timestamp). When this version was produced.
 - `status` — one of `done | done_with_concerns | blocked | needs_context` (Completion Status Protocol from CLAUDE.md).
+- `stack` — one of `meta | mkt | product | research`. Mandatory for v2: the flat-path grammar (`<stack>-<skill>-<date>-<slug>.<ext>`) makes stack no longer inferable from path depth.
+- `review_surface` — one of `html | md | none`. Mandatory for v2: declares which review surface the artifact uses; `html` triggers the co-located HTML preview while `decision_state: pending`.
 
 ### Optional fields
 
+- `skills_involved` — list of kebab-case skill slugs for multi-skill pipelines. `skill:` stays as the primary producer; `skills_involved:` enumerates every contributing skill.
+- `decision_state` — human-review state. See [[reviewable-artifact-contract]] for the full enum and lifecycle defaults. Defaults to `not_required` when absent.
+- `review_tool` — review tool name (`roughdraft | inline | none`). Pairs with `review_surface`.
+- `reviewed_at` / `reviewer` — populated only after a completed human review.
 - `stale_after_days` — how long before this artifact should be considered stale (default `90`). Use shorter values for fast-moving artifacts (e.g., `diagnose.md` → `30`); use longer for slow-moving (e.g., `brand/BRAND.md` → `365`).
 - `summary` — one-line summary of the artifact's key takeaway. Quoted string. Lets consumers preview without reading the full file.
 - `title` — display title. Optional because sync derives it from the first H1.
@@ -180,7 +201,7 @@ downstream: "brand-system, campaign-plan, copywriting, system-architecture"
 - `do_not_use_when` — when this artifact should be skipped or refreshed.
 - `supersedes` / `superseded_by` — lineage pointers for replacements and archived history.
 - `upstream` / `downstream` — comma-separated dependency/context hints.
-- `decision_status` — decision state for specs and decisions.
+- `decision_status` — decision-record stance (`proposed | accepted | rejected | superseded`) for `lifecycle: decision` / `lifecycle: spec` artifacts. **Not** the same as `decision_state`.
 
 Keep optional frontmatter fields flat scalar strings. Do not use nested YAML or multiline values; the sync parser intentionally stays small and deterministic.
 
@@ -203,13 +224,13 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 `meta-skills/scripts/manifest-sync.ts` — Bun TypeScript, ~100 lines, no dependencies.
 
 What it does:
-1. Walk `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files.
-2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`).
-3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields.
+1. Walk `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files. Parse the flat-path filename grammar (`<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`) when present; fall back to legacy nested-path parsing (`{meta,mkt,product,research}/{kind}/<slug>.md`) for back-compat.
+2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`). Legacy `review_state` is read with a one-line warning and surfaced under `decision_state`.
+3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields. When a `.html` twin exists co-located with an `.md`, set `review_surface: html` in the entry; do **not** index HTML as a separate artifact.
 4. For experience files (`.forsvn/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
 6. Write `.forsvn/index/manifest.json` (pretty-printed JSON, trailing newline).
-7. Write `.forsvn/index/artifact-index.md` (human-readable selection index derived from the manifest).
+7. Write `.forsvn/index/artifact-index.md` (human-readable selection index derived from the manifest). Columns: **Stack**, **Skill**, **Date**, **Title**, **Summary**, **Lifecycle**, **Status**, **Decision** (the `decision_state` value), **Surface** (the `review_surface` value).
 
 The script is **idempotent** for unchanged artifact state — running it twice preserves `updated_at` and generated output. It is **self-healing** — if a skill forgets to call it, the next run reconciles. It has **no dependencies** beyond Bun runtime.
 

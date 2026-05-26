@@ -1,0 +1,66 @@
+<!doctype html>
+<!--
+  base.html — the structural template for every review-surface HTML preview.
+  Skill emitters string-replace the {{...}} placeholders. The five regions
+  (topbar, left controls, stage, decision footer, hidden artifact-data) are
+  required; the stage_html is the only block that varies by skill.
+
+  Placeholders:
+    {{stack}}             — air | water | fire | earth (mandatory)
+    {{title}}             — artifact title
+    {{skill}}             — kebab-case skill slug
+    {{date}}              — YYYY-MM-DD
+    {{slug}}              — kebab-case artifact slug
+    {{decision_state}}    — pending | approved | denied | suggested | not_required
+    {{tokens_css_href}}   — path to tokens.css (typically "./tokens.css")
+    {{chrome_css_href}}   — path to chrome.css
+    {{chrome_js_src}}     — path to chrome.js
+    {{stage_fonts_link}}  — per-stack Google Fonts link (one of four blocks; see design spec § 4)
+    {{md_path}}           — repo-relative path to the .md artifact (for the Roughdraft deeplink)
+    {{artifact_data_json}}— JSON blob mirroring the MD frontmatter
+    {{left_controls_html}}— per-skill control panel (variant picker, view toggles, export)
+    {{stage_html}}        — per-skill center stage content
+-->
+<html lang="en" data-stack="{{stack}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}} · {{skill}} · {{date}}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  {{stage_fonts_link}}
+
+  <link rel="stylesheet" href="{{tokens_css_href}}">
+  <link rel="stylesheet" href="{{chrome_css_href}}">
+</head>
+<body>
+
+  <header class="topbar">
+    <span class="stack-chip">{{stack}}</span>
+    <span class="topbar-meta"><strong>{{skill}}</strong> · {{date}} · {{slug}}</span>
+    <span class="decision-pill" data-state="{{decision_state}}">{{decision_state}}</span>
+  </header>
+
+  <aside class="left-controls">
+    {{left_controls_html}}
+  </aside>
+
+  <main class="stage">
+    {{stage_html}}
+  </main>
+
+  <footer class="footer">
+    <a class="footer-action primary" data-roughdraft-link
+       href="roughdraft://open?path={{md_path}}">
+      Open in Roughdraft →
+    </a>
+    <span class="footer-meta">{{title}} · decision: {{decision_state}}</span>
+    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
+  </footer>
+
+  <script type="application/json" id="artifact-data">{{artifact_data_json}}</script>
+  <script src="{{chrome_js_src}}"></script>
+</body>
+</html>
