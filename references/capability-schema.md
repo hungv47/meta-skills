@@ -247,6 +247,8 @@ node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts
 bun scripts/lint-html-output.ts
 bun scripts/test-forsvn-preview.ts
+bun scripts/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun scripts/audit-skill-budget.ts --enforce-caps
+bun scripts/lint-description-body-coherence.ts --strict
 ```
 
 Bottom three added by the review-surface overhaul (2026-05-26):

@@ -82,6 +82,13 @@ Three routes (A / B / C) — chosen at Pre-Dispatch (Cold Start Q5 or auto-infer
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships — 12 named anti-patterns (7 from original body + 5 cross-cutting: hallucination under `--fast`, canonical product-context.md mirror skip, Q5 routing-persistence, cross-stack contract drift, write-back skipped/partial). Detection + bad/good examples + verified agent ownership against `critic-agent.md` Rewrite Routing Table.
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 - **DONE** — full ICP synthesized, critic PASS, all 5-7 dimensions populated with quoted evidence.

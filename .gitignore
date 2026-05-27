@@ -4,10 +4,9 @@ dist/
 .env
 .env.*
 
-# Per-project runtime state — context, experience, artifacts, loops, evals,
-# and the machine-derived index (.forsvn/index/). Populated when skills run;
-# not distributable plugin content.
-.forsvn/
+# Per-project runtime state lives at forsvn/.forsvn/ (parent), not here.
+# `resources/` holds research material that should not ship to the public mirror.
+resources/
 
 # Local-only IDE / agent state
 .scion/

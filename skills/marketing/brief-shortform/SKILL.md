@@ -74,6 +74,13 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before output 
 
 Most common in practice: AI-slop openers ("Hey guys"), vague action verbs ("show product"), caption-only variant resizing, missing VoC in caption first-line, generic founder/company tropes.
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 - **DONE** — all 4 critics PASS within ≤2 cycles. Hero + all requested variants produced.

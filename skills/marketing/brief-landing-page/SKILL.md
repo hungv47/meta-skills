@@ -24,37 +24,9 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 - **Don't inline the shared skill chain.** Reference by section header; add page-specific overrides only.
 - **No placeholder testimonials, fake logos, or pretend numbers.** Spec the slot ("Customer logo grid, 6 cells × 60px") and note "delete cell if not real" — never fabricate.
 
-## Inputs
+## Inputs + Outputs
 
-| Artifact | Required? | What it provides |
-|---|---|---|
-| Page route or campaign name (`/pricing`, `q3-launch-lp`) — current state if exists (URL/screenshot/code) | **required** | Subject of the brief |
-| `brand/BRAND.md` | **required** (NEEDS_CONTEXT if absent) | Voice, archetype, sacred elements, lexicon rules |
-| `brand/DESIGN.md` | **required** (NEEDS_CONTEXT if absent) | Palette, typography, surface language, motion tokens |
-| Existing page state (URL/screenshot/code) | optional but recommended | Inform redesign without blocking the brief |
-| Post-launch evidence (analytics, heatmaps, experiment notes) | optional | Stronger evidence for redesign hypotheses; absent → labeled assumption |
-| `research/icp-research.md` | optional | Objections + VoC for copy candidates |
-| `research/product-context.md` | optional | Product accuracy in features/proof |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | optional | Traffic source, awareness stage, funnel role |
-| `.forsvn/artifacts/meta/records/targets-*.md` | optional | Conversion target informs CTA aggressiveness |
-
-## Output
-
-`.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` — single main artifact.
-
-Always-emitted companion:
-
-- `handoff-implementation.md` — paste-ready prompt for any coding agent (Claude Code / Cursor / Codex / Opus / Gemini / GPT). Stack auto-detected from repo (frameworks → that stack; no framework → pure HTML/CSS/Vanilla JS, single index.html). Motion stack from `brand/DESIGN.md` (silent → GSAP+ScrollTrigger+Lenis). Carries verbatim Asset Placeholder Rule so coding agents never invent stock-photo URLs.
-
-Optional companions per `target_handoff`:
-
-- `handoff-claude-design.md` — verbatim prompt block for claude.ai/design
-- `handoff-figma.md` — design spec for Figma designer
-- `handoff-designer.md` — narrative brief for human designer
-
-Per-slot artifacts (written by downstream `brief-graphic`, not by brief-landing-page itself):
-
-- `asset-slots/{slot-id}.prompt.md`. Slots with `route: pending-media-skill` have no prompt yet — implementation prompt renders them as solid-color placeholders until a future media-briefing skill catches up.
+Full inputs table + output companions + per-slot artifacts: [`references/procedures/inputs-outputs.md`](references/procedures/inputs-outputs.md). Hard-required: page route/campaign name, `brand/BRAND.md`, `brand/DESIGN.md`. Main artifact: `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md`. Always-emitted companion: `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected, Asset Placeholder Rule verbatim). Optional companions per `target_handoff`: `handoff-{claude-design,figma,designer}.md`.
 
 ## Quality Gate
 
@@ -78,47 +50,25 @@ Hard gates pass → proceed to Pre-Dispatch.
 
 ## Pre-Dispatch + Mode
 
-Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions:
+Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: page identity (route + name, always supplied), tier (conversion-primary vs -secondary; programmatic out of scope), hypothesis intent, goal (leads/signups/purchases/demos), route (A or B, resolved by hard gates).
 
-- Page identity — route + name (always supplied — not asked).
-- Tier — conversion-primary (hero LP, /pricing, /services) or conversion-secondary (/about, /story). Programmatic out of scope.
-- Hypothesis intent — what's this page trying to prove?
-- Goal — leads / signups / purchases / demos.
-- Route (A or B) — already resolved by hard gates.
+Warm/Cold Start prompts + 4-question Cold Start + Write-back map + Project-Specific Workflows + Context-to-Pass + hard-block conditions: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
-Warm/Cold Start prompts + 4-question Cold Start template + Write-back map + Project-Specific Workflows + Context-to-Pass + hard-block conditions: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
+Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` collapses L1/1.5/2/3/3.5/4 to single-agent execution per layer, skips Layer 5 critic dispatch (critics noted as "skipped under --fast"). **`--fast` does NOT skip Hard Gates, 3 Approval Gates, or Critical Gates 1-6.**
 
-Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` collapses L1/1.5/2/3/3.5/4 to single-agent execution per layer, skips Layer 5 critic dispatch (critics noted as "skipped under --fast"). **`--fast` does NOT skip Hard Gates, 3 Approval Gates (user-facing contract), or Critical Gates 1-6.**
+## Routing + Approval Gates
 
-## Routing
-
-Three routes — full dispatch graphs in [`references/agent-manifest.md`](references/agent-manifest.md):
-
-- **Route A — Fresh LP** (no existing page).
-- **Route B — Existing LP redesign** (evidence-anchored; "What Changed from rev N-1" section mandatory when prior brief exists).
-- **Route C — Re-run with `--rev=N`** (read prior at `v[N-1]/brief.md`, diff against fresh inputs, save to `v[N]/brief.md`).
-
-Spawn mechanics + single-agent fallback: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
-
-## Approval Gates — STOP points
-
-Three gates between layers — all three fire even under `--fast`. Full presentation format + response handling: [`references/agent-manifest.md`](references/agent-manifest.md) § "Approval Gates".
-
-- **Gate 1** (after L1.5) — Hypothesis Selection. Present 3 A/B/C with 3Q score. *Pick one, revise, or kill all.*
-- **Gate 2** (after L2) — Architecture Approval. Present Surface Rhythm + Section List + ASCII diagram + Scroll Velocity Plan. *Approve, revise, or reject.*
-- **Gate 3** (after L5 critic merge) — Final Brief Acceptance. Present brief preview + both critic verdicts + concerns. *Approve, request revisions, or reject.*
+Three routes (Route A fresh LP · Route B existing-LP redesign with mandatory "What Changed from rev N-1" · Route C re-run with `--rev=N`) and three STOP gates (Gate 1 Hypothesis Selection after L1.5 · Gate 2 Architecture Approval after L2 · Gate 3 Final Brief Acceptance after L5 critic merge) — all three gates fire even under `--fast`. Full dispatch graphs, presentation format, response handling, spawn mechanics, single-agent fallback: [`references/agent-manifest.md`](references/agent-manifest.md) + [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 
 ## Artifact Contract
 
 - **Path:** `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
-- **Always-emitted companion:** `handoff-implementation.md`.
-- **Optional companions:** `handoff-{claude-design,figma,designer}.md` per `target_handoff`.
-- **Per-slot artifacts** (downstream `brief-graphic`, not this skill): `asset-slots/{slot-id}.prompt.md`.
+- **Companions:** always `handoff-implementation.md`; optional `handoff-{claude-design,figma,designer}.md` per `target_handoff`. Per-slot `asset-slots/{slot-id}.prompt.md` written downstream by `brief-graphic`.
 - **Lifecycle:** `pipeline` — versioned re-runs preserve prior versions.
 - **Frontmatter:** 17 fields — see [`references/format-conventions.md`](references/format-conventions.md) and [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) § provenance two-variants. Provenance is required so `evaluate-landing-page` can ground scoring on `input_artifacts` and `scripts/eval/promote-to-experience.ts` can walk `output_eval`.
 - **Body:** 15 sections (Title block · Concerns · IMC Context · Hypothesis Approved · What Changed from rev N-1 · Page Architecture · Section-by-Section Spec · Asset Slots · What NOT to Do · Implementation Prompt · Hand-Off · Pre-flight Checklist · Skill Chain · Launch Plan + Results + Why This Works · Review Gate).
 - **Envelope:** 250-500 lines, enforced strictly by brand-voice critic G6.
-- **Review-gated:** carries review machinery but `decision_state` defaults to `not_required` — most runs are regenerable drafts. Operator or loop can opt a run into review by setting `decision_state: pending`. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+- **Review-gated:** `decision_state` defaults to `not_required` (regenerable drafts); operator/loop can opt in by setting `pending`. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
 - **Cross-stack contract:** consumed by human designers + coding agents + `brief-graphic` (per slot) + `evaluate-landing-page` cycles (when brief referenced from loop's `strategy/`). Schema changes require atomic update across upstream callers (`plan-campaign`) + downstream consumers (`brief-graphic`, coding agents, `evaluate-landing-page`).
 
 Full artifact template byte-identical: [`references/format-conventions.md`](references/format-conventions.md).
@@ -133,7 +83,14 @@ Previous: `plan-campaign` (optional — campaign context), `create-brand` (requi
 
 ## Anti-Patterns
 
-Read [`references/anti-patterns.md`](references/anti-patterns.md) before brief ships — 12 brief-specific + 4 cross-cutting + 3 design-handoff prompting (19 total). Most common in practice: ignoring sacred elements (Critical Gate 3 + brand-voice critic G1 sacred 4/4 auto-FAIL), brief too long (Critical Gate 4 + G6 envelope), coding-agent inventing asset URLs (G8b Implementation Prompt Compliance — Asset Placeholder Rule), hero copy violating voice (G2 Forbidden Vocabulary single-hit FAIL).
+Read [`references/anti-patterns.md`](references/anti-patterns.md) before brief ships — 12 brief-specific + 4 cross-cutting + 3 design-handoff prompting (19 total). Most common: ignoring sacred elements (G1 sacred 4/4 auto-FAIL), brief too long (G6 envelope), coding-agent inventing asset URLs (G8b Asset Placeholder Rule), hero copy violating voice (G2 Forbidden Vocabulary single-hit FAIL).
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -141,6 +98,10 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before brief s
 - **DONE_WITH_CONCERNS** — after 2 cycles, ≥1 critic still FAIL or mixed; concerns pinned at top of `brief.md` AND in frontmatter. User sees both reports at Gate 3 and ships consciously.
 - **BLOCKED** — user rejected at a gate, or required input missing mid-flow.
 - **NEEDS_CONTEXT** — `BRAND.md` or `DESIGN.md` missing; cannot proceed.
+
+## Next Step
+
+After Gate 3 PASS: hand `handoff-implementation.md` to the coding agent (or paste a companion handoff into Claude Design / Figma / designer). Re-invoke with `--rev=N` after post-launch evidence triggers a redesign.
 
 ## Worked Examples
 

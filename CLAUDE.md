@@ -100,7 +100,7 @@ Don't add new top-level folders without clearing that canonical bar. Folder spra
 
 Everything else lives flat under `.forsvn/artifacts/` using the v2 filename grammar `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>` (md for the durable artifact, html for the review preview while `decision_state: pending`). See `references/artifact-contract-template.md` for the frontmatter contract and `references/review-surface-design.md` for the per-stack elemental theming (meta=AIR, mkt=WATER, product=FIRE, research=EARTH).
 
-## Pre-merge gate (10 commands)
+## Pre-merge gate (12 commands)
 
 Run before merging any PR that touches skills, routing, capabilities, or artifacts. The canonical list lives in `references/capability-schema.md` § "Validation". Summary:
 
@@ -115,8 +115,26 @@ node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts        # added by review-surface overhaul (2026-05-26)
 bun scripts/lint-html-output.ts           # added by review-surface overhaul (2026-05-26)
 bun scripts/test-forsvn-preview.ts        # added by review-surface v2 (2026-05-26)
+bun scripts/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun scripts/audit-skill-budget.ts --enforce-caps  # SkillOpt Phase 1.4 — write the report to forsvn/.forsvn/ then re-run with --enforce-caps (flipped ON 2026-05-27 after Phase 1.6 corpus-wide compaction sweep). Fails on any cap violation without a documented BUDGET_EXCEPTION, malformed fence, or skill missing a budget tier.
+bun scripts/lint-description-body-coherence.ts --strict          # SkillOpt Phase 1.3 (added 2026-05-27; --strict flipped on 2026-05-27 after 3 HIGH issues resolved)
 ```
 
 If `lint-artifact-paths` reports legacy paths under `.forsvn/artifacts/`, run `bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree to bring them to the flat v2 grammar.
 
 When `review_surface: html`, the operator can preview + capture the decision with `bun scripts/forsvn-preview.ts <path>.html` — Bun-served localhost CSRF-protected. Roughdraft stays as the escape-hatch path for MD-first reviewers.
+
+### SkillOpt-derived gates — staged enforcement
+
+**Coherence lint (`--strict` ON, 2026-05-27).** Fails the gate on any HIGH-severity router-vs-body divergence. Three HIGH issues from the initial baseline (`write-copy`, `debate-agents`, `research-platform`) were resolved by adding user-facing capability vocabulary to each SKILL.md body. MEDIUM issues stay informational — most are unacknowledged `not_when` sibling references that don't justify blocking PRs.
+
+**Budget audit (`--enforce-caps` ON, 2026-05-27).** Phase 1.6 corpus-wide compaction sweep landed: 31 originally over-cap skills compacted across four tranches (worst-offender first). Aggregate body cost dropped from ~118.8k → ~87.6k tokens (-26%). 8 skills carry documented `BUDGET_EXCEPTION` markers and are filtered out by the enforcement check: 5 eval skills (`evaluate-landing-page`, `evaluate-campaign`, `evaluate-content`, `evaluate-ad`, `research/evaluate-shortform`) carry the artifact-schema-as-contract exception; `meta/discover` retains its Light/Medium/Deep depth-tier exception; `meta/forsvn` carries the front-door routing-surface exception; `marketing/brief-graphic` carries the brief-schema-as-contract exception. `product/build-ios-apps` (vendored Chorus skill, no `budget:` tier) carries its own BUDGET_EXCEPTION so it is skipped by both the cap check and the missing-budget check. Future cap violations fail the gate. The audit still flags any skill missing a `budget:` declaration that lacks a `BUDGET_EXCEPTION` — that's a separate failure class so vendored or hand-authored skills cannot silently bypass enforcement.
+
+Two convention markers SKILL.md authors must respect:
+
+- `<!-- SLOW_UPDATE_START --> ... <!-- SLOW_UPDATE_END -->` — protected region. Step-level edits MUST NOT modify content inside. See [`references/slow-update-fence.md`](references/slow-update-fence.md).
+- `<!-- BUDGET_EXCEPTION: <reason> -->` — placed immediately under the H1 to document a deliberate cap-exception. The audit script's `--enforce-caps` filter skips exception-flagged skills.
+
+Conventions:
+- Tier caps and SKILL.md compactness contract: `references/mode-resolver.md` § "Compactness caps".
+- Slow-update fence syntax + protection contract: `references/slow-update-fence.md`.
+- The lint scripts are intentionally heuristic. End-to-end coherence is verified by per-skill eval sets in Phase 2; static lint catches only the worst structural divergence.

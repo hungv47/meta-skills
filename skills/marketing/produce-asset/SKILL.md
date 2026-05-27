@@ -11,122 +11,84 @@ metadata:
 
 # Produce Asset — Render-Ready Prompt + Manifest Orchestrator
 
-*Production skill. Converts a brief-graphic artifact into a render-ready prompt + asset manifest the operator can run through any image-gen tool, vector tool, or human designer.*
+*Production skill. Converts brief-graphic → render-ready prompt + asset manifest the operator runs through any image-gen tool, vector tool, or human designer.*
 
-**Core Question:** "Can any downstream tool (Midjourney / DALL·E / Imagen / Claude Design / Figma / human designer) produce the right asset from this prompt without a single follow-up question?"
+**Core Question:** "Can any downstream tool (Midjourney / DALL·E / Imagen / Claude Design / Figma / designer) produce the right asset from this prompt without a follow-up question?"
 
-> Tool-agnostic by design — the stack emits render-ready prompts + a manifest and holds no API keys; you run the prompt through your own image engine. See [`references/format-conventions.md`](references/format-conventions.md) for the manifest + prompt schema.
+> Tool-agnostic — emits prompts + manifest, holds no API keys. Schema: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Critical Gates — Read First
 
-Non-negotiable constraints — brief 04 § Production Principle + § Anti-patterns. The shared production-skill contract (tool-agnostic export-mode floor, brand-mark fidelity, lean 2-agent dispatch, pipeline lifecycle) is canonical in [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) [PROCEDURE]:
+Non-negotiable. Full text: [`references/procedures/critical-gates.md`](references/procedures/critical-gates.md) [PROCEDURE].
 
-1. **Tool-agnostic by design.** This stack does not call image-gen APIs, Figma MCP, or any external rendering service — by design, it holds no API keys. The output is a prompt + manifest you run through your own engine. If an upstream caller passes `--publish` or `--api-render`, return `BLOCKED — this stack emits render-ready prompts; it does not call render engines. Run the emitted prompt through your engine.` No silent fall-throughs.
-2. **No hallucinated logos or brand marks.** If `brand/BRAND.md` or `brand/DESIGN.md` references a logo asset that doesn't exist on disk, the prompt MUST instruct the renderer to leave the logo slot as a solid-color placeholder, NEVER to generate a stand-in logo. Critic Gate 3 enforces.
-3. **Aspect ratio + safe zones are spec, not suggestion.** Every prompt carries the platform-aware aspect ratio (1:1 / 4:5 / 9:16 / 16:9 / OOH custom) + safe-zone definition from the brief-graphic artifact. The renderer must produce on-spec output or the asset gets rejected at the manifest's verification step. No silent aspect overrides.
-4. **Copy-to-render preserved verbatim.** When the brief carries copy slots (headline, CTA, captions), the prompt instructs the renderer to render the exact strings — no synonymizing, no "improving" the copy, no font substitutions that compromise legibility. The brief is the source of truth for what the asset says.
+1. **Tool-agnostic.** No image-gen APIs / Figma MCP. `--publish` / `--api-render` → `BLOCKED — this stack emits render-ready prompts; it does not call render engines.`
+2. **No hallucinated logos / brand marks.** Missing logo on disk → solid-color placeholder slot, never a stand-in. Critic Gate 3.
+3. **Aspect ratio + safe zones are spec.** Brief's aspect (1:1 / 4:5 / 9:16 / 16:9 / OOH) + safe zones verbatim into every prompt. No silent overrides.
+4. **Copy-to-render verbatim.** Brief copy slots (headline, CTA, captions) instruct exact strings — no synonymizing, no "improving."
 
-## Inputs
+## Before Starting
 
 | Artifact | Required? | What it provides |
-|----------|-----------|------------------|
-| `.forsvn/artifacts/mkt/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept direction, platform, aspect, safe zones, copy slots, type scale, contrast, file format, image-gen prompt seed (if brief-graphic populated it) |
-| `brand/BRAND.md` | **required** | Voice, archetype, sacred elements (do-not-touch rails for the renderer) |
-| `brand/DESIGN.md` | **required** | Color tokens (hex + token name), type scale, motion permissions if asset is animated, surface conventions (paper / matte / glass-if-permitted) |
-| Target platforms | optional | Defaults to the brief's `target_platforms`; can be overridden if producing for a subset |
-| Render-mode hint | optional | Default: `export-mode` — the prompt is tuned for hand-off to your chosen engine (image-gen API / Figma / human designer) |
+|---|---|---|
+| `.forsvn/artifacts/mkt/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept, platform, aspect, safe zones, copy slots, type scale, file format, prompt seed |
+| `brand/BRAND.md` | **required** | Voice, archetype, sacred elements |
+| `brand/DESIGN.md` | **required** | Color tokens, type scale, motion permissions, surfaces |
+| Target platforms | optional | Defaults to brief's `target_platforms` |
+| Render-mode hint | optional | Default `export-mode` (hand-off to chosen engine) |
 
-If `brand/BRAND.md` or `brand/DESIGN.md` is missing → return `NEEDS_CONTEXT` and defer to `create-brand`.
-If the brief-graphic artifact is missing → return `NEEDS_CONTEXT` and defer to `brief-graphic`.
-
-## Output
-
-Primary artifact: `.forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md` — single-file manifest listing every slot the brief defined, with status (prompt-ready / rendered / approved), file paths for the rendered asset (filled in by the operator after rendering), and verification checklist (aspect, safe zones, legibility, brand-mark fidelity).
-
-Per-slot prompts: `.forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[slot-id].md` — one file per asset slot the brief defined. Each file carries the render-ready prompt body, platform spec injection, copy-to-render, anti-patterns, and (optional) reference-image suggestions.
-
-Full template + field definitions: [`references/format-conventions.md`](references/format-conventions.md).
+Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic). Brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
 
 ## Quality Gate
 
-Single critic agent runs before delivery — `agents/critic-agent.md` enforces brief 04 spec compliance:
+Critic (`agents/critic-agent.md`) verifies brief 04 spec compliance: (1) every brief slot has `prompts/[slot-id].md`, no orphans/extras; (2) aspect + safe-zone verbatim per prompt; (3) hallucinated-logo prohibition + placeholder rule active; (4) copy-to-render verbatim; (5) EXIF / aspect overrides forbidden; (6) manifest verification checklist matches brief spec gates (aspect, safe zones, legibility, brand-mark + color fidelity).
 
-- [ ] Every slot in the brief has a corresponding `prompts/[slot-id].md` (no orphan slots, no extra slots beyond what the brief defined)
-- [ ] Every prompt carries the brief's aspect ratio + safe-zone definition verbatim
-- [ ] Every prompt instructs the renderer to NEVER hallucinate logos / brand marks; placeholder rule active when assets don't exist on disk
-- [ ] Every prompt carries copy-to-render verbatim from the brief (no synonyms, no "improvements")
-- [ ] EXIF / aspect overrides explicitly forbidden in the prompt
-- [ ] Manifest's verification checklist matches the brief's spec gates (aspect, safe zones, legibility, brand-mark fidelity, color fidelity)
+FAIL → re-dispatch prompt-author with feedback (max 2 cycles). PASS twice with operator override → log via `scripts/eval/log-critic-override.ts` per D8 contract.
 
-Critic FAIL → re-dispatch prompt-author-agent with specific feedback (max 2 cycles). Critic PASS twice with operator override → log override via `scripts/eval/log-critic-override.ts` per D8 contract.
+## Agents + Dispatch
 
-## Chain Position
-
-**Previous:** `brief-graphic` (required — the per-asset brief), `create-brand` (required — brand tokens) | **Next:** operator runs the emitted prompts through their chosen renderer; rendered asset feeds future `evaluate-content` / `evaluate-ad` cycles inside a loop.
-
-**Re-run triggers:** brief-graphic re-emitted, brand/DESIGN.md tokens updated, target platforms changed, operator rejected a rendered asset and wants a sharpened prompt.
-
-## Agent Manifest
-
-| Agent | Layer | File | Focus |
-|---|---|---|---|
-| Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-slot prompt with platform spec injection, anti-pattern reminders, copy verbatim |
-| Critic | 2 (final) | `agents/critic-agent.md` | Spec compliance: aspect, safe zones, brand-mark fidelity, copy verbatim, EXIF/aspect-override forbiddance |
-
-Intentionally lean: sequential prompt-author → critic. No parallel Layer 1, no merge step, no variant agent. The work IS the prompt + manifest, not multi-perspective synthesis — deeper orchestration is not warranted. This is the shared 2-agent dispatch — see [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
-
-## Routing + Dispatch
-
-Single route:
-
-```
-ROUTE A (export-mode):
-  1. Pre-Dispatch — read brief-graphic artifact + brand/BRAND.md + brand/DESIGN.md
-  2. Dispatch: prompt-author-agent for EACH slot in the brief (sequential or parallel, operator choice via --parallel flag)
-  3. Dispatch: critic-agent on the assembled manifest + all prompts
-  4. Critic FAIL → re-dispatch prompt-author-agent for the failing slot(s) with feedback (max 2 cycles)
-  5. Critic PASS → write manifest.md + prompts/[slot-id].md files
-  6. Return manifest path + slot count + operator's next-step instruction ("Run the prompts through your chosen renderer; mark the manifest's verification checklist when each slot is on-spec.")
-```
+2 agents, sequential: **Prompt Author** (`agents/prompt-author-agent.md`) per slot → **Critic** (`agents/critic-agent.md`) on assembled manifest. Single route (export-mode). Pseudocode (Pre-Dispatch reads → per-slot dispatch → critic gate → FAIL re-dispatch loop → manifest write → next-step return), re-run triggers, chain position: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Shared 2-agent pattern: [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
 
 ## Artifact Contract
 
-- **Manifest path:** `.forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md`
+- **Manifest:** `.forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md`
 - **Per-slot prompts:** `.forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[slot-id].md`
-- **Lifecycle:** `pipeline` (regenerated by re-running; not canonical)
-- **Frontmatter (manifest):** 9 fields — `skill` / `version` / `date` / `status` / `slug` / `source_brief` / `target_platforms` / `slot_count` / `provenance` (generation-variant per `references/_shared/artifact-contract-template.md`)
-- **Frontmatter (per-slot prompt):** 6 fields — `skill` / `version` / `date` / `slot_id` / `platform` / `aspect_ratio`
-- **Generation provenance:** required. `input_artifacts` lists the brief-graphic path + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until a downstream eval cycle scores the rendered asset.
-- **Cross-stack contract:** consumed by downstream rendering tools (operator-chosen) + future `evaluate-content` / `evaluate-ad` cycles when produced assets are scored against the brief's hypothesis. Schema changes require atomic update across upstream callers (brief-graphic, brief-landing-page) — never silently drift.
+- **Lifecycle:** `pipeline` (regenerated; not canonical)
+- **Frontmatter (manifest):** `skill` / `version` / `date` / `status` / `slug` / `source_brief` / `target_platforms` / `slot_count` / `provenance`
+- **Frontmatter (per-slot prompt):** `skill` / `version` / `date` / `slot_id` / `platform` / `aspect_ratio`
+- **Provenance:** `input_artifacts` = brief-graphic + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until eval scores rendered asset.
+- **Cross-stack:** consumed by downstream renderers + future `evaluate-content` / `evaluate-ad`. Schema changes require atomic update with brief-graphic + brief-landing-page — never silently drift.
 
-Full template + field definitions + per-slot prompt schema: [`references/format-conventions.md`](references/format-conventions.md).
+Full template + per-slot prompt schema: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md). Re-read before any prompt ships. 5 orchestrator-level patterns (skipping brief read, hallucinating logos, silent aspect overrides, copy synonymizing, render-mode misroute) + 4 cross-cutting marketing-stack rows (cross-stack contract drift, brand-system absent → token fabrication, skill-deference miss, artifact schema drift).
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 5 orchestrator (skip brief read, hallucinate logos, silent aspect overrides, copy synonymizing, render-mode misroute) + 4 cross-cutting marketing-stack rows. Most common: copy synonymizing (Gate 4), hallucinated logos (Gate 2).
 
-Most common in practice: copy synonymizing (Critical Gate 4) and hallucinated logos (Critical Gate 2).
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
 End with one status:
 
-- `DONE` — manifest + all per-slot prompts written, critic passed, brief 04 Critical Gates all green
-- `DONE_WITH_CONCERNS` — manifest delivered but critic flagged secondary issues (e.g., one slot's reference-image suggestion was thin)
-- `NEEDS_CONTEXT` — brief-graphic artifact missing OR brand/BRAND.md / brand/DESIGN.md missing OR target platforms not defined
-- `BLOCKED` — `--publish` / `--api-render` requested (this stack emits render-ready prompts; it does not call render engines — run the emitted prompt through your engine); critic FAILed twice on spec compliance
+- `DONE` — manifest + all per-slot prompts written, critic passed, Critical Gates green
+- `DONE_WITH_CONCERNS` — delivered, secondary issues flagged (e.g., thin reference-image suggestion)
+- `NEEDS_CONTEXT` — brief-graphic OR brand files missing, or target platforms undefined
+- `BLOCKED` — `--publish` / `--api-render` requested, OR critic FAILed twice
 
 ## Next Step
 
-Operator runs the emitted prompts through their chosen renderer (Midjourney / DALL·E / Imagen / Claude Design / Figma / human designer). After each render, operator marks the manifest's verification checklist for that slot. When all slots are verified on-spec, the rendered assets are ready for downstream eval cycles (future `evaluate-content` / `evaluate-ad` inside a loop).
+Operator runs emitted prompts through chosen renderer (Midjourney / DALL·E / Imagen / Claude Design / Figma / designer); marks each slot in the manifest's verification checklist on render. Once all on-spec, assets feed downstream eval cycles (`evaluate-content` / `evaluate-ad`).
 
 ## References
 
-- **Shared:** `references/_shared/{production-pattern, eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md` (synced via `scripts/sync-skill-support.mjs`)
-- **Frameworks** (`references/`): `format-conventions.md` (manifest + per-slot prompt schema), `anti-patterns.md` (5 orchestrator + 4 cross-cutting rows)
-- **Agents (`agents/`):** 2 agents — see Agent Manifest above
-- **Upstream:** `skills/marketing/brief-graphic/` (the brief this skill consumes); `skills/marketing/create-brand/` (brand tokens this skill respects)
+- `references/procedures/{critical-gates, dispatch-mechanics}.md`
+- `references/{format-conventions, anti-patterns}.md`
+- `references/_shared/{production-pattern, eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md`
+- Upstream: `skills/marketing/{brief-graphic, create-brand}/`
 
-## Worked Example (deferred)
-
-End-to-end Route A walkthrough (Instagram carousel from a brief-graphic artifact through manifest + 5 per-slot prompts + critic PASS) is deferred to a follow-up — v1 ships the skill scaffold; worked examples land when the first real produce-asset run completes in a project.
+Worked example deferred until first real run.

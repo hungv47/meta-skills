@@ -11,46 +11,40 @@ metadata:
 
 # Problem Analysis — Orchestrator
 
-*Strategy — Step 1 of 4. Defines the problem, forms testable hypotheses, and identifies root causes.*
+*Strategy — Step 1 of 4. Defines the business problem, builds falsifiable reasoning via testable hypotheses, and identifies root-cause with evidence-backed tests.*
 
 **Core Question:** "What's actually causing this, and what does the evidence prove?"
 
-[Read [`references/playbook.md`](references/playbook.md) [PLAYBOOK] for why this skill exists, the Watanabe MECE philosophy, 3-tree-type calibration, always-cold-start rationale, 10-gate quality summary, Inconclusive-is-valid philosophy, external-factor scan rationale, and when NOT to use.]
+> Why this skill exists, Watanabe MECE philosophy, 3-tree-type calibration, always-cold-start rationale, 10-gate quality summary, Inconclusive-is-valid philosophy, external-factor 6-factor rationale, when NOT to use: [`references/playbook.md`](references/playbook.md) [PLAYBOOK].
 
 ---
 
 ## Critical Gates — Read First
 
-1. **Problem statement MUST be: "[Metric] is [current] instead of [target]."** No vague problems. If the user says "things aren't going well," interview for the specific metric, current value, and target value before dispatching any agent.
-2. **Do NOT skip external factors — 30%+ of problems have external causes.** The external-check-agent runs in Layer 1 alongside the tree builder. Skipping it leads to treating a symptom when the cause is environmental.
-3. **If/Then/Because format required — hypotheses without "because" are unfalsifiable.** The "because" clause explains the mechanism. Without it, a rejected hypothesis teaches nothing.
+1. **Problem statement MUST be: "[Metric] is [current] instead of [target]."** No vague business problems. If the user says "things aren't going well," interview for the specific metric, current value, and target value before dispatching any agent.
+2. **Do NOT skip external factors — 30%+ of problems have external root-causes.** The external-check-agent runs in Layer 1 alongside the tree builder. Skipping it leads to treating a symptom when the cause is environmental.
+3. **If/Then/Because format required — hypotheses without "because" are unfalsifiable.** The "because" clause is the reasoning mechanism. Without it, a rejected hypothesis teaches nothing and the tests prove nothing.
 4. **Do NOT confirm hypotheses without evidence — "seems likely" is not Confirmed.** Every verdict must cite a specific data point that matches or contradicts the "then" clause. Inconclusive is a valid verdict.
 
 ---
 
 ## Before Starting
 
-Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
+Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK], then run the diagnose-specific pre-flight per [`references/procedures/before-starting.md`](references/procedures/before-starting.md) [PROCEDURE] — mode resolution (Cold Start STILL fires under `--fast`), canonical-path check, prior-run staleness signal, then Pre-Dispatch entry.
 
-0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` collapses the critic gate to a single pass within the chosen route — it does NOT auto-trigger Route A. Route A is a user-confirmation gate (operator must explicitly confirm skipping the external-factor scan per original semantics, preserving Critical Gate 2). **Cold Start STILL fires under `--fast`** (diagnose ALWAYS cold-starts — the 4 questions ARE the work; safety gates supersede mode-resolver downgrade).
-1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/diagnose-*.md`).
-2. Read `.forsvn/index/manifest.json` — find any prior `diagnose-*.md` for the same metric (re-run signal). Original SKILL.md "Re-run triggers" (metric shifts significantly, new data surfaces, prioritize initiative killed) are operator-judgment — do not auto-emit staleness warnings.
-3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — always-cold-start contract, 4-question Cold Start prompt, read order, staleness check, Write-back map (Q1-Q4 → goals.md, verbatim from original — Q1-Q3 persist, Q4 does NOT) all there.
+Pre-Dispatch detail (always-cold-start contract, 4-question Cold Start prompt, read order, Write-back map Q1-Q4 → goals.md verbatim): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
 
 ---
 
 ## Artifact Contract
 
 - **Path:** `.forsvn/artifacts/meta-diagnose-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one per metric; re-run renames prior with `.v[N]` suffix and increments)
-- **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy)
-- **Frontmatter fields:** `skill`, `version` (integer, increment on re-run), `date` (ISO-8601), `status` (per Completion Status below), `stack` (=meta — diagnose produces meta-stack records), `review_surface` (=none — snapshot lifecycle defaults to `decision_state: not_required`). See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
-- **Required body sections (in order — cross-stack contract):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block (full schemas in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE])
-- **Optional sections (append only when applicable):** Known Issues · Change Log
-- **Side effects (mandatory on PASS or done_with_concerns per `procedures/dispatch-mechanics.md`):**
-  - Goals write-back per `procedures/pre-dispatch.md` Write-back map: Q1 (Metric), Q2 (Current), Q3 (Target) append to `experience/goals.md`. **Q4 (Tried) is NOT persisted** — diagnostic-specific, lives in diagnose.md snapshot only. Preserved verbatim from original SKILL.md.
-  - Rename any prior `diagnose-*.md` for the same metric to `diagnose.v[N].md`
-- **Consumed by:** `prioritize` (Root Cause Statement feeds Initiative hypothesis "because" clauses — hard-gated upstream); `plan-funnel` (Root Cause Statement baselines feed Target Table); `plan-campaign` (Root Cause + Verdicts filter which initiatives need channel-level execution); future `diagnose` re-runs (prior tree as context, not replacement)
-- **Cross-stack OUTPUT contract:** Phase 1/2/3 schemas + Verdict Table column schema + Next Step block + Logic Tree code-fence are all load-bearing — schema changes require atomic update of consumers (per `anti-patterns.md` row "Cross-stack contract drift")
+- **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy); `review_surface: none`; `decision_state: not_required`
+- **Frontmatter:** `skill`, `version` (integer, increment on re-run), `date`, `status`, `stack: meta`, `review_surface: none`. Schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
+- **Required body sections (cross-stack contract — load-bearing):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block. Full schemas + Logic Tree code-fence + Verdict Table columns in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. Optional: Known Issues · Change Log.
+- **Side effects (mandatory on PASS / done_with_concerns):** Goals write-back (Q1 Metric, Q2 Current, Q3 Target append to `experience/goals.md`; **Q4 Tried NOT persisted** — lives in snapshot only). Rename any prior `diagnose-*.md` for same metric to `diagnose.v[N].md`. Mechanics: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
+- **Consumed by:** `prioritize` (Root Cause feeds Initiative "because" clauses — hard-gated); `plan-funnel` (Root Cause baselines feed Target Table); `plan-campaign` (Root Cause + Verdicts filter channel-level execution); future `diagnose` re-runs (prior tree as context).
+- **Cross-stack contract:** Phase 1/2/3 schemas + Verdict Table columns + Next Step block + Logic Tree code-fence — schema changes require atomic consumer update (see `anti-patterns.md` "Cross-stack contract drift").
 
 ---
 
@@ -58,12 +52,12 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 | # | Agent | Layer | Focus |
 |---|-------|-------|-------|
-| 1 | [tree-builder-agent](agents/tree-builder-agent.md) | L1 (parallel) | MECE logic tree construction (Math/Issue/Yes-No) — 2-3 levels, ≥3 leaves |
-| 2 | [external-check-agent](agents/external-check-agent.md) | L1 (parallel) | 6-factor external scan via WebSearch (competitor, market/seasonal, platform, regulatory, technology, macro-economic) |
-| 3 | [hypothesis-agent](agents/hypothesis-agent.md) | L2 (sequential) | If/Then/Because hypothesis formation; ranked by testability (speed × gap explained) |
+| 1 | [tree-builder-agent](agents/tree-builder-agent.md) | L1 (parallel) | MECE logic tree (Math/Issue/Yes-No) — 2-3 levels, ≥3 leaves |
+| 2 | [external-check-agent](agents/external-check-agent.md) | L1 (parallel) | 6-factor external scan via WebSearch (competitor, market/seasonal, platform, regulatory, technology, macro) |
+| 3 | [hypothesis-agent](agents/hypothesis-agent.md) | L2 (sequential) | If/Then/Because formation; ranked by testability (speed × gap explained) |
 | 4 | [data-mapper-agent](agents/data-mapper-agent.md) | L2 (sequential) | Data requirement table (deciding data, source, owner, confirming, rejecting) |
-| 5 | [verdict-agent](agents/verdict-agent.md) | L2 (sequential) | Evidence evaluation + root cause statement with gap percentages summing to ~100%; 3-strikes escalation if all Rejected |
-| 6 | [critic-agent](agents/critic-agent.md) | L2 (final) | 10-point quality gate (full rubric + failure routing table in `agents/critic-agent.md`). Max 2 rewrite cycles |
+| 5 | [verdict-agent](agents/verdict-agent.md) | L2 (sequential) | Evidence evaluation + root cause statement with gap %s summing to ~100%; 3-strikes escalation |
+| 6 | [critic-agent](agents/critic-agent.md) | L2 (final) | 10-point quality gate (rubric + failure routing in `agents/critic-agent.md`). Max 2 rewrite cycles |
 
 ---
 
@@ -74,19 +68,26 @@ Two routes; chosen after Cold Start (the 4 questions always fire) and echoed in 
 | Route | When | Graph |
 |---|---|---|
 | **B — Full Analysis** (default) | Non-trivial metric decline or strategic problem | L1 parallel (tree-builder + external-check) → merge → L2 sequential (hypothesis → data-mapper → [Data Gathering Pause] → verdict → critic) |
-| **A — Quick Diagnosis** | User already provides data inline AND problem is clearly internal AND user CONFIRMS skipping external scan (per original Route A semantics — preserves Critical Gate 2) | hypothesis → data-mapper → Data Gathering Pause → verdict → critic (skip tree-builder + external-check) |
+| **A — Quick Diagnosis** | User provides data inline AND problem clearly internal AND user CONFIRMS skipping external scan (preserves Critical Gate 2) | hypothesis → data-mapper → Data Gathering Pause → verdict → critic |
 
 **Data Gathering Pause is NON-SKIPPABLE in both routes.** Verdicts without evidence are speculation; critic Gate 9 will FAIL.
 
-Mechanics (Route Selection, Layer 1/2 spawn details, merge step, Data Gathering Pause handling, critic FAIL routing, Inconclusive Handling rules, 3-strikes escalation, post-write side effects, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
+Mechanics (Route Selection, Layer 1/2 spawn, merge, Pause handling, critic FAIL routing, Inconclusive Handling, 3-strikes escalation, post-write side effects, chain position, skill deference): [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 
 ---
 
 ## Anti-Patterns
 
-Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — 13-pattern catalog (covered by critic gates 1-10 in `agents/critic-agent.md` plus 3 Additional Checks for correlation/3-strikes/external-factors) plus 2 cross-cutting failures (cross-stack contract drift + goals write-back skipped) caught by operator review and post-write side effects respectively. Verified agent ownership against critic-agent.md Failure Routing table.
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 13-pattern catalog (covered by critic gates 1-10 in `agents/critic-agent.md` plus 3 Additional Checks for correlation/3-strikes/external-factors) + 2 cross-cutting failures (cross-stack contract drift + goals write-back skipped). Re-read before any output ships.
 
 ---
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -97,22 +98,19 @@ Every run ends with explicit status:
 - **BLOCKED** — metric/baseline cannot be obtained from any source (data unavailable, access denied, or measurement undefined); analysis would be speculation
 - **NEEDS_CONTEXT** — problem statement missing the metric+current+target triad required for dispatch; ask the user before invoking agents
 
+## Next Step
+
+After verdict + root cause ship: hand to `prioritize` for initiative selection (Root Cause Statement is the hard-gated input). For metric-tracking initiatives, also feed `plan-funnel` baselines. Re-run `diagnose` when the metric shifts significantly or new data surfaces (operator-judgment, not auto-flagged).
+
 ---
 
 ## References
 
-| Reference | Load class | Use For |
-|---|---|---|
-| [playbook.md](references/playbook.md) | PLAYBOOK | Why this skill exists, Watanabe MECE, 3-tree-type calibration, always-cold-start rationale, 10-gate summary, Inconclusive-is-valid philosophy, external-factor 6-factor list, when NOT to use |
-| [_shared/before-starting-check.md](references/_shared/before-starting-check.md) | PLAYBOOK | Pre-Pre-Dispatch read pattern (canonical at `references/`, synced) |
-| [_shared/mode-resolver.md](references/_shared/mode-resolver.md) | PROCEDURE | `--fast` / `--deep` behavior contract |
-| [_shared/pre-dispatch-protocol.md](references/_shared/pre-dispatch-protocol.md) | PROCEDURE | Canonical Pre-Dispatch spec |
-| [_shared/hypothesis-framework.md](references/_shared/hypothesis-framework.md) | PROCEDURE | If/Then/Because structure (use Framing A — Diagnostic) |
-| [procedures/pre-dispatch.md](references/procedures/pre-dispatch.md) | PROCEDURE | Always-cold-start contract, 4-question Cold Start prompt, read order, staleness check, Write-back map (Q1-Q4 → goals.md verbatim) |
-| [procedures/dispatch-mechanics.md](references/procedures/dispatch-mechanics.md) | PROCEDURE | Route A/B details, Layer 1/2 spawn mechanics, merge step, Data Gathering Pause, critic FAIL routing, Inconclusive Handling, 3-strikes escalation, post-write side effects, chain position, skill deference |
-| [format-conventions.md](references/format-conventions.md) | PROCEDURE | Artifact template, Logic Tree code-fence, Phase 1/2/3 schemas, Next Step block, date/number/citation format |
-| [examples/diagnose-walkthrough.md](references/examples/diagnose-walkthrough.md) | EXAMPLE | Full Route B walkthrough on signup decline case (10 critic gates traced through) |
-| [anti-patterns.md](references/anti-patterns.md) | ANTI-PATTERN | 13 named anti-patterns (verified agent ownership against critic-agent.md) + 2 cross-cutting failures, with detection + bad/good examples + fixes |
-| [watanabe-framework.md](references/watanabe-framework.md) | data catalog | MECE principles, tree-building methodology |
-| [logic-tree-examples.md](references/logic-tree-examples.md) | data catalog | 4 worked logic trees (SaaS churn, e-commerce, content ROI, B2B pipeline) |
-| `research-skills/CLAUDE.md` | reference | Stack-level conventions (Pre-Dispatch Protocol, Complexity Routing, Multi-Agent Skills) |
+- `references/playbook.md` [PLAYBOOK] — philosophy, 3-tree calibration, when NOT to use
+- `references/format-conventions.md` [PROCEDURE] — artifact template, Phase 1/2/3 schemas, Logic Tree code-fence, Next Step block
+- `references/anti-patterns.md` [ANTI-PATTERN] — 13 patterns + 2 cross-cutting failures
+- `references/procedures/{before-starting, pre-dispatch, dispatch-mechanics}.md` [PROCEDURE] — pre-flight, Cold Start, routes, Pause handling
+- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, hypothesis-framework, artifact-contract-template}.md`
+- `references/examples/diagnose-walkthrough.md` [EXAMPLE] — full Route B walkthrough on signup decline (10 critic gates traced)
+- `references/{watanabe-framework, logic-tree-examples}.md` — MECE methodology + 4 worked trees (SaaS churn, e-commerce, content ROI, B2B pipeline)
+- `research-skills/CLAUDE.md` — stack-level conventions

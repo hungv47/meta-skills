@@ -93,6 +93,13 @@ Full template + filename conventions + version-increment rule: [`references/repo
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before applying any deletion that smells off — bulk, auth-bearing, mid-process, shell-rc-referenced, package manager + data split. "When NOT to nuke" + bulk-action pause triggers also live there.
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 - **DONE** — all approved removals executed, totals reported (`total_reclaimed`), no orphaned references in shell-rcs.

@@ -32,24 +32,19 @@ Transforms product specifications into a technical blueprint covering stack, sch
 
 ## Before Starting
 
-Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
+| Artifact | Source | Required? |
+|---|---|---|
+| `research/product-context.md` | research-icp | Recommended — product dims, voice, constraints |
+| `.forsvn/artifacts/meta/specs/*.md` | spec/PRD | Recommended — feature scope |
+| `.forsvn/artifacts/product/flow/*.md` | map-user-flow | Recommended — user types + flows |
+| `.forsvn/experience/technical.md` | (any skill) | Optional — stack history + constraints |
+| `.forsvn/index/manifest.json` | system | Optional — prior runs + downstream task state |
 
-- **Mode resolution** — `budget: deep`. Auto-downgrades to `fast` for simple products (<3 user types AND <5 data entities) → Single-Agent Fallback. `--fast` forces single-agent regardless of scope. **All 8 Critical Gates fire in every mode.**
-- Read `research/product-context.md`. Missing → interview for product dimensions or recommend `/research-icp`. `date` >30 days → recommend refresh.
-- Read `.forsvn/index/manifest.json` for prior runs + downstream task state.
-- Read `.forsvn/experience/technical.md` for stack history + constraints.
+Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). `--fast` forces single-agent regardless of scope; All 8 Critical Gates fire in every mode.
 
 ## Pre-Dispatch
 
-Run [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). Needed dimensions: spec/PRD reference, scale targets (users / RPS / data), constraints (budget / team skills / latency / compliance), deployment context (greenfield / brownfield / migration).
-
-Read order:
-
-1. Pipeline: `.forsvn/artifacts/meta/specs/*.md`, `.forsvn/artifacts/meta/sketches/prioritize-*.md`, `.forsvn/artifacts/product/flow/*.md`, existing `architecture/system-architecture.md` (if re-run).
-2. Codebase: package manifest, existing schema files, framework signals.
-3. Experience: `.forsvn/experience/technical.md` for stack history + constraints.
-
-Warm Start, Cold Start, and the 8-question Architecture Interview live in [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md).
+Run [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). Needed dimensions: spec/PRD reference, scale targets (users / RPS / data), constraints (budget / team skills / latency / compliance), deployment context (greenfield / brownfield / migration). Full read-order + interview prompts: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 ## Critical Gates — all 8 fire in every mode
 
@@ -70,10 +65,10 @@ Failure → critic identifies which agent must fix it; orchestrator re-dispatche
 
 - **Path:** `architecture/system-architecture.md` (active); prior runs renamed `system-architecture.v[N].md`.
 - **Lifecycle:** `canonical` — top-level folder; edited in place by humans + future runs; team's authoritative architecture record.
-- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=html — canonical architecture gets the FIRE-themed HTML preview while `decision_state: pending`), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
+- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=html — FIRE-themed HTML preview while `decision_state: pending`), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** 12 sections (§1 Overview → §12 Security Review) + §12a STRIDE + §12b OWASP + §12d false-positive log. §12c LLM/AI Security conditional. Not Included + Open Questions when applicable.
-- **Consumed by:** `breakdown-tasks` (decomposes architecture into tasks), `review-work` (post-implementation review), `clean-code` (preserves boundaries), `forsvn` (state detection), operator.
-- **Review-gated:** write review frontmatter + `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); when `review_surface: html`, emit the co-located FIRE-themed HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `decision_state` defaults to `pending` (enum: `pending \| approved \| denied \| suggested \| not_required`). `status` (skill quality) and `decision_state` (human acceptance) are independent — `status: done` + `decision_state: pending` is valid.
+- **Consumed by:** `breakdown-tasks`, `review-work`, `clean-code`, `forsvn`, operator.
+- **Review-gated:** write review frontmatter + `## Review Gate` block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); when `review_surface: html`, emit FIRE-themed HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `decision_state` defaults to `pending` (enum: `pending | approved | denied | suggested | not_required`). `status` (skill quality) and `decision_state` (human acceptance) are independent.
 
 Full template + section content + version-increment rule: [`references/report-template.md`](references/report-template.md).
 
@@ -83,60 +78,20 @@ Previous: `/discover` or `/map-user-flow` (optional, both sharpen output) | Next
 
 Re-run triggers: product spec changes significantly, scale requirements change (10x growth), migrating core infrastructure, adding major new integrations.
 
-## Multi-Agent Architecture
+## Dispatch
 
-7 agents per [`references/agent-manifest.md`](references/agent-manifest.md): stack-selection · infrastructure · schema · api · integration · scaling · critic. Per-agent role + file paths in the manifest.
-
-### Execution Layers
-
-```
-Layer 1 (parallel):
-  stack-selection-agent ──┐
-  infrastructure-agent ───┘─── run simultaneously
-
-Layer 2 (sequential):
-  schema-agent ─────────────── depends on stack choice
-    → api-agent ────────────── depends on stack + schema
-      → integration-agent ──── depends on stack + schema + API
-        → scaling-agent ────── validates everything above
-          → critic-agent ───── final quality review
-```
-
-### Dispatch Protocol
-
-1. **Gather context** — extract user types, data entities, critical flows, scale profile, constraints from the spec. Missing → run Architecture Interview ([`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md)).
-2. **Layer 1 dispatch** — brief + constraints to `stack-selection-agent` and `infrastructure-agent` in parallel.
-3. **Layer 2 sequential chain** — stack → schema → api → integration → scaling.
-4. **Critic review** — verifies all 8 Critical Gates.
-5. **Revision loop** — critic FAIL → re-dispatch affected agents with feedback. Max 2 rounds; remaining issues → `## Open Questions`.
-6. **Assembly** — merge into 12-section artifact per [`references/report-template.md`](references/report-template.md). Save to `architecture/system-architecture.md`.
-
-### Routing Logic
-
-| Condition | Route |
-|---|---|
-| User provides tech stack upfront | Skip stack-selection-agent; pass user's stack to schema-agent (Mode 1) |
-| User needs stack recommendations | Run stack-selection-agent first (Mode 2) |
-| Critic returns PASS | Assemble and deliver |
-| Critic returns FAIL | Re-dispatch only the agents cited in critic's issues |
-| Revision round > 2 | Deliver with remaining issues as Open Questions |
-
-Annotated full-stack walkthrough (SaaS invoicing, all 7 agents + critic decisions + trade-offs): [`references/examples/saas-invoicing-walkthrough.md`](references/examples/saas-invoicing-walkthrough.md).
-
-## Single-Agent Fallback
-
-Used when mode-resolver downgrades to `fast` (simple product OR `--fast` flag):
-
-1. Skip multi-agent dispatch.
-2. Sequential execution: gather context → make architecture decisions (use `references/tech-stack-patterns.md` + `references/tech-stack-matrix.md`) → generate all 12 sections → cross-reference validation.
-3. Run 8 Critical Gates checklist as self-review.
-4. Save to `architecture/system-architecture.md`.
-
-All 8 Critical Gates + Pre-Dispatch context gate fire in fallback mode — safety contract is mode-independent.
+Multi-agent default (7 agents: stack-selection · infrastructure · schema · api · integration · scaling · critic). Single-agent fallback when mode-resolver downgrades to `fast`. Full execution layers, dispatch protocol, routing logic, and fallback steps: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md). Per-agent role + file paths: [`references/agent-manifest.md`](references/agent-manifest.md).
 
 ## Anti-Patterns
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) at every doubt — premature microservices, schema without queries, auth-as-afterthought, missing error states, "we'll add monitoring later," over-engineering for scale. Revision-loop handling + when-to-defer-instead-of-architecting also live there.
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -145,10 +100,15 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) at every doubt
 - **BLOCKED** — requirements contradict (budget vs scale, latency vs cost); needs user trade-off decision.
 - **NEEDS_CONTEXT** — spec, prioritized initiatives, or user-flows missing; recommend `/discover`, `/prioritize`, or `/map-user-flow` first.
 
+## Next Step
+
+After delivery: human reviews via FIRE HTML preview or roughdraft, sets `decision_state`. Approved → dispatch `/breakdown-tasks` to decompose into tasks. Suggested edits → re-run with feedback. Denied → loop back to `/discover` or `/map-user-flow`.
+
 ## References
 
+- [`references/procedures/{pre-dispatch, dispatch-mechanics}.md`](references/procedures/)
 - [`references/playbook.md`](references/playbook.md), [`references/agent-manifest.md`](references/agent-manifest.md), [`references/anti-patterns.md`](references/anti-patterns.md), [`references/report-template.md`](references/report-template.md)
-- [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md), [`before-starting-check.md`](references/_shared/before-starting-check.md), [`mode-resolver.md`](references/_shared/mode-resolver.md)
+- [`references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver}.md`](references/_shared/)
 - [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md), [`dependency-classification.md`](references/dependency-classification.md)
 - Pattern catalogs (agent-consumed): [`tech-stack-patterns.md`](references/tech-stack-patterns.md), [`tech-stack-matrix.md`](references/tech-stack-matrix.md), [`file-structure-patterns.md`](references/file-structure-patterns.md), [`database-patterns.md`](references/database-patterns.md), [`api-patterns.md`](references/api-patterns.md), [`auth-patterns.md`](references/auth-patterns.md), [`deployment-patterns.md`](references/deployment-patterns.md), [`failure-modes.md`](references/failure-modes.md), [`interaction-edge-cases.md`](references/interaction-edge-cases.md), [`security-patterns.md`](references/security-patterns.md)
 - Walkthrough: [`references/examples/saas-invoicing-walkthrough.md`](references/examples/saas-invoicing-walkthrough.md)

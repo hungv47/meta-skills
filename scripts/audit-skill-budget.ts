@@ -19,6 +19,13 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const DOMAINS = ["meta", "research", "marketing", "product"];
 
+type Tier = "fast" | "standard" | "deep";
+
+type FenceState =
+  | { kind: "missing" }
+  | { kind: "ok"; openIndex: number; closeIndex: number }
+  | { kind: "malformed"; reason: string };
+
 type SkillBudget = {
   domain: string;
   id: string;
@@ -31,10 +38,52 @@ type SkillBudget = {
   promptSignalPhrases: string[];
   hasRoutingYaml: boolean;
   hasCapabilitySection: boolean;
+  budget: Tier | null;
+  fence: FenceState;
+  budgetException: string | null;
+};
+
+const TIER_CAPS: Record<Tier, number> = {
+  fast: 800,
+  standard: 1500,
+  deep: 2500,
 };
 
 function estimateTokens(chars: number): number {
   return Math.ceil(chars / 4);
+}
+
+function extractBudget(frontmatter: string): Tier | null {
+  // Matches `budget: deep` anywhere in frontmatter (top-level or nested
+  // under metadata:). YAML indent is not significant here; we only need the
+  // value, and the field name is unique enough across the codebase.
+  const match = frontmatter.match(/^\s*budget:\s*(["']?)(fast|standard|deep)\1\s*$/m);
+  if (!match) return null;
+  return match[2] as Tier;
+}
+
+function detectFence(body: string): FenceState {
+  const openRe = /<!--\s*SLOW_UPDATE_START\s*-->/g;
+  const closeRe = /<!--\s*SLOW_UPDATE_END\s*-->/g;
+  const opens = [...body.matchAll(openRe)];
+  const closes = [...body.matchAll(closeRe)];
+  if (opens.length === 0 && closes.length === 0) return { kind: "missing" };
+  if (opens.length > 1) return { kind: "malformed", reason: "multiple SLOW_UPDATE_START markers" };
+  if (closes.length > 1) return { kind: "malformed", reason: "multiple SLOW_UPDATE_END markers" };
+  if (opens.length !== closes.length) {
+    return { kind: "malformed", reason: "unmatched SLOW_UPDATE markers" };
+  }
+  const openIndex = opens[0].index ?? -1;
+  const closeIndex = closes[0].index ?? -1;
+  if (closeIndex < openIndex) {
+    return { kind: "malformed", reason: "SLOW_UPDATE_END appears before SLOW_UPDATE_START" };
+  }
+  return { kind: "ok", openIndex, closeIndex };
+}
+
+function extractBudgetException(body: string): string | null {
+  const match = body.match(/<!--\s*BUDGET_EXCEPTION:\s*(.+?)\s*-->/);
+  return match ? match[1].trim() : null;
 }
 
 function splitFrontmatter(text: string): { frontmatter: string; body: string } {
@@ -126,6 +175,9 @@ function gatherSkills(): SkillBudget[] {
         promptSignalPhrases,
         hasRoutingYaml: existsSync(routingPath),
         hasCapabilitySection,
+        budget: extractBudget(frontmatter),
+        fence: detectFence(body),
+        budgetException: extractBudgetException(body),
       });
     }
   }
@@ -145,6 +197,62 @@ function findDuplicatePhrases(skills: SkillBudget[]): Map<string, string[]> {
     if (owners.length < 2) map.delete(phrase);
   }
   return map;
+}
+
+type CapViolation = {
+  skill: string;
+  budget: Tier;
+  cap: number;
+  tokens: number;
+  exception: string | null;
+};
+
+type FenceIssue = {
+  skill: string;
+  kind: "missing" | "malformed";
+  reason?: string;
+};
+
+function checkCapViolations(skills: SkillBudget[]): CapViolation[] {
+  const violations: CapViolation[] = [];
+  for (const skill of skills) {
+    if (!skill.budget) continue;
+    const cap = TIER_CAPS[skill.budget];
+    if (skill.bodyTokensEstimate > cap) {
+      violations.push({
+        skill: `${skill.domain}/${skill.id}`,
+        budget: skill.budget,
+        cap,
+        tokens: skill.bodyTokensEstimate,
+        exception: skill.budgetException,
+      });
+    }
+  }
+  return violations;
+}
+
+// Skills with no `budget:` field silently bypass --enforce-caps, which lets a
+// vendored or hand-authored skill skip the gate entirely. Treat missing tier
+// as a violation in its own right — operator must declare a tier or attach a
+// BUDGET_EXCEPTION explaining why none applies.
+function checkMissingBudget(skills: SkillBudget[]): SkillBudget[] {
+  return skills.filter((s) => !s.budget && !s.budgetException);
+}
+
+function checkFenceIssues(skills: SkillBudget[]): FenceIssue[] {
+  const issues: FenceIssue[] = [];
+  for (const skill of skills) {
+    if (skill.fence.kind === "missing") {
+      issues.push({ skill: `${skill.domain}/${skill.id}`, kind: "missing" });
+    } else if (skill.fence.kind === "malformed") {
+      issues.push({
+        skill: `${skill.domain}/${skill.id}`,
+        kind: "malformed",
+        reason: skill.fence.reason,
+      });
+    }
+  }
+  return issues;
 }
 
 function formatHumanReport(skills: SkillBudget[]): string {
@@ -224,13 +332,59 @@ function formatHumanReport(skills: SkillBudget[]): string {
     }
     lines.push("");
   }
+  const capViolations = checkCapViolations(skills);
+  const fenceIssues = checkFenceIssues(skills);
+
+  lines.push("## Tier compactness caps");
+  lines.push("");
+  lines.push("Caps per `references/mode-resolver.md` § \"Compactness caps\":");
+  lines.push("");
+  lines.push("| Tier | Body cap (tokens) |");
+  lines.push("|---|---:|");
+  lines.push(`| fast | ${TIER_CAPS.fast} |`);
+  lines.push(`| standard | ${TIER_CAPS.standard} |`);
+  lines.push(`| deep | ${TIER_CAPS.deep} |`);
+  lines.push("");
+  if (capViolations.length === 0) {
+    lines.push("No cap violations.");
+  } else {
+    lines.push(`Cap violations: ${capViolations.length}`);
+    lines.push("");
+    lines.push("| Skill | Budget | Cap | Tokens~ | Over by | Exception |");
+    lines.push("|---|:---:|---:|---:|---:|---|");
+    for (const v of capViolations) {
+      lines.push(
+        `| ${v.skill} | ${v.budget} | ${v.cap} | ${v.tokens} | ${v.tokens - v.cap} | ${v.exception ?? ""} |`,
+      );
+    }
+  }
+  lines.push("");
+
+  lines.push("## Slow-update fence");
+  lines.push("");
+  lines.push("Convention per `references/slow-update-fence.md`.");
+  lines.push("");
+  const missing = fenceIssues.filter((i) => i.kind === "missing");
+  const malformed = fenceIssues.filter((i) => i.kind === "malformed");
+  lines.push(`Skills missing fence: ${missing.length} / ${skills.length}`);
+  if (malformed.length > 0) {
+    lines.push("");
+    lines.push(`Malformed fences: ${malformed.length}`);
+    for (const issue of malformed) {
+      lines.push(`- ${issue.skill}: ${issue.reason}`);
+    }
+  }
+  lines.push("");
+
   lines.push("## Per-skill breakdown");
   lines.push("");
-  lines.push("| Skill | DescChars | BodyChars | BodyTokens~ | BodyLines | Phrases | Capability |");
-  lines.push("|---|---:|---:|---:|---:|---:|:---:|");
+  lines.push("| Skill | Tier | DescChars | BodyChars | BodyTokens~ | BodyLines | Phrases | Capability | Fence |");
+  lines.push("|---|:---:|---:|---:|---:|---:|---:|:---:|:---:|");
   for (const skill of skills) {
+    const fenceMark =
+      skill.fence.kind === "ok" ? "Y" : skill.fence.kind === "malformed" ? "!" : "";
     lines.push(
-      `| ${skill.domain}/${skill.id} | ${skill.descriptionChars} | ${skill.bodyChars} | ${skill.bodyTokensEstimate} | ${skill.bodyLines} | ${skill.promptSignalPhrases.length} | ${skill.hasCapabilitySection ? "Y" : ""} |`,
+      `| ${skill.domain}/${skill.id} | ${skill.budget ?? "?"} | ${skill.descriptionChars} | ${skill.bodyChars} | ${skill.bodyTokensEstimate} | ${skill.bodyLines} | ${skill.promptSignalPhrases.length} | ${skill.hasCapabilitySection ? "Y" : ""} | ${fenceMark} |`,
     );
   }
   lines.push("");
@@ -240,6 +394,7 @@ function formatHumanReport(skills: SkillBudget[]): string {
 function main(): void {
   const skills = gatherSkills();
   const json = process.argv.includes("--json");
+  const enforceCaps = process.argv.includes("--enforce-caps");
   const outArg = process.argv.find((arg) => arg.startsWith("--out="));
 
   if (json) {
@@ -252,9 +407,29 @@ function main(): void {
     const target = join(ROOT, outArg.slice("--out=".length));
     writeFileSync(target, report);
     console.log(`[audit-skill-budget] Wrote report to ${outArg.slice("--out=".length)}.`);
-    return;
+  } else {
+    process.stdout.write(report);
   }
-  process.stdout.write(report);
+
+  if (enforceCaps) {
+    const violations = checkCapViolations(skills).filter((v) => v.exception === null);
+    const malformed = checkFenceIssues(skills).filter((i) => i.kind === "malformed");
+    const missingBudget = checkMissingBudget(skills);
+    if (violations.length > 0 || malformed.length > 0 || missingBudget.length > 0) {
+      console.error("");
+      console.error(`[audit-skill-budget] FAIL — ${violations.length} cap violation(s), ${malformed.length} malformed fence(s), ${missingBudget.length} skill(s) missing budget tier.`);
+      for (const v of violations) {
+        console.error(`  ${v.skill}: ${v.tokens} tokens > ${v.cap} cap (${v.budget})`);
+      }
+      for (const m of malformed) {
+        console.error(`  ${m.skill}: ${m.reason}`);
+      }
+      for (const s of missingBudget) {
+        console.error(`  ${s.domain}/${s.id}: no budget tier declared (declare fast/standard/deep or add BUDGET_EXCEPTION)`);
+      }
+      process.exit(1);
+    }
+  }
 }
 
 main();

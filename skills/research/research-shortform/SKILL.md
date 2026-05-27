@@ -92,6 +92,13 @@ Mechanics (how to spawn agents, parallel/sequential tables, critic routing rules
 
 Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — covers orphan claims, multi-market mixing, sample-size dishonesty, stale mechanics, generic recommendations, critic-loop overrun, cross-stack contract drift, and 8 more failure modes.
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 Skill returns one of:

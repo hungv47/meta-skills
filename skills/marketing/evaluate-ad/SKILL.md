@@ -11,122 +11,89 @@ metadata:
 
 # Ad Eval — Orchestrator
 
-Converts launched Meta-ad evidence into a cycle snapshot + ledger row + narrowly-scoped next action inside an existing eval loop. One cycle per audience-temperature. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Agent table + 7-dim rubric + critic-override protocol: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology: [`references/playbook.md`](references/playbook.md).
+<!-- BUDGET_EXCEPTION: Eval skills carry artifact-schema-as-contract (8 body sections + 8-col results row + cross-stack consumer contract) that is load-bearing and cannot move to references/. Cycle ledger discipline requires the schema be visible in the SKILL.md body. Ad-eval also surfaces the audience-temp scoping rule (one cycle = one audience-temp) and creative-fatigue signal columns. ~300 tokens over the standard cap is the legitimate cost. -->
 
-**Core question:** Did this ad cycle, for this audience-temp, create measurable signal strong enough to keep / discard / watch / block — and what should the next strategy/execution skill know?
+*Evaluation skill. Converts launched Meta-ad evidence into a cycle snapshot + ledger row + narrowly-scoped next action inside an existing eval loop. One cycle = one audience-temp.*
 
-## Critical Gates — load first
+**Core Question:** "Did this ad cycle, for this audience-temp, create measurable signal strong enough to keep / discard / watch / block — and what should the next strategy/execution skill know?"
 
-1. **Existing eval loop required.** If `.forsvn/loops/[slug]/program.md` and `context.md` do not exist → `NEEDS_CONTEXT`, recommend `/run-eval-loop`.
-2. **Measurement evidence required.** Not a generic creative-quality audit. Require at least one metric source, measurement window, current value for the loop's primary metric (CTR / CPA / ROAS / conversion rate — operator-pick-per-cycle via `program.md`).
-3. **One primary metric decides the ledger row.** Secondary metrics (frequency, fatigue indicators, qualitative comments) explain diagnosis; they don't override unless `program.md` defines an explicit guardrail failure (e.g., frequency > 4 kills the cycle regardless of ROAS).
-4. **One audience-temp per cycle.** Cold-traffic and retargeting are evaluated in separate cycles. Mirrors write-ad's one-artifact-per-audience-temp pattern. Mixed-audience metrics → split before ingest, or return `BLOCKED` if attribution can't be cleaned.
-5. **No fabricated analytics.** Unknown values stay unknown. Manual notes only when labeled as operator-supplied and tied to date/window/source.
-6. **Attribution confidence must be explicit.** Every verdict includes sample size (impressions + spend window), baseline comparability (same audience-temp, same offer, comparable spend window), confounders (creative change mid-flight, audience size shift, iOS attribution gap), and confidence: `high | medium | low | blocked`.
-7. **Evaluation does not generate creative.** Recommend next changes; route actual creative authorship to `write-ad` (with revised brief), channel-mix work to `plan-campaign`, LP-bottleneck work to `brief-landing-page`.
+> Why, methodology, history: [`references/playbook.md`](references/playbook.md) [PLAYBOOK]. Capability metadata (route triggers, prerequisites, load map): [`routing.yaml`](routing.yaml).
+
+## Critical Gates
+
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+2. **Measurement evidence required + primary metric decides the row.** Need ≥1 metric source, window, current value for the loop's primary metric (CTR / CPA / ROAS / conversion rate — operator-pick via `program.md`). Secondary metrics (frequency, fatigue indicators, qualitative) explain diagnosis; don't override unless `program.md` defines a guardrail failure (e.g., frequency > 4).
+3. **One audience-temp per cycle.** Cold-traffic and retargeting evaluated in separate cycles. Mirrors write-ad's one-artifact-per-audience-temp. Mixed-audience metrics → split before ingest or return `BLOCKED`.
+4. **No fabricated analytics.** Unknown stays unknown. Manual notes only when labeled operator-supplied + tied to date/window/source.
+5. **Attribution confidence must be explicit.** Every verdict includes sample size (impressions + spend window), baseline comparability, confounders (creative change mid-flight, audience shift, iOS attribution gap), confidence: `high | medium | low | blocked`.
+6. **Evaluation does not generate creative.** Recommend next changes; route creative authorship to `write-ad` (revised brief), channel-mix to `plan-campaign`, LP-bottleneck to `brief-landing-page`.
 
 ## Responsibility Split
 
-- `/run-eval-loop` owns loop setup, `program.md`, `context.md`, `results.tsv` schema, durable learning ledger.
-- `/evaluate-ad` owns post-launch Meta-ad evidence snapshots for a loop cycle, scoped to a single audience-temp.
-- `/write-ad` owns next-cycle creative after an eval identifies what should change.
+`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch Meta-ad evidence snapshots for a loop cycle, scoped to a single audience-temp. `/write-ad` owns next-cycle creative.
 
 ## Inputs
 
-| Input | Required? | What it provides |
-|---|---:|---|
-| Loop slug or path | **required** | Locates `.forsvn/loops/[slug]/` |
-| Audience-temp tag (`cold-traffic` OR `retargeting`) | **required** | Scopes the cycle; gates Critical Gate 4 |
-| Source ad-copy artifact | **required** | Brief's hypothesis — typically `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md` |
-| Measurement window | **required** | Date range (start + end + days) |
-| Primary metric value + source | **required** | Ledger decision metric (e.g., ROAS=2.4× from Meta Ads Manager) |
-| Spend window | **required** | Total spend during measurement window (sample-size confidence) |
-| Baseline or prior cycle row | required if available | Comparison point |
-| Frequency at window close | recommended | Creative-Fatigue Awareness scoring |
-| Conversion count + CPA | recommended | CPA + conversion-quality diagnosis |
-| Audience size + reach | recommended | Saturation diagnosis |
-| Guardrail metrics from `program.md` | optional | Auto-fail thresholds (frequency > 4, CPA > $X) |
-| Qualitative evidence | optional | Comments, sentiment, click-quality notes |
+**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
+
+**Recommended:** baseline/prior cycle row · frequency at window close (Creative-Fatigue scoring) · conversion count + CPA · audience size + reach · guardrails from `program.md` · qualitative evidence (comments, sentiment, click-quality).
 
 ## Outputs
 
-Primary artifact: `.forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md`.
+`.forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md` + append one row to `results.tsv` via `bun scripts/append-loop-result.ts` (8-col helper) + update `learnings.md` ONLY for high-confidence keep/discard reusable lessons (critic-gated) + run `bun scripts/manifest-sync.ts`.
 
-Side effects:
+## Agent Manifest + Dispatch
 
-- Append one row to `.forsvn/loops/[slug]/results.tsv` with `bun scripts/append-loop-result.ts` (8-column validated helper).
-- Update `.forsvn/loops/[slug]/learnings.md` ONLY for high-confidence `keep` or `discard` lessons that generalize beyond this creative (critic gates).
-- Run `bun scripts/manifest-sync.ts` after writing.
+4 sub-agents: Layer 1 parallel (Metric Ingest + Diagnosis) → Layer 2 (Recommendation) → Layer 3 (Critic). Critic FAIL → revise once; still FAIL → no ledger row + `BLOCKED`. Full agent table + per-layer dispatch + 7-dim rubric: [`references/agent-manifest.md`](references/agent-manifest.md). Domain rubric: [`references/rubric.md`](references/rubric.md). Shared frame: `_shared/evaluation-loop-rubric.md`.
 
 ## Pre-Dispatch
 
-Hard-block conditions fire BEFORE Cold Start:
-
-1. `program.md` or `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`.
-2. No measurement evidence for current cycle → `BLOCKED` with missing-evidence list.
-3. Mixed-audience metrics with no clean split → `BLOCKED` until ingest is scoped to one audience-temp.
-4. Custom 10+ column `results.tsv` schema → warn + flag to eval-loop owner; require hand-edit.
-
-Read Order: `program.md` → `context.md` → `results.tsv` → latest `strategy/` + `execution/` + `evals/` files → source ad-copy artifact → canonical artifacts (`brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, campaign plan if present). Stale `.forsvn/index/manifest.json` → run `bun scripts/manifest-sync.ts`.
-
-**Warm Start** (loop exists + metric evidence present + audience-temp tagged): summarize loop + audience-temp + primary metric + baseline/prior + latest creative artifact + current evidence window; proceed to cycle N.
-
-**Cold Start** (loop exists but cycle context missing): ask 6 bundled questions — loop slug/path + audience-temp + source ad-copy artifact path + measurement window + primary metric value/baseline + spend window. If loop itself does not exist → `NEEDS_CONTEXT`, recommend `/run-eval-loop`.
-
-Full Warm/Cold Start templates + hard-block conditions + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
-
-## Quality Gate
-
-7-dim rubric (5 shared + 2 ad-specific). Critic FAIL → revise once; persistent FAIL → write no ledger row, return `BLOCKED`. Full rubric + Hard Fails + override protocol: [`references/agent-manifest.md`](references/agent-manifest.md). Domain rubric: [`references/rubric.md`](references/rubric.md); shared frame: `references/_shared/evaluation-loop-rubric.md`.
+Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; no measurement evidence → `BLOCKED`; mixed-audience metrics with no clean split → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · audience-temp · source ad-copy path · window · primary metric value/baseline · spend window). Full read-order + warm/cold templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
 
 ## Artifact Contract
 
-- **Primary artifact:** `.forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md`.
-- **Side effects:** append one row to `results.tsv` · update `learnings.md` ONLY for high-confidence keep/discard reusable lessons (critic gates) · run `manifest-sync.ts`.
-- **Lifecycle:** `evaluation`.
-- **Frontmatter:** 10 fields (`skill` / `version` / `date` / `status` / `summary` / `purpose` / `lifecycle` / `use_when` / `do_not_use_when` / `upstream` / `downstream`) + provenance (`provenance.input_artifacts`: source ad-copy path + `brand/BRAND.md` + `research/icp-research.md`; `provenance.output_eval: null` until consumed — rare, eval cycles are typically terminal).
-- **Body:** 8 sections — Title · Verdict · Evidence (6-col table) · What Changed This Cycle · Diagnosis (Likely Drivers + Confounders + Creative-Fatigue Signals) · Next Cycle Recommendation · Results Row (8-col TSV) · Learning Promotion.
-- **Audience-temp field:** Verdict block must name the audience-temp explicitly (Critical Gate 4); Evidence table scopes metrics to that audience-temp.
-- **Results Row schema:** 8 columns — `cycle` / `date` / `artifact` / `primary_metric` / `value` / `baseline` / `status` / `description`. `status` must be `keep | discard | watch | blocked` (Critic Hard Fail otherwise); description includes audience-temp tag.
-- **Cross-stack contract:** consumed by future ad-eval cycles (trend analysis) + `write-ad --rev=N+1` (hypothesis seeding) + humans reviewing loop progress. Ad-eval does NOT directly consume write-ad output — sibling coordination is at the eval-loop boundary. Schema changes require atomic update across `_shared/eval-loop-spec.md` + downstream callers.
+- **Path:** `.forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md`. **Lifecycle:** `evaluation`.
+- **Frontmatter (10 fields):** `skill` / `version` / `date` / `status` / `summary` / `purpose` / `lifecycle` / `use_when` / `do_not_use_when` / `upstream` / `downstream` + provenance (`input_artifacts` = source ad-copy + `brand/BRAND.md` + `research/icp-research.md`; `output_eval: null` — eval cycles are typically terminal).
+- **Body sections (8):** Title · Verdict · Evidence (6-col table) · What Changed This Cycle · Diagnosis (Likely Drivers + Confounders + Creative-Fatigue Signals) · Next Cycle Recommendation · Results Row (8-col TSV) · Learning Promotion. Verdict block must name the audience-temp (Gate 3); Evidence table scopes metrics to that audience-temp.
+- **Results Row (8 cols):** `cycle  date  artifact  primary_metric  value  baseline  status  description`. `status` ∈ `keep|discard|watch|blocked` (Critic Hard Fail otherwise); description includes the audience-temp tag.
+- **Cross-stack contract:** consumed by future ad-eval cycles (trend analysis) + `write-ad --rev=N+1` (hypothesis seeding) + human reviewers. Ad-eval does NOT directly consume write-ad output — sibling coordination is at the eval-loop boundary. Schema changes require atomic update across `_shared/eval-loop-spec.md` + downstream callers.
 
-Full evaluation artifact template byte-identical + Evidence table + Results Row + Learning Promotion: [`references/format-conventions.md`](references/format-conventions.md).
+Full byte-identical template + Evidence/Results/Learning formats + helper invocation: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
-## Results Row Discipline
-
-Append exactly one row:
-
-```text
-cycle	date	artifact	primary_metric	value	baseline	status	description
-```
-
-Rules: `artifact` is loop-relative · `status` must be `keep | discard | watch | blocked` · `description` is one sentence without tabs (include audience-temp tag).
+## Results Row Helper
 
 ```bash
 bun scripts/append-loop-result.ts "<loop slug>" \
   --artifact evals/YYYY-MM-DD-cycle-N.md \
-  --metric "<primary metric>" \
-  --value "<current value>" \
-  --baseline "<baseline value>" \
-  --status "<keep|discard|watch|blocked>" \
-  --description "<one sentence — include audience-temp>"
+  --metric "<primary metric>" --value "<current>" --baseline "<baseline>" \
+  --status "<keep|discard|watch|blocked>" --description "<one sentence — include audience-temp>"
 ```
 
-Do NOT append a row if Critic verdict is FAIL. Return `BLOCKED`.
+Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL — **log the override BEFORE writing the artifact**: `bun scripts/eval/log-critic-override.ts --skill evaluate-ad …`. Three overrides → rubric-revision escalation. Override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md).
+Operator ships despite critic FAIL — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-ad …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
-Read [`references/anti-patterns.md`](references/anti-patterns.md) before any cycle artifact ships. Ad-eval-specific (mixed-audience metric ingest, fabricated attribution, confidence inflation on low-spend windows, scope drift to redesigning the creative under the brief, scope drift to redesigning the LP under the ad, learning promotion from a fatigued window, killing a cycle without baseline comparability) + 4 cross-cutting marketing-stack.
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 7 ad-eval rows + 4 cross-cutting marketing-stack. Most common: mixed-audience contamination (Gate 3 + Critic "Audience-Temp Fidelity"), confidence inflation on low-spend (Gate 5 + Critic "Attribution Honesty"), scope drift to write-ad (Gate 6 + Critic "Decision Discipline"), missing source ad-copy artifact (Critic Hard Fail).
 
-Most common in practice: mixed-audience contamination (Critical Gate 4 + critic dim Audience-Temp Fidelity), confidence inflation on low-spend (Critical Gate 6 + critic dim Attribution Honesty), scope drift to write-ad (Critical Gate 7 + critic dim Decision Discipline), missing source ad-copy artifact (Critic Hard Fail).
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
 
 ## Completion Status
 
-- `DONE` — eval artifact written, ledger row appended, critic PASS.
-- `DONE_WITH_CONCERNS` — artifact + row written, but confidence is low/medium or confounders are material.
-- `NEEDS_CONTEXT` — missing loop, source ad-copy artifact, audience-temp tag, or required metric evidence.
-- `BLOCKED` — contradictory data, mixed-audience ingest, filesystem failure, or critic failed after revision.
+- **DONE** — eval artifact written, ledger row appended, critic PASS.
+- **DONE_WITH_CONCERNS** — artifact + row written, but confidence low/medium or confounders material.
+- **NEEDS_CONTEXT** — missing loop, source ad-copy artifact, audience-temp tag, or required metric evidence.
+- **BLOCKED** — contradictory data, mixed-audience ingest, filesystem failure, or critic failed after revision.
+
+## References
+
+- `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
+- `_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
+- **Siblings:** `write-ad` (downstream — this skill routes recommendations TO it but does not produce briefs), `run-eval-loop` (loop scaffolding + ledger schema + durable learnings), `evaluate-campaign` (multi-channel aggregate sibling)

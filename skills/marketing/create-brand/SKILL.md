@@ -31,18 +31,18 @@ Coordinates 8 specialized agents to transform product context into a brand narra
 | `brand/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
 | `brand/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
 
-ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board — see Step 9.
+ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board (Step 9).
 
 ## Quality Gate — critic check-groups
 
-Full canonical checklist (13 BRAND.md + 13 DESIGN.md + ASSETS.md + 4 cross-file) in [`agents/critic-agent.md`](agents/critic-agent.md). Four check-groups:
+Four check-groups; full canonical checklist (13 BRAND + 13 DESIGN + ASSETS + 4 cross-file + narrative-tension NT-Q1-Q4 + brand-kit BK-G1-G9) in [`agents/critic-agent.md`](agents/critic-agent.md):
 
-- **BRAND.md** — origin/naming depth, real-tradeoff values, voice Do/Don't examples, 3-context tone range, tagline V/F/U (min 6/9) + competitor swap, concrete Lexicon Rules block, no copywriting scope creep, touchpoint-level emotional journey, register separation, route-appropriate platform coverage, brand-book prose quality, narrative-tension gates NT-Q1-NT-Q4 (sustainable persona, lived-not-aspirational values, specific community resonance, no exploitative pain narrative).
-- **DESIGN.md** — AI-readable header, font Loading & Licensing table, named iconography + fallback + Forbidden Icons YAML, complete per-theme palettes + semantic tokens, WCAG AA on every pair, bg/fg convention, archetype-justified `--radius`, surface/shadow systems, physics-valued animations, per-platform icon specs, concrete Do's/Don'ts.
-- **ASSETS.md** (Route B) — one section per declared platform, every row spec-ref'd + fully-substituted path, no invented or duplicated rows, legend + summary + `## Orphaned` handled, prior `[~]`/`[!]` markers preserved.
-- **Cross-file coherence** — radius↔archetype, type↔personality, color↔emotion, imagery↔archetype; voice tone ↔ visual atmosphere; ASSETS.md ≡ BRAND.md ≡ DESIGN.md platform sets; AI-slop check via `references/ai-slop-detection.md` (0-1 clean / 2-3 review / 4+ regenerate).
+- **BRAND.md** — origin/values/voice/tagline/lexicon depth, no copywriting scope creep, narrative-tension gates.
+- **DESIGN.md** — AI-readable header, font/iconography tables, per-theme palettes + semantic tokens, WCAG AA, archetype-justified `--radius`, surface/shadow/motion systems.
+- **ASSETS.md** (Route B) — one section per declared platform, spec-ref'd + substituted paths, no invented/duplicated rows, `[~]`/`[!]` preserved.
+- **Cross-file coherence** — radius↔archetype, type↔personality, color↔emotion, imagery↔archetype, voice↔visual, ASSETS≡BRAND≡DESIGN platform sets; AI-slop check via [`references/ai-slop-detection.md`](references/ai-slop-detection.md) (0-1 clean / 2-3 review / 4+ regenerate).
 
-Reference quality bar: compare against `references/example-brand.md` + `references/example-design.md`; run their copy-paste / blind-build / competitor-swap / implementation-gap tests as final validation.
+Reference bar: [`references/example-brand.md`](references/example-brand.md) + [`references/example-design.md`](references/example-design.md) (copy-paste / blind-build / competitor-swap / implementation-gap tests).
 
 ## Before Starting
 
@@ -66,33 +66,12 @@ Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.m
 
 Ask: *"Full brand system or quick brand for MVP?"*
 
-- **Route A — Quick Brand (MVP):** Step 0 → Layer 1 parallel (strategy + visual color/typography-only, logo deferred) → critic (strategy↔visual coherence only) → re-dispatch on FAIL (max 2 cycles) → deliver. Output includes: "Run full brand-system when ready to build the design system."
+- **Route A — Quick Brand (MVP):** Step 0 → Layer 1 parallel (strategy + visual color/typography-only, logo deferred) → critic (strategy↔visual coherence only) → re-dispatch on FAIL (max 2 cycles) → deliver + "Run full brand-system when ready to build the design system."
 - **Route B — Full Brand System:** Step 0 → Layer 1 parallel (4 agents) → Merge → Layer 2 sequential (3 agents) → critic → Step 8.5 ASSETS projection → Step 9 (optional Visual Renderings) → Step 10 deliver. Max 2 rewrite cycles.
 
-Full dispatch graphs: [`references/agent-manifest.md`](references/agent-manifest.md). Spawn mechanics + single-agent fallback: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
+Full dispatch graphs, spawn mechanics, single-agent fallback, Layer 1→Merge→Layer 2 semantics (coherence check, palette ownership, accessibility hand-back), Step 8.5 7-step projection + invariants, Step 9 sub-paths (9a Paper MCP / 9b Claude Design / 9c None / 9d Brand-Kit Board): [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) + [`references/agent-manifest.md`](references/agent-manifest.md). Step 9a artboard rules: [`references/artboard-generation.md`](references/artboard-generation.md); Step 9d gated by [`references/brand-kit-rendering.md`](references/brand-kit-rendering.md) + critic BK-G1-G9.
 
-## Layer 1 → Merge → Layer 2 — load-bearing rules
-
-Three semantics govern conflict resolution; the full per-layer dispatch tables are in `agent-manifest.md`:
-
-- **Coherence check before Layer 2.** Archetype must align with visual choices. Caregiver + aggressive typography → resolve before Layer 2.
-- **Palette ownership.** Visual-agent is authoritative for colors. Token-architect systematizes them; on conflict, visual-agent wins.
-- **Accessibility hand-back.** Accessibility-agent owns the audit, not the fix. Failing pairs route to the critic, which re-dispatches the upstream owner.
-
-## Step 8.5: ASSETS.md Projection (Route B only, always-on)
-
-Deterministic orchestrator step, after critic PASS, before Step 9. **No sub-agent.** Read [`references/assets-inventory.md`](references/assets-inventory.md) for emission rules + per-platform templates. Full 7-step procedure + orchestrator self-check gate: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) § "Step 8.5".
-
-Key invariants: every row has spec ref + target path · ASSETS.md platform set ≡ declared platforms ≡ BRAND.md Digital Touchpoints ≡ DESIGN.md Platform Icon Specifications · human `[~]`/`[!]` markers never overwritten · no invented rows.
-
-## Step 9: Visual Renderings (optional)
-
-Spec is canonical; renderings are derivative. Three paths — full procedure in `procedures/dispatch-mechanics.md § Step 9`:
-
-- **9a Paper MCP** — 5 artboards (Color / Typography / Spacing / UI / Logo) to `brand/artboards/`. AI slop detection after generation. See [`references/artboard-generation.md`](references/artboard-generation.md).
-- **9b Claude Design** — handoff to `claude.ai/design`. Pre-flight checks (DESIGN.md complete, Brand Mark commission-grade, `brand/logo/logo-full.svg`, `brand/font/` populated). Exports go OUTSIDE `brand/` (`presentations/`) — re-run brand-system to update source.
-- **9c None** — spec stands alone. Downstream skills consume DESIGN.md directly.
-- **9d Brand-Kit Board** — visual-agent emits a board *spec* + per-panel image-gen prompts to `brand/artboards/[board-name]/{spec.md,prompts.md}`. No new brand decisions in the board. Gated by [`references/brand-kit-rendering.md`](references/brand-kit-rendering.md) and critic BK-G1-G9.
+Key invariants (always-on): every ASSETS row has spec ref + target path · ASSETS platform set ≡ declared platforms ≡ BRAND Digital Touchpoints ≡ DESIGN Platform Icon Specs · human `[~]`/`[!]` markers never overwritten · no invented rows · Step 8.5 reads [`references/assets-inventory.md`](references/assets-inventory.md).
 
 ## Artifact Contract
 
@@ -100,10 +79,10 @@ Spec is canonical; renderings are derivative. Three paths — full procedure in 
 - **Lifecycle:** `canonical` — brand-of-record artifacts consumed by 10+ downstream marketing + product skills.
 - **Versioning:** BRAND.md + DESIGN.md rename existing to `*.v[N].md` on re-run. ASSETS.md is a **living file** — always updated in place, dropped-platform rows move to `## Orphaned` (preserved); only versioned on explicit fresh-inventory request.
 - **Frontmatter + section schema:** [`references/format-conventions.md`](references/format-conventions.md).
-- **Review-gated:** write the review frontmatter (`decision_state` / `review_surface` / `review_tool` / `reviewed_at` / `reviewer`) per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); when `review_surface: html`, emit the co-located WATER-themed HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md) (the WATER exemplar at `references/_html/exemplars/water-create-brand.html` is the canonical pattern for this skill); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). BRAND.md + DESIGN.md default `decision_state: pending` + `review_surface: html` and carry `## Review Gate` block. ASSETS.md is a deterministic projection → `decision_state: not_required` + `review_surface: none` + `review_tool: none`, no `## Review Gate`. `status` (skill quality) and `decision_state` (human acceptance) are independent. v2 enum: `pending | approved | denied | suggested | not_required`.
-- **Cross-stack contract:** schema changes (frontmatter, section headings, table columns) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow). Exception: the four review fields are additive — downstream callers consume brand content by heading match and do not parse review fields.
+- **Review-gated:** per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md) + [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md) (WATER exemplar: `references/_html/exemplars/water-create-brand.html`) + [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). BRAND.md + DESIGN.md default `decision_state: pending` + `review_surface: html` + `## Review Gate`. ASSETS.md (deterministic projection) → `decision_state: not_required` + `review_surface: none`, no `## Review Gate`. v2 enum: `pending | approved | denied | suggested | not_required`.
+- **Cross-stack contract:** schema changes (frontmatter, section headings, table columns) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow). The four review fields are additive — downstream callers consume brand content by heading match.
 
-Full templates: [`references/artifact-templates.md`](references/artifact-templates.md). Quality-bar examples: [`references/example-brand.md`](references/example-brand.md), [`references/example-design.md`](references/example-design.md).
+Full templates: [`references/artifact-templates.md`](references/artifact-templates.md).
 
 ## Chain Position
 
@@ -113,7 +92,14 @@ Previous: `research-icp` (product context) | Next: `plan-campaign`, `write-copy`
 
 ## Anti-Patterns
 
-Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships — 21-pattern catalog (13 brand-system pipeline + 4 cross-cutting + 2 narrative-tension + 2 brand-kit board). Most common in practice: aesthetics-without-strategy, generic values, inventing ASSETS.md rows, overwriting human markers.
+Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships — 21-pattern catalog (13 brand-system pipeline + 4 cross-cutting + 2 narrative-tension + 2 brand-kit board). Most common: aesthetics-without-strategy, generic values, inventing ASSETS rows, overwriting human markers.
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 

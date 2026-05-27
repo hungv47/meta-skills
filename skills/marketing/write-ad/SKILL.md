@@ -69,6 +69,13 @@ Full template + per-field format rules: [`references/format-conventions.md`](ref
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships. 8 inherited sections + §9 Orchestrator-Level (13 rows: cold-creative reused as retargeting, frequency creep, lookalikes on cold trial app, repurposed UGC at scale, purchase optimization on 3-day trial, banned health/finance/political claim, fabricated stat, paraphrase variants, em-dashes, generic "Quick question?" hooks, multi-CTA, double-humanmaxxing, change-everything-at-once) + §10 Cross-Cutting marketing-stack (4 rows: protected_tokens contract per-variant incl. URL, post-humanmaxxing regression per-variant, plan-campaign Route B context drop, artifact schema drift).
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 - **DONE** — passed critic + format-checker + humanmaxxing regression, ready-to-publish.

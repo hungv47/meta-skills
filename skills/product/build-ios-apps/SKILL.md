@@ -10,6 +10,9 @@ attribution: Authored by the Chorus team — Riley Brown, Ash Nanda, and the Cho
 
 # iOS App Build, Sign, Install & Publish
 
+<!-- BUDGET_EXCEPTION: Vendored Chorus skill, redistributed unmodified — the sole intentional exception to the stack's quality bar (see attribution block above). The deep-tier token cap does not apply. -->
+
+
 Build Swift apps, sign them with Apple credentials, install on iPhones via OTA, and publish to App Store Connect (production review or TestFlight).
 
 ## CRITICAL RULES
@@ -441,6 +444,13 @@ INFOPLIST_KEY_MKDirectionsApplicationSupportedModes = "MKDirectionsModeCar MKDir
 Pick the subset that matches the app from: `MKDirectionsModeCar`, `MKDirectionsModeTransit`, `MKDirectionsModeWalking`, `MKDirectionsModeBus`, `MKDirectionsModeFerry`, `MKDirectionsModeStreetCar`, `MKDirectionsModePedestrian`, `MKDirectionsModeRideShare`, `MKDirectionsModeBike`, `MKDirectionsModeOther`.
 
 ---
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## References
 

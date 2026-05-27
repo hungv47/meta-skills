@@ -77,6 +77,13 @@ Three routes (A / B / C) — chosen at Pre-Dispatch (Q3 why-now classification o
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships — 11 patterns (8 from original + 3 cross-cutting: cross-stack contract drift, experience write-back skipped/partial, scope-blind critic evaluation). Per-pattern detection + bad/good examples + agent ownership.
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 - **DONE** — all 4 Layer 1 streams complete (trends, sizing, competitor, consumer-landscape), opportunities ranked, critic PASS.

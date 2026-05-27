@@ -65,31 +65,13 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤
 
 ## Agent Manifest
 
-| Agent | File | Layer | Mode(s) | Focus |
-|-------|------|-------|---------|-------|
-| crawl-agent | `agents/crawl-agent.md` | 1 (parallel) | Technical Audit, Full | Crawlability, indexation, robots.txt, sitemaps, canonicals |
-| foundations-agent | `agents/foundations-agent.md` | 1 (parallel) | Technical Audit, Full | CWV, mobile, HTTPS, URL structure, on-page optimization |
-| content-quality-agent | `agents/content-quality-agent.md` | 1 (parallel) | Technical Audit, Full | E-E-A-T, thin content, duplicate detection, content gaps |
-| authority-agent | `agents/authority-agent.md` | 1 (parallel) | Technical Audit, Full | Backlink profile, internal linking, link equity |
-| ai-structure-agent | `agents/ai-structure-agent.md` | 1 (parallel) | AI SEO, Full | Schema, heading hierarchy, answer passages, structured data |
-| ai-presence-agent | `agents/ai-presence-agent.md` | 1 (parallel) | AI SEO, Full | AI crawler access, llms.txt, citation monitoring, AEO |
-| programmatic-template-agent | `agents/programmatic-template-agent.md` | 1 (parallel) | Programmatic | Template design, URL architecture, defensibility |
-| programmatic-quality-agent | `agents/programmatic-quality-agent.md` | 1 (parallel) | Programmatic | Thin page detection, quality gates, monitoring plan |
-| comparison-page-agent | `agents/comparison-page-agent.md` | 1 | Competitor Pages | Page format, content architecture, comparison matrices |
-| aso-keyword-agent | `agents/aso-keyword-agent.md` | 1 (parallel) | ASO | Keyword research for App Store, Play Store, G2, Capterra |
-| aso-listing-agent | `agents/aso-listing-agent.md` | 1 (parallel) | ASO | Title, subtitle, description, screenshots, preview video |
-| aso-reviews-agent | `agents/aso-reviews-agent.md` | 1 (parallel) | ASO | Review sentiment, response templates, rating improvement |
-| aso-competitive-agent | `agents/aso-competitive-agent.md` | 1 (parallel) | ASO | Competitor listing comparison, feature matrix positioning |
-| prioritization-agent | `agents/prioritization-agent.md` | 2 (sequential) | All | Impact × effort ranking of all findings |
-| critic-agent | `agents/critic-agent.md` | 2 (sequential) | All | 10-item quality gate — specific fixes, no vague language, actionability |
+15 sub-agents across two layers (13 Layer 1 domain agents — crawl / foundations / content-quality / authority / ai-structure / ai-presence / programmatic-template / programmatic-quality / comparison-page / aso-keyword / aso-listing / aso-reviews / aso-competitive — + Layer 2 prioritization → critic). Full table with per-agent focus + per-route composition: `references/agent-manifest.md` [PROCEDURE].
 
 ---
 
 ## Routing Logic — Mode-Based Dispatch
 
-### Step 1: Determine Mode
-
-Diagnose first, then enter the right mode.
+Diagnose first, then enter the right mode. Modes can run sequentially. **Start with Technical Audit if never audited** — no point optimizing for AI citations if crawlers can't reach content (Critical Gate 2).
 
 | Situation | Mode | Route |
 |-----------|------|-------|
@@ -100,30 +82,7 @@ Diagnose first, then enter the right mode.
 | Comprehensive SEO strategy | **Full SEO** (Technical + AI) | Route E |
 | Distribute via app stores / listings (App Store, Play Store, G2, Capterra, Product Hunt) | **ASO** | Route F |
 
-Modes can run sequentially. **Start with Technical Audit if never audited** — no point optimizing for AI citations if crawlers can't reach content (Critical Gate 2).
-
-### Step 2: Per-route Dispatch
-
-| Route | Layer 1 (parallel) | Layer 2 (sequential) |
-|---|---|---|
-| **A** Technical Audit | crawl + foundations + content-quality + authority | prioritization → critic |
-| **B** AI SEO | ai-structure + ai-presence | prioritization → critic |
-| **C** Programmatic | programmatic-template + programmatic-quality | prioritization → critic |
-| **D** Competitor Pages | comparison-page | prioritization → critic |
-| **E** Full SEO | crawl + foundations + content-quality + authority + ai-structure + ai-presence | prioritization → critic |
-| **F** ASO | aso-keyword + aso-listing + aso-reviews + aso-competitive | prioritization → critic |
-
-**Route E produces TWO artifacts:** `seo-audit.md` + `seo-ai.md` (per `references/format-conventions.md` [PROCEDURE]).
-
-Full pre-writing object schema, 8-step Multi-Agent Dispatch flow, Single-Agent Fallback, `--fast` execution path: `references/procedures/dispatch-mechanics.md` [PROCEDURE].
-
----
-
-## Layer 2 — Prioritization + Critic
-
-`prioritization-agent` force-ranks findings: Quick Wins → Strategic Investments → Low-Hanging Fruit → Backlog. Phases P1 (Week 1-2) / P2 (Month 1) / P3 (Month 2-3) / P4 (Ongoing). Dependencies mapped — no action recommended before its prerequisite.
-
-`critic-agent` evaluates against the **10-item quality gate** (canonical list in `agents/critic-agent.md`; summary in `references/playbook.md`). Verdict binary (PASS / FAIL). **Max 2 rewrite cycles** — on FAIL the critic names the agent to re-dispatch per the 11-row Rewrite Routing Table.
+Per-route Layer 1 + Layer 2 composition: `references/agent-manifest.md` § "Per-route composition". **Route E produces TWO artifacts** (`seo-audit.md` + `seo-ai.md`). Full pre-writing object schema, 8-step Multi-Agent Dispatch flow, Single-Agent Fallback, prioritization mechanics (Quick Wins → Strategic Investments → Low-Hanging Fruit → Backlog; P1-P4 phasing; dependency mapping), critic gate mechanics (10-item rubric, binary PASS/FAIL, max 2 rewrite cycles, 11-row Rewrite Routing Table), `--fast` execution path: `references/procedures/dispatch-mechanics.md` [PROCEDURE].
 
 ---
 
@@ -147,6 +106,13 @@ Most common in practice: "Consider improving" (gate 3 hedge-language), "Do SEO" 
 
 ---
 
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
+
 ## Completion Status
 
 Every run ends with explicit status:
@@ -169,7 +135,7 @@ End-to-end Route A walkthrough (Pre-Dispatch → parallel Layer 1 → merge → 
 - **Playbook:** `references/playbook.md` [PLAYBOOK]
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
-- **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
+- **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` + `references/agent-manifest.md` [PROCEDURE]
 - **Example:** `references/examples/seo-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, technical-crawler-checklist, ai-seo, retrieval-layer-seo, live-serp-remediation, programmatic-seo, competitor-pages, schema-reference, aso, platform-search}.md`. Shared: `references/_shared/evidence-classes.md` (canonical: `skills/marketing/_shared/evidence-classes.md`, shared with `monitor-aeo`).
 - **Platform intelligence** (loaded by ai-presence-agent, programmatic-template-agent, comparison-page-agent, aso-keyword-agent, aso-listing-agent when their mode is active): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13). Agent-to-section map in `references/platform-search.md`.

@@ -30,11 +30,11 @@ Pure orchestration. The skill never calls provider APIs itself — it builds que
 Before delivering, all must hold:
 
 1. **No fabricated evidence.** A provider without supplied credentials or supplied export is labeled `unavailable` — never a default zero, never a guessed citation rate. Missing input becomes a labeled gap, not a silent absence.
-2. **Stochastic outputs declare their confidence.** AI provider responses vary turn to turn. Single-run citation observations carry a `single-run` caveat; multi-run aggregates carry `n=<runs>` + `<agreement-rate>%`.
+2. **Stochastic outputs declare their confidence.** Single-run citation observations carry a `single-run` caveat; multi-run aggregates carry `n=<runs>` + `<agreement-rate>%`.
 3. **AEO ≠ GEO ≠ classic SEO ≠ referral.** These four evidence streams are reported in separate sections. Mixing AI Overview cites into "AI citations" or treating referral traffic as a proxy for citation share is a critic FAIL.
 4. **Competitor cited-domains captured even when subject is absent.** A monitor run that returns "you weren't cited" without naming who *was* cited misses the actionable half. Cited-domain inventory is mandatory per query.
 5. **Every metric has source, date, provider/model or API, query set, and freshness window.** A number without these fields is a critic FAIL.
-6. **Recommendations are handoffs, not strategy.** Findings stop at "evidence shows X gap"; the prescription ("rewrite page Y", "add chunk Z") goes in `handoff-optimize-seo.md` and runs through `optimize-seo`.
+6. **Recommendations are handoffs, not strategy.** Findings stop at "evidence shows X gap"; the prescription goes in `handoff-optimize-seo.md` and runs through `optimize-seo`.
 
 ---
 
@@ -58,8 +58,6 @@ Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protoc
 
 Full read-order + Cold Start prompt + Warm Start prompt + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
 
----
-
 ## Mode Resolution
 
 Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤3 sentences + no prior artifacts; `--fast` flag skips Layer 2 (no critic, single-agent execution). **`--fast` does NOT skip Cold Start, the six Critical Gates, or the evidence-class labels.**
@@ -70,58 +68,24 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤
 
 ## Agent Manifest
 
-| Agent | File | Layer | Mode(s) | Focus |
-|-------|------|-------|---------|-------|
-| query-set-agent | `agents/query-set-agent.md` | 0 (sequential, pre-layer-1) | All | Builds/validates the target AI query set from ICP + product context; assigns provider × query matrix |
-| provider-readiness-agent | `agents/provider-readiness-agent.md` | 0 (sequential, pre-layer-1) | All | Inventories supplied credentials/exports per provider/source; labels every provider available / partial / unavailable with the specific gap |
-| citation-monitor-agent | `agents/citation-monitor-agent.md` | 1 (parallel) | ai-citations, full-report | Ingests provider-query export data into a citation matrix; flags single-run vs multi-run; computes mention/citation/cited-domain rates per query × provider |
-| geo-monitor-agent | `agents/geo-monitor-agent.md` | 1 (parallel) | geo-overview, full-report | Ingests Google AI Overview / SGE export data; records AI-Overview presence + cited domains per target keyword + competitor cited-domain share |
-| traffic-monitor-agent | `agents/traffic-monitor-agent.md` | 1 (parallel) | ai-referrals, full-report | Ingests Plausible/GA4/server-log referral exports; isolates AI-product referrers (chat.openai.com, perplexity.ai, etc.); produces a labeled referral table |
-| readiness-agent | `agents/readiness-agent.md` | 1 (parallel) | bing-readiness, llms-readiness, full-report | Checks Bing Webmaster posture, IndexNow submission, sitemap/robots, `llms.txt` / `llms-full.txt` presence + validity; results bucketed `ready` / `partial` / `missing` |
-| report-agent | `agents/report-agent.md` | 2 (sequential) | All | Merges Layer-1 outputs into the dated snapshot + report, computes trend deltas against prior snapshots, produces `handoff-optimize-seo.md` with evidence-tagged gap list |
-| critic-agent | `agents/critic-agent.md` | 2 (sequential) | All | Validates 8-item quality gate — evidence provenance, evidence-class labels, no fabricated data, AEO/GEO/SEO/referral separation, correct handoff to `optimize-seo` |
+8 sub-agents across three layers (Layer 0 sequential pre-checks + Layer 1 parallel ingestors + Layer 2 sequential report→critic). Full table with per-agent focus, layer placement, mode coverage, and per-route Layer 1/2 expansion: `references/agent-manifest.md` [PROCEDURE].
 
----
+## Routing — Mode-Based Dispatch
 
-## Routing Logic — Mode-Based Dispatch
-
-### Step 1: Determine Mode
-
-Default is `full-report` (operator decision: snapshot is the primary job). Single-mode runs are opt-in.
+Default is `full-report` (snapshot is the primary job). Single-mode runs are opt-in.
 
 | Situation | Mode | Route |
 |-----------|------|-------|
-| First snapshot, or monthly dated report | **full-report** (default) | Route Z |
-| Spot check: do AI providers cite us for these queries? | **ai-citations** | Route A |
-| Spot check: AI Overview presence on target keywords | **geo-overview** | Route B |
-| Read AI referral evidence from analytics | **ai-referrals** | Route C |
-| Bing Webmaster / IndexNow / sitemap posture | **bing-readiness** | Route D |
-| `llms.txt` / `llms-full.txt` posture | **llms-readiness** | Route E |
+| First snapshot, or monthly dated report | **full-report** (default) | Z |
+| Spot check: do AI providers cite us for these queries? | **ai-citations** | A |
+| Spot check: AI Overview presence on target keywords | **geo-overview** | B |
+| Read AI referral evidence from analytics | **ai-referrals** | C |
+| Bing Webmaster / IndexNow / sitemap posture | **bing-readiness** | D |
+| `llms.txt` / `llms-full.txt` posture | **llms-readiness** | E |
 
-### Step 2: Per-route Dispatch
-
-Layer 0 (sequential) runs first on every route: `query-set-agent` → `provider-readiness-agent`. The query × provider matrix and the readiness ledger are the input contract for Layer 1.
-
-| Route | Layer 1 (parallel) | Layer 2 (sequential) |
-|---|---|---|
-| **A** ai-citations | citation-monitor | report → critic |
-| **B** geo-overview | geo-monitor | report → critic |
-| **C** ai-referrals | traffic-monitor | report → critic |
-| **D** bing-readiness | readiness (Bing/IndexNow subset) | report → critic |
-| **E** llms-readiness | readiness (llms.txt subset) | report → critic |
-| **Z** full-report (default) | citation-monitor + geo-monitor + traffic-monitor + readiness | report → critic |
-
-**Route Z produces ONE merged artifact** (`report.md` + dated JSON snapshots) — distinct from optimize-seo Route E which splits into two. AEO monitor is a single dated snapshot per run by design.
+Per-route Layer 1 / Layer 2 agent fan-out lives in `references/agent-manifest.md` § "Per-route expansion". Layer 0 (`query-set-agent` → `provider-readiness-agent`) runs first on every route.
 
 Full pre-writing object schema, 8-step Multi-Agent Dispatch flow, Single-Agent Fallback, `--fast` execution path: `references/procedures/dispatch-mechanics.md` [PROCEDURE].
-
----
-
-## Layer 2 — Report + Critic
-
-`report-agent` merges Layer-1 sections, computes trend deltas against prior snapshots (`.forsvn/artifacts/mkt/aeo-monitor/[slug]/snapshots/`), and emits `handoff-optimize-seo.md` — an evidence-tagged gap list ready for `optimize-seo` to consume as strategy input. **Report never prescribes a fix.**
-
-`critic-agent` evaluates against the **8-item quality gate** (canonical list in `agents/critic-agent.md`; summary in `references/playbook.md`). Verdict binary (PASS / FAIL). **Max 2 rewrite cycles** — on FAIL the critic names the agent to re-dispatch per the Rewrite Routing Table.
 
 ---
 
@@ -135,31 +99,34 @@ Output path: `.forsvn/artifacts/mkt/aeo-monitor/[slug]/` — directory, not a si
   query-set.md                             # the locked query × provider matrix used this run
   handoff-optimize-seo.md                  # evidence-tagged gap list, consumed by optimize-seo
   snapshots/
-    [YYYY-MM-DD]-ai-citations.json        # written when ai-citations or full-report ran
-    [YYYY-MM-DD]-geo-overview.json        # written when geo-overview or full-report ran
-    [YYYY-MM-DD]-ai-referrals.json        # written when ai-referrals or full-report ran
-    [YYYY-MM-DD]-readiness.json           # written when bing- or llms- or full-report ran
+    [YYYY-MM-DD]-ai-citations.json
+    [YYYY-MM-DD]-geo-overview.json
+    [YYYY-MM-DD]-ai-referrals.json
+    [YYYY-MM-DD]-readiness.json
 ```
 
-`[slug]` = kebab-cased subject domain (e.g., `example-com` for `example.com`).
+`[slug]` = kebab-cased subject domain (e.g., `example-com` for `example.com`). Snapshot files are written only when their mode (or `full-report`) ran.
 
-**Re-run convention:** snapshots are append-only (one set per date). `report.md`, `query-set.md`, and `handoff-optimize-seo.md` are rewritten in place each run; prior copies remain in git history. Trend computation reads `snapshots/*.json`.
+**Lifecycle:** snapshots are append-only (one set per date). `report.md`, `query-set.md`, and `handoff-optimize-seo.md` are rewritten in place each run; prior copies remain in git history. Trend computation reads `snapshots/*.json`.
 
-Frontmatter (REQUIRED on `report.md`): `skill: monitor-aeo`, `mode`, `subject` (domain), `date`, `status`, `evidence-classes` (object: count by class).
+**Frontmatter (REQUIRED on `report.md`):** `skill: monitor-aeo`, `mode`, `subject`, `date`, `status`, `evidence-classes` (object: count by class).
 
-Body sections (REQUIRED on `report.md`): Subject + Scope / Provider Readiness / AI Citations / GEO (AI Overview) / AI Referrals / Technical Readiness / Trend (vs. prior snapshot, or `n/a` first run) / Competitor Cited-Domain Share / Gaps for Strategy (→ handoff) / Methodology + Evidence Class Index.
-
-Full template + per-snapshot JSON schema + handoff schema: `references/format-conventions.md` [PROCEDURE].
+Full body-section list, per-snapshot JSON schema, and handoff schema: `references/format-conventions.md` [PROCEDURE].
 
 ---
 
 ## Anti-Patterns
 
-Patterns with detection rules, bad/good examples, and per-pattern agent ownership: `references/anti-patterns.md` [ANTI-PATTERN].
-
-Most common in practice: **fabricated zero** (provider reported "0 citations" when no run actually executed → critic FAIL gate 1), **single-run certainty** (one chat turn reported as a stable rate → gate 2), **AEO/GEO conflation** (Google AI Overview cites merged into "AI citations" → gate 3), **subject-only reporting** (no competitor cited-domain inventory → gate 4), **strategy creep** (report prescribes a rewrite instead of handing off → gate 6).
+`references/anti-patterns.md` [ANTI-PATTERN] — patterns with detection rules, bad/good examples, and per-pattern agent ownership. Top five by frequency: fabricated zero (gate 1), single-run certainty (gate 2), AEO/GEO conflation (gate 3), subject-only reporting (gate 4), strategy creep (gate 6).
 
 ---
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -170,21 +137,24 @@ Every run ends with explicit status:
 - **BLOCKED** — query set un-derivable (no ICP source AND no operator-supplied queries) OR subject domain not supplied; state exactly what's blocked + what unblocks
 - **NEEDS_CONTEXT** — operator invoked a single-mode route whose inputs are entirely missing (e.g., `ai-citations` with zero provider exports); recommend `full-report` to capture whatever evidence is available, or state which exports to supply
 
+## Next Step
+
+Hand `handoff-optimize-seo.md` to `optimize-seo` for strategy + page-rewrite work. Re-run on cadence (monthly default) to extend the trend series.
+
 ---
 
 ## Worked Example
 
 End-to-end Route Z walkthrough (Pre-Dispatch → Layer 0 → parallel Layer 1 → merge → critic PASS → deliver → handling missing providers → `--fast` variant): `references/examples/aeo-walkthrough.md` [EXAMPLE].
 
----
-
 ## References
 
 - **Playbook:** `references/playbook.md` [PLAYBOOK]
+- **Agent manifest:** `references/agent-manifest.md` [PROCEDURE]
 - **Format:** `references/format-conventions.md` [PROCEDURE]
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/aeo-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{provider-matrix, llms-readiness}.md`
+- **Domain catalogs** (loaded by agents at dispatch): `references/{provider-matrix, llms-readiness}.md`
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, evidence-classes}.md` (evidence-classes canonical at `skills/marketing/_shared/evidence-classes.md`, shared with `optimize-seo`)
-- **Agents:** 8 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 8-item quality gate + Rewrite Routing Table.
+- **Agents:** 8 sub-agents in `agents/` — see `references/agent-manifest.md`. `critic-agent.md` holds the canonical 8-item quality gate + Rewrite Routing Table.

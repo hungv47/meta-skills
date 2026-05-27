@@ -401,3 +401,4 @@ lifecycle: <lifecycle>; required selection fields: summary, purpose, use_when.
 - [[manifest-spec]] — how `.forsvn/index/manifest.json` is built from these frontmatter fields
 - [[eval-loop-spec]] — loop-specific contract requirements (loop:, loop-context lifecycle, etc.)
 - [[quality-dashboard-spec]] — dashboard reads status + critic verdicts from artifact frontmatter
+- [[slow-update-fence]] — SKILL.md-body convention for protecting durable procedural rules from step-level edits (separate surface from artifact frontmatter, but the same authorship hygiene applies)

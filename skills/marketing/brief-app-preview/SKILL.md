@@ -60,51 +60,15 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load ICP + BRA
 
 ---
 
-## Pre-Dispatch
+## Pre-Dispatch + Mode
 
-Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]).
-
-**Needed dimensions:** feature name (1-2 sentences of intent), screenshot inventory (paths + state labels), flow order, target surface (app-store | onboarding | website | social), brand mode (founder | company), market.
-
-Full read-order + Warm Start + Cold Start (5-question bundled) + write-back map + hard-block conditions: `references/procedures/pre-dispatch.md` [PROCEDURE].
+Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensions: feature name, screenshot inventory, flow order, target surface, brand mode, market. Full read-order + Cold Start (5-question bundled) + hard-block conditions: `references/procedures/pre-dispatch.md`. Mode resolution per `references/_shared/mode-resolver.md`; `--fast` skips Layer 2 (no critic, no platform-format) — does **NOT** skip Cold Start or Critical Gates 1-6.
 
 ---
 
-## Mode Resolution
+## Agent Manifest + Routing
 
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤3 sentences AND no screenshots-yet (resolves to `NEEDS_CONTEXT`, since gate 1 is hard); `--fast` flag skips Layer 2 (no critic, no platform-format pass) and runs Layer 1 + 1.5 via single-agent fallback. **`--fast` does NOT skip Cold Start or Critical Gates 1-6.**
-
----
-
-## Agent Manifest
-
-| Agent | Layer | File | Focus |
-|-------|-------|------|-------|
-| Intake Validator Agent | 1 (parallel) | `agents/intake-validator-agent.md` | Confirms screenshot inventory, per-state labels, feature intent (1 feature only), flow order, target surface, missing assets |
-| Flow Slicer Agent | 1.5 (parallel) | `agents/flow-slicer-agent.md` | Selects the UI component or region that proves each beat; produces `crop-map.md` |
-| Interaction Storyboard Agent | 1.5 (parallel) | `agents/interaction-storyboard-agent.md` | Builds beat sequence: focal slice → interaction → result → transition; one action per beat |
-| Motion Spec Agent | 1.5 (parallel) | `agents/motion-spec-agent.md` | Defines pointer/tap, mask/crop, caption, transition, and timing rules; preserves source UI styling |
-| Platform Format Agent | 2 (sequential) | `agents/platform-format-agent.md` | Maps output to App Store / onboarding / website / social hard constraints; emits final asset manifest + handoff |
-| Critic Agent | 2 (final) | `agents/critic-agent.md` | Five sub-critics (grounding / component focus / beat clarity / brand fidelity / platform fit); routes failures; max 2 cycles |
-
----
-
-## Routing + Dispatch
-
-Single route — the skill always runs Layer 1 + Layer 1.5 + Layer 2. Multi-surface invocations are rejected at pre-dispatch (one feature × one surface per run; re-invoke for additional surfaces).
-
-```
-1. Pre-Dispatch (warm-start scan + cold-start if needed) — per procedures/pre-dispatch.md
-2. LAYER 1 SEQUENTIAL: intake-validator-agent (hard gate — must PASS before Layer 1.5)
-3. LAYER 1.5 IN PARALLEL: flow-slicer-agent, interaction-storyboard-agent, motion-spec-agent
-4. LAYER 2 SEQUENTIAL:
-   - platform-format-agent (emits asset manifest + produce-video handoff)
-   - critic-agent (5-sub-critic gate; FAIL → re-dispatch named source agent)
-5. Critic FAIL → re-dispatch (max 2 cycles); after cycle 2, ship done_with_concerns
-6. Deliver brief + assets + crop-map + handoff-produce-video
-```
-
-Mechanics (how to spawn agents, parallel/sequential tables, single-agent fallback, critic routing, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
+6 sub-agents: Layer 1 intake-validator (hard gate) → Layer 1.5 parallel (flow-slicer, interaction-storyboard, motion-spec) → Layer 2 sequential (platform-format → critic 5-sub-critic gate, max 2 rewrite cycles). One feature × one surface per run. Full per-agent focus + dispatch pseudocode + spawn mechanics + critic routing + single-agent fallback + chain position + skill deference: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 
 ---
 
@@ -119,48 +83,22 @@ Mechanics (how to spawn agents, parallel/sequential tables, single-agent fallbac
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" + `produce-video`'s `video-brief-schema.md` extension for app-preview inputs (WS4 will land that extension)
 - **Review:** This `pipeline` artifact carries the review machinery but `decision_state` defaults to `not_required`. Operator opts a run into review by setting `decision_state: pending`. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. Review machinery applies to `brief.md` only — not to `assets.md`, `crop-map.md`, or `handoff-produce-video.md`.
 
-Full template + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
-
-### Output Artifact Structure (frontmatter spec)
-
-`.forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md` — full template lives in `references/format-conventions.md` §1. Frontmatter:
-
-```yaml
----
-type: app-preview-brief
-role: hero
-status: done | done_with_concerns | blocked | needs_context
-decision_state: not_required # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
-reviewed_at:               # YYYY-MM-DD — empty until reviewed
-reviewer:                  # who recorded the review — empty until reviewed
-date: [YYYY-MM-DD]
-slug: [slug]
-feature: [free text — 1 feature only]
-surface: app-store | onboarding | website | social
-brand_mode: founder | company
-market: [region]
-screenshot_count: [int — total unique source files referenced]
-beat_count: [int — beats in the sequence]
-total_length_seconds: [number]
-aspect: 9:16 | 1:1 | 16:9 | 4:5 | 2:3
-brand_source: brand-md | cold-start-hint
-critic_passes: [grounding, component-focus, beat-clarity, brand-fidelity, platform-fit]
-critic_loop_count: [1 | 2]
----
-```
-
-The four `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per `references/_shared/reviewable-artifact-contract.md`. This is a `pipeline` artifact → `decision_state` defaults to `not_required`.
+Full template + frontmatter spec + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per `references/_shared/reviewable-artifact-contract.md`. Pipeline default: `decision_state: not_required`.
 
 ---
 
 ## Anti-Patterns
 
-Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. Five sub-critic clusters (Grounding / Component Focus / Beat Clarity / Brand Fidelity / Platform Fit) + 4 cross-cutting marketing-stack rows (cross-stack contract drift, brand-system absent → token fabrication, skill-deference miss, artifact schema drift).
-
-Most common in practice: whole-screen tours (Gate 4), idle "establishing" beats with no action (Gate 3), synthetic glow / invented gradients (Gate 6), App Store policy violations (platform-format-agent's hard rules), captions that explain the product instead of the beat (Gate 5).
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 5 sub-critic clusters + 4 cross-cutting marketing-stack rows. Re-read before any output ships.
 
 ---
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -181,18 +119,12 @@ Most common in practice: whole-screen tours (Gate 4), idle "establishing" beats 
 
 ## Worked Example
 
-End-to-end walkthrough (Pre-Dispatch warm-start → Layer 1 intake → Layer 1.5 parallel → Layer 2 platform-format + critic PASS → deliver; plus FAIL-handling cycle 2 variant + `--fast` variant) on a fictional generic SaaS app for the App Store preview surface: [`references/examples/app-preview-walkthrough.md`](references/examples/app-preview-walkthrough.md) [EXAMPLE].
-
----
+End-to-end walkthrough + FAIL cycle 2 + `--fast` variant: [`references/examples/app-preview-walkthrough.md`](references/examples/app-preview-walkthrough.md) [EXAMPLE].
 
 ## References
 
-- **Playbook:** `references/playbook.md` [PLAYBOOK]
-- **Format:** `references/format-conventions.md` [PROCEDURE]
-- **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
-- **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/app-preview-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by craft agents at dispatch, not orchestrator): `references/{platform-specs, interaction-grammar}.md`
-- **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, roughdraft-review-protocol}.md`
-- **Agents:** 6 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 5-sub-critic gate + Rewrite Routing Table.
-- `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits
+- `references/playbook.md`, `format-conventions.md`, `anti-patterns.md`
+- `references/procedures/{pre-dispatch, dispatch-mechanics}.md`
+- `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, roughdraft-review-protocol}.md`
+- Domain catalogs (loaded by craft agents at dispatch): `references/{platform-specs, interaction-grammar}.md`
+- 6 sub-agents in `agents/`; `critic-agent.md` holds the canonical 5-sub-critic gate

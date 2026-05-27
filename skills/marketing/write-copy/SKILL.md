@@ -11,7 +11,7 @@ metadata:
 
 # Write Copy — Orchestrator
 
-Coordinates specialized sub-agents to produce craft-quality copy with annotations, alternatives, and quantitative evaluation.
+Drafts and critiques persuasive copy — headlines, hooks, CTAs, taglines, and landing-page section copy — with per-line V/F/U rubric scoring, annotations, and ranked alternatives. Coordinates specialized sub-agents to produce craft-quality output.
 
 **Core question:** Is every key line visual, falsifiable, and uniquely ours?
 
@@ -76,6 +76,13 @@ Full template + per-section format rules in [`references/format-conventions.md`]
 ## Anti-Patterns
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships. 5 orchestrator rows + 4 pipeline rows + 4 cross-cutting marketing-stack rows.
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 

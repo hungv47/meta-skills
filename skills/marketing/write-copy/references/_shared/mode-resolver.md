@@ -32,6 +32,24 @@ A skill's `budget:` field is its **default tier** — never a ceiling, never a f
 
 ---
 
+## Compactness caps (SKILL.md body, by tier)
+
+SkillOpt's empirical finding (arXiv:2605.23904v2 §4.4): trained skills are uniformly compact — final `best_skill.md` ranges from 379 to 1,995 tokens with **median ~920**. Bloated skill bodies are not a sign of effort; they are a signal that procedural rules and reference material have not been separated. Each tier carries a body-token cap that `scripts/audit-skill-budget.ts --enforce-caps` enforces in the pre-merge gate.
+
+| Budget | Body cap (estimated tokens, chars ÷ 4) | Rationale |
+|---|---:|---|
+| **fast** | 800 | A single-agent, one-pass skill should fit on one screen. If a `fast` skill needs more than 800 tokens of body, either it is not actually `fast` (re-classify) or content belongs in `references/`. |
+| **standard** | 1,500 | One critic pass, reduced orchestration. Procedural rules + critic checklist + completion contract should fit comfortably. |
+| **deep** | 2,500 | Full orchestration, multi-agent. Caps the orchestrator body, NOT sub-agent prompts or reference docs. If a `deep` skill exceeds the cap, the next refactor extracts the longest section into `references/`. |
+
+**What the cap measures.** Body chars (excluding frontmatter) divided by 4. Same heuristic the existing `audit-skill-budget.ts` already reports.
+
+**What the cap does NOT measure.** Token cost of `references/`-cited material (loaded on demand), agent prompts (separate files), routing.yaml (separate surface). The cap is the on-trigger context cost when a skill activates and its SKILL.md body is read into the model context — that is the cost paid every invocation.
+
+**Exception protocol.** A skill that legitimately exceeds its cap must document the exception inside the SKILL.md body with a `<!-- BUDGET_EXCEPTION: <reason> -->` comment immediately under the H1. The pre-merge gate logs exceptions but does not fail on them. Repeat offenders become refactor targets.
+
+---
+
 ## Auto-downgrade heuristics (apply before dispatching agents)
 
 - Input is ≤3 sentences AND doesn't reference prior artifacts AND skill budget is not `deep` → treat as `fast`.

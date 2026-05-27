@@ -11,16 +11,16 @@ metadata:
 
 # Technical Writer — Orchestrator
 
-Scans a codebase and produces clear, structured documentation that new users can follow without reading source code. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Agent table + 5 routes + 6 standard critical gates + Single-Agent Fallback: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology + documentation types catalog + audience types + file importance ranking: [`references/playbook.md`](references/playbook.md).
+Scans a codebase and generates clear, structured documentation — READMEs, API references, setup guides, runbooks, ship logs, release notes — with consistent terminology so a new team member can follow without reading source code. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Agent table + 5 routes + Single-Agent Fallback: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology + doc-type catalog + audience types + file importance ranking: [`references/playbook.md`](references/playbook.md).
 
 **Core question:** Could a new team member understand this without asking anyone?
 
 ## When To Use
 
-- Codebase needs new docs or a refresh (README, user guide, API reference, config guide, tutorial).
+- Codebase needs new docs or a refresh (README, user guide, API reference, config guide, tutorial, runbook).
 - After PRs that modify env vars, API routes, or configuration (Route C — Sync).
 - Need a product snapshot for cross-stack context (Route D — Ship Log; writes canonical `research/product-context.md`).
-- Need a CHANGELOG entry for an imminent release (Route E — Release Notes).
+- Need a CHANGELOG entry or release notes for an imminent release (Route E).
 - Auditing existing docs for staleness (Audit mode; no writing).
 
 ## When NOT To Use
@@ -43,35 +43,15 @@ All 6 fire under `--fast`, Single-Agent Fallback, and dry-run. Routes D + E REPL
 
 Critic FAIL → identifies which agent must fix it; orchestrator re-dispatches. Full failure-handling flow: [`references/anti-patterns.md`](references/anti-patterns.md) "When the critic FAILs."
 
-## Before Starting
+## Before Starting + Pre-Dispatch
 
-Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
+Full procedure (before-starting checks, mode resolution, dimensions, read order, Warm/Cold Start, route-locked Pre-Dispatch for D + E, write-back rules): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
-- **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: standard`. `--fast` forces Single-Agent Fallback. **Safety gates supersede `--fast`.**
-- Read `.forsvn/index/manifest.json` for prior docs-writing runs against the same target; surface staleness signals.
-- Read `.forsvn/experience/technical.md` for prior doc conventions (voice, formatting preferences).
-- Read project context: existing README, CLAUDE.md, `research/product-context.md`, `package.json#description` — all available context before scanning code.
-
-## Pre-Dispatch
-
-Run [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). Needed dimensions: audience (end-user / developer / operator / mixed), doc type (readme / user-guide / api-reference / config-guide / tutorial / ship-log / release-notes), codebase path, fresh write or update existing.
-
-Read order: codebase scan (existing README, docs/, package manifest, framework hints) → `.forsvn/experience/technical.md` (prior doc conventions).
-
-Warm Start + Cold Start + route-locked Pre-Dispatch (Routes D + E override Q1+Q2) + Write-back rules: [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md).
+Needed dimensions: **audience** (end-user / developer / operator / mixed), **doc-type** (readme / user-guide / api-reference / config-guide / tutorial / ship-log / release-notes / runbook), codebase path, fresh-write vs update-existing.
 
 ## Artifact Contract
 
-- **Path (default route):** project files — `README.md`, `docs/<topic>.md`, or specified location.
-- **Path (Route C — Sync):** in-place updates to existing docs with `<!-- synced: YYYY-MM-DD -->` markers.
-- **Path (Route D — Ship Log):** `research/product-context.md` (canonical cross-stack artifact; pre-write merge-mode check required).
-- **Path (Route E — Release Notes):** `CHANGELOG.md` (prepend new entry); optionally also GitHub Release body draft to stdout via `--gh-release`.
-- **Path (Audit Mode):** no writes — produces audit report inline.
-- **Lifecycle:** varies by doc-type — see [`references/report-template.md`](references/report-template.md) "Lifecycle by doc-type" (README/User Guide/Config/Tutorial/Ship Log = canonical; API Reference = pipeline; Release Notes = snapshot).
-- **Frontmatter (baseline):** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=md by default; project-level canonical docs may opt into `html` for FIRE-themed preview), `decision_state`, `audience`, `doc-type`. Backfilled additions: `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
-- **Consumed by:** all 12+ downstream skills (Ship Log → `research/product-context.md` feeds create-brand, write-copy, optimize-seo, architect-system, etc.); users on `/plugin update` (Release Notes → CHANGELOG.md); `clean-code` + `review-work` + `architect-system` (read docs for drift detection).
-
-Full templates + filename + version-increment rule: [`references/report-template.md`](references/report-template.md).
+Per-route paths, lifecycle-by-doc-type, frontmatter baseline, and downstream consumers: [`references/procedures/artifact-paths.md`](references/procedures/artifact-paths.md). Full templates + filename + version-increment rule: [`references/report-template.md`](references/report-template.md).
 
 ## Multi-Agent + Single-Agent
 
@@ -86,6 +66,13 @@ Previous: none | Next: none (standalone). Pairs well with `architect-system` (ar
 ## Anti-Patterns
 
 Read [`references/anti-patterns.md`](references/anti-patterns.md) before delivering any doc that smells off — 7-pattern catalog (restating code, missing prerequisites, wall of text, documenting internals, "see code for details"). Route-specific anti-patterns + critic-FAIL handling + when-to-defer guidance also live there.
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 

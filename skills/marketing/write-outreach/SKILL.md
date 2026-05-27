@@ -70,59 +70,11 @@ Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget:
 
 ## Agent Manifest
 
-| Agent | Layer | File | Focus |
-|-------|-------|------|-------|
-| Signal Analyst | 1a (solo, first) | `agents/signal-analyst.md` | Rates trigger-signal strength (1-5), drafts the observation line, flags weak/generic signals. Runs FIRST because strategist + proof-selector consume its `signal_strength` score. |
-| Strategist | 1b (parallel) | `agents/strategist.md` | Picks framework (O→P→P→A, Q→V→A, Trigger→Insight→Ask, Story→Bridge→Ask, Declared-Need→Relevant-Proof→Specific-Next-Step, No-pitch connection note), angle, CTA shape. Receives `signal_strength` from 1a. |
-| Proof Selector | 1b (parallel) | `agents/proof-selector.md` | Picks strongest proof asset from the `available_proof[]` pool: named case study > named logo + metric > specific claim > generic. Receives `signal_strength` from 1a for tie-breaking. |
-| Composer | 2 (sequential, post-merge) | `agents/composer.md` | Drafts the message applying channel-specific craft rules (length, structure, subject line, formatting) |
-| Voice Auditor | 2 (sequential) | `agents/voice-auditor.md` | Peer-voice audit — strips vendor-speak, enforces contractions, cuts filler, verifies "you > me" |
-| Critic | 2 (sequential, gate) | `agents/critic.md` | Rubric scoring across 5 dimensions, PASS/FAIL with rewrite feedback. Reads `references/anti-patterns.md` for banned-phrase auto-fails. |
-| Reply Classifier | 1 (reply mode) | `agents/reply-classifier.md` | Types inbound reply: not-interested / no-budget / send-info / wrong-person / curious / qualified / later / hostile / ambiguous |
-| Reply Composer | 2 (reply mode) | `agents/reply-composer.md` | Drafts response per classification + next-touch logic |
-
-### Shared References (read by multiple agents)
-
-- **Channel craft** (`references/channels/`): `email.md`, `linkedin.md`, `twitter.md`, `imessage.md`, `platform-proposals.md`
-- **Mode defaults** (`references/modes/`): `services.md`, `saas.md`, `partnership.md`, `community.md`
-- **Frameworks** (`references/frameworks/`): `structures.md`, `personalization-signals.md`, `ctas.md`, `objections.md`, `saraev-four-step.md`
-- **Shared guardrails:** `references/anti-patterns.md` (AI tells, template smell, banned phrases), `references/proof-types.md` (proof hierarchy)
-
----
+8 sub-agents across two layers (1a solo + 1b parallel + Layer 2 sequential + reply-route variants). Full table with per-agent focus, inputs, layer placement, and shared-reference loads: [`references/agent-manifest.md`](references/agent-manifest.md) [PROCEDURE]. Shared craft catalogs: `references/channels/`, `references/modes/`, `references/frameworks/`, `references/anti-patterns.md`, `references/proof-types.md`.
 
 ## Routing + Dispatch
 
-Three routes — Route A (compose: first-touch or follow-up), Route B (reply handling), Route C (called by another skill).
-
-```
-ROUTE A (compose):
-  1. Pre-Dispatch (per procedures/pre-dispatch.md)
-  2. LAYER 1a — signal-analyst SOLO (must complete before 1b)
-  3. LAYER 1b — IN PARALLEL: strategist + proof-selector (both receive signal_strength)
-  4. MERGE → strategy brief
-  5. LAYER 2 — SEQUENTIAL: composer → voice-auditor → critic
-  6. Critic FAIL → re-dispatch FULL Layer 2 chain with feedback (max 2 cycles)
-  6a. Voice-auditor BLOCKED on proof gap → re-dispatch composer + parallel proof-selector
-  7. TERMINAL: humanmaxxing with content-type "short-outbound" + channel + protected_tokens
-  8. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only
-  9. Write 3 artifacts ([slug].md + .rationale.md + .critic-score.md)
- 10. Deliver message + rationale inline
-
-ROUTE B (reply):
-  1. Pre-Dispatch: read reply text; confirm channel + mode
-  2. LAYER 1: reply-classifier (types reply)
-  3. LAYER 2 SEQUENTIAL: reply-composer → voice-auditor → critic (reply-specific rubric)
-  4. Critic FAIL → re-dispatch FULL Layer 2 with feedback (max 2 cycles)
-  5. TERMINAL: humanmaxxing + Specificity regression (same as Route A)
-  6. Write artifacts; deliver inline
-
-ROUTE C (called by plan-campaign):
-  1. Pre-Dispatch: read campaign context from calling skill's artifact
-  2. Execute Route A per touch requested
-  3. Return annotated message + rationale to calling skill
-```
-
-Mechanics (how to spawn agents, single-agent fallback, Layer 1a + 1b two-stage strategy dispatch, Merge Step, Layer 2 sequential pipeline, critic gate + rewrite loop, Terminal humanmaxxing + Specificity regression, Reply Route Agent Flow with rubric substitutions, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1a dispatch entry.
+Three routes — Route A (compose: first-touch or follow-up), Route B (reply handling), Route C (called by another skill). Full pseudocode (Layer 1a SOLO → 1b parallel → MERGE → Layer 2 sequential → critic gate + rewrite loop → terminal humanmaxxing + Specificity regression), spawn mechanics, single-agent fallback, chain position, skill deference: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1a dispatch entry.
 
 ---
 
@@ -136,35 +88,22 @@ Mechanics (how to spawn agents, single-agent fallback, Layer 1a + 1b two-stage s
 
 Full template + per-field format rules (slug derivation, channel/mode/touch/route field values, critic_total format, re-run convention) live in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
-### Artifact Template
-
-Every `[slug].md` carries:
-
-```yaml
----
-skill: write-outreach
-version: 1
-date: YYYY-MM-DD
-status: done | done_with_concerns | blocked | needs_context
-channel: email | linkedin-dm | linkedin-connection | twitter-reply | twitter-dm | imessage | sms | upwork-proposal | other-platform
-mode: services-sell | saas-sell | partnership-sell | community-sell
-touch: integer | "breakup"   # 1, 2, 3, 4+, or "breakup"
-route: compose | reply
-critic_total: N/50
----
-```
-
-Slug is derived from target + channel (e.g., `jane-acme-email-t1`, `jane-acme-linkedin-dm`, `jane-acme-email-t2-followup`).
+Slug grammar: `<target>-<company>-<channel>-t<N>[-suffix]` (e.g., `jane-acme-email-t1`). Full artifact template (channel/mode/touch enums, critic_total format, slug derivation rules): [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
 ---
 
 ## Anti-Patterns
 
-Polish-pipeline + orchestrator + cross-cutting references: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships. Banned phrases (~50 zero-tolerance) + reply killers + structural anti-patterns + 9 orchestrator-level rows (template-with-{{FirstName}} swap, "hope this finds you well", "quick 30-min call?" in touch 1, feature dumps, fake Re:/Fwd:, double-humanmaxxing, arguing with "no", skipping ICP artifact, multi-touch without prior-touches) + 4 cross-cutting marketing-stack rows (protected_tokens contract drop, post-humanmaxxing regression disabled, campaign-plan Route C context drop, artifact schema drift).
-
-Most common in practice: banned-phrase residual ("I hope this email finds you well", "leverage"), Specificity Floor violation (1 verifiable specific instead of ≥2), calendar CTA in touch 1, multi-touch without prior_touches.
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — ~50 banned phrases (zero-tolerance) + reply killers + 9 orchestrator anti-patterns + 4 cross-cutting marketing-stack rows. Re-read before any output ships.
 
 ---
+
+## Durable Rules (protected)
+
+<!-- SLOW_UPDATE_START -->
+<!-- No pinned rules yet. Populate via the slow-update workflow (see references/slow-update-fence.md). Each pinned rule must (a) be procedural not instance-specific, (b) be earned from a regression or critic-flagged failure, (c) cite the artifact / decision record that justified pinning. -->
+<!-- SLOW_UPDATE_END -->
+
 
 ## Completion Status
 
@@ -182,19 +121,12 @@ After receiving the message: send, wait for reply or cadence (7-14 days typical)
 
 ## Worked Example
 
-End-to-end Route A walkthrough (services-sell email touch 1 to a named CFO target, signal-strength 4, framework's four-step framework, critic PASS cycle 1 at 44/50, terminal humanmaxxing with `protected_tokens=["Ramp","9 days","4 days","Acme"]`, post-humanmaxxing Specificity regression passes) + FAIL-handling cycle-2 variant + voice-auditor BLOCKED path + Route B (reply) snippet: [`references/examples/write-outreach-walkthrough.md`](references/examples/write-outreach-walkthrough.md) [EXAMPLE].
-
----
+End-to-end Route A + FAIL-handling cycle-2 + voice-auditor BLOCKED + Route B (reply) snippet: [`references/examples/write-outreach-walkthrough.md`](references/examples/write-outreach-walkthrough.md) [EXAMPLE].
 
 ## References
 
-- **Playbook:** `references/playbook.md` [PLAYBOOK]
-- **Format:** `references/format-conventions.md` [PROCEDURE]
-- **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
-- **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
-- **Example:** `references/examples/write-outreach-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch): `references/channels/{email, linkedin, twitter, imessage, platform-proposals}.md`, `references/modes/{services, saas, partnership, community}.md`, `references/frameworks/{structures, personalization-signals, ctas, objections, saraev-four-step}.md`, `references/proof-types.md`
-- **Shared:** `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`
-- **Marketing foundations:** `references/_shared/marketing-foundations.md` — canonical 9-channel framework, funnel-stage vocabulary, 3Q content test, CTA formula, VoC principles
-- **Agents:** 8 sub-agents in `agents/` — see Agent Manifest above. `critic.md` holds the canonical 5-dimension rubric.
-- `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits
+- `references/playbook.md`, `format-conventions.md`, `anti-patterns.md`, `proof-types.md`
+- `references/procedures/{pre-dispatch, dispatch-mechanics}.md`
+- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, marketing-foundations}.md`
+- Domain catalogs (loaded by agents at dispatch): `references/channels/`, `references/modes/`, `references/frameworks/`
+- 8 sub-agents in `agents/`; `critic.md` holds the canonical 5-dimension rubric
