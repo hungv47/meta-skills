@@ -20,7 +20,7 @@ When invoked as a sub-routine by another skill: return the synthesis inline (Con
 ---
 skill: debate-agents
 produced_by: agents-panel
-version: {skill-version}     # matches running skill's metadata.version (currently 2.0.0)
+version: {skill-version}     # matches the running skill's metadata.version
 date: {YYYY-MM-DD}
 status: done | done_with_concerns | blocked | needs_context
 stack: meta

@@ -4,7 +4,7 @@ description: "Decomposes a spec or architecture into buildable tasks with accept
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
 ---

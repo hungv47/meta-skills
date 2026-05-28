@@ -4,7 +4,7 @@ description: "Turn a brief-shortform or brief-app-preview into a multi-runtime e
 argument-hint: "[brief slug or path] [--platforms tiktok,reels,...] [--surface app-store,onboarding,...]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.2.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-2.00"
 ---

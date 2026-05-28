@@ -4,7 +4,7 @@ description: "Audits and plans search visibility across six modes — technical 
 argument-hint: "[url or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$2-5"
 ---

@@ -4,7 +4,7 @@ description: "Strip AI tells, inject brand voice, and compress existing text so 
 argument-hint: "[content file or text]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.2.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.40"
 ---

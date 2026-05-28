@@ -245,20 +245,19 @@ node scripts/sync-skill-support.mjs --check
 bun scripts/eval-triggers.ts --require-all
 node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts
-bun scripts/lint-html-output.ts
-bun scripts/test-forsvn-preview.ts
+bun scripts/validate-artifacts.ts --strict
+bun scripts/manifest-sync.ts --check
 bun scripts/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun scripts/audit-skill-budget.ts --enforce-caps
 bun scripts/lint-description-body-coherence.ts --strict
 ```
 
-Bottom three added by the review-surface overhaul (2026-05-26):
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
 `bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree if it
-flags legacy paths); `lint-html-output` enforces the 10-check rubric
-on every review-surface HTML preview ([[html-output-critic]]); and
-`test-forsvn-preview` runs the end-to-end decision-capture flow through
-the `bun scripts/forsvn-preview.ts` CLI (added by v2; see
-[[reviewable-artifact-contract]] § "Review surface").
+flags legacy paths); `validate-artifacts --strict` enforces v2 frontmatter
+on every `.forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
+index drifted from disk (both added by skills-refactor Phase 2.5).
+HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) moved
+out to the **forsvn-preview** plugin — skills emit Markdown only.
 
 Trigger evals (run before merge — routing changes must keep
 `tests/triggers/` fixtures green, and `--require-all` ensures every skill

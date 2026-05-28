@@ -4,7 +4,7 @@ description: "Generate documentation from a codebase — READMEs, API references
 argument-hint: "[codebase or project to document]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "3.3.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.10-0.40"
 ---

@@ -102,36 +102,32 @@ The human checks exactly one box. The agent reads the checked box to set
 
 ## Review surface — HTML preview lifecycle
 
-When `review_surface: html`, the producing skill emits two files at the same
-flat path under `.forsvn/artifacts/`:
+When `review_surface: html`, the **durable artifact is the Markdown file**. The
+skill writes only the `.md`; the HTML preview is rendered on demand by the
+optional **forsvn-preview** plugin:
 
 ```
-.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md     ← durable
-.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview (while pending)
+.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md     ← durable (the skill writes this)
+.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview, rendered by the plugin (while pending)
 ```
 
 The HTML is a **rendering** of the MD frontmatter + body, themed by stack
-(meta=AIR, mkt=WATER, product=FIRE, research=EARTH). Layout and tokens come from
-[[review-surface-design]] and the shared template at [[review-surface-template]].
+(meta=AIR, mkt=WATER, product=FIRE, research=EARTH). Rendering — layout, tokens,
+the themed HTML — is owned by the **forsvn-preview** plugin, not the skill. A
+skill is fully functional without the plugin; the operator reviews the Markdown
+directly (e.g. in Roughdraft).
 
 **Lifecycle:**
 
-1. Skill writes MD with `decision_state: pending`, `review_surface: html`.
-2. Skill renders the HTML twin via `renderReviewSurface(stack, stagePartial, data)`.
-3. Operator opens the preview by running
-   `bun scripts/forsvn-preview.ts .forsvn/artifacts/<slug>.html`. The CLI
-   starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port),
-   injects the token into the page's `#preview-config` block, opens the
-   browser, and blocks. (Roughdraft is the escape hatch — see below.)
-4. Operator clicks one of approve / deny / suggest changes in the in-page
-   `<form id="decision-capture">`, optionally writes comments, clicks Done.
-   The page POSTs `{token, decision_state, comments?, variant?}` to `/done`.
-5. CLI validates the CSRF token, rewrites the MD frontmatter
+1. Skill writes MD with `decision_state: pending`, `review_surface: html`. That is the skill's entire job — plain Markdown, no HTML.
+2. Operator runs the plugin: `bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<slug>.md`. It renders the HTML twin from the MD (themed by stack), then starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port), injects the token into the page's `#preview-config` block, opens the browser, and blocks. (Roughdraft is the escape hatch — see below.)
+3. Operator clicks one of approve / deny / suggest changes in the in-page `<form id="decision-capture">`, optionally writes comments, clicks Done. The page POSTs `{token, decision_state, comments?, variant?}` to `/done`.
+4. The plugin validates the CSRF token, rewrites the MD frontmatter
    (`decision_state`, `reviewed_at`, `reviewer`), appends a `## Reviewer notes`
    block if comments were submitted, moves the `.html` to
    `.forsvn/artifacts/.archive/<original-filename>.html`, runs `manifest-sync`,
    and exits 0.
-6. The MD stays at the canonical path; the manifest is re-indexed.
+5. The MD stays at the canonical path; the manifest is re-indexed.
 
 **Roughdraft remains the escape hatch.** The HTML footer still carries a
 `roughdraft://open?path=…` deeplink. If the reviewer prefers inline
@@ -215,11 +211,13 @@ review fields index normally. Legacy artifacts that still carry the old
 In a SKILL.md Artifact Contract section:
 
 ```
-This artifact is review-gated. Write review frontmatter and the `## Review Gate`
-block per `references/_shared/reviewable-artifact-contract.md`; run the review
-per `references/_shared/roughdraft-review-protocol.md`. When the artifact is
-review_surface: html, render the preview via `renderReviewSurface(...)` per
-`references/_shared/review-surface-template.md`.
+This artifact is review-gated. Write a plain Markdown artifact with review
+frontmatter and the `## Review Gate` block per
+`references/_shared/reviewable-artifact-contract.md`; run the review per
+`references/_shared/roughdraft-review-protocol.md`. When `review_surface: html`,
+the operator previews + records the decision by running the forsvn-preview
+plugin on the `.md` (`bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`);
+the skill itself emits no HTML.
 ```
 
 Do not restate the field semantics in the SKILL.md — cite this file.
@@ -266,5 +264,4 @@ the new field name) until they are migrated.
 - [[roughdraft-review-protocol]] — the procedure for opening and processing a review
 - [[artifact-contract-template]] — the full frontmatter schema these fields extend
 - [[manifest-spec]] — how `decision_state` is indexed into `manifest.json`
-- [[review-surface-design]] — element tokens, motifs, motion for the HTML preview surface
-- [[review-surface-template]] — the structural HTML template skill authors fill in
+- **forsvn-preview plugin** — owns HTML rendering (the themed preview surface, tokens, the `base.html` template). Skills emit Markdown only; the plugin renders it. Lives at top-level `forsvn-preview/` (`references/review-surface-design.md`, `references/review-surface-template.md`).

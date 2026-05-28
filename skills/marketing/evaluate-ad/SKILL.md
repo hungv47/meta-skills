@@ -4,7 +4,7 @@ description: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, freque
 argument-hint: "[loop slug or path] [audience-temp: cold-traffic|retargeting] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "0.2.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---

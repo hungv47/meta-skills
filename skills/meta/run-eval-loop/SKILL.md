@@ -4,7 +4,7 @@ description: "Scaffolds and maintains the workspace for a measurable strategy â†
 argument-hint: "[measurable initiative name, e.g. 'pricing page conversion' or 'founder outbound sequence']"
 allowed-tools: Read Write Edit Grep Glob Bash
 metadata:
-  version: "0.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.20-0.80"
 ---

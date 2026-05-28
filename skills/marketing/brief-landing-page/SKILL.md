@@ -4,7 +4,7 @@ description: "Generates a campaign-grade brief for a conversion landing page or 
 argument-hint: "[page route or campaign name, e.g. '/pricing' or 'q3-launch-lp']"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$2-4"
 ---

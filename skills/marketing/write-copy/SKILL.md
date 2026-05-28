@@ -4,7 +4,7 @@ description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, t
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---

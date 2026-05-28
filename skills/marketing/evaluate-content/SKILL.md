@@ -4,7 +4,7 @@ description: "Score a published organic post (text / image / carousel) from real
 argument-hint: "[loop slug or path] [primary-platform] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "0.2.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---

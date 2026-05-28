@@ -5,7 +5,7 @@ argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
 metadata:
-  version: "3.3.0"
+  version: "1.0.0"
   budget: fast
   estimated-cost: "$0.03-0.10"
 ---

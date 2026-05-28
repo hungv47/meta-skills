@@ -4,7 +4,7 @@ description: "Production-ready brief for short-form video — hook, shot list, o
 argument-hint: "[angle or topic] [--platforms tiktok,reels,...] [--brand-mode founder|company]"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$2-4 (single platform) / $4-8 (1 hero + 2 variants)"
 ---

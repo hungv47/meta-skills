@@ -4,7 +4,7 @@ description: "Scores a launched landing page from real performance evidence insi
 argument-hint: "[loop slug or path] [page URL/route] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "0.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---

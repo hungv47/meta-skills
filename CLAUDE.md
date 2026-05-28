@@ -43,6 +43,23 @@ Every skill declares a `budget` tier in frontmatter: `fast`, `standard`, or `dee
 
 **Single source of truth: [`references/mode-resolver.md`](references/mode-resolver.md)** — tier definitions, auto-downgrade heuristics, override mechanics, what `--fast` does NOT skip. Every skill cites it.
 
+## Versioning Policy
+
+Three **distinct** version namespaces. Never conflate them — the confusion of "version 3 everywhere" came from treating them as one.
+
+| Namespace | Field / file | Scheme | Rule |
+|---|---|---|---|
+| **Skill version** | `metadata.version` in each `SKILL.md` | SemVer | All skills baseline at `1.0.0`. Bump **only** when that one skill's behavior changes — independently, not in lockstep. |
+| **Artifact-schema version** | `version` in an artifact's frontmatter | integer | The reviewable-artifact contract schema version (currently `1` → `2`). Owned by `references/artifact-contract-template.md`, **not** the skill. |
+| **Plugin release** | `version` in `plugin.json` + `marketplace.json` | SemVer on the **1.0.x** line | The whole-stack release version. It **mirrors the git release tag** (currently `v1.0.1`, so this release is **`1.0.2`**). The earlier `3.x` in `plugin.json` was an orphan from the old agent-skills consolidation scheme — realigned onto the v1.0.x line on 2026-05-28. |
+
+**Release rule — versions are controlled deliberately, never bumped blindly:**
+
+1. The release line is **1.0.x** (the git-tag line). `plugin.json` + `marketplace.json` `version` MUST equal the git release tag — they *mirror* it; they are not an independent line.
+2. Each release chooses its increment intentionally (patch / minor / major per SemVer) by a human. No CI or script auto-bumps it.
+3. `forsvn-preview` is a separate plugin on its own line (first release `1.0.0`).
+4. Reference and playbook files carry **no standalone `version:`** — they version with the skill that owns them. `{skill-version}` tokens in templates are filled at runtime from the running skill's `metadata.version`; never hardcode a number there.
+
 ## Completion Status Protocol
 
 Every skill output ends with an explicit status — no implicit "here's the output."
@@ -98,7 +115,7 @@ A skill writes to a **top-level folder** only when its output is a canonical sou
 
 Don't add new top-level folders without clearing that canonical bar. Folder sprawl is worse than consistent placement.
 
-Everything else lives flat under `.forsvn/artifacts/` using the v2 filename grammar `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>` (md for the durable artifact, html for the review preview while `decision_state: pending`). See `references/artifact-contract-template.md` for the frontmatter contract and `references/review-surface-design.md` for the per-stack elemental theming (meta=AIR, mkt=WATER, product=FIRE, research=EARTH).
+Everything else lives flat under `.forsvn/artifacts/` using the v2 filename grammar `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`. Skills emit **Markdown only**; an `.html` review preview is rendered on demand by the optional **forsvn-preview** plugin while `decision_state: pending`. See `references/artifact-contract-template.md` for the frontmatter contract, `references/artifact-discovery.md` for how consumers find a prerequisite, and `references/reviewable-artifact-contract.md` for the review-gate contract. Per-stack elemental theming (meta=AIR, mkt=WATER, product=FIRE, research=EARTH) lives with the renderer in the forsvn-preview plugin.
 
 ## Pre-merge gate (12 commands)
 
@@ -113,15 +130,15 @@ node scripts/sync-skill-support.mjs --check
 bun scripts/eval-triggers.ts --require-all
 node hooks/test-router.mjs
 bun scripts/lint-artifact-paths.ts        # added by review-surface overhaul (2026-05-26)
-bun scripts/lint-html-output.ts           # added by review-surface overhaul (2026-05-26)
-bun scripts/test-forsvn-preview.ts        # added by review-surface v2 (2026-05-26)
+bun scripts/validate-artifacts.ts --strict  # skills-refactor Phase 2.5 — frontmatter conforms to the v2 contract (no-op if cwd has no .forsvn/artifacts)
+bun scripts/manifest-sync.ts --check         # skills-refactor Phase 2.5 — manifest.json + artifact-index.md are fresh (regenerate if stale)
 bun scripts/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun scripts/audit-skill-budget.ts --enforce-caps  # SkillOpt Phase 1.4 — write the report to forsvn/.forsvn/ then re-run with --enforce-caps (flipped ON 2026-05-27 after Phase 1.6 corpus-wide compaction sweep). Fails on any cap violation without a documented BUDGET_EXCEPTION, malformed fence, or skill missing a budget tier.
 bun scripts/lint-description-body-coherence.ts --strict          # SkillOpt Phase 1.3 (added 2026-05-27; --strict flipped on 2026-05-27 after 3 HIGH issues resolved)
 ```
 
 If `lint-artifact-paths` reports legacy paths under `.forsvn/artifacts/`, run `bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree to bring them to the flat v2 grammar.
 
-When `review_surface: html`, the operator can preview + capture the decision with `bun scripts/forsvn-preview.ts <path>.html` — Bun-served localhost CSRF-protected. Roughdraft stays as the escape-hatch path for MD-first reviewers.
+When `review_surface: html`, the operator previews + captures the decision with the optional **forsvn-preview** plugin: `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>` — it renders the themed HTML from the Markdown and serves a Bun localhost CSRF-protected decision-capture surface. Skills emit no HTML. Roughdraft stays as the escape-hatch path for MD-first reviewers.
 
 ### SkillOpt-derived gates — staged enforcement
 

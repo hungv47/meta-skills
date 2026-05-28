@@ -4,7 +4,7 @@ description: "Writes and evaluates Meta paid-ad copy (retargeting + cold-traffic
 argument-hint: "[audience-temp + offer + creative-format, e.g. 'cold-traffic / 14-day trial / dedicated']"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-2"
 ---

@@ -4,7 +4,7 @@ description: "Produce a graphic-design brief for a single visual asset — socia
 argument-hint: "[asset description, e.g. 'instagram carousel about pricing tiers']"
 allowed-tools: Read Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$1-2"
   status: done_with_concerns

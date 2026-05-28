@@ -73,9 +73,6 @@ const SUPPORT_REFS = {
   "evidence-classes.md": "skills/marketing/_shared/evidence-classes.md",
   "copywriting-research-workflow.md": "skills/marketing/write-copy/references/research-workflow.md",
   "clipping-and-live.md": "skills/marketing/plan-campaign/references/distribution-models/clipping-and-live.md",
-  "review-surface-design.md": "references/review-surface-design.md",
-  "review-surface-template.md": "references/review-surface-template.md",
-  "html-output-critic.md": "references/html-output-critic.md",
 };
 
 // Single-file shared scripts. name -> canonical source path (repo-relative).
@@ -88,7 +85,6 @@ const SUPPORT_SCRIPTS = {
   "append-loop-result.ts": "scripts/append-loop-result.ts",
   "scaffold-eval-loop.ts": "scripts/scaffold-eval-loop.ts",
   "update-quality-dashboard.ts": "scripts/update-quality-dashboard.ts",
-  "forsvn-preview.ts": "scripts/forsvn-preview.ts",
 };
 
 // Whole-directory mirrors. dest label under references/_shared/ -> source dir.
@@ -98,12 +94,6 @@ const SUPPORT_TREES = {
   "brand-system": "skills/marketing/create-brand/references",
   "ad-intelligence": "skills/marketing/write-ad/references/ad-intelligence",
   "platform-intelligence": "references/platform-intelligence",
-  // Review-surface chrome assets (base.html template + tokens.css + chrome.css +
-  // chrome.js). Skills that emit `review_surface: html` need these alongside
-  // their forsvn-preview.ts copy so the packaged skill is self-contained. The
-  // exemplars/ subdir is excluded by the mirror walker (it's reference content
-  // for maintainers, not run-time material).
-  "_html": "references/_html",
 };
 
 // Out-of-sync support files found in --check mode.
@@ -384,32 +374,13 @@ function syncSkill(dir) {
   if (/scaffold-eval-loop/.test(corpus)) ensureScript(dir, "scaffold-eval-loop.ts");
   if (/update-quality-dashboard/.test(corpus)) ensureScript(dir, "update-quality-dashboard.ts");
 
-  // Review-surface package — skills that emit `review_surface: html` (or
-  // describe the option in prose) ship the forsvn-preview CLI, the chrome
-  // assets it serves, and the spec docs that describe the contract. Without
-  // these, an installed/self-contained skill can't run its documented review
-  // flow (the skill-local roughdraft-review-protocol.md mirror cites
-  // `scripts/forsvn-preview.ts` directly).
-  //
-  // Each alternate is a positive declaration the skill emits / supports html;
-  // we deliberately avoid the looser "review_surface near html" pattern
-  // because skills that declare `review_surface: md  # html | md | none`
-  // would false-positive on the enum comment.
-  if (
-    /review_surface:\s*html/.test(corpus) ||                  // YAML / inline-code form
-    /`review_surface`\s*\(=\s*html/i.test(corpus) ||          // prose form: `review_surface` (=html ...)
-    /opt[\s.-]+into\s*`html`/i.test(corpus) ||                // explicit opt-in (write-docs)
-    /forsvn-preview/.test(corpus) ||
-    /review-surface-(design|template)/.test(corpus) ||
-    /html-output-critic/.test(corpus) ||
-    /references\/_html\b/.test(corpus)
-  ) {
-    addRef("review-surface-design.md");
-    addRef("review-surface-template.md");
-    addRef("html-output-critic.md");
-    addScript("forsvn-preview.ts");
-    addTree("_html", join(dir, "references", "_html"));
-  }
+  // Review-surface rendering was extracted to the standalone `forsvn-preview`
+  // plugin (skills-refactor Phase 3). Skills no longer ship the forsvn-preview
+  // CLI, the `_html` chrome assets, or the review-surface spec docs — they emit
+  // plain Markdown per `reviewable-artifact-contract.md`, and the plugin renders
+  // + captures the decision. The forsvn-preview.ts copies left in skill folders
+  // are pruned by the PRUNABLE_SCRIPTS sweep below; stale `_html` trees are
+  // pruned by the tree sweep.
 
   // Existing-copy sweep. Skill folders that have a packaged copy of a support
   // script but no citation in the corpus (vendored before the citation-driven

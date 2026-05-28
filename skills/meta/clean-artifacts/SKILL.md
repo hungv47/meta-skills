@@ -5,7 +5,7 @@ argument-hint: "[scope path | --dry-run | --apply | --threshold-days N]"
 allowed-tools: Read Grep Glob Bash Edit
 user-invocable: true
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.05-0.20"
 ---

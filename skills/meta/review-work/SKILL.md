@@ -5,7 +5,7 @@ argument-hint: "[code or artifact to verify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
 metadata:
-  version: "1.2.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
 ---

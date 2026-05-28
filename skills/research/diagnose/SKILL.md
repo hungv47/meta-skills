@@ -4,7 +4,7 @@ description: "Structured diagnosis of business and strategic problems — builds
 argument-hint: "[metric or problem to diagnose]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---

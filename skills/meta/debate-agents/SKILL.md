@@ -5,7 +5,7 @@ argument-hint: "[problem or decision to analyze]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 user-invocable: true
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.15-0.50"
 ---
@@ -50,7 +50,7 @@ Mode routing keywords, debate path (A1–A4), poll path (B1–B5), config table,
 - **Sections (debate):** Participants / Consensus / Key Disagreements / Recommended Action / Unresolved Risks / Debate Highlights
 - **Sections (poll):** Consensus / Divergences / Outliers / Raw Data / High-Variance Flags
 - **Consumed by:** operator (decision audit trail). No machine consumer in v1.
-- **Review (standalone only):** write review frontmatter + `## Review Gate` body block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); emit HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md); run per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `decision_state` defaults `pending`; `status` and `decision_state` independent.
+- **Review (standalone only):** write a plain Markdown artifact with review frontmatter + `## Review Gate` per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). Emits **no HTML** — preview via the optional **forsvn-preview** plugin when `review_surface: html`. `decision_state` defaults `pending`; `status` and `decision_state` independent.
 
 Full frontmatter + report bodies (debate + poll) + slug convention: [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 
@@ -89,4 +89,4 @@ Standalone or sub-routine. Typical sub-routine callers: `prioritize`, `architect
 - `references/playbook.md` [PLAYBOOK], `references/decision-tree.md` [PROCEDURE], `references/report-template.md` [PROCEDURE], `references/anti-patterns.md` [ANTI-PATTERN]
 - `references/procedures/{pre-dispatch, debate, poll}.md` [PROCEDURE]
 - `references/examples/debate-walkthrough.md` [EXAMPLE]
-- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, review-surface-template, roughdraft-review-protocol}.md`
+- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, roughdraft-review-protocol}.md`

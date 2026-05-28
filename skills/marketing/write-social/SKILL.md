@@ -4,7 +4,7 @@ description: "Platform-native social copy (hook variants + body + CTA + format s
 argument-hint: "<topic-or-brief-path> <platform> [--variants N] [--polish-chain humanmaxxing|vn-tone|none] [--goal awareness|engagement|click|save|share]"
 allowed-tools: Read Write Bash Grep Glob
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.50-1.50"
 ---

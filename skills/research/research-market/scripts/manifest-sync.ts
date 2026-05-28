@@ -13,7 +13,8 @@ import { join, relative, basename } from "node:path";
 import { parseArtifactPath } from "./lib/path-parser";
 
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
-const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && arg !== "--include-archive") ?? process.cwd();
+const CHECK = process.argv.includes("--check");
+const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && !arg.startsWith("--")) ?? process.cwd();
 const ROOT = realpathSync(ROOT_ARG);
 const ARTIFACT_ROOTS = [".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
 const EXPERIENCE_PREFIX = ".forsvn/experience";
@@ -453,8 +454,31 @@ try {
   // Missing or malformed generated manifest: rewrite with a fresh timestamp.
 }
 
-writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + "\n");
-writeFileSync(ARTIFACT_INDEX_PATH, renderArtifactIndex(manifest) + "\n");
+const manifestStr = JSON.stringify(manifest, null, 2) + "\n";
+const indexStr = renderArtifactIndex(manifest) + "\n";
+
+if (CHECK) {
+  // Freshness gate: compare derived output to disk, ignoring updated_at. Never writes.
+  if (!existsSync(MANIFEST_PATH) && Object.keys(artifacts).length === 0) {
+    console.log("[manifest-sync --check] OK — no artifacts and no index in this project; nothing to check.");
+    process.exit(0);
+  }
+  const drift: string[] = [];
+  const onDiskManifest = existsSync(MANIFEST_PATH) ? readFileSync(MANIFEST_PATH, "utf8") : null;
+  const onDiskIndex = existsSync(ARTIFACT_INDEX_PATH) ? readFileSync(ARTIFACT_INDEX_PATH, "utf8") : null;
+  const stripTs = (s: string | null) => (s == null ? null : s.replace(/"updated_at":\s*"[^"]*"/, '"updated_at":""'));
+  if (stripTs(onDiskManifest) !== stripTs(manifestStr)) drift.push(".forsvn/index/manifest.json");
+  if (onDiskIndex !== indexStr) drift.push(".forsvn/index/artifact-index.md");
+  if (drift.length) {
+    console.error(`[manifest-sync --check] STALE — regenerate (bun manifest-sync.ts): ${drift.join(", ")}`);
+    process.exit(1);
+  }
+  console.log("[manifest-sync --check] OK — index is fresh.");
+  process.exit(0);
+}
+
+writeFileSync(MANIFEST_PATH, manifestStr);
+writeFileSync(ARTIFACT_INDEX_PATH, indexStr);
 
 const artifactCount = Object.keys(artifacts).length;
 const experienceCount = Object.keys(experience).length;

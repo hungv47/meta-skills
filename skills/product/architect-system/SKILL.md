@@ -4,7 +4,7 @@ description: "Designs technical blueprints — tech stack selection, database sc
 argument-hint: "[product or feature to architect]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "3.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -65,10 +65,10 @@ Failure → critic identifies which agent must fix it; orchestrator re-dispatche
 
 - **Path:** `architecture/system-architecture.md` (active); prior runs renamed `system-architecture.v[N].md`.
 - **Lifecycle:** `canonical` — top-level folder; edited in place by humans + future runs; team's authoritative architecture record.
-- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=html — FIRE-themed HTML preview while `decision_state: pending`), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
+- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=html — the optional forsvn-preview plugin renders the themed preview while `decision_state: pending`), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** 12 sections (§1 Overview → §12 Security Review) + §12a STRIDE + §12b OWASP + §12d false-positive log. §12c LLM/AI Security conditional. Not Included + Open Questions when applicable.
 - **Consumed by:** `breakdown-tasks`, `review-work`, `clean-code`, `forsvn`, operator.
-- **Review-gated:** write review frontmatter + `## Review Gate` block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); when `review_surface: html`, emit FIRE-themed HTML preview via `renderReviewSurface(...)` per [`references/_shared/review-surface-template.md`](references/_shared/review-surface-template.md); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). `decision_state` defaults to `pending` (enum: `pending | approved | denied | suggested | not_required`). `status` (skill quality) and `decision_state` (human acceptance) are independent.
+- **Review-gated:** write a plain Markdown artifact with review frontmatter + the `## Review Gate` block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). The skill emits **no HTML** — when `review_surface: html` and the optional **forsvn-preview** plugin is installed, the operator previews + records the decision with `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`. `decision_state` defaults to `pending` (enum: `pending | approved | denied | suggested | not_required`). `status` (skill quality) and `decision_state` (human acceptance) are independent.
 
 Full template + section content + version-increment rule: [`references/report-template.md`](references/report-template.md).
 

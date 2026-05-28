@@ -4,7 +4,7 @@ description: "Closes the feedback loop for short-form video — scores a publish
 argument-hint: "<loop-slug> <post-url> <brief-path>"
 allowed-tools: Read Grep Glob Bash WebFetch Write
 metadata:
-  version: "0.1.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.50-1.50"
 ---

@@ -16,7 +16,7 @@ load_class: PROCEDURE
 ---
 skill: clean-artifacts
 produced_by: cleanup-artifacts
-version: {skill-version}   # matches the running skill's metadata.version (currently 1.0.0)
+version: {skill-version}   # matches the running skill's metadata.version
 date: {YYYY-MM-DD}
 status: done | done_with_concerns | blocked | needs_context
 mode: dry-run | apply

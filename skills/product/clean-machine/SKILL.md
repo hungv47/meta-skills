@@ -4,7 +4,7 @@ description: "Audit + clean a developer's machine — dotfolders, caches, langua
 argument-hint: "[target: home | caches | runtimes | packages | all]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---

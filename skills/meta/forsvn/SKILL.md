@@ -5,7 +5,7 @@ argument-hint: "[free-form ask, or 'resume', or empty for state summary]"
 allowed-tools: Read Grep Glob Bash Write Edit
 user-invocable: true
 metadata:
-  version: "1.1.0"
+  version: "1.0.0"
   budget: fast
   estimated-cost: "$0.02-0.08"
 ---

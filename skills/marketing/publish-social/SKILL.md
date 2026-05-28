@@ -4,7 +4,7 @@ description: "Turn write-social copy into a publishing bundle — per-platform d
 argument-hint: "[write-social slug or path]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.3.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.40-1.20"
 ---

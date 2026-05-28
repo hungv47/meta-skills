@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "FORSVN Skills — multi-agent skill stack for research, marketing, product, and meta (process) workflows. 43 skills, single install from github.com/hungv47/meta-skills. Verb-first naming with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification.",
-    "version": "3.0.0"
+    "version": "1.0.2"
   },
   "plugins": [
     {
@@ -19,6 +19,15 @@
         "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
         "create-brand", "write-copy", "write-ad", "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "brief-graphic", "optimize-seo", "monitor-aeo", "humanmaxxing", "write-outreach", "brief-shortform", "write-social",
         "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs"
+      ]
+    },
+    {
+      "name": "forsvn-preview",
+      "source": "./forsvn-preview",
+      "description": "Optional review-surface preview for FORSVN artifacts. Renders standard Markdown artifacts into themed HTML previews and captures approve/deny/suggest decisions back into frontmatter. Install alongside forsvn-skills to preview and review artifacts; skills themselves only emit plain Markdown.",
+      "category": "tools",
+      "tags": [
+        "forsvn", "forsvn-preview", "review", "artifact", "preview", "decision-capture", "roughdraft"
       ]
     }
   ]

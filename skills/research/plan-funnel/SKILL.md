@@ -4,7 +4,7 @@ description: "Models business funnels with numeric targets — works backward fr
 argument-hint: "[revenue target or business goal]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "4.0.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.30-0.80"
 ---

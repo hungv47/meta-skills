@@ -4,7 +4,7 @@ description: "Maps multi-step in-product flows — screens, decisions, transitio
 argument-hint: "[feature or flow to map]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "4.0.0"
+  version: "1.0.0"
   budget: standard
   estimated-cost: "$0.20-0.50"
 ---

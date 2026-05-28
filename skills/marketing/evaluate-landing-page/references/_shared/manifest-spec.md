@@ -158,7 +158,7 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 
 ## The Artifact Frontmatter Contract
 
-Every skill that produces an artifact writes a YAML frontmatter block at the top:
+**The frontmatter schema is the single source of truth in [[artifact-contract-template]].** This spec does not restate the field definitions — the manifest-entry shape above is *derived* from those frontmatter fields by `manifest-sync.ts`. A representative block:
 
 ```yaml
 ---
@@ -179,33 +179,11 @@ downstream: "brand-system, campaign-plan, copywriting, system-architecture"
 ---
 ```
 
-### Required fields
+### Field definitions — see the contract
 
-- `skill` — producing skill name (matches the skill's directory name)
-- `version` — schema version of this artifact type. Start at `1`. Bump when you change the artifact's structure in a breaking way.
-- `date` — `YYYY-MM-DD` (or ISO timestamp). When this version was produced.
-- `status` — one of `done | done_with_concerns | blocked | needs_context` (Completion Status Protocol from CLAUDE.md).
-- `stack` — one of `meta | mkt | product | research`. Mandatory for v2: the flat-path grammar (`<stack>-<skill>-<date>-<slug>.<ext>`) makes stack no longer inferable from path depth.
-- `review_surface` — one of `html | md | none`. Mandatory for v2: declares which review surface the artifact uses; `html` triggers the co-located HTML preview while `decision_state: pending`.
+The required fields (`skill`, `version`, `date`, `status`), the v2 mandatories (`stack`, `review_surface`), the selection fields (`summary`, `purpose`, `lifecycle`, `use_when`), the lifecycle enum, the lineage pointers (`upstream`, `downstream`, `supersedes`, `superseded_by`), and the review fields (`decision_state`, `review_tool`, `reviewed_at`, `reviewer`) are all defined **once** in [[artifact-contract-template]]. This spec deliberately does not duplicate them — a single SoT prevents the two docs from drifting.
 
-### Optional fields
-
-- `skills_involved` — list of kebab-case skill slugs for multi-skill pipelines. `skill:` stays as the primary producer; `skills_involved:` enumerates every contributing skill.
-- `decision_state` — human-review state. See [[reviewable-artifact-contract]] for the full enum and lifecycle defaults. Defaults to `not_required` when absent.
-- `review_tool` — review tool name (`roughdraft | inline | none`). Pairs with `review_surface`.
-- `reviewed_at` / `reviewer` — populated only after a completed human review.
-- `stale_after_days` — how long before this artifact should be considered stale (default `90`). Use shorter values for fast-moving artifacts (e.g., `diagnose.md` → `30`); use longer for slow-moving (e.g., `brand/BRAND.md` → `365`).
-- `summary` — one-line summary of the artifact's key takeaway. Quoted string. Lets consumers preview without reading the full file.
-- `title` — display title. Optional because sync derives it from the first H1.
-- `purpose` — why the artifact exists. Required in practice for new non-terminal artifacts; optional only for legacy compatibility.
-- `lifecycle` — lifecycle taxonomy value. Required in practice for new artifacts; sync infers from path for legacy compatibility.
-- `use_when` — when this artifact should be selected.
-- `do_not_use_when` — when this artifact should be skipped or refreshed.
-- `supersedes` / `superseded_by` — lineage pointers for replacements and archived history.
-- `upstream` / `downstream` — comma-separated dependency/context hints.
-- `decision_status` — decision-record stance (`proposed | accepted | rejected | superseded`) for `lifecycle: decision` / `lifecycle: spec` artifacts. **Not** the same as `decision_state`.
-
-Keep optional frontmatter fields flat scalar strings. Do not use nested YAML or multiline values; the sync parser intentionally stays small and deterministic.
+One parser constraint this spec owns: **keep every frontmatter field a flat scalar string.** No nested YAML, no multiline values — `manifest-sync.ts`'s parser is intentionally small and deterministic and reads flat `key: value` only.
 
 ### Skill author obligations
 

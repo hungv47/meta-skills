@@ -4,7 +4,7 @@ description: "Brainstorms strategic solutions when the problem or goal is alread
 argument-hint: "[problem or goal to solve]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---

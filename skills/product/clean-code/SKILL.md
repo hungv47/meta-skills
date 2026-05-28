@@ -4,7 +4,7 @@ description: "Audits and refactors existing code for readability, maintainabilit
 argument-hint: "[file or directory to clean]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "3.0.0"
+  version: "1.0.0"
   budget: deep
   estimated-cost: "$1-3"
 ---

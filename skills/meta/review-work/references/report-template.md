@@ -18,7 +18,7 @@ load_class: PROCEDURE
 ---
 skill: review-work
 produced_by: fresh-eyes
-version: {skill-version}     # matches running skill's metadata.version (currently 1.0.0)
+version: {skill-version}     # matches the running skill's metadata.version
 date: {YYYY-MM-DD}
 status: done | done_with_concerns | blocked | needs_context
 mode: generalist | specialist | critic-consensus

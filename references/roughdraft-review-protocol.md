@@ -17,10 +17,11 @@ Roughdraft is a single-file Markdown review UI. It is not the artifact database,
 loop engine, manifest, or approval ledger. One `roughdraft open` opens exactly
 one `.md` file; its durable state is that file.
 
-**v2 routing note (2026-05-26).** When `review_surface: html`, the default
-capture path is the in-page form on the HTML twin, served by
-`bun scripts/forsvn-preview.ts` (see [[reviewable-artifact-contract]] §
-"Review surface"). Roughdraft remains the escape hatch for reviewers who
+**v2 routing note.** When `review_surface: html`, the default capture path is the
+in-page form on the HTML twin — rendered + served by the optional **forsvn-preview**
+plugin: `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>` (the skill emits
+no HTML; see [[reviewable-artifact-contract]] § "Review surface"). Roughdraft
+remains the escape hatch for reviewers who
 prefer inline CriticMarkup — opening the MD directly in Roughdraft and
 ticking the Review Gate body block writes `decision_state` the same way
 this protocol describes. When `review_surface: md`, Roughdraft is the only
@@ -49,13 +50,14 @@ can open the review when appropriate.
    `review_surface` value, and the `## Review Gate` body block. It runs
    `bun scripts/manifest-sync.ts` as usual.
 
-2. **Render HTML preview (when `review_surface: html`).** Emit a co-located
-   `.html` twin at the same flat path via
-   `renderReviewSurface(stack, stagePartial, data)` (per
-   [[review-surface-template]]). The preview is read-only — it carries no
-   content the MD doesn't have and captures no decisions. It exists for visual
-   comparison and stack-themed scanning before the operator opens Roughdraft.
-   Skip this step when `review_surface: md` or `none`.
+2. **HTML preview (when `review_surface: html`) — via the plugin, not the skill.**
+   The skill emits no HTML. If the optional **forsvn-preview** plugin is
+   installed, the operator renders + reviews the themed `.html` twin by running
+   `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>` — the plugin renders
+   the preview from the MD and serves a decision-capture surface. The preview
+   carries no content the MD doesn't have. Without the plugin, review the MD in
+   Roughdraft (next step). Skip rendering entirely when `review_surface: md` or
+   `none`.
 
 3. **Open.** When review is warranted, open exactly the MD file and leave the
    command running — it blocks until the operator clicks Done Reviewing:
