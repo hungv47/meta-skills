@@ -26,7 +26,7 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 
 ## Inputs + Outputs
 
-Full inputs table + output companions + per-slot artifacts: [`references/procedures/inputs-outputs.md`](references/procedures/inputs-outputs.md). Hard-required: page route/campaign name, `brand/BRAND.md`, `brand/DESIGN.md`. Main artifact: `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md`. Always-emitted companion: `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected, Asset Placeholder Rule verbatim). Optional companions per `target_handoff`: `handoff-{claude-design,figma,designer}.md`.
+Full inputs table + output companions + per-slot artifacts: [`references/procedures/inputs-outputs.md`](references/procedures/inputs-outputs.md). Hard-required: page route/campaign name, `brand/BRAND.md`, `brand/DESIGN.md`. Main artifact: `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md`. Always-emitted companion: `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected, Asset Placeholder Rule verbatim). Optional companions per `target_handoff`: `handoff-{claude-design,figma,designer}.md`.
 
 ## Quality Gate
 
@@ -62,13 +62,13 @@ Three routes (Route A fresh LP · Route B existing-LP redesign with mandatory "W
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
+- **Path:** `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
 - **Companions:** always `handoff-implementation.md`; optional `handoff-{claude-design,figma,designer}.md` per `target_handoff`. Per-slot `asset-slots/{slot-id}.prompt.md` written downstream by `brief-graphic`.
 - **Lifecycle:** `pipeline` — versioned re-runs preserve prior versions.
 - **Frontmatter:** 17 fields — see [`references/format-conventions.md`](references/format-conventions.md) and [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) § provenance two-variants. Provenance is required so `evaluate-landing-page` can ground scoring on `input_artifacts` and `scripts/eval/promote-to-experience.ts` can walk `output_eval`.
 - **Body:** 15 sections (Title block · Concerns · IMC Context · Hypothesis Approved · What Changed from rev N-1 · Page Architecture · Section-by-Section Spec · Asset Slots · What NOT to Do · Implementation Prompt · Hand-Off · Pre-flight Checklist · Skill Chain · Launch Plan + Results + Why This Works · Review Gate).
 - **Envelope:** 250-500 lines, enforced strictly by brand-voice critic G6.
-- **Review-gated:** `decision_state` defaults to `not_required` (regenerable drafts); operator/loop can opt in by setting `pending`. Field semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+
 - **Cross-stack contract:** consumed by human designers + coding agents + `brief-graphic` (per slot) + `evaluate-landing-page` cycles (when brief referenced from loop's `strategy/`). Schema changes require atomic update across upstream callers (`plan-campaign`) + downstream consumers (`brief-graphic`, coding agents, `evaluate-landing-page`).
 
 Full artifact template byte-identical: [`references/format-conventions.md`](references/format-conventions.md).

@@ -464,7 +464,7 @@ The **Implementation Prompt** is always emitted — every brief writes `handoff-
 - Human designer working in Figma → add `figma` + `designer` (Figma for spec, designer for narrative)
 - Solo founder, no designer, pure code-first → implementation prompt only (no extras)
 
-**Companion files** at `.forsvn/artifacts/mkt/brief-landing-page/[slug]/`:
+**Companion files** at `.forsvn/artifacts/marketing/brief-landing-page/[slug]/`:
 - `brief.md` — main artifact (always)
 - `handoff-implementation.md` — coding-agent prompt block (always)
 - `handoff-claude-design.md` — Claude Design block (if `claude-design` in target_handoff)

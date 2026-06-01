@@ -7,10 +7,10 @@ It is not loaded into model context by default. It is consumed by:
 
 - `hooks/build-registry.mjs` → `hooks/skill-registry.json` (prompt-submit
   trigger heuristic).
-- `scripts/build-capability-index.ts` → `references/capability-index.json`
+- `bin/build-capability-index.ts` → `references/capability-index.json`
   (routing, orchestration, load map, outputs — used by `/forsvn`, validators,
   docs generators).
-- `scripts/validate-routing.ts` (structure, path resolution, contract checks).
+- `_dev/validate-routing.ts` (structure, path resolution, contract checks).
 
 Two generated artifacts, one source file per skill. Edit `routing.yaml`, then
 rebuild both.
@@ -201,7 +201,7 @@ Rules:
 ```yaml
 outputs:
   artifacts:
-    - path: ".forsvn/artifacts/mkt/content/[slug].copy.md"
+    - path: ".forsvn/artifacts/marketing/content/[slug].copy.md"
       lifecycle: pipeline
       produced_when: "Route A or Route B."
 ```
@@ -218,13 +218,13 @@ Rules:
 Build:
 
 ```bash
-bun scripts/build-capability-index.ts
+bun bin/build-capability-index.ts
 ```
 
 Check (CI):
 
 ```bash
-bun scripts/build-capability-index.ts --check
+bun bin/build-capability-index.ts --check
 ```
 
 Output: `references/capability-index.json` — deterministic, committed.
@@ -237,22 +237,22 @@ the maintainer runs these locally as a pre-merge gate, and any external CI
 (if added later) should run the full pre-merge command set:
 
 ```bash
-bun scripts/validate-routing.ts --require-all
-bun scripts/build-capability-index.ts --check
+bun _dev/validate-routing.ts --require-all
+bun bin/build-capability-index.ts --check
 node hooks/build-registry.mjs --check
-bun scripts/verify-counts.ts
-node scripts/sync-skill-support.mjs --check
-bun scripts/eval-triggers.ts --require-all
+bun _dev/verify-counts.ts
+node _dev/sync-skill-support.mjs --check
+bun _dev/eval-triggers.ts --require-all
 node hooks/test-router.mjs
-bun scripts/lint-artifact-paths.ts
-bun scripts/validate-artifacts.ts --strict
-bun scripts/manifest-sync.ts --check
-bun scripts/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun scripts/audit-skill-budget.ts --enforce-caps
-bun scripts/lint-description-body-coherence.ts --strict
+bun bin/lint-artifact-paths.ts
+bun bin/validate-artifacts.ts --strict
+bun bin/manifest-sync.ts --check
+bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
+bun _dev/lint-description-body-coherence.ts --strict
 ```
 
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
-`bun scripts/migrate-artifacts-flat.ts --apply` on a clean tree if it
+`bun _dev/migrate-artifacts-flat.ts --apply` on a clean tree if it
 flags legacy paths); `validate-artifacts --strict` enforces v2 frontmatter
 on every `.forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
 index drifted from disk (both added by skills-refactor Phase 2.5).
@@ -264,7 +264,7 @@ Trigger evals (run before merge — routing changes must keep
 has a fixture file):
 
 ```bash
-bun scripts/eval-triggers.ts --require-all
+bun _dev/eval-triggers.ts --require-all
 ```
 
 Bare invocation (no flag) is retained for local exploration on in-progress
@@ -273,7 +273,7 @@ soft-warns instead of hard-failing. New skills must clear `--require-all`
 before merge.
 
 ```bash
-bun scripts/validate-routing.ts
+bun _dev/validate-routing.ts
 ```
 
 Hard-fail conditions (always):
@@ -299,7 +299,7 @@ Soft-fail (warn until `--require-all`):
 **Fold complete (2026-05-26).** All 43 skills carry `routing.yaml` v2 with both
 `promptSignals` and `capability:` sections. Standalone `capability.yaml` files
 deleted as part of the fold. The pre-merge gate runs
-`bun scripts/validate-routing.ts --require-all` so a missing capability
+`bun _dev/validate-routing.ts --require-all` so a missing capability
 section is now a hard error, not a warning.
 
 What this section was for: tracking which skills had been folded during the

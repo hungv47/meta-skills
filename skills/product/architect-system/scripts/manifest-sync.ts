@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // manifest-sync — derive `.forsvn/index/manifest.json` from artifact frontmatter.
 // See references/_shared/manifest-spec.md for the full contract.
 //
@@ -10,21 +10,30 @@
 
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync, mkdirSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, basename } from "node:path";
-import { parseArtifactPath } from "./lib/path-parser";
+import { parseArtifactPath, normalizeStack } from "./lib/path-parser";
 
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
 const CHECK = process.argv.includes("--check");
 const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && !arg.startsWith("--")) ?? process.cwd();
 const ROOT = realpathSync(ROOT_ARG);
-const ARTIFACT_ROOTS = [".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops", "research", "brand", "architecture"];
-const EXPERIENCE_PREFIX = ".forsvn/experience";
+// The three layers of the `.forsvn/` home (each split by stack), plus the
+// post-v0 loop workspace. canonical/ artifacts/ experience/ ARE the data model.
+const ARTIFACT_ROOTS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops"];
+// Old flat experience files lived at `.forsvn/experience/<name>.md` (no stack
+// subdir) and were indexed as Q&A substrate. Layered experience
+// (`.forsvn/experience/<stack>/...`) is indexed as a normal artifact.
+const LEGACY_FLAT_EXPERIENCE_RE = /^\.forsvn\/experience\/[^/]+\.md$/;
 const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const VALID_DECISION_STATES = new Set(["pending", "approved", "denied", "suggested", "not_required"]);
 const VALID_REVIEW_SURFACES = new Set(["html", "md", "none"]);
-const VALID_STACKS = new Set(["meta", "mkt", "product", "research"]);
+const VALID_STACKS = new Set(["meta", "research", "marketing", "product"]);
+const VALID_TYPES = new Set([
+  "canonical", "plan", "spec", "decision", "experience", "pipeline", "snapshot",
+  "review", "brief", "strategy", "execution", "evaluation", "loop", "learning", "registry",
+]);
 // Legacy v1 -> v2 review enum migration. Read with a per-artifact warning.
 const LEGACY_REVIEW_STATE_MAP: Record<string, string> = {
   pending: "pending",
@@ -38,6 +47,9 @@ const LIFECYCLE_SORT_ORDER = ["canonical", "loop", "loop-context", "learning", "
 
 type Frontmatter = Record<string, string | number | boolean | string[]>;
 type ArtifactEntry = {
+  id: string;
+  type: string;
+  keywords: string[];
   produced_by: string;
   produced_at: string;
   status: string;
@@ -56,6 +68,7 @@ type ArtifactEntry = {
   superseded_by: string;
   upstream: string;
   downstream: string;
+  references: string;
   decision_status: string;
   decision_state: string;
   review_surface: string;
@@ -115,7 +128,7 @@ function walkMd(dir: string, files: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const p = join(dir, entry.name);
     if (entry.isSymbolicLink()) continue;
-    if (!INCLUDE_ARCHIVE && relative(ROOT, p).split("\\").join("/").startsWith(".forsvn/artifacts/.archive")) continue;
+    if (!INCLUDE_ARCHIVE && relative(ROOT, p).split("\\").join("/").includes("/.archive/")) continue;
     if (entry.isDirectory()) walkMd(p, files);
     else if (entry.isFile() && entry.name.endsWith(".md")) files.push(p);
   }
@@ -126,6 +139,14 @@ function walkMd(dir: string, files: string[] = []): string[] {
 // Falls back to "unknown" for paths the spec doesn't recognize.
 function inferProducer(rel: string): string {
   const map: Array<[RegExp, string]> = [
+    // v3 canonical home (frontmatter `skill:` wins; these are the fallback)
+    [/^\.forsvn\/canonical\/product\/ARCHITECTURE/, "architect-system"],
+    [/^\.forsvn\/canonical\/product\/USER-FLOW/, "map-user-flow"],
+    [/^\.forsvn\/canonical\/meta\/MASTER-PLAN/, "forsvn"],
+    [/^\.forsvn\/canonical\/meta\/PHASE-LEDGER/, "forsvn"],
+    [/^\.forsvn\/canonical\/marketing\/(BRAND|DESIGN)/, "create-brand"],
+    [/^\.forsvn\/canonical\/research\/ICP/, "research-icp"],
+    [/^\.forsvn\/canonical\/research\/MARKET/, "research-market"],
     [/^research\/icp-research/, "research-icp"],
     [/^research\/market-research/, "research-market"],
     [/^research\/product-context/, "research-icp"],
@@ -210,9 +231,35 @@ function inferTitle(rel: string, content: string, fm: Frontmatter | null): strin
   return basename(rel, ".md");
 }
 
+// type → lifecycle bridge. The v3 contract leads with `type` (the agent
+// instruction); `lifecycle` stays as the manifest's sort/index axis. When only
+// one is set, derive the other so existing tooling and the new contract agree.
+const TYPE_TO_LIFECYCLE: Record<string, string> = {
+  plan: "spec",
+  review: "snapshot",
+  brief: "pipeline",
+};
+function typeToLifecycle(type: string): string {
+  if (!type) return "";
+  return TYPE_TO_LIFECYCLE[type] ?? type;
+}
+function lifecycleToType(lifecycle: string): string {
+  if (!lifecycle) return "";
+  if (VALID_TYPES.has(lifecycle)) return lifecycle;
+  if (lifecycle === "loop-context") return "loop";
+  if (lifecycle === "anchor") return "plan";
+  if (lifecycle === "archive") return "snapshot";
+  return "";
+}
+
 function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   const explicit = textField(fm, "lifecycle");
   if (explicit) return explicit;
+  const fromType = typeToLifecycle(textField(fm, "type"));
+  if (fromType) return fromType;
+  // v3 layered home
+  if (/^\.forsvn\/canonical\//.test(rel)) return "canonical";
+  if (/^\.forsvn\/experience\//.test(rel)) return "learning";
   if (/^brand\//.test(rel) || /^research\/(product-context|icp-research|market-research)/.test(rel) || /^architecture\//.test(rel)) return "canonical";
   if (/^\.forsvn\/loops\/[^/]+\/program\.md$/.test(rel)) return "loop";
   if (/^\.forsvn\/loops\/[^/]+\/context\.md$/.test(rel)) return "loop-context";
@@ -258,8 +305,8 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
   const renderRows = (rows: Array<[string, ArtifactEntry]>): string => {
     if (rows.length === 0) return "_None._\n";
     return [
-      "| Stack | Artifact | Type | Why it exists | Use when | Status | Decision | Surface | Lineage |",
-      "|---|---|---|---|---|---|---|---|---|",
+      "| Stack | Artifact | Type | Keywords | Why it exists | Use when | Status | Decision | Surface | Lineage |",
+      "|---|---|---|---|---|---|---|---|---|---|",
       ...rows.map(([path, entry]) => {
         const why = entry.purpose || entry.summary || entry.title;
         const useWhen = entry.use_when || (entry.lifecycle === "snapshot" ? "Point-in-time audit trail; read only when investigating that run." : "");
@@ -273,14 +320,15 @@ function renderArtifactIndex(manifest: { updated_at: string; artifacts: Record<s
         const status = `${entry.status}${entry.stale ? " / stale" : ""}`;
         const decision = entry.decision_state === "not_required" ? "—" : entry.decision_state;
         const surface = entry.review_surface === "none" ? "—" : entry.review_surface;
-        return `| ${formatCell(entry.stack)} | \`${escapeTableCell(path)}\` | ${formatCell(entry.lifecycle)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(decision)} | ${formatCell(surface)} | ${formatCell(lineageParts.join("; "))} |`;
+        const typeCell = entry.type || entry.lifecycle;
+        return `| ${formatCell(entry.stack)} | \`${escapeTableCell(path)}\` | ${formatCell(typeCell)} | ${formatCell(entry.keywords.join(", "), "—", 120)} | ${formatCell(why)} | ${formatCell(useRules)} | ${formatCell(status)} | ${formatCell(decision)} | ${formatCell(surface)} | ${formatCell(lineageParts.join("; "))} |`;
       }),
     ].join("\n") + "\n";
   };
 
   return `# Artifact Index
 
-Generated from artifact frontmatter by \`scripts/manifest-sync.ts\`.
+Generated from artifact frontmatter by \`skills/bin/manifest-sync.ts\`.
 
 - Updated: ${manifest.updated_at}
 - Artifacts indexed: ${entries.length}
@@ -317,7 +365,10 @@ for (const base of ARTIFACT_ROOTS) {
     const stat = statSync(file);
     const content = readFileSync(file, "utf8");
 
-    if (rel.startsWith(EXPERIENCE_PREFIX) && rel.endsWith(".md")) {
+    // Legacy flat experience (`.forsvn/experience/<name>.md`, no stack subdir)
+    // is the old Q&A substrate. Layered experience (`experience/<stack>/...`)
+    // is a normal, frontmatter-bearing artifact and falls through to indexing.
+    if (LEGACY_FLAT_EXPERIENCE_RE.test(rel)) {
       const name = basename(rel);
       const entries = (content.match(/^## /gm) || []).length;
       const askedBy = [...content.matchAll(/\*\*Asked by:\*\*\s*([^\s·\n]+)/g)].map((m) => m[1]);
@@ -345,15 +396,31 @@ for (const base of ARTIFACT_ROOTS) {
     const staleAfterDays = numberField(fm, "stale_after_days", DEFAULT_STALE_DAYS);
     const summary = textField(fm, "summary");
 
-    // Stack — frontmatter wins; fall back to flat-filename prefix (legacy
-    // nested paths also encode stack as segment 2); else empty.
+    // Stack — frontmatter wins; fall back to the path (layered <stack>/ folder,
+    // legacy flat prefix, or nested segment). The `mkt → marketing` alias is
+    // applied to both sources so the folder name always equals the stack value.
     const rawStack = textField(fm, "stack");
-    const stack = rawStack && VALID_STACKS.has(rawStack)
-      ? rawStack
-      : (parsedPath.stack ?? "");
-    if (rawStack && !VALID_STACKS.has(rawStack) && !isArchived) {
+    const aliasedFmStack = rawStack ? normalizeStack(rawStack) : undefined;
+    const aliasedPathStack = parsedPath.stack ? normalizeStack(parsedPath.stack) : undefined;
+    const stack = aliasedFmStack ?? aliasedPathStack ?? "";
+    if (rawStack && !aliasedFmStack && !isArchived) {
       warnings.push(`${rel}: unknown stack ${JSON.stringify(rawStack)} dropped`);
     }
+    if (rawStack === "mkt" && !isArchived) {
+      warnings.push(`${rel}: legacy stack "mkt" indexed as "marketing" — update the frontmatter`);
+    }
+
+    // v3 instruction core — id (stable identity), type (per-doc instruction),
+    // keywords (greppable selection surface). Type derives from lifecycle when
+    // absent so legacy artifacts still carry one.
+    const id = textField(fm, "id");
+    const lifecycleForType = inferLifecycle(rel, fm);
+    const rawType = textField(fm, "type");
+    const type = rawType && VALID_TYPES.has(rawType) ? rawType : lifecycleToType(lifecycleForType);
+    if (rawType && !VALID_TYPES.has(rawType) && !isArchived) {
+      warnings.push(`${rel}: unknown type ${JSON.stringify(rawType)} dropped`);
+    }
+    const keywords = listField(fm, "keywords");
 
     // skills_involved — list of contributing skills for multi-skill pipelines.
     const skillsInvolved = listField(fm, "skills_involved");
@@ -393,6 +460,9 @@ for (const base of ARTIFACT_ROOTS) {
     }
 
     artifacts[rel] = {
+      id,
+      type,
+      keywords,
       produced_by: skill,
       produced_at: producedAt,
       status,
@@ -411,6 +481,7 @@ for (const base of ARTIFACT_ROOTS) {
       superseded_by: textField(fm, "superseded_by"),
       upstream: textField(fm, "upstream"),
       downstream: textField(fm, "downstream"),
+      references: textField(fm, "references"),
       decision_status: textField(fm, "decision_status"),
       decision_state: decisionState,
       review_surface: reviewSurface,
@@ -423,10 +494,87 @@ for (const base of ARTIFACT_ROOTS) {
   }
 }
 
+// --- Phase 1: id → path index + resolved knowledge graph --------------------
+// The schema fields (id, edges) landed in Phase 0; Phase 1 makes them *live*.
+//   by_id  — resolves a stable `id` to its CURRENT path. A move/rename only
+//            updates this map; references authored by id never break.
+//   graph  — per-id forward edges resolved to ids + a `referenced_by` reverse
+//            index, so the graph is navigable in BOTH directions and is itself
+//            path-independent (keyed by id, valued by ids → survives a move).
+type GraphNode = {
+  path: string;
+  upstream: string[];
+  downstream: string[];
+  supersedes: string[];
+  superseded_by: string[];
+  references: string[];
+  referenced_by: string[];
+};
+const EDGE_FIELDS = ["upstream", "downstream", "supersedes", "superseded_by", "references"] as const;
+
+const byId: Record<string, string> = {};
+const idByPath: Record<string, string> = {};
+const duplicateIdErrors: string[] = [];
+for (const [path, entry] of Object.entries(artifacts)) {
+  if (!entry.id) continue;
+  idByPath[path] = entry.id;
+  if (byId[entry.id] === undefined) {
+    byId[entry.id] = path;
+  } else {
+    // Split-brain: artifacts[path].id stays set, but by_id[id] points elsewhere
+    // (first-wins). An agent reading artifacts[path].id sees a live id that does
+    // not resolve via by_id. Keep the write resilient (first-wins) so a manifest
+    // is always produced, but record the conflict so --check (the gate) fails.
+    const msg = `duplicate id "${entry.id}" — already mapped to ${byId[entry.id]}; ignoring ${path}. ids must be unique.`;
+    warnings.push(msg);
+    duplicateIdErrors.push(msg);
+  }
+}
+
+const knownIds = new Set(Object.keys(byId));
+// Resolve one raw edge token (an id, a repo-relative path, or external text) to
+// an internal artifact id, or null when it points outside the indexed graph
+// (skill names, ../_biz-ops, skills/references, archived paths, etc.).
+function resolveEdgeToId(token: string): string | null {
+  const t = token.trim();
+  if (!t) return null;
+  if (knownIds.has(t)) return t;
+  if (idByPath[t]) return idByPath[t];
+  const norm = t.replace(/^\.\//, "");
+  if (idByPath[norm]) return idByPath[norm];
+  return null;
+}
+
+const graph: Record<string, GraphNode> = {};
+for (const [path, entry] of Object.entries(artifacts)) {
+  if (!entry.id || byId[entry.id] !== path) continue; // skip dupes (first wins)
+  const node: GraphNode = { path, upstream: [], downstream: [], supersedes: [], superseded_by: [], references: [], referenced_by: [] };
+  for (const f of EDGE_FIELDS) {
+    const raw = entry[f] as string;
+    const ids = (raw ? raw.split(",") : [])
+      .map((tok) => resolveEdgeToId(tok))
+      .filter((x): x is string => x !== null);
+    node[f] = [...new Set(ids)];
+  }
+  graph[entry.id] = node;
+}
+// reverse index: any forward edge A → B records A in B.referenced_by.
+for (const [id, node] of Object.entries(graph)) {
+  for (const f of EDGE_FIELDS) {
+    for (const target of node[f]) {
+      if (target === id) continue;
+      const tnode = graph[target];
+      if (tnode && !tnode.referenced_by.includes(id)) tnode.referenced_by.push(id);
+    }
+  }
+}
+
 const manifest = {
-  version: 1,
+  version: 2,
   updated_at: new Date().toISOString(),
   artifacts,
+  by_id: byId,
+  graph,
   experience,
 };
 
@@ -446,6 +594,8 @@ try {
   if (
     existing.version === manifest.version &&
     JSON.stringify(existing.artifacts) === JSON.stringify(manifest.artifacts) &&
+    JSON.stringify(existing.by_id) === JSON.stringify(manifest.by_id) &&
+    JSON.stringify(existing.graph) === JSON.stringify(manifest.graph) &&
     JSON.stringify(existing.experience) === JSON.stringify(manifest.experience)
   ) {
     manifest.updated_at = existing.updated_at;
@@ -459,6 +609,12 @@ const indexStr = renderArtifactIndex(manifest) + "\n";
 
 if (CHECK) {
   // Freshness gate: compare derived output to disk, ignoring updated_at. Never writes.
+  // Duplicate ids first — a split-brain manifest must never pass the gate, even
+  // if the on-disk index happens to match the (first-wins) regeneration.
+  if (duplicateIdErrors.length) {
+    console.error(`[manifest-sync --check] FAIL — duplicate id(s) detected (run validate-artifacts --strict):\n${duplicateIdErrors.map((e) => `  - ${e}`).join("\n")}`);
+    process.exit(1);
+  }
   if (!existsSync(MANIFEST_PATH) && Object.keys(artifacts).length === 0) {
     console.log("[manifest-sync --check] OK — no artifacts and no index in this project; nothing to check.");
     process.exit(0);

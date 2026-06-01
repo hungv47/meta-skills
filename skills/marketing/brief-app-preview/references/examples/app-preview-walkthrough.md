@@ -39,7 +39,7 @@ Orchestrator reads:
 - `brand/DESIGN.md` → tokens loaded (accent `#0F4C5C`, surface `#F4F1EB`, text `#1A1B23`, radius.md 12px, type Inter 600)
 - `research/icp-research.md` → market US, audience "professionals seeking focus protection" (informs caption register)
 - `screenshots/` directory listed — 4 files matching expected names
-- No prior `.forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/` — first run
+- No prior `.forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/` — first run
 
 All 6 dimensions resolve. Warm Start summary:
 
@@ -312,7 +312,7 @@ Audio default for App Store iOS: on. Brief proceeds with audio plan; produce-vid
 ```yaml
 ---
 type: produce-video-input
-source_brief: .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
+source_brief: .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
 surface: app-store
 aspect: 9:16
 total_length_seconds: 18.0

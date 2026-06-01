@@ -115,7 +115,7 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 ```markdown
 ## Before Starting
 
-Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
+Apply the [[before-starting-check]] [PLAYBOOK]:
 1. Read canonical-paths.md.
 2. Read research/product-context.md + brand/BRAND.md.
 3. Read .forsvn/experience/{audience,brand,content}.md.

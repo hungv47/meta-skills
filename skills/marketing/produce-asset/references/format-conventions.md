@@ -17,7 +17,7 @@ load_class: PROCEDURE
 ## Artifact tree
 
 ```
-.forsvn/artifacts/mkt/produced-assets/
+.forsvn/artifacts/marketing/produced-assets/
 └── [slug]/
     ├── manifest.md
     └── prompts/
@@ -39,7 +39,7 @@ version: 1
 date: [today]
 status: done | done_with_concerns | blocked | needs_context
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/mkt/design-briefs/[slug].md OR lp-brief asset-slot path]
+source_brief: [.forsvn/artifacts/marketing/design-briefs/[slug].md OR lp-brief asset-slot path]
 target_platforms: [list, e.g., instagram-carousel, linkedin-doc, og-card]
 slot_count: [N]
 provenance:
@@ -85,13 +85,13 @@ For each slot, mark each spec gate after the rendered asset is reviewed:
 1. Open each prompt file under `prompts/` and run through your chosen renderer:
    - Image-gen tools (Midjourney / DALL·E / Imagen / Claude Design): paste the prompt body, run, save the output
    - Figma / human designer: pass the prompt file as the spec
-2. Save the rendered asset to `.forsvn/artifacts/mkt/produced-assets/[slug]/rendered/[slot-id].[ext]` (or any path you prefer; update the manifest's "Rendered File" column with the path)
+2. Save the rendered asset to `.forsvn/artifacts/marketing/produced-assets/[slug]/rendered/[slot-id].[ext]` (or any path you prefer; update the manifest's "Rendered File" column with the path)
 3. Mark the verification checklist for each slot after reviewing the rendered output
 4. When all slots are verified, the produced assets are ready for downstream eval cycles (future `evaluate-content` / `evaluate-ad` inside an eval-loop)
 
 ## Re-run
 
-If the brief changes or a slot needs a sharpened prompt: re-run `produce-asset` with `--rev=N` to write to `.forsvn/artifacts/mkt/produced-assets/[slug]/v[N]/...` and preserve prior versions.
+If the brief changes or a slot needs a sharpened prompt: re-run `produce-asset` with `--rev=N` to write to `.forsvn/artifacts/marketing/produced-assets/[slug]/v[N]/...` and preserve prior versions.
 ```
 
 ---

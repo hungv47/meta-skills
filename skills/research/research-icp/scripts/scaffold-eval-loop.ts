@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // scaffold-eval-loop — create a loop-centered workspace for measurable work.
 // See references/_shared/eval-loop-spec.md for the full contract.
 //
@@ -151,7 +151,13 @@ writeIfMissing(
 );
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const syncPath = join(scriptDir, "manifest-sync.ts");
+// Resolve manifest-sync across both layouts: per-skill copy (sibling in
+// <skill>/scripts/) and the dev repo (skills/bin/). The mirror is byte-copied,
+// so this same line must work in both.
+const syncPath = [
+  join(scriptDir, "manifest-sync.ts"),
+  join(scriptDir, "..", "bin", "manifest-sync.ts"),
+].find((p) => existsSync(p)) ?? join(scriptDir, "manifest-sync.ts");
 if (!noSync && existsSync(syncPath)) {
   try {
     const sync = Bun.spawnSync(["bun", syncPath, ROOT], { stdout: "pipe", stderr: "pipe" });

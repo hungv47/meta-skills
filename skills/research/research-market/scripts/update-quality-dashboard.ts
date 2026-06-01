@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // update-quality-dashboard — create or update lightweight quality telemetry.
 // See references/_shared/quality-dashboard-spec.md.
 

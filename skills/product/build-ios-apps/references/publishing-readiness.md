@@ -24,7 +24,7 @@
 
 | Name | Meaning | Remediation |
 |---|---|---|
-| `metadata.required` | All production-required fields non-blank | Fill missing fields in the `--metadata` JSON. See the metadata schema in [production.md](production.md#metadata-schema). |
+| `metadata.required` | All production-required fields non-blank | Fill missing fields in the `--metadata` JSON. See the metadata schema in [production.md](publishing-production.md#metadata-schema). |
 | `metadata.description_length` / `metadata.keywords_length` / `metadata.<field>_shape` / `metadata.<field>_url_shape` / `metadata.screenshot_urls_shape` | Per-field length / shape / url-scheme checks | Fix the offending field per the schema constraints. |
 | `metadata.screenshots_reachable` | HEAD probe of every screenshot URL returns 2xx | Re-host the asset; redirects also fail (the SSRF-hardened downloader rejects them). |
 | `version_is_first_or_has_whatsnew` | First-release OR `whatsNew` provided | Add `whatsNew` to metadata. Lookup-failure variants are non-definitive (transient — retry). |

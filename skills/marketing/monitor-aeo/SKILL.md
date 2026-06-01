@@ -46,7 +46,7 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load product c
 |---|---|---|
 | `icp-research.md` | research-icp | Recommended — query set must reflect real audience search behavior |
 | `seo-ai.md` / `seo-audit.md` | optimize-seo | Optional — informs which queries the strategy expects to win |
-| Prior `.forsvn/artifacts/mkt/aeo-monitor/[slug]/snapshots/` | this skill | Optional — enables trend mode in `full-report` |
+| Prior `.forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/` | this skill | Optional — enables trend mode in `full-report` |
 
 ---
 
@@ -91,10 +91,10 @@ Full pre-writing object schema, 8-step Multi-Agent Dispatch flow, Single-Agent F
 
 ## Artifact Contract
 
-Output path: `.forsvn/artifacts/mkt/aeo-monitor/[slug]/` — directory, not a single file.
+Output path: `.forsvn/artifacts/marketing/aeo-monitor/[slug]/` — directory, not a single file.
 
 ```
-.forsvn/artifacts/mkt/aeo-monitor/[slug]/
+.forsvn/artifacts/marketing/aeo-monitor/[slug]/
   report.md                                # dated report (this run)
   query-set.md                             # the locked query × provider matrix used this run
   handoff-optimize-seo.md                  # evidence-tagged gap list, consumed by optimize-seo

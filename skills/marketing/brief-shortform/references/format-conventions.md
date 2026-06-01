@@ -123,7 +123,7 @@ Per the Output Artifact Structure block in SKILL.md body. Required fields (in th
 type: short-form-brief
 role: hero | variant
 status: done | done_with_concerns | blocked | needs_context
-stack: mkt
+stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none

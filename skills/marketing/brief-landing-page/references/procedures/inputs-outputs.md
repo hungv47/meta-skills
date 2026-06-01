@@ -21,12 +21,12 @@ Cited from SKILL.md "Inputs" + "Output" sections. Full per-artifact provenance +
 | Post-launch evidence (analytics, heatmaps, experiment notes) | optional | Stronger evidence for redesign hypotheses; absent → labeled assumption |
 | `research/icp-research.md` | optional | Objections + VoC for copy candidates |
 | `research/product-context.md` | optional | Product accuracy in features/proof |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | optional | Traffic source, awareness stage, funnel role |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | optional | Traffic source, awareness stage, funnel role |
 | `.forsvn/artifacts/meta/records/targets-*.md` | optional | Conversion target informs CTA aggressiveness |
 
 ## Outputs
 
-**Main artifact:** `.forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
+**Main artifact:** `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
 
 **Always-emitted companion:**
 

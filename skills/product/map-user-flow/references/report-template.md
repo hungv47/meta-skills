@@ -192,7 +192,7 @@ Generated from the files in this directory. Update whenever a flow file is added
 
 | File | Flow | Platforms | Last updated | Version | Status |
 |------|------|-----------|--------------|---------|--------|
-| [flow-slug.md](./flow-slug.md) | [Flow name] | [platforms] | [date] | [n] | [draft/done] |
+| `flow-slug.md` | [Flow name] | [platforms] | [date] | [n] | [draft/done] |
 
 ## Platform coverage at a glance
 

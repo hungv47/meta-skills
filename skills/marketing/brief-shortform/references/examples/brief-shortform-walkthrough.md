@@ -21,7 +21,7 @@ For two condensed reference briefs covering different (market, brand_mode, platf
   - `research/icp-research.md` exists (VN solo dev founder ICP)
   - `brand/BRAND.md` exists (founder archetype, semi-casual VN voice)
   - `.forsvn/artifacts/research/research-shortform/dev-tools-vn.md` exists (8d old trends, 22d old mechanics — fresh)
-  - `.forsvn/artifacts/mkt/campaign-plan.md` does not match this angle
+  - `.forsvn/artifacts/marketing/campaign-plan.md` does not match this angle
 - **Resolved dimensions after Pre-Dispatch:**
   - Angle: "We replaced standups with a bot. Output went up."
   - Platforms: TikTok (hero) + Reels (variant)
@@ -40,7 +40,7 @@ Orchestrator reads in order:
 2. `brand/BRAND.md` → archetype: founder (semi-casual VN, dev-tools register)
 3. `research/icp-research.md` → 3 VoC phrases pulled to context
 4. `.forsvn/experience/content.md` → prior brand_mode lock confirms founder
-5. `.forsvn/artifacts/mkt/campaign-plan.md` → no matching slug; no inheritance
+5. `.forsvn/artifacts/marketing/campaign-plan.md` → no matching slug; no inheritance
 
 Emit warm-start summary:
 
@@ -115,14 +115,14 @@ Per (VN, founder): `polish-vn` Layer 2 on spoken-line section + full body.
 
 Orchestrator writes:
 
-- `.forsvn/artifacts/mkt/brief-shortform/standup-bot/brief.md` (hero, 14 sections per `format-conventions.md`)
-- `.forsvn/artifacts/mkt/brief-shortform/standup-bot/variants/reels.md` (variant, abbreviated 5-section set after "What Changed From Hero")
+- `.forsvn/artifacts/marketing/brief-shortform/standup-bot/brief.md` (hero, 14 sections per `format-conventions.md`)
+- `.forsvn/artifacts/marketing/brief-shortform/standup-bot/variants/reels.md` (variant, abbreviated 5-section set after "What Changed From Hero")
 - Frontmatter `status: done`, `critic_loop_count: 1`, `polish_chain_applied: vn-tone`, `critic_passes: [hook, production, algorithm-fit, brand-fit]`
 
 Returns inline to operator:
 ```
-✓ Hero brief at .forsvn/artifacts/mkt/brief-shortform/standup-bot/brief.md
-✓ Reels variant at .forsvn/artifacts/mkt/brief-shortform/standup-bot/variants/reels.md
+✓ Hero brief at .forsvn/artifacts/marketing/brief-shortform/standup-bot/brief.md
+✓ Reels variant at .forsvn/artifacts/marketing/brief-shortform/standup-bot/variants/reels.md
 Critic: 4/4 PASS cycle 1. Polish: vn-tone applied.
 DONE.
 ```

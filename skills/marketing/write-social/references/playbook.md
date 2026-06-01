@@ -82,7 +82,7 @@ Polish chain runs ONLY after critic verdict (`pass` or `done_with_concerns`). FO
 
 ## Cross-stack contract (consumed downstream)
 
-Output artifact at `.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md` is consumed by:
+Output artifact at `.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md` is consumed by:
 
 - **Operator publish workflow** — frontmatter `platform` + `goal` + `critic_verdict` fields drive publish decisions; body sections (Hook variants A/B + Body + CTA + Format spec + Critic verdict) are the publishable payload.
 - **`humanmaxxing` / `polish-vn`** (polish chain) — read the `## Body` and `## CTA` sections; rewrite in place; preserve frontmatter except adding `polish_chain_applied` field.

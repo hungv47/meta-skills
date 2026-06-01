@@ -62,7 +62,7 @@ capability:
       recommended:
         - "research/icp-research.md"
         - "research/product-context.md"
-        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard:
         - "brand/BRAND.md"
         - "brand/DESIGN.md"
@@ -87,7 +87,6 @@ capability:
     when:
       - if: "Hard-gate check (brand artifacts present)"
         read:
-          - "references/_shared/reviewable-artifact-contract.md"
       - if: "Pre-Dispatch (Cold Start, page-state / evidence intake)"
         read:
           - "references/procedures/pre-dispatch.md"
@@ -114,18 +113,18 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md"
+      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md"
         lifecycle: pipeline
         produced_when: "Approval Gate 3 PASS; versioned re-runs to v[N]/brief.md."
-      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-implementation.md"
+      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-implementation.md"
         lifecycle: pipeline
         produced_when: "Always-emitted companion (universal coding-agent prompt, stack auto-detected)."
-      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-claude-design.md"
+      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-claude-design.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists claude-design."
-      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-figma.md"
+      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-figma.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists figma."
-      - path: ".forsvn/artifacts/mkt/brief-landing-page/[slug]/handoff-designer.md"
+      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-designer.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists designer."

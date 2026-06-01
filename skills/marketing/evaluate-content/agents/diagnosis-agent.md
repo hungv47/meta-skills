@@ -8,7 +8,7 @@ Explain why the content cycle likely moved, using the source write-social artifa
 
 - Loop `program.md` and `context.md`
 - Latest strategy/execution artifacts
-- **Source write-social artifact** (`.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md`) — read the hook, format choice, CTA, platform framing, hypothesis
+- **Source write-social artifact** (`.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) — read the hook, format choice, CTA, platform framing, hypothesis
 - Metric Ingest output (from Layer 1 sibling) — DO NOT re-fetch metrics; consume the normalized packet
 - Current cycle evidence (raw platform analytics, screenshots, qualitative comments) — read independently for behavioral signals (comment sentiment, save/share ratios, dwell)
 - Optional qualitative evidence: replies, DMs, comment threads referencing the post

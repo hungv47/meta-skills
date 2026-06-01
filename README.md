@@ -2,7 +2,7 @@
 
 ![Agent Skills](./assets/banners/forsvn-skills.png)
 
-**43 composable skills that turn an AI coding agent into a product team — research, marketing, product, and meta-process, all from one install.**
+**44 composable skills that turn an AI coding agent into a product team — research, marketing, product, and meta-process, all from one install.**
 
 Call any skill by verb (`/research-icp`, `/write-copy`, `/architect-system`, `/review-work`) or let the front door route for you (`/forsvn`). Skills chain — each one reads what earlier skills left behind, so output compounds the more you use the stack.
 
@@ -10,10 +10,10 @@ Call any skill by verb (`/research-icp`, `/write-copy`, `/architect-system`, `/r
 
 ## What to expect
 
-- **43 skills, 4 domains.** Research (8) · Marketing (21) · Product (7) · Meta (7).
+- **44 skills, 4 domains.** Research (8) · Marketing (22) · Product (7) · Meta (7).
 - **One install, every editor.** Claude Code plugin or `npx skills add` for Cursor, Codex, Windsurf, Gemini CLI, VS Code.
 - **A single front door.** `/forsvn` reads your project state, asks ≤2 questions if needed, and routes you to the right skill (or resumes a prior initiative).
-- **Context compounds.** Skills write artifacts to `.forsvn/`, `research/`, `brand/`, `architecture/`. Every downstream skill reads them automatically — no copy-paste, no re-asking.
+- **Context compounds.** Skills write artifacts into the `.forsvn/` data model (canonical truth · working output · experience, each by stack). Every downstream skill reads them automatically — no copy-paste, no re-asking.
 - **Quality gates built in.** Most skills run multi-agent orchestration behind a critic gate. `/review-work` adds a fresh-eyes pass before you ship.
 
 ## Install
@@ -64,9 +64,9 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ### Marketing — create, optimize, and measure marketing
 
-> [`skills/marketing/`](./skills/marketing/) · 21 skills
+> [`skills/marketing/`](./skills/marketing/) · 22 skills
 
-`create-brand` · `plan-campaign` · `brief-landing-page` · `brief-graphic` · `brief-shortform` · `brief-app-preview` · `write-copy` · `write-ad` · `write-outreach` · `write-social` · `optimize-seo` · `monitor-aeo` · `humanmaxxing` · `polish-vn` · `produce-asset` · `produce-video` · `publish-social` · `evaluate-ad` · `evaluate-campaign` · `evaluate-content` · `evaluate-landing-page`
+`create-brand` · `plan-campaign` · `brief-landing-page` · `brief-graphic` · `brief-shortform` · `brief-app-preview` · `write-copy` · `write-ad` · `write-outreach` · `write-social` · `optimize-seo` · `monitor-aeo` · `preview-og` · `humanmaxxing` · `polish-vn` · `produce-asset` · `produce-video` · `publish-social` · `evaluate-ad` · `evaluate-campaign` · `evaluate-content` · `evaluate-landing-page`
 
 ### Product — design and build software
 
@@ -82,13 +82,13 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ## Where outputs land
 
-`.forsvn/` is the canonical state root. Three top-level folders hold canonical records the team owns long-term:
+`.forsvn/` is the canonical state root — the project's data model, organized as **three layers, each by stack** (`meta · research · marketing · product`):
 
-- `research/` — audience and market of record (`product-context.md`, `icp-research.md`, `market-research.md`)
-- `brand/` — brand identity of record (`BRAND.md`, `DESIGN.md`, `ASSETS.md`)
-- `architecture/` — system blueprint of record (`system-architecture.md`)
+- `canonical/<stack>/` — **TRUTH**: curated records the team owns long-term (`ARCHITECTURE`, `USER-FLOW`, `MASTER-PLAN`, `BRAND`, `DESIGN`, `ICP`, `MARKET`), UPPERCASE, edited in place
+- `artifacts/<stack>/` — **KNOWLEDGE**: working skill output, `<skill>-<date>-<slug>.md`
+- `experience/<stack>/` — **MEMORY**: append-only learnings; prevents re-asking
 
-Everything else lives under `.forsvn/{context,experience,artifacts,loops,evals,routing,dashboard}/`. Every artifact carries frontmatter (`skill`, `version`, `date`, `status`) for traceability.
+Plus `index/` (the manifest API + human index), `context/`, `routing/`. Every artifact carries frontmatter — `skill, version, date, status, stack, review_surface` + the instruction core `id, type, keywords` — for greppable discovery and traceability.
 
 ## Tips
 
@@ -96,6 +96,35 @@ Everything else lives under `.forsvn/{context,experience,artifacts,loops,evals,r
 - **Answer Pre-Dispatch questions in one reply.** Skills bundle 3–7 context questions per dispatch so they can run parallel sub-agents. Answer all at once to save a re-prompt round.
 - **Run `/review-work` before shipping.** Auto-triggers on security and data-mutation work. Run it manually on copy, briefs, and architecture docs.
 - **Install globally for the meta layer.** `/forsvn`, `/discover`, `/run-eval-loop`, `/debate-agents`, `/breakdown-tasks`, `/review-work` are useful in every project — `npx skills add hungv47/meta-skills -g`.
+
+## Performance & invocation reliability
+
+Claude Code reserves a **skill-listing budget** — by default `skillListingBudgetFraction: 0.01` (1% of the context window) for all installed skills' descriptions. This 44-skill stack alone is ≈ 2.5% of a 200k-token context, and most users run it alongside other plugins. On overflow, the least-used skills' **descriptions collapse to name-only**, which degrades *auto-selection* (Claude picking a skill without being asked).
+
+- **Explicit invocation always works.** Skill *names* are never dropped — `/<skill-name>` or `Skill(forsvn-skills:<name>)` resolves even under a full budget. Only description-driven auto-selection degrades.
+- **Power-user config** (`settings.json`) to keep auto-selection sharp with the full stack:
+  ```json
+  {
+    "skillListingBudgetFraction": 0.025,
+    "skillOverrides": { "rarely-used-skill": "name-only" }
+  }
+  ```
+- **Diagnose:** `/doctor` shows whether the budget is overflowing and which skills are affected; `claude plugin details` shows the always-on vs on-invoke token cost.
+- **Audit the stack's footprint:** `bun _dev/audit-skill-listing.ts` reports the listing cost and the `skillListingBudgetFraction` needed to list every skill.
+
+A `UserPromptSubmit` hook (`hooks/user-prompt-submit-skill-router.mjs`, suggestion-only) ships with the plugin to nudge auto-selection under budget pressure — it never auto-invokes a skill.
+
+### Local dev / dogfood (skip the marketplace cache)
+
+To run skills live from a working copy (Claude Code v2.1.157+) without the published marketplace cache going stale, symlink the repo's `skills/` into your project's `.claude/skills/` so edits load immediately:
+
+```bash
+ln -s "$(pwd)/skills/skills" .claude/skills   # auto-loads the 44 skills; no /plugin install
+```
+
+This loads the **skills** live for fast iteration on skill content. It does **not** load the plugin's auto-discovered `hooks/` (e.g. the suggestion router) — those load only when Claude Code discovers the plugin root (`.claude-plugin/plugin.json` + sibling `hooks/`). To dogfood hook changes, install the plugin from the local repo as a marketplace (`/plugin marketplace add <path-to>/skills` → `/plugin install forsvn-skills`) and reload, or use the published marketplace path below.
+
+Keep the marketplace install (`/plugin install forsvn-skills`) as the path for end users — it carries URL continuity and `.publicignore` fencing.
 
 ## Migrating from pre-2.0 (4-plugin install)
 

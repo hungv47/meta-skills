@@ -6,7 +6,7 @@
 
 ## Path + lifecycle
 
-- **Path:** `.forsvn/artifacts/mkt/copy/[platform]-[YYYY-MM-DD]-[slug].md`
+- **Path:** `.forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`
 - **Lifecycle:** `pipeline` — regenerated on re-run for the same (platform, topic) tuple. Variant exploration uses suffixed slugs (e.g., `-variant-b`).
 
 ## Frontmatter (13 fields, verbatim, in order)

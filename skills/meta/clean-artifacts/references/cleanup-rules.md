@@ -45,7 +45,7 @@ The artifact is load-bearing for the project and must stay in place.
 | `.forsvn/artifacts/meta/tasks.md` | session anchor |
 | `.forsvn/artifacts/meta/records/skill-contracts.md` | living registry (`kind: registry`) |
 | `.forsvn/artifacts/meta/records/learned-rules.md` | living registry |
-| `.forsvn/artifacts/mkt/copy/twitter-2026-05-01.md` (within 90d, manifest done) | fresh pipeline output |
+| `.forsvn/artifacts/marketing/copy/twitter-2026-05-01.md` (within 90d, manifest done) | fresh pipeline output |
 
 ---
 
@@ -69,7 +69,7 @@ The artifact has a manifest entry but it has aged past the threshold and no down
 |---|---|
 | `.forsvn/artifacts/meta/records/2025-11-30-fresh-eyes-foo.md` | dated record, > 90d old, no live ref |
 | `.forsvn/loops/video-series/evals/2025-12-01-cycle-1.md` | loop evaluation output, > 90d, superseded by later cycles |
-| `.forsvn/artifacts/mkt/copy/linkedin-2025-08-15.md` | pipeline output, > 90d, no recent consumer |
+| `.forsvn/artifacts/marketing/copy/linkedin-2025-08-15.md` | pipeline output, > 90d, no recent consumer |
 
 ---
 
@@ -89,7 +89,7 @@ The file exists on disk but has no manifest entry, OR its producing skill was re
 |---|---|
 | `.forsvn/artifacts/meta/sketches/foo-sketch.md` | hand-created sketch, no manifest entry, no producing skill |
 | `.forsvn/artifacts/research/old-skill-name/some-output.md` | producing skill was renamed/removed |
-| `.forsvn/artifacts/mkt/random-scratch.md` | no manifest entry, no clear producer |
+| `.forsvn/artifacts/marketing/random-scratch.md` | no manifest entry, no clear producer |
 
 ORPHAN ≠ STALE. STALE has a manifest entry that aged out. ORPHAN has none, or its producer no longer exists.
 

@@ -30,7 +30,7 @@ load_class: PROCEDURE
 2. `brand/BRAND.md` + `.forsvn/experience/business.md` → infer `brand_mode`. Solo founder / personal brand → `founder`. Faceless product / company → `company`. Ambiguous → ask in Cold Start Q3.
 3. `research/icp-research.md` + `.forsvn/experience/audience.md` → audience VoC, register, market.
 4. `.forsvn/experience/content.md` → recent content decisions, market lock-in, prior brand_mode / production_mode selections.
-5. `.forsvn/artifacts/mkt/campaign-plan.md` → if `[slug]` matches a campaign asset, inherit theme/dates/CTAs.
+5. `.forsvn/artifacts/marketing/campaign-plan.md` → if `[slug]` matches a campaign asset, inherit theme/dates/CTAs.
 
 ---
 

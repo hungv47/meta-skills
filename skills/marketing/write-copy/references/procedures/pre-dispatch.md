@@ -28,7 +28,7 @@ load_class: PROCEDURE
 2. **Pipeline artifacts:**
    - `research/icp-research.md` → VoC + pain language
    - `research/product-context.md` → product details + voice adjectives + Unique Mechanism (if persisted)
-   - `.forsvn/artifacts/mkt/campaign-plan.md` → angle + awareness stage
+   - `.forsvn/artifacts/marketing/campaign-plan.md` → angle + awareness stage
 3. **Experience:** `.forsvn/experience/{audience,product,goals}.md` → prior copy shift + belief sequence + proof points
 4. **Conversation context:** brief from upstream skill (e.g., lp-brief handed a per-section spec with audience + traffic + Unique Mechanism resolved)
 

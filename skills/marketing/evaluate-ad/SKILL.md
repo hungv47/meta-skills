@@ -34,7 +34,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
+**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
 
 **Recommended:** baseline/prior cycle row · frequency at window close (Creative-Fatigue scoring) · conversion count + CPA · audience size + reach · guardrails from `program.md` · qualitative evidence (comments, sentiment, click-quality).
 

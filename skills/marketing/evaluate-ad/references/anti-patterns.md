@@ -57,7 +57,7 @@ load_class: ANTI-PATTERN
 **Fix:** Recommendation's Creative-Fatigue Decision block names the specific component. Decision Discipline rubric dim drops the score when rotation is campaign-level.
 
 ### 10. Source ad-copy artifact unverified
-**Pattern:** Cycle artifact's provenance lists `input_artifacts: .forsvn/artifacts/mkt/write-ad/cold-traffic-2026-05-01-paint-pourer.md` — but the file doesn't exist (typo, moved, never written).
+**Pattern:** Cycle artifact's provenance lists `input_artifacts: .forsvn/artifacts/marketing/write-ad/cold-traffic-2026-05-01-paint-pourer.md` — but the file doesn't exist (typo, moved, never written).
 **Why it fails:** Without the source artifact, the eval is scoring against an imagined hypothesis. Future `write-ad --rev=N+1` runs read provenance + can't follow the chain.
 **Fix:** Metric Ingest's Blockers section catches unreadable source paths. Critic Hard Fail #10 enforces.
 

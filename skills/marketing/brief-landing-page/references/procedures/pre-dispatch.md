@@ -29,7 +29,7 @@ If hard gates pass, proceed to Pre-Dispatch flows.
 
 ## Read order
 
-1. **Pipeline:** `brand/BRAND.md`, `brand/DESIGN.md` (both confirmed by hard gate). `research/icp-research.md`, `research/product-context.md`, `.forsvn/artifacts/mkt/campaign-plan.md`, `.forsvn/artifacts/meta/records/targets-*.md` (all optional, read when present).
+1. **Pipeline:** `brand/BRAND.md`, `brand/DESIGN.md` (both confirmed by hard gate). `research/icp-research.md`, `research/product-context.md`, `.forsvn/artifacts/marketing/campaign-plan.md`, `.forsvn/artifacts/meta/records/targets-*.md` (all optional, read when present).
 2. **Experience:** `.forsvn/experience/goals.md` for prior hypothesis/goal context. `.forsvn/experience/audience.md` for ICP fallback if no `icp-research.md`.
 
 ## Warm Start prompt

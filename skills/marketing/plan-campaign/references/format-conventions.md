@@ -9,7 +9,7 @@
 Single artifact per run:
 
 ```
-.forsvn/artifacts/mkt/campaign-plan.md
+.forsvn/artifacts/marketing/campaign-plan.md
 ```
 
 Pipeline lifecycle — overwrite on re-run unless version preservation is requested (see Re-run convention below).
@@ -24,7 +24,7 @@ skill: plan-campaign
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-stack: mkt
+stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required    # pending | approved | denied | suggested | not_required
 review_tool: roughdraft       # roughdraft | inline | none
@@ -144,7 +144,7 @@ This `pipeline` artifact ships the block in every run, but `decision_state` defa
 
 When re-running the skill on the same product/campaign:
 
-1. **Default behavior:** overwrite `.forsvn/artifacts/mkt/campaign-plan.md` with `version: 1` (or current version), updated `date`.
+1. **Default behavior:** overwrite `.forsvn/artifacts/marketing/campaign-plan.md` with `version: 1` (or current version), updated `date`.
 2. **Preserve history mode:** rename existing artifact to `campaign-plan.v[N].md` (e.g., `campaign-plan.v1.md`) before writing the new version. New artifact gets `version: 2`, etc.
 3. **Re-run triggers:** ICP research updated (>30d freshness recommendation), new product/campaign launch, channel performance data suggests reallocation, growth motion changes (PLG → Hybrid, etc.).
 4. **Cite the trigger** in the Foundation section's core message rationale when re-running, so the diff vs. prior version is obvious.
@@ -154,7 +154,7 @@ When re-running the skill on the same product/campaign:
 When the critic-agent fails on cycle 1 + 2 (max cycles exhausted) and the orchestrator delivers as `DONE_WITH_CONCERNS`, an optional sidecar may be written:
 
 ```
-.forsvn/artifacts/mkt/campaign-plan.critic-notes.md
+.forsvn/artifacts/marketing/campaign-plan.critic-notes.md
 ```
 
 Contents: full critic feedback per cycle, named re-dispatch targets, what was fixed / what wasn't. Not mandatory; useful when handing off to a human reviewer.

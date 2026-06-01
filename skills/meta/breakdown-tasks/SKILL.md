@@ -60,7 +60,7 @@ Per [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispa
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=md), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`. Schema + Status Index + Shared Context + task-block format: [`references/task-format.md`](references/task-format.md) [PROCEDURE].
 - **Required sections:** Status Index (source-of-truth for resume), Shared Context (decisions every task references), Tasks (sibling `###` blocks, stable IDs).
 - **Consumed by:** fresh engineering sessions running Resume Protocol from [`references/execution-protocol.md`](references/execution-protocol.md); orchestrators batching AFK; operator; fresh-eyes.
-- **Review:** `decision_state: not_required` default — most runs are regenerable drafts. Semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+
 
 ## Execution Hand-off
 
@@ -98,4 +98,4 @@ Hand off `tasks.md` to implementing agent/dev with the Resume Protocol pointer. 
 - `references/`: `playbook.md` [PLAYBOOK], `task-format.md` [PROCEDURE], `execution-protocol.md`, `anti-patterns.md` [ANTI-PATTERN], `{sizing-examples, dependency-patterns, acceptance-criteria}.md`
 - `references/procedures/{multi-agent-dispatch, pre-dispatch}.md` [PROCEDURE]
 - `references/examples/decompose-walkthrough.md` [EXAMPLE]
-- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, roughdraft-review-protocol}.md`
+- `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol}.md`

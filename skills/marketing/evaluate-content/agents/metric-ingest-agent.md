@@ -10,7 +10,7 @@ Normalize published organic-content evidence into a metric packet the orchestrat
 - Loop `context.md`, especially baseline and measurement assumptions
 - Prior `results.tsv`
 - Primary-platform tag for the current cycle — operator-supplied; gates Critical Gate 5 in SKILL.md
-- Source write-social artifact (`.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md`) — the brief being scored
+- Source write-social artifact (`.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) — the brief being scored
 - Current evidence: native platform analytics (LinkedIn / Instagram / X / Facebook / Threads insights), screenshot summary, operator-supplied numbers, qualitative comments
 - Optional: secondary-platform headline metrics (for Cross-Platform Context — they do NOT enter the verdict)
 

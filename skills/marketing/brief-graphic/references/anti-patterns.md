@@ -22,7 +22,7 @@
 
 ### 2. Skipping the brief acceptance gate
 
-**Symptom:** Writing `.forsvn/artifacts/mkt/design-briefs/[slug].md` after Layer 3 critic PASS without presenting the assembled brief + critic report at Approval Gate 2.
+**Symptom:** Writing `.forsvn/artifacts/marketing/design-briefs/[slug].md` after Layer 3 critic PASS without presenting the assembled brief + critic report at Approval Gate 2.
 
 **Why it fails:** Critic PASS is necessary but not sufficient — critic scores the brief against the rubric, but the user owns "is this what I asked for." Gate 2 is the user's last chance to revise before the brief ships to a downstream renderer. Skipping it ships briefs the user didn't validate; ASSETS.md auto-tick fires; downstream tools start consuming a brief the user hasn't seen.
 
@@ -124,7 +124,7 @@
 
 **Symptom:** Orchestrator renames `downstream_route` → `route`, adds an undocumented `priority` field, drops the Hierarchy section "because the Concept covers it."
 
-**Why it fails:** `.forsvn/artifacts/mkt/design-briefs/[slug].md` is read by downstream image-gen tools (Claude Design / Midjourney / Imagen / DALL·E), vector tools (Pencil / Figma), human designers (reading the Designer-Handoff Spec block), AND lp-brief (when the brief was invoked from a landing-page slot). Schema drift breaks downstream consumers silently — they jump to a section by frontmatter check or heading match, the check fails, they fall back to defaults, the user sees a render disconnected from the brief.
+**Why it fails:** `.forsvn/artifacts/marketing/design-briefs/[slug].md` is read by downstream image-gen tools (Claude Design / Midjourney / Imagen / DALL·E), vector tools (Pencil / Figma), human designers (reading the Designer-Handoff Spec block), AND lp-brief (when the brief was invoked from a landing-page slot). Schema drift breaks downstream consumers silently — they jump to a section by frontmatter check or heading match, the check fails, they fall back to defaults, the user sees a render disconnected from the brief.
 
 **Fix:** Frontmatter rules + body section order are the contract per `format-conventions.md`. Schema changes require atomic update of `format-conventions.md` in the same commit. No silent additions, no field renames, no section drops.
 

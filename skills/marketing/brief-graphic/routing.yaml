@@ -75,8 +75,8 @@ capability:
     prerequisites:
       recommended:
         - "brand/ASSETS.md"
-        - ".forsvn/artifacts/mkt/content/[slug].copy.md"
-        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - ".forsvn/artifacts/marketing/content/[slug].copy.md"
+        - ".forsvn/artifacts/marketing/campaign-plan.md"
         - "research/icp-research.md"
       hard:
         - "brand/BRAND.md"
@@ -122,12 +122,12 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/design-briefs/[slug].md"
+      - path: ".forsvn/artifacts/marketing/design-briefs/[slug].md"
         lifecycle: pipeline
         produced_when: "Approval Gate 2 PASS; default overwrite on re-run."
-      - path: ".forsvn/artifacts/mkt/design-briefs/[slug]-rejected.md"
+      - path: ".forsvn/artifacts/marketing/design-briefs/[slug]-rejected.md"
         lifecycle: pipeline
         produced_when: "Approval Gate 2 reject."
-      - path: ".forsvn/artifacts/mkt/design-briefs/[slug]-candidates.md"
+      - path: ".forsvn/artifacts/marketing/design-briefs/[slug]-candidates.md"
         lifecycle: pipeline
         produced_when: "Approval Gate 1 stop (paused-candidate exit)."

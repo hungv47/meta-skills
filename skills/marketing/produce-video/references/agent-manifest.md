@@ -25,7 +25,7 @@ Two routes — discriminated by input brief's `type` frontmatter at pre-dispatch
 3. Dispatch: critic-agent on the assembled bundle (Gates 1-4)
 4. Critic FAIL on Gate 1/2/3 → re-dispatch prompt-author-agent with feedback (max 2 cycles)
 5. Critic FAIL on Gate 4 only → ship done_with_concerns
-6. Critic PASS → write bundle to .forsvn/artifacts/mkt/produced-videos/[slug]/
+6. Critic PASS → write bundle to .forsvn/artifacts/marketing/produced-videos/[slug]/
 7. Return bundle path + shot count + runtime choices
 ```
 
@@ -43,7 +43,7 @@ Two routes — discriminated by input brief's `type` frontmatter at pre-dispatch
 3. Dispatch: critic-agent on the assembled bundle (Gates 1-7; Gates 5/6/7 are app-preview-only hard FAILs)
 4. Critic FAIL on any hard gate → re-dispatch prompt-author-agent with feedback (max 2 cycles)
 5. Critic FAIL on Gate 4 only → ship done_with_concerns
-6. Critic PASS → write bundle to .forsvn/artifacts/mkt/produced-videos/[slug]/
+6. Critic PASS → write bundle to .forsvn/artifacts/marketing/produced-videos/[slug]/
 7. Return bundle path + shot count + 2 runtime choices ("Run hyperframes/scaffold.html through
    `hyperframes preview`, OR remotion/scaffold.tsx through `npx remotion preview`.
    Vercel AI CLI does NOT apply in app-preview — visuals are real screenshots.")

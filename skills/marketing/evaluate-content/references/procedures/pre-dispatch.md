@@ -32,8 +32,8 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 2. `.forsvn/loops/[slug]/context.md` — baseline assumptions + loop history + prior-cycle platforms
 3. `.forsvn/loops/[slug]/results.tsv` — prior cycles' rows + resolve cycle number (`last cycle + 1`); read at least the last 2 rows of the same platform for trend context
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what was changed this cycle + prior eval verdicts
-5. **Source write-social artifact** at `.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md` — the brief's hypothesis is the benchmark for Diagnosis
-6. `.forsvn/artifacts/mkt/published-social/[slug]/manifest.md` if present — post URLs + distribution provenance
+5. **Source write-social artifact** at `.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md` — the brief's hypothesis is the benchmark for Diagnosis
+6. `.forsvn/artifacts/marketing/published-social/[slug]/manifest.md` if present — post URLs + distribution provenance
 7. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`
 
 If `.forsvn/index/manifest.json` is stale or missing, run:
@@ -52,7 +52,7 @@ Found:
 - primary platform: [platform]
 - primary metric: [from program.md]
 - baseline/prior result: [from results.tsv last row of same platform + content type]
-- source write-social artifact: [.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md]
+- source write-social artifact: [.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md]
 - current evidence window: [window + source]
 - reach: [amount]
 
@@ -66,7 +66,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 ```
 1. Which loop slug/path should this evaluation write into?
 2. What is the primary platform for this cycle? (one cycle = one primary platform; secondary platforms are context only)
-3. What is the source write-social artifact path? (typically .forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md)
+3. What is the source write-social artifact path? (typically .forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md)
 4. What measurement window (start date → end date, days) and source (native platform analytics / third-party dashboard / operator-supplied)?
 5. What is the primary metric value for this window, and what baseline (same platform + same content type prior cycle)?
 6. Reach/impressions for the window? Engagement breakdown (likes / saves / shares / comments)? Click-through if available?

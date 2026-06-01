@@ -25,7 +25,7 @@ Step 0 → L1 (evidence-anchor ∥ brand-anchor) → L1.5 (hypothesis) → ★ G
        → L2 (architecture) → ★ Gate 2
        → L3 (section-spec) → L3.5 (asset-slot) → L4 (handoff)
        → L5 (conversion-critic ∥ brand-voice-critic) → critic merge → ★ Gate 3
-       → write brief.md + handoff/* + asset-slots/* to .forsvn/artifacts/mkt/brief-landing-page/[slug]/
+       → write brief.md + handoff/* + asset-slots/* to .forsvn/artifacts/marketing/brief-landing-page/[slug]/
 ```
 
 ### Route B — Existing LP redesign (evidence-anchored)

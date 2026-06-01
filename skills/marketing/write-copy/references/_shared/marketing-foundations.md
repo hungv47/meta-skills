@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 # Marketing Foundations
 
@@ -111,18 +111,18 @@ create-brand → BRAND.md + DESIGN.md → consumed by write-copy, humanize, brie
 research-shortform (research stack)
   └─ per-platform catalog → consumed by brief-shortform, write-social, evaluate-shortform
 
-plan-campaign → .forsvn/artifacts/mkt/plan-campaign/[slug].md → consumed by brief-landing-page, write-outreach, optimize-seo
+plan-campaign → .forsvn/artifacts/marketing/plan-campaign/[slug].md → consumed by brief-landing-page, write-outreach, optimize-seo
 
-write-copy → .forsvn/artifacts/mkt/write-copy/[slug].md → consumed by humanize, polish-vn
-humanize → .forsvn/artifacts/mkt/humanmaxxing/[slug].md → final-stage polish
-polish-vn → .forsvn/artifacts/mkt/polish-vn/[slug].md → Vietnamese register polish
+write-copy → .forsvn/artifacts/marketing/write-copy/[slug].md → consumed by humanize, polish-vn
+humanize → .forsvn/artifacts/marketing/humanmaxxing/[slug].md → final-stage polish
+polish-vn → .forsvn/artifacts/marketing/polish-vn/[slug].md → Vietnamese register polish
 
-brief-landing-page → .forsvn/artifacts/mkt/brief-landing-page/[slug]/brief.md → owns landing-page construction + conversion-principles gate; consumed by brief-graphic (per asset slot) and external designer/image-gen
+brief-landing-page → .forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md → owns landing-page construction + conversion-principles gate; consumed by brief-graphic (per asset slot) and external designer/image-gen
 evaluate-landing-page → .forsvn/loops/[slug]/evals/[date]-cycle-N.md → owns post-launch landing-page evidence scoring; consumes the eval-loop workspace and appends results.tsv
-brief-graphic → .forsvn/artifacts/mkt/brief-graphic/[slug].md → consumed by external designer or image-gen tool
-optimize-seo → .forsvn/artifacts/mkt/optimize-seo/[mode].md → consumed by write-copy (SEO content), plan-campaign
+brief-graphic → .forsvn/artifacts/marketing/brief-graphic/[slug].md → consumed by external designer or image-gen tool
+optimize-seo → .forsvn/artifacts/marketing/optimize-seo/[mode].md → consumed by write-copy (SEO content), plan-campaign
 
-write-outreach → .forsvn/artifacts/mkt/write-outreach/[slug].md → standalone outbound execution
+write-outreach → .forsvn/artifacts/marketing/write-outreach/[slug].md → standalone outbound execution
 ```
 
 ---

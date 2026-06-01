@@ -41,7 +41,7 @@ All four PASS required:
 3. **Algorithm-fit** — brief aligns with target platform's algorithmic preferences from research catalog (completion thresholds, hold rates, audio rules, captions, watermarks).
 4. **Brand-fit** — caption + verbal lines use VoC phrases from ICP; voice matches `BRAND.md` archetype; no generic founder/company tropes.
 
-Full 4-sub-critic rubric + binary verdicts + format-fit test + 13-row Rewrite Routing Table: [`agents/critic-agent.md`](agents/critic-agent.md).
+Full 4-sub-critic rubric + binary verdicts + format-fit test + 13-row Rewrite Routing Table: [`agents/critic-agent.md`](../agents/critic-agent.md).
 
 ## Pattern Catalogs
 

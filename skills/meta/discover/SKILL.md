@@ -64,7 +64,7 @@ Per [`references/procedures/orchestration-steps.md`](references/procedures/orche
 - **Required sections (Medium/Deep):** Premise Challenge · Dream State Mapping · Decided Approach · Implementation Alternatives (min 2-3) · Temporal Interrogation · Key Decisions · Edge Cases · Failure Conditions · Out of Scope · Open Questions · Open Branches (only if `done_with_concerns`) · Implementation Notes · Verdict. **Light-depth saves skip 5 sections** (Premise Challenge, Dream State Mapping, Implementation Alternatives, Temporal Interrogation, Verdict) — compact format `light_spec: true`.
 - **Consumed by:** operator (audit trail) · `breakdown-tasks` · `architect-system` · `review-work` (scope-drift detection).
 - **Side effect (idea-stage only):** spawns `agents/idea-critic.md` once at Step 2.7.
-- **Review-gated:** `decision_state` defaults `pending`. Field semantics: [`_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+
 
 ## Context Resolution Order
 
@@ -106,7 +106,7 @@ Full configuration table (depth, mode, plan-review-mode, output, zones, idea-cri
 ## References
 
 - [`references/playbook.md`](references/playbook.md) — why, methodology, when NOT to use
-- [`_shared/`](references/_shared/) — before-starting-check, mode-resolver, reviewable-artifact-contract, roughdraft-review-protocol
+- [`_shared/`](references/_shared/) — before-starting-check, mode-resolver
 - [`procedures/`](references/procedures/) — context-gathering, communication-discipline, interview-techniques, idea-critic-dispatch, output-formats, plan-review-modes, **orchestration-steps** (full Step 2-7 detail), **resolution-exit conditions**
 - [`references/anti-patterns.md`](references/anti-patterns.md), [`question-bank.md`](references/question-bank.md), [`example-contracts.md`](references/example-contracts.md), [`configuration.md`](references/configuration.md)
 - [`references/operator-playbooks/`](references/operator-playbooks/) — 9 practitioner-grade frames (3 always-on stance + 6 founder-domain on product-context match)

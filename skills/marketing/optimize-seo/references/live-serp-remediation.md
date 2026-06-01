@@ -126,7 +126,7 @@ When the loop stops with a remaining gap, the manifest's `final_state` field rec
 
 For multi-page or sitewide work, the loop produces a manifest. The manifest is the loop's audit trail and resume token.
 
-**Path:** `.forsvn/artifacts/mkt/seo-ai.serp-remediation-manifest.md` (alongside `seo-ai.md`); re-runs append a new manifest with version suffix.
+**Path:** `.forsvn/artifacts/marketing/seo-ai.serp-remediation-manifest.md` (alongside `seo-ai.md`); re-runs append a new manifest with version suffix.
 
 **Manifest frontmatter:**
 

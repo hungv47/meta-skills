@@ -56,7 +56,7 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load ICP + BRA
 | `brand/BRAND.md` | create-brand | Soft-required — proceeds with `brand_source: cold-start-hint` flag if missing; critic warns on motion specs that contradict typical brand discipline |
 | `brand/DESIGN.md` | create-brand | Soft-required — same cold-start handling as BRAND.md; tokens (color hex, radius, type scale) lifted into motion-spec output when present |
 | `research/icp-research.md` | research-icp | Optional — informs caption register and feature framing |
-| Prior `.forsvn/artifacts/mkt/app-preview-brief/[slug]/` | this skill | Optional — re-run with `--rev=N` to preserve prior brief |
+| Prior `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` | this skill | Optional — re-run with `--rev=N` to preserve prior brief |
 
 ---
 
@@ -74,16 +74,16 @@ Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensio
 
 ## Artifact Contract
 
-- **Output root:** `.forsvn/artifacts/mkt/app-preview-brief/[slug]/`
+- **Output root:** `.forsvn/artifacts/marketing/app-preview-brief/[slug]/`
 - **Files (4):** `brief.md` · `assets.md` · `crop-map.md` · `handoff-produce-video.md`
 - **Lifecycle:** `pipeline` — one artifact set per (feature, surface, market); re-run on feature pivot or surface change
 - **Frontmatter fields (brief.md):** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count` (full schema in `references/format-conventions.md`)
 - **Body sections (brief.md, 12, in order):** TL;DR for the Editor · Feature Promise · Source Inventory · Beat Sequence · Crop / Mask Plan · Interaction Choreography · Motion Spec · Caption Pack · Pointer + Audio Plan · Platform Spec · What NOT To Do · Handoff to produce-video
 - **Consumed by:** `produce-video` (via `handoff-produce-video.md`) — emits the runtime scaffolds; never `brief-shortform`, never `publish-social`
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" + `produce-video`'s `video-brief-schema.md` extension for app-preview inputs (WS4 will land that extension)
-- **Review:** This `pipeline` artifact carries the review machinery but `decision_state` defaults to `not_required`. Operator opts a run into review by setting `decision_state: pending`. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. Review machinery applies to `brief.md` only — not to `assets.md`, `crop-map.md`, or `handoff-produce-video.md`.
 
-Full template + frontmatter spec + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer per `references/_shared/reviewable-artifact-contract.md`. Pipeline default: `decision_state: not_required`.
+
+Full template + frontmatter spec + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer rendered by the forsvn-preview plugin. Pipeline default: `decision_state: not_required`.
 
 ---
 
@@ -125,6 +125,6 @@ End-to-end walkthrough + FAIL cycle 2 + `--fast` variant: [`references/examples/
 
 - `references/playbook.md`, `format-conventions.md`, `anti-patterns.md`
 - `references/procedures/{pre-dispatch, dispatch-mechanics}.md`
-- `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, reviewable-artifact-contract, roughdraft-review-protocol}.md`
+- `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
 - Domain catalogs (loaded by craft agents at dispatch): `references/{platform-specs, interaction-grammar}.md`
 - 6 sub-agents in `agents/`; `critic-agent.md` holds the canonical 5-sub-critic gate

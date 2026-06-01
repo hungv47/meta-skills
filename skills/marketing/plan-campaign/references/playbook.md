@@ -76,7 +76,7 @@ pillar-agent → angle-agent → channel-agent → timeline-agent → launch-seq
 - `brief-shortform` — reads campaign goal + pillar context for hero video angle
 - `plan-funnel` — reads channel mix + cadence to set per-channel numeric targets
 
-The artifact at `.forsvn/artifacts/mkt/campaign-plan.md` is the shared reference these skills check before generating their own deliverables.
+The artifact at `.forsvn/artifacts/marketing/campaign-plan.md` is the shared reference these skills check before generating their own deliverables.
 
 ## History / origin
 

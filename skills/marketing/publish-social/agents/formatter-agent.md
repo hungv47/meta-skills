@@ -28,7 +28,7 @@ You do NOT:
 
 ## Output Contract
 
-A bundle written to `.forsvn/artifacts/mkt/published-social/[slug]/`:
+A bundle written to `.forsvn/artifacts/marketing/published-social/[slug]/`:
 
 ```
 [slug]/

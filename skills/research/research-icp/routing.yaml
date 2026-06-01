@@ -50,7 +50,7 @@ capability:
       - "Campaign/channel plan from known audience -> plan-campaign."
     prerequisites:
       recommended:
-        - ".forsvn/context/product-context.md"
+        - ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
       hard: []
 
   orchestration:

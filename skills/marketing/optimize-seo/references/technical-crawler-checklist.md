@@ -158,7 +158,7 @@ Every page audited at the technical-crawler layer clears these 12 checks. A chec
 
 ## Per-URL summary table — the audit output shape
 
-The audit normalizes the 12-check ledger into a per-URL summary table that lives in the audit artifact (`.forsvn/artifacts/mkt/seo-audit.md`).
+The audit normalizes the 12-check ledger into a per-URL summary table that lives in the audit artifact (`.forsvn/artifacts/marketing/seo-audit.md`).
 
 | URL | Title | Meta Desc | H1/H2 | OG | Canonical | hreflang | JSON-LD | Robots | Sitemap | Orphan | Alt | Thin/Lang/Icons | Findings |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|

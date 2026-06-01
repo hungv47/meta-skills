@@ -61,7 +61,7 @@ capability:
       recommended:
         - "research/product-context.md"
         - "research/icp-research.md"
-        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 
   orchestration:
@@ -108,9 +108,9 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].md"
+      - path: ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
         lifecycle: pipeline
         produced_when: "Critic + terminal humanmaxxing PASS."
-      - path: ".forsvn/artifacts/mkt/write-outreach/[channel]-[date]-[slug].critic-score.md"
+      - path: ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].critic-score.md"
         lifecycle: pipeline
         produced_when: "5-dim scorecard + post-humanmaxxing regression (always emitted)."

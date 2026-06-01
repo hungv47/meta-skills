@@ -34,7 +34,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · campaign name/tag · source plan-campaign artifact (`.forsvn/artifacts/mkt/campaign-plan.md`) · measurement window · primary metric value + source · per-channel rollup (spend / effort / reach / leads / conversions / revenue) · total fully-loaded spend (media + production + tooling).
+**Required:** loop slug/path · campaign name/tag · source plan-campaign artifact (`.forsvn/artifacts/marketing/campaign-plan.md`) · measurement window · primary metric value + source · per-channel rollup (spend / effort / reach / leads / conversions / revenue) · total fully-loaded spend (media + production + tooling).
 
 **Recommended:** baseline/prior-cycle row · revenue + new-customer count · attribution model · guardrails from `program.md` · per-asset eval artifacts (CONTEXT ONLY).
 

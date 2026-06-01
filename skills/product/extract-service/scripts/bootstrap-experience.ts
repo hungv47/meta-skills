@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // bootstrap-experience — create the local .forsvn/experience substrate.
 // See references/_shared/pre-dispatch-protocol.md.
 

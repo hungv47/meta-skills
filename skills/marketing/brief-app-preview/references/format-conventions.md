@@ -6,7 +6,7 @@
 
 ## §1 — `brief.md` Template
 
-Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md`
+Path: `.forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md`
 
 ### Frontmatter (verbatim field order)
 
@@ -15,7 +15,7 @@ Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md`
 type: app-preview-brief
 role: hero
 status: done | done_with_concerns | blocked | needs_context
-stack: mkt
+stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
@@ -86,7 +86,7 @@ critic_loop_count: [1 | 2]
 
 ## §2 — `crop-map.md` Template
 
-Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/crop-map.md`
+Path: `.forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md`
 
 ```markdown
 ---
@@ -120,7 +120,7 @@ beat_count: [N]
 
 ## §3 — `assets.md` Template
 
-Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/assets.md`
+Path: `.forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md`
 
 ```markdown
 ---
@@ -163,12 +163,12 @@ brand_source: brand-md | cold-start-hint
 
 ## §4 — `handoff-produce-video.md` Template
 
-Path: `.forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md`
+Path: `.forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md`
 
 ```markdown
 ---
 type: produce-video-input
-source_brief: .forsvn/artifacts/mkt/app-preview-brief/[slug]/brief.md
+source_brief: .forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md
 surface: [app-store | onboarding | website | social]
 aspect: [aspect]
 total_length_seconds: [N.N]

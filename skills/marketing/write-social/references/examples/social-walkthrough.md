@@ -166,7 +166,7 @@ Verdict: PASS.
 
 Orchestrator writes:
 
-**Path:** `.forsvn/artifacts/mkt/copy/linkedin-2026-05-18-fire-the-hubspot-stack.md`
+**Path:** `.forsvn/artifacts/marketing/copy/linkedin-2026-05-18-fire-the-hubspot-stack.md`
 
 **Frontmatter:**
 

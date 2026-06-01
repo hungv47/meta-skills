@@ -13,7 +13,7 @@ produce-video tideline-surge-mode-app-store-ios
 The slug resolves to the brief-app-preview output directory:
 
 ```
-.forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/
+.forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/
 ├── brief.md
 ├── assets.md
 ├── crop-map.md
@@ -28,7 +28,7 @@ Orchestrator reads `handoff-produce-video.md` frontmatter:
 
 ```yaml
 type: produce-video-input
-source_brief: .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
+source_brief: .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
 surface: app-store
 aspect: 9:16
 total_length_seconds: 18.0
@@ -69,7 +69,7 @@ date: 2026-05-23
 status: done
 mode: app-preview
 slug: tideline-surge-mode-app-store-ios
-source_brief: .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
+source_brief: .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
 surface: app-store
 aspect: 9:16
 length_seconds: 18
@@ -80,9 +80,9 @@ provenance:
   skill: produce-video
   run_date: 2026-05-23
   input_artifacts:
-    - .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
-    - .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
-    - .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/assets.md
+    - .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
+    - .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/brief.md
+    - .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/assets.md
     - brand/BRAND.md
     - brand/DESIGN.md
   output_eval: null
@@ -90,7 +90,7 @@ provenance:
 
 # Produced-Video Manifest — tideline-surge-mode-app-store-ios
 
-**Source brief:** .forsvn/artifacts/mkt/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
+**Source brief:** .forsvn/artifacts/marketing/app-preview-brief/tideline-surge-mode-app-store-ios/handoff-produce-video.md
 **Mode:** app-preview
 **Surface:** app-store
 **Aspect:** 9:16
@@ -665,7 +665,7 @@ PASS.
 - HyperFrames + Remotion scaffolds reach parity: both implement the same crop / mask / pointer / caption-band semantics via runtime-native primitives (waapi for HF, frame-driven interpolate for Remotion).
 ```
 
-Orchestrator writes the bundle to `.forsvn/artifacts/mkt/produced-videos/tideline-surge-mode-app-store-ios/`. Status: `DONE`. Cycle 1 PASS — no rewrite needed.
+Orchestrator writes the bundle to `.forsvn/artifacts/marketing/produced-videos/tideline-surge-mode-app-store-ios/`. Status: `DONE`. Cycle 1 PASS — no rewrite needed.
 
 ---
 

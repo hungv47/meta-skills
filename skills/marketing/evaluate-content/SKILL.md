@@ -35,7 +35,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · primary-platform tag (`linkedin` · `instagram` · `x` · `facebook` · `threads`) · source write-social artifact (`.forsvn/artifacts/mkt/copy/[platform]-[date]-[slug].md`) · measurement window · primary metric value + source · reach/impressions (sample-size floor).
+**Required:** loop slug/path · primary-platform tag (`linkedin` · `instagram` · `x` · `facebook` · `threads`) · source write-social artifact (`.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) · measurement window · primary metric value + source · reach/impressions (sample-size floor).
 
 **Recommended:** baseline/prior-cycle row · engagement breakdown (likes/saves/shares/comments split — drives Engagement-Quality dim) · click-through + conversion · qualitative evidence (comment sentiment, replies, DMs — honest, not fabricated) · secondary-platform headline metrics (Cross-Platform Context) · guardrails from `program.md`.
 

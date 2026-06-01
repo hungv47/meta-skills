@@ -65,7 +65,7 @@ capability:
         - "brand/DESIGN.md"
         - "brand/BRAND.md"
       hard:
-        - ".forsvn/artifacts/mkt/design-briefs/[slug].md"
+        - ".forsvn/artifacts/marketing/design-briefs/[slug].md"
 
   orchestration:
     default: auto
@@ -91,9 +91,9 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md"
+      - path: ".forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
         lifecycle: pipeline
         produced_when: "Critic PASS; canonical asset manifest."
-      - path: ".forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[platform].md"
+      - path: ".forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[platform].md"
         lifecycle: pipeline
         produced_when: "Per-platform prompt file (one per target engine)."

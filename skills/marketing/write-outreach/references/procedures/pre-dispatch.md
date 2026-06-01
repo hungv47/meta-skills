@@ -28,7 +28,7 @@ load_class: PROCEDURE
 1. **Pipeline artifacts:**
    - `research/product-context.md` → voice adjectives, accuracy constraints, proof points
    - `research/icp-research.md` → primary persona + VoC pain language
-   - `.forsvn/artifacts/mkt/campaign-plan.md` → channel mix + sequencing if outbound is part of a broader campaign
+   - `.forsvn/artifacts/marketing/campaign-plan.md` → channel mix + sequencing if outbound is part of a broader campaign
 2. **Experience:** `.forsvn/experience/{audience,product,business}.md` → Voice notes, proof points, target-fit observations from prior runs
 3. **Conversation context:** brief from upstream skill (e.g., campaign-plan handed strategy directly)
 

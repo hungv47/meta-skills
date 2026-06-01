@@ -68,10 +68,10 @@ capability:
       - "Landing-page placement -> brief-landing-page."
     prerequisites:
       recommended:
-        - ".forsvn/artifacts/mkt/produce-asset/[slug]/manifest.md"
-        - ".forsvn/artifacts/mkt/produce-video/[slug]/manifest.md"
+        - ".forsvn/artifacts/marketing/produce-asset/[slug]/manifest.md"
+        - ".forsvn/artifacts/marketing/produce-video/[slug]/manifest.md"
       hard:
-        - ".forsvn/artifacts/mkt/write-social/[slug]/*.md"
+        - ".forsvn/artifacts/marketing/write-social/[slug]/*.md"
         - "brand/BRAND.md"
 
   orchestration:
@@ -84,7 +84,7 @@ capability:
       - "Route D — `--mode=publish` across multiple platforms (formatter → critic → two-stage gate → automation → orchestrator dim 8)."
     critic_required_when:
       - "Always — 8-dim rubric runs before delivery (export/draft) or before the publish gate fires (publish)."
-      - "Any bundle emission writes a canonical artifact under .forsvn/artifacts/mkt/published-social/."
+      - "Any bundle emission writes a canonical artifact under .forsvn/artifacts/marketing/published-social/."
 
   load:
     always:
@@ -114,24 +114,24 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/manifest.md"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
         lifecycle: pipeline
         produced_when: "Bundle ships (DONE or DONE_WITH_CONCERNS)."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/platforms/[platform].md"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/platforms/[platform].md"
         lifecycle: pipeline
         produced_when: "One file per target platform — body, hashtags, CTA, media ref, formatting."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/typefully.json"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/typefully.json"
         lifecycle: pipeline
         produced_when: "Always emitted in export/draft bundle."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/buffer.csv"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/buffer.csv"
         lifecycle: pipeline
         produced_when: "Always emitted in export/draft bundle."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/hootsuite.csv"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/hootsuite.csv"
         lifecycle: pipeline
         produced_when: "Always emitted in export/draft bundle."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/scheduler-imports/generic.csv"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/generic.csv"
         lifecycle: pipeline
         produced_when: "Always emitted in export/draft bundle."
-      - path: ".forsvn/artifacts/mkt/published-social/[slug]/README.md"
+      - path: ".forsvn/artifacts/marketing/published-social/[slug]/README.md"
         lifecycle: pipeline
         produced_when: "Always emitted — operator step-by-step per route."

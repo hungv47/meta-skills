@@ -148,7 +148,7 @@
 
 **Symptom:** Orchestrator renames `status` → `state`, adds an undocumented `phase` field, drops the `version` field "because it's always 1."
 
-**Why it fails:** `.forsvn/artifacts/mkt/campaign-plan.md` is read by `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, and `plan-funnel`. Schema drift breaks downstream consumers silently — they jump to a section by frontmatter check, the check fails, they fall back to scaffolded defaults, the user sees a plan-disconnected output.
+**Why it fails:** `.forsvn/artifacts/marketing/campaign-plan.md` is read by `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, and `plan-funnel`. Schema drift breaks downstream consumers silently — they jump to a section by frontmatter check, the check fails, they fall back to scaffolded defaults, the user sees a plan-disconnected output.
 
 **Fix:** Frontmatter rules in `format-conventions.md` § "Frontmatter — required fields" are the contract. Schema changes require atomic update of `format-conventions.md` in the same commit. No silent additions, no field renames.
 

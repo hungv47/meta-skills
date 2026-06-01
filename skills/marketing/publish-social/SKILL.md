@@ -36,13 +36,13 @@ Non-negotiable. Full: [`references/procedures/critical-gates.md`](references/pro
 | `brand/BRAND.md` | **yes** | Voice, sacred elements, archetype |
 | produce-asset / produce-video manifest | opt | Image / video media |
 | `--mode` | opt | `auto` · `export` · `draft` · `publish` (+ `--dry-run`) |
-| Target platforms | opt | Defaults to write-social targets; subset via flag |
+| Target platforms | opt | Defaults to write-social; subset via flag |
 
 Missing write-social → `NEEDS_CONTEXT` (`/write-social`). Missing `brand/BRAND.md` → `NEEDS_CONTEXT` (`/create-brand`).
 
 ## Output
 
-Bundle `.forsvn/artifacts/mkt/published-social/[slug]/`: `manifest.md`, `platforms/[platform].md` (per target), `scheduler-imports/{typefully.json,buffer.csv,hootsuite.csv,generic.csv}`, `README.md`. Schema: [`references/format-conventions.md`](references/format-conventions.md).
+Bundle `.forsvn/artifacts/marketing/published-social/[slug]/`: `manifest.md`, `platforms/[platform].md` (per target), `scheduler-imports/{typefully.json,buffer.csv,hootsuite.csv,generic.csv}`, `README.md`. Schema: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Quality Gate
 
@@ -61,7 +61,7 @@ Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish`
 
 ## Artifact Contract
 
-- **Root:** `.forsvn/artifacts/mkt/published-social/[slug]/` · **Lifecycle:** `pipeline`.
+- **Root:** `.forsvn/artifacts/marketing/published-social/[slug]/` · **Lifecycle:** `pipeline`.
 - **Frontmatter:** manifest (16 fields) + per-platform draft (10 fields) — `mode_per_platform`, `credentials_detected`, `confirmation_result` (D17), `dry_run`/`publish_result_per_platform` (D18), `draft_url`/`post_url`/`automation_result`.
 - **Provenance:** `input_artifacts` = write-social + media manifests + `brand/BRAND.md`; `output_eval: null` until `evaluate-content`.
 - **Cross-stack:** schema changes need atomic update across write-social/produce-asset/produce-video. Full: [`references/format-conventions.md`](references/format-conventions.md) (v2 baseline: `_shared/artifact-contract-template.md`).

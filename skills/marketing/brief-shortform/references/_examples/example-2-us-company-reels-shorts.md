@@ -2,7 +2,7 @@
 
 Reference brief for a US faceless consumer e-commerce brand. Company-mode, market=EN, hero=Reels + variant=Shorts.
 
-This is a **worked example**. Actual hero brief artifact: `.forsvn/artifacts/mkt/brief-shortform/morning-light-hydrator/brief.md`.
+This is a **worked example**. Actual hero brief artifact: `.forsvn/artifacts/marketing/brief-shortform/morning-light-hydrator/brief.md`.
 
 ---
 

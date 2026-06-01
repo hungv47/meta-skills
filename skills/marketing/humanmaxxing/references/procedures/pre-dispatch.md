@@ -26,7 +26,7 @@ load_class: PROCEDURE
 1. **Pipeline artifacts:**
    - `brand/BRAND.md` → voice rules + lexicon + voice adjectives
    - `research/product-context.md` → voice adjectives (Voice — adjectives field if present)
-   - `.forsvn/artifacts/mkt/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
+   - `.forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
 2. **Experience:** `.forsvn/experience/brand.md` → voice notes from prior runs (`Voice — adjectives` key)
 3. **Conversation context:** brief from upstream skill (e.g., copywriting handed text directly with voice context)
 

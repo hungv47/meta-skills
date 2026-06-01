@@ -40,13 +40,13 @@ purpose: "Post-launch evidence snapshot for a Meta-ad eval loop, scoped to one a
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current ad cycle"
 do_not_use_when: "Authoring next-cycle creative without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md, metric source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md, metric source"
 downstream: "results.tsv, learnings.md, write-ad next-cycle brief"
 provenance:
   skill: evaluate-ad
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md
+    - .forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md
     - brand/BRAND.md
     - research/icp-research.md
   output_eval: null
@@ -81,13 +81,13 @@ purpose: "Post-launch evidence snapshot for a Meta-ad eval loop, scoped to one a
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current ad cycle"
 do_not_use_when: "Authoring next-cycle creative without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md, metric source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md, metric source"
 downstream: "results.tsv, learnings.md, write-ad next-cycle brief"
 provenance:
   skill: evaluate-ad
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md
+    - .forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md
     - brand/BRAND.md
     - research/icp-research.md
   output_eval: null
@@ -117,7 +117,7 @@ provenance:
 
 ## What Changed This Cycle
 
-- Source ad-copy artifact: `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md`
+- Source ad-copy artifact: `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`
 - Creative/offer/audience/bid-strategy delta from prior cycle:
 
 ## Diagnosis
@@ -254,6 +254,6 @@ This skill produces:
 - `results.tsv` row — appended to the loop's ledger; consumed by any skill reading the loop's status (dashboard skills, ledger-summary skills, downstream campaign-plan retrospectives)
 - `learnings.md` update — high-confidence audience-temp-scoped lessons reusable beyond this creative state; consumed by future write-ad / plan-campaign cycles + by humans
 
-This skill does NOT directly consume write-ad output via cross-skill import. write-ad MIGHT be the strategy/execution artifact for the eval-loop cycle (its `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md` copied or linked into the loop's `execution/` directory); evaluate-ad reads loop-local strategy/execution artifacts AND the source ad-copy artifact path stored in provenance. The coordination contract between write-ad and evaluate-ad is at the eval-loop boundary + the provenance.input_artifacts pointer, not at a shared-schema boundary.
+This skill does NOT directly consume write-ad output via cross-skill import. write-ad MIGHT be the strategy/execution artifact for the eval-loop cycle (its `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` copied or linked into the loop's `execution/` directory); evaluate-ad reads loop-local strategy/execution artifacts AND the source ad-copy artifact path stored in provenance. The coordination contract between write-ad and evaluate-ad is at the eval-loop boundary + the provenance.input_artifacts pointer, not at a shared-schema boundary.
 
 Schema changes (frontmatter fields, body section structure, Evidence table columns, Results Row columns, learnings.md format) require atomic update of `format-conventions.md` + `_shared/eval-loop-spec.md` + downstream callers — never silently drift.

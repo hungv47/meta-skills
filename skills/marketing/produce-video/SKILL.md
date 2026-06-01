@@ -35,7 +35,7 @@ Mode auto-detected from brief frontmatter `type`. Full input tables, `NEEDS_CONT
 
 - **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md`.
 - **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + on-disk source screenshots. Brand files soft-required (skippable when `brand_source: cold-start-hint`).
-- **Bundle:** `.forsvn/artifacts/mkt/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` (collapsed in app-preview mode).
+- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` (collapsed in app-preview mode).
 
 ## Quality Gate & Routing
 
@@ -43,7 +43,7 @@ Two routes discriminated by brief `type` at pre-dispatch (graphs + dispatch in [
 
 ## Artifact Contract
 
-- **Root + lifecycle:** `.forsvn/artifacts/mkt/produced-videos/[slug]/`, `pipeline` (regenerated on re-run).
+- **Root + lifecycle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/`, `pipeline` (regenerated on re-run).
 - **Manifest frontmatter (12):** `skill` · `version` · `date` · `status` · `slug` · `source_brief` · `target_platforms` · `aspect` · `length_seconds` · `shot_count` · `cta` · `provenance`.
 - **Per-shot frontmatter (7):** `skill` · `version` · `date` · `shot_id` · `shot_index` · `duration_seconds` · `platform`.
 - **Provenance:** `input_artifacts` = brief path + `brand/BRAND.md` + `brand/DESIGN.md`; `output_eval: null` until downstream `evaluate-shortform`/`evaluate-content`.

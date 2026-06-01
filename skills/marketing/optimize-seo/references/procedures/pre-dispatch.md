@@ -25,7 +25,7 @@ Before asking, read in this sequence and announce what's resolved:
 
 1. **Pipeline artifacts:**
    - `research/icp-research.md` → audience + search behavior (resolves Q3)
-   - `.forsvn/artifacts/mkt/campaign-plan.md` → pillars + angles (informs Q1 mode + IMC coordination)
+   - `.forsvn/artifacts/marketing/campaign-plan.md` → pillars + angles (informs Q1 mode + IMC coordination)
    - `research/product-context.md` → category + product context (informs Q2 site type if domain not supplied)
 
 2. **Experience substrate:**
@@ -117,7 +117,7 @@ After Cold Start answers received, persist learnings to experience substrate per
 
 ## Coordination with IMC Plan
 
-When `.forsvn/artifacts/mkt/campaign-plan.md` exists, seo and the IMC coordinate by pillar:
+When `.forsvn/artifacts/marketing/campaign-plan.md` exists, seo and the IMC coordinate by pillar:
 
 | Situation | Who Leads | How They Coordinate |
 |-----------|----------|-------------------|

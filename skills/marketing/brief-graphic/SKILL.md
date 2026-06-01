@@ -47,9 +47,9 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `brand/BRAND.md` | create-brand | **REQUIRED** (hard gate) — voice, archetype, sacred elements |
 | `brand/DESIGN.md` | create-brand | **REQUIRED** (hard gate) — palette, type, surface, motion |
 | `brand/ASSETS.md` | create-brand B | Optional — auto-fill dimensions + checkbox tick |
-| `.forsvn/artifacts/mkt/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — LP slot spec |
-| `.forsvn/artifacts/mkt/content/[slug].copy.md` | write-copy | Optional — copy that renders IN the asset |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — campaign context |
+| `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — LP slot spec |
+| `.forsvn/artifacts/marketing/content/[slug].copy.md` | write-copy | Optional — copy that renders IN the asset |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — campaign context |
 | `research/icp-research.md` | research-icp | Optional — audience visual preferences |
 
 ## Pre-Dispatch + Mode
@@ -64,12 +64,12 @@ Every brief carries a `downstream_route` tag — `image-gen` / `vector-tool` / `
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/mkt/design-briefs/[slug].md` (default; preserve-history → `[slug].v[N].md`; Gate-2 reject → `[slug]-rejected.md`; Gate-1 stop → `[slug]-candidates.md`).
+- **Paths:** `.forsvn/artifacts/marketing/design-briefs/[slug].md` (default; preserve-history → `[slug].v[N].md`; Gate-2 reject → `[slug]-rejected.md`; Gate-1 stop → `[slug]-candidates.md`).
 - **Lifecycle:** `pipeline` — re-run on BRAND.md / DESIGN.md update, new ASSETS.md row, brief-landing-page slot request, campaign launch, render dissatisfaction.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `downstream_route`, `target_tool` (when image-gen), `asset_type`, `platform`, `dimensions`, `brand_anchors`, `sacred_respected`.
 - **Consumed by:** image-gen tools (Claude Design / Midjourney / Imagen / DALL·E / Ideogram / Veo / Suno) · vector tools (Pencil / Figma) · human designers · `brief-landing-page` (LP slot) · `brand/ASSETS.md` auto-tick (literal path match).
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § Frontmatter + § Body section order + § Downstream Handoff Block schemas.
-- **Review-gated:** `decision_state` defaults to `not_required`. Semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+
 
 Full template + per-route Downstream Handoff Block schemas + ASSETS.md auto-tick: [`references/format-conventions.md`](references/format-conventions.md).
 

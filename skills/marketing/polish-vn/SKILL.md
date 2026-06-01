@@ -41,7 +41,7 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 | Artifact | Source | Required? |
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended — brand voice → register inference |
-| `.forsvn/artifacts/mkt/content/[slug].md` | upstream | Optional — register from frontmatter |
+| `.forsvn/artifacts/marketing/content/[slug].md` | upstream | Optional — register from frontmatter |
 | `.forsvn/experience/brand.md` | (any) | Optional — `Brand — VN target register` key |
 
 ## Pre-Dispatch + Mode
@@ -65,7 +65,7 @@ Spawn mechanics, fallback, checkpoint, pipeline, rewrite loop: [`references/proc
 
 ## Artifact Contract
 
-- **Path (A):** `.forsvn/artifacts/mkt/content/[slug].vn-tone.md` · **(B):** none, embedded in caller
+- **Path (A):** `.forsvn/artifacts/marketing/content/[slug].vn-tone.md` · **(B):** none, embedded in caller
 - **Lifecycle:** `pipeline` — re-run renames to `[slug].vn-tone.v[N].md`
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `target_register`, `subvariant`, `dialect`, `critic_score`
 - **Body (in order):** Polish Summary · Change Log · Polished Text · Status

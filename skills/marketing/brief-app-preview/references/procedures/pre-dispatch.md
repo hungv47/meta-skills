@@ -29,7 +29,7 @@ Before asking, read in this sequence and announce what's resolved:
    - `brand/BRAND.md` → voice, archetype, brand_mode (resolves Q5)
    - `brand/DESIGN.md` → color tokens, type scale, radius, spacing (resolves token inventory for motion-spec)
    - `research/icp-research.md` → audience + market (informs Q6 + caption register)
-   - `.forsvn/artifacts/mkt/app-preview-brief/[slug]/` → prior brief for this feature (enables `--rev=N` re-run)
+   - `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` → prior brief for this feature (enables `--rev=N` re-run)
 
 2. **Experience substrate:**
    - `.forsvn/experience/product.md` → feature inventory (resolves Q1 if feature name ambiguous)
@@ -131,7 +131,7 @@ When the brief is delivered, write back to:
 
 | Path | Why |
 |---|---|
-| `.forsvn/artifacts/mkt/app-preview-brief/[slug]/` | The 4-file artifact (canonical) |
+| `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` | The 4-file artifact (canonical) |
 | `.forsvn/index/manifest.json` | Add the artifact entry with date, status, surface, feature, beat_count |
 | `.forsvn/experience/product.md` (optional, append-only) | Flag that this feature now has an app-preview brief; downstream produce-video runs can find it |
 

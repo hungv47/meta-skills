@@ -11,7 +11,7 @@ load_class: PLAYBOOK
 
 Three pieces make discovery deterministic:
 
-1. **Every artifact is written to one predictable place** — the flat grammar `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`. The manifest also indexes the skills' canonical top-level folders `brand/`, `architecture/`, `research/` (the `architect-system` / `create-brand` / `research-*` outputs in a consuming project). Path grammar: [[manifest-spec]]; frontmatter schema: [[artifact-contract-template]]. (In this repo the FORSVN *app* blueprint was relocated to a dormant `docs/architecture/` and is intentionally **not** a live manifest artifact — see `docs/README.md`.)
+1. **Every artifact is written to one predictable place** — the by-stack layered grammar `.forsvn/<layer>/<stack>/<name>.md`, where `<layer>` ∈ `canonical | artifacts | experience` and `<stack>` ∈ `meta | research | marketing | product`. Working output is `.forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.md`; curated truth is `.forsvn/canonical/<stack>/<UPPER-NAME>.md`; memory is `.forsvn/experience/<stack>/<name>.md`. Path grammar: [[artifact-contract-template]] § "v3 — the by-stack layered home"; frontmatter schema: same file. (The old flat `.forsvn/artifacts/<stack>-<skill>-<date>-<slug>.md` grammar is legacy — still indexed for back-compat, never emitted. FORSVN's own canon lives in `.forsvn/canonical/`.)
 2. **Every artifact-producing skill declares what it requires and produces** in its `routing.yaml` (capability metadata, not loaded into context):
    - `capability.route.prerequisites.{recommended,hard}` — the input artifacts this skill **requires**.
    - `capability.outputs.artifacts[]` — `{path, lifecycle, produced_when}` for each artifact this skill **produces**.
@@ -32,6 +32,14 @@ To locate a prerequisite from inside a consuming skill:
    - When several candidates match (e.g. dated snapshots), prefer the **newest `produced_at`** that is not superseded.
 5. **If the path is absent from the manifest** → it does not exist *or* the index is stale. Run `bun ${SKILLS_ROOT:-.claude/skills}/meta-skills/scripts/manifest-sync.ts` and re-check. Still absent → the prerequisite has not been produced; route to the producer skill named in `prerequisites`.
 
+## Phase 1 helpers — id resolution, graph traversal, one-query context
+
+The manifest's `by_id` + `graph` (see [[manifest-spec]] § "v2 — the Knowledge Graph") back three ergonomic queries:
+
+- `bun skills/bin/find-artifacts.ts --resolve <id>` → the artifact's current path (move-safe; references are by `id`).
+- `bun skills/bin/find-artifacts.ts --graph <id>` → the artifact's edges in both directions (`upstream/downstream/supersedes/superseded_by/references` + the `referenced_by` reverse index).
+- `bun skills/bin/find-artifacts.ts --context [--stack <s>]` → an agent's full starting context (TRUTH + OUTPUT + MEMORY) in one call — read this before starting work on a stack instead of globbing. Append a learning to the MEMORY layer with `bun skills/bin/append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>`.
+
 ## Filtering by produced_by + lifecycle + decision_state
 
 When you don't have an exact path (e.g. "find the latest approved decision record for this initiative"):
@@ -46,12 +54,12 @@ candidates = manifest.artifacts
 pick = candidates[0]
 ```
 
-The flat filename encodes `<stack>-<skill>-<date>-<slug>`, so even without the manifest you can pattern-match producer + date; but always prefer the manifest because it carries status/decision/staleness the filename can't.
+The path encodes `<layer>/<stack>/` and the filename encodes `<skill>-<date>-<slug>`, so even without the manifest you can `rg`-match producer + date + the greppable `id`/`type`/`keywords` frontmatter; but always prefer the manifest because it carries status/decision/staleness and resolves `id → current path` (a moved artifact is still found by its stable `id`).
 
 ## Producer obligations (so consumers can find you)
 
-1. Write frontmatter per [[artifact-contract-template]] — at minimum `skill`, `version`, `date`, `status`, `stack`, `review_surface`.
-2. Write to the flat path; declare it in `routing.yaml` `outputs.artifacts[]`.
+1. Write frontmatter per [[artifact-contract-template]] — at minimum `skill`, `version`, `date`, `status`, `stack`, `review_surface`, plus the v3 instruction core `id`, `type`, `keywords`.
+2. Write to the layered path `.forsvn/<layer>/<stack>/...`; declare it in `routing.yaml` `outputs.artifacts[]`.
 3. Call `manifest-sync` as the last step so the index reflects the new artifact immediately.
 4. Never hand-edit `manifest.json` / `artifact-index.md` — they are derived.
 

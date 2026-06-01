@@ -93,11 +93,11 @@ handoff-agent writes 2 blocks (target = `claude-design` + `designer`):
 User approves at Approval Gate 3.
 
 ### Output
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/brief.md` (412 lines)
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/handoff-claude-design.md`
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/handoff-designer.md`
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/asset-slots/hero-receipt.prompt.md`
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/asset-slots/og-image.prompt.md`
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/brief.md` (412 lines)
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/handoff-claude-design.md`
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/handoff-designer.md`
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/asset-slots/hero-receipt.prompt.md`
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/asset-slots/og-image.prompt.md`
 - Status: **DONE**
 
 ---
@@ -111,7 +111,7 @@ User approves at Approval Gate 3.
 ### Step 0: Pre-Dispatch
 - BRAND.md + DESIGN.md present.
 - Post-launch evidence notes present: mobile heatmap summary, CTA click split, support-ticket themes.
-- Prior brief: `.forsvn/artifacts/mkt/brief-landing-page/pricing/v1/brief.md`.
+- Prior brief: `.forsvn/artifacts/marketing/brief-landing-page/pricing/v1/brief.md`.
 - **Route: B** (evidence-anchored).
 - Tier: primary.
 
@@ -157,7 +157,7 @@ Mobile note: receipt hero adopts hypothesis-A-style simplification as a side eff
 - Brand-voice: 8/8 PASS, envelope 438 lines.
 
 ### Output
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/v2/brief.md` (438 lines)
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/v2/brief.md` (438 lines)
 - Companion files at `v2/`
 - Status: **DONE**
 
@@ -171,7 +171,7 @@ Mobile note: receipt hero adopts hypothesis-A-style simplification as a side eff
 
 ### Step 0: Pre-Dispatch + diff
 - New evidence notes: enterprise conversion segment, sales-call objections, tier-click data.
-- Prior briefs: v1, v2 at `.forsvn/artifacts/mkt/brief-landing-page/pricing/`.
+- Prior briefs: v1, v2 at `.forsvn/artifacts/marketing/brief-landing-page/pricing/`.
 - **Route: B** (existing page redesign, evidence present).
 - The `--rev=3` flag tells orchestrator to read v2 brief and diff against new evidence.
 
@@ -192,7 +192,7 @@ Mobile note: receipt hero adopts hypothesis-A-style simplification as a side eff
 User decides to ship as-is (envelope is 522 — only 22 over the ceiling, designer can absorb).
 
 ### Output
-- `.forsvn/artifacts/mkt/brief-landing-page/pricing/v3/brief.md` (522 lines)
+- `.forsvn/artifacts/marketing/brief-landing-page/pricing/v3/brief.md` (522 lines)
 - `## Concerns` block at top: "Brand-voice critic G6 — brief envelope 522 lines (ceiling 500). Cycle-2 expansion to fix conversion FM-13 pushed over. Designer should skim past the conversion checklists, focus on copy slots and asset references."
 - Status: **DONE_WITH_CONCERNS**
 

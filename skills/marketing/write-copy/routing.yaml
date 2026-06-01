@@ -99,6 +99,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/content/[slug].copy.md"
+      - path: ".forsvn/artifacts/marketing/content/[slug].copy.md"
         lifecycle: pipeline
         produced_when: "Route A or Route B writes standalone copy."

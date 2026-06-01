@@ -56,7 +56,7 @@ capability:
       - "User wants competitive landscape or market sizing -> research-market."
     prerequisites:
       recommended:
-        - ".forsvn/context/product-context.md"
+        - ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
       hard: []
 
   orchestration:
@@ -95,7 +95,6 @@ capability:
       - if: "Step 7 save (operator-grade spec / Light-depth / Contract format)"
         read:
           - "references/procedures/output-formats.md"
-          - "references/_shared/reviewable-artifact-contract.md"
       - if: "Resolution-exit edge cases / banned-phrase or false-resolution doubt"
         read:
           - "references/anti-patterns.md"

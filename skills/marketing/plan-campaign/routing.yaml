@@ -84,6 +84,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/campaign-plan.md"
+      - path: ".forsvn/artifacts/marketing/campaign-plan.md"
         lifecycle: canonical
         produced_when: "Critic PASS; single artifact per run (overwrite on re-run unless version preservation requested via `campaign-plan.v[N].md`)."

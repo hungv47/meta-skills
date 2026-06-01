@@ -69,7 +69,7 @@ capability:
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"
-        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - ".forsvn/artifacts/marketing/campaign-plan.md"
 
   orchestration:
     default: auto

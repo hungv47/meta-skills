@@ -22,7 +22,7 @@ load_class: PROCEDURE
 
 ## 1. Confidence labels — every finding tagged
 
-The label, scoring rubric, source-independence rules, and the L-resolution rule are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) [PROCEDURE]. research-icp uses that default rubric **unchanged** — this section is the ICP-specific application.
+The label, scoring rubric, source-independence rules, and the L-resolution rule are canonical in [`references/_shared/confidence-labeling.md`](_shared/confidence-labeling.md) [PROCEDURE]. research-icp uses that default rubric **unchanged** — this section is the ICP-specific application.
 
 ### What gets a confidence label
 
@@ -39,11 +39,11 @@ Format (inline at end of finding bullet):
 [Confidence: <H | M | L> | sources: <N>]
 ```
 
-`<N>` is the count of **independent sources** that triangulate the finding — not the count of quotes. The H/M/L scoring rubric and the source-independence rules (what counts as an independent source, what does not) are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 2–§ 3; research-icp uses them unchanged. Load-bearing here: multiple quotes from one Reddit thread is N=1, not N=3.
+`<N>` is the count of **independent sources** that triangulate the finding — not the count of quotes. The H/M/L scoring rubric and the source-independence rules (what counts as an independent source, what does not) are canonical in [`references/_shared/confidence-labeling.md`](_shared/confidence-labeling.md) § 2–§ 3; research-icp uses them unchanged. Load-bearing here: multiple quotes from one Reddit thread is N=1, not N=3.
 
 ### Resolving Low-confidence findings
 
-Per [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 4, a finding labeled `Confidence: L` MUST be promoted to M (collect 1-2 more independent sources), moved to the Red Flags section as an explicit hypothesis, or dropped from the artifact — never shipped as a finding. In ICP research a flagged hypothesis reads: "Persona 1 may dismiss social proof — single-source, needs validation."
+Per [`references/_shared/confidence-labeling.md`](_shared/confidence-labeling.md) § 4, a finding labeled `Confidence: L` MUST be promoted to M (collect 1-2 more independent sources), moved to the Red Flags section as an explicit hypothesis, or dropped from the artifact — never shipped as a finding. In ICP research a flagged hypothesis reads: "Persona 1 may dismiss social proof — single-source, needs validation."
 
 ### Confidence summary at artifact top
 
@@ -160,7 +160,7 @@ After (with confidence tag):
 
 ## 5. Anti-patterns
 
-The universal confidence anti-patterns — counting quotes as sources, promoting L findings without resolution, bare confidence labels, same-selection sources counted as independent, conflating channel density with finding confidence — are canonical in [`references/_shared/confidence-labeling.md`](references/_shared/confidence-labeling.md) § 6. ICP-specific additions:
+The universal confidence anti-patterns — counting quotes as sources, promoting L findings without resolution, bare confidence labels, same-selection sources counted as independent, conflating channel density with finding confidence — are canonical in [`references/_shared/confidence-labeling.md`](_shared/confidence-labeling.md) § 6. ICP-specific additions:
 
 1. **Sample Bias section as a generic disclaimer.** "Selection bias may exist" without naming WHICH bias on WHICH finding is critic FAIL (Gate 9).
 2. **Skipping the ≥5 floor for a "feel-good" persona.** If sources don't exist yet, the persona is hypothesis. Label it. Don't pretend otherwise.

@@ -1,42 +1,110 @@
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
-// path-parser — single parser for artifact filenames under `.forsvn/artifacts/`.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
+// path-parser — single parser for artifact paths under `.forsvn/`.
 //
-// v2 grammar (flat): `.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`
-// Legacy grammar:    `.forsvn/artifacts/{meta,mkt,product,research}/<kind>/<slug>.md`
+// v3 grammar (by-stack layered home — the data model):
+//   canonical:   .forsvn/canonical/<stack>/<UPPER-NAME>.md
+//   artifacts:   .forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.<ext>
+//   experience:  .forsvn/experience/<stack>/<name>.md   (dated or plain topic)
+//     stacks: meta · research · marketing · product   (folder name == frontmatter `stack`)
 //
-// Consumed by manifest-sync.ts and migrate-artifacts-flat.ts. Keep deterministic —
-// the migration script's correctness depends on a single source of truth for
-// "what does this path mean."
+// Legacy grammars (recognized only so the un-flatten migration + back-compat
+// indexing keep working — never emitted for new artifacts):
+//   v2 flat:     .forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>   (stack incl. `mkt`)
+//   v1 nested:   .forsvn/artifacts/{meta,mkt,product,research}/<kind>/<slug>.md
+//
+// Consumed by manifest-sync.ts, lint-artifact-paths.ts, validate-artifacts.ts,
+// find-artifacts.ts, and migrate-artifacts-flat.ts. Keep deterministic — one
+// source of truth for "what does this path mean."
+
+export const STACKS = ["meta", "research", "marketing", "product"] as const;
+export const LAYERS = ["canonical", "artifacts", "experience"] as const;
+export type Stack = (typeof STACKS)[number];
+export type Layer = (typeof LAYERS)[number];
+
+// Legacy stack alias — the flat v2 grammar + nested v1 grammar used `mkt`.
+// New artifacts use `marketing`; the migration + indexer normalize through this.
+export const STACK_ALIASES: Record<string, Stack> = { mkt: "marketing" };
+
+export function normalizeStack(raw: string): Stack | undefined {
+  if ((STACKS as readonly string[]).includes(raw)) return raw as Stack;
+  return STACK_ALIASES[raw];
+}
 
 export type ParsedArtifactPath = {
-  // Match status:
-  shape: "flat" | "legacy" | "loop" | "experience" | "canonical-top" | "unknown";
+  shape: "canonical" | "artifact" | "experience" | "legacy-flat" | "legacy-nested" | "loop" | "unknown";
+  layer?: Layer;
   // Extracted fields (undefined when not derivable from the path alone):
-  stack?: "meta" | "mkt" | "product" | "research";
+  stack?: Stack | "mkt";
   skill?: string;
   date?: string;
   slug?: string;
+  name?: string; // canonical UPPER-NAME or experience topic
   extension?: "md" | "html";
-  // Original relative path (forward-slash, repo-root relative):
   rel: string;
 };
 
-export const FLAT_FILENAME_RE = /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)-(?<skill>[a-z][a-z0-9-]*?)-(?<date>\d{4}-\d{2}-\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\.(?<ext>md|html)$/;
-export const LEGACY_NESTED_RE = /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)\/(?<kind>[^/]+)\/(?<rest>.+)\.md$/;
+// --- v3 layered grammar (the home) ------------------------------------------
+export const CANONICAL_RE =
+  /^\.forsvn\/canonical\/(?<stack>meta|research|marketing|product)\/(?<name>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\.md$/;
+export const LAYERED_ARTIFACT_RE =
+  /^\.forsvn\/(?<layer>artifacts|experience)\/(?<stack>meta|research|marketing|product)\/(?<skill>[a-z][a-z0-9-]*?)-(?<date>\d{4}-\d{2}-\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\.(?<ext>md|html)$/;
+// Experience files may also be plain topic names (no skill/date), e.g. audience.md.
+export const EXPERIENCE_LOOSE_RE =
+  /^\.forsvn\/experience\/(?<stack>meta|research|marketing|product)\/(?<name>[a-z][a-z0-9-]*)\.md$/;
+
+// --- legacy grammars (migration source + back-compat indexing) --------------
+export const FLAT_FILENAME_RE =
+  /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)-(?<skill>[a-z][a-z0-9-]*?)-(?<date>\d{4}-\d{2}-\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\.(?<ext>md|html)$/;
+export const LEGACY_NESTED_RE =
+  /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)\/(?<kind>[^/]+)\/(?<rest>.+)\.md$/;
 export const LOOP_RE = /^\.forsvn\/loops\/(?<slug>[^/]+)\/(?<rest>.+\.md)$/;
-export const EXPERIENCE_RE = /^\.forsvn\/experience\/(?<name>[a-z]+)\.md$/;
-export const CANONICAL_TOP_RE = /^(?<top>brand|architecture|research)\//;
 
 /**
  * Parse a repo-relative artifact path.
  * The `rel` argument MUST use forward-slashes and start at the repo root.
  */
 export function parseArtifactPath(rel: string): ParsedArtifactPath {
+  const canonical = rel.match(CANONICAL_RE);
+  if (canonical?.groups) {
+    return {
+      shape: "canonical",
+      layer: "canonical",
+      stack: canonical.groups.stack as Stack,
+      name: canonical.groups.name,
+      extension: "md",
+      rel,
+    };
+  }
+  const layered = rel.match(LAYERED_ARTIFACT_RE);
+  if (layered?.groups) {
+    return {
+      shape: layered.groups.layer === "experience" ? "experience" : "artifact",
+      layer: layered.groups.layer as Layer,
+      stack: layered.groups.stack as Stack,
+      skill: layered.groups.skill,
+      date: layered.groups.date,
+      slug: layered.groups.slug,
+      extension: layered.groups.ext as "md" | "html",
+      rel,
+    };
+  }
+  const expLoose = rel.match(EXPERIENCE_LOOSE_RE);
+  if (expLoose?.groups) {
+    return {
+      shape: "experience",
+      layer: "experience",
+      stack: expLoose.groups.stack as Stack,
+      name: expLoose.groups.name,
+      extension: "md",
+      rel,
+    };
+  }
   const flat = rel.match(FLAT_FILENAME_RE);
   if (flat?.groups) {
     return {
-      shape: "flat",
-      stack: flat.groups.stack as ParsedArtifactPath["stack"],
+      shape: "legacy-flat",
+      layer: "artifacts",
+      stack: flat.groups.stack as Stack | "mkt",
       skill: flat.groups.skill,
       date: flat.groups.date,
       slug: flat.groups.slug,
@@ -46,11 +114,11 @@ export function parseArtifactPath(rel: string): ParsedArtifactPath {
   }
   const legacy = rel.match(LEGACY_NESTED_RE);
   if (legacy?.groups) {
-    // Strip the leading date from filenames like `2026-05-26-fresh-eyes.md`.
     const restMatch = legacy.groups.rest.match(/^(?<date>\d{4}-\d{2}-\d{2})-(?<slug>.+)$/);
     return {
-      shape: "legacy",
-      stack: legacy.groups.stack as ParsedArtifactPath["stack"],
+      shape: "legacy-nested",
+      layer: "artifacts",
+      stack: legacy.groups.stack as Stack | "mkt",
       skill: undefined, // legacy paths encode skill via inferProducer rules, not the path
       date: restMatch?.groups?.date,
       slug: restMatch?.groups?.slug ?? legacy.groups.rest,
@@ -59,15 +127,45 @@ export function parseArtifactPath(rel: string): ParsedArtifactPath {
     };
   }
   if (LOOP_RE.test(rel)) return { shape: "loop", rel };
-  if (EXPERIENCE_RE.test(rel)) return { shape: "experience", rel };
-  if (CANONICAL_TOP_RE.test(rel)) return { shape: "canonical-top", rel };
   return { shape: "unknown", rel };
 }
 
 /**
- * Build a v2 flat filename from frontmatter-derived fields.
- * Throws if any required field is missing or malformed — callers should
- * validate upstream and surface meaningful errors.
+ * Build a v3 layered path from frontmatter-derived fields.
+ * Throws if any required field is missing or malformed.
+ */
+export function buildLayeredPath(args: {
+  layer: Layer;
+  stack: string;
+  skill: string;
+  date: string;
+  slug: string;
+  extension?: "md" | "html";
+}): string {
+  const { layer, skill, date, slug } = args;
+  const ext = args.extension ?? "md";
+  if (!(LAYERS as readonly string[]).includes(layer)) {
+    throw new Error(`buildLayeredPath: invalid layer ${JSON.stringify(layer)}`);
+  }
+  const stack = normalizeStack(args.stack);
+  if (!stack) throw new Error(`buildLayeredPath: invalid stack ${JSON.stringify(args.stack)}`);
+  if (!/^[a-z][a-z0-9-]*$/.test(skill)) {
+    throw new Error(`buildLayeredPath: invalid skill slug ${JSON.stringify(skill)}`);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    throw new Error(`buildLayeredPath: invalid date ${JSON.stringify(date)}`);
+  }
+  const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  if (!cleanSlug) throw new Error(`buildLayeredPath: empty slug after normalization (${JSON.stringify(slug)})`);
+  if (cleanSlug.length > 60) {
+    throw new Error(`buildLayeredPath: slug exceeds 60 chars after normalization (${cleanSlug})`);
+  }
+  return `.forsvn/${layer}/${stack}/${skill}-${date}-${cleanSlug}.${ext}`;
+}
+
+/**
+ * Build a legacy v2 flat filename (used by the un-flatten migration to detect
+ * the source shape; not emitted for new artifacts).
  */
 export function buildFlatPath(args: {
   stack: string;
@@ -95,9 +193,12 @@ export function buildFlatPath(args: {
   return `.forsvn/artifacts/${stack}-${skill}-${date}-${cleanSlug}.${ext}`;
 }
 
-/**
- * True if `rel` matches the flat v2 grammar (md or html).
- */
+/** True if `rel` matches the v3 layered artifact/experience grammar (md or html). */
+export function isLayeredPath(rel: string): boolean {
+  return LAYERED_ARTIFACT_RE.test(rel) || CANONICAL_RE.test(rel) || EXPERIENCE_LOOSE_RE.test(rel);
+}
+
+/** True if `rel` matches the legacy v2 flat grammar (md or html). */
 export function isFlatPath(rel: string): boolean {
   return FLAT_FILENAME_RE.test(rel);
 }

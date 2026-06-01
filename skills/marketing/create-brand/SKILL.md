@@ -79,7 +79,7 @@ Key invariants (always-on): every ASSETS row has spec ref + target path · ASSET
 - **Lifecycle:** `canonical` — brand-of-record artifacts consumed by 10+ downstream marketing + product skills.
 - **Versioning:** BRAND.md + DESIGN.md rename existing to `*.v[N].md` on re-run. ASSETS.md is a **living file** — always updated in place, dropped-platform rows move to `## Orphaned` (preserved); only versioned on explicit fresh-inventory request.
 - **Frontmatter + section schema:** [`references/format-conventions.md`](references/format-conventions.md).
-- **Review-gated:** write plain Markdown per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md) + [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md) — **no HTML**. BRAND.md + DESIGN.md default `decision_state: pending` + `review_surface: html` + `## Review Gate`; preview via the optional **forsvn-preview** plugin. ASSETS.md → `decision_state: not_required` + `review_surface: none`, no Gate. v2 enum: `pending | approved | denied | suggested | not_required`.
+
 - **Cross-stack contract:** schema changes (frontmatter, section headings, table columns) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow). The four review fields are additive — downstream callers consume brand content by heading match.
 
 Full templates: [`references/artifact-templates.md`](references/artifact-templates.md).

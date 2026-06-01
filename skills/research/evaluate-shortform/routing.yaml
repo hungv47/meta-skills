@@ -64,7 +64,7 @@ capability:
         - "research/icp-research.md"
       hard:
         - ".forsvn/loops/[slug]/program.md"
-        - ".forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md"
+        - ".forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
 
   orchestration:
     default: auto

@@ -43,7 +43,7 @@ For Route B with full artifact, the body adds operational metadata (Date / Skill
 
 ## Output file structure (1 file per run, Route A/B)
 
-Single artifact file at `.forsvn/artifacts/mkt/content/`:
+Single artifact file at `.forsvn/artifacts/marketing/content/`:
 
 | File | Content | Consumer |
 |------|---------|----------|

@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 # Worked Example — OG Image for an Async-First PM Tool Launch Post
 
@@ -18,8 +18,8 @@ For 4 additional asset-type walkthroughs (IG carousel, YouTube thumbnail, OOH bi
 - `brand/BRAND.md` present (Async-PM brand: archetype = the Sage, voice = direct + technical)
 - `brand/DESIGN.md` present (primary palette: deep-indigo `#1A1B3A` + signal-amber `#FFB547`; type: Söhne Buch + JetBrains Mono)
 - `brand/ASSETS.md` present with row `og-images/blog-async-launch.png — [ ] [ ]` (path match candidate)
-- `.forsvn/artifacts/mkt/content/blog-async-launch.copy.md` present (headline: "Stop managing chaos, start leading progress.")
-- `.forsvn/artifacts/mkt/campaign-plan.md` present (PLG, async-first launch, 60-day window, Pillar 1 "The meeting tax")
+- `.forsvn/artifacts/marketing/content/blog-async-launch.copy.md` present (headline: "Stop managing chaos, start leading progress.")
+- `.forsvn/artifacts/marketing/campaign-plan.md` present (PLG, async-first launch, 60-day window, Pillar 1 "The meeting tax")
 
 ---
 
@@ -258,7 +258,7 @@ Orchestrator STOPs and presents:
 User: "Approve."
 
 Orchestrator:
-1. Writes `.forsvn/artifacts/mkt/design-briefs/og-blog-2026-05-18-async-launch.md` with the assembled brief.
+1. Writes `.forsvn/artifacts/marketing/design-briefs/og-blog-2026-05-18-async-launch.md` with the assembled brief.
 2. ASSETS.md auto-tick: literal path match found (`og-images/blog-async-launch.png` row); flips `[ ]` → `[x] 2026-05-18`.
 3. Status: **DONE**.
 
@@ -299,10 +299,10 @@ Skill ends with: "Ran in --fast mode; rerun without the flag for 3-concept varie
 
 When `brief-landing-page` is producing a landing-page brief and needs a per-asset brief for the hero slot:
 
-1. lp-brief invokes design-brief with: "Need brief for hero asset slot, image-gen route preferred, slot spec at `.forsvn/artifacts/mkt/brief-landing-page/async-launch-lp/asset-slots/hero.md`."
+1. lp-brief invokes design-brief with: "Need brief for hero asset slot, image-gen route preferred, slot spec at `.forsvn/artifacts/marketing/brief-landing-page/async-launch-lp/asset-slots/hero.md`."
 2. Orchestrator reads slot spec → extracts asset type + dimensions + copy placement + brand-anchor pre-fills.
 3. Hard gate passes (brand artifacts already loaded by lp-brief, but design-brief verifies independently).
 4. Warm Start: 4 of 5 dimensions resolved from slot spec; only constraint Q remains (asks lp-brief's orchestrator inline).
 5. Layer 1 + 1.5 + Gate 1 + Layer 2 + Layer 3 + Gate 2 all run as standard.
-6. Artifact written at `.forsvn/artifacts/mkt/design-briefs/lp-async-launch-hero-2026-05-18.md` with `consumed: [.forsvn/artifacts/mkt/brief-landing-page/async-launch-lp/asset-slots/hero.md]` in frontmatter.
+6. Artifact written at `.forsvn/artifacts/marketing/design-briefs/lp-async-launch-hero-2026-05-18.md` with `consumed: [.forsvn/artifacts/marketing/brief-landing-page/async-launch-lp/asset-slots/hero.md]` in frontmatter.
 7. lp-brief consumes the design-brief artifact path back at its own Approval Gate.

@@ -30,11 +30,11 @@ Non-negotiable. Full text: [`references/procedures/critical-gates.md`](reference
 
 | Artifact | Required? | What it provides |
 |---|---|---|
-| `.forsvn/artifacts/mkt/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept, platform, aspect, safe zones, copy slots, type scale, file format, prompt seed |
+| `.forsvn/artifacts/marketing/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept, platform, aspect, safe zones, copy slots, type scale, file format, prompt seed |
 | `brand/BRAND.md` | **required** | Voice, archetype, sacred elements |
 | `brand/DESIGN.md` | **required** | Color tokens, type scale, motion permissions, surfaces |
 | Target platforms | optional | Defaults to brief's `target_platforms` |
-| Render-mode hint | optional | Default `export-mode` (hand-off to chosen engine) |
+| Render-mode hint | optional | Default `export-mode` |
 
 Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic). Brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
 
@@ -50,8 +50,8 @@ FAIL → re-dispatch prompt-author with feedback (max 2 cycles). PASS twice with
 
 ## Artifact Contract
 
-- **Manifest:** `.forsvn/artifacts/mkt/produced-assets/[slug]/manifest.md`
-- **Per-slot prompts:** `.forsvn/artifacts/mkt/produced-assets/[slug]/prompts/[slot-id].md`
+- **Manifest:** `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`
+- **Per-slot prompts:** `.forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[slot-id].md`
 - **Lifecycle:** `pipeline` (regenerated; not canonical)
 - **Frontmatter (manifest):** `skill` / `version` / `date` / `status` / `slug` / `source_brief` / `target_platforms` / `slot_count` / `provenance`
 - **Frontmatter (per-slot prompt):** `skill` / `version` / `date` / `slot_id` / `platform` / `aspect_ratio`

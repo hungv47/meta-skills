@@ -19,7 +19,7 @@ Use the **Agent tool** (general-purpose or Explore) with a prompt built as:
 1. **Read** the agent instruction file (e.g., `agents/strategist.md`) — include FULL content in the Agent prompt
 2. **Append** pre-writing context + any prior layer's output
 3. **Resolve paths to absolute** — rooted at this skill's directory. Example: `references/ad-intelligence/meta-retargeting.md` → `<skill-root>/references/ad-intelligence/meta-retargeting.md` (`<skill-root>` = install path, typically `<skill-root>/`).
-4. **Pass upstream artifacts by content, not path** — orchestrator reads `research/*.md`, `brand/*.md`, and `.forsvn/artifacts/mkt/*.md` FIRST, includes excerpts (VoC quotes, voice adjectives, brand banned-words) in pre-writing. Sub-agents do NOT read artifact files directly.
+4. **Pass upstream artifacts by content, not path** — orchestrator reads `research/*.md`, `brand/*.md`, and `.forsvn/artifacts/marketing/*.md` FIRST, includes excerpts (VoC quotes, voice adjectives, brand banned-words) in pre-writing. Sub-agents do NOT read artifact files directly.
 5. If **feedback** exists (critic FAIL or format-checker REVISION_REQUIRED), append at end with header "## Resolver Feedback — Address Every Point"
 
 ## Single-agent fallback
@@ -58,7 +58,7 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
 4b. Format-checker REVISION_REQUIRED on policy/substantiation → re-dispatch composer with the named violation; do not consume a critic cycle.
 5. TERMINAL: invoke `humanmaxxing` per variant with `content-type: "short-outbound"` (Light strip on AI telltales only, Full sender voice, 0-10% compression — ad copy is already tight; further compression kills specificity)
 6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved variant.
-7. Write artifacts to `.forsvn/artifacts/mkt/write-ad/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
+7. Write artifacts to `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
 8. Deliver hero + 2 variants + rationale inline; show scorecard only if user asks or any dim scored 6-7 OR if creative_format=repurposed-ugc (variant-level ceiling warning prominent in artifact)
 ```
 

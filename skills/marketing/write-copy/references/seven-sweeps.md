@@ -76,7 +76,7 @@ Words to remove or replace, unless they carry irreplaceable meaning in context. 
 - `At the end of the day`, `It goes without saying`, `That being said`, `With that in mind`
 - `Let's dive in`, `Let's explore`, `Have you ever wondered`
 
-For the broader AI-tell list (formatting tells, structural tells, conversational LLM patterns) see [`references/_shared/../../../humanize/references/ai-patterns.md`](../../humanize/references/ai-patterns.md) in humanize. Seven Sweeps cuts target upstream filler/corporate-speak; humanize cuts target downstream AI-tells. Some overlap is expected; this list is the authoritative source for what should die at Sweep 1-2, humanize's list is the authoritative source for what should die in the terminal polish pass.
+For the broader AI-tell list (formatting tells, structural tells, conversational LLM patterns) see [`references/_shared/../../../humanmaxxing/references/ai-patterns.md`](../../humanmaxxing/references/ai-patterns.md) in humanize. Seven Sweeps cuts target upstream filler/corporate-speak; humanize cuts target downstream AI-tells. Some overlap is expected; this list is the authoritative source for what should die at Sweep 1-2, humanize's list is the authoritative source for what should die in the terminal polish pass.
 
 ### Em-dash policy
 

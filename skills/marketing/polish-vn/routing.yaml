@@ -90,6 +90,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/content/[slug].vn-polished.md"
+      - path: ".forsvn/artifacts/marketing/content/[slug].vn-polished.md"
         lifecycle: pipeline
         produced_when: "Route A or B; re-run renames prior to `[slug].vn-polished.v[N].md`."

@@ -17,7 +17,7 @@ load_class: PROCEDURE
 ## Artifact tree
 
 ```
-.forsvn/artifacts/mkt/produced-videos/
+.forsvn/artifacts/marketing/produced-videos/
 └── [slug]/
     ├── manifest.md
     ├── scenes/
@@ -47,7 +47,7 @@ date: [today]
 status: done | done_with_concerns | blocked | needs_context
 mode: shortform | app-preview        # WS4 — discriminator; required
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md OR variants path OR hand-written video-brief path OR .forsvn/artifacts/mkt/app-preview-brief/[slug]/handoff-produce-video.md]
+source_brief: [.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md OR variants path OR hand-written video-brief path OR .forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md]
 target_platforms: [list — e.g., tiktok, reels, shorts]    # shortform mode
 surface: [app-store | onboarding | website | social]      # app-preview mode only — omit in shortform
 aspect: [9:16 | 1:1 | 16:9 | 4:5 | 2:3 | custom-WxH]
@@ -62,7 +62,7 @@ provenance:
     - [source_brief path]
     - brand/BRAND.md       # both modes
     - brand/DESIGN.md      # both modes (or annotated "absent — cold-start-hint" when brand_source: cold-start-hint)
-    - [.forsvn/artifacts/mkt/app-preview-brief/[slug]/assets.md]  # app-preview mode only
+    - [.forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md]  # app-preview mode only
   output_eval: null  # set when a downstream eval cycle scores the rendered video
 ---
 
@@ -133,7 +133,7 @@ Pick ONE downstream runtime — the bundle supports all four:
 
 ## Re-run
 
-If the brief changes or the runtime choice changes: re-run `produce-video` with `--rev=N` to write to `.forsvn/artifacts/mkt/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
+If the brief changes or the runtime choice changes: re-run `produce-video` with `--rev=N` to write to `.forsvn/artifacts/marketing/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
 
 ## Operator Next Steps
 

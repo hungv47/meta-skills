@@ -128,7 +128,7 @@ When AI-SEO mode is active, every retrieval-layer finding (from `ai-structure-ag
 - [ ] **No inadmissible "private prompt" claim.** Findings that assert vendor private-prompt behavior (e.g. "ChatGPT's system prompt prioritizes X") → FAIL. Reframe as observed retrieval behavior (`observed-test`) or as a `hypothesis` with measurement plan.
 - [ ] **Technical-audit blocker gate.** Retrieval-layer findings on pages whose `references/technical-crawler-checklist.md` shows FAIL on checks #5 (canonical), #8 (robots/noindex/X-Robots-Tag), or #9 (sitemap), OR where the relevant AI crawler is blocked, are an anti-pattern #13 violation → FAIL → escalate to Route A (Technical Audit) first.
 - [ ] **Vendor-score-chasing check.** When the live-SERP remediation loop is active (`references/live-serp-remediation.md`), no recommendation names a proprietary vendor score as the success metric. The Measurement query field must name an AI-surface query, not the vendor's score.
-- [ ] **Manifest required for multi-page remediation.** When the live-SERP loop touches more than 3 pages, a manifest at `.forsvn/artifacts/mkt/seo-ai.serp-remediation-manifest.md` exists with stable ordering, batch range, baseline / rescan / retrieval-delta fields populated. Missing manifest on a >3-page loop → FAIL.
+- [ ] **Manifest required for multi-page remediation.** When the live-SERP loop touches more than 3 pages, a manifest at `.forsvn/artifacts/marketing/seo-ai.serp-remediation-manifest.md` exists with stable ordering, batch range, baseline / rescan / retrieval-delta fields populated. Missing manifest on a >3-page loop → FAIL.
 
 ### Rewrite Routing
 

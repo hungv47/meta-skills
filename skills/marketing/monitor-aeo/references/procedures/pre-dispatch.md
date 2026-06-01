@@ -26,9 +26,9 @@ Before asking, read in this sequence and announce what's resolved:
 
 1. **Pipeline artifacts:**
    - `research/icp-research.md` → audience search behavior + competitor candidates (resolves Q3 + Q4)
-   - `.forsvn/artifacts/mkt/seo-ai.md` → which queries optimize-seo's strategy expects to win (informs Q3 query set)
-   - `.forsvn/artifacts/mkt/aeo-monitor/[slug]/query-set.md` → prior locked query set (enables delta-based Q3)
-   - `.forsvn/artifacts/mkt/aeo-monitor/[slug]/snapshots/` → prior snapshots (enables trend mode in any route)
+   - `.forsvn/artifacts/marketing/seo-ai.md` → which queries optimize-seo's strategy expects to win (informs Q3 query set)
+   - `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` → prior locked query set (enables delta-based Q3)
+   - `.forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/` → prior snapshots (enables trend mode in any route)
 
 2. **Experience substrate:**
    - `.forsvn/experience/audience.md` → search behavior + geo (informs Q3)
@@ -79,7 +79,7 @@ monitor-aeo runs 6 modes (ai-citations / geo-overview / ai-referrals / bing-read
 3. **Query set source** — one of:
    a) point me at `research/icp-research.md`,
    b) supply 10-30 literal queries the audience would type,
-   c) reuse prior `.forsvn/artifacts/mkt/aeo-monitor/[slug]/query-set.md`.
+   c) reuse prior `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md`.
 
 4. **Competitor set** — 3-7 domains; or "extract from ICP" if (3a).
 
@@ -101,10 +101,10 @@ After dispatch + critic PASS, the orchestrator writes back:
 
 | Artifact | Path | What's written |
 |---|---|---|
-| Report | `.forsvn/artifacts/mkt/aeo-monitor/[slug]/report.md` | Full dated report |
-| Query set | `.forsvn/artifacts/mkt/aeo-monitor/[slug]/query-set.md` | Locked query × provider matrix |
-| Handoff | `.forsvn/artifacts/mkt/aeo-monitor/[slug]/handoff-optimize-seo.md` | Evidence-tagged gap list |
-| Snapshots | `.forsvn/artifacts/mkt/aeo-monitor/[slug]/snapshots/[date]-*.json` | Append-only |
+| Report | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/report.md` | Full dated report |
+| Query set | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` | Locked query × provider matrix |
+| Handoff | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/handoff-optimize-seo.md` | Evidence-tagged gap list |
+| Snapshots | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/[date]-*.json` | Append-only |
 | Experience update (optional) | `.forsvn/experience/aeo-inputs.md` | Which provider inputs the operator typically supplies (warm-start enable) |
 
 ---

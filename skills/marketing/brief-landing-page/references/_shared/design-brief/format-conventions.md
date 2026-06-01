@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 # Format Conventions — Design-Brief
 
@@ -11,7 +11,7 @@
 Single artifact per run (or per-format-pack with one umbrella artifact):
 
 ```
-.forsvn/artifacts/mkt/design-briefs/[slug].md
+.forsvn/artifacts/marketing/design-briefs/[slug].md
 ```
 
 Slug pattern: `[asset-type]-[platform]-[date]-[descriptor]` or `[concept-name]-[date]`. Examples:
@@ -34,7 +34,7 @@ skill: brief-graphic
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-stack: mkt
+stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
 review_tool: roughdraft    # roughdraft | inline | none
@@ -167,7 +167,7 @@ This is the human-review layer per [`reviewable-artifact-contract`](_shared/revi
 
 When re-running the skill on the same asset:
 
-1. **Default behavior:** overwrite `.forsvn/artifacts/mkt/design-briefs/[slug].md` with `version: N+1`, updated `date`.
+1. **Default behavior:** overwrite `.forsvn/artifacts/marketing/design-briefs/[slug].md` with `version: N+1`, updated `date`.
 2. **Preserve history mode:** rename existing artifact to `[slug].v[N].md` (e.g., `og-blog-2026-05-18-async-launch.v1.md`) before writing the new version. Enables A/B comparison.
 3. **Re-run triggers:** BRAND.md or DESIGN.md updates, new asset row in ASSETS.md, lp-brief slot needs an explicit per-asset brief, campaign launch.
 
@@ -200,7 +200,7 @@ Before the orchestrator writes the artifact:
 When critic-agent fails on cycle 1 + 2 (max cycles exhausted) and orchestrator delivers as `DONE_WITH_CONCERNS`, an optional sidecar may be written:
 
 ```
-.forsvn/artifacts/mkt/design-briefs/[slug].critic-notes.md
+.forsvn/artifacts/marketing/design-briefs/[slug].critic-notes.md
 ```
 
 Contents: full critic feedback per cycle, named re-dispatch targets, what was fixed / what wasn't, 13-pattern Generic-AI-Aesthetic Detector scores per cycle. Not mandatory; useful when handing the brief to a human designer who wants to see the rubric trace.

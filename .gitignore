@@ -30,3 +30,6 @@ scripts/private/
 
 # Local-only migration audit trail (scripts/migrate-artifacts-flat.ts --apply)
 /migration-report-*.json
+
+# Stray per-project state must never live in the plugin tree (the real .forsvn/ is at repo root).
+.forsvn/

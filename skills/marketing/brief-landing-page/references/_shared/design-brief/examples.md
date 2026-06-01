@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 # Worked Examples
 
@@ -88,7 +88,7 @@ wide shot of an empty corporate conference room at dusk, abandoned ergonomic mes
 
 ### Output
 
-`.forsvn/artifacts/mkt/design/standups-killed-og/`
+`.forsvn/artifacts/marketing/design/standups-killed-og/`
 - `brief.md` (concept A)
 - `prompt.md` (MJ + 2 variants + post-processing)
 - `critic.md`
@@ -121,7 +121,7 @@ Orchestrator detects render path matches ASSETS.md row `brand/og/blog/standups-k
 
 User picks **A**. (B = also good; C = re-route to P.)
 
-**Copy-anchor:** 8 slides of copy from `.forsvn/artifacts/mkt/content/pricing-tiers.md` (content-create produced earlier).
+**Copy-anchor:** 8 slides of copy from `.forsvn/artifacts/marketing/content/pricing-tiers.md` (content-create produced earlier).
 
 ### Layer 1.5: Brief Synth
 
@@ -153,7 +153,7 @@ Layer 2PE re-dispatched with feedback. Re-critic. PASS. Approved.
 
 ### Output
 
-`.forsvn/artifacts/mkt/design/pricing-tiers-carousel-ig/`
+`.forsvn/artifacts/marketing/design/pricing-tiers-carousel-ig/`
 - `brief.md`
 - `render.pen`
 - `critic.md`
@@ -195,7 +195,7 @@ Brief with sections: Header, 12-icon grid, per-icon spec annotations, anatomy ca
 - hex-only
 - no margins (gap on parent, padding on children)
 
-Saved to `.forsvn/artifacts/mkt/design/icon-style-artboard/render.html`. **NOT** roundtripped into `brand/`.
+Saved to `.forsvn/artifacts/marketing/design/icon-style-artboard/render.html`. **NOT** roundtripped into `brand/`.
 
 ### Layer 3: Critic → PASS.
 
@@ -254,7 +254,7 @@ Produces `figma-spec.md` with:
 
 ### Output
 
-`.forsvn/artifacts/mkt/design/hero-billboard/`
+`.forsvn/artifacts/marketing/design/hero-billboard/`
 - `brief.md`
 - `figma-spec.md`
 - `critic.md`

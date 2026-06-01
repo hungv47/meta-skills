@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root.
+// GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // append-loop-result — validate and append one row to a loop results.tsv.
 // See references/_shared/eval-loop-spec.md for the ledger contract.
 //

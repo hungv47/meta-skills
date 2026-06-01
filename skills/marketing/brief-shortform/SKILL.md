@@ -42,7 +42,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `.forsvn/artifacts/research/research-shortform/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
 | `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
 | `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs if `[slug]` matches |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs if `[slug]` matches |
 
 ## Pre-Dispatch + Mode
 
@@ -56,15 +56,15 @@ Single route — always runs Layer 1 + Layer 1.5 + Layer 2. Multi-platform invoc
 
 ## Artifact Contract
 
-- **Hero path:** `.forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md`.
-- **Variant path:** `.forsvn/artifacts/mkt/brief-shortform/[slug]/variants/[platform].md`.
+- **Hero path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md`.
+- **Variant path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`.
 - **Lifecycle:** `pipeline` — one artifact per (angle, platform-set, market); re-run on angle/platform/market pivot.
 - **Frontmatter:** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied`.
 - **Hero body sections (15, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap · Review Gate.
 - **Variant body sections:** What Changed From Hero · Hook · Storyboard delta · Audio Plan · Caption · CTA.
 - **Consumed by:** human producers / video editors / motion designers; `produce-video` (consumes the brief to emit multi-runtime export bundles).
-- **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)". Review fields + `## Review Gate` heading are additive and orthogonal — consumers match sections by heading.
-- **Review-gated:** `decision_state` defaults to `not_required`. Operator or eval loop opts a run into review by setting it `pending` and following [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). Review machinery applies to **hero `brief.md` only** — not the per-platform variants.
+- **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)". Review fields are additive and orthogonal — consumers match sections by heading.
+
 
 Full template + per-section format rules: [`references/format-conventions.md`](references/format-conventions.md).
 

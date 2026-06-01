@@ -1265,6 +1265,60 @@
       ],
       "minScore": 6
     },
+    "preview-og": {
+      "phrases": [
+        "og image",
+        "og:image",
+        "open graph",
+        "opengraph",
+        "share card",
+        "social card",
+        "link preview",
+        "social preview",
+        "twitter card",
+        "preview broken",
+        "thumbnail not showing",
+        "card not showing",
+        "how does my link look",
+        "test my og",
+        "check my og",
+        "metaprev"
+      ],
+      "allOf": [
+        [
+          "og",
+          "image"
+        ],
+        [
+          "share",
+          "card"
+        ],
+        [
+          "link",
+          "preview"
+        ],
+        [
+          "social",
+          "preview"
+        ]
+      ],
+      "anyOf": [
+        "opengraph",
+        "og:image",
+        "twitter:card",
+        "link preview",
+        "share card",
+        "social card",
+        "metaprev"
+      ],
+      "noneOf": [
+        "keyword research",
+        "seo strategy",
+        "write the copy",
+        "design system"
+      ],
+      "minScore": 6
+    },
     "produce-asset": {
       "phrases": [
         "produce asset",

@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 ---
 title: Brand-System Format Conventions
@@ -41,7 +41,7 @@ file: BRAND.md | DESIGN.md | ASSETS.md
 version: [integer, increments on re-run; ASSETS.md stays at 1 unless explicitly fresh-inventory'd]
 date: [ISO YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
-stack: mkt
+stack: marketing
 review_surface: html          # BRAND.md / DESIGN.md → html · ASSETS.md → none
 decision_state: pending       # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
 review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none

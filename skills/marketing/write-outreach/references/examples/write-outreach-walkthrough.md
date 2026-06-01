@@ -33,7 +33,7 @@ Orchestrator reads in order:
 1. `research/product-context.md` → voice adjectives "blunt, specific, technical"; accuracy constraint "never round Ramp's 9→4 days metric"
 2. `research/icp-research.md` → CFO persona present, VoC pain phrase "the close" used 14x in interviews
 3. `.forsvn/experience/product.md` → `Product — proof points` key has Ramp + Linear engagements already; Ramp is most-cited
-4. No `.forsvn/artifacts/mkt/campaign-plan.md` (standalone outreach, not part of a campaign)
+4. No `.forsvn/artifacts/marketing/campaign-plan.md` (standalone outreach, not part of a campaign)
 
 Emit warm-start summary:
 
@@ -219,7 +219,7 @@ Word count: 65 (1 word more — humanmaxxing added "also a mid-market SaaS" for 
 
 ## Step 6 — Write artifacts
 
-Orchestrator writes 3 files to `.forsvn/artifacts/mkt/write-outreach/`:
+Orchestrator writes 3 files to `.forsvn/artifacts/marketing/write-outreach/`:
 
 - **`jane-acme-email-t1.md`** — final humanmaxxed text + frontmatter (`skill: write-outreach`, `version: 1`, `date: 2026-05-18`, `status: done`, `channel: email`, `mode: services-sell`, `touch: 1`, `route: compose`, `critic_total: 44/50`)
 - **`jane-acme-email-t1.rationale.md`** — angle + framework + signal strength + CTA logic + channel craft + anti-patterns avoided + Pre-Dispatch dimensions resolved

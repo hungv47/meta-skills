@@ -26,7 +26,7 @@ Note: `original_text` (the Vietnamese input) is a per-run input, not a Pre-Dispa
 
 1. **Pipeline artifacts:**
    - `research/product-context.md` → brand voice (adjective → register map; see Register Resolution below) + dialect/glossary preferences
-   - `.forsvn/artifacts/mkt/content/[slug].md` if polishing a prior artifact (extract register from frontmatter if present)
+   - `.forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract register from frontmatter if present)
 2. **Experience:** `.forsvn/experience/brand.md` → register-mapping notes (only if user previously persisted `Brand — VN target register`)
 3. **Conversation:** explicit `--register` argument from user always wins (highest priority)
 

@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 # Manifest Spec
 
@@ -20,7 +20,11 @@ The manifest is **derived state** — markdown artifacts remain source of truth.
 
 ## The Substrate: `.forsvn/index/manifest.json`
 
-Single JSON file at project root. Cheap to read (<50KB at scale), trivially parseable, machine-friendly. Schema:
+Single JSON file at project root. Cheap to read (<50KB at scale), trivially parseable, machine-friendly.
+
+> **Version note:** the example below shows the **v1 base shape** (`artifacts` + `experience`). Phase 1 bumped the manifest to **`version: 2`**, which adds two derived top-level maps — `by_id` (stable identity → current path) and `graph` (id-keyed edges, both directions). A real Phase-1+ `manifest.json` carries both. They are documented in [§ v2 — the Knowledge Graph](#v2--the-knowledge-graph-phase-1) below; the v1 example is kept for the per-entry field reference.
+
+Schema:
 
 ```json
 {
@@ -114,7 +118,8 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 ### Field reference
 
 **Top level:**
-- `version` — manifest schema version. Currently `1`. Bump only on breaking shape changes.
+- `version` — manifest schema version. Currently `2` (Phase 1 added `by_id` + `graph`; see § v2 below). Bump only on breaking shape changes.
+- `by_id`, `graph` — the Phase 1 knowledge-graph maps. Documented in § "v2 — the Knowledge Graph".
 - `updated_at` — ISO timestamp of last sync run. Consumers can use this to detect drift.
 - `artifacts` — map of path → artifact entry. Paths may come from `.forsvn/artifacts/`, `research/`, `brand/`, or `architecture/`.
 - `experience` — map of `<domain>.md` filename → experience entry. Separate because experience files are append-only multi-skill, not single-producer.
@@ -137,9 +142,9 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `upstream` — comma-separated sources or prerequisite artifacts that fed this one.
 - `downstream` — comma-separated skills or artifacts expected to consume this one.
 - `decision_status` — optional decision-record state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts. **Not** the same as `decision_state` — `decision_status` is the strategic-record stance; `decision_state` is the human-review acceptance state.
-- `stack` — `meta | mkt | product | research`. From frontmatter; derived from the flat-filename prefix (`<stack>-<skill>-...`) when frontmatter is missing, and from the second path segment for legacy nested paths.
+- `stack` — `meta | research | marketing | product`. From frontmatter. The retired `mkt` value is normalized to `marketing` by the indexer (and rejected by `validate-artifacts --strict`). Derived from the `<stack>/` folder of the v3 layered path when frontmatter is missing, falling back to the legacy flat-filename prefix (`<stack>-<skill>-...`) or nested second segment for back-compat.
 - `skills_involved` — list of kebab-case skill slugs that contributed to producing this artifact. From frontmatter; defaults to `[]`.
-- `decision_state` — human-review state: `pending | approved | denied | suggested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Legacy `review_state` field is read with a one-line warning and surfaced under `decision_state`. Full semantics in [[reviewable-artifact-contract]].
+- `decision_state` — human-review state: `pending | approved | denied | suggested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Legacy `review_state` field is read with a one-line warning and surfaced under `decision_state`. Full semantics in the reviewable-artifact contract.
 - `review_surface` — `html | md | none`. Which surface this artifact uses for review. From frontmatter; defaults to `md` for legacy artifacts when `decision_state` is set, `none` otherwise.
 - `review_tool` — review tool: `roughdraft | inline | none`. From frontmatter; empty string when absent.
 - `reviewed_at` — date the review was recorded (`YYYY-MM-DD`). Empty until reviewed.
@@ -153,6 +158,47 @@ Single JSON file at project root. Cheap to read (<50KB at scale), trivially pars
 - `last_written_at` — file mtime ISO timestamp.
 - `entries` — count of `## ` headings (one per Q+A block).
 - `size_bytes` — file size.
+
+---
+
+## v2 — the Knowledge Graph (Phase 1)
+
+Phase 1 makes the stable-`id` + edge fields **live** and bumps the manifest to `version: 2` by adding two derived top-level maps. Both are rebuilt by `manifest-sync.ts` from artifact frontmatter — never hand-edit.
+
+### `by_id` — stable identity → current path
+
+```json
+"by_id": { "architecture": ".forsvn/canonical/product/ARCHITECTURE.md", "master-plan": "..." }
+```
+
+Resolves an immutable `id` to its **current** path. Moving / renaming / re-categorizing an artifact updates only this map — references authored by `id` never break (the keystone). Ids must be unique; `validate-artifacts --strict` fails on a duplicate. Resolve with `find-artifacts --resolve <id>`.
+
+### `graph` — id-keyed edges, both directions
+
+```json
+"graph": {
+  "architecture": {
+    "path": ".forsvn/canonical/product/ARCHITECTURE.md",
+    "upstream": ["master-plan"], "downstream": [],
+    "supersedes": [], "superseded_by": [], "references": [],
+    "referenced_by": ["master-plan", "user-flow", "skill-stack-grand-plan"]
+  }
+}
+```
+
+- Keyed by `id`, valued by `id`s → the graph is **path-independent** (survives a move).
+- Forward edges (`upstream/downstream/supersedes/superseded_by/references`) are resolved from frontmatter to ids; tokens that don't resolve to an internal artifact (skill names, `../_biz-ops`, `skills/…`, archived paths) are external and excluded.
+- `referenced_by` is the **reverse index** — every id that points here via any edge — so the graph is navigable in BOTH directions. Traverse with `find-artifacts --graph <id>`.
+
+**Edges are authored by `id`** in frontmatter (not path); `references` joins the four prior edge fields. `migrate-edges-to-id.ts` (dev) converts legacy path-authored edges; `validate-artifacts --strict` fails on an unresolved internal-path edge.
+
+### One-query context retrieval
+
+`find-artifacts --context [--stack <s>]` returns an agent's full starting context — **TRUTH** (`canonical/`) + **OUTPUT** (`artifacts/`) + **MEMORY** (`experience/`) — in a single manifest read, no globbing.
+
+### Experience writeback (the live MEMORY layer)
+
+`append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>` appends a learning to `.forsvn/experience/<stack>/<topic>.md` (created with contract-conforming frontmatter on first write). A run records what it learned; the next run reads it via `--context`. This is the layered experience layer (indexed as normal artifacts) — distinct from the legacy flat `experience` map (Q&A substrate) documented above.
 
 ---
 
@@ -201,7 +247,7 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 
 ### The script
 
-`scripts/manifest-sync.ts` — Bun TypeScript, ~100 lines, no dependencies.
+`skills/bin/manifest-sync.ts` (in this repo; `bin/manifest-sync.ts` in the published `meta-skills` mirror) — Bun TypeScript, no dependencies.
 
 What it does:
 1. Walk `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files. Parse the flat-path filename grammar (`<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`) when present; fall back to legacy nested-path parsing (`{meta,mkt,product,research}/{kind}/<slug>.md`) for back-compat.
@@ -242,16 +288,16 @@ See `references/_shared/eval-loop-spec.md` for the full loop contract. The manif
 ### Invocation
 
 ```bash
-bun /path/to/scripts/manifest-sync.ts
+bun /path/to/skills/bin/manifest-sync.ts
 ```
 
 Skills should call this with an absolute path resolved at install time, or use the `MANIFEST_SYNC` env var if the user has installed the skills in a non-standard location.
 
-For projects that ship the skills as a submodule, the canonical path is:
+For projects that install the plugin (mirror root == the published `meta-skills`), the canonical path is:
 ```bash
-bun .claude/skills/scripts/manifest-sync.ts
+bun .claude/plugins/forsvn-skills/bin/manifest-sync.ts
 # or
-bun scripts/manifest-sync.ts
+bun ${SKILLS_ROOT}/bin/manifest-sync.ts
 ```
 
 ---
@@ -307,7 +353,7 @@ When a skill finishes producing an artifact:
 1. **Write the artifact** with required frontmatter (`skill`, `version`, `date`, `status`).
 2. **Run sync as the last step** before returning control:
    ```bash
-   bun scripts/manifest-sync.ts
+   bun ${SKILLS_ROOT}/bin/manifest-sync.ts
    ```
 3. **Do NOT write to `.forsvn/index/manifest.json` directly.** Sync owns it.
 
@@ -335,7 +381,7 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 | Tasks (`.forsvn/artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
 | Cleanup reports (`.forsvn/artifacts/meta/records/cleanup-*.md`) | 30 |
 | Spec from `discover` (`.forsvn/artifacts/meta/specs/*.md`) | 60 |
-| Marketing artifacts (`.forsvn/artifacts/mkt/**`) | 30 |
+| Marketing artifacts (`.forsvn/artifacts/marketing/**`) | 30 |
 | Loop programs (`.forsvn/loops/*/program.md`) | 90 |
 | Loop context (`.forsvn/loops/*/context.md`) | 60 |
 | Loop evals (`.forsvn/loops/*/evals/*.md`) | 90 |

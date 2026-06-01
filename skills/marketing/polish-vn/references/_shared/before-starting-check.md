@@ -1,4 +1,4 @@
-<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node scripts/sync-skill-support.mjs` from the agent-skills repo root. -->
+<!-- GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root. -->
 
 ---
 title: Before-Starting Check — pre-execution read pattern every skill applies
@@ -117,7 +117,7 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 ```markdown
 ## Before Starting
 
-Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
+Apply the [[before-starting-check]] [PLAYBOOK]:
 1. Read canonical-paths.md.
 2. Read research/product-context.md + brand/BRAND.md.
 3. Read .forsvn/experience/{audience,brand,content}.md.

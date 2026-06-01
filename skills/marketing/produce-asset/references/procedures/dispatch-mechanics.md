@@ -6,7 +6,7 @@ Canonical orchestration for produce-asset. Single route (export-mode).
 
 ```
 1. Pre-Dispatch
-   - Read brief-graphic artifact (.forsvn/artifacts/mkt/design-briefs/[slug].md)
+   - Read brief-graphic artifact (.forsvn/artifacts/marketing/design-briefs/[slug].md)
    - Read brand/BRAND.md + brand/DESIGN.md
    - If brief missing → return NEEDS_CONTEXT (defer to brief-graphic)
    - If brand files missing → return NEEDS_CONTEXT (defer to create-brand)

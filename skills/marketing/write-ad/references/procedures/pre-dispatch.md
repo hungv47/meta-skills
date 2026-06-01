@@ -33,7 +33,7 @@ load_class: PROCEDURE
 2. **Pipeline artifacts:**
    - `research/product-context.md` → voice adjectives + accuracy constraints + proof points
    - `research/icp-research.md` → primary persona + VoC pain language
-   - `.forsvn/artifacts/mkt/campaign-plan.md` → channel mix + paid budget split + sequencing (Route B context)
+   - `.forsvn/artifacts/marketing/campaign-plan.md` → channel mix + paid budget split + sequencing (Route B context)
    - `brand/BRAND.md` → voice anchors + banned-language list
 3. **Experience:** `.forsvn/experience/{audience,product,business,brand}.md`
 4. **Conversation context:** brief from upstream skill (e.g., campaign-plan handed strategy with audience-temp + offer + production-model resolved)

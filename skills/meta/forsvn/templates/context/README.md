@@ -5,13 +5,13 @@ read-by: all marketing + product + research skills (pre-dispatch)
 written-by: /forsvn (autodraft) + user (review and edit)
 ---
 
-# `.forsvn/context/` — Shared Product Context
+# `.forsvn/context/` — Working Context Root
 
-The 12-section product-marketing context read before any skill dispatch. Prevents repeated cold-start questions across skills.
+The **canonical product context now lives in the TRUTH layer at `.forsvn/canonical/product/PRODUCT-CONTEXT.md`** (promoted 2026-05-30 — "replace, not coexist"), read before any skill dispatch to prevent repeated cold-start questions. This `context/` dir holds only ad-hoc working notes that have not hardened into a canonical source.
 
 ## Files
 
-- `product-context.md` — the canonical 12-section document (created on first `/forsvn` invocation; user reviews and edits)
+- `.forsvn/canonical/product/PRODUCT-CONTEXT.md` — the canonical product context (autodrafted on first `/forsvn` invocation; user reviews and promotes to `status: done`)
 
 ## The 12 Sections (per brief 01)
 
@@ -30,11 +30,11 @@ The 12-section product-marketing context read before any skill dispatch. Prevent
 
 ## Authoring Protocol
 
-1. `/forsvn` autodrafts from `README.md`, `package.json`, `brand/BRAND.md`, `research/icp-research.md`, `research/market-research.md`, landing pages — whichever exist.
-2. Drafts land with frontmatter `status: draft, source: autodraft`.
-3. Marked `status: canonical` only after user review.
-4. Skills must check `status:` and treat `draft` as "ask the user to confirm before generating."
+1. `/forsvn` autodrafts `.forsvn/canonical/product/PRODUCT-CONTEXT.md` from `README.md`, `package.json`, `brand/BRAND.md`, `research/icp-research.md`, `research/market-research.md`, landing pages — whichever exist.
+2. Drafts land with `status: needs_context` (unratified).
+3. Promoted to `status: done` (canonical) only after user review.
+4. Skills must check `status:` and treat anything other than `done` as "ask the user to confirm before generating."
 
 ## What This Is Not
 
-This is a **summary for dispatch**, not a replacement for canonical research. `research/icp-research.md` and `research/market-research.md` remain the deep sources. `context/product-context.md` is the operational digest.
+This is a **summary for dispatch**, not a replacement for canonical research. `research/icp-research.md` and `research/market-research.md` remain the deep sources. `.forsvn/canonical/product/PRODUCT-CONTEXT.md` is the operational digest.

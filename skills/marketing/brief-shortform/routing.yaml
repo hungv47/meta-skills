@@ -56,7 +56,7 @@ capability:
         - ".forsvn/artifacts/research/research-shortform/[slug].md"
         - "research/icp-research.md"
         - "brand/BRAND.md"
-        - ".forsvn/artifacts/mkt/campaign-plan.md"
+        - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 
   orchestration:
@@ -107,9 +107,9 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/mkt/brief-shortform/[slug]/brief.md"
+      - path: ".forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
         lifecycle: pipeline
         produced_when: "Hero brief — Layer 2 critic PASS / DONE_WITH_CONCERNS."
-      - path: ".forsvn/artifacts/mkt/brief-shortform/[slug]/variants/[platform].md"
+      - path: ".forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md"
         lifecycle: pipeline
         produced_when: "Per-platform variant (TRUE RECUT) emitted by platform-tailor-agent."

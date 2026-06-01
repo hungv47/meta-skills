@@ -35,7 +35,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 2. `.forsvn/loops/[slug]/context.md` — baseline assumptions + loop history + prior-cycle channel mixes
 3. `.forsvn/loops/[slug]/results.tsv` — prior cycles' rows + resolve cycle number (`last cycle + 1`); read at least the last 2 rows for trend context
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what was changed this cycle + prior eval verdicts
-5. **Source plan-campaign artifact** at `.forsvn/artifacts/mkt/campaign-plan.md` — the plan's hypothesis is the benchmark for Diagnosis
+5. **Source plan-campaign artifact** at `.forsvn/artifacts/marketing/campaign-plan.md` — the plan's hypothesis is the benchmark for Diagnosis
 6. Any per-asset eval artifacts in the loop (`evaluate-ad` / `evaluate-content` / `evaluate-landing-page` cycle files) — context only; never re-scored
 7. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`
 
@@ -55,7 +55,7 @@ Found:
 - campaign: [campaign name / tag]
 - primary metric: [from program.md]
 - baseline/prior result: [from results.tsv last comparable row]
-- source plan-campaign artifact: [.forsvn/artifacts/mkt/campaign-plan.md]
+- source plan-campaign artifact: [.forsvn/artifacts/marketing/campaign-plan.md]
 - current evidence window: [window + source]
 - channels in rollup: [list]
 - total spend (fully loaded): [amount]
@@ -70,7 +70,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 ```
 1. Which loop slug/path should this evaluation write into?
 2. What is the campaign name/tag for this cycle? (one cycle = the whole campaign across all channels)
-3. What is the source plan-campaign artifact path? (typically .forsvn/artifacts/mkt/campaign-plan.md)
+3. What is the source plan-campaign artifact path? (typically .forsvn/artifacts/marketing/campaign-plan.md)
 4. What measurement window (start date → end date, days) and source (CRM / ad-platform dashboard / web analytics / operator-supplied)?
 5. What is the primary metric value for this window, and what baseline (comparable campaign type + channel mix)?
 6. The per-channel rollup — for EVERY channel the campaign ran on: spend or effort, reach, leads, conversions, revenue. And total fully-loaded spend (media + production + tooling).

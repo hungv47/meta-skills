@@ -7,7 +7,7 @@ Context root:
 ! `[ -d .forsvn ] && echo "  .forsvn/ exists" || echo "  .forsvn/ not yet scaffolded — will bootstrap"`
 
 Product context:
-! `[ -f .forsvn/context/product-context.md ] && grep -E "^status:" .forsvn/context/product-context.md | head -1 | sed 's/^/  /' || echo "  (no product-context.md — will autodraft on dispatch)"`
+! `[ -f .forsvn/canonical/product/PRODUCT-CONTEXT.md ] && grep -E "^status:" .forsvn/canonical/product/PRODUCT-CONTEXT.md | head -1 | sed 's/^/  /' || echo "  (no PRODUCT-CONTEXT.md — will autodraft on dispatch)"`
 
 Last session:
 ! `[ -f .forsvn/routing/last-session.md ] && grep -E "^(timestamp|intent|status|next-action):" .forsvn/routing/last-session.md | sed 's/^/  /' || echo "  (no prior session)"`

@@ -68,7 +68,7 @@ Failure → critic identifies which agent must fix it; orchestrator re-dispatche
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=product), `review_surface` (=html — the optional forsvn-preview plugin renders the themed preview while `decision_state: pending`), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** 12 sections (§1 Overview → §12 Security Review) + §12a STRIDE + §12b OWASP + §12d false-positive log. §12c LLM/AI Security conditional. Not Included + Open Questions when applicable.
 - **Consumed by:** `breakdown-tasks`, `review-work`, `clean-code`, `forsvn`, operator.
-- **Review-gated:** write a plain Markdown artifact with review frontmatter + the `## Review Gate` block per [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); run review per [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md). The skill emits **no HTML** — when `review_surface: html` and the optional **forsvn-preview** plugin is installed, the operator previews + records the decision with `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`. `decision_state` defaults to `pending` (enum: `pending | approved | denied | suggested | not_required`). `status` (skill quality) and `decision_state` (human acceptance) are independent.
+
 
 Full template + section content + version-increment rule: [`references/report-template.md`](references/report-template.md).
 
@@ -102,7 +102,7 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) at every doubt
 
 ## Next Step
 
-After delivery: human reviews via FIRE HTML preview or roughdraft, sets `decision_state`. Approved → dispatch `/breakdown-tasks` to decompose into tasks. Suggested edits → re-run with feedback. Denied → loop back to `/discover` or `/map-user-flow`.
+After delivery: the operator reviews + sets the decision via the optional forsvn-preview plugin, `decision_state`. Approved → dispatch `/breakdown-tasks` to decompose into tasks. Suggested edits → re-run with feedback. Denied → loop back to `/discover` or `/map-user-flow`.
 
 ## References
 

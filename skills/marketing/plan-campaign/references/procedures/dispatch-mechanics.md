@@ -107,7 +107,7 @@ After Layer 2 step 5, the critic-agent returns one of two verdicts (per `agents/
 - `brief-shortform` (social-media-channel hero video brief)
 - `plan-funnel` (sets per-channel numeric targets — CAC / LTV / per-channel CPL)
 
-Campaign-plan is the **integration layer** between strategy (icp-research, prioritize) and execution (lp-brief, seo, cold-outreach, ad-copy, short-form-brief, funnel-planner). Downstream skills read `.forsvn/artifacts/mkt/campaign-plan.md` for context.
+Campaign-plan is the **integration layer** between strategy (icp-research, prioritize) and execution (lp-brief, seo, cold-outreach, ad-copy, short-form-brief, funnel-planner). Downstream skills read `.forsvn/artifacts/marketing/campaign-plan.md` for context.
 
 ---
 

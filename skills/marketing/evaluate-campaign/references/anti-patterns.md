@@ -57,7 +57,7 @@ load_class: ANTI-PATTERN
 **Fix:** The per-channel breakdown table in Diagnosis § Channel-Mix Signals is mandatory. Channel-Mix Discrimination rubric dim drops to 0-2 on a breakdown-free artifact.
 
 ### 10. Source plan-campaign artifact unverified
-**Pattern:** The cycle artifact's provenance lists `input_artifacts: .forsvn/artifacts/mkt/campaign-plan.md` — but the file doesn't exist or is a different campaign's plan.
+**Pattern:** The cycle artifact's provenance lists `input_artifacts: .forsvn/artifacts/marketing/campaign-plan.md` — but the file doesn't exist or is a different campaign's plan.
 **Why it fails:** Without the source artifact, the eval scores against an imagined hypothesis. Future `plan-campaign --rev=N+1` runs read provenance and can't follow the chain.
 **Fix:** Metric Ingest's Blockers section catches unreadable source paths. Critic Hard Fail #10 enforces.
 

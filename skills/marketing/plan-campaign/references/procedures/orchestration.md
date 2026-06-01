@@ -57,7 +57,7 @@ ROUTE B (full plan — ICP research complete, campaign launch):
   6. Deliver artifact
 
 ROUTE C (called by another skill — brief-landing-page, write-outreach, write-ad):
-  1. Read existing .forsvn/artifacts/mkt/campaign-plan.md if available
+  1. Read existing .forsvn/artifacts/marketing/campaign-plan.md if available
   2. If not available OR stale (>30d), run Route B
   3. Return plan to calling skill
 ```

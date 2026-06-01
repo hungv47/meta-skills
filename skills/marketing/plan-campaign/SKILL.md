@@ -80,12 +80,12 @@ Spawn mechanics, orchestrator-written sections (Growth Motion / Foundation / Cha
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/mkt/campaign-plan.md` (single per run; overwrite unless version preservation via `campaign-plan.v[N].md`)
+- **Path:** `.forsvn/artifacts/marketing/campaign-plan.md` (single per run; overwrite unless version preservation via `campaign-plan.v[N].md`)
 - **Lifecycle:** `pipeline` — re-run on ICP update / new launch / channel reallocation / growth-motion change / capacity change
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer` (+ optional: `campaign_name`, `goal`, `audience`, `growth_motion`, `team_size`, `budget_tier`, `duration_days`)
 - **Consumed by:** `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, `plan-funnel` — hypothesis grounding + channel-aware composition
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter — required fields" + § "Body section order" — downstream jumps by heading match
-- **Review:** `pipeline` carries review machinery; `decision_state` defaults to `not_required`. Opt in by setting `decision_state: pending`. Semantics: [`references/_shared/reviewable-artifact-contract.md`](references/_shared/reviewable-artifact-contract.md); procedure: [`references/_shared/roughdraft-review-protocol.md`](references/_shared/roughdraft-review-protocol.md).
+
 
 Full template + per-field rules: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 
@@ -130,6 +130,6 @@ Route B end-to-end (B2B SaaS PM tool — PLG, 60 days, 500 trial signups, 4 pill
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics, orchestration}.md` [PROCEDURE]
 - **Example:** `references/examples/campaign-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents): `references/{3d-angle-framework, channel-strategy, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `platform-channels.md` maps channel-agent to `references/platform-intelligence/` (§2/§3/§6) for Social-media briefs — D13.B.
-- **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, marketing-foundations, reviewable-artifact-contract, roughdraft-review-protocol}.md` — 9-channel framework, funnel-stage vocab, 3Q test, CTA formula, VoC principles
+- **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, marketing-foundations}.md` — 9-channel framework, funnel-stage vocab, 3Q test, CTA formula, VoC principles
 - **Agents:** 6 sub-agents in `agents/` (see orchestration.md § Agent Manifest); `critic-agent.md` holds the canonical 11-row Quality Gate Checklist
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills"

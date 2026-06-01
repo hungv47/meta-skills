@@ -51,7 +51,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-co
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended — voice adjectives + accuracy constraints + proof points |
 | `research/icp-research.md` | research-icp | Recommended — primary persona + VoC pain language |
-| `.forsvn/artifacts/mkt/campaign-plan.md` | plan-campaign | Optional — if outbound is part of a broader campaign (Route C) |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — if outbound is part of a broader campaign (Route C) |
 | `.forsvn/experience/product.md` | (any skill) | Optional — `Product — proof points` key if user previously persisted |
 
 ## Pre-Dispatch
@@ -80,7 +80,7 @@ Three routes — Route A (compose: first-touch or follow-up), Route B (reply han
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/mkt/write-outreach/[slug].md` (final draft), `[slug].rationale.md` (angle + framework + CTA logic), `[slug].critic-score.md` (5-dim scorecard)
+- **Paths:** `.forsvn/artifacts/marketing/write-outreach/[slug].md` (final draft), `[slug].rationale.md` (angle + framework + CTA logic), `[slug].critic-score.md` (5-dim scorecard)
 - **Lifecycle:** `pipeline` — overwrite on re-run for same (target, channel, touch); increment touch suffix in slug for new touches in a multi-touch sequence
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`, `channel`, `mode`, `touch`, `route`, `critic_total`
 - **Consumed by:** human reader (Route A/B), `plan-campaign` (Route C — reads `critic_total`, `touch`, `route`, `mode`, `channel`, `status` for sequencing next touches)
