@@ -35,6 +35,12 @@ const STATUS = new Set(["done", "done_with_concerns", "blocked", "needs_context"
 const STACK = new Set(["meta", "research", "marketing", "product"]);
 const SURFACE = new Set(["html", "md", "none"]);
 const DECISION = new Set(["pending", "approved", "denied", "suggested", "not_required"]);
+// review_tool — how a gated artifact is reviewed. `proof` (collaborative-doc
+// sub-type, ADR 2026-06-08) joins the original three. A `proof` artifact MUST
+// carry a `proof_slug` binding to its working doc.
+const REVIEW_TOOL = new Set(["roughdraft", "inline", "none", "proof"]);
+// collab_state — lifecycle of a Proof-backed collaborative doc.
+const COLLAB_STATE = new Set(["drafting", "in_review", "exported"]);
 const TYPE = new Set([
   "canonical", "plan", "spec", "decision", "experience", "pipeline", "snapshot",
   "review", "brief", "strategy", "execution", "evaluation", "loop", "learning", "registry",
@@ -197,6 +203,22 @@ function validate(abs: string, rel: string): void {
   const decision = field(fm, "decision_state");
   if (decision !== null && decision !== "" && !DECISION.has(decision))
     problems.push(`\`decision_state\` invalid: "${decision}" (expected ${[...DECISION].join(" | ")})`);
+
+  // review_tool enum (optional field)
+  const reviewTool = field(fm, "review_tool");
+  if (reviewTool !== null && reviewTool !== "" && !REVIEW_TOOL.has(reviewTool))
+    problems.push(`\`review_tool\` invalid: "${reviewTool}" (expected ${[...REVIEW_TOOL].join(" | ")})`);
+
+  // collaborative-doc sub-type (ADR 2026-06-08): collab_state enum + the
+  // proof_slug binding is required whenever the doc is Proof-backed, else the
+  // manifest can't resolve the working doc and the MCP proxy has nothing to hit.
+  const collabState = field(fm, "collab_state");
+  if (collabState !== null && collabState !== "" && !COLLAB_STATE.has(collabState))
+    problems.push(`\`collab_state\` invalid: "${collabState}" (expected ${[...COLLAB_STATE].join(" | ")})`);
+  if (reviewTool === "proof") {
+    const slug = field(fm, "proof_slug");
+    if (slug === null || slug === "") problems.push("`review_tool: proof` requires a `proof_slug` binding");
+  }
 
   records.push({ rel, fm, id, problems });
 }
