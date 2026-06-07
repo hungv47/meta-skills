@@ -153,7 +153,7 @@ Total / Done / In progress / Blocked / Not started counts.
 
 ### Substep 6 — Write `.forsvn/canonical/marketing/ASSETS.md`
 
-Frontmatter MUST stamp the required instruction core — `skill: create-brand`, `version` (integer), `date`, `status`, `stack: marketing`, `review_surface: none`, `id: assets`, `type: canonical`, `keywords: [assets, checklist, deliverables, brand-assets, production]` — plus the ASSETS-only bookkeeping (`declared_platforms`, `last_scan` ISO timestamp, `brand_md_version`/`design_md_version`). Full template: `references/artifact-templates.md` "ASSETS.md Template". Then legend, sections, summary, and `## Orphaned` block if any.
+Frontmatter MUST stamp the required instruction core — `skill: create-brand`, `version` (integer), `date`, `status`, `stack: marketing`, `review_surface: none`, `id: assets`, `type: canonical`, `keywords: [assets, checklist, deliverables, brand-assets, production]` — plus the review bookkeeping every artifact carries (`decision_state: not_required`, `review_tool: none`, `reviewed_at:` empty, `reviewer:` empty) and the ASSETS-only bookkeeping (`declared_platforms`, `last_scan` ISO timestamp, `brand_md_version`/`design_md_version`). Full template: `references/artifact-templates.md` "ASSETS.md Template". Then legend, sections, summary, and `## Orphaned` block if any.
 
 ### Substep 7 — Re-run versioning
 

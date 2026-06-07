@@ -110,8 +110,10 @@ Return a single markdown document with exactly these sections:
 2. **States are visual treatments, not labels.** "Show an error" fails CP-05. "Display `ErrorBanner`
    component with `surface-error` background token, body copy `[error message]`, and a `[ Retry ]`
    CTA using `action-primary` token" passes. Every state entry must be concrete enough to build from.
-3. **Accessibility is structural, not a checklist.** Contrast ratios are computed from the token
-   pairs token-application-agent declared — state the ratio, not just "passes." Focus order must
+3. **Accessibility is structural, not a checklist.** Contrast ratios are computed (WCAG 2.x
+   relative-luminance formula) from the foreground/background hex token pairs token-application-agent
+   declared — state the computed ratio against its AA threshold (`4.5:1` body text, `3:1` large
+   text / UI components), e.g. `4.8:1 — pass`, not just "passes." Focus order must
    be enumerated per screen; "logical order" is not a spec. Touch targets must name the element and
    its measured or token-derived size.
 4. **Consume the merged spec, do not re-derive it.** The screen list, component taxonomy, and token

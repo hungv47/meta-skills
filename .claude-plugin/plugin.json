@@ -1,7 +1,7 @@
 {
   "name": "forsvn-skills",
   "description": "FORSVN Skills — consolidated multi-agent skill stack. 49 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",

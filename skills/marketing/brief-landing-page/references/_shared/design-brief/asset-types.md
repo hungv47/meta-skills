@@ -91,7 +91,7 @@ When ASSETS.md provides a row, ASSETS.md wins. This is the fallback for assets n
 ## Social — X / Twitter
 
 ### Single image
-- **Dimensions:** 1200 × 675 px (16:9)
+- **Dimensions:** 1200 × 675 px (16:9 in-feed); 1200 × 628 px for the `summary_large_image` link/OG card (X crops to ~1.91:1) — see platform-modules.md
 - **Aspect:** Up to 16:9; 4:5 also crops well in-feed
 - **Format:** PNG / JPG / WebP
 - **Copy caps:** Tweet ≤280 chars

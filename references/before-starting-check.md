@@ -40,6 +40,8 @@ manifest's `by_id` map resolves an id to its current location (move-safe). Resol
 one with `find-artifacts --resolve <id>`, or get all three layers (TRUTH + OUTPUT +
 MEMORY) in a single call with `find-artifacts --context [--stack <stack>]`.
 
+`<stack>` is the optional domain namespace (`meta` · `research` · `marketing` · `product`); omit it to resolve across all stacks. Both commands exit non-zero with no artifact payload when the id (or stack) is unresolvable — treat that as the NEEDS_CONTEXT signal below, not a transient error to retry.
+
 **Marketing and product skills** resolve `id:product-context` (the 12-section context
 — see product-marketing-context-schema.md). Check its frontmatter:
   - `sections_completed: [...]` — which sections are filled vs stubbed
@@ -78,7 +80,7 @@ After steps 1-3, the skill has a complete picture of what's resolvable from disk
 
 - **All needed dimensions resolvable** → Warm Start (short summary + override invitation).
 - **≥1 needed dimension missing** → Cold Start (single bundled prompt, 3-5 questions).
-- **Foundation id unresolvable AND `--fast` flag NOT set** → NEEDS_CONTEXT (short-circuit; don't fabricate).
+- **Foundation id unresolvable** → NEEDS_CONTEXT (short-circuit; don't fabricate). `--fast` does **not** bypass this — see § "`--fast` behavior".
 
 ---
 
@@ -124,7 +126,7 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 
 Apply the [[before-starting-check]] [PLAYBOOK]:
 1. Resolve foundation by id: `find-artifacts --context [--stack <domain>]` (one call → TRUTH + OUTPUT + MEMORY), or `find-artifacts --resolve <id>` per prerequisite.
-2. For each required prerequisite (e.g. `id:product-context`, `id:brand`), confirm it resolves; read its `status` + staleness.
+2. For each required prerequisite (e.g. `id:product-context`, `id:brand`), confirm it resolves; read its frontmatter `status` (`done` · `done_with_concerns` · `blocked` · `needs_context`) + staleness (`last_validated`).
 3. Read the experience dimensions your domain needs (Step 3 mapping).
 4. If any required prerequisite is unresolvable → NEEDS_CONTEXT (recommend its producer).
 5. Otherwise route to Pre-Dispatch per pre-dispatch-protocol.md.
