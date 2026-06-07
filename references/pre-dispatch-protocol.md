@@ -194,7 +194,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 3. Target value + deadline. → `goals`
 4. What you've tried (1-2 things). → `goals`
 
-**prioritize** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/records/diagnose-*.md`. Cold path: recommend `diagnose` first.*
+**prioritize** — *no cold start. `id:diagnose` is recommended, not hard (diagnose's output; resolve via `find-artifacts --resolve diagnose`); if absent, recommend `diagnose` first or proceed from a clearly-stated problem.*
 
 **funnel-planner** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
 

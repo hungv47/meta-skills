@@ -51,10 +51,10 @@ capability:
       - "Writing the actual copy -> write-copy / write-ad / write-social."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
+        - "id:brand"
       hard:
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:icp-research"
+        - "id:product-context"
 
   orchestration:
     default: multi

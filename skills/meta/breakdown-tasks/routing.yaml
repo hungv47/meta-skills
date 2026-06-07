@@ -51,7 +51,7 @@ capability:
     prerequisites:
       recommended:
         - ".forsvn/artifacts/meta/specs/<slug>.md"
-        - "architecture/system-architecture.md"
+        - "id:architecture"
       hard: []
 
   orchestration:

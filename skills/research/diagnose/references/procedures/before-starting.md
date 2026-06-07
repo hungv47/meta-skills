@@ -16,11 +16,11 @@ Per [`../_shared/mode-resolver.md`](../_shared/mode-resolver.md) [PROCEDURE]. Sk
 
 ### 1. Canonical path check
 
-Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/records/diagnose-*.md`).
+Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/canonical/research/DIAGNOSE.md`).
 
 ### 2. Prior-run staleness check
 
-Read `.forsvn/index/manifest.json` — find any prior `diagnose-*.md` for the same metric (re-run signal).
+Resolve `id:diagnose` via `find-artifacts --resolve diagnose` — if `DIAGNOSE.md` already exists, this run is a re-run (overwrite-in-place signal); read it for context.
 
 Original SKILL.md "Re-run triggers" (metric shifts significantly, new data surfaces, prioritize initiative killed) are **operator-judgment** — do not auto-emit staleness warnings.
 

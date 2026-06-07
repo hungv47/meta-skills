@@ -1,29 +1,31 @@
 /* tokens.css — design tokens for the review-surface HTML preview.
-   v2 (2026-05-26): unified FORSVN brand. One typography stack, one motion
-   vocabulary, signal-lime brand accent in chrome. Per-stack variation lives
-   in the 5 stage tokens (--stage-bg/-fg/-accent/-accent-2/-border).
-   Source of truth: references/review-surface-design.md § 3. */
+   v3 (2026-06-04): sunset / forest-only rebrand. Signal Lime + Void retired.
+   Leaf accent on Forest Shadow; warmth from the canvas. One typography stack,
+   one motion vocabulary. Per-stack variation lives in the 5 stage tokens.
+   Source of truth: _biz-ops/forsvn-ops/brand/DESIGN.md § 3. */
 
 :root {
   /* ============ Chrome (constant across stacks) ============ */
-  --chrome-bg:           #0a0a0a;
-  --chrome-panel:        #111114;
-  --chrome-border:       #1f1f24;
-  --chrome-text:         #e4e4e7;
-  --chrome-text-muted:   #71717a;
-  --chrome-accent:       #B7FF6E;             /* signal-lime — FORSVN brand mark */
+  --chrome-bg:           #0A120D;             /* Forest Shadow */
+  --chrome-panel:        #111B14;
+  --chrome-border:       #1E2A22;
+  --chrome-text:         #EFE9D1;             /* Warm Cream */
+  --chrome-text-muted:   #8A9784;
+  --chrome-accent:       #74B36B;             /* Leaf — FORSVN dark accent (lime retired) */
 
-  /* ============ Brand palette (Pure Void canonical) ============ */
-  --brand-lime:          #B7FF6E;
+  /* ============ Brand palette (sunset / forest-only) ============ */
+  --brand-leaf:          #74B36B;             /* dark-mode accent */
+  --brand-honey:         #F2CE6B;             /* logo field / warm glow */
+  --brand-lime:          #74B36B;             /* legacy alias → Leaf */
   --brand-forest:        #004700;
-  --brand-void:          #000000;
-  --brand-paper:         #F5F5F5;
+  --brand-void:          #0A120D;             /* legacy alias → Forest Shadow */
+  --brand-paper:         #F7F0D4;             /* Sunset Cream */
 
   /* ============ Decision pill colors ============ */
   --pill-pending-bg:     #2a2a2e;
   --pill-pending-fg:     #fbbf24;
   --pill-approved-bg:    #004700;
-  --pill-approved-fg:    #B7FF6E;
+  --pill-approved-fg:    #EFE9D1;
   --pill-denied-bg:      #7f1d1d;
   --pill-denied-fg:      #fecaca;
   --pill-suggested-bg:   #1e3a8a;
@@ -54,41 +56,41 @@
 }
 
 /* ============ Stage tokens — 5 per stack (D17) ============ */
-/* meta · AIR color register — signal-lime on Pure Void near-black */
+/* meta · AIR color register — Leaf on Forest Shadow near-black */
 :root[data-stack="air"] {
-  --stage-bg:            #000000;
-  --stage-fg:            #F5F5F5;
-  --stage-accent:        #B7FF6E;
+  --stage-bg:            #0A120D;
+  --stage-fg:            #EFE9D1;
+  --stage-accent:        #74B36B;
   --stage-accent-2:      #004700;
-  --stage-border:        #1A1A1A;
+  --stage-border:        #1E2A22;
 }
 
-/* marketing · WATER color register — signal-lime on midnight blue tint */
+/* marketing · WATER color register — Leaf on warm deep green (blue retired) */
 :root[data-stack="water"] {
-  --stage-bg:            #050d18;
-  --stage-fg:            #f0f6ff;
-  --stage-accent:        #B7FF6E;
+  --stage-bg:            #0C1A13;
+  --stage-fg:            #EFE9D1;
+  --stage-accent:        #74B36B;
   --stage-accent-2:      #004700;
-  --stage-border:        #1a2e44;
+  --stage-border:        #1E2E22;
 }
 
-/* product · FIRE color register — signal-lime on warm charcoal tint */
+/* product · FIRE color register — Leaf on warm charcoal (espresso) */
 :root[data-stack="fire"] {
   --stage-bg:            #1a1410;
   --stage-fg:            #fdf4ee;
-  --stage-accent:        #B7FF6E;
+  --stage-accent:        #74B36B;
   --stage-accent-2:      #004700;
   --stage-border:        #2d2520;
 }
 
-/* research · EARTH color register — forest on cream (only light-mode stack;
-   signal-lime stays as decorative accent-2; lime-on-cream fails AA for text) */
+/* research · EARTH color register — forest on Sunset Cream (only light-mode stack;
+   Leaf is decorative accent-2 only; leaf-on-cream fails AA for text) */
 :root[data-stack="earth"] {
-  --stage-bg:            #f4ede0;
-  --stage-fg:            #1a1410;
+  --stage-bg:            #F7F0D4;
+  --stage-fg:            #15190F;
   --stage-accent:        #004700;
-  --stage-accent-2:      #B7FF6E;
-  --stage-border:        #c4b594;
+  --stage-accent-2:      #74B36B;
+  --stage-border:        #E3D7A8;
 }
 
 /* ============ Derived helpers + back-compat aliases ============ */

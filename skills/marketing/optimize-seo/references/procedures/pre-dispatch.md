@@ -133,7 +133,7 @@ When `.forsvn/artifacts/marketing/campaign-plan.md` exists, seo and the IMC coor
 ## Before Starting (after Pre-Dispatch resolved)
 
 ### Step 0: Product Context
-Read `research/product-context.md` if present. If `icp-research.md` or `campaign-plan.md` `date` fields exceed 30 days, recommend re-running upstream — stale audience data weakens strategy.
+Resolve `id:product-context` if present (`find-artifacts --resolve product-context`). If `icp-research.md` or `campaign-plan.md` `date` fields exceed 30 days, recommend re-running upstream — stale audience data weakens strategy.
 
 ### Required Artifacts
 | Artifact | Source | If Missing |

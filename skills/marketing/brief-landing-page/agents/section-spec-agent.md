@@ -96,7 +96,7 @@ Return a single markdown document with one section per architecture entry. Use t
 
 (Skip checks that don't apply to this section — but the spec should explicitly note "n/a" rather than omit.)
 
-> **Page-level CPs not gated here:** CP-10 (cognitive bias), CP-12 (pre-launch foundation checklist), and CP-13 (3-second test, hero-only) are evaluated at brief-assembly time — not per-section. CP-13 still applies to the hero section's spec; the others are cross-cutting. The conversion-critic scores all 13.
+> **Page-level CPs not gated here:** CP-10 (cognitive bias), CP-12 (pre-launch foundation checklist), CP-13 (3-second test, hero-only), and CP-14 (5-question diagnostic, cross-section sequence) are evaluated at brief-assembly time — not per-section. CP-13 still applies to the hero section's spec; the others are cross-cutting. The conversion-critic scores all 14.
 
 ### Section-Specific Anti-Patterns
 

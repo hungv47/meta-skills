@@ -1,6 +1,6 @@
 {
   "name": "forsvn-skills",
-  "description": "FORSVN Skills — consolidated multi-agent skill stack. 44 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
+  "description": "FORSVN Skills — consolidated multi-agent skill stack. 49 skills across meta (process), research, marketing, and product domains. Verb-first naming throughout, with /forsvn as the front door. Critic-gated agent pipelines with quantitative rubrics, anti-sycophancy mechanisms, and signal-vs-noise verification. Distributed from github.com/hungv47/meta-skills for URL continuity.",
   "version": "1.1.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
@@ -8,10 +8,10 @@
   "license": "MIT",
   "keywords": [
     "skills", "forsvn-skills", "multi-agent", "orchestration",
-    "forsvn", "discover", "debate-agents", "run-eval-loop", "breakdown-tasks", "review-work", "clean-artifacts",
+    "forsvn", "discover", "debate-agents", "run-eval-loop", "run-pipeline", "breakdown-tasks", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "optimize-seo", "monitor-aeo", "preview-og", "humanmaxxing", "polish-vn",
+    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-asset", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "evaluate-outreach", "optimize-seo", "evaluate-seo", "monitor-aeo", "preview-og", "humanmaxxing", "polish-vn",
     "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs", "build-ios-apps"
   ],
   "skills": [
@@ -19,6 +19,7 @@
     "./skills/meta/discover/",
     "./skills/meta/debate-agents/",
     "./skills/meta/run-eval-loop/",
+    "./skills/meta/run-pipeline/",
     "./skills/meta/breakdown-tasks/",
     "./skills/meta/review-work/",
     "./skills/meta/clean-artifacts/",
@@ -36,6 +37,7 @@
     "./skills/marketing/write-copy/",
     "./skills/marketing/write-ad/",
     "./skills/marketing/write-outreach/",
+    "./skills/marketing/evaluate-outreach/",
     "./skills/marketing/write-social/",
     "./skills/marketing/brief-shortform/",
     "./skills/marketing/brief-landing-page/",
@@ -43,6 +45,7 @@
     "./skills/marketing/evaluate-landing-page/",
     "./skills/marketing/evaluate-ad/",
     "./skills/marketing/evaluate-content/",
+    "./skills/marketing/evaluate-asset/",
     "./skills/marketing/evaluate-campaign/",
     "./skills/marketing/plan-campaign/",
     "./skills/marketing/brief-graphic/",
@@ -50,6 +53,7 @@
     "./skills/marketing/produce-video/",
     "./skills/marketing/publish-social/",
     "./skills/marketing/optimize-seo/",
+    "./skills/marketing/evaluate-seo/",
     "./skills/marketing/monitor-aeo/",
     "./skills/marketing/preview-og/",
     "./skills/marketing/humanmaxxing/",
@@ -61,6 +65,7 @@
     "./skills/product/extract-service/",
     "./skills/product/clean-machine/",
     "./skills/product/write-docs/",
-    "./skills/product/build-ios-apps/"
+    "./skills/product/build-ios-apps/",
+    "./skills/product/brief-product-ui/"
   ]
 }

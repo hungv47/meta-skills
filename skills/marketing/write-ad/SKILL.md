@@ -19,7 +19,7 @@ Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic audienc
 
 1. **Audience-temp is non-negotiable.** Missing audience-temp BLOCKs (drives entire strategist tree — warm objection map vs cold objection map). Offer + creative-format + proof also hard-block via Missing-Input Hard Blocks.
 2. **One audience-temp per artifact.** Run twice for campaigns spanning warm + cold; do NOT stack two audience-temps in one artifact.
-3. **Hero + 2 distinct variants per artifact.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants isolate ONE variable each (Variable Subtraction).
+3. **Hero + 2 distinct variants per artifact.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants isolate ONE variable each (Variable Subtraction). Count is **structural** (Meta A/B) — **not loosened**: mode + tier in [`references/_shared/options-selection.md`](references/_shared/options-selection.md) (DELIVERY, tier B).
 4. **Format-checker is a HARD gate, not a critic dim.** Bounces on Meta char-cap violation / banned policy phrase / unsubstantiated measured claim. PASSED / REVISION_REQUIRED (does NOT consume critic cycle) / FORMAT_FAIL (escalate to user).
 5. **Humanmaxxing runs ONCE per variant with `protected_tokens` including URL.** Post-humanmaxxing Specificity regression is **automatic, not judgment** per variant — drops ≥2 OR named entity/number/URL absent → revert THAT variant to critic-approved.
 
@@ -83,14 +83,16 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before output 
 - **BLOCKED** — missing offer, missing proof + no product-context, or audience-temp missing.
 - **NEEDS_CONTEXT** — recommend `research-icp` or provide proof candidates.
 
-## Next Step
+## Execution
 
-After receiving the artifact:
+Offer the registry-gated fork (category `publish` + `image`). **Brief-only** (today's handoff):
 
 1. Submit hero to Meta Ads Manager as primary creative.
 2. Submit Variant A + Variant B as A/B test against hero.
 3. Apply auto-pause rule per `ad-intelligence/creative-cadence.md` § 3 (CTR <1.5% after 48h).
 4. Re-invoke at creative-fatigue trigger (winner CTR decays >30% from peak) OR offer change OR LP change.
+
+**Assisted/Direct**: a verified engine submits/renders, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
 
 ## Worked Example
 

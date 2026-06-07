@@ -141,6 +141,9 @@ Schema:
 - `superseded_by` — path or slug that replaces this artifact. Consumers should prefer the replacement.
 - `upstream` — comma-separated sources or prerequisite artifacts that fed this one.
 - `downstream` — comma-separated skills or artifacts expected to consume this one.
+- `assets` — list of repo-relative paths / URLs of re-ingested rendered outputs attached to this artifact (CLOSED-LOOP.md §6 return-leg). From frontmatter; defaults to `[]`. The binary lives under git-ignored `.forsvn/assets/<id>/`; this is the indexed pointer downstream skills + `forsvn-mcp get_artifact` read.
+- `asset_picked` — the option-picker's canonical choice among `assets` (or a variant slug). From frontmatter; empty string when absent.
+- `execution_mode` — the execution-fork choice (`brief-only | assisted | direct`) recorded on a brief/produce artifact (CLOSED-LOOP.md §4). From frontmatter; empty string when absent. Provenance + eval attribution; see `references/execution-fork.md`.
 - `decision_status` — optional decision-record state (`proposed`, `accepted`, `rejected`, `superseded`, etc.) for decision/spec artifacts. **Not** the same as `decision_state` — `decision_status` is the strategic-record stance; `decision_state` is the human-review acceptance state.
 - `stack` — `meta | research | marketing | product`. From frontmatter. The retired `mkt` value is normalized to `marketing` by the indexer (and rejected by `validate-artifacts --strict`). Derived from the `<stack>/` folder of the v3 layered path when frontmatter is missing, falling back to the legacy flat-filename prefix (`<stack>-<skill>-...`) or nested second segment for back-compat.
 - `skills_involved` — list of kebab-case skill slugs that contributed to producing this artifact. From frontmatter; defaults to `[]`.
@@ -373,9 +376,9 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 | Artifact category | Default `stale_after_days` |
 |---|---|
 | Audience / market research (`research-icp`, `research-market`) | 90 |
-| Brand identity (`brand/BRAND.md`, `brand/DESIGN.md`) | 365 |
-| Architecture (`architecture/system-architecture.md`) | 180 |
-| Diagnosis (`.forsvn/artifacts/meta/records/diagnose-*.md`) | 30 — diagnoses age fast |
+| Brand identity (`id:brand`, `id:design`) | 365 |
+| Architecture (`id:architecture`) | 180 |
+| Diagnosis (`id:diagnose`) | 30 — diagnoses age fast |
 | Prioritization (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) | 60 |
 | Funnel targets (`.forsvn/artifacts/meta/records/targets-*.md`) | 60 |
 | Tasks (`.forsvn/artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |

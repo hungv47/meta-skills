@@ -27,9 +27,9 @@ Coordinates 8 specialized agents to transform product context into a brand narra
 
 | File | Audience | Register | Route |
 |---|---|---|---|
-| `brand/BRAND.md` | Founders, marketers, copywriters, designers | Prose — brand book | A + B |
-| `brand/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
-| `brand/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
+| `.forsvn/canonical/marketing/BRAND.md` | Founders, marketers, copywriters, designers | Prose — brand book | A + B |
+| `.forsvn/canonical/marketing/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
+| `.forsvn/canonical/marketing/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
 
 ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board (Step 9).
 
@@ -52,8 +52,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 |---|---|---|
 | `research/product-context.md` | research-icp | Strongly recommended — drives strategy + audience grounding |
 | `research/icp-research.md` | research-icp | Strongly recommended — audience archetype + voice register |
-| `brand/BRAND.md` (existing) | prior run | Optional — triggers versioning (`BRAND.v[N].md`) on re-run |
-| `brand/ASSETS.md` (existing) | prior run | Optional — Step 8.5 preserves `[~]`/`[!]` markers across re-runs |
+| `.forsvn/canonical/marketing/BRAND.md` (existing) | prior run | Optional — re-run overwrites in place + bumps `version:` |
+| `.forsvn/canonical/marketing/ASSETS.md` (existing) | prior run | Optional — Step 8.5 preserves `[~]`/`[!]` markers across re-runs |
 | `.forsvn/experience/{product,audience,brand,business,technical}.md` | any skill | Optional — persisted answers for the 7 Pre-Dispatch dimensions |
 
 ## Pre-Dispatch + Mode
@@ -75,9 +75,9 @@ Key invariants (always-on): every ASSETS row has spec ref + target path · ASSET
 
 ## Artifact Contract
 
-- **Paths (Route B):** `brand/BRAND.md`, `brand/DESIGN.md`, `brand/ASSETS.md` · **Route A:** `brand/BRAND.md` only.
+- **Paths (Route B):** `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (ids `brand`, `design`, `assets`) · **Route A:** `.forsvn/canonical/marketing/BRAND.md` only.
 - **Lifecycle:** `canonical` — brand-of-record artifacts consumed by 10+ downstream marketing + product skills.
-- **Versioning:** BRAND.md + DESIGN.md rename existing to `*.v[N].md` on re-run. ASSETS.md is a **living file** — always updated in place, dropped-platform rows move to `## Orphaned` (preserved); only versioned on explicit fresh-inventory request.
+- **Versioning:** all three overwrite in place + increment the integer `version:` on re-run (prior versions live in git history). ASSETS.md additionally moves dropped-platform rows to `## Orphaned` (preserved). Never a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots.
 - **Frontmatter + section schema:** [`references/format-conventions.md`](references/format-conventions.md).
 
 - **Cross-stack contract:** schema changes (frontmatter, section headings, table columns) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow). The four review fields are additive — downstream callers consume brand content by heading match.

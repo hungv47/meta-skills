@@ -51,7 +51,7 @@ capability:
       - "Extract repeated implementation mechanics -> extract-service."
     prerequisites:
       recommended:
-        - "research/product-context.md"
+        - "id:product-context"
         - ".forsvn/artifacts/meta/specs/[slug].md"
         - ".forsvn/artifacts/product/flow/[slug].md"
       hard: []
@@ -101,5 +101,6 @@ capability:
   outputs:
     artifacts:
       - path: "architecture/system-architecture.md"
+        id: architecture
         lifecycle: canonical
         produced_when: "Architecture reaches DONE or DONE_WITH_CONCERNS."

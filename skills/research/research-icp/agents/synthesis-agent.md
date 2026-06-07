@@ -32,7 +32,12 @@ skill: research-icp
 version: 1
 date: [today's date]
 status: done
-decision_status: draft
+stack: research
+review_surface: html
+id: icp-research
+type: canonical
+keywords: [icp, persona, audience, voice-of-customer, pain, habitat]
+decision_state: pending
 ---
 
 # ICP Research
@@ -71,6 +76,8 @@ decision_status: draft
 |----------|-----------|---------|-----------|------|
 | [Specific] | [Specific] | H/M/L | [Type] | [Role] |
 
+> **Role = journey stage + why-here.** Carry over each habitat's journey role from habitat-agent — name the stage (Discovery / Trust / Conversion) plus a short why-here, e.g. "Discovery — peer-pain venting." Aim to cover all three stages across the map; if no Conversion habitat surfaced, flag that gap in Red Flags — downstream channel planning needs the full funnel, not just top-of-funnel.
+
 ## Persona 2: [Name/Archetype]
 [Same format]
 
@@ -85,7 +92,7 @@ decision_status: draft
 ## Next Step
 Run `plan-campaign` to turn these insights into a communication plan.
 
-> On re-run: rename existing artifact to `icp-research.v[N].md` and create new with incremented version.
+> On re-run: overwrite `.forsvn/canonical/research/ICP.md` in place and increment the integer `version:`. Prior versions live in git history — no `.v[N].md` siblings under `canonical/`.
 ```
 
 Additionally, append:

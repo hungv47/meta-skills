@@ -8,7 +8,7 @@ load_class: ANTI-PATTERN
 
 # LP-Brief Anti-Patterns
 
-> Re-read before any brief ships. Patterns 1–12 are lp-brief pipeline failure modes extracted from the body; patterns 13–16 are cross-cutting marketing-stack patterns; patterns 17–19 are design-handoff prompting patterns. Ownership column cites by **CP-ID** (conversion critic — 13 well-named principle IDs from `conversion-principles.md`) or **G-ID** (brand-voice critic — 9 well-named gates G1-G8b from `agents/brand-voice-critic-agent.md`) — NOT integer "Gate N" labels (both critics use letter+number naming, so direct ID references are accurate).
+> Re-read before any brief ships. Patterns 1–12 are lp-brief pipeline failure modes extracted from the body; patterns 13–16 are cross-cutting marketing-stack patterns; patterns 17–19 are design-handoff prompting patterns. Ownership column cites by **CP-ID** (conversion critic — 14 well-named principle IDs from `conversion-principles.md`) or **G-ID** (brand-voice critic — 9 well-named gates G1-G8b from `agents/brand-voice-critic-agent.md`) — NOT integer "Gate N" labels (both critics use letter+number naming, so direct ID references are accurate).
 
 ## Section 1 — LP-brief pipeline patterns (12)
 
@@ -18,7 +18,7 @@ load_class: ANTI-PATTERN
 
 **Why it fails:** Construction-time best-practice gating (lp-brief's job) is structurally different from measurement-driven optimization (lp-eval's job). A best-practice teardown without measurement evidence can confidently recommend the wrong direction — the data might show the "conversion best practice" is actively hurting THIS audience. Heuristics are priors, not posteriors.
 
-**Instead:** Build with the conversion rubric (CP-01 → CP-13) inside this brief; after launch, use real analytics/recordings/experiment evidence in `evaluate-landing-page` inside an existing eval-loop. Then feed the resulting eval into the next `lp-brief --rev=N` cycle.
+**Instead:** Build with the conversion rubric (CP-01 → CP-14) inside this brief; after launch, use real analytics/recordings/experiment evidence in `evaluate-landing-page` inside an existing eval-loop. Then feed the resulting eval into the next `lp-brief --rev=N` cycle.
 
 **Owned by:** Orchestrator (`Skill Deference` block in body — "Need post-launch CRO from real evidence? → `evaluate-landing-page` inside an existing `run-eval-loop`") + Critical Gate 2 (do NOT skip conversion rubric) + brand-system-stack convention (lp-brief is brief-time; lp-eval is post-launch).
 
@@ -248,7 +248,7 @@ load_class: ANTI-PATTERN
 
 ## Cross-references
 
-- For agent-side gate ownership: see `agents/conversion-critic-agent.md` (CP-01 → CP-13 — 11 hard-gate CPs + CP-06 PAS as NOTE-grade + CP-10 cognitive bias as NOTE-only + Cross-Cutting Checks + Scoring Patterns Per CP + Tier Excuses + Cycle Logic) and `agents/brand-voice-critic-agent.md` (G1 Sacred / G2 Forbidden Vocabulary / G3 Preferred Phrasing / G4 Surface Language Match / G5 Token Discipline / G6 Brief Envelope / G7 Asset Slot Brand Compliance / G8 Hand-Off Verbatim Compliance / G8b Implementation Prompt Compliance + Sacred Element Detection + Voice Forbidden Vocab Detection + Token Discipline + Envelope Math).
+- For agent-side gate ownership: see `agents/conversion-critic-agent.md` (CP-01 → CP-14 — 11 hard-gate CPs + CP-06 PAS, CP-10 cognitive bias, and CP-14 5-question diagnostic as NOTE-grade + Cross-Cutting Checks + Scoring Patterns Per CP + Tier Excuses + Cycle Logic) and `agents/brand-voice-critic-agent.md` (G1 Sacred / G2 Forbidden Vocabulary / G3 Preferred Phrasing / G4 Surface Language Match / G5 Token Discipline / G6 Brief Envelope / G7 Asset Slot Brand Compliance / G8 Hand-Off Verbatim Compliance / G8b Implementation Prompt Compliance + Sacred Element Detection + Voice Forbidden Vocab Detection + Token Discipline + Envelope Math).
 - For procedural correctness: see `procedures/dispatch-mechanics.md` (Layer 1/1.5/2/3/3.5/4/5 dispatch tables + 3 Approval Gate user-response handling) and `procedures/pre-dispatch.md` (hard gates fire BEFORE any cold-start questioning — catches pattern 13).
 - For format-side correctness: see `format-conventions.md` (frontmatter schema + 14 body sections + full artifact template byte-identical + companion file conventions + brief envelope rules — catches patterns 3, 7, 8, 14).
-- For domain catalogs: `conversion-principles.md` (CP-01 → CP-13 detail), `section-templates.md` (per-section templates with conversion-checklist), `handoff-formats.md` (Asset Placeholder Rule canonical source), `failure-modes.md` (page-level failures the critics watch for).
+- For domain catalogs: `conversion-principles.md` (CP-01 → CP-14 detail), `section-templates.md` (per-section templates with conversion-checklist), `handoff-formats.md` (Asset Placeholder Rule canonical source), `failure-modes.md` (page-level failures the critics watch for).

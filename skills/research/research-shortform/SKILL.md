@@ -1,6 +1,6 @@
 ---
 name: research-shortform
-description: "Discovers what's working right now on short-form video platforms (TikTok, Instagram Reels, YouTube Shorts; X and LinkedIn video by opt-in) for a given topic and market — mines hook archetypes, trending audio, and platform mechanics into a sourced per-platform catalog. Use before briefing short-form content, to find current viral patterns, or to refresh stale platform intelligence. Not for long-form video (parked) or static visuals (use brief-graphic). For audience research, see research-icp; for campaign planning, see plan-campaign."
+description: "Discovers what's working right now on short-form video platforms (TikTok, Instagram Reels, YouTube Shorts; X and LinkedIn video by opt-in) for a given topic and market — mines hook archetypes, trending audio, and platform mechanics into a sourced per-platform catalog. Use before briefing short-form content, to find current viral patterns, or to refresh stale platform intelligence. Not for long-form video (parked) or static visuals (use brief-graphic); for audience research, see research-icp."
 argument-hint: "[topic or angle]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch Write
 metadata:

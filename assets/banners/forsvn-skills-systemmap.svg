@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440" role="img" aria-label="The Agent Skills stack — 40 skills across Research, Marketing, Product, and Meta feed a central .forsvn artifact store, which feeds manifest, loops, and review.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440" role="img" aria-label="The Agent Skills stack — 49 skills across Research, Marketing, Product, and Meta feed a central .forsvn artifact store, which feeds manifest, loops, and review.">
 <title>Agent Skills — how the stack chains</title>
-<desc>A system map: four skill domains (Research, Marketing, Product, Meta) feed a central .forsvn artifact store; the store feeds three outputs — manifest, loops, and review. Signal-lime pulses glide left to right along the connections.</desc>
+<desc>A system map: four skill domains (Research, Marketing, Product, Meta) feed a central .forsvn artifact store; the store feeds three outputs — manifest, loops, and review. Leaf-green pulses glide left to right along the connections.</desc>
 <style>
   .bg { fill:#004700; }
-  .card { fill:#181d1b; stroke:#6b7872; stroke-width:1; }
-  .hub { fill:#2a302d; stroke:#b7ff6e; stroke-width:1.6; animation:edge 4.6s ease-in-out infinite; }
-  .ink { fill:#f4f6f5; }
-  .dim { fill:#8a9690; }
-  .ac { fill:#b7ff6e; }
-  .logo { fill:#b7ff6e; }
+  .card { fill:#111b14; stroke:#6b7872; stroke-width:1; }
+  .hub { fill:#16221a; stroke:#74b36b; stroke-width:1.6; animation:edge 4.6s ease-in-out infinite; }
+  .ink { fill:#efe9d1; }
+  .dim { fill:#8a9784; }
+  .ac { fill:#74b36b; }
+  .logo { fill:#74b36b; }
   .div { stroke:#3e4844; stroke-width:1; }
   .wire { fill:none; stroke:#3e4844; stroke-width:2; }
-  .pulse { fill:none; stroke:#b7ff6e; stroke-width:2.6; stroke-linecap:round; stroke-dasharray:9 33; }
+  .pulse { fill:none; stroke:#74b36b; stroke-width:2.6; stroke-linecap:round; stroke-dasharray:9 33; }
   .f1 { animation:flow 2.6s linear infinite; }
   .f2 { animation:flow 2.6s linear infinite; animation-delay:-1.3s; }
   @keyframes flow { to { stroke-dashoffset:-42; } }

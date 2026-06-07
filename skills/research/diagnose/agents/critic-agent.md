@@ -103,7 +103,7 @@ You do NOT:
 | 6 | **Every "then" names a specific metric** | Metric name + direction, ideally with threshold | "Things get worse" instead of "open rate drops below 20%" |
 | 7 | **Every hypothesis has a named data source** | Tool → Report → Metric path, not "check analytics" | Vague sources without specific report paths |
 | 8 | **Hypotheses ranked by testability** | Ordered by speed-to-data x potential-gap-explained | Ranked by gut feel or not ranked at all |
-| 9 | **Every hypothesis has a verdict with cited evidence** | Confirmed/Rejected/Inconclusive, each citing specific data | "Seems likely" without data, or missing verdicts |
+| 9 | **Every verdict cites DISCRIMINATING evidence (no correlation-as-causation)** | Each verdict cites specific data; among co-timed changes, a Confirmed cause cites evidence ruling out the alternatives (A/B null, per-segment/per-capita normalization, same-segment-flat) AND a composition/mix-shift check was done | "Seems likely" / missing verdicts; a Confirmed on timeline coincidence alone; gap distributed across un-discriminated co-timed causes; an invented cause added to reach ~100%; a within-segment cause Confirmed when every segment is flat (it's the mix) |
 | 10 | **Root cause gap percentages sum to ~100%** | Confirmed causes + Unexplained = ~100% | 140% (double-counting) or 30% (missing causes) |
 
 ### Additional Checks (Non-Gate but Flag-Worthy)
@@ -114,7 +114,7 @@ These do not trigger a FAIL by themselves, but flag them in Observations:
 - **Inconclusive items are prioritized** — >50% must resolve, 10-50% should resolve, <10% skip
 - **No premature verdicts** — "Confirmed" based on one loosely supportive data point
 - **No unfalsifiable hypotheses** — Every hypothesis must define what rejection looks like
-- **No correlation-as-causation** — Timeline coincidence is not proof of mechanism
+- **No correlation-as-causation** — now a **Gate 9 hard FAIL** (not just a flag): a "Confirmed" resting on timeline coincidence, a gap padded with un-discriminated or invented causes, or a within-segment cause confirmed despite a composition/mix-shift, all FAIL Gate 9
 - **3-strikes escalation** — If 3+ hypotheses were Rejected with none Confirmed or Inconclusive, verify the verdict-agent escalated properly (root cause statement says "cannot be determined," recommends reframing or new data). If the verdict-agent forced a root cause from weak evidence instead of escalating, FAIL with re-dispatch to verdict-agent.
 
 ### Failure Routing

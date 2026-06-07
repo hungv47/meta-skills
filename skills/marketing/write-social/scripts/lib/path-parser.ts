@@ -5,6 +5,9 @@
 //   canonical:   .forsvn/canonical/<stack>/<UPPER-NAME>.md
 //   artifacts:   .forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.<ext>
 //   experience:  .forsvn/experience/<stack>/<name>.md   (dated or plain topic)
+//   records:     .forsvn/artifacts/<stack>/records/<YYYY-MM-DD>-<slug>.md
+//                (immutable per-run review/cleanup records; review-work + clean-code
+//                 emit here, plus the loose `records/learned-rules.md`)
 //     stacks: meta · research · marketing · product   (folder name == frontmatter `stack`)
 //
 // Legacy grammars (recognized only so the un-flatten migration + back-compat
@@ -31,7 +34,7 @@ export function normalizeStack(raw: string): Stack | undefined {
 }
 
 export type ParsedArtifactPath = {
-  shape: "canonical" | "artifact" | "experience" | "legacy-flat" | "legacy-nested" | "loop" | "unknown";
+  shape: "canonical" | "artifact" | "experience" | "records" | "legacy-flat" | "legacy-nested" | "loop" | "unknown";
   layer?: Layer;
   // Extracted fields (undefined when not derivable from the path alone):
   stack?: Stack | "mkt";
@@ -51,6 +54,11 @@ export const LAYERED_ARTIFACT_RE =
 // Experience files may also be plain topic names (no skill/date), e.g. audience.md.
 export const EXPERIENCE_LOOSE_RE =
   /^\.forsvn\/experience\/(?<stack>meta|research|marketing|product)\/(?<name>[a-z][a-z0-9-]*)\.md$/;
+// Per-run records (review-work fresh-eyes, clean-code cleanup): an immutable,
+// usually-dated record under a `records/` subfolder. First-class v3 — NOT
+// legacy-nested. The date prefix is optional (e.g. `records/learned-rules.md`).
+export const RECORDS_RE =
+  /^\.forsvn\/artifacts\/(?<stack>meta|research|marketing|product)\/records\/(?:(?<date>\d{4}-\d{2}-\d{2})-)?(?<slug>[a-z0-9][a-z0-9-]*)\.md$/;
 
 // --- legacy grammars (migration source + back-compat indexing) --------------
 export const FLAT_FILENAME_RE =
@@ -95,6 +103,20 @@ export function parseArtifactPath(rel: string): ParsedArtifactPath {
       layer: "experience",
       stack: expLoose.groups.stack as Stack,
       name: expLoose.groups.name,
+      extension: "md",
+      rel,
+    };
+  }
+  // records/ MUST be checked before the legacy-nested grammar (which would also
+  // match `<stack>/records/<rest>` as kind=records and mis-label it legacy).
+  const records = rel.match(RECORDS_RE);
+  if (records?.groups) {
+    return {
+      shape: "records",
+      layer: "artifacts",
+      stack: records.groups.stack as Stack,
+      date: records.groups.date, // undefined for loose names (e.g. learned-rules.md)
+      slug: records.groups.slug,
       extension: "md",
       rel,
     };
@@ -193,9 +215,14 @@ export function buildFlatPath(args: {
   return `.forsvn/artifacts/${stack}-${skill}-${date}-${cleanSlug}.${ext}`;
 }
 
-/** True if `rel` matches the v3 layered artifact/experience grammar (md or html). */
+/** True if `rel` matches the v3 layered artifact/experience/records grammar (md or html). */
 export function isLayeredPath(rel: string): boolean {
-  return LAYERED_ARTIFACT_RE.test(rel) || CANONICAL_RE.test(rel) || EXPERIENCE_LOOSE_RE.test(rel);
+  return (
+    LAYERED_ARTIFACT_RE.test(rel) ||
+    CANONICAL_RE.test(rel) ||
+    EXPERIENCE_LOOSE_RE.test(rel) ||
+    RECORDS_RE.test(rel)
+  );
 }
 
 /** True if `rel` matches the legacy v2 flat grammar (md or html). */

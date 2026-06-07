@@ -1,6 +1,6 @@
 ---
 name: diagnose
-description: "Structured diagnosis of business and strategic problems — builds MECE logic trees, forms testable If/Then/Because hypotheses, scans external factors, and identifies root causes with evidence. Use when a metric is underperforming, something went wrong, or you need to find what's actually causing a problem before acting. Not for code bugs (use clean-code), brainstorming solutions to a known problem (use prioritize), or scoping a new idea (use discover). For market-level trends and competitive context, see research-market."
+description: "Structured diagnosis of business and strategic problems — builds MECE logic trees, forms testable If/Then/Because hypotheses, scans external factors, and identifies root causes with evidence. Use when a metric is underperforming, something went wrong, or you need to find what's causing a problem before acting. Not for code bugs (use clean-code), brainstorming solutions to a known problem (use prioritize), or scoping a new idea (use discover); for market trends, see research-market."
 argument-hint: "[metric or problem to diagnose]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -24,7 +24,7 @@ metadata:
 1. **Problem statement MUST be: "[Metric] is [current] instead of [target]."** No vague business problems. If the user says "things aren't going well," interview for the specific metric, current value, and target value before dispatching any agent.
 2. **Do NOT skip external factors — 30%+ of problems have external root-causes.** The external-check-agent runs in Layer 1 alongside the tree builder. Skipping it leads to treating a symptom when the cause is environmental.
 3. **If/Then/Because format required — hypotheses without "because" are unfalsifiable.** The "because" clause is the reasoning mechanism. Without it, a rejected hypothesis teaches nothing and the tests prove nothing.
-4. **Do NOT confirm hypotheses without evidence — "seems likely" is not Confirmed.** Every verdict must cite a specific data point that matches or contradicts the "then" clause. Inconclusive is a valid verdict.
+4. **Do NOT confirm hypotheses without evidence — "seems likely" is not Confirmed.** Every verdict must cite a specific data point that matches or contradicts the "then" clause. Inconclusive is a valid verdict. **When multiple causes changed in the same window, a matching timeline is correlation, not confirmation:** a Confirmed verdict must cite evidence that DISCRIMINATES it from the co-timed alternatives (an A/B null, a per-capita/per-segment normalization, a same-segment-flat reading), and must rule out a **composition/mix-shift** artifact (every segment flat but the blended metric moved → the cause is the mix, not any within-segment factor). No discriminating evidence → Inconclusive. Never distribute the gap across un-discriminated candidates or invent a cause to reach ~100%.
 
 ---
 
@@ -38,12 +38,12 @@ Pre-Dispatch detail (always-cold-start contract, 4-question Cold Start prompt, r
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-diagnose-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one per metric; re-run renames prior with `.v[N]` suffix and increments)
-- **Lifecycle:** `snapshot` (per `agent-skills/CLAUDE.md` taxonomy); `review_surface: none`; `decision_state: not_required`
-- **Frontmatter:** `skill`, `version` (integer, increment on re-run), `date`, `status`, `stack: meta`, `review_surface: none`. Schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
+- **Path:** `.forsvn/canonical/research/DIAGNOSE.md` (canonical singleton — the current diagnosis of record; re-run overwrites in place and bumps `version`. Prior runs live in git history, NOT as concurrent files.)
+- **Lifecycle:** `canonical`; `type: canonical`; `review_surface: none`; `decision_state: not_required` (diagnose stays un-gated)
+- **Frontmatter:** `skill`, `version` (integer, increment on re-run), `date`, `status`, `stack: research`, `review_surface: none`, `id: diagnose`, `type: canonical`, `keywords: [diagnose, root-cause, hypothesis-tree, metric-decline, if-then-because]`. Schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required body sections (cross-stack contract — load-bearing):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block. Full schemas + Logic Tree code-fence + Verdict Table columns in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. Optional: Known Issues · Change Log.
-- **Side effects (mandatory on PASS / done_with_concerns):** Goals write-back (Q1 Metric, Q2 Current, Q3 Target append to `experience/goals.md`; **Q4 Tried NOT persisted** — lives in snapshot only). Rename any prior `diagnose-*.md` for same metric to `diagnose.v[N].md`. Mechanics: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
-- **Consumed by:** `prioritize` (Root Cause feeds Initiative "because" clauses — hard-gated); `plan-funnel` (Root Cause baselines feed Target Table); `plan-campaign` (Root Cause + Verdicts filter channel-level execution); future `diagnose` re-runs (prior tree as context).
+- **Side effects (mandatory on PASS / done_with_concerns):** Goals write-back (Q1 Metric, Q2 Current, Q3 Target append to `experience/goals.md`; **Q4 Tried NOT persisted** — lives in the canonical record only). Re-run overwrites `DIAGNOSE.md` in place and bumps `version`; no `.v[N].md` siblings. Mechanics: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
+- **Consumed by:** `prioritize` (Root Cause feeds Initiative "because" clauses — recommended input, not a hard gate); `plan-funnel` (Root Cause baselines feed Target Table); `plan-campaign` (Root Cause + Verdicts filter channel-level execution); future `diagnose` re-runs (prior tree as context).
 - **Cross-stack contract:** Phase 1/2/3 schemas + Verdict Table columns + Next Step block + Logic Tree code-fence — schema changes require atomic consumer update (see `anti-patterns.md` "Cross-stack contract drift").
 
 ---
@@ -100,7 +100,7 @@ Every run ends with explicit status:
 
 ## Next Step
 
-After verdict + root cause ship: hand to `prioritize` for initiative selection (Root Cause Statement is the hard-gated input). For metric-tracking initiatives, also feed `plan-funnel` baselines. Re-run `diagnose` when the metric shifts significantly or new data surfaces (operator-judgment, not auto-flagged).
+After verdict + root cause ship: hand to `prioritize` for initiative selection (Root Cause Statement is a recommended input, not a hard gate). For metric-tracking initiatives, also feed `plan-funnel` baselines. Re-run `diagnose` when the metric shifts significantly or new data surfaces (operator-judgment, not auto-flagged).
 
 ---
 

@@ -18,9 +18,10 @@ load_class: PROCEDURE
 
 | Trigger | Format | Frontmatter |
 |---|---|---|
-| Medium/Deep depth + handoff to others, strategic calls being made | **Operator-grade spec** (5 mandatory sections) | `light_spec: false` (default) |
+| Medium/Deep depth, strategic calls being made, a persisted spec others *read* (not a fresh agent resuming the work) | **Operator-grade spec** (5 mandatory sections) | `light_spec: false` (default) |
 | Light depth (Adaptive Depth row 1: clear task, well-defined scope, existing codebase) | **Compact spec** (5 sections skipped) | `light_spec: true` |
 | Scope-locking before building | **Contract format** (separate template) | n/a — emitted inline |
+| Converged session + next consumer is a **fresh agent / future session** (not the operator continuing in-context, not a downstream in-context skill) | **Handoff plan** (path-free, clipboard-ready) | n/a — emitted inline |
 
 **Mandatory-sections rule:** the 5 mandatory sections (Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict) apply at Medium/Deep depth. Light-depth saves explicitly skip them. Contracts explicitly skip Premise Challenge + Dream State Mapping (scope-locking, not idea-validating); Implementation Alternatives + Temporal Interrogation + Verdict (in `BUILD_AS_PROPOSED` / `CUT_TO_MINIMUM` shape) DO apply when a contract is generated downstream of the operator-grade spec format.
 
@@ -265,6 +266,43 @@ NOT IN SCOPE:
 - [ ] All CONSTRAINTS respected: {confirmation}
 - [ ] FORMAT matches spec: {confirmation}
 ```
+
+---
+
+## Handoff plan format (fresh-agent transfer)
+
+**When:** the session converged and the next consumer is a *different* agent or a *future* session — **not** the operator continuing in this conversation (decisions live in chat), and **not** a downstream in-context skill (`architect-system` / `breakdown-tasks` read the conversation directly). Triggered by "hand this off" / "write a handoff" / "prep this for another agent" — or a session ending with work a fresh agent will resume. The discriminator is *who picks this up next*: a context that wasn't in this conversation.
+
+**Not the operator-grade spec; not breakdown-tasks.** The spec is a *descriptive audit-trail* of a converged decision (premise / dream-state / alternatives), written for the operator. `breakdown-tasks` is a *sized eng-task graph* (acceptance criteria, dependencies, risk-order → `tasks.md`) for execution. A handoff plan is a *forward-looking, path-free work-transfer packet*: where we are, what's locked, the next concrete actions, and the minimal context a fresh agent needs to not re-ask or redo. Its next-actions are **coarse — skill/decision-level** ("run `architect-system` in a fresh session on the data model", "validate pricing with 3 customers"), not sized tasks. The receiving agent runs `breakdown-tasks` when it needs an execution graph.
+
+**Path-free + clipboard-ready.** Write it so it can be pasted into a fresh session with no filesystem assumptions. Reference prior decisions and artifacts by *content*, not only by path — if a path is load-bearing, state what it contains so the handoff stands alone. **Emitted inline by default** (like Contract); persist into the spec's Implementation Notes or a saved file only if the operator asks.
+
+```markdown
+## Handoff — [Goal in one line]
+
+**Outcome:** [what success looks like — one sentence, user-visible.]
+**Status:** converged | converged-with-open-branches · **Depth reached:** Light | Medium | Deep
+
+### Decisions locked (do NOT re-litigate)
+- [Decision] — [one-line rationale]
+
+### Where we are
+[2-4 sentences: what's decided, what already exists, what's been tried. Name the prior pain or constraint so the fresh agent starts from the delta, not from zero.]
+
+### Next actions (ordered)
+1. [Concrete next step — skill or decision level, not a sized task] → [done signal]
+2. [...]
+
+### Open branches / unresolved
+- [Branch] — [what would resolve it: evidence, a decision, a follow-up session]
+
+### Context a fresh agent needs
+- **Read:** [artifact / file] — [what it contains and why it matters]
+- **Don't redo:** [what's already settled, or tried-and-rejected]
+- **Gotchas:** [non-obvious constraints]
+```
+
+If the session exited with operator-overridden branches (Step 6), carry them verbatim into **Open branches / unresolved** — a handoff that hides unresolved branches makes the fresh agent re-discover them.
 
 ---
 

@@ -49,6 +49,7 @@ promptSignals:
     # "redesign brief" is not contiguous there.
     - "redesign brief"
     - "landing page redesign"
+    - "evaluate"
   minScore: 6
 
 capability:
@@ -74,13 +75,13 @@ capability:
       - "User flow / wireframe -> map-user-flow."
     prerequisites:
       recommended:
-        - "brand/ASSETS.md"
+        - "id:assets"
         - ".forsvn/artifacts/marketing/content/[slug].copy.md"
         - ".forsvn/artifacts/marketing/campaign-plan.md"
-        - "research/icp-research.md"
+        - "id:icp-research"
       hard:
-        - "brand/BRAND.md"
-        - "brand/DESIGN.md"
+        - "id:brand"
+        - "id:design"
 
   orchestration:
     default: auto

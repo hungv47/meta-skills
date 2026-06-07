@@ -121,7 +121,7 @@ After critic passes, before Step 9. Read `references/assets-inventory.md` for fu
 
 ### Substep 1 — Load prior state
 
-Read existing `brand/ASSETS.md`. Preserve `[~]` (in progress) and `[!]` (blocked) rows verbatim. Note platforms present in old file but no longer declared — those rows go to `## Orphaned` on emit.
+Read existing `.forsvn/canonical/marketing/ASSETS.md`. Preserve `[~]` (in progress) and `[!]` (blocked) rows verbatim. Note platforms present in old file but no longer declared — those rows go to `## Orphaned` on emit.
 
 ### Substep 2 — Project fresh inventory
 
@@ -153,13 +153,13 @@ Overlay preserved `[~]`/`[!]` rows (matched by name) onto fresh inventory. **Hum
 
 Total / Done / In progress / Blocked / Not started counts.
 
-### Substep 6 — Write `brand/ASSETS.md`
+### Substep 6 — Write `.forsvn/canonical/marketing/ASSETS.md`
 
-Frontmatter (declared platforms, last scan ISO timestamp, BRAND.md/DESIGN.md versions), legend, sections, summary, and `## Orphaned` block if any.
+Frontmatter MUST stamp the required instruction core — `skill: create-brand`, `version` (integer), `date`, `status`, `stack: marketing`, `review_surface: none`, `id: assets`, `type: canonical`, `keywords: [assets, checklist, deliverables, brand-assets, production]` — plus the ASSETS-only bookkeeping (`declared_platforms`, `last_scan` ISO timestamp, `brand_md_version`/`design_md_version`). Full template: `references/artifact-templates.md` "ASSETS.md Template". Then legend, sections, summary, and `## Orphaned` block if any.
 
 ### Substep 7 — Re-run versioning
 
-ASSETS.md is a **living file** — always updated in place. Dropped-platform rows move to `## Orphaned` (NOT removed), preserving tracking state. Only version (`ASSETS.v[N].md`) when the user **explicitly** requests a fresh inventory (e.g., after major product pivot). The Orphaned block, not versioning, is the primary handler for "platform dropped between runs."
+ASSETS.md is a **living file** — overwrite `.forsvn/canonical/marketing/ASSETS.md` in place and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (NOT removed), preserving tracking state. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots. The Orphaned block, not a versioned sibling, is the primary handler for "platform dropped between runs."
 
 ### Quality gate (orchestrator self-check before write)
 

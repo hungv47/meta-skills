@@ -8,13 +8,13 @@
 
 Unlike most stack skills, diagnose **always cold-starts** even when context is partially resolvable. The reason: diagnose IS the diagnostic interview — the 4 questions (metric / current / target / tried) ARE the work. Warm-starting from cached partial context would mean the orchestrator hallucinates a problem statement that was never fully specified.
 
-The only "warm" path is **re-run after metric shift** — when a prior `diagnose-*.md` exists, the new run reads it for context but still asks for fresh metric/current/target values (the whole point of re-running is the numbers changed).
+The only "warm" path is **re-run after metric shift** — when `DIAGNOSE.md` already exists (resolve `id:diagnose` via `find-artifacts --resolve diagnose`), the new run reads it for context but still asks for fresh metric/current/target values (the whole point of re-running is the numbers changed).
 
 ---
 
 ## Read order (in order)
 
-1. **Pipeline (optional):** prior `.forsvn/artifacts/meta/records/diagnose-*.md` if re-running. Carries the prior tree structure + verdicts as context for the new run; doesn't replace the new Cold Start.
+1. **Canonical (optional):** prior `.forsvn/canonical/research/DIAGNOSE.md` if re-running (resolve `id:diagnose` via `find-artifacts --resolve diagnose`). Carries the prior tree structure + verdicts as context for the new run; doesn't replace the new Cold Start.
 2. **Pipeline (optional):** `research/product-context.md` — business profile (type, stage, sales cycle). Improves logic-tree calibration (tree-builder-agent picks tree type informed by business model).
 3. **Experience (read, don't ask):** `.forsvn/experience/goals.md` for prior metric history (does this metric have a baseline already? prior target?).
 
@@ -75,7 +75,7 @@ Echo the chosen route at the end of the Cold Start confirmation, after the user 
 
 Original SKILL.md "Re-run triggers" (line 99): "When the metric shifts significantly, when new data surfaces that could change verdicts, or when a prioritize initiative is killed." These are **operator-judgment** triggers — not automated emissions.
 
-Do NOT auto-emit a "WARNING: prior diagnose-*.md is N days old" message on re-run. Operator decides when re-diagnosis is warranted; auto-emission would be net-new behavior.
+Do NOT auto-emit a "WARNING: prior DIAGNOSE.md is N days old" message on re-run. Operator decides when re-diagnosis is warranted; auto-emission would be net-new behavior.
 
 ---
 

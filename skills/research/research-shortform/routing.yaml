@@ -46,7 +46,7 @@ capability:
       - "Campaign planning -> plan-campaign."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
+        - "id:icp-research"
       hard: []
 
   orchestration:

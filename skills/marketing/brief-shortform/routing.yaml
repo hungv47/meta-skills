@@ -26,6 +26,7 @@ promptSignals:
     - "newsletter"
     - "long-form"
     - "podcast"
+    - "evaluate"
   minScore: 6
 
 capability:
@@ -33,7 +34,7 @@ capability:
   domain: marketing
   public: true
   command: /brief-shortform
-  summary: "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + max 2 variants per run. Live-action + motion-graphic."
+  summary: "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + 2 variants per run. Live-action + motion-graphic."
   aliases:
     - shortform-brief
     - video-brief
@@ -54,8 +55,8 @@ capability:
     prerequisites:
       recommended:
         - ".forsvn/artifacts/research/research-shortform/[slug].md"
-        - "research/icp-research.md"
-        - "brand/BRAND.md"
+        - "id:icp-research"
+        - "id:brand"
         - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 

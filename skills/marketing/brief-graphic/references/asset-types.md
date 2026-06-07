@@ -64,6 +64,26 @@ When ASSETS.md provides a row, ASSETS.md wins. This is the fallback for assets n
 - **Safe zone:** 60px from edges (logo overlay area on top-left)
 - **Format:** PNG / JPG
 
+### Event banner
+- **Dimensions:** 1600 × 900 px (16:9) `[verify — no dedicated LinkedIn spec page; secondary-sourced]`
+- **Safe zone:** logo/headline in center ~70% (≈1120 × 630); lower third overlaid by the event metadata card
+- **Format:** PNG / JPG, ≤8 MB
+
+---
+
+## Social — Facebook (Ads)
+
+### Feed ad (single image / carousel card)
+- **Dimensions:** 1080 × 1350 px (4:5, recommended) or 1080 × 1080 (1:1)
+- **Safe zone:** 60px from edges; image renders un-overlaid — Sponsored label above + headline/CTA bar below come from ad setup (don't bake a button in)
+- **Format:** JPG / PNG, sRGB, ≤30 MB (compress ≤1MB for feed load)
+- **Copy caps (ad setup, not creative):** primary text ~125 chars before "…more", headline ≤27 chars, description ~30 chars `[verify — Meta drifts]`
+
+### Story ad
+- **Dimensions:** 1080 × 1920 px (9:16)
+- **Safe zone:** Mar-2026 unified — top ~14% (≈270px) + bottom ~20% (≈384px, larger than organic 250) + 6% sides `[verify — Meta drifts]`
+- **Format:** PNG / JPG / MP4 (H.264), sRGB
+
 ---
 
 ## Social — X / Twitter
@@ -141,9 +161,9 @@ When ASSETS.md provides a row, ASSETS.md wins. This is the fallback for assets n
 - **Copy caps:** ≤5 words, large bold display type
 
 ### Channel banner
-- **Dimensions:** 2560 × 1440 px (full)
-- **Safe zone (TV/desktop minimum):** 1546 × 423 px centered
-- **Format:** PNG / JPG
+- **Dimensions:** 2560 × 1440 px (full); desktop shows ~2560 × 423, TV the full 2560 × 1440
+- **Safe zone (all devices):** 1546 × 423 px centered — all load-bearing content (logo, name, CTA) must fit here (it's what mobile shows)
+- **Format:** PNG / JPG (GIF/BMP also accepted), ≤6 MB
 
 ---
 
@@ -153,7 +173,7 @@ When ASSETS.md provides a row, ASSETS.md wins. This is the fallback for assets n
 - **Dimensions:** 600 × 300 px (delivers crisp on retina; max width across most clients)
 - **Format:** PNG / JPG (some clients block WebP)
 - **File cap:** ≤200 KB
-- **Note:** Email clients often block images by default — design as IMAGE_BLOCKED-aware (no critical text in images)
+- **Note:** Email clients often block images by default — design as IMAGE_BLOCKED-aware (no critical text in images). Author at 1200px wide, constrain to 600 for 2× retina. Avoid WebP (unsupported in several clients). Dark mode varies (Apple Mail inverts hard, Outlook barely, Gmail partial) — plate logos to survive inversion.
 
 ### Subject line + preview text
 - **Subject:** ≤50 chars (mobile cutoff)
@@ -175,8 +195,18 @@ When ASSETS.md provides a row, ASSETS.md wins. This is the fallback for assets n
 
 ### Billboard (varies by spec)
 - **Dimensions:** spec-dependent (commonly 14 × 48 ft = 4032 × 1152 px @ 7dpi viewing distance)
-- **Format:** PDF (CMYK, low-DPI for size)
+- **Format:** PDF (CMYK print / RGB digital DOOH, low-DPI for size)
 - **Copy cap:** ≤7 words (read at distance + speed)
+
+### Magazine ad (full page / spread)
+- **Dimensions:** 300 DPI at trim, CMYK; common single trim 8.125 × 10.875 in (~2438 × 3263 px), spread 16.25 × 10.875 in (~4875 × 3263 px) `[verify — trim is per-publication]`
+- **Bleed / safety / gutter:** bleed 0.125 in min (0.25 pref); live matter 0.25–0.5 in inside trim; spread gutter 0.75–1 in (keep faces/logos off the fold)
+- **Format:** press-ready CMYK PDF/X, fonts embedded/outlined, ≥300 DPI
+
+### Transit poster
+- **Dimensions:** interior car card ~11 × 28 in (height ~11.125 in); exterior King ~30 × 144 in, King Kong ~54 × 248 in (market-dependent) `[verify — varies by transit authority]`
+- **Read distance / copy:** interior ~3–10 ft (long dwell → more copy OK); exterior ~20+ ft in motion (glance-media); min type ~38pt / ⅜ in, pref 50–60pt
+- **Format:** CMYK PDF, fonts outlined, vendor die-line with bleed
 
 ---
 
@@ -233,8 +263,10 @@ this table. Override with `--route=image-gen|vector-tool|designer-handoff|templa
 | FB / display banner (text-heavy) | vector-tool | Vector text + crop variants |
 | FB / display banner (visual-led) | image-gen | Generate visual, overlay text |
 | YouTube thumbnail | image-gen | Photo-based + bold text overlay |
+| YouTube channel banner | vector-tool or designer-handoff | Brand furniture, multi-device safe area |
 | X/Twitter card | image-gen or vector-tool | Depends on photo vs typographic |
-| OOH / billboard / print | designer-handoff | Print-grade, needs human designer |
+| LinkedIn event banner | image-gen or vector-tool | Depends on photo vs typographic |
+| OOH / billboard / transit / print / magazine spread | designer-handoff | Print-grade, needs human designer + vendor/publication die-line |
 | Email hero | image-gen or vector-tool | Depends on photo vs typographic |
 | Hero illustration (custom) | image-gen or designer-handoff | Generative or human-designer |
 | Spot icon / decoration | vector-tool | Vector |

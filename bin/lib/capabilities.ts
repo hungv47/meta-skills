@@ -36,6 +36,7 @@ export type Capability = {
   outputs?: {
     artifacts?: Array<{
       path: string;
+      id?: string;
       lifecycle: string;
       produced_when: string;
     }>;
@@ -77,8 +78,10 @@ function asArtifactArray(value: YamlValue | undefined): Capability["outputs"]["a
     .filter((item) => item && !Array.isArray(item) && typeof item === "object")
     .map((item) => {
       const obj = item as Record<string, YamlValue>;
+      const id = asString(obj.id);
       return {
         path: asString(obj.path),
+        ...(id ? { id } : {}),
         lifecycle: asString(obj.lifecycle),
         produced_when: asString(obj.produced_when),
       };

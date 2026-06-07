@@ -249,6 +249,9 @@ bun bin/validate-artifacts.ts --strict
 bun bin/manifest-sync.ts --check
 bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
 bun _dev/lint-description-body-coherence.ts --strict
+bun _dev/check-skill-links.ts
+bun _dev/audit-skill-listing.ts --check
+bun _dev/lint-catalog-coherence.ts --strict
 ```
 
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
@@ -258,6 +261,12 @@ on every `.forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
 index drifted from disk (both added by skills-refactor Phase 2.5).
 HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) moved
 out to the **forsvn-preview** plugin — skills emit Markdown only.
+`check-skill-links` (dead relative links) and `audit-skill-listing --check`
+(per-skill listing caps) were already in the gate but missing from this list —
+synced 2026-06-05. `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches
+per-skill catalog drift — a numbered rubric (critic gates, `CP-IDs`, principle
+sets) disagreeing on count, item names, or id-references across a single skill's
+files; SoT = the richest enumeration, History/Changelog + `_shared/` excluded.
 
 Trigger evals (run before merge — routing changes must keep
 `tests/triggers/` fixtures green, and `--require-all` ensures every skill

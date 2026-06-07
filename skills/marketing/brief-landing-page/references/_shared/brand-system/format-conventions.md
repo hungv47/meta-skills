@@ -14,19 +14,19 @@ load_class: PROCEDURE
 
 ## Output location
 
-- `brand/BRAND.md` — canonical, always
-- `brand/DESIGN.md` — canonical, Route B only (Quick Brand produces BRAND.md only)
-- `brand/ASSETS.md` — living inventory, Route B only
+- `.forsvn/canonical/marketing/BRAND.md` — canonical, always
+- `.forsvn/canonical/marketing/DESIGN.md` — canonical, Route B only (Quick Brand produces BRAND.md only)
+- `.forsvn/canonical/marketing/ASSETS.md` — living inventory, Route B only
 
-Create `brand/` if missing, plus `brand/logo/`, `brand/font/`, `brand/inspiration/`, `brand/social/`, `brand/favicon/`, `brand/tokens/`, `brand/imagery/`, `brand/platforms/` subdirs with `.gitkeep` files.
+Create `brand/` if missing (the asset-binary working tree for produced files), plus `brand/logo/`, `brand/font/`, `brand/inspiration/`, `brand/social/`, `brand/favicon/`, `brand/tokens/`, `brand/imagery/`, `brand/platforms/` subdirs with `.gitkeep` files. The canonical Markdown spec lives under `.forsvn/canonical/marketing/`; the `brand/` subdirs hold the rendered/binary assets that ASSETS.md auto-scans and references by `target:` path.
 
 ## File naming + versioning
 
 | File | Re-run behavior |
 |---|---|
-| BRAND.md | Rename existing to `BRAND.v[N].md` and create new with incremented version |
-| DESIGN.md | Rename existing to `DESIGN.v[N].md` and create new with incremented version |
-| ASSETS.md | **Always updated in place** — living inventory. Dropped-platform rows move to `## Orphaned` (preserved, not deleted). Only version (`ASSETS.v[N].md`) when user explicitly requests fresh inventory after major product pivot |
+| BRAND.md | Overwrite `.forsvn/canonical/marketing/BRAND.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
+| DESIGN.md | Overwrite `.forsvn/canonical/marketing/DESIGN.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` |
+| ASSETS.md | **Always updated in place** — living inventory. Overwrite `.forsvn/canonical/marketing/ASSETS.md` and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (preserved, not deleted). NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
 
 Date format throughout: ISO `YYYY-MM-DD` in frontmatter; prose may use absolute-date phrasing (e.g., "as of May 2026").
 
@@ -37,12 +37,14 @@ Required fields on every file:
 ```yaml
 ---
 skill: create-brand
-file: BRAND.md | DESIGN.md | ASSETS.md
-version: [integer, increments on re-run; ASSETS.md stays at 1 unless explicitly fresh-inventory'd]
+version: [integer, increments on re-run; ASSETS.md increments on each in-place re-run]
 date: [ISO YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
 stack: marketing
 review_surface: html          # BRAND.md / DESIGN.md → html · ASSETS.md → none
+id: brand | design | assets   # stable logical id per file — BRAND.md → brand · DESIGN.md → design · ASSETS.md → assets
+type: canonical               # all three are canonical
+keywords: [...]               # ASSETS.md → [assets, checklist, deliverables, brand-assets, production]
 decision_state: pending       # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
 review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
@@ -53,6 +55,8 @@ design_md_version: [integer — ASSETS.md only; pins to DESIGN.md version]
 last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 ---
 ```
+
+Canonical output paths: `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md`. The stable `id` is immutable — `manifest-sync.ts` maps `id → current path`, so a downstream caller references `assets`/`brand`/`design`, never a path. Full per-file ASSETS.md template: [`artifact-templates.md`](artifact-templates.md) "ASSETS.md Template".
 
 ### Review fields (human-review layer)
 
@@ -234,7 +238,7 @@ Quality-bar reference:
 
 ## Cross-stack contract
 
-This skill is the canonical producer of `brand/BRAND.md` + `brand/DESIGN.md` + `brand/ASSETS.md`. These artifacts are consumed by:
+This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (ids `brand`, `design`, `assets`). These artifacts are consumed by:
 
 - `write-copy` — voice DNA + lexicon block
 - `write-ad` — voice DNA + brand mark for visual creative briefs

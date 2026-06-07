@@ -5,6 +5,7 @@
 // Allowed shapes:
 //   .forsvn/canonical/<stack>/<UPPER-NAME>.md             (curated truth)
 //   .forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.md|html
+//   .forsvn/artifacts/<stack>/records/[<YYYY-MM-DD>-]<slug>.md  (per-run review/cleanup records; date prefix optional, e.g. records/learned-rules.md)
 //   .forsvn/experience/<stack>/<name>.md                  (dated or plain topic)
 //     stacks: meta · research · marketing · product
 //   <layer>/<stack>/.archive/<anything>                   (archived; not validated)

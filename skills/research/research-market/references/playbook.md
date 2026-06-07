@@ -87,7 +87,7 @@ Scope-blind evaluation is an anti-pattern (per `agents/critic-agent.md` Anti-Pat
 
 market-research and `diagnose` are the two entry points of the Strategy track. They're `parallel-with` each other — both can run from cold, and prioritize consumes outputs from either or both.
 
-market-research creates `research/market-research.md` — the **canonical market record** that prioritize reads for ICE-score evidence ("how big is the SAM for this segment?"), system-architecture reads for competitive context, and campaign-plan reads for positioning anchors. Re-run triggers (operator judgment): new market entry, major competitor launch/pivot, fundraising, or quarterly for fast-moving categories.
+market-research creates `.forsvn/canonical/research/MARKET.md` — the **canonical market record** that prioritize reads for ICE-score evidence ("how big is the SAM for this segment?"), system-architecture reads for competitive context, and campaign-plan reads for positioning anchors. Re-run triggers (operator judgment): new market entry, major competitor launch/pivot, fundraising, or quarterly for fast-moving categories.
 
 ---
 

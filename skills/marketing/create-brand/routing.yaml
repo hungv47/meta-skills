@@ -54,8 +54,8 @@ capability:
       - "Single asset render only -> produce-asset."
     prerequisites:
       recommended:
-        - "research/product-context.md"
-        - "research/icp-research.md"
+        - "id:product-context"
+        - "id:icp-research"
       hard: []
 
   orchestration:
@@ -106,12 +106,15 @@ capability:
 
   outputs:
     artifacts:
-      - path: "brand/BRAND.md"
+      - path: ".forsvn/canonical/marketing/BRAND.md"
+        id: brand
         lifecycle: canonical
         produced_when: "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
-      - path: "brand/DESIGN.md"
+      - path: ".forsvn/canonical/marketing/DESIGN.md"
+        id: design
         lifecycle: canonical
         produced_when: "Route B completes Layer 2 critic PASS."
-      - path: "brand/ASSETS.md"
+      - path: ".forsvn/canonical/marketing/ASSETS.md"
+        id: assets
         lifecycle: canonical
         produced_when: "Route B completes Step 8.5 ASSETS projection."

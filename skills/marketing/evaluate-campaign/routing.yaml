@@ -63,9 +63,9 @@ capability:
       - "Single short-form video performance -> evaluate-shortform."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:brand"
+        - "id:icp-research"
+        - "id:product-context"
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"

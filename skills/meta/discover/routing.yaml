@@ -82,6 +82,9 @@ capability:
       - if: "Step 2.5 mode detection - plan-review picked"
         read:
           - "references/procedures/plan-review-modes.md"
+      - if: "Step 2.6 divergence pass (idea-stage, Deep + open solution space, or operator brainstorm override)"
+        read:
+          - "references/procedures/divergence.md"
       - if: "Step 2.7 idea-critic gate (idea-stage)"
         read:
           - "references/procedures/idea-critic-dispatch.md"

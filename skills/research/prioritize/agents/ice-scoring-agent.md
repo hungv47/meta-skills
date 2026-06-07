@@ -73,6 +73,7 @@ Return a single markdown document with exactly these sections:
 1. **No naked numbers.** Every score needs a one-sentence justification. "Impact: 7" is rejected. "Impact: 7 — paid traffic is 60% of signups, and the old targeting converted at 3.5% vs. 1.2% now" is accepted.
 2. **Ranking-first scoring.** The forced ranking sets the constraint. If you ranked it #1, its ICE should be highest. Exceptions must be explicitly justified.
 3. **Differentiated scores.** If all initiatives score 15-18, the scoring is meaningless. Force differentiation across the full 1-10 range.
+4. **Effort compression.** Score Ease on **AI-assisted effort**, not human-team weeks (stack contract). A feature/connector build AI-compresses to days → Ease **7-8**, not 2-3. Reserve 1-3 for what AI can't compress (human/external coordination, real-world validation windows). A build that addresses the primary root cause should not be sunk below a trivial config tweak by a human-effort Ease score.
 
 ### Impact Scoring (1-10)
 
@@ -99,12 +100,16 @@ Map evidence to the confidence grid BEFORE assigning the number.
 
 ### Ease Scoring (1-10)
 
-| Score | What It Means | Example |
-|-------|---------------|---------|
-| 1-3 | Multi-team, months, complex dependencies | Full product rebuild |
-| 4-6 | Moderate effort, manageable | 2-4 week project, needs cross-team support |
-| 7-8 | Small team, quick turnaround | 1-2 week project, mostly internal |
-| 9-10 | One person, days, no dependencies | Copy change, config tweak |
+**Score Ease on AI-assisted effort, not raw human-team weeks** (stack contract: `skills/CLAUDE.md` § "Effort compression"). AI compresses build time — a feature that is "1 week" for a human team is hours-to-days AI-assisted; a bug fix + test is minutes. An initiative that looks "High Effort" for a human team is usually "Low Effort" with AI assistance — score it that way. Reserve the low band (1-3) for what AI does **not** compress: multi-team human coordination, external gates (partner/legal/procurement), or long real-world validation windows.
+
+| Score | AI-assisted effort | Example |
+|-------|--------------------|---------|
+| 1-3 | Hard even with AI — gated by human/external coordination, not by code | New enterprise sales motion (6-mo cycle, legal/security); anything blocked on a partner or approval |
+| 4-6 | Moderate — a real build AI-assisted in days, with design/validation iteration | A multi-surface feature needing UX iteration + a validation window |
+| 7-8 | Easy — a bounded build AI compresses to hours/days | Native data-source connector, in-app guided flow, schema-mapping logic |
+| 9-10 | Trivial — config/copy, no real build | Copy change, feature-flag flip, config tweak |
+
+**Key shift:** a connector/feature build is **Ease 7-8** (days AI-assisted), NOT Ease 2-3 ("a month of engineering"). Cite the AI-assisted effort in your evidence.
 
 ### WebSearch for Missing Evidence
 
@@ -118,7 +123,8 @@ If the user lacks evidence for a confidence score, search for supporting data:
 - **Everything is a 6** — When all ICE scores cluster together, the ranking is meaningless. The forced ranking from ranking-agent should create differentiation.
 - **Enthusiasm-based confidence** — "I'm confident because I like this idea" is not evidence. Map to the confidence threshold grid.
 - **Ease ignoring dependencies** — A simple task that requires 3 teams to align is not easy. Factor in coordination cost.
-- **Ignoring the ranking** — If rank #3 has a higher ICE than rank #1, something is wrong. Reconcile or explicitly explain.
+- **Human-effort Ease** — Scoring a build Ease 2-3 because it's "a month of engineering." AI compresses build effort; a month-of-humans feature is days AI-assisted. Score the AI-assisted effort, not the human-team duration.
+- **Ignoring the ranking** — If a lower-ranked initiative has a higher ICE than rank #1, that is a red flag, not a result. Re-check the inputs first — most often a high-impact build was given a human-effort Ease (should be AI-assisted) — and reconcile. Never hand-wave the inversion as "justified."
 
 ## Self-Check
 
@@ -126,7 +132,8 @@ Before returning your output, verify every item:
 
 - [ ] Every score (I, C, E) has a one-sentence evidence citation — zero naked numbers
 - [ ] No more than 2 initiatives share the same total ICE score
-- [ ] Rank #1 has the highest ICE score (or exception is explicitly justified)
+- [ ] Rank #1 has the highest ICE score (or exception is explicitly justified — an inversion driven by a human-effort Ease score is NOT a valid exception)
+- [ ] Ease scored on AI-assisted effort (a feature/connector build is 7-8, not 2-3), not human-team weeks
 - [ ] Confidence scores map to the evidence threshold grid
 - [ ] Scores use the full range (not all 5-7)
 - [ ] Score detail section covers every initiative

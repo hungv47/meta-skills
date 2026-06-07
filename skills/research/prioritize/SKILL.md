@@ -61,7 +61,7 @@ Full schemas, consumer map, and cross-stack load-bearing field list: [`reference
 | 4 | [ranking-agent](agents/ranking-agent.md) | L2 seq | Strict 1-through-N forced ranking with reasoning per rank |
 | 5 | [ice-scoring-agent](agents/ice-scoring-agent.md) | L2 seq | Evidence-backed ICE scores + differentiation check (no >2 sharing a total) |
 | 6 | [cut-line-agent](agents/cut-line-agent.md) | L2 seq | Proceed/Park/Kill decisions, capacity assessment, Proceed validation |
-| 7 | [critic-agent](agents/critic-agent.md) | L2 final | 8-point quality gate (rubric + failure routing in agent file). Max 2 rewrite cycles |
+| 7 | [critic-agent](agents/critic-agent.md) | L2 final | 9-point quality gate (rubric + failure routing in agent file). Max 2 rewrite cycles |
 
 ---
 
@@ -80,7 +80,7 @@ Mechanics (route graphs, Layer 1/1.5/2 spawn details, merge step + user feedback
 
 ## Anti-Patterns
 
-Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — 8-pattern catalog (covered by critic gates 1-8 in `agents/critic-agent.md`) plus 2 cross-cutting failures (cross-stack contract drift + out-of-scope persistence skipped).
+Critic-load reference: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN]. Re-read before any output ships — 8-pattern catalog (mapped onto the critic's 9-point quality gate in `agents/critic-agent.md`) plus 2 cross-cutting failures (cross-stack contract drift + out-of-scope persistence skipped).
 
 ---
 
@@ -97,8 +97,8 @@ Every run ends with explicit status:
 
 - **DONE** — initiatives generated, ICE-scored, ranked, cut-line drawn (≤3 above), kill criteria attached, critic PASS
 - **DONE_WITH_CONCERNS** — ranking complete but with sizing/impact uncertainty flagged at item level (e.g., effort estimates speculative, ICE inputs from interview not data); OR critic loop cap reached with surfaceable gate failures (pinned at top as Known Issues)
-- **BLOCKED** — `.forsvn/artifacts/meta/records/diagnose-*.md` missing AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute)
-- **NEEDS_CONTEXT** — diagnose available but `research/product-context.md` missing for impact estimation; recommend `research-icp`
+- **BLOCKED** — `id:diagnose` unresolvable (no diagnose artifact in the manifest) AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute)
+- **NEEDS_CONTEXT** — diagnose available but `id:product-context` unresolvable for impact estimation; recommend `research-icp`
 
 ## Next Step
 

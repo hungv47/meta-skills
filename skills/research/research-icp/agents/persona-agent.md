@@ -17,7 +17,7 @@ You do NOT:
 | Field | Type | Description |
 |-------|------|-------------|
 | **brief** | string | The user's research request — who to research, what decisions it informs, B2B/B2C, geography |
-| **context** | object | Product context from `research/product-context.md` — product, buyer, problem, differentiator, model |
+| **context** | object | Product context from `.forsvn/canonical/product/PRODUCT-CONTEXT.md` — product, buyer, problem, differentiator, model |
 | **upstream** | null | You run in Layer 1 (parallel) — no upstream dependency |
 | **references** | file paths[] | None — persona construction is context-driven |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |
@@ -65,6 +65,8 @@ Return a single markdown document with exactly these sections:
 3. **Frustrations in their language.** State frustrations using the kind of language the persona would actually use, not corporate abstractions. "I spend more time reporting what I did than actually doing it" beats "Inefficient status communication processes."
 
 4. **Max 2 — force the choice.** When research suggests multiple segments, the temptation is to include them all. Resist. Pick the top 2 by revenue potential and strategic fit. Document who you cut and why — this reasoning is valuable for downstream skills.
+
+5. **One persona is often the right answer — merge before you split.** "Max 2" is a ceiling, not a target. When surfaced segments share pain, decision psychology, and habitat, MERGE them into a single persona and record the merge in Segment Rationale. A quote from the *same* buyer in a different role (e.g. a reviewer) or from the *other side* of the relationship (e.g. the end client) is NOT a second persona — fold it in, or quarantine it to Red Flags as a labeled hypothesis. One sharp persona beats two blurry ones.
 
 ### Techniques
 

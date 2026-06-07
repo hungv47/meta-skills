@@ -103,7 +103,7 @@ One line per initiative, ranked 1-through-N. The #1 entry must include a reason;
 | Initiative | string | Verbatim from Phase 1 (`### N. [Name]`) |
 | I | integer 1-10 | Impact — how much this moves the target metric |
 | C | integer 1-10 | Confidence — how sure this will work; needs evidence in Key Evidence |
-| E | integer 1-10 | Effort INVERSE (higher = easier) — person-weeks; per `references/ice-scoring-rubric.md` |
+| E | integer 1-10 | Effort INVERSE (higher = easier) — scored on AI-assisted effort, not human-team weeks; per `references/ice-scoring-rubric.md` |
 | ICE | integer | Sum of I + C + E (max 30) |
 | Key Evidence | string | One-sentence citation for the top-scoring dimension (e.g., "I:8 — paid is 60% of traffic, old targeting converted at 3.5% vs 1.2% now") |
 
@@ -159,7 +159,7 @@ This block is **verbatim** — downstream `forsvn` and `plan-funnel` grep these 
 ```markdown
 ## Known Issues
 
-[List the critic's last-cycle verdict verbatim, the 8-point gates that failed, the agent that owns each, and the reason the loop stopped.]
+[List the critic's last-cycle verdict verbatim, the 9-point gates that failed, the agent that owns each, and the reason the loop stopped.]
 ```
 
 ### Revisited Out-of-Scope (only if reconsidering a prior Kill)

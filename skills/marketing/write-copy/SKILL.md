@@ -62,6 +62,8 @@ Default English; other languages need adapted idioms. `--fast` collapses Layer 1
 
 Three routes — A (single key line), B (full page), C (called by another skill). Full pseudocode + agent manifest in [`references/agent-manifest.md`](references/agent-manifest.md). Spawn mechanics in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 
+**Route-collapse default (no `--fast` needed):** a ≤3-sentence single-line ask with no prior artifacts auto-resolves to **Route A** (one writing agent + critic) — the lean single-route composition. Route B's full Layer 1 + Layer 2 orchestration engages only for full-page scope, multi-line asks, or an upward override ("full page", "thorough").
+
 ## Artifact Contract
 
 - **Path (Route A/B):** `.forsvn/artifacts/marketing/content/[slug].copy.md`

@@ -14,7 +14,7 @@ Brand-system produces three complementary files — **BRAND.md** (narrative bran
 
 The orchestrator coordinates 8 specialized sub-agents across two layers: **Layer 1 parallel** (strategy + personality + voice + visual) lays the brand foundation; **Layer 2 sequential** (token-architect → component-token → accessibility → critic) builds the design system on top of the visual foundation. ASSETS.md is projected deterministically after the critic gate passes — no extra agent — by reading BRAND.md + DESIGN.md + declared platforms against `references/assets-inventory.md` templates.
 
-This skill is the canonical producer of `brand/BRAND.md`, `brand/DESIGN.md`, `brand/ASSETS.md`. These are top-level canonical artifacts (not pipeline outputs) — edited in place over time by humans and re-amended on major product pivots.
+This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (ids `brand`, `design`, `assets`). These are canonical artifacts (not pipeline outputs) — edited in place over time by humans and re-amended on major product pivots.
 
 ## Why this skill exists at all
 
@@ -44,7 +44,7 @@ Three-layer token architecture is load-bearing for downstream usability. Primiti
 - **Layer 1 (parallel):** strategy-agent + personality-agent + voice-agent + visual-agent. Run simultaneously because they consume the same brief and produce non-overlapping sections of BRAND.md (plus visual-agent populates DESIGN.md §1-3 + §6-8 + §11 atmosphere/colors/typography/shadows/imagery/do's-don'ts and BRAND.md brand-mark).
 - **Layer 2 (sequential):** token-architect-agent receives visual-agent output (colors + fonts + complete theme palettes) AND personality-agent output (archetype for radius). Component-token-agent receives token-architect output (semantic token map). Accessibility-agent receives token-architect + component-token outputs. Critic-agent receives the full assembled brand system.
 - **Merge step between Layer 1 and Layer 2:** orchestrator assembles Layer 1 outputs into BRAND.md (11 sections) + DESIGN.md (sections 1-3 + 6-8 + 11). Coherence check before dispatching Layer 2.
-- **Step 8.5 (after critic PASS, Route B only, deterministic — no agent):** project declared-platforms × `assets-inventory.md` templates into `brand/ASSETS.md`. Auto-scan `brand/` for file existence; preserve human `[~]`/`[!]` markers verbatim; move dropped-platform rows to `## Orphaned`.
+- **Step 8.5 (after critic PASS, Route B only, deterministic — no agent):** project declared-platforms × `assets-inventory.md` templates into `.forsvn/canonical/marketing/ASSETS.md` (stamps `id: assets`). Auto-scan `brand/` for file existence; preserve human `[~]`/`[!]` markers verbatim; move dropped-platform rows to `## Orphaned`.
 - **Step 9 (optional):** Visual Renderings via Paper MCP artboards (9a), Claude Design handoff (9b), or none (9c).
 
 **Two routes by scope.**
@@ -62,7 +62,7 @@ Three-layer token architecture is load-bearing for downstream usability. Primiti
 
 - **Critical Gates are binary.** 5 gates so load-bearing that violation = re-dispatch BEFORE delivery. (1) No colors/fonts before strategy. (2) No Layer 2 before Layer 1 completes. (3) Don't skip critic's cross-element coherence check. (4) Stale upstream data >30 days → recommend re-running `research-icp`. (5) BRAND.md is prose, DESIGN.md is specification — never mix registers.
 - **Declared platforms gate per-platform content.** Target platforms enumerated at Pre-Dispatch (Q6) are the SINGLE source of truth for what appears in BRAND.md Digital Touchpoints, DESIGN.md Platform Icon Specifications, and ASSETS.md platform blocks. Undeclared platforms MUST NOT appear. Three-way platform-set equivalence is a critic gate.
-- **ASSETS.md is living, not versioned.** Always updated in place. Dropped-platform rows move to `## Orphaned` (preserved, not deleted). Only version (`ASSETS.v[N].md`) when the user explicitly requests fresh inventory after major product pivot. BRAND.md and DESIGN.md DO version on re-run (`BRAND.v[N].md` / `DESIGN.v[N].md`).
+- **ASSETS.md is living.** Overwrite `.forsvn/canonical/marketing/ASSETS.md` in place + increment the integer `version:` (prior versions in git history). Dropped-platform rows move to `## Orphaned` (preserved, not deleted). Never a `.v[N].md` sibling under `canonical/` — the UPPERCASE name grammar forbids dots. BRAND.md and DESIGN.md re-run the same way — overwrite in place + bump the integer `version:` (prior versions live in git history; no `.v[N].md` sibling under `canonical/`).
 - **Human markers are sacred.** Auto-scan only flips `[ ]` ↔ `[x]` based on file existence. `[~]` (in progress) and `[!]` (blocked) are human-owned and preserved verbatim across re-runs.
 - **No invented rows.** Every ASSETS.md row traces to BRAND.md / DESIGN.md / `platform-surfaces.md`. No invented assets.
 - **Reference examples teach quality, not direction.** `example-brand.md` + `example-design.md` show structural quality (sections, depth, format). They are NOT a style guide. If output shares visual language with examples (glass surfaces, amethyst palette, geometric type) without justification from the brief, that's anchoring bias and the critic flags it.

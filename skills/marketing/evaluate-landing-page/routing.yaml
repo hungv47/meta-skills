@@ -26,6 +26,8 @@ promptSignals:
     - [page, results]
     - [landing, not, converting]
     - [landing, performance]
+    - [evaluate, landing, page]
+    - [evaluate, landing]
   anyOf:
     - "experiment results"
     - "conversion data"
@@ -65,8 +67,8 @@ capability:
       - "Scaffolding the loop itself -> run-eval-loop."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "research/icp-research.md"
+        - "id:brand"
+        - "id:icp-research"
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"

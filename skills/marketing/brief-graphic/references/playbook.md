@@ -80,7 +80,7 @@ Multi-agent value here: **brand specialist + concept variety (3 distinct options
 - `.forsvn/artifacts/marketing/campaign-plan.md` — campaign context, channel placement, awareness stage (from `plan-campaign`)
 - `research/icp-research.md` — audience visual preferences (from `research-icp` in research-skills)
 - `references/asset-types.md` — per-asset format specs
-- `references/platform-modules.md` — per-platform brief checklists (skeleton — needs follow-up build pass per skill `status: done_with_concerns`)
+- `references/platform-modules.md` — per-platform brief checklists. Fully populated — all 18 modules (tranche 1 core-digital + tranche 2 paid-ad-chrome + physical) carry practitioner-grade specs; volatile platform fields + per-vendor physical specs carry `[verify]` / confirm-media-kit flags. Skill is `status: done`
 - `references/prompt-patterns.md` — image-gen prompt structures + tool → asset type table
 - `references/visual-rubric.md` — critic scoring dimensions + 13-pattern generic-AI-aesthetic detector
 - `references/failure-modes.md` — generic-AI catalog + brand drift patterns

@@ -54,9 +54,9 @@ capability:
       - "Technical architecture for a chosen initiative -> architect-system."
     prerequisites:
       recommended:
-        - "research/market-research.md"
-        - "research/diagnose.md"
-        - "research/product-context.md"
+        - "id:market-research"
+        - "id:diagnose"
+        - "id:product-context"
       hard: []
 
   orchestration:

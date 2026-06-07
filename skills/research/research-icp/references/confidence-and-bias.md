@@ -47,7 +47,7 @@ Per [`references/_shared/confidence-labeling.md`](_shared/confidence-labeling.md
 
 ### Confidence summary at artifact top
 
-Insert at top of `research/icp-research.md`, immediately after the H1:
+Insert at top of `.forsvn/canonical/research/ICP.md`, immediately after the H1:
 
 ```markdown
 **Confidence Summary:** H findings: N | M findings: N | L findings: N (each L resolved or dropped — see Red Flags)
@@ -75,7 +75,7 @@ Every source type has structural skews. Surfacing them upstream prevents downstr
 
 ### What to write in the artifact
 
-New H2 section in `research/icp-research.md`, placed AFTER Red Flags and BEFORE Next Step:
+New H2 section in `.forsvn/canonical/research/ICP.md`, placed AFTER Red Flags and BEFORE Next Step:
 
 ```markdown
 ## Sample Bias Acknowledged

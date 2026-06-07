@@ -72,7 +72,7 @@ capability:
         - ".forsvn/artifacts/marketing/produce-video/[slug]/manifest.md"
       hard:
         - ".forsvn/artifacts/marketing/write-social/[slug]/*.md"
-        - "brand/BRAND.md"
+        - "id:brand"
 
   orchestration:
     default: auto

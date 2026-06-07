@@ -68,10 +68,10 @@ capability:
       - "Caller asks for `--publish`, `--render`, or `--auto-run` -> BLOCKED (this stack does not invoke render engines)."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
+        - "id:icp-research"
       hard:
-        - "brand/BRAND.md"
-        - "brand/DESIGN.md"
+        - "id:brand"
+        - "id:design"
 
   orchestration:
     default: auto

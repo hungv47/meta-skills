@@ -95,6 +95,9 @@ Derived/inferred values (set by `manifest-sync.ts` or `clean-artifacts`, NOT set
 | `superseded_by` | Set on the old artifact when a newer one replaces it (by `id`) | `"new-plan-slug"` |
 | `references` | Non-hierarchical link to a related artifact (by `id`) | `"market, icp"` |
 | `kind` | When marking a living registry inside `records/` | `"registry"` |
+| `assets` | The return-leg (§ below) — re-ingested rendered outputs attached to this artifact | `[.forsvn/assets/hero/final.png, https://site.com/lp]` |
+| `asset_picked` | The option-picker's canonical choice among `assets` (or a variant slug) | `.forsvn/assets/hero/final.png` |
+| `execution_mode` | The execution-fork choice recorded on a brief/produce artifact (provenance + eval attribution) | `brief-only` \| `assisted` \| `direct` |
 
 **Graph edges are authored by `id`, not path** (Phase 1). The five edge fields (`upstream`, `downstream`, `supersedes`, `superseded_by`, `references`) reference other artifacts by their stable `id`; the manifest resolves `id → current path` and derives the `referenced_by` reverse index, so a move never breaks an edge. Tokens that name something outside the indexed graph (a skill name, an external path like `skills/…` or `../_biz-ops/…`) are kept literal and treated as external. See [`manifest-spec.md`](manifest-spec.md) § "v2 — the Knowledge Graph".
 
@@ -129,6 +132,25 @@ Producers: every generative skill in scope of an eval loop. Consumer: `evaluate-
 The eval-loop contract is the source of this variant. It is emitted by skills whose output is expected to be scored by a downstream `evaluate-*` command.
 
 A single artifact MAY carry both variants under separate keys (`provenance_extraction:` and `provenance_generation:`) if it was extracted from a source AND is generation-evaluatable, but this is rare — typically extraction-provenance artifacts are canonical refs and aren't evaluated.
+
+### Return-leg fields (`assets` / `asset_picked`)
+
+The closed loop (CLOSED-LOOP.md §6) only closes when the **real rendered output**
+re-enters the graph — so the evaluator scores what shipped and downstream skills
+(`write-social`, `write-ad`) reference the asset, not the brief.
+
+- **`assets`** — a **flat list** of repo-relative paths or URLs of rendered outputs
+  attached to this artifact. Files are taken into custody under
+  `.forsvn/assets/<id>/` (id-keyed so a move never orphans them) and the blob is
+  git-ignored (local-first: track the pointer, not the binary); URLs are recorded
+  verbatim. Populated by `forsvn-preview attach <artifact.md> <file-or-url>` (the
+  desktop drop-zone is a thin trigger over the same mechanic).
+- **`asset_picked`** — the **option-picker's** canonical choice among `assets`
+  (or, for a design-variant picker, the chosen variant slug). Persisted from the
+  review surface's variant picker (`--picked` on `attach`, or the picker POST).
+
+Both are optional and flat-YAML; `manifest-sync` indexes them and `forsvn-mcp
+get_artifact` surfaces them so an agent references the picked asset directly.
 
 ---
 

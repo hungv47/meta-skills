@@ -1,0 +1,124 @@
+# Routing + capability metadata for evaluate-outreach.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "outreach eval"
+    - "evaluate the outreach"
+    - "did the outreach work"
+    - "outreach cycle results"
+    - "cold email results"
+    - "did the sequence land replies"
+    - "score the outreach campaign"
+    - "reply rate results"
+    - "positive reply rate"
+    - "meeting booked rate"
+    - "outreach performance"
+    - "did the cold email work"
+  allOf:
+    - [outreach, results]
+    - [reply, rate]
+    - [outreach, performance]
+    - [cold email, results]
+  anyOf:
+    - "reply rate"
+    - "positive reply"
+    - "meeting booked"
+    - "qualified leads"
+    - "bounce rate"
+    - "spam complaints"
+    - "deliverability"
+    - "open rate"
+  noneOf:
+    - "write outreach"
+    - "draft a cold email"
+    - "write a cold email"
+    - "outreach sequence to write"
+    - "post performance"
+    - "ad performance"
+    - "short-form video"
+  minScore: 6
+
+capability:
+  id: evaluate-outreach
+  domain: marketing
+  public: true
+  command: /evaluate-outreach
+  summary: "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) from real reply data inside an existing eval loop — one channel + segment per cycle, verdict + reply-quality diagnosis with a deliverability + compliance gate."
+  aliases:
+    - outreach-eval
+    - reply-eval
+    - sequence-eval
+
+  route:
+    use_when:
+      - "User asks to evaluate a sent outreach sequence against its write-outreach hypothesis using reply data."
+      - "Loop exists; cycle N needs scoring for one channel + segment."
+    not_when:
+      - "Loop does not exist yet -> run-eval-loop."
+      - "The outreach is still a draft, not sent -> write-outreach."
+      - "Organic-post performance -> evaluate-content."
+      - "Paid-ad performance -> evaluate-ad."
+      - "Writing next-cycle copy -> write-outreach; list/targeting -> research-icp."
+    prerequisites:
+      recommended:
+        - "id:icp-research"
+        - "id:brand"
+        - "id:product-context"
+      hard:
+        - ".forsvn/loops/[slug]/program.md"
+        - ".forsvn/loops/[slug]/context.md"
+        - ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Reply ingest only (no reply-quality / deliverability diagnosis needed)."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+      - "Reply-quality or deliverability/compliance signal disputed; needs the full layer."
+    critic_required_when:
+      - "Always — eval artifact + ledger row are canonical loop state."
+      - "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+
+  load:
+    always:
+      - "references/_shared/eval-loop-spec.md"
+      - "references/_shared/evaluation-loop-rubric.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, hard-block checks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic revision cycle"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Rubric scoring"
+        read:
+          - "references/rubric.md"
+      - if: "Artifact write / Evidence + Reply-Quality + Deliverability table format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Critic override (operator ships despite FAIL)"
+        read:
+          - "references/_shared/critic-override-protocol.md"
+      - if: "Quality feedback / dashboard updates"
+        read:
+          - "references/_shared/quality-dashboard-spec.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one cycle = one channel + segment = one artifact + one ledger row."
+      - path: ".forsvn/loops/[slug]/results.tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended via `append-loop-result.ts` on critic PASS."
+      - path: ".forsvn/loops/[slug]/learnings.md"
+        lifecycle: evaluation
+        produced_when: "ONLY for high-confidence keep/discard lessons that generalize beyond this exact sequence — critic gates promotion."

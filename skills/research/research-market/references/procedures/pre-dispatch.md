@@ -6,9 +6,9 @@
 
 ## Read order (in order)
 
-1. **Pipeline (preferred):** `research/product-context.md` for product signal (category, differentiator, pricing model, target segment) — informs competitor selection, positioning axes, gap identification. `.forsvn/artifacts/meta/records/diagnose-*.md` for known root-cause focus — narrows market scan to relevant dimensions.
+1. **Pipeline (preferred):** `id:product-context` for product signal (category, differentiator, pricing model, target segment) — informs competitor selection, positioning axes, gap identification. `id:diagnose` for known root-cause focus — narrows market scan to relevant dimensions.
 2. **Experience (read, don't ask):** `.forsvn/experience/product.md` (category if persisted), `.forsvn/experience/business.md` (geo + horizon + known competitors if persisted), `.forsvn/experience/audience.md` (B2B/B2C if persisted).
-3. **Pipeline (optional, re-run case):** prior `research/market-research.md` — carries prior landscape + opportunities as context for the new run; the new run still re-scans (don't recycle stale market data per Critical Gate 1).
+3. **Pipeline (optional, re-run case):** prior `id:market-research` at `.forsvn/canonical/research/MARKET.md` — carries prior landscape + opportunities as context for the new run; the new run still re-scans (don't recycle stale market data per Critical Gate 1).
 
 After read + scan, present findings and ask only about the gaps.
 
@@ -65,7 +65,7 @@ This matches the canonical mode-resolver contract: `--fast` skips orchestration 
 
 ## Step 0 — Product Context Check
 
-Check for `research/product-context.md`. If missing: **strongly recommend** running `research-icp` first to create it. Skill works without it, but quality improves significantly. If user declines, interview for category, target market, and differentiator at minimum.
+Check for `id:product-context` (`find-artifacts --resolve product-context`). If missing: **strongly recommend** running `research-icp` first to create it. Skill works without it, but quality improves significantly. If user declines, interview for category, target market, and differentiator at minimum.
 
 **If product-context.md exists**, extract before dispatch:
 
@@ -106,7 +106,7 @@ After Pre-Dispatch answers come in AND artifact ships PASS (or done_with_concern
 
 This write-back IS in the original SKILL.md (lines 131-139) and IS preserved here verbatim.
 
-**No canonical mirror.** Unlike icp-research (which mirrors Q1 to `research/product-context.md` because icp-research IS the canonical producer of product-context), market-research's writes go to per-domain `experience/*.md` only. The cross-stack artifact is `research/market-research.md` itself, produced by the dispatch arc — not by Pre-Dispatch write-back.
+**No experience-mirror of the canonical record.** Unlike icp-research (which mirrors Q1 to `research/product-context.md` because icp-research IS the canonical producer of product-context), market-research's writes go to per-domain `experience/*.md` only. The cross-stack artifact is `.forsvn/canonical/research/MARKET.md` itself, produced by the dispatch arc — not by Pre-Dispatch write-back.
 
 ---
 
@@ -130,7 +130,7 @@ Echo the chosen route at the end of the Cold Start / Warm Start confirmation. Op
 
 Original SKILL.md "Re-run triggers" (line 92): "New market entry, major competitor launch/pivot, fundraising, or quarterly for fast-moving categories." These are **operator-judgment** triggers — not automated emissions.
 
-Do NOT auto-emit a "WARNING: prior market-research.md is N days old" message on re-run. Operator decides when re-research is warranted; auto-emission would be net-new behavior. The only auto-flag is Critical Gate 1 (sources >18 months → flag as historical) — that's a per-source check during dispatch, not a per-artifact warning.
+Do NOT auto-emit a "WARNING: prior MARKET.md is N days old" message on re-run. Operator decides when re-research is warranted; auto-emission would be net-new behavior. The only auto-flag is Critical Gate 1 (sources >18 months → flag as historical) — that's a per-source check during dispatch, not a per-artifact warning.
 
 ---
 
@@ -149,7 +149,7 @@ Echo the chosen route at the end of the Cold Start / Warm Start confirmation. Op
 ## Anti-patterns in Pre-Dispatch
 
 - **Dispatching with category undefined.** "Tech" or "SaaS" is too broad to size. Return `BLOCKED` per Completion Status; ask user for category narrowing.
-- **Recycling prior `research/market-research.md` without re-scan.** Prior data is context, not output. The new run re-fetches via WebSearch (Critical Gate 4 — never rely on training data).
+- **Recycling prior `.forsvn/canonical/research/MARKET.md` without re-scan.** Prior data is context, not output. The new run re-fetches via WebSearch (Critical Gate 4 — never rely on training data).
 - **Writing to product.md / business.md / goals.md / audience.md BEFORE the artifact ships.** Write-back happens after Layer 1 + Layer 2 dispatch completes AND critic PASSes (or done_with_concerns ships). Partial runs that BLOCK should not persist scope state.
 - **Persisting Q3 (Why-now / trigger) as if it were stable user state.** Q3 is a per-invocation rationale, not a stable goal. Original SKILL.md writes it to goals.md as `Goals — market-research trigger` (a one-off trigger, not a recurring goal) — preserved verbatim. Don't elevate it to a recurring goal entry.
 - **Auto-emitting staleness warnings on re-run.** Only Critical Gate 1 (>18-month sources) auto-flags. General re-run staleness is operator judgment.

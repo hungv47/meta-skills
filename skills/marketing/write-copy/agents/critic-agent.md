@@ -178,6 +178,7 @@ All items must pass for a PASS verdict:
 - [ ] Every key line passes the Three-Question Test (V, F, U all yes)
 - [ ] Rubric score averages ≥3.5 across V/F/U for all key lines
 - [ ] No key line scores below 3 on any single dimension
+- [ ] **Belief sequence walked across the hero** (multi-line surfaces): headline → subhead → bullets cover the belief sequence in order, AND the headline scores ≥4 on each of V/F/U — an abstract belief-1 belongs in the subhead, not forced into a weak headline
 - [ ] Every key line passes the Competitor Swap Test
 - [ ] Unique Mechanism distinctness check passed, or N/A is explicitly justified
 - [ ] 3-5 variations were generated per key line, best selected with alternatives documented

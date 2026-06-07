@@ -55,6 +55,7 @@ promptSignals:
     - "render the asset"
     - "render asset"
     - "image generation"
+    - "evaluate"
   minScore: 6
 
 capability:
@@ -80,9 +81,9 @@ capability:
       - "No screenshots available; greenfield social video -> brief-shortform."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "brand/DESIGN.md"
-        - "research/icp-research.md"
+        - "id:brand"
+        - "id:design"
+        - "id:icp-research"
       hard: []
 
   orchestration:

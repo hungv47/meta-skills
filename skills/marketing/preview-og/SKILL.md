@@ -1,6 +1,6 @@
 ---
 name: preview-og
-description: "Previews, validates, and fixes Open Graph / Twitter share cards — how a link renders on Facebook, X, LinkedIn, and Discord/Slack. Runs the metaprev CLI to catch broken or missing og:image, relative image URLs, wrong dimensions or ratio, oversized or non-image files, and weak titles, then applies the fixes in the codebase and re-verifies. Use before shipping a page, after editing og:* meta, or when a share preview looks broken or blank. Not for writing page copy (use write-copy), search/AEO strategy (use optimize-seo), generating the og:image artwork (use produce-asset), or posting content (use publish-social)."
+description: "Previews, validates, and fixes Open Graph / Twitter share cards — how a link renders on Facebook, X, LinkedIn, and Discord/Slack. Runs the metaprev CLI to catch missing or broken og:image, relative URLs, wrong dimensions, oversized files, and weak titles, then applies fixes and re-verifies. Use before shipping a page or when a share preview looks broken. Not for page copy (use write-copy), search/AEO (use optimize-seo), og:image artwork (use produce-asset), or posting (use publish-social)."
 argument-hint: "[url or localhost dev server]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:

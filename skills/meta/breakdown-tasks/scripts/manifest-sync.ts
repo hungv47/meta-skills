@@ -69,6 +69,9 @@ type ArtifactEntry = {
   upstream: string;
   downstream: string;
   references: string;
+  assets: string[];
+  asset_picked: string;
+  execution_mode: string;
   decision_status: string;
   decision_state: string;
   review_surface: string;
@@ -482,6 +485,14 @@ for (const base of ARTIFACT_ROOTS) {
       upstream: textField(fm, "upstream"),
       downstream: textField(fm, "downstream"),
       references: textField(fm, "references"),
+      // The return-leg (CLOSED-LOOP.md §6): `assets` is the flat list of
+      // re-ingested rendered outputs (repo-relative paths or URLs) attached to
+      // this artifact; `asset_picked` is the canonical option-picker choice.
+      // Indexed so downstream skills + MCP get_artifact reference the REAL asset.
+      assets: listField(fm, "assets"),
+      asset_picked: textField(fm, "asset_picked"),
+      // The execution fork (CLOSED-LOOP.md §4): which mode produced this artifact.
+      execution_mode: textField(fm, "execution_mode"),
       decision_status: textField(fm, "decision_status"),
       decision_state: decisionState,
       review_surface: reviewSurface,

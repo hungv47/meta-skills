@@ -1,6 +1,6 @@
 ---
 name: evaluate-shortform
-description: "Closes the feedback loop for short-form video — scores a published post against its original brief and the matching short-form platform-intelligence catalog on a 4-dimension rubric, then logs a falsifiable pattern entry to the eval loop. Use to review a post after publishing, check whether a brief survived contact with the platform, or run an eval cycle inside an existing loop. Not for pre-publish brief authoring (use brief-shortform) or catalog discovery (use research-shortform). Needs an existing loop workspace — for that, see run-eval-loop."
+description: "Closes the feedback loop for short-form video — scores a published post against its original brief and the matching short-form platform-intelligence catalog on a 4-dimension rubric, then logs a falsifiable pattern entry to the eval loop. Use to review a post after publishing or run an eval cycle in an existing loop. Not for pre-publish brief authoring (use brief-shortform) or catalog discovery (use research-shortform); needs a loop workspace (see run-eval-loop)."
 argument-hint: "<loop-slug> <post-url> <brief-path>"
 allowed-tools: Read Grep Glob Bash WebFetch Write
 metadata:

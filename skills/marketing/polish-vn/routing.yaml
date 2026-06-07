@@ -58,7 +58,7 @@ capability:
       - "Brand voice of record -> create-brand."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
+        - "id:brand"
       hard: []
 
   orchestration:

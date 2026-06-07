@@ -101,7 +101,7 @@ Run one at a time; each consumes the previous output.
 | Field | Value |
 |---|---|
 | **Input** | Complete merged analysis (all upstream agents' outputs) |
-| **Expected output** | PASS or FAIL against the 8-point quality gate documented in `agents/critic-agent.md`. FAIL routes specifically per the Failure Routing table in that file. |
+| **Expected output** | PASS or FAIL against the 9-point quality gate documented in `agents/critic-agent.md`. FAIL routes specifically per the Failure Routing table in that file. |
 
 ---
 
@@ -123,19 +123,19 @@ research-agent → initiative-generator-agent → ranking-agent → ice-scoring-
 
 **Max 2 rewrite cycles.** If the critic returns FAIL:
 
-1. Read the critic's failure report — it names the specific gate (1 of 8), the fix, and the agent to re-dispatch.
+1. Read the critic's failure report — it names the specific gate (1 of 9), the fix, and the agent to re-dispatch.
 2. Re-dispatch ONLY the named agent(s) with the critic's feedback as input.
 3. Re-merge if Layer-2 agents downstream of the re-dispatched one need fresh input.
 4. Send the updated complete analysis back to `critic-agent`.
 5. **If FAIL again after 2 cycles** → deliver the artifact with a `## Known Issues` section listing unresolved gate failures + the critic's last verdict verbatim. Status becomes `done_with_concerns`, never silent PASS.
 
-The 8-point gate + failure routing table both live in `agents/critic-agent.md`. Don't re-encode here.
+The 9-point gate + failure routing table both live in `agents/critic-agent.md`. Don't re-encode here.
 
 ---
 
 ## Single-Agent Fallback
 
-If the full orchestration is unnecessary (simple problem, ≤3 initiatives already named by the operator, ranking is the only question) you may run the analysis inline without dispatching agents. Apply the same 8-point quality gate before delivering.
+If the full orchestration is unnecessary (simple problem, ≤3 initiatives already named by the operator, ranking is the only question) you may run the analysis inline without dispatching agents. Apply the same 9-point quality gate before delivering.
 
 **When the fallback is appropriate:** user pastes "Here are 3 initiatives — rank them and tell me which to ship first" with constraints + context already provided. That's a single decision; orchestration is theatre.
 

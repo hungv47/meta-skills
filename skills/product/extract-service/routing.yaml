@@ -52,7 +52,7 @@ capability:
       - "Documentation only -> write-docs."
     prerequisites:
       recommended:
-        - "architecture/system-architecture.md"
+        - "id:architecture"
       hard: []
 
   orchestration:

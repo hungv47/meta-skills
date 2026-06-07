@@ -1,6 +1,6 @@
 ---
 name: brief-shortform
-description: "Production-ready brief for short-form video — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. Covers live-action + motion-graphic. 1 hero + max 2 variants per run. Reads the per-platform research-shortform catalog. Not for static visual assets (use brief-graphic), organic social copy (use write-social), paid ad creative (use write-ad), or rendering (use produce-video)."
+description: "Production-ready brief for short-form video — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. Covers live-action + motion-graphic. 1 hero + 2 variants per run. Reads the per-platform research-shortform catalog. Not for static visual assets (use brief-graphic), organic social copy (use write-social), paid ad creative (use write-ad), or rendering (use produce-video)."
 argument-hint: "[angle or topic] [--platforms tiktok,reels,...] [--brand-mode founder|company]"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -18,7 +18,7 @@ Production-grade brief for one short-form asset. Reads the per-platform research
 ## Critical Gates — load first
 
 1. **Soft-required: `research-shortform` artifact.** Missing → warn but proceed (briefs lack current trend signals; flag in artifact frontmatter). Stale beyond 30d trends or 180d mechanics → recommend re-run; user can override.
-2. **Hard cap: 1 hero + max 2 variants per invocation.** More platforms → re-invoke. Cost discipline.
+2. **Variant cap (soft): 1 hero + 2 variant platforms default.** More platforms extend the recut set with a per-recut cost+craft warning (`deep` budget; critic attention per variant thins past 2); re-invoke instead for full per-platform craft verification. Mode + tier: [`references/_shared/options-selection.md`](references/_shared/options-selection.md) (DELIVERY, tier A).
 3. **Hard cap: `brand_mode` is `founder` OR `company` — no `hybrid`.** User picks per-brief.
 4. **No fabricated VoC.** Every quote in the brief traces to `research/icp-research.md`. Cold-start audience hint accepted but flagged in artifact.
 5. **Generic content fails.** Critic gate enforces specificity at four axes (hook, production, algorithm-fit, brand-fit). Two cycles max, then ship `done_with_concerns`.
@@ -46,7 +46,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 ## Pre-Dispatch + Mode
 
-Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: angle · platforms (1-3) · brand_mode (founder | company) · production_mode (auto | live-action | motion-graphic | mixed) · market · optional campaign tie-in. Warm/Cold Start (5-question bundled) + Write-back map + VN auto-routing for polish chain: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
+Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: angle · platforms (1-3 typical; more extends recuts with a cost warning) · brand_mode (founder | company) · production_mode (auto | live-action | motion-graphic | mixed) · market · optional campaign tie-in. Warm/Cold Start (5-question bundled) + Write-back map + VN auto-routing for polish chain: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` skips Layer 2 (no critic, no platform-tailor) and runs Layer 1 + 1.5 single-pass via single-agent fallback. **`--fast` does NOT skip Cold Start or Critical Gates 1-6.**
 
@@ -70,7 +70,7 @@ Full template + per-section format rules: [`references/format-conventions.md`](r
 
 ## Anti-Patterns
 
-Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships. 5 sub-critic clusters (Hook / Production / Algorithm-fit / Brand-fit / Variant) + 5 soft anti-patterns + 6 cross-cutting marketing-stack (VN auto-routing, polish-chain on FAIL, hard-cap erosion, cross-stack contract drift, mixed production-mode transition principle).
+Read [`references/anti-patterns.md`](references/anti-patterns.md) before output ships. 5 sub-critic clusters (Hook / Production / Algorithm-fit / Brand-fit / Variant) + 5 soft anti-patterns + 6 cross-cutting marketing-stack (VN auto-routing, polish-chain on FAIL, variant-cap creep, cross-stack contract drift, mixed production-mode transition principle).
 
 Most common in practice: AI-slop openers ("Hey guys"), vague action verbs ("show product"), caption-only variant resizing, missing VoC in caption first-line, generic founder/company tropes.
 
@@ -87,6 +87,10 @@ Most common in practice: AI-slop openers ("Hey guys"), vague action verbs ("show
 - **DONE_WITH_CONCERNS** — loop cap reached; remaining FAILs surfaced as warnings. Concerns pinned at top of artifact.
 - **BLOCKED** — research stale beyond windows AND user declined re-run; ICP read fails; WebSearch/WebFetch blocked when verifying audio.
 - **NEEDS_CONTEXT** — required inputs missing (no research AND user declined to proceed; no BRAND.md AND brand_mode unresolvable). State which upstream skill provides what's missing.
+
+## Execution
+
+Offer the registry-gated fork (category `video`) — **Brief-only**: hand the brief to `produce-video` for the render-ready scaffold (→ `evaluate-shortform`); **Assisted/Direct**: a verified engine renders, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
 
 ## Worked Example
 

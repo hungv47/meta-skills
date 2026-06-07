@@ -61,7 +61,15 @@ function writeIfMissing(path: string, content: string): void {
     }
     return;
   }
-  writeFileSync(path, content);
+  try {
+    // O_EXCL ("wx"): create-or-fail atomically. Closes the TOCTOU between the
+    // existsSync check above and the write, and never follows a symlink planted
+    // in that gap (O_EXCL refuses an existing path, symlink included).
+    writeFileSync(path, content, { flag: "wx" });
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "EEXIST") return; // raced — leave what's there
+    throw err;
+  }
 }
 
 function ensureSafeDirectory(path: string): void {

@@ -69,9 +69,9 @@ Canonical: [`references/_shared/artifact-contract-template.md`](references/_shar
 - `NEEDS_CONTEXT` — brief missing AND no schema-compliant video-brief; or brand files missing; or aspect/length not derivable.
 - `BLOCKED` — `--publish`/`--render`/`--auto-run` requested; or critic FAILed twice on any hard gate.
 
-## Next Step
+## Execution
 
-Operator runs the scaffold (HyperFrames `preview|render`, Remotion `npx remotion preview|render`, or Vercel AI CLI / image-gen per `vercel-ai-cli.md` for shortform), then marks the manifest's per-shot verification checklist. Verified bundles feed `evaluate-shortform` / `evaluate-content`.
+Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
 
 ## Worked Example
 

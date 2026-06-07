@@ -61,6 +61,8 @@ Full read-order + Cold Start prompt + Warm Start prompt + write-back map + Chain
 
 Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤3 sentences + no prior artifacts; `--fast` flag skips Layer 2 (no prioritization, no critic) and runs single-agent. **`--fast` does NOT skip Cold Start or Critical Gates 1-4.**
 
+**Route-collapse default (multi-route deep override):** a ≤3-sentence single-scope ask (one mode's keywords, no prior artifacts) auto-resolves to that single mode's minimal Route (A/B/C/D/F) + critic — never Route E "Full SEO" — without needing `--fast`. Comprehensive or cross-mode asks, or an upward override ("full strategy", "thorough"), use the full multi-mode orchestration.
+
 ---
 
 ## Agent Manifest

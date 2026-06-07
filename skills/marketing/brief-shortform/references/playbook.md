@@ -12,7 +12,7 @@ load_class: PLAYBOOK
 
 Short-form video is a production discipline, not a writing discipline. The gap between "we have an angle" and "a producer can shoot/animate this" is where most short-form content dies — vague hooks, missing timing, "use trending music," generic CTAs. The brief is the contract between research and production. A brief that names the hook archetype, timed every shot to the second, specified a named track or VO direction, and bound every caption line to a VoC phrase from ICP can be executed without a single follow-up question. Anything less wastes a shoot day or a motion-graphic session.
 
-This skill replaces "give me a TikTok idea" with a production-ready document. Hero + max 2 variants per invocation — variants are TRUE RECUTS (rebuilt hook archetype, audio rule, caption norm, CTA placement per platform from the research catalog), never caption-resized clones. The variant cap is cost discipline; the recut rule is craft.
+This skill replaces "give me a TikTok idea" with a production-ready document. Hero + 2 variants per invocation by default — variants are TRUE RECUTS (rebuilt hook archetype, audio rule, caption norm, CTA placement per platform from the research catalog), never caption-resized clones. The variant default is cost + craft discipline (critic attention per variant thins past 2; extend past it only with a surfaced warning); the recut rule is craft.
 
 Specificity is the unit of value. "Hand pulls latch on case, latch click audible at 0:03–0:05, MCU framing" beats "show product." Every shot, scene, and line earns its place because the producer can act on it.
 
@@ -41,7 +41,7 @@ Brand mode and market drive the voice and polish chain; they're not cosmetic. Fo
 
 ## Methodology
 
-**1 hero + max 2 variants per invocation.** Hard cap. More platforms → re-invoke. The cap is cost discipline; the recut rule is craft. A hero is the canonical brief for the highest-leverage platform; variants are TRUE RECUTS for adjacent platforms (not caption resizes).
+**1 hero + 2 variants per invocation (soft default).** More platforms → re-invoke, or extend past the default with a surfaced cost+craft warning (critic attention per variant thins past 2). The default is cost + craft discipline; the recut rule is craft. A hero is the canonical brief for the highest-leverage platform; variants are TRUE RECUTS for adjacent platforms (not caption resizes).
 
 **Research-anchored bets, not generic advice.** Every recommendation in the brief traces to a per-platform finding in the short-form-research catalog (hook archetype, audio rule, length sweet spot, caption norm, CTA placement). Critic Algorithm-fit sub-critic verifies the bet matches the catalog.
 

@@ -49,9 +49,9 @@ capability:
       - "Channel-mix strategy (not search-only) -> plan-campaign."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
-        - "research/product-context.md"
-        - "brand/BRAND.md"
+        - "id:icp-research"
+        - "id:product-context"
+        - "id:brand"
       hard: []
 
   orchestration:

@@ -62,8 +62,8 @@ capability:
       - "Rendering happens upstream / inside an image engine — not in this stack."
     prerequisites:
       recommended:
-        - "brand/DESIGN.md"
-        - "brand/BRAND.md"
+        - "id:design"
+        - "id:brand"
       hard:
         - ".forsvn/artifacts/marketing/design-briefs/[slug].md"
 

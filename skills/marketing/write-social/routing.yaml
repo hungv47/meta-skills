@@ -63,11 +63,11 @@ capability:
       - "AI-pattern stripping post-generation -> humanmaxxing (terminal pass)."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:icp-research"
+        - "id:product-context"
         - ".forsvn/artifacts/marketing/short-form-brief/[slug]/brief.md"
       hard:
-        - "brand/BRAND.md"
+        - "id:brand"
 
   orchestration:
     default: auto

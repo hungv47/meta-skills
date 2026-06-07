@@ -1,6 +1,6 @@
 ---
 name: polish-vn
-description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing) — fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and corporate translationese. Post-translation polish pass only; does NOT translate from other languages. Use on translated Vietnamese copy that reads stiff or foreign. Not for tone work on English or other languages (use humanmaxxing), or writing new Vietnamese copy from scratch (use write-copy)."
+description: "Polishes already-translated Vietnamese text so it reads natively in a target register (báo chí, semi-casual, bro, or pop-marketing) — fixes pronoun drift, missing particles, literal idioms, passive-voice calques, typography, and translationese. Post-translation polish only; does NOT translate from other languages. Use on translated Vietnamese copy that reads stiff or foreign. Not for tone work on English (use humanmaxxing) or writing new Vietnamese from scratch (use write-copy)."
 argument-hint: "[vietnamese text or file path] [--register bao-chi|semi-casual|bro|pop-marketing]"
 allowed-tools: Read Grep Glob Bash WebFetch
 metadata:

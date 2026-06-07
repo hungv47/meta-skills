@@ -78,7 +78,7 @@ Plus 6 "Additional Checks" that flag in Observations but don't FAIL (see critic-
 
 Most skills warm-start when context is resolvable. Diagnose **always** cold-starts because diagnose IS the diagnostic interview — the questions (metric / current / target / tried) ARE the work. Skipping the cold-start would mean the orchestrator hallucinated the problem statement.
 
-The only "warm" path is a re-run after a metric shift, where prior `diagnose-*.md` informs (but doesn't replace) the new run.
+The only "warm" path is a re-run after a metric shift, where the prior `DIAGNOSE.md` informs (but doesn't replace) the new run.
 
 ---
 

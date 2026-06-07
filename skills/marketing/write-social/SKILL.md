@@ -11,7 +11,7 @@ metadata:
 
 # Social Copy — Orchestrator
 
-3 agents (copywriter → format-checker → critic) generate platform-native social copy with enforced limits, hook archetypes, and rubric scoring. Capability: [`routing.yaml`](routing.yaml). Agents + dispatch + rubric: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology: [`references/playbook.md`](references/playbook.md).
+3 agents (copywriter → format-checker → critic) generate platform-native social copy with enforced limits and rubric scoring. Capability: [`routing.yaml`](routing.yaml). Agents + dispatch + rubric: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology: [`references/playbook.md`](references/playbook.md).
 
 **Core question:** Does this copy stop the scroll, clear all platform limits, and earn the click — on THIS platform?
 
@@ -66,7 +66,7 @@ Single sequential graph (copywriter → format-checker → critic), no branching
 
 ## Chain Position
 
-**Prev:** `brief-shortform` (locks platform/hook/audience/goal) OR `plan-campaign` (cadence) OR greenfield. **Next:** `humanmaxxing` / `polish-vn` (optional) OR operator publish. **Re-run:** new platform, brand-voice shift, hook A/B, underperformance.
+**Prev:** `brief-shortform` (locks platform/hook/audience/goal) OR `plan-campaign` (cadence) OR greenfield. **Next:** see `## Execution`. **Re-run:** new platform, brand-voice shift, hook A/B, underperformance.
 
 **Deference:** paid ad → `write-ad`; full video brief → `brief-shortform`; landing-page → `write-copy`; long-form (articles, Substack, blog) → `write-copy` or `optimize-seo`; VN polish → `polish-vn`; AI-pattern stripping → `humanmaxxing`.
 
@@ -88,9 +88,9 @@ Single sequential graph (copywriter → format-checker → critic), no branching
 - **BLOCKED** — FORMAT_FAIL (two REVISION_REQUIRED); platform unsupported; brief contradicts brand_mode unresolved.
 - **NEEDS_CONTEXT** — no brief, topic, brand voice, `experience/`, or `brand/BRAND.md`; recommend `brief-shortform` or `create-brand`.
 
-## Next Step
+## Execution
 
-After PASS: polish chain (`humanmaxxing` / `polish-vn`) if flagged, else operator publishes. On underperformance, re-invoke with new variants or shifted goal.
+Offer the registry-gated fork (category `publish`) — **Brief-only**: polish (`humanmaxxing` / `polish-vn`) if flagged; **Assisted/Direct** need a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
 
 ## Worked Example
 

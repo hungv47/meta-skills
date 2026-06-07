@@ -181,11 +181,11 @@ These patterns aren't tied to a single sub-critic — they apply to any short-fo
 
 **INSTEAD:** Polish chain runs on `done_with_concerns` outputs same as `done` outputs. The concerns are about craft (hook archetype miss, vague action, audio mismatch) — polish doesn't fix craft, but it doesn't hurt either, and the brief still goes to a producer who needs readable prose. Polish chain ONLY skips under `--fast` (operator opted out of multi-pass) or `polish_chain_applied: none` per the (market, brand_mode) table in `procedures/dispatch-mechanics.md` § "Polish Chain."
 
-### Multi-platform invocation exceeding hard cap
+### Multi-platform invocation — silent fan-out or silent drop
 
-**Problem:** Operator invokes with `--platforms tiktok,reels,shorts,linkedin` (4 platforms). Skill quietly drops one or runs all 4 anyway. Either path violates Critical Gate 2 (1 hero + max 2 variants).
+**Problem:** Operator invokes with `--platforms tiktok,reels,shorts,linkedin` (4 platforms). Skill quietly drops one, or fans out to all 4 without surfacing the cost+craft trade-off.
 
-**INSTEAD:** Pre-Dispatch hard-block ("Platforms requested > 3 → reject and re-ask"). Orchestrator surfaces the cap, asks operator to pick 1 hero + max 2 variants, and waits. Does not silently drop platforms (operator might not notice which got dropped).
+**INSTEAD:** Default is 1 hero + 2 variants (Critical Gate 2 soft default). Past that, Pre-Dispatch surfaces a cost+craft warning (each extra recut adds cost; critic attention per variant thins past 2) and offers the cheaper, higher-craft path — re-invoke so each platform gets its own hero brief with full critic verification. Operator opts in explicitly; never silently drop a platform or silently fan out.
 
 ### Cross-stack contract drift
 
@@ -199,8 +199,8 @@ These patterns aren't tied to a single sub-critic — they apply to any short-fo
 
 **INSTEAD:** When `production_mode: mixed` is resolved, production-mode-agent MUST emit a transition principle section (e.g., "Live-action establishes founder + product context 0:00–0:08; motion-graphic takes over for data viz 0:08–0:25; cut back to live for CTA 0:25–0:30. Audio bridges via beat-bed sustained across the cut."). Empty transition principle = production-mode-agent FAIL → re-dispatch.
 
-### Hard-cap erosion via "just one more variant"
+### Variant cap creep without surfacing cost/craft
 
-**Problem:** Operator argues "one more platform won't hurt" mid-conversation. Brief gets 3 variants instead of 2.
+**Problem:** Operator argues "one more platform won't hurt" mid-conversation. Brief silently gets a 3rd or 4th variant with no cost or craft flag.
 
-**INSTEAD:** Hard cap is hard. 1 hero + max 2 variants per invocation, no exceptions. If operator wants a 3rd platform, re-invoke (this guarantees the platform gets its own hero brief with full critic verification, not a tacked-on variant). The cap is cost discipline AND craft discipline — variants get TRUE RECUTS (per `format-conventions.md` § "Variant 'What Changed From Hero' guard"), and craft attention erodes past 2.
+**INSTEAD:** Default is 1 hero + 2 variants (cost AND craft discipline — variants get TRUE RECUTS per `format-conventions.md` § "Variant 'What Changed From Hero' guard", and critic attention per variant thins past 2). Extending past the default is allowed but MUST surface the cost+craft trade-off; prefer re-invoke (each platform gets its own hero brief with full critic verification, not a tacked-on variant). Never extend silently.

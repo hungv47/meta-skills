@@ -9,6 +9,9 @@ load_class: PLAYBOOK
 
 # Review-Surface Design System
 
+> [!IMPORTANT]
+> **Palette superseded by the forest-only "sunset" rebrand (2026-06-07).** Signal Lime `#B7FF6E` and the Pure-Void `#000000` canvas described below are **retired**. The current live tokens are forest-only — Leaf `#74B36B` accent on a Forest Shadow `#0A120D` canvas, Warm Cream text. **Source of truth for live values:** `forsvn-preview/assets/_html/tokens.css` and `_biz-ops/forsvn-ops/brand/DESIGN.md`. The structure below (five regions, stack registers, FOUC handling, motion) is current; the specific hex values and contrast tables describe the retired palette and await a forest-only rewrite (rebrand pass 2).
+
 **The visual contract for every `review_surface: html` artifact. Five-region
 layout, one FORSVN brand chrome, one typography stack, one motion vocabulary
 shared across all stacks. Per-stack variation lives in 5 stage color tokens

@@ -86,7 +86,7 @@ handoff-agent writes 2 blocks (target = `claude-design` + `designer`):
 - VERDICT: PASS
 
 **Brand-voice critic:**
-- 8/8 PASS
+- 9/9 PASS
 - Brief envelope: 412 lines (within 250–500)
 - VERDICT: PASS
 
@@ -153,8 +153,8 @@ Mobile note: receipt hero adopts hypothesis-A-style simplification as a side eff
 ### Layer 3, 4, 5 proceed as Example 1.
 
 **Critic outputs:**
-- Conversion: 13/13 PASS (rev 2 addresses evidence signals 1, 2 partially via simplified hero; signal 3 fully via new section).
-- Brand-voice: 8/8 PASS, envelope 438 lines.
+- Conversion: 11/11 hard gates PASS (rev 2 addresses evidence signals 1, 2 partially via simplified hero; signal 3 fully via new section).
+- Brand-voice: 9/9 PASS, envelope 438 lines.
 
 ### Output
 - `.forsvn/artifacts/marketing/brief-landing-page/pricing/v2/brief.md` (438 lines)
@@ -179,7 +179,7 @@ Mobile note: receipt hero adopts hypothesis-A-style simplification as a side eff
 
 **Layer 5 — mixed verdict:**
 - Conversion critic: 1 FAIL (FM-13 in features section: tier comparison table missing benefit translation per row). Verdict: FAIL.
-- Brand-voice critic: 8/8 PASS. Verdict: PASS.
+- Brand-voice critic: 9/9 PASS. Verdict: PASS.
 
 **Cycle 2:** orchestrator re-dispatches section-spec-agent with conversion critic feedback (only the failing CP cited).
 
@@ -202,7 +202,7 @@ User decides to ship as-is (envelope is 522 — only 22 over the ceiling, design
 
 1. **Route A is real-world for new products.** Don't pretend you have post-launch evidence when you don't.
 2. **Route B gets stronger with real evidence.** Anchored hypotheses are sharper than vibe-hypotheses. Use analytics, recordings, experiments, support tickets, and sales-call notes when a live page exists; do not block on a separate heuristic audit.
-3. **Mixed-critic verdict is normal at cycle 2.** The DONE_WITH_CONCERNS path with concerns pinned at top is the correct off-ramp — don't loop forever trying to chase 13/13 + 8/8.
+3. **Mixed-critic verdict is normal at cycle 2.** The DONE_WITH_CONCERNS path with concerns pinned at top is the correct off-ramp — don't loop forever trying to chase 11/11 + 9/9.
 4. **The brief's job is to be paste-ready.** Once approved, the user (or claude-design / designer) can build without follow-up questions. If they're asking questions, the brief failed.
 
 ---

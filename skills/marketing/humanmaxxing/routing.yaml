@@ -49,8 +49,8 @@ capability:
       - "Vietnamese-tone polish -> polish-vn."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "research/product-context.md"
+        - "id:brand"
+        - "id:product-context"
       hard: []
 
   orchestration:

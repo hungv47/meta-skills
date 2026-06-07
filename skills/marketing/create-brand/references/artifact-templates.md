@@ -234,6 +234,41 @@ Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 
 ---
 
+## ASSETS.md Template
+
+ASSETS.md is written to `.forsvn/canonical/marketing/ASSETS.md` and is a **living checklist** — updated in place every run (auto-scan flips `[ ]` ↔ `[x]`; human `[~]`/`[!]` markers preserved verbatim). It carries the full required instruction core and stamps the stable `id: assets`. Re-run = overwrite in place + increment the integer `version:`; never create a `.v[N].md` sibling under `canonical/`. Frontmatter (fill the `[...]` bracketed values; full schema in [`format-conventions.md`](format-conventions.md)):
+
+```yaml
+---
+skill: create-brand
+version: [integer — increments on each in-place re-run; starts at 1]
+date: [ISO YYYY-MM-DD]
+status: done | done_with_concerns | blocked | needs_context
+stack: marketing
+review_surface: none
+id: assets
+type: canonical
+keywords: [assets, checklist, deliverables, brand-assets, production]
+summary: "[Brand] production-asset inventory — per-platform deliverables checklist"
+purpose: "Living checklist of brand deliverables (logos, fonts, icons, splash, screenshots) by platform with target paths"
+use_when: "Tracking which brand assets exist vs. still need producing for [Brand]"
+upstream: "brand, design"
+downstream: "designers, asset producers"
+decision_state: not_required
+review_tool: none
+reviewed_at:
+reviewer:
+declared_platforms: [list of platforms declared at Pre-Dispatch Q6]
+brand_md_version: [integer — pins to the BRAND.md version this was projected from]
+design_md_version: [integer — pins to the DESIGN.md version this was projected from]
+last_scan: [ISO timestamp — when auto-scan last ran]
+---
+```
+
+The body is the legend + 5 fixed sections + per-platform blocks + summary (+ optional `## Orphaned`) per [`format-conventions.md`](format-conventions.md) "ASSETS.md structure" and [`assets-inventory.md`](assets-inventory.md). ASSETS.md does **not** carry a `## Review Gate` block (`review_surface: none`).
+
+---
+
 ## DESIGN.md Template
 
 ```markdown

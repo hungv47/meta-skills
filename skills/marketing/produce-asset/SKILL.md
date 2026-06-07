@@ -11,11 +11,11 @@ metadata:
 
 # Produce Asset — Render-Ready Prompt + Manifest Orchestrator
 
-*Production skill. Converts brief-graphic → render-ready prompt + asset manifest the operator runs through any image-gen tool, vector tool, or human designer.*
+*Production skill. Converts brief-graphic → render-ready prompts + asset manifest.*
 
-**Core Question:** "Can any downstream tool (Midjourney / DALL·E / Imagen / Claude Design / Figma / designer) produce the right asset from this prompt without a follow-up question?"
+**Core Question:** "Can any downstream tool (image engine / Figma / designer) produce the right asset from this prompt without follow-up?"
 
-> Tool-agnostic — emits prompts + manifest, holds no API keys. Schema: [`references/format-conventions.md`](references/format-conventions.md).
+> Tool-agnostic — emits prompts + manifest, no API keys. **No output variation by design** (VERBATIM, tier C — `_shared/options-selection.md`): "more" = a manifest re-run, not extra renders. Schema: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Critical Gates — Read First
 
@@ -80,9 +80,9 @@ End with one status:
 - `NEEDS_CONTEXT` — brief-graphic OR brand files missing, or target platforms undefined
 - `BLOCKED` — `--publish` / `--api-render` requested, OR critic FAILed twice
 
-## Next Step
+## Execution
 
-Operator runs emitted prompts through chosen renderer (Midjourney / DALL·E / Imagen / Claude Design / Figma / designer); marks each slot in the manifest's verification checklist on render. Once all on-spec, assets feed downstream eval cycles (`evaluate-content` / `evaluate-ad`).
+Offer the registry-gated fork (category `image`) — **Brief-only**: run the prompts, mark the manifest checklist (feeds `evaluate-asset`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
 
 ## References
 

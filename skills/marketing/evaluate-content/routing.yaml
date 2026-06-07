@@ -61,9 +61,9 @@ capability:
       - "Writing next-cycle copy -> write-social."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:brand"
+        - "id:icp-research"
+        - "id:product-context"
         - ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
       hard:
         - ".forsvn/loops/[slug]/program.md"

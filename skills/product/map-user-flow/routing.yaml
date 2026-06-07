@@ -47,8 +47,8 @@ capability:
       - "Conversion landing page -> brief-landing-page."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
-        - "brand/BRAND.md"
+        - "id:icp-research"
+        - "id:brand"
       hard: []
 
   orchestration:
@@ -85,5 +85,6 @@ capability:
   outputs:
     artifacts:
       - path: ".forsvn/artifacts/product/flow/[slug].md"
+        id: user-flow
         lifecycle: pipeline
         produced_when: "Critic PASS; flow map artifact."

@@ -160,9 +160,9 @@ If the full orchestration is unnecessary (single clear metric, hypothesis alread
 
 ## Post-write side effects
 
-After the artifact is written to `.forsvn/artifacts/meta/records/diagnose-[date].md`:
+After the artifact is written to `.forsvn/canonical/research/DIAGNOSE.md`:
 
-1. **Re-name** any prior `diagnose-*.md` for the same metric to `diagnose.v[N].md` (increment N). Never overwrite silently.
+1. **Overwrite in place + bump `version`.** `DIAGNOSE.md` is a canonical singleton (the current diagnosis of record). On re-run, overwrite it and increment `version`; the prior run lives in git history. Never create a `.v[N].md` sibling.
 2. **Goals write-back** per `procedures/pre-dispatch.md` Write-back map — Q1 (Metric), Q2 (Current), Q3 (Target) append to `experience/goals.md`. Q4 (Tried) is NOT persisted — diagnostic-specific.
 
 Both side effects are mandatory on PASS or `done_with_concerns`. Skip on `BLOCKED` / `NEEDS_CONTEXT` (no artifact to index).

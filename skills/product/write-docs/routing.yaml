@@ -61,7 +61,7 @@ capability:
     prerequisites:
       recommended:
         - ".forsvn/experience/technical.md"
-        - "research/product-context.md"
+        - "id:product-context"
       hard: []
 
   orchestration:

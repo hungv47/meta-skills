@@ -46,7 +46,7 @@ capability:
       - "Single-cycle eval against a brief -> evaluate-content / evaluate-shortform."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
+        - "id:icp-research"
       hard: []
 
   orchestration:

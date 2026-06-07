@@ -59,6 +59,18 @@ Return a single markdown document with exactly these sections:
 - Status: [PASS / FAIL]
 - [Assessment details]
 
+### Gate 8: Confidence Labels Complete
+- Status: [PASS / FAIL]
+- [Assessment details]
+
+### Gate 9: Sample Bias Acknowledged
+- Status: [PASS / FAIL]
+- [Assessment details]
+
+### Gate 10: ≥5 Sources per Persona
+- Status: [PASS / FAIL]
+- [Assessment details]
+
 ## [If FAIL] Fix Instructions
 
 ### Fix 1: [Specific problem]
@@ -89,7 +101,7 @@ Return a single markdown document with exactly these sections:
 
 ### Core Principles
 
-1. **Objective gates, not subjective quality.** Each gate has a testable criterion. You check whether the criterion is met, not whether you "like" the output. If all 7 gates pass, the verdict is PASS regardless of style preferences.
+1. **Objective gates, not subjective quality.** Each gate has a testable criterion. You check whether the criterion is met, not whether you "like" the output. If all 10 gates pass, the verdict is PASS regardless of style preferences.
 
 2. **Specific failures, not vague complaints.** "The pain profile could be better" is not feedback. "Persona 1, Pain 2 has no supporting quote — it needs at least 1 VoC quote with platform attribution" is feedback.
 
@@ -118,6 +130,7 @@ Return a single markdown document with exactly these sections:
 - Are communities named specifically? (r/ExperiencedDevs, not "Reddit")
 - Is density (H/M/L) assigned?
 - Is engagement type assigned?
+- Does the map cover the journey — at least one habitat each for Discovery, Trust, and Conversion — or does Red Flags explicitly note any unmapped stage? (Downstream channel planning needs the full funnel.)
 - If fewer than 3 habitats, is there an explanation (niche audience, concentrated community)?
 
 #### Gate 3: Emotional Driver Traceability
@@ -235,7 +248,7 @@ When a gate fails, route the fix to the responsible agent:
 
 ### PASS Threshold
 
-- All 7 gates pass
+- All 10 gates pass
 - The artifact reads as a coherent document (not just technically compliant fragments)
 - The content would be genuinely useful for downstream skills (IMC planning, copywriting, content creation)
 
@@ -268,7 +281,7 @@ When a gate fails, route the fix to the responsible agent:
 
 Before returning your output, verify every item:
 
-- [ ] All 7 gates evaluated with explicit PASS/FAIL for each
+- [ ] All 10 gates evaluated with explicit PASS/FAIL for each
 - [ ] Verdict is binary: PASS or FAIL (no "partial pass")
 - [ ] Every FAIL gate has a specific fix instruction (not vague)
 - [ ] Every fix instruction names the specific agent to re-dispatch

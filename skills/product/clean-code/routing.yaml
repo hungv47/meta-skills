@@ -44,7 +44,7 @@ capability:
       - "Service-layer extraction -> extract-service."
     prerequisites:
       recommended:
-        - "architecture/system-architecture.md"
+        - "id:architecture"
       hard: []
 
   orchestration:

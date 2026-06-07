@@ -28,7 +28,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
+            "id:product-context",
             ".forsvn/artifacts/meta/specs/[slug].md",
             ".forsvn/artifacts/product/flow/[slug].md"
           ],
@@ -104,6 +104,7 @@
         "artifacts": [
           {
             "path": "architecture/system-architecture.md",
+            "id": "architecture",
             "lifecycle": "canonical",
             "produced_when": "Architecture reaches DONE or DONE_WITH_CONCERNS."
           }
@@ -139,7 +140,7 @@
         "prerequisites": {
           "recommended": [
             ".forsvn/artifacts/meta/specs/<slug>.md",
-            "architecture/system-architecture.md"
+            "id:architecture"
           ],
           "hard": []
         }
@@ -233,9 +234,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "brand/DESIGN.md",
-            "research/icp-research.md"
+            "id:brand",
+            "id:design",
+            "id:icp-research"
           ],
           "hard": []
         }
@@ -324,14 +325,14 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/ASSETS.md",
+            "id:assets",
             ".forsvn/artifacts/marketing/content/[slug].copy.md",
             ".forsvn/artifacts/marketing/campaign-plan.md",
-            "research/icp-research.md"
+            "id:icp-research"
           ],
           "hard": [
-            "brand/BRAND.md",
-            "brand/DESIGN.md"
+            "id:brand",
+            "id:design"
           ]
         }
       },
@@ -445,13 +446,13 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md",
-            "research/product-context.md",
+            "id:icp-research",
+            "id:product-context",
             ".forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": [
-            "brand/BRAND.md",
-            "brand/DESIGN.md"
+            "id:brand",
+            "id:design"
           ]
         }
       },
@@ -556,12 +557,125 @@
       "source": "skills/marketing/brief-landing-page/routing.yaml",
       "skill_path": "skills/marketing/brief-landing-page"
     },
+    "brief-product-ui": {
+      "id": "brief-product-ui",
+      "domain": "product",
+      "public": true,
+      "command": "/brief-product-ui",
+      "summary": "Design the in-product interface from a mapped user flow — screen inventory, reusable component system, DESIGN-token application, per-state visual treatments, accessibility floor + buildable handoff. Emits a portable spec, never rendered UI.",
+      "aliases": [
+        "product-ui",
+        "interface-design",
+        "ui-spec",
+        "screen-design"
+      ],
+      "route": {
+        "use_when": [
+          "A map-user-flow artifact exists and the in-product UI (screens/components/layout/states) needs designing.",
+          "Need a brand-tokened, buildable UI spec before architect-system or a coding-agent build.",
+          "Hand a feature's screens to a design tool (Figma / Stitch) or coding agent from a validated flow."
+        ],
+        "not_when": [
+          "Flow logic / screen map -> map-user-flow (the prerequisite).",
+          "Brand identity / tokens -> create-brand.",
+          "Conversion landing page -> brief-landing-page.",
+          "API / schema / tech architecture -> architect-system."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "id:icp-research"
+          ],
+          "hard": [
+            "id:user-flow"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Single-screen feature; --fast collapses Layer 1 to single-pass."
+        ],
+        "multi_when": [
+          "Multi-screen feature with a shared component system across surfaces."
+        ],
+        "critic_required_when": [
+          "Always — the 8-checkpoint rubric (flow grounding, token fidelity, state coverage, no-render) gates every run."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (feature + flow + brand source + target engine)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md",
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Critical gates + 8-checkpoint critic rubric",
+            "read": [
+              "references/procedures/gates-and-rubric.md"
+            ]
+          },
+          {
+            "if": "Agent dispatch",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Component system + token application + layout",
+            "read": [
+              "references/component-patterns.md",
+              "references/token-application-patterns.md",
+              "references/layout-conventions.md"
+            ]
+          },
+          {
+            "if": "Artifact format + worked example",
+            "read": [
+              "references/format-conventions.md",
+              "references/examples/saas-dashboard-walkthrough.md"
+            ]
+          },
+          {
+            "if": "Tool handoff (upstream redirect / terminal fork)",
+            "read": [
+              "references/_shared/tool-redirect.md",
+              "references/_shared/execution-fork.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/artifacts/product/brief-product-ui-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Critic PASS (all 8 CPs); UI spec artifact."
+          }
+        ]
+      },
+      "source": "skills/product/brief-product-ui/routing.yaml",
+      "skill_path": "skills/product/brief-product-ui"
+    },
     "brief-shortform": {
       "id": "brief-shortform",
       "domain": "marketing",
       "public": true,
       "command": "/brief-shortform",
-      "summary": "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + max 2 variants per run. Live-action + motion-graphic.",
+      "summary": "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + 2 variants per run. Live-action + motion-graphic.",
       "aliases": [
         "shortform-brief",
         "video-brief",
@@ -584,8 +698,8 @@
         "prerequisites": {
           "recommended": [
             ".forsvn/artifacts/research/research-shortform/[slug].md",
-            "research/icp-research.md",
-            "brand/BRAND.md",
+            "id:icp-research",
+            "id:brand",
             ".forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
@@ -891,7 +1005,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "architecture/system-architecture.md"
+            "id:architecture"
           ],
           "hard": []
         }
@@ -1065,8 +1179,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
-            "research/icp-research.md"
+            "id:product-context",
+            "id:icp-research"
           ],
           "hard": []
         }
@@ -1146,17 +1260,20 @@
       "outputs": {
         "artifacts": [
           {
-            "path": "brand/BRAND.md",
+            "path": ".forsvn/canonical/marketing/BRAND.md",
+            "id": "brand",
             "lifecycle": "canonical",
             "produced_when": "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
           },
           {
-            "path": "brand/DESIGN.md",
+            "path": ".forsvn/canonical/marketing/DESIGN.md",
+            "id": "design",
             "lifecycle": "canonical",
             "produced_when": "Route B completes Layer 2 critic PASS."
           },
           {
-            "path": "brand/ASSETS.md",
+            "path": ".forsvn/canonical/marketing/ASSETS.md",
+            "id": "assets",
             "lifecycle": "canonical",
             "produced_when": "Route B completes Step 8.5 ASSETS projection."
           }
@@ -1269,7 +1386,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md"
+            "id:product-context"
           ],
           "hard": []
         }
@@ -1322,9 +1439,10 @@
       "outputs": {
         "artifacts": [
           {
-            "path": "research/diagnose.md",
+            "path": ".forsvn/canonical/research/DIAGNOSE.md",
+            "id": "diagnose",
             "lifecycle": "canonical",
-            "produced_when": "Critic PASS; canonical diagnosis record (rename prior to `research/diagnose.v[N].md` on re-run)."
+            "produced_when": "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `.forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
           }
         ]
       },
@@ -1393,6 +1511,12 @@
             "if": "Step 2.5 mode detection - plan-review picked",
             "read": [
               "references/procedures/plan-review-modes.md"
+            ]
+          },
+          {
+            "if": "Step 2.6 divergence pass (idea-stage, Deep + open solution space, or operator brainstorm override)",
+            "read": [
+              "references/procedures/divergence.md"
             ]
           },
           {
@@ -1467,9 +1591,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/icp-research.md",
-            "research/product-context.md"
+            "id:brand",
+            "id:icp-research",
+            "id:product-context"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
@@ -1565,6 +1689,137 @@
       "source": "skills/marketing/evaluate-ad/routing.yaml",
       "skill_path": "skills/marketing/evaluate-ad"
     },
+    "evaluate-asset": {
+      "id": "evaluate-asset",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-asset",
+      "summary": "Score a produced visual asset (image / graphic / carousel frame) against its brief — render fidelity + brand-fit — inside an existing eval loop, using the re-ingested asset (the return-leg). One asset (or picked variant) per cycle, verdict + brief-fidelity diagnosis.",
+      "aliases": [
+        "asset-eval",
+        "render-eval",
+        "brief-fidelity-eval"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a rendered/produced visual asset against its brief-graphic acceptance criteria.",
+          "Loop exists; the rendered asset is re-ingested (return-leg) and cycle N needs scoring for that one asset/variant."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "Only a prompt/brief exists; nothing rendered or re-ingested -> produce-asset + re-ingest.",
+          "The asset is a short-form video -> evaluate-shortform.",
+          "The surface is a landing page -> evaluate-landing-page.",
+          "The question is the asset's live-post engagement -> evaluate-content / evaluate-ad.",
+          "Generating or re-rendering the asset -> produce-asset; changing the brief -> brief-graphic."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "id:design",
+            "id:icp-research",
+            ".forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/marketing/design-briefs/[slug].md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Brief-fidelity check only (no render-quality / brand-fit diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Brief-fidelity vs render-quality disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Brief-Fidelity table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Return-leg / execution-mode provenance",
+            "read": [
+              "references/_shared/execution-fork.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one asset/variant = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this exact render — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-asset/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-asset"
+    },
     "evaluate-campaign": {
       "id": "evaluate-campaign",
       "domain": "marketing",
@@ -1591,9 +1846,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/icp-research.md",
-            "research/product-context.md"
+            "id:brand",
+            "id:icp-research",
+            "id:product-context"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
@@ -1713,9 +1968,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/icp-research.md",
-            "research/product-context.md",
+            "id:brand",
+            "id:icp-research",
+            "id:product-context",
             ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
           ],
           "hard": [
@@ -1837,8 +2092,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/icp-research.md"
+            "id:brand",
+            "id:icp-research"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
@@ -1901,6 +2156,252 @@
       "source": "skills/marketing/evaluate-landing-page/routing.yaml",
       "skill_path": "skills/marketing/evaluate-landing-page"
     },
+    "evaluate-outreach": {
+      "id": "evaluate-outreach",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-outreach",
+      "summary": "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) from real reply data inside an existing eval loop — one channel + segment per cycle, verdict + reply-quality diagnosis with a deliverability + compliance gate.",
+      "aliases": [
+        "outreach-eval",
+        "reply-eval",
+        "sequence-eval"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate a sent outreach sequence against its write-outreach hypothesis using reply data.",
+          "Loop exists; cycle N needs scoring for one channel + segment."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "The outreach is still a draft, not sent -> write-outreach.",
+          "Organic-post performance -> evaluate-content.",
+          "Paid-ad performance -> evaluate-ad.",
+          "Writing next-cycle copy -> write-outreach; list/targeting -> research-icp."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:icp-research",
+            "id:brand",
+            "id:product-context"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Reply ingest only (no reply-quality / deliverability diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Reply-quality or deliverability/compliance signal disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Reply-Quality + Deliverability table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one channel + segment = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this exact sequence — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-outreach/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-outreach"
+    },
+    "evaluate-seo": {
+      "id": "evaluate-seo",
+      "domain": "marketing",
+      "public": true,
+      "command": "/evaluate-seo",
+      "summary": "Score an SEO / AEO cycle from real ranking + visibility data inside an existing eval loop — one keyword cluster + surface per cycle, verdict + visibility-delta diagnosis with a lag-and-volatility gate that refuses short-window noise.",
+      "aliases": [
+        "seo-eval",
+        "aeo-eval",
+        "ranking-eval"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to evaluate the ranking/visibility delta of an optimize-seo or monitor-aeo change over a measurement window.",
+          "Loop exists; cycle N needs scoring for one keyword cluster + surface."
+        ],
+        "not_when": [
+          "Loop does not exist yet -> run-eval-loop.",
+          "Running the audit or applying fixes -> optimize-seo.",
+          "Tracking AI Overview / LLM-answer citations live -> monitor-aeo.",
+          "Organic-post engagement -> evaluate-content; paid-ad -> evaluate-ad.",
+          "Writing the content/page itself -> write-copy."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:icp-research",
+            "id:product-context",
+            ".forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
+          ],
+          "hard": [
+            ".forsvn/loops/[slug]/program.md",
+            ".forsvn/loops/[slug]/context.md",
+            ".forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Visibility ingest only (no lag/volatility diagnosis needed)."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic).",
+          "Visibility signal or lag/volatility (core-update confounder) disputed; needs the full layer."
+        ],
+        "critic_required_when": [
+          "Always — eval artifact + ledger row are canonical loop state.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/evaluation-loop-rubric.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/agent-manifest.md",
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / Evidence + Visibility + Lag table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Critic override (operator ships despite FAIL)",
+            "read": [
+              "references/_shared/critic-override-protocol.md"
+            ]
+          },
+          {
+            "if": "Quality feedback / dashboard updates",
+            "read": [
+              "references/_shared/quality-dashboard-spec.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one cycle = one keyword cluster + surface = one artifact + one ledger row."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended via `append-loop-result.ts` on critic PASS."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "evaluation",
+            "produced_when": "ONLY for high-confidence keep/discard lessons that generalize beyond this exact keyword — critic gates promotion."
+          }
+        ]
+      },
+      "source": "skills/marketing/evaluate-seo/routing.yaml",
+      "skill_path": "skills/marketing/evaluate-seo"
+    },
     "evaluate-shortform": {
       "id": "evaluate-shortform",
       "domain": "research",
@@ -1925,8 +2426,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/icp-research.md"
+            "id:brand",
+            "id:icp-research"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
@@ -2014,7 +2515,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "architecture/system-architecture.md"
+            "id:architecture"
           ],
           "hard": []
         }
@@ -2173,8 +2674,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md",
-            "research/product-context.md"
+            "id:brand",
+            "id:product-context"
           ],
           "hard": []
         }
@@ -2291,8 +2792,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md",
-            "brand/BRAND.md"
+            "id:icp-research",
+            "id:brand"
           ],
           "hard": []
         }
@@ -2352,6 +2853,7 @@
         "artifacts": [
           {
             "path": ".forsvn/artifacts/product/flow/[slug].md",
+            "id": "user-flow",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; flow map artifact."
           }
@@ -2386,7 +2888,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md"
+            "id:product-context"
           ],
           "hard": []
         }
@@ -2471,9 +2973,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md",
-            "research/product-context.md",
-            "brand/BRAND.md"
+            "id:icp-research",
+            "id:product-context",
+            "id:brand"
           ],
           "hard": []
         }
@@ -2596,11 +3098,11 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md"
+            "id:brand"
           ],
           "hard": [
-            "research/icp-research.md",
-            "research/product-context.md"
+            "id:icp-research",
+            "id:product-context"
           ]
         }
       },
@@ -2681,9 +3183,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/market-research.md",
-            "research/product-context.md",
-            "research/diagnose.md"
+            "id:market-research",
+            "id:product-context",
+            "id:diagnose"
           ],
           "hard": []
         }
@@ -2770,7 +3272,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/BRAND.md"
+            "id:brand"
           ],
           "hard": []
         }
@@ -2934,9 +3436,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/market-research.md",
-            "research/diagnose.md",
-            "research/product-context.md"
+            "id:market-research",
+            "id:diagnose",
+            "id:product-context"
           ],
           "hard": []
         }
@@ -3018,8 +3520,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "brand/DESIGN.md",
-            "brand/BRAND.md"
+            "id:design",
+            "id:brand"
           ],
           "hard": [
             ".forsvn/artifacts/marketing/design-briefs/[slug].md"
@@ -3101,11 +3603,11 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md"
+            "id:icp-research"
           ],
           "hard": [
-            "brand/BRAND.md",
-            "brand/DESIGN.md"
+            "id:brand",
+            "id:design"
           ]
         }
       },
@@ -3217,7 +3719,7 @@
           ],
           "hard": [
             ".forsvn/artifacts/marketing/write-social/[slug]/*.md",
-            "brand/BRAND.md"
+            "id:brand"
           ]
         }
       },
@@ -3363,7 +3865,7 @@
           "Output will feed brand, campaign, copy, landing page, or product strategy."
         ],
         "critic_required_when": [
-          "Writing or updating research/icp-research.md.",
+          "Writing or updating .forsvn/canonical/research/ICP.md.",
           "Any shipped persona claim has fewer than five independent evidence sources.",
           "User asks to use the result as canonical downstream context."
         ]
@@ -3405,12 +3907,14 @@
       "outputs": {
         "artifacts": [
           {
-            "path": "research/icp-research.md",
+            "path": ".forsvn/canonical/research/ICP.md",
+            "id": "icp-research",
             "lifecycle": "canonical",
             "produced_when": "Audience research reaches DONE or DONE_WITH_CONCERNS."
           },
           {
-            "path": "research/product-context.md",
+            "path": ".forsvn/canonical/product/PRODUCT-CONTEXT.md",
+            "id": "product-context",
             "lifecycle": "canonical",
             "produced_when": "Audience research resolves product context."
           }
@@ -3445,8 +3949,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
-            "research/diagnose.md"
+            "id:product-context",
+            "id:diagnose"
           ],
           "hard": []
         }
@@ -3528,9 +4032,10 @@
       "outputs": {
         "artifacts": [
           {
-            "path": "research/market-research.md",
+            "path": ".forsvn/canonical/research/MARKET.md",
+            "id": "market-research",
             "lifecycle": "canonical",
-            "produced_when": "Critic PASS; on re-run rename prior to `research/market-research.v[N].md` and increment."
+            "produced_when": "Critic PASS; on re-run overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
           }
         ]
       },
@@ -3561,7 +4066,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md"
+            "id:icp-research"
           ],
           "hard": []
         }
@@ -3648,7 +4153,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md"
+            "id:icp-research"
           ],
           "hard": []
         }
@@ -3800,8 +4305,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md",
-            "research/product-context.md"
+            "id:icp-research",
+            "id:product-context"
           ],
           "hard": []
         }
@@ -3866,6 +4371,94 @@
       "source": "skills/meta/run-eval-loop/routing.yaml",
       "skill_path": "skills/meta/run-eval-loop"
     },
+    "run-pipeline": {
+      "id": "run-pipeline",
+      "domain": "meta",
+      "public": true,
+      "command": "/run-pipeline",
+      "summary": "Orchestrate a closed-loop initiative across named stages — the superset of run-eval-loop sharing the loop-tree schema. Sequences leaf skills, stops at every gate; never auto-approves.",
+      "aliases": [
+        "pipeline",
+        "closed-loop-pipeline",
+        "orchestrate-loop"
+      ],
+      "route": {
+        "use_when": [
+          "Thread a full produce-and-measure initiative end to end across stages.",
+          "Resume a multi-stage loop from its current stage + gate.",
+          "Add the execution fork + return-leg ingest to an eval loop."
+        ],
+        "not_when": [
+          "Eval-only scaffold (program.md + results.tsv) -> run-eval-loop.",
+          "One-shot artifact with no execute/evaluate cycle -> the leaf skill.",
+          "Scoring one cycle -> evaluate-{ad/content/landing-page/campaign/shortform/asset/outreach/seo}.",
+          "Multi-perspective debate -> debate-agents."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:icp-research",
+            ".forsvn/canonical/meta/tool-registry.md"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "Pipeline setup/resume is single-agent (architect designs the stage plan; critic gates it)."
+        ],
+        "multi_when": [
+          "Never — each stage's work is delegated to its leaf skill, which runs its own agents."
+        ],
+        "critic_required_when": [
+          "Stage plan validation (every stage maps to a real leaf skill or gate).",
+          "Gate discipline (execute + brief stages never auto-approve)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/pipeline-spec.md",
+          "references/_shared/eval-loop-spec.md",
+          "references/_shared/before-starting-check.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start: initiative, category, metric, surface)",
+            "read": [
+              "references/_shared/pre-dispatch-protocol.md"
+            ]
+          },
+          {
+            "if": "Execute-stage fork — which engines are verified for the category",
+            "read": [
+              "references/_shared/tool-registry-spec.md",
+              "references/_shared/execution-fork.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": ".forsvn/loops/[slug]/pipeline.md",
+            "lifecycle": "loop",
+            "produced_when": "Pipeline scaffolded — staged program + current-stage pointer."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/results.tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "Pipeline scaffolded — 8-column header (shared with run-eval-loop); per-cycle rows appended by evaluate-* siblings."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/learnings.md",
+            "lifecycle": "learning",
+            "produced_when": "Pipeline scaffolded — durable learning ledger (empty at start)."
+          }
+        ]
+      },
+      "source": "skills/meta/run-pipeline/routing.yaml",
+      "skill_path": "skills/meta/run-pipeline"
+    },
     "write-ad": {
       "id": "write-ad",
       "domain": "marketing",
@@ -3892,9 +4485,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
-            "research/icp-research.md",
-            "brand/BRAND.md",
+            "id:product-context",
+            "id:icp-research",
+            "id:brand",
             ".forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
@@ -4011,9 +4604,9 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
-            "research/icp-research.md",
-            "brand/BRAND.md"
+            "id:product-context",
+            "id:icp-research",
+            "id:brand"
           ],
           "hard": []
         }
@@ -4118,7 +4711,7 @@
         "prerequisites": {
           "recommended": [
             ".forsvn/experience/technical.md",
-            "research/product-context.md"
+            "id:product-context"
           ],
           "hard": []
         }
@@ -4256,8 +4849,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/product-context.md",
-            "research/icp-research.md",
+            "id:product-context",
+            "id:icp-research",
             ".forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
@@ -4377,12 +4970,12 @@
         ],
         "prerequisites": {
           "recommended": [
-            "research/icp-research.md",
-            "research/product-context.md",
+            "id:icp-research",
+            "id:product-context",
             ".forsvn/artifacts/marketing/short-form-brief/[slug]/brief.md"
           ],
           "hard": [
-            "brand/BRAND.md"
+            "id:brand"
           ]
         }
       },

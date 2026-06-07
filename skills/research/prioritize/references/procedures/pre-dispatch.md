@@ -6,12 +6,12 @@
 
 ## Hard gate (enforced before any agent dispatches)
 
-`.forsvn/artifacts/meta/records/diagnose-*.md` must exist.
+`id:diagnose` must resolve (diagnose's output, via `find-artifacts --resolve diagnose`).
 
-**Missing → return NEEDS_CONTEXT.** Recommend:
+**Unresolvable → return NEEDS_CONTEXT.** Recommend:
 
 ```
-NEEDS_CONTEXT — prioritize requires .forsvn/artifacts/meta/records/diagnose-*.md.
+NEEDS_CONTEXT — prioritize requires id:diagnose (run `diagnose` first).
 
 Initiative ranking against an unvalidated root cause produces a generic
 growth playbook. Run `diagnose` first to identify the root cause; prioritize
@@ -27,8 +27,8 @@ The hard gate fires under `--fast` too. Safety gates supersede the mode-resolver
 
 ## Read order (post-gate, in order)
 
-1. **Pipeline (required):** `.forsvn/artifacts/meta/records/diagnose-*.md` (newest) — the validated root cause + gap percentages.
-2. **Pipeline (optional):** `research/product-context.md` — business profile (constraints + capabilities). Improves impact estimation.
+1. **Pipeline (required):** `id:diagnose` (the diagnosis artifact) — the validated root cause + gap percentages.
+2. **Pipeline (optional):** `id:product-context` — business profile (constraints + capabilities). Improves impact estimation.
 3. **Pipeline (optional):** `research/icp-research.md` — audience-fit scoring for customer-facing initiatives.
 4. **Pipeline (optional):** `research/market-research.md` — market gaps + competitive intel sharpen initiative generation.
 5. **Experience (read, don't ask):** `.forsvn/experience/{goals,business,product}.md` — team capacity, prior attempts, constraint context.

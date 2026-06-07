@@ -33,6 +33,7 @@ promptSignals:
     - "analytics"
     - "experiment results"
     - "conversion rate"
+    - "evaluate"
   minScore: 6
 
 capability:
@@ -60,12 +61,12 @@ capability:
       - "Programmatic-SEO templates (industries/:slug, compare/:vs) -> out of scope for v1."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:icp-research"
+        - "id:product-context"
         - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard:
-        - "brand/BRAND.md"
-        - "brand/DESIGN.md"
+        - "id:brand"
+        - "id:design"
 
   orchestration:
     default: multi

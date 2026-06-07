@@ -7,8 +7,8 @@ metadata:
   version: "1.0.0"
   budget: standard
   estimated-cost: "$1-2"
-  status: done_with_concerns
-  notes: "Re-scoped from design-create (brief-only, no rendering). Platform-aware module content for IG/LinkedIn/FB/YT/X/OOH/banner is skeleton-only — needs a follow-up build pass with practitioner-grade specs (aspect ratios, safe zones, mobile type scales, thumb-stop contrast, file conventions, anti-patterns) per platform."
+  status: done
+  notes: "Re-scoped from design-create (brief-only, no rendering). platform-modules.md is fully populated — all 18 modules (tranche 1 core-digital + tranche 2 paid-ad-chrome + physical: linkedin-event-banner, facebook-feed/story-ad, youtube-banner, email-hero, ooh-billboard, transit-poster, print-magazine-spread) carry practitioner-grade specs. Volatile platform fields (ad-chrome geometry, file caps) carry [verify YYYY-MM] flags and per-vendor physical specs instruct the operator to confirm the vendor/publication media kit — verified against current sources where confirmable, never fabricated. Re-verify [verify] fields on a cadence (Meta/LinkedIn ad-chrome drifts fastest)."
 ---
 
 # Design Brief — Orchestrator
@@ -56,7 +56,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 Canonical Pre-Dispatch: [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). **Dimensions:** asset type · downstream route · brand ref (hard-gate auto) · copy/headline · constraints. Hard-gate semantics + Cold Start + Write-back + Step 0.5 Route Detection: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
-Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `budget: standard`. `--fast` collapses Layer 1 → single pass, Layer 1.5 → 1 brief, skips Approval Gate 1. **Does NOT skip** hard gate, Cold Start, Step 0.5, Approval Gate 2, critic, or AI-Aesthetic Detector.
+Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `budget: standard`. `--fast` collapses Layer 1 → single pass, Layer 1.5 → 1 brief, skips Approval Gate 1 (the SELECTION pick — 3 concepts → 1; [`options-selection.md`](references/_shared/options-selection.md), tier B). **Does NOT skip** hard gate, Cold Start, Step 0.5, Approval Gate 2, critic, or AI-Aesthetic Detector.
 
 ## Routes + Downstream Handoff
 
@@ -87,13 +87,13 @@ Full template + per-route Downstream Handoff Block schemas + ASSETS.md auto-tick
 ## Completion Status
 
 - **DONE** — brief approved, critic PASS, artifact written.
-- **DONE_WITH_CONCERNS** — approved with flagged issues in frontmatter. **Skill itself ships in this state until platform-modules.md is fully populated.**
+- **DONE_WITH_CONCERNS** — approved with flagged issues in frontmatter (e.g. a brief drew a `[verify]`-flagged platform field that wasn't confirmed against a current source, or a per-vendor physical spec the operator hasn't confirmed).
 - **BLOCKED** — user rejected at a gate, or external dependency missing.
 - **NEEDS_CONTEXT** — `BRAND.md` or `DESIGN.md` missing.
 
-## Next Step
+## Execution
 
-Hand the approved brief to the renderer named by `downstream_route`. On render dissatisfaction, re-invoke — `pipeline` lifecycle overwrites.
+Offer the registry-gated fork (category `image`) — **Brief-only**: hand the approved brief to the renderer named by `downstream_route` (→ `produce-asset` → `evaluate-asset`); **Assisted/Direct**: render via a verified engine, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. On render dissatisfaction, re-invoke — `pipeline` lifecycle overwrites.
 
 ## Worked Example
 

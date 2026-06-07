@@ -215,7 +215,7 @@
 **Fix direction:** Hypothesis re-dispatch with anchor-trace requirement.
 
 ### FM-30 — Inflated Critic Scores
-**Symptom:** Critic returns 13/13 PASS on every brief.
+**Symptom:** Critic returns 11/11 hard gates PASS on every brief (with no honest NOTEs on the advisory CPs either).
 **Why it kills:** Sycophancy. Critic isn't doing its job. Errors compound across briefs.
 **Where it appears:** Conversion-critic or brand-voice-critic output.
 **Fix direction:** Critic re-dispatch with honest-scoring instructions; or treat as critic-agent bug to fix.

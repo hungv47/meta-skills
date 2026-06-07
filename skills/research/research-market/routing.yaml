@@ -49,8 +49,8 @@ capability:
       - "Prioritizing what to build from market data -> prioritize."
     prerequisites:
       recommended:
-        - "research/product-context.md"
-        - "research/diagnose.md"
+        - "id:product-context"
+        - "id:diagnose"
       hard: []
 
   orchestration:
@@ -100,6 +100,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: "research/market-research.md"
+      - path: ".forsvn/canonical/research/MARKET.md"
+        id: market-research
         lifecycle: canonical
-        produced_when: "Critic PASS; on re-run rename prior to `research/market-research.v[N].md` and increment."
+        produced_when: "Critic PASS; on re-run overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."

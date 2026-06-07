@@ -276,6 +276,49 @@
       ],
       "minScore": 6
     },
+    "run-pipeline": {
+      "phrases": [
+        "run pipeline",
+        "closed loop pipeline",
+        "orchestrate the loop",
+        "thread the stages",
+        "brief to execute to evaluate",
+        "research brief execute evaluate",
+        "end to end loop",
+        "pipeline orchestrator",
+        "drive the whole loop",
+        "staged pipeline"
+      ],
+      "allOf": [
+        [
+          "orchestrate",
+          "stages"
+        ],
+        [
+          "brief",
+          "execute",
+          "evaluate"
+        ],
+        [
+          "pipeline",
+          "loop"
+        ]
+      ],
+      "anyOf": [
+        "execution fork",
+        "stage pipeline",
+        "ingest the asset",
+        "thread the skills",
+        "produce and measure"
+      ],
+      "noneOf": [
+        "ci pipeline",
+        "data pipeline",
+        "build pipeline",
+        "ml pipeline"
+      ],
+      "minScore": 6
+    },
     "diagnose": {
       "phrases": [
         "root cause",
@@ -645,7 +688,8 @@
         "publish to tiktok",
         "render the asset",
         "render asset",
-        "image generation"
+        "image generation",
+        "evaluate"
       ],
       "minScore": 6
     },
@@ -707,7 +751,8 @@
         "user flow",
         "wireframe",
         "redesign brief",
-        "landing page redesign"
+        "landing page redesign",
+        "evaluate"
       ],
       "minScore": 6
     },
@@ -752,7 +797,8 @@
         "cro audit",
         "analytics",
         "experiment results",
-        "conversion rate"
+        "conversion rate",
+        "evaluate"
       ],
       "minScore": 6
     },
@@ -790,7 +836,8 @@
         "blog post",
         "newsletter",
         "long-form",
-        "podcast"
+        "podcast",
+        "evaluate"
       ],
       "minScore": 6
     },
@@ -882,6 +929,61 @@
         "ad brief",
         "write an ad",
         "ad creative brief"
+      ],
+      "minScore": 6
+    },
+    "evaluate-asset": {
+      "phrases": [
+        "asset eval",
+        "evaluate the asset",
+        "evaluate the render",
+        "did the render match the brief",
+        "did the image match the brief",
+        "render quality check",
+        "score the render",
+        "brief fidelity",
+        "did the generated image work",
+        "rate the produced asset",
+        "is the asset on brand",
+        "render vs brief"
+      ],
+      "allOf": [
+        [
+          "render",
+          "brief"
+        ],
+        [
+          "asset",
+          "fidelity"
+        ],
+        [
+          "image",
+          "match",
+          "brief"
+        ],
+        [
+          "render",
+          "quality"
+        ]
+      ],
+      "anyOf": [
+        "brief fidelity",
+        "render quality",
+        "on brand",
+        "off brand",
+        "aspect ratio",
+        "legible",
+        "render artifacts",
+        "picked variant"
+      ],
+      "noneOf": [
+        "generate an image",
+        "produce the asset",
+        "create a graphic",
+        "design brief",
+        "post performance",
+        "engagement rate",
+        "short-form video"
       ],
       "minScore": 6
     },
@@ -1031,6 +1133,15 @@
         [
           "landing",
           "performance"
+        ],
+        [
+          "evaluate",
+          "landing",
+          "page"
+        ],
+        [
+          "evaluate",
+          "landing"
         ]
       ],
       "anyOf": [
@@ -1048,6 +1159,116 @@
         "landing page brief",
         "design brief",
         "single asset"
+      ],
+      "minScore": 6
+    },
+    "evaluate-outreach": {
+      "phrases": [
+        "outreach eval",
+        "evaluate the outreach",
+        "did the outreach work",
+        "outreach cycle results",
+        "cold email results",
+        "did the sequence land replies",
+        "score the outreach campaign",
+        "reply rate results",
+        "positive reply rate",
+        "meeting booked rate",
+        "outreach performance",
+        "did the cold email work"
+      ],
+      "allOf": [
+        [
+          "outreach",
+          "results"
+        ],
+        [
+          "reply",
+          "rate"
+        ],
+        [
+          "outreach",
+          "performance"
+        ],
+        [
+          "cold email",
+          "results"
+        ]
+      ],
+      "anyOf": [
+        "reply rate",
+        "positive reply",
+        "meeting booked",
+        "qualified leads",
+        "bounce rate",
+        "spam complaints",
+        "deliverability",
+        "open rate"
+      ],
+      "noneOf": [
+        "write outreach",
+        "draft a cold email",
+        "write a cold email",
+        "outreach sequence to write",
+        "post performance",
+        "ad performance",
+        "short-form video"
+      ],
+      "minScore": 6
+    },
+    "evaluate-seo": {
+      "phrases": [
+        "seo eval",
+        "evaluate seo performance",
+        "seo cycle results",
+        "ranking delta",
+        "did our seo work",
+        "did we move up in search",
+        "visibility delta",
+        "aeo eval",
+        "did our aeo citations improve",
+        "evaluate the ranking change",
+        "search ranking results",
+        "ranking results this cycle"
+      ],
+      "allOf": [
+        [
+          "seo",
+          "results"
+        ],
+        [
+          "ranking",
+          "delta"
+        ],
+        [
+          "seo",
+          "cycle"
+        ],
+        [
+          "search",
+          "ranking",
+          "results"
+        ]
+      ],
+      "anyOf": [
+        "ranking position",
+        "organic clicks",
+        "aeo citation",
+        "search visibility",
+        "serp position",
+        "keyword position",
+        "visibility delta",
+        "ranking delta"
+      ],
+      "noneOf": [
+        "seo audit",
+        "optimize seo",
+        "do an seo audit",
+        "fix our seo",
+        "track our citations",
+        "ai overview citations",
+        "monitor aeo",
+        "post performance"
       ],
       "minScore": 6
     },
@@ -1683,6 +1904,40 @@
         "user flow",
         "brand identity",
         "wireframe"
+      ],
+      "minScore": 6
+    },
+    "brief-product-ui": {
+      "phrases": [
+        "design the ui",
+        "product ui",
+        "interface design",
+        "screen design",
+        "component spec",
+        "design the screens"
+      ],
+      "allOf": [
+        [
+          "design",
+          "ui"
+        ],
+        [
+          "screen",
+          "spec"
+        ]
+      ],
+      "anyOf": [
+        "ui",
+        "interface",
+        "screen",
+        "component",
+        "layout",
+        "design system"
+      ],
+      "noneOf": [
+        "brand identity",
+        "landing page",
+        "database schema"
       ],
       "minScore": 6
     },

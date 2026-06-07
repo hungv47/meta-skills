@@ -57,9 +57,9 @@ capability:
       - "Non-Meta channels (Google / LinkedIn / TikTok / Search / YouTube ads) -> out of scope at v1."
     prerequisites:
       recommended:
-        - "research/product-context.md"
-        - "research/icp-research.md"
-        - "brand/BRAND.md"
+        - "id:product-context"
+        - "id:icp-research"
+        - "id:brand"
         - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 

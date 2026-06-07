@@ -6,7 +6,7 @@
 
 ## Inputs
 
-**Hard gate:** `.forsvn/artifacts/meta/records/diagnose-2026-05-10.md` exists → PASS, dispatch proceeds.
+**Hard gate:** `id:diagnose` resolves (diagnosis artifact present) → PASS, dispatch proceeds.
 
 **Root cause from diagnose:**
 - (1) Ad targeting brought low-intent visitors after Q1 targeting change (~55% of gap)
@@ -110,18 +110,21 @@ Validates owners + target metrics + kill criteria for each Proceed.
 
 ### Step 4: critic-agent
 
-8-point quality gate run:
+9-point quality gate run (gate names + order mirror `agents/critic-agent.md` exactly):
 
 | # | Gate | Status | Evidence |
 |---|---|---|---|
-| 1 | Root-cause anchoring | PASS | Both Proceeds reference specific root cause in hypothesis |
-| 2 | Force-rank ceiling | PASS | #1-ranked has highest ICE (25); ranking and scoring agree |
-| 3 | Evidence-backed scores | PASS | Every score has one-sentence justification in Key Evidence |
-| 4 | ≤3 above cut line | PASS | 2 Proceeds (within ≤3) |
-| 5 | Kill criteria on Proceeds | PASS | Both Proceeds have specific (metric, threshold, duration) |
-| 6 | Effort mix | PASS | 3S, 3M, 1L across the combined list |
-| 7 | Cross-stack contract | PASS | Phase 1 + Phase 2 + Decisions tables match format-conventions schema |
-| 8 | Out-of-scope persistence ready | PASS | All 3 Kills have Reason: prefix for Out-of-Scope file write |
+| 1 | Root cause anchor | PASS | Both Proceeds reference the specific root cause in their hypothesis |
+| 2 | Specific mechanics | PASS | Each mechanic is an action sequence (pull list → build lookalike → A/B test), not a category |
+| 3 | Anti-generic test | PASS | Every initiative carries an Anti-generic check tied to the specific root cause |
+| 4 | Effort mix | PASS | 3S, 3M, 1L across the combined list |
+| 5 | Evidence-backed ICE | PASS | Every score has a one-sentence justification in Key Evidence |
+| 6 | Differentiated scores | PASS | 7 distinct ICE totals (25, 23, 22, 18, 15, 13, 12) — no more than 2 sharing a total |
+| 7 | Force-rank ceiling | PASS | #1-ranked (Restore Paid Targeting) carries the highest ICE (25); rank order agrees with ICE order |
+| 8 | Cut line ≤3 | PASS | 2 Proceeds (within ≤3) |
+| 9 | Proceed validation | PASS | Both Proceeds have owner + target metric with baseline + kill criteria |
+
+> The critic does **not** score cross-stack schema conformance or Out-of-Scope file writes — those are operator-review / post-write responsibilities (see `anti-patterns.md`), demonstrated in **Post-write side effects** below.
 
 → **PASS.** Ship artifact + write 3 Out-of-Scope files.
 

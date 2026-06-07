@@ -1,6 +1,6 @@
 ---
 name: research-platform
-description: "Turns the operator's own platform evidence — owned analytics, public metrics, manual exports, qualitative observations, and prior eval outcomes — into a sourced per-platform evidence base across X, LinkedIn, TikTok, YouTube, and Instagram. Every metric is tagged with its evidence source and freshness; every recommendation names the platform, source, window, and confidence behind it. Use to ground social / SEO / short-form decisions in measured reality before briefing or publishing, or to refresh a stale evidence base. Not for discovering what's working in the wild (use research-shortform) or competitive / market sizing (use research-market). For audience research, see research-icp."
+description: "Turns the operator's own platform evidence — owned analytics, public metrics, manual exports, and prior eval outcomes — into a sourced per-platform evidence base across X, LinkedIn, TikTok, YouTube, and Instagram, every metric tagged to its source and freshness. Use to ground social / SEO / short-form decisions in measured reality before briefing. Not for discovering what's working in the wild (use research-shortform) or market sizing (use research-market); for audience research, see research-icp."
 argument-hint: "[platform set or account/channel to analyze]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch Write
 metadata:

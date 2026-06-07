@@ -60,8 +60,8 @@ capability:
       - "Writing the next-cycle brief -> brief-shortform."
     prerequisites:
       recommended:
-        - "brand/BRAND.md"
-        - "research/icp-research.md"
+        - "id:brand"
+        - "id:icp-research"
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"

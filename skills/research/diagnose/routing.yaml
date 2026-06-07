@@ -55,7 +55,7 @@ capability:
       - "Fuzzy requirements / new idea -> discover."
     prerequisites:
       recommended:
-        - "research/product-context.md"
+        - "id:product-context"
       hard: []
 
   orchestration:
@@ -88,6 +88,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: "research/diagnose.md"
+      - path: ".forsvn/canonical/research/DIAGNOSE.md"
+        id: diagnose
         lifecycle: canonical
-        produced_when: "Critic PASS; canonical diagnosis record (rename prior to `research/diagnose.v[N].md` on re-run)."
+        produced_when: "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `.forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."

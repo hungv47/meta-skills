@@ -74,6 +74,14 @@ Before drafting, write the argument spine in scratch form:
 
 The final hook does not need to state all four parts. It must lead with the most interesting load-bearing part and imply the rest. If a hook works only because of adjectives, rewrite it around the argument spine.
 
+### Belief Sequencing Across the Hero (multi-line surfaces)
+
+When a surface spans multiple lines (headline + subhead + bullets), the *piece* must walk the belief sequence (1 → N) even though no single line states all of it — assign each belief to a line. But lead with V/F/U, not with sequence order:
+
+- The HEADLINE carries whichever belief scores highest on V/F/U (usually the proof- or mechanism-anchored belief, 2–3). Never lead with a line below 4 on any of V/F/U just to honor sequence order.
+- If belief 1 is an abstract/emotional pain (low V/F/U alone), put it in the SUBHEAD as the "from" state the mechanism resolves — don't force it into the headline.
+- Subhead and bullets pick up the remaining beliefs in order, so the hero reads as one argument: old belief → why the old way fails → mechanism/proof → trust.
+
 ### The Three-Question Test (3Q)
 
 Run every variation through this filter:

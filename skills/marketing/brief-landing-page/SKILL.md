@@ -18,7 +18,7 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 ## Critical Gates — load first
 
 - **No brief without brand artifacts.** Missing `brand/BRAND.md` or `brand/DESIGN.md` → return `NEEDS_CONTEXT`. Brief depends on tokens, voice rules, sacred elements.
-- **Conversion rubric is mandatory.** Every section spec is gated by `references/conversion-principles.md` CP-01 → CP-13. Brand-good but conversion-bad = failure.
+- **Conversion rubric is mandatory.** Every section spec is gated by `references/conversion-principles.md` CP-01 → CP-14. Brand-good but conversion-bad = failure.
 - **Sacred elements are rails, not options.** Logo geometry, primary palette anchor, tagline wording, signature treatments are "do not touch."
 - **Envelope: 250-500 lines.** <250 = insufficient depth (designer asks follow-ups). >500 = bloat (designer skims). Brand-voice critic G6 FAILs both directions.
 - **Don't inline the shared skill chain.** Reference by section header; add page-specific overrides only.
@@ -32,7 +32,7 @@ Full inputs table + output companions + per-slot artifacts: [`references/procedu
 
 Two critics run in parallel before delivery, both binary PASS/FAIL:
 
-- **Conversion critic** scores against `references/conversion-principles.md` (CP-01 → CP-13). Full rubric in `agents/conversion-critic-agent.md`.
+- **Conversion critic** scores against `references/conversion-principles.md` (CP-01 → CP-14). Full rubric in `agents/conversion-critic-agent.md`.
 - **Brand-voice critic** scores sacred-element compliance, voice rules, surface language, token discipline, brief envelope (250-500 lines). Full rubric in `agents/brand-voice-critic-agent.md`.
 
 Cycle 1/2 verdict matrix + per-FAIL routing rule (from critics' `fix direction` field, not hardcoded): [`references/agent-manifest.md`](references/agent-manifest.md) § "Layer 5 critic verdict logic". DONE_WITH_CONCERNS is the floor — every concern visible.
@@ -54,7 +54,7 @@ Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](refe
 
 Warm/Cold Start prompts + 4-question Cold Start + Write-back map + Project-Specific Workflows + Context-to-Pass + hard-block conditions: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
-Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` collapses L1/1.5/2/3/3.5/4 to single-agent execution per layer, skips Layer 5 critic dispatch (critics noted as "skipped under --fast"). **`--fast` does NOT skip Hard Gates, 3 Approval Gates, or Critical Gates 1-6.**
+Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` collapses L1/1.5/2/3/3.5/4 to single-agent execution per layer, skips Layer 5 critic dispatch (critics noted as "skipped under --fast"). **`--fast` does NOT skip Hard Gates, 3 Approval Gates, or Critical Gates 1-6.** **Lean default (no `--fast` needed):** a ≤3-sentence single-scope ask with no prior artifacts auto-applies the per-layer single-agent collapse but KEEPS the Layer 5 critic; the 3 Approval Gates + Hard/Critical Gates always fire. Full multi-agent layers engage for broad, multi-section, or evidence-anchored (Route B) asks, or an upward override.
 
 ## Routing + Approval Gates
 
@@ -99,9 +99,9 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before brief s
 - **BLOCKED** — user rejected at a gate, or required input missing mid-flow.
 - **NEEDS_CONTEXT** — `BRAND.md` or `DESIGN.md` missing; cannot proceed.
 
-## Next Step
+## Execution
 
-After Gate 3 PASS: hand `handoff-implementation.md` to the coding agent (or paste a companion handoff into Claude Design / Figma / designer). Re-invoke with `--rev=N` after post-launch evidence triggers a redesign.
+After Gate 3 PASS, offer the registry-gated fork (category `design`) — **Brief-only**: hand `handoff-implementation.md` to a coding agent / Claude Design / Figma / designer; **Assisted/Direct**: a verified engine builds it end-to-end (returns a URL → `evaluate-landing-page`), you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. Re-invoke `--rev=N` after post-launch evidence triggers a redesign.
 
 ## Worked Examples
 

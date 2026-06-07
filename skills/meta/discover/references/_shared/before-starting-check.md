@@ -35,22 +35,29 @@ If mismatch: stop. Surface "artifact path drift" to operator before proceeding.
 
 If the command is routed through `/forsvn`, treat `skills/meta/forsvn/routing.yaml` and the generated `references/capability-index.json` as the routing contract. The per-skill SKILL.md remains authoritative for artifact output; the capability section in `routing.yaml` declares the machine-readable mirror that the index ships to consumers.
 
-### Step 2 — Read the foundation files (per skill domain)
+### Step 2 — Resolve the foundation artifacts by id (per skill domain)
 
-Each skill reads the canonical files its domain depends on. **Marketing and product skills:**
+Foundation artifacts are addressed by **stable logical id**, never by path — the
+manifest's `by_id` map resolves an id to its current location (move-safe). Resolve
+one with `find-artifacts --resolve <id>`, or get all three layers (TRUTH + OUTPUT +
+MEMORY) in a single call with `find-artifacts --context [--stack <stack>]`.
 
-```
-Read: research/product-context.md (the 12-section context — see product-marketing-context-schema.md)
-Check frontmatter:
+**Marketing and product skills** resolve `id:product-context` (the 12-section context
+— see product-marketing-context-schema.md). Check its frontmatter:
   - `sections_completed: [...]` — which sections are filled vs stubbed
   - `confidence: high | medium | low | mixed` — overall reliability
   - `last_validated: YYYY-MM-DD` — staleness check
-Read: brand/BRAND.md (creative marketing skills) or architecture/system-architecture.md (product skills)
-```
 
-**Research skills:** Read prior `research/*.md` files in domain.
+Creative marketing skills also resolve `id:brand` (+ `id:design`); product skills
+resolve `id:architecture` when the work requires it.
 
-**Meta skills:** Read `.forsvn/index/manifest.json` + `.forsvn/index/artifact-index.md` for state.
+**Research skills:** resolve the domain's canonical research artifact by id
+(`id:icp-research`, `id:market-research`, `id:diagnose`).
+
+**Meta skills:** read `.forsvn/index/manifest.json` (or `find-artifacts --context`) for state.
+
+An id that does not resolve = the prerequisite has not been produced → route to its
+producer skill (NEEDS_CONTEXT). The id is stable; only its path in `by_id` moves.
 
 ### Step 3 — Read .forsvn/experience/{relevant-dim}.md
 
@@ -73,7 +80,7 @@ After steps 1-3, the skill has a complete picture of what's resolvable from disk
 
 - **All needed dimensions resolvable** → Warm Start (short summary + override invitation).
 - **≥1 needed dimension missing** → Cold Start (single bundled prompt, 3-5 questions).
-- **Foundation file missing AND `--fast` flag NOT set** → NEEDS_CONTEXT (short-circuit; don't fabricate).
+- **Foundation id unresolvable AND `--fast` flag NOT set** → NEEDS_CONTEXT (short-circuit; don't fabricate).
 
 ---
 
@@ -81,12 +88,12 @@ After steps 1-3, the skill has a complete picture of what's resolvable from disk
 
 The check fails-fast (returns NEEDS_CONTEXT, no dispatch) when ANY apply:
 
-1. **Foundation file missing for skill domain.**
-   - Marketing/product skill called with no `research/product-context.md` → NEEDS_CONTEXT. Route operator to icp-research.
-   - Creative marketing skill called with no `brand/BRAND.md` → NEEDS_CONTEXT. Route to brand-system.
-   - Product skill called with no `architecture/system-architecture.md` (when product-shape requires it) → NEEDS_CONTEXT. Route to system-architecture.
+1. **Foundation artifact unresolvable for skill domain.**
+   - Marketing/product skill and `id:product-context` does not resolve → NEEDS_CONTEXT. Route operator to research-icp.
+   - Creative marketing skill and `id:brand` does not resolve → NEEDS_CONTEXT. Route to create-brand.
+   - Product skill and `id:architecture` does not resolve (when product-shape requires it) → NEEDS_CONTEXT. Route to architect-system.
 
-   **Per-project caveat:** these foundation files (`research/`, `brand/`, `architecture/`) materialize per-project where the stack is installed, not in the agent-skills repo itself. When a skill runs from the agent-skills repo (maintainer context, no host project) and these files are absent, treat as fresh-project bootstrap — do NOT short-circuit. The short-circuit applies only when a skill runs in a project context that should have these files but doesn't.
+   **Per-project caveat:** these foundation artifacts materialize per-project where the stack is installed, not in the agent-skills repo itself. When a skill runs from the agent-skills repo (maintainer context, no host project) and these files are absent, treat as fresh-project bootstrap — do NOT short-circuit. The short-circuit applies only when a skill runs in a project context that should have these files but doesn't.
 2. **`sections_completed` lacks a section the skill requires.**
    - Example: ad-copy needs sections 2, 4, 7, 9, 10. If 7 (Objections) is missing → NEEDS_CONTEXT.
 3. **`confidence: low` AND skill is `deep`-budget.**
@@ -105,8 +112,8 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 - Confidence + freshness gates (steps short-circuit 3 + 4 above)
 
 `--fast` does NOT skip:
-- Steps 1 + 2 (canonical-paths + foundation files). Without these, the skill can't produce sensible output even in `--fast` mode.
-- The NEEDS_CONTEXT short-circuit on missing foundation file (condition #1 above). `--fast` produces reduced rigor; it does not produce hallucination.
+- Steps 1 + 2 (skill contract + id-resolved foundation artifacts). Without these, the skill can't produce sensible output even in `--fast` mode.
+- The NEEDS_CONTEXT short-circuit on an unresolvable foundation id (condition #1 above). `--fast` produces reduced rigor; it does not produce hallucination.
 
 ---
 
@@ -118,13 +125,13 @@ For 3 and 4, `--fast` mode is the operator's escape hatch — `--fast` skips the
 ## Before Starting
 
 Apply the [[before-starting-check]] [PLAYBOOK]:
-1. Read canonical-paths.md.
-2. Read research/product-context.md + brand/BRAND.md.
-3. Read .forsvn/experience/{audience,brand,content}.md.
-4. If any required foundation is missing → NEEDS_CONTEXT.
+1. Resolve foundation by id: `find-artifacts --context [--stack <domain>]` (one call → TRUTH + OUTPUT + MEMORY), or `find-artifacts --resolve <id>` per prerequisite.
+2. For each required prerequisite (e.g. `id:product-context`, `id:brand`), confirm it resolves; read its `status` + staleness.
+3. Read the experience dimensions your domain needs (Step 3 mapping).
+4. If any required prerequisite is unresolvable → NEEDS_CONTEXT (recommend its producer).
 5. Otherwise route to Pre-Dispatch per pre-dispatch-protocol.md.
 
-This skill requires sections: <list>. This skill requires brand context: <yes/no>.
+This skill requires artifacts: <id-list>. This skill requires brand context: <yes/no>.
 ```
 
 Skill-specific details (which sections required, which experience dimensions read) go inline. The check pattern itself stays in the ref.
@@ -133,10 +140,10 @@ Skill-specific details (which sections required, which experience dimensions rea
 
 ## Anti-patterns
 
-1. **Skipping Step 1 because "canonical-paths is too much to read."** It's a 240-line table; agent reads it once per session and caches. Cost is trivial.
+1. **Skipping the manifest read because "it's too much."** `find-artifacts --context` is one call; the manifest is a single small JSON. Read it once per session and cache.
 2. **Reading all 8 experience dimensions.** Bloats Pre-Dispatch. Read only what the skill needs per the mapping table.
 3. **Soft NEEDS_CONTEXT.** Returning `done_with_concerns` when foundation is missing is a sycophancy failure (see [anti-sycophancy.md](anti-sycophancy.md) § "PASS-with-caveats inflation"). If foundation is missing, status is `needs_context`, period.
-4. **Re-asking questions answered in product-context.md.** Pre-Dispatch's Cold Start should never re-ask Section 1-12 content if those sections are filled. If a skill is doing this, the check is broken.
+4. **Re-asking questions answered in `id:product-context`.** Pre-Dispatch's Cold Start should never re-ask Section 1-12 content if those sections are filled. If a skill is doing this, the check is broken.
 5. **`--fast` skipping foundation reads.** `--fast` skips orchestration weight, not correctness floor. Steps 1 + 2 always run.
 6. **Treating the check as optional.** Every skill applies it. No exceptions. Skills that "just produce output" without the check are the ones that hallucinate.
 

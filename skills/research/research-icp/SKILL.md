@@ -1,6 +1,6 @@
 ---
 name: research-icp
-description: "Builds ideal customer profiles and buyer personas from real voice-of-customer evidence — analyzes demographics, pain points, jobs-to-be-done, decision psychology, and online habitat for a target market. Use to define who you're talking to before messaging, channel, or positioning work. Foundational: its output feeds 13+ downstream skills. Not for competitive positioning (use prioritize) or campaign planning (use plan-campaign). For brand identity from audience data, see create-brand; for market sizing, see research-market."
+description: "Builds ideal customer profiles and buyer personas from real voice-of-customer evidence — demographics, pain points, jobs-to-be-done, decision psychology, and online habitat for a target market. Use to define who you're talking to before messaging, channel, or positioning work. Foundational: its output feeds 13+ downstream skills. Not for competitive positioning (use prioritize) or campaign planning (use plan-campaign); for brand identity, see create-brand; for market sizing, see research-market."
 argument-hint: "[product or target market]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -11,7 +11,7 @@ metadata:
 
 # ICP Research — Orchestrator
 
-Foundational skill for all stacks. Coordinates sub-agents to build audience intelligence from real research, not assumptions. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Why this skill exists, creative-vs-structural framing, 7-gate quality summary: [`references/playbook.md`](references/playbook.md).
+Foundational skill for all stacks. Coordinates sub-agents to build audience intelligence from real research, not assumptions. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Why this skill exists, creative-vs-structural framing, 10-gate quality summary: [`references/playbook.md`](references/playbook.md).
 
 **Core question:** Who exactly are we talking to and what keeps them up at night?
 
@@ -22,22 +22,21 @@ Non-negotiable before any agent dispatches:
 1. **No guessed personas — VoC or interview evidence only.** Every attribute traces to product context, brief, user input, or VoC quotes. Fabricated personas mislead 13+ downstream skills.
 2. **Don't skip habitat mapping.** IMC planning needs specific community names with density and engagement type. "They're on LinkedIn" is not actionable.
 3. **Max 2 personas.** More dilutes focus. If 4+ segments surface, force-rank by revenue potential; document cuts in Segment Rationale.
-4. **Stale product context (>30 days) → recommend re-run.** If `research/product-context.md` `Date` is older than 30 days, warn and recommend re-run. Proceeding → note "stale product context" in artifact header.
-5. **≥5 independent sources per persona** ([`references/confidence-and-bias.md`](references/confidence-and-bias.md) § 3). Below 5 → `Hypothesis Mode` + `Confidence: L`; critic returns NEEDS_CONTEXT; voc-collector gathers more (or operator invokes `--hypothesis-mode` with override logged).
-6. **Every finding carries a confidence label** (`confidence-and-bias.md` § 1). Pains, biases, objections, trust signals, emotional drivers — all carry inline `[Confidence: H | M | L | sources: N]`. `L` findings must be promoted, moved to Red Flags as hypotheses, or dropped — never shipped as findings.
-7. **Sample Bias section is mandatory** (`confidence-and-bias.md` § 2). Name source-type mix, dataset-specific skews, mitigations applied, known gaps. Critic Gate 9 enforces specificity — generic disclaimers FAIL.
+4. **Stale product context (>30 days) → recommend re-run.** If `.forsvn/canonical/product/PRODUCT-CONTEXT.md` `Date` is older than 30 days, warn and recommend re-run. Proceeding → note "stale product context" in artifact header.
+
+The source floor (≥5 independent sources/persona), confidence labels, and the mandatory Sample Bias section are **critic-enforced** (Gates 8–10 below), not pre-dispatch — see the critic checklist + [`references/confidence-and-bias.md`](references/confidence-and-bias.md).
 
 ## Before Starting
 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. `--fast` collapses to Route A (skips habitat-agent + decision-psychology-agent) IF Warm Start has sufficient context; critic gate collapses to single pass. **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize hallucinating personas (Critical Gate 1 floor).
-- Read `.forsvn/index/manifest.json` — find any prior `research/icp-research.md` (re-run signal) and check `research/product-context.md` staleness (Gate 4).
+- Read `.forsvn/index/manifest.json` — find any prior `.forsvn/canonical/research/ICP.md` (re-run signal) and check `.forsvn/canonical/product/PRODUCT-CONTEXT.md` staleness (Gate 4).
 - Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) — auto-scan, Warm/Cold Start, 5-question Cold Start prompt, read order, Write-back map.
 
-## Quality Gate — critic checklist (gates 1-9)
+## Quality Gate — critic checklist (9 of 10 gates)
 
-Gate 10 (Brief Alignment) is critic-agent-only. Full 10-gate rubric in `agents/critic-agent.md`.
+Gate 7 (Brief Alignment) is critic-agent-only — it needs the originating brief. Full 10-gate rubric in `agents/critic-agent.md`.
 
 - [ ] Every VoC quote includes platform name and traces to a real source (not agent-generated)
 - [ ] Each persona has a habitat map with specific channels and supporting evidence. Aim for 3+; document why if fewer.
@@ -51,24 +50,23 @@ Gate 10 (Brief Alignment) is critic-agent-only. Full 10-gate rubric in `agents/c
 
 ## Artifact Contract
 
-- **Paths:** `research/icp-research.md` (canonical audience record) + `research/product-context.md` (canonical foundational record — research-icp IS the producer).
-- **Lifecycle:** `canonical` — edited in place by humans; on re-run rename prior to `research/icp-research.v[N].md` and increment.
-- **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`, `stack` (=research), `review_surface` (=html — the optional forsvn-preview plugin renders the themed preview while `decision_state: pending`), `decision_state`. See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v2 schema.
+- **Paths:** `.forsvn/canonical/research/ICP.md` (canonical audience record, `id: icp-research`) + `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (canonical foundational record, `id: product-context` — research-icp IS the producer).
+- **Lifecycle:** `canonical` — edited in place; on re-run overwrite in place and bump the integer `version:` (no `.v[N].md` sibling — git history holds priors).
+- **Frontmatter:** `skill`, `version`, `date` (ISO-8601), `status`, `stack: research`, `review_surface: html`, `id: icp-research`, `type: canonical`, `keywords: [icp, persona, audience, voice-of-customer, pain, habitat]`. See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the full schema.
 - **Required body sections (in order — cross-stack contract):** Persona 1 (Demographics + Pain Profile + Decision Psychology + Habitat Map) · Persona 2 (if applicable, max 2) · Top 3 Emotional Drivers · Red Flags · Next Step. Full template (60+ lines): [`references/format-conventions.md`](references/format-conventions.md).
 - **Optional sections:** Segment Rationale (3+ segments surfaced, 2 cut per Gate 3) · Known Issues (critic FAILed twice and artifact ships with annotations).
 - **Side effects (mandatory on PASS / done_with_concerns):**
-  - Write `research/icp-research.md`.
-  - Write or update `research/product-context.md` (8-section schema + Canonical Terminology).
-  - Experience write-back per `procedures/pre-dispatch.md` Write-back map: Q1 → `experience/product.md` + mirror to `research/product-context.md` Product section; Q2/Q3/Q4 → `experience/audience.md`. **Q5 (Route) is NOT persisted — routing only.**
-  - Rename any prior `research/icp-research.md` to `research/icp-research.v[N].md` on re-run.
+  - Write `.forsvn/canonical/research/ICP.md`.
+  - Write or update `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (8-section schema + Canonical Terminology).
+  - Experience write-back per `procedures/pre-dispatch.md` Write-back map: Q1 → `experience/product.md` + mirror to `.forsvn/canonical/product/PRODUCT-CONTEXT.md` Product section; Q2/Q3/Q4 → `experience/audience.md`. **Q5 (Route) is NOT persisted — routing only.**
 - **Consumed by:** plan-campaign · create-brand · write-copy · brief-landing-page · brief-graphic · write-ad · write-outreach · research-shortform · brief-shortform · humanmaxxing · optimize-seo · polish-vn · write-social.
-- **Cross-stack OUTPUT contract:** Artifact Template structure + Habitat Map 5-column schema + Top 3 Emotional Drivers + Next Step block + product-context.md 8-section schema are load-bearing — schema changes require atomic update of 13 downstream consumers (`anti-patterns.md` row "Cross-stack contract drift").
+- **Cross-stack OUTPUT contract:** Artifact Template structure + Habitat Map 5-column schema + Top 3 Emotional Drivers + Next Step block + PRODUCT-CONTEXT.md 8-section schema are load-bearing — schema changes require atomic update of 13 downstream consumers (`anti-patterns.md` row "Cross-stack contract drift").
 
 ## Chain Position
 
 **Previous:** none (or any skill needing audience context — Route C) | **Next:** `plan-campaign`, `create-brand`.
 
-**Foundational role:** Creates `research/product-context.md` consumed by 13+ downstream skills. Run first for significantly better downstream output.
+**Foundational role:** Creates `.forsvn/canonical/product/PRODUCT-CONTEXT.md` consumed by 13+ downstream skills. Run first for significantly better downstream output.
 
 **Re-run triggers:** audience pivot, new market entry, major product changes, quarterly for active products.
 
@@ -94,7 +92,7 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before output 
 - **DONE** — full ICP synthesized, critic PASS, all 5-7 dimensions populated with quoted evidence.
 - **DONE_WITH_CONCERNS** — critic PASS but Route A used (habitat/decision-psychology omitted), OR VoC quote density thin (flagged in artifact).
 - **BLOCKED** — irreconcilable persona contradictions (e.g., two distinct buyers with no merge path); needs user scope decision.
-- **NEEDS_CONTEXT** — `research/product-context.md` missing AND user can't describe product/audience; recommend `/discover` first.
+- **NEEDS_CONTEXT** — `.forsvn/canonical/product/PRODUCT-CONTEXT.md` missing AND user can't describe product/audience; recommend `/discover` first.
 
 ## References
 

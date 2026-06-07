@@ -13,7 +13,7 @@ Loaded by the orchestrator when entering Layer 1 dispatch.
 | Section-Spec Agent | 3 (after architecture approved) | `agents/section-spec-agent.md` | Per-section spec — copy slots, layout, motion, asset slots, conversion-checklist embed. |
 | Asset-Slot Agent | 3.5 (after section-spec) | `agents/asset-slot-agent.md` | Named asset slots with file paths, dimensions, formats, fallbacks, generation prompt templates. **Sequential after section-spec** — slot IDs originate there, parallel execution would drift them. |
 | Hand-Off Agent | 4 (after L3) | `agents/handoff-agent.md` | Composes Claude Design / Figma / designer / universal coding-agent hand-off prompts. |
-| Conversion Critic | 5 (parallel) | `agents/conversion-critic-agent.md` | Scores brief against the local CP-01 → CP-13 conversion-principles rubric. |
+| Conversion Critic | 5 (parallel) | `agents/conversion-critic-agent.md` | Scores brief against the local CP-01 → CP-14 conversion-principles rubric. |
 | Brand-Voice Critic | 5 (parallel) | `agents/brand-voice-critic-agent.md` | Scores sacred-element compliance, voice rules, surface language, token discipline, brief envelope (250-500 lines). |
 
 ## Routes
@@ -80,7 +80,7 @@ DONE_WITH_CONCERNS is the floor. No silent FAIL outputs.
 
 | Reference | Consumed by | Purpose |
 |---|---|---|
-| `references/conversion-principles.md` | conversion-critic, section-spec | CP-01 → CP-13 canonical rubric. |
+| `references/conversion-principles.md` | conversion-critic, section-spec | CP-01 → CP-14 canonical rubric. |
 | `references/conversion/*.md` | conversion-critic | 6 source files (core-principles, advanced-psychology, social-proof-trust, ux-design, testing-optimization, implementation-checklist). |
 | `references/section-templates.md` | architecture, section-spec | Hero / Problem / Solution / Proof / Objection / CTA section templates. |
 | `references/surface-rhythm.md` | architecture | Scroll velocity, eye-pause, density beats. |

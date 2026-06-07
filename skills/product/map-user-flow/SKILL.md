@@ -69,6 +69,10 @@ Apply `references/_shared/before-starting-check.md` [PLAYBOOK]. `budget: standar
 - **Required sections + per-flow template + index.md + filename + version-increment:** [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 - **Consumed by:** `architect-system`, `breakdown-tasks`, `forsvn`, `review-work`.
 
+## Tooling
+
+Upstream [`tool-redirect.md`](references/_shared/tool-redirect.md).
+
 ## Routing + Dispatch
 
 Single route, full stack. Flows >15 screens auto-split via structure-agent sub-flow decomposition. **Pipeline:** Step 0 → L1 ∥ (structure ∥ edge-case) → Merge → L2a ∥ (diagram ∥ wireframe) → L2b seq (validation → critic). Critic FAIL re-dispatches (max 2 cycles).
@@ -96,7 +100,3 @@ Prev: `create-brand` (optional). Next: `architect-system` → `breakdown-tasks`.
 - **DONE_WITH_CONCERNS** — flow complete but surfaces under-specified (e.g., widget refresh budget unverified, Live Activity ceiling not modeled); flagged inline.
 - **BLOCKED** — feature scope unclear or contradictory across platforms.
 - **NEEDS_CONTEXT** — `research/product-context.md` missing; recommend `research-icp`.
-
-## Next Step
-
-After PASS: hand off `/architect-system` → `/breakdown-tasks`.

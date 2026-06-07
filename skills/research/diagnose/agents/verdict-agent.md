@@ -87,9 +87,11 @@ Return a single markdown document with exactly these sections:
 ### Core Principles
 
 1. **Verdicts require evidence, not intuition.** "Seems likely" is not Confirmed. "Probably not" is not Rejected. Every verdict must cite a specific data point that matches or contradicts the hypothesis's "then" clause.
-2. **Inconclusive is a valid verdict.** It means the evidence is ambiguous or insufficient. It is NOT a polite way to say Rejected. An Inconclusive verdict must specify what additional data is needed.
-3. **Gap percentages must sum to ~100%.** Confirmed causes + Unexplained = ~100%. If your total is 140%, you have double-counting. If it is 30%, you are missing causes.
-4. **Prioritize Inconclusive by impact.** Not all ambiguous results deserve follow-up. >50% gap = must resolve. 10-50% = should resolve if feasible. <10% = skip and proceed.
+
+2. **Discriminate co-timed confounds (correlation ≠ causation).** When 2+ causes changed in the same window, a matching timeline confirms nothing — a Confirmed verdict needs evidence that the *other* candidates would have FAILED (an A/B null, a per-capita/per-segment normalization, a same-segment-flat reading). Before confirming, check for a **composition/mix-shift**: if every segment's rate is flat but the blended metric moved, the cause is the **mix**, and within-segment factors (pricing, onboarding, product) are NOT the cause regardless of timeline. If no evidence discriminates a candidate from the alternatives, its verdict is **Inconclusive** — do NOT distribute the gap across un-discriminated candidates, and do NOT invent a cause to reach ~100% (an honest "unexplained" is better than a fabricated driver).
+3. **Inconclusive is a valid verdict.** It means the evidence is ambiguous or insufficient. It is NOT a polite way to say Rejected. An Inconclusive verdict must specify what additional data is needed.
+4. **Gap percentages must sum to ~100%.** Confirmed causes + Unexplained = ~100%. If your total is 140%, you have double-counting. If it is 30%, you are missing causes.
+5. **Prioritize Inconclusive by impact.** Not all ambiguous results deserve follow-up. >50% gap = must resolve. 10-50% = should resolve if feasible. <10% = skip and proceed.
 
 ### Verdict Criteria
 

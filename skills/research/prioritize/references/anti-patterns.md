@@ -75,7 +75,7 @@
 
 **Fix:** Force-rank BEFORE scoring (Critical Gate 2). The #1 rank sets the ICE ceiling — if you ranked it #1, its ICE should be highest. ice-scoring-agent's differentiation rule (no more than 2 sharing a total) forces re-scoring if the spread is too tight.
 
-**Owned by:** ranking-agent (force-rank first) + ice-scoring-agent (differentiation check) + critic-agent (Gate 2 catch).
+**Owned by:** ranking-agent (force-rank first) + ice-scoring-agent (differentiation check) + critic-agent (Gates 6-7 catch — Differentiated scores + Force-rank ceiling).
 
 ---
 
@@ -92,7 +92,7 @@
 
 **Fix:** Every score needs a one-sentence citation in the Key Evidence column — what data, case study, or reasoning supports this number. Lead with the dimension + score (e.g., "I:8 — paid is 60% of traffic, old targeting converted at 3.5% vs 1.2% now").
 
-**Owned by:** ice-scoring-agent + critic-agent (Gate 3 catch).
+**Owned by:** ice-scoring-agent + critic-agent (Gate 5 catch — Evidence-backed ICE).
 
 ---
 
@@ -108,7 +108,7 @@
 
 **Fix:** Force the ≤3 constraint at the cut-line-agent step. Parked initiatives have their turn after the current batch ships. If the team genuinely has capacity for >3 simultaneous initiatives (rare — typically requires a dedicated owner per initiative + no shared dependencies), document the capacity explicitly in the Cut line statement.
 
-**Owned by:** cut-line-agent + critic-agent (Gate 4 catch).
+**Owned by:** cut-line-agent + critic-agent (Gate 8 catch — Cut line ≤3).
 
 ---
 
@@ -130,7 +130,7 @@
 
 **Fix:** Every Proceed needs a specific (metric, threshold, duration) triplet that triggers a stop. cut-line-agent enforces this in its output contract.
 
-**Owned by:** cut-line-agent + critic-agent (Gate 5 catch).
+**Owned by:** cut-line-agent + critic-agent (Gate 9 catch — Proceed validation).
 
 ---
 
@@ -147,7 +147,7 @@
 
 **Fix:** Default to Route A unless the operator explicitly justifies Route B. The unconventional scan's parallel cost is low; the expected value of asymmetric initiatives is high.
 
-**Owned by:** Route Selection (in `procedures/dispatch-mechanics.md`). Note: the 8-point critic gate does NOT catch this — there is no "Route A was used when warranted" gate. Operator review is the final check before shipping; if a critical unconventional initiative would have surfaced, the operator should escalate to Route A and re-dispatch.
+**Owned by:** Route Selection (in `procedures/dispatch-mechanics.md`). Note: the 9-point critic gate does NOT catch this — there is no "Route A was used when warranted" gate. Operator review is the final check before shipping; if a critical unconventional initiative would have surfaced, the operator should escalate to Route A and re-dispatch.
 
 ---
 
@@ -162,7 +162,7 @@ The Phase 1 initiative format (`Hypothesis / Mechanic / Target Metric / Anti-gen
 - Omitting the `Anti-generic check` row in Phase 1.
 - Omitting the `Cut line:` declaration after the Decisions table.
 
-**Owned by:** operator review against `references/format-conventions.md` before shipping any schema change. Note: the 8-point critic gate does NOT catch schema drift — Gate 7 is "Cut line ≤3" and Gate 8 is "Proceed validation" (owner/baseline/kill criteria), neither inspects column schemas. If schema-drift catching matters more, that's a v6.3.0 enhancement to add a 9th gate.
+**Owned by:** operator review against `references/format-conventions.md` before shipping any schema change. Note: the 9-point critic gate does NOT catch schema drift — Gate 8 is "Cut line ≤3" and Gate 9 is "Proceed validation" (owner/baseline/kill criteria), neither inspects column schemas. If schema-drift catching matters more, that's a future enhancement to add a 10th gate.
 
 ---
 
@@ -178,4 +178,4 @@ The Phase 1 initiative format (`Hypothesis / Mechanic / Target Metric / Anti-gen
 
 **Fix:** cut-line-agent (or the orchestrator post-write) writes one file per Kill in the canonical format. Mandatory on PASS or done_with_concerns. The file format spec lives in `references/format-conventions.md` § "Out-of-Scope file format."
 
-**Owned by:** Post-write side effects (in `procedures/dispatch-mechanics.md`). Note: the 8-point critic gate does NOT catch this — Gate 8 is "Proceed validation" (owner/baseline/kill criteria), which inspects the artifact body, not on-disk side-effect files. Out-of-Scope file writes are an orchestrator post-write responsibility; missing writes are caught at the operator/integration level, not by the critic.
+**Owned by:** Post-write side effects (in `procedures/dispatch-mechanics.md`). Note: the 9-point critic gate does NOT catch this — Gate 9 is "Proceed validation" (owner/baseline/kill criteria), which inspects the artifact body, not on-disk side-effect files. Out-of-Scope file writes are an orchestrator post-write responsibility; missing writes are caught at the operator/integration level, not by the critic.

@@ -1,0 +1,125 @@
+# Routing + capability metadata for evaluate-seo.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun scripts/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "seo eval"
+    - "evaluate seo performance"
+    - "seo cycle results"
+    - "ranking delta"
+    - "did our seo work"
+    - "did we move up in search"
+    - "visibility delta"
+    - "aeo eval"
+    - "did our aeo citations improve"
+    - "evaluate the ranking change"
+    - "search ranking results"
+    - "ranking results this cycle"
+  allOf:
+    - [seo, results]
+    - [ranking, delta]
+    - [seo, cycle]
+    - [search, ranking, results]
+  anyOf:
+    - "ranking position"
+    - "organic clicks"
+    - "aeo citation"
+    - "search visibility"
+    - "serp position"
+    - "keyword position"
+    - "visibility delta"
+    - "ranking delta"
+  noneOf:
+    - "seo audit"
+    - "optimize seo"
+    - "do an seo audit"
+    - "fix our seo"
+    - "track our citations"
+    - "ai overview citations"
+    - "monitor aeo"
+    - "post performance"
+  minScore: 6
+
+capability:
+  id: evaluate-seo
+  domain: marketing
+  public: true
+  command: /evaluate-seo
+  summary: "Score an SEO / AEO cycle from real ranking + visibility data inside an existing eval loop — one keyword cluster + surface per cycle, verdict + visibility-delta diagnosis with a lag-and-volatility gate that refuses short-window noise."
+  aliases:
+    - seo-eval
+    - aeo-eval
+    - ranking-eval
+
+  route:
+    use_when:
+      - "User asks to evaluate the ranking/visibility delta of an optimize-seo or monitor-aeo change over a measurement window."
+      - "Loop exists; cycle N needs scoring for one keyword cluster + surface."
+    not_when:
+      - "Loop does not exist yet -> run-eval-loop."
+      - "Running the audit or applying fixes -> optimize-seo."
+      - "Tracking AI Overview / LLM-answer citations live -> monitor-aeo."
+      - "Organic-post engagement -> evaluate-content; paid-ad -> evaluate-ad."
+      - "Writing the content/page itself -> write-copy."
+    prerequisites:
+      recommended:
+        - "id:icp-research"
+        - "id:product-context"
+        - ".forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
+      hard:
+        - ".forsvn/loops/[slug]/program.md"
+        - ".forsvn/loops/[slug]/context.md"
+        - ".forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Visibility ingest only (no lag/volatility diagnosis needed)."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Recommendation + Critic)."
+      - "Visibility signal or lag/volatility (core-update confounder) disputed; needs the full layer."
+    critic_required_when:
+      - "Always — eval artifact + ledger row are canonical loop state."
+      - "Override protocol: critic FAIL twice -> BLOCKED, no ledger row."
+
+  load:
+    always:
+      - "references/_shared/eval-loop-spec.md"
+      - "references/_shared/evaluation-loop-rubric.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, hard-block checks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic revision cycle"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Rubric scoring"
+        read:
+          - "references/rubric.md"
+      - if: "Artifact write / Evidence + Visibility + Lag table format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Critic override (operator ships despite FAIL)"
+        read:
+          - "references/_shared/critic-override-protocol.md"
+      - if: "Quality feedback / dashboard updates"
+        read:
+          - "references/_shared/quality-dashboard-spec.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: ".forsvn/loops/[slug]/evals/YYYY-MM-DD-cycle-N.md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one cycle = one keyword cluster + surface = one artifact + one ledger row."
+      - path: ".forsvn/loops/[slug]/results.tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended via `append-loop-result.ts` on critic PASS."
+      - path: ".forsvn/loops/[slug]/learnings.md"
+        lifecycle: evaluation
+        produced_when: "ONLY for high-confidence keep/discard lessons that generalize beyond this exact keyword — critic gates promotion."

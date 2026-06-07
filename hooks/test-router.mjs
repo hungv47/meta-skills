@@ -22,6 +22,15 @@ const tests = [
   ["Gather our platform analytics evidence for our X and YouTube accounts", "research-platform"],
   ["Create an eval loop for the new pricing page", "run-eval-loop"],
   ["Evaluate landing page analytics for the pricing page", "evaluate-landing-page"],
+  // P0-C eval<->brief separation: bare eval phrasings (no "analytics" crutch)
+  // must reach evaluate-landing-page, not brief-landing-page; and pure brief
+  // phrasings must still reach brief-landing-page. Pre-fix, the first three
+  // routed to brief-landing-page (phrase "landing page" +6, no "evaluate" veto).
+  ["Evaluate my landing page", "evaluate-landing-page"],
+  ["Can you evaluate the landing page?", "evaluate-landing-page"],
+  ["evaluate this landing page for me", "evaluate-landing-page"],
+  ["I need a landing page brief", "brief-landing-page"],
+  ["Write a new landing page brief for the launch", "brief-landing-page"],
   ["Build our brand identity and voice guidelines", "create-brand"],
   ["Write copy for the hero section headline", "write-copy"],
   ["Plan our go to market strategy", "plan-campaign"],

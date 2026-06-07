@@ -49,9 +49,9 @@ capability:
       - "Campaign / channel planning -> plan-campaign."
     prerequisites:
       recommended:
-        - "research/market-research.md"
-        - "research/product-context.md"
-        - "research/diagnose.md"
+        - "id:market-research"
+        - "id:product-context"
+        - "id:diagnose"
       hard: []
 
   orchestration:

@@ -59,8 +59,8 @@ capability:
       - "Sourcing / list-building -> out of scope."
     prerequisites:
       recommended:
-        - "research/product-context.md"
-        - "research/icp-research.md"
+        - "id:product-context"
+        - "id:icp-research"
         - ".forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 

@@ -53,8 +53,8 @@ capability:
       - "Diagnosing a metric decline -> diagnose."
     prerequisites:
       recommended:
-        - "research/icp-research.md"
-        - "research/product-context.md"
+        - "id:icp-research"
+        - "id:product-context"
       hard: []
 
   orchestration:

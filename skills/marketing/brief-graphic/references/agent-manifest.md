@@ -74,7 +74,7 @@ Dimensions:
 | Reference | Consumed by | Purpose |
 |---|---|---|
 | `references/asset-types.md` | Step 0.5 Route Detection | Per-asset format specs + auto-detection table. |
-| `references/platform-modules.md` | brand-anchor, concept, brief-synth, critic | Per-platform brief checklists (IG/LinkedIn/FB/YT/X/OOH/banner — skeleton, follow-up build pass needed). |
+| `references/platform-modules.md` | brand-anchor, concept, brief-synth, critic | Per-platform brief checklists. Fully populated — all 18 modules (tranche 1 core-digital + tranche 2 FB feed/story ads, LinkedIn event, YT banner, email-hero, OOH/transit/magazine) carry practitioner-grade specs; volatile ad-chrome / file caps + per-vendor physical specs carry `[verify]` / confirm-media-kit flags. |
 | `references/prompt-patterns.md` | prompt-craft | Image-gen prompt structures + tool → asset-type table. |
 | `references/visual-rubric.md` | critic | 8-dim scoring + 13-pattern Generic-AI-Aesthetic Detector. |
 | `references/failure-modes.md` | critic | Generic-AI catalog + brand drift. |

@@ -75,7 +75,7 @@ capability:
       - "Keyword research / classical SERP analysis -> optimize-seo."
     prerequisites:
       recommended:
-        - "research/product-context.md"
+        - "id:product-context"
       hard: []
 
   orchestration:

@@ -53,19 +53,19 @@ Some teams use the product (I × C × E) instead. Either works, just be consiste
 
 ## Dimension 3: Ease
 
-*"How easy is this to execute?"*
+*"How easy is this to execute?"* **Score on AI-assisted effort, not raw human-team weeks** — see `skills/CLAUDE.md` § "Effort compression." AI compresses build time, so a feature build that reads as "weeks" for a human team is hours-to-days AI-assisted. Reserve the low band for what AI can't compress (human/external coordination, real-world validation windows).
 
-| Score | Label | What It Means | Example |
+| Score | Label | What It Means (AI-assisted effort) | Example |
 |-------|-------|---------------|---------|
-| 1-3 | Hard | Multiple teams, long timeline, complex dependencies | Full product rebuild, multi-month campaign with external partners |
-| 4-6 | Moderate | Some effort, manageable dependencies | 2-4 week project, needs design + eng support |
-| 7-8 | Easy | Small team, quick turnaround | 1-2 week project, mostly within your team's control |
-| 9-10 | Trivial | One person, days to execute, no dependencies | Copy change, email sequence, configuration tweak |
+| 1-3 | Hard | Gated by human/external coordination, not by code — AI can't compress it | New enterprise sales motion (6-mo cycle, legal/security); anything blocked on a partner or approval |
+| 4-6 | Moderate | A real build AI-assisted in days, with design/validation iteration | A multi-surface feature needing UX iteration + a validation window |
+| 7-8 | Easy | A bounded build AI compresses to hours/days | Native connector/integration, in-app guided flow, schema-mapping logic |
+| 9-10 | Trivial | Config/copy, no real build | Copy change, feature-flag flip, configuration tweak |
 
 **Calibration tips:**
-- Include ramp-up time, not just execution time
-- Account for review/approval cycles
-- Factor in dependencies — a simple task that requires 3 teams to align is not easy
+- Score AI-assisted effort: a feature/connector build is Ease 7-8 (days AI-assisted), not 2-3 ("a month of engineering"). A build that fixes the primary root cause should not score below a trivial tweak.
+- The low band (1-3) is for human/external coordination and real-world time — AI does not compress a 6-month sales cycle or a partner negotiation.
+- Account for review/approval cycles and real dependencies — a task that requires 3 teams to align is not easy.
 - Consider opportunity cost — what else could the team do instead?
 
 ---
@@ -139,3 +139,5 @@ Sort by total ICE score. Draw a line based on available capacity — top initiat
 3. **Ignoring negative ease** — Some initiatives actively make other things harder (tech debt, support burden). Factor in total cost, not just direct effort.
 
 4. **Not revisiting scores** — ICE scores should be updated as you learn more. A 5 confidence can become a 7 after a successful small test.
+
+5. **Ease on human-team weeks** — Scoring a build Ease 2-3 because it's "a month of engineering." Score AI-assisted effort; a feature/connector build is days (Ease 7-8). A trivial high-Ease tweak outscoring the primary-root-cause build is a red flag — re-check Ease realism and Impact weighting, not a result to ship.

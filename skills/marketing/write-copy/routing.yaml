@@ -54,9 +54,9 @@ capability:
       - "Landing-page structure or wire brief -> brief-landing-page."
     prerequisites:
       recommended:
-        - "research/product-context.md"
-        - "research/icp-research.md"
-        - "brand/BRAND.md"
+        - "id:product-context"
+        - "id:icp-research"
+        - "id:brand"
       hard: []
 
   orchestration:

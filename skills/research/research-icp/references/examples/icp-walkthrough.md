@@ -1,6 +1,6 @@
 # Example — Full ICP Walkthrough (Route B)
 
-> Load when an operator is learning the skill OR when synthesis-agent needs to see a worked example of the dispatch → critic → PASS arc end-to-end. This example traces the original SKILL.md worked example with the same 7-gate critic verdict expanded inline. Preserved from the original SKILL.md verbatim where possible — the persona narrative, VoC quotes, and habitat map are illustrative not prescriptive (per the creative-skill ref pattern).
+> Load when an operator is learning the skill OR when synthesis-agent needs to see a worked example of the dispatch → critic → PASS arc end-to-end. This example traces the original SKILL.md worked example with the same 10-gate critic verdict expanded inline. Preserved from the original SKILL.md verbatim where possible — the persona narrative, VoC quotes, and habitat map are illustrative not prescriptive (per the creative-skill ref pattern).
 
 ---
 
@@ -23,7 +23,7 @@ Warm Start prompt emitted; user confirmed and added:
 - Geo focus: US + EU
 - Route: B (Full ICP — comprehensive research needed for launch)
 
-Generated `research/product-context.md` with 8 sections (Product, Buyer, Problem, Differentiator, Social Proof, Model, Voice, Primary CTA) + Canonical Terminology table (terms: `project`, `update`, `team`, `seat`). Saved.
+Generated `.forsvn/canonical/product/PRODUCT-CONTEXT.md` with 8 sections (Product, Buyer, Problem, Differentiator, Social Proof, Model, Voice, Primary CTA) + Canonical Terminology table (terms: `project`, `update`, `team`, `seat`). Saved.
 
 ---
 
@@ -111,7 +111,7 @@ Each driver traced to 2+ quotes with platform attribution. Critic Gate 3 satisfi
 
 ### 4. Critic Gate → PASS
 
-All 7 gates pass:
+All 10 gates pass:
 
 - **Gate 1 (VoC Evidence Integrity):** PASS — All quotes attributed to specific communities (r/ExperiencedDevs, not just Reddit) with dates and context.
 - **Gate 2 (Habitat Specificity):** PASS — 5 named communities with H/M/L density and Lurker/Engager/Creator engagement.
@@ -120,8 +120,11 @@ All 7 gates pass:
 - **Gate 5 (Quote Volume & Coverage):** PASS — 18 quotes across 5 categories spanning 5 platforms.
 - **Gate 6 (Persona Constraint):** PASS — 1 persona (within max of 2).
 - **Gate 7 (Brief Alignment):** PASS — Engineering managers + mid-size SaaS + B2B + US+EU matches brief.
+- **Gate 8 (Confidence Labels Complete):** PASS — every finding carries `[Confidence: H|M|L | sources: N]`; no unresolved `L` shipped.
+- **Gate 9 (Sample Bias Acknowledged):** PASS — Sample Bias section present and specific to this 5-platform dataset (not a generic disclaimer).
+- **Gate 10 (≥5 Sources per Persona):** PASS — persona drawn from 5 named communities across 5 platforms, clearing the 5-source floor.
 
-Artifact delivered to `research/icp-research.md`.
+Artifact delivered to `.forsvn/canonical/research/ICP.md`.
 
 ---
 
@@ -129,8 +132,8 @@ Artifact delivered to `research/icp-research.md`.
 
 Per `procedures/dispatch-mechanics.md`:
 
-1. Wrote `research/icp-research.md` with frontmatter + Persona 1 + Top 3 Emotional Drivers + Red Flags + Next Step.
-2. Updated `research/product-context.md` Product / Buyer / Problem / Differentiator / Voice sections (canonical mirror per Write-back map Q1).
+1. Wrote `.forsvn/canonical/research/ICP.md` with frontmatter + Persona 1 + Top 3 Emotional Drivers + Red Flags + Next Step.
+2. Updated `.forsvn/canonical/product/PRODUCT-CONTEXT.md` Product / Buyer / Problem / Differentiator / Voice sections (canonical mirror per Write-back map Q1).
 3. Experience write-back:
    - `experience/product.md` ← `Product — one-line: "ProjectSync — async project visibility for engineering teams"`
    - `experience/audience.md` ← `Audience — primary persona: "Engineering Manager, 30-38, B2B SaaS, 50-200 engineers"`, `Audience — pain points (primary): "Status Update Theater, Standup Fatigue, Visibility Without Micromanagement"`, `Audience — geo focus: "US + EU"`
@@ -141,19 +144,19 @@ Per `procedures/dispatch-mechanics.md`:
 ## What this example traces
 
 - All 4 Critical Gates fired (Gate 1 evidence-only, Gate 2 habitat specificity, Gate 3 max-2 personas — 1 used here, Gate 4 product-context staleness check passed during Pre-Dispatch).
-- All 7 critic gates traced through to PASS.
+- All 10 critic gates traced through to PASS.
 - Layer 1 parallel → Layer 2 sequential dispatch arc.
 - Pre-Dispatch Warm Start path (auto-scan + 2 Cold Start questions only).
 - Cross-stack contract preserved (Habitat Map 5-column schema, Top 3 Emotional Drivers section, Next Step block).
-- Canonical mirror to `research/product-context.md` per the foundational role.
+- Canonical mirror to `.forsvn/canonical/product/PRODUCT-CONTEXT.md` per the foundational role.
 
 ---
 
 ## What this example does NOT show
 
-- **Critic FAIL → rewrite cycle.** All 7 gates passed on first dispatch. For a FAIL walkthrough, see `agents/critic-agent.md` § "FAIL example."
+- **Critic FAIL → rewrite cycle.** All 10 gates passed on first dispatch. For a FAIL walkthrough, see `agents/critic-agent.md` § "FAIL example."
 - **Route A (Quick ICP).** This walkthrough used Route B. Route A would skip habitat-agent + decision-psychology-agent and annotate the artifact with the omissions per `format-conventions.md` § "Route A (Quick ICP) artifact differences."
-- **Route C (called by another skill).** A campaign-plan invocation would read `research/icp-research.md` and check freshness; if <30 days, return existing; if >30 days, warn and recommend re-run.
+- **Route C (called by another skill).** A campaign-plan invocation would read `.forsvn/canonical/research/ICP.md` and check freshness; if <30 days, return existing; if >30 days, warn and recommend re-run.
 - **`--fast` mode.** Would auto-route to Route A if context is sufficient for Warm Start; would still emit Cold Start questions if context is thin (Critical Gate 1 floor).
 - **Multi-persona artifact.** This example shipped 1 persona. A multi-persona artifact has the same structure repeated as `## Persona 2:` with optional `## Segment Rationale` documenting who was cut.
 
@@ -187,4 +190,4 @@ The critic-agent output structure (per `agents/critic-agent.md`) is:
 - [Minor suggestions that don't block PASS]
 ```
 
-Verdict is binary — no "PASS with reservations." Either all 7 gates pass or the verdict is FAIL.
+Verdict is binary — no "PASS with reservations." Either all 10 gates pass or the verdict is FAIL.

@@ -17,7 +17,7 @@
 //   124 idle timeout (no Done click within 10 min)
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync, readdirSync } from "node:fs";
-import { join, dirname, basename, resolve, relative, sep } from "node:path";
+import { join, dirname, basename, resolve, relative, sep, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
@@ -64,6 +64,9 @@ async function main(): Promise<number> {
   if (args[0] === "list") {
     return listMode(args.slice(1));
   }
+  if (args[0] === "attach") {
+    return attachMode(args.slice(1));
+  }
 
   const flagJson = args.includes("--json");
   const flagNoOpen = args.includes("--no-open");
@@ -72,6 +75,7 @@ async function main(): Promise<number> {
   if (positional.length !== 1) {
     err(`usage: forsvn-preview <path-to-artifact.md|.html> [--no-open] [--json]`);
     err(`       forsvn-preview list [--root <dir>] [--state pending|decided|all] [--json]`);
+    err(`       forsvn-preview attach <artifact.md> <file-or-url> [--picked] [--root <dir>] [--json]`);
     return 1;
   }
   const input = resolve(positional[0]);
@@ -159,13 +163,18 @@ async function main(): Promise<number> {
   // Apply mutations after the server stops so failure leaves the world
   // unchanged. Order: rewrite MD → archive HTML → manifest-sync.
   const today = new Date().toISOString().slice(0, 10);
-  const updated = applyDecision(mdSource, {
+  const decisionUpdates: Record<string, string> = {
     decision_state: result.payload.decision_state,
     reviewed_at: today,
     reviewer: "operator",
-  }, result.payload.comments);
+  };
+  // The option-picker (CLOSED-LOOP.md §6): the picked variant was captured but
+  // never persisted ("accepted but ignored"). Record it as `asset_picked` so the
+  // canonical choice survives in frontmatter and is indexed for downstream skills.
+  if (result.payload.variant) decisionUpdates.asset_picked = result.payload.variant;
+  const updated = applyDecision(mdSource, decisionUpdates, result.payload.comments);
   writeFileSync(mdPath, updated, "utf8");
-  log(`md updated → decision_state: ${result.payload.decision_state}, reviewed_at: ${today}`);
+  log(`md updated → decision_state: ${result.payload.decision_state}, reviewed_at: ${today}${result.payload.variant ? `, asset_picked: ${result.payload.variant}` : ""}`);
 
   const archivedRel = archiveHtml(projectRoot, htmlPath);
   log(`html archived → ${archivedRel}`);
@@ -181,6 +190,7 @@ async function main(): Promise<number> {
       archived: archivedRel,
       comments: result.payload.comments ?? null,
       variant: result.payload.variant ?? null,
+      asset_picked: result.payload.variant ?? null,
     }));
   } else {
     log(`done · decision: ${result.payload.decision_state}`);
@@ -265,6 +275,107 @@ async function listMode(args: string[]): Promise<number> {
   if (stateArg === "pending" || stateArg === "all") show("pending", pending);
   if (stateArg === "decided" || stateArg === "all") show("decided", decided);
   return 0;
+}
+
+// --- attach subcommand (the return-leg, CLOSED-LOOP.md §6) ----------------
+// Re-ingest a rendered asset (a file or a deployed URL) back onto its artifact:
+// the loop only closes when the REAL output re-enters the graph so the evaluator
+// scores what shipped and downstream skills (write-social, write-ad) reference
+// the asset, not the brief. A file is copied into `.forsvn/assets/<id>/` (custody
+// + a stable, id-keyed home that survives an artifact move); the repo-relative
+// path (or the URL verbatim) is appended to the flat `assets:` frontmatter list.
+// `--picked` records it as the canonical option-picker choice (`asset_picked:`).
+// Self-contained, headless, additive — the desktop drag-drop is a thin trigger
+// over this same mechanic. Decisions stay human-owned; this attaches, never approves.
+
+const ASSETS_REL = ".forsvn/assets";
+
+async function attachMode(args: string[]): Promise<number> {
+  const flagJson = args.includes("--json");
+  const picked = args.includes("--picked");
+  const rootArg = argValue(args, "--root");
+  // Positionals = non-flag tokens, excluding the value consumed by `--root <dir>`
+  // (space form). `--root=<dir>` and `--json`/`--picked` start with `-` already.
+  const positional: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i].startsWith("-")) continue;
+    if (i > 0 && args[i - 1] === "--root") continue;
+    positional.push(args[i]);
+  }
+  if (positional.length !== 2) {
+    err(`usage: forsvn-preview attach <artifact.md> <file-or-url> [--picked] [--root <dir>] [--json]`);
+    return 1;
+  }
+  const [artifactArg, source] = positional;
+  const mdPath = resolve(artifactArg);
+  if (!mdPath.endsWith(".md")) { err(`expected an .md artifact, got ${mdPath}`); return 1; }
+  if (!existsSync(mdPath)) { err(`artifact not found: ${mdPath}`); return 1; }
+
+  const projectRoot = rootArg ? findProjectRootFromDir(resolve(rootArg)) : findProjectRoot(mdPath);
+  const mdSource = readFileSync(mdPath, "utf8");
+  const fm = parseFrontmatter(mdSource);
+  if (!fm) { err(`could not read frontmatter from ${mdPath}`); return 1; }
+  const id = fm.id;
+  if (!id) { err(`artifact has no \`id\` in frontmatter — cannot key its asset folder`); return 1; }
+
+  // Resolve the asset reference: a URL is recorded verbatim; a file is taken
+  // into custody under .forsvn/assets/<id>/ and recorded as a repo-relative path.
+  const isUrl = /^https?:\/\//i.test(source);
+  let ref: string;
+  if (isUrl) {
+    ref = source;
+  } else {
+    const src = resolve(source);
+    if (!existsSync(src) || !statSync(src).isFile()) { err(`asset file not found: ${src}`); return 1; }
+    const destDir = join(projectRoot, ASSETS_REL, id);
+    mkdirSync(destDir, { recursive: true });
+    let dest = join(destDir, basename(src));
+    // Never silently overwrite a prior re-ingest of the same name (and don't
+    // self-copy when re-attaching a file already in custody).
+    if (existsSync(dest) && resolve(dest) !== src) {
+      const ext = extname(dest);
+      dest = join(destDir, `${basename(dest, ext)}.${new Date().toISOString().replace(/[:.]/g, "-")}${ext}`);
+    }
+    if (resolve(dest) !== src) copyFileSync(src, dest);
+    ref = relative(projectRoot, dest).split(sep).join("/");
+  }
+
+  const current = readAssetsList(fm);
+  const next = current.includes(ref) ? current : [...current, ref];
+  const updates: Record<string, string> = { assets: serializeList(next) };
+  if (picked) updates.asset_picked = ref;
+  // applyDecision is a generic frontmatter upserter (replace-or-append per key);
+  // no comments here — attach is additive, not a decision.
+  const updated = applyDecision(mdSource, updates, undefined);
+  writeFileSync(mdPath, updated, "utf8");
+  runManifestSync(projectRoot);
+
+  if (flagJson) {
+    console.log(JSON.stringify({
+      ok: true,
+      artifact: relative(projectRoot, mdPath),
+      id,
+      asset: ref,
+      kind: isUrl ? "url" : "file",
+      assets: next,
+      asset_picked: picked ? ref : (fm.asset_picked ?? null),
+    }));
+  } else {
+    log(`attached → ${ref}${picked ? "  (picked: canonical)" : ""}`);
+    log(`assets now: ${next.join(", ")}`);
+  }
+  return 0;
+}
+
+function readAssetsList(fm: Record<string, string>): string[] {
+  const raw = (fm.assets ?? "").trim();
+  if (!raw) return [];
+  const inner = raw.startsWith("[") && raw.endsWith("]") ? raw.slice(1, -1) : raw;
+  return inner.split(",").map((x) => x.trim().replace(/^["']|["']$/g, "")).filter(Boolean);
+}
+
+function serializeList(items: string[]): string {
+  return `[${items.join(", ")}]`;
 }
 
 function scanArtifacts(dir: string, projectRoot: string): ArtifactEntry[] {

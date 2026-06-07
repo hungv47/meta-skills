@@ -15,7 +15,7 @@ load_class: PROCEDURE
 ## Needed dimensions
 
 - **Angle** — required (no default; cold-start asks; per-run input, no write-back)
-- **Target platforms** — 1–3, hard cap 1 hero + max 2 variants (Critical Gate 2)
+- **Target platforms** — 1–3 typical, soft default 1 hero + 2 variants (Critical Gate 2; extend with a cost+craft warning)
 - **Brand mode** — `founder` OR `company`, no `hybrid` (Critical Gate 3); auto-detect from BRAND.md when possible, else cold-start asks
 - **Production mode** — `live-action` | `motion-graphic` | `mixed`; default per brand mode (founder → live-action, company → motion-graphic) unless operator picks
 - **Market** — inherited from research artifact; cold-start asks if no research artifact
@@ -63,7 +63,7 @@ Short-form brief — quick decisions (one round-trip).
 1. Angle / topic for this piece:
    [free text]
 
-2. Target platform(s) (1-3 max — hard cap 1 hero + 2 variants):
+2. Target platform(s) (1-3 typical — soft default 1 hero + 2 variants):
    (a) TikTok only
    (b) Reels only
    (c) Shorts only
@@ -106,7 +106,7 @@ Q1 (angle), Q2 (platforms), Q5 (campaign tie-in) are per-run inputs — do NOT w
 ## Hard-block conditions
 
 - **Angle empty AND no warm-start match** → BLOCKED, ask for angle (Cold Start Q1).
-- **Platforms requested > 3** → reject and re-ask (Critical Gate 2 hard cap: 1 hero + max 2 variants).
+- **Platforms requested > 3** → pause and surface the cost+craft trade-off (Critical Gate 2 soft default: 1 hero + 2 variants; critic attention per variant thins past 2). Proceed only on explicit operator opt-in; offer re-invoke as the higher-craft path. Not an automatic reject.
 - **brand_mode = "hybrid" requested** → reject and re-ask (Critical Gate 3: founder OR company only).
 - **No research artifact AND user declines to proceed** → NEEDS_CONTEXT, defer to `research-shortform`.
 - **No BRAND.md AND brand_mode unresolvable from cold-start** → NEEDS_CONTEXT, defer to `create-brand`.

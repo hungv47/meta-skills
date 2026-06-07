@@ -6,9 +6,9 @@
 
 ## Artifact path
 
-`.forsvn/artifacts/meta/records/diagnose-[YYYY-MM-DD].md`
+`.forsvn/canonical/research/DIAGNOSE.md`
 
-On re-run: rename existing artifact to `diagnose.v[N].md` (increment N from the highest existing version) and create new at incremented version. Never overwrite.
+Canonical singleton — the current diagnosis of record. On re-run: overwrite `DIAGNOSE.md` in place and increment `version`. Never create a `.v[N].md` sibling — prior runs live in git history.
 
 ---
 
@@ -20,13 +20,19 @@ skill: diagnose
 version: [N]                          # increment on re-run
 date: [YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
+stack: research
+review_surface: none
+id: diagnose
+type: canonical
+keywords: [diagnose, root-cause, hypothesis-tree, metric-decline, if-then-because]
 ---
 ```
 
 **Field semantics:**
-- `version`: integer, 1 on first run, increment on every subsequent run for the same metric.
+- `version`: integer, 1 on first run, increment on every subsequent run (overwrite in place — the singleton holds the latest diagnosis only).
 - `date`: artifact creation date, ISO-8601. Drives the 30-day staleness check on downstream consumers (prioritize reads `date` to decide whether to recommend re-diagnosis).
 - `status`: per the Completion Status block in SKILL.md.
+- `id`: stable `diagnose` — consumers resolve it via `find-artifacts --resolve diagnose`; never changes.
 
 ---
 

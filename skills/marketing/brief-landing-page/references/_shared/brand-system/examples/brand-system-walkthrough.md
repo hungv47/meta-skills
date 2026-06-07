@@ -86,13 +86,13 @@ Orchestrator projects declared platforms (iOS, Web, Email) against `references/a
 
 Auto-scans `brand/` — `logo-full.svg` exists → `[x]`; all others `[ ]` (fresh run).
 
-Writes `brand/ASSETS.md` with legend, sections, summary (Done: 1 / 74), no Orphaned block (first run).
+Writes `.forsvn/canonical/marketing/ASSETS.md` (id: assets) with legend, sections, summary (Done: 1 / 74), no Orphaned block (first run).
 
 On re-run as the designer drops files into `brand/` subdirs, the Done count rises and human `[~]` (in-progress) markers persist across runs.
 
 ### Deliver
 
-`brand/BRAND.md`, `brand/DESIGN.md`, and `brand/ASSETS.md` saved. Status: DONE.
+`.forsvn/canonical/marketing/BRAND.md`, `.forsvn/canonical/marketing/DESIGN.md`, and `.forsvn/canonical/marketing/ASSETS.md` saved. Status: DONE.
 
 ---
 
@@ -128,7 +128,7 @@ Checks strategy-to-visual coherence only. PASS.
 
 ### Deliver
 
-Quick Brand artifact saved as single `brand/BRAND.md` with note:
+Quick Brand artifact saved as single `.forsvn/canonical/marketing/BRAND.md` with note:
 
 > Run full brand-system (Route B) when ready to produce DESIGN.md + ASSETS.md.
 
@@ -147,7 +147,7 @@ Status: DONE.
 | Layer 2 | Skipped | All 3 (token-architect → component-token → accessibility) + critic |
 | Step 8.5 | Skipped | Run (ASSETS.md projection) |
 | Step 9 | Skipped | Optional (Paper MCP / Claude Design / none) |
-| Output files | `brand/BRAND.md` | `brand/BRAND.md` + `brand/DESIGN.md` + `brand/ASSETS.md` (+ optional artboards) |
+| Output files | `.forsvn/canonical/marketing/BRAND.md` | `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (+ optional artboards) |
 | Critic scope | Strategy-to-visual coherence only | Full 7-dimension rubric + 6-row Cross-Element Coherence Matrix |
 | Time budget | ~30 minutes | ~3 hours |
 | Cost band | $0.30-0.80 | $2-5 |

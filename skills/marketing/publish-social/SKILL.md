@@ -11,7 +11,7 @@ metadata:
 
 # Publish Social — Integration-Aware Bundle Emitter
 
-Converts a write-social artifact (+ optional media manifests) into a per-platform draft bundle + scheduler-import files. Auto-detects credentials, picks highest non-publish mode. Routing: [`routing.yaml`](routing.yaml) · agents + 4-route dispatch: [`references/agent-manifest.md`](references/agent-manifest.md).
+Converts a write-social artifact into a per-platform draft bundle + scheduler-import files. Auto-detects credentials, picks highest non-publish mode. Routing: [`routing.yaml`](routing.yaml) · agents + 4-route dispatch: [`references/agent-manifest.md`](references/agent-manifest.md).
 
 **Core question:** Can the operator paste one file into their scheduler (or find X drafts in Typefully) without formatting another line?
 
@@ -46,7 +46,7 @@ Bundle `.forsvn/artifacts/marketing/published-social/[slug]/`: `manifest.md`, `p
 
 ## Quality Gate
 
-Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish` → **content gate before the confirmation gate** (live post can't be fixed after).
+Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish` → **content gate before the confirmation gate**.
 
 **Pass:** ≥56/80 aggregate AND every dim ≥6. FAIL → re-dispatch formatter (or automation for dim 7), max 2 cycles. Persistent publish FAIL → `BLOCKED`. Per-dim: [`references/quality-gate.md`](references/quality-gate.md). Full: [`references/rubric.md`](references/rubric.md).
 
@@ -68,7 +68,7 @@ Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish`
 
 ## Chain · Re-run · Anti-Patterns
 
-**Prev:** `write-social` + `create-brand` (req), `produce-asset`/`produce-video` (opt). **Next:** operator imports scheduler / opens Typefully drafts / live-posts; feeds `evaluate-content`.
+**Prev:** `write-social` + `create-brand` (req), `produce-asset`/`produce-video` (opt). **Next:** see `## Execution`; feeds `evaluate-content`.
 
 **Re-run:** write-social re-emitted, targets/scheduler changed, credentials first configured, draft rejected.
 
@@ -88,6 +88,6 @@ Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish`
 - **NEEDS_CONTEXT** — write-social missing OR `brand/BRAND.md` missing OR targets not derivable.
 - **BLOCKED** — `--mode=publish` with no credentials; critic FAILed twice (publish: gate never fires; export/draft: spec). Operator-aborted two-stage gate is NOT BLOCKED — ships export bundle as DONE.
 
-## Next Step
+## Execution
 
-Manifest's per-route instruction tells operator what to do (A export · B Typefully draft · C automation draft · D publish). Details: [`references/procedures/next-step.md`](references/procedures/next-step.md).
+Offer the registry-gated fork (category `publish`) — **Brief-only**: follow the manifest's per-route instruction (export · Typefully draft · automation draft · publish); **Assisted/Direct** need a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.

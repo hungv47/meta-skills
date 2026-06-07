@@ -1,6 +1,6 @@
 ---
 name: evaluate-landing-page
-description: "Scores a launched landing page from real performance evidence inside an existing eval loop. Writes a cycle eval snapshot and appends the loop results ledger. Use for post-launch CRO cycles backed by analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Not for designing the next page brief or a redesign (use brief-landing-page), channel-strategy questions (use plan-campaign), generic best-practice audits without measurement evidence, or scaffolding the loop itself (use run-eval-loop)."
+description: "Scores a launched landing page from real performance evidence inside an existing eval loop — writes a cycle eval snapshot and appends the loop results ledger. Use for post-launch CRO cycles backed by analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Not for designing the next page brief or a redesign (use brief-landing-page), channel strategy (use plan-campaign), best-practice audits without evidence, or scaffolding the loop (use run-eval-loop)."
 argument-hint: "[loop slug or path] [page URL/route] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:

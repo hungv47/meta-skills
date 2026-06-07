@@ -12,6 +12,8 @@ Loaded by the orchestrator at copywriter-agent dispatch entry.
 
 **Why 3 agents:** Splitting into more (hook + body + CTA separately) introduces collision risk during merge. Three is the floor for multi-agent dispatch and the ceiling for short-form-craft skills.
 
+**Hook variants are a DELIVERY set** (tier A — [`_shared/options-selection.md`](_shared/options-selection.md)): `--variants N` is operator-controlled and already loose; present + regenerate (`more` / `swap K`), and every variant still clears the 5-dim rubric. Nothing is discarded — the set ships together.
+
 ## Dispatch Graph
 
 ```

@@ -150,7 +150,7 @@ Gap percentages sum to ~100% (55 + 35 + 10) — Critic Gate 10 passes.
 
 ## Final Artifact
 
-`.forsvn/artifacts/meta/records/diagnose-2026-05-18.md`:
+`.forsvn/canonical/research/DIAGNOSE.md`:
 
 ```markdown
 ---
@@ -158,6 +158,11 @@ skill: diagnose
 version: 1
 date: 2026-05-18
 status: done
+stack: research
+review_surface: none
+id: diagnose
+type: canonical
+keywords: [diagnose, root-cause, hypothesis-tree, metric-decline, if-then-because]
 ---
 
 # Problem Analysis
