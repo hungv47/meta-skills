@@ -56,15 +56,33 @@ The Artifact Template prescribes a fixed section order. Do **not** reorder; down
 2. Metadata block (`**Date:**` / `**Skill:**` / `**Goal:**` / `**Audience:**`)
 3. `## Growth Motion` — Motion / Primary acquisition lever / Channel weighting rationale
 4. `## Foundation` — Core message (one sentence) / Awareness distribution (% per stage)
-5. `## Pillars` — table with columns: `#`, `Pillar`, `Type`, `%`, `Stage`, `Evidence`
-6. `## Angle Bank` — table with columns: `#`, `Angle`, `Hook`, `Stage`, `Trigger`, `Score`, `Class`, `Pillar`
-7. `## Channel Assignments` — table with columns: `Channel`, `Type`, `Angle`, `Role`, `Cadence`
+5. `## Creative Direction` — per-campaign art direction, inherited from the house `CREATIVE-DIRECTION.md` and tuned to this campaign (see "Creative Direction section" below). Present whenever a house CD exists; omitted with an inline note when it does not.
+6. `## Pillars` — table with columns: `#`, `Pillar`, `Type`, `%`, `Stage`, `Evidence`
+7. `## Angle Bank` — table with columns: `#`, `Angle`, `Hook`, `Stage`, `Trigger`, `Score`, `Class`, `Pillar`
+8. `## Channel Assignments` — table with columns: `Channel`, `Type`, `Angle`, `Role`, `Cadence`
    - Followed by the 9-Channel Evaluation note (lists all 9 channels by name)
-8. `## Channel Execution Briefs` — table with columns: `Channel`, `Objective`, `Tactic`, `Budget Type`, `Success Metric`, `Owner`, `First Milestone`
+9. `## Channel Execution Briefs` — table with columns: `Channel`, `Objective`, `Tactic`, `Budget Type`, `Success Metric`, `Owner`, `First Milestone`
    - Followed by execution notes for offline channels when selected (IRL, SMS, OOH)
-9. `## Timeline` — table with columns: `Week`, `Phase`, `Channel`, `Angle`, `Format`, `Status`
-10. `## Launch Sequence` — table with columns: `Phase`, `Timing`, `Channels`, `Action`
-11. `## Review Gate` — final section; the human-review decision block (see "Review Gate block" below)
+10. `## Timeline` — table with columns: `Week`, `Phase`, `Channel`, `Angle`, `Format`, `Status`
+11. `## Launch Sequence` — table with columns: `Phase`, `Timing`, `Channels`, `Action`
+12. `## Review Gate` — final section; the human-review decision block (see "Review Gate block" below)
+
+## Creative Direction section
+
+The per-campaign tier of creative direction (tier 2). It **inherits** the evergreen house `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` (tier 1, owned by `create-brand`) and tunes it to this campaign's angle, audience, season, platform mix, and offer. It does **not** re-derive the brand world or restate every house rule — it names the deltas and the campaign-specific calls.
+
+Subsections (in order):
+
+1. **Inherited from house direction** — one line naming the house CD it inherits (`source: CREATIVE-DIRECTION.md vN`) and the house movements/light/palette it carries unchanged.
+2. **Campaign tuning** — how the house direction bends for *this* campaign: which movement leads (e.g. Trail for a launch push), seasonal/temporal shift, platform emphasis, offer-driven mood. 3-6 bullets.
+3. **Hero concept direction** — the art-direction call for the campaign's flagship visual(s): subject, framing, light, the one image it's built around.
+4. **Per-channel art-direction cues** — a short table (`Channel` · `Art-direction cue`) for the selected channels, so each `brief-*` inherits a coherent, tuned cue rather than re-improvising.
+
+**Inheritance rule (hard):** every campaign-specific art call must be a *tuning of* a house-CD element, not a contradiction of it. A cue that violates the house direction (new palette, off-world light, a betrayed anti-pattern) is a soft-check failure — ships `done_with_concerns` with the conflict named.
+
+**No house CD present:** omit the hero/per-channel depth, emit a one-line `## Creative Direction` note ("No house CREATIVE-DIRECTION.md — art direction deferred to per-asset briefs against DESIGN.md tokens; run `create-brand` to add the house layer"), and flag `done_with_concerns`. Never fabricate a brand world here.
+
+Consumed by the visual brief skills (`brief-graphic`, `brief-shortform`, `brief-landing-page`, `brief-app-preview`, `write-ad`) by heading match, alongside the house CD.
 
 ## Pillar table
 

@@ -41,10 +41,10 @@ version: [integer, increments on re-run; ASSETS.md increments on each in-place r
 date: [ISO YYYY-MM-DD]
 status: done | done_with_concerns | blocked | needs_context
 stack: marketing
-review_surface: html          # BRAND.md / DESIGN.md → html · ASSETS.md → none
-id: brand | design | assets   # stable logical id per file — BRAND.md → brand · DESIGN.md → design · ASSETS.md → assets
-type: canonical               # all three are canonical
-keywords: [...]               # ASSETS.md → [assets, checklist, deliverables, brand-assets, production]
+review_surface: html          # BRAND.md / DESIGN.md / CREATIVE-DIRECTION.md → html · ASSETS.md → none
+id: brand | design | assets | creative-direction   # stable logical id per file — BRAND.md → brand · DESIGN.md → design · ASSETS.md → assets · CREATIVE-DIRECTION.md → creative-direction
+type: canonical               # all four are canonical
+keywords: [...]               # ASSETS.md → [assets, checklist, deliverables, brand-assets, production] · CREATIVE-DIRECTION.md → [creative-direction, art-direction, mood, photography, motion]
 decision_state: pending       # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
 review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
@@ -56,7 +56,7 @@ last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 ---
 ```
 
-Canonical output paths: `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md`. The stable `id` is immutable — `manifest-sync.ts` maps `id → current path`, so a downstream caller references `assets`/`brand`/`design`, never a path. Full per-file ASSETS.md template: [`artifact-templates.md`](artifact-templates.md) "ASSETS.md Template".
+Canonical output paths: `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md`. The stable `id` is immutable — `manifest-sync.ts` maps `id → current path`, so a downstream caller references `assets`/`brand`/`design`, never a path. Full per-file ASSETS.md template: [`artifact-templates.md`](artifact-templates.md) "ASSETS.md Template".
 
 ### Review fields (human-review layer)
 
@@ -68,9 +68,10 @@ Per-file defaults:
 |---|---|---|---|---|---|
 | BRAND.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical brand-of-record; needs a human gate; WATER HTML preview for visual comparison |
 | DESIGN.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical design-of-record; same |
+| CREATIVE-DIRECTION.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical art-direction-of-record; taste-bearing, needs a human gate; same WATER HTML preview |
 | ASSETS.md | `not_required` | `none` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored |
 
-`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
+`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md / CREATIVE-DIRECTION.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
 
 **Cross-stack note — review fields are exempt from the downstream-caller update rule.** The "Cross-stack contract" section below requires atomic downstream-caller updates on schema change. The four review fields are the deliberate exception: they are additive and orthogonal, and every downstream caller consumes brand content by heading match without parsing frontmatter review fields. Adding them updates only this file — no downstream caller is touched.
 
@@ -157,9 +158,9 @@ forbidden_icons:
   # 3-8 entries OR empty list with one-line explanation
 ```
 
-## Review Gate body block (BRAND.md + DESIGN.md only)
+## Review Gate body block (BRAND.md, DESIGN.md, CREATIVE-DIRECTION.md)
 
-BRAND.md and DESIGN.md each end with a `## Review Gate` block as their final section — the human-review decision surface, per `references/_shared/reviewable-artifact-contract.md`:
+BRAND.md, DESIGN.md, and CREATIVE-DIRECTION.md each end with a `## Review Gate` block as their final section — the human-review decision surface, per `references/_shared/reviewable-artifact-contract.md`:
 
 ```markdown
 ## Review Gate
@@ -220,6 +221,32 @@ Legend: [x] done · [ ] not started · [~] in progress (human) · [!] blocked (h
 [Original platform-block content, fully preserved]
 ```
 
+## CREATIVE-DIRECTION.md structure (art-direction layer, Route B; refreshable standalone)
+
+The art-direction soul **under** the brand — *how the world looks and feels*. Read after BRAND.md, before any photo shoot, render, or landing-page build. **Additive and token-referencing:** it names what DESIGN.md tokens *mean* in the scene; it never redefines a hex, font, or motion value. When a value appears here it is quoted from DESIGN.md.
+
+Register split (never mix): **BRAND.md** = who we are (prose) · **DESIGN.md** = exact values (spec) · **CREATIVE-DIRECTION.md** = how the world looks and feels (art direction).
+
+Sections, in order:
+
+1. **At a glance** — blockquote: one creative idea (one line), the world/scene, the light, the feeling, palette-as-meaning, and the **boundary** (what neighbouring brand/system this must NOT bleed into).
+2. **The Thesis** — the single creative idea, stated as a resolved tension where one exists. Why the world looks this way, grounded in real origin, not a stock moodboard.
+3. **Source / Mood** — the literal reference frame(s) (`inspiration/*` path when one exists) the whole direction derives from. "When in doubt, would this sit next to <frame>?"
+4. **Movements / Modes** — 2-4 named moods a surface can lean on (distance × energy), as a table: name · distance · energy · when-to-use · feels-like. The page-level rhythm across them.
+5. **Light & Atmosphere** — time of day, direction, quality, temperature; the glow/grading rule (push shadows toward the named DESIGN.md shadow token).
+6. **Color as Landscape** — a table mapping each DESIGN.md token → its **meaning in the scene** (tokens owned by DESIGN.md; this only assigns place/meaning).
+7. **Texture & Grain** · **Composition & Framing** — surface material feel; framing/crop/negative-space rules.
+8. **Photographic & Render Direction** — lens/era/subject/treatment for shot and generated imagery; what a render must satisfy to stay in-world.
+9. **Motion & Pacing** — the movement feel (references DESIGN.md motion permissions, never new durations).
+10. **Type & Mark in the Landscape** — how the brand type/logo sit in the world (references DESIGN.md type/mark, never new specs).
+11. **The Feeling We're Protecting** — the one-line gut check every surface is graded against.
+12. **Anti-Patterns** — what would betray the direction (concrete, testable).
+13. **Surface Cues (fast reference)** — per-surface one-liners (hero / about / footer / OG / video bumper / email).
+14. **Sources** — what this direction is derived from (origin, frames, BRAND/DESIGN), making clear it is derived, not invented.
+15. **Review Gate** — the standard human-review block (see "Review Gate body block" above).
+
+**Refresh-only path (additive on a locked brand).** CREATIVE-DIRECTION.md may be (re)written standalone — without re-running Layer 1/2 or touching DESIGN.md — so a locked brand can gain or refresh its art direction without regenerating tokens. On the refresh path the agent reads BRAND.md + DESIGN.md (+ any `inspiration/` frames), writes/overwrites CREATIVE-DIRECTION.md in place, bumps its integer `version:`, and leaves all other canonical files byte-unchanged.
+
 ## Anti-drift checks
 
 Three-way platform-set equivalence (critic enforces):
@@ -238,7 +265,7 @@ Quality-bar reference:
 
 ## Cross-stack contract
 
-This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (ids `brand`, `design`, `assets`). These artifacts are consumed by:
+This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md` (ids `brand`, `design`, `assets`, `creative-direction`). These artifacts are consumed by:
 
 - `write-copy` — voice DNA + lexicon block
 - `write-ad` — voice DNA + brand mark for visual creative briefs
@@ -250,5 +277,7 @@ This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESI
 - `polish-vn` — voice DNA for register selection
 - `brief-shortform` — brand mark + voice + visual atmosphere
 - `map-user-flow` — DESIGN.md design tokens + component context
+
+`CREATIVE-DIRECTION.md` (id `creative-direction`) is additionally consumed as the **house** art-direction layer by `plan-campaign` (inherited into per-campaign creative direction) and by every `brief-*` / `write-ad` visual brief (art direction the brief designs against, alongside DESIGN.md tokens). Absent → those skills degrade to tokens-only and say so; they never fabricate art direction.
 
 Schema changes (frontmatter fields, section headings, table column structure) require atomic update across affected upstream callers — never silently drift.

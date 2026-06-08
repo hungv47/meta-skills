@@ -17,7 +17,8 @@ Cited from SKILL.md "Inputs" + "Output" sections. Full per-artifact provenance +
 | Page route or campaign name (`/pricing`, `q3-launch-lp`) — current state if exists (URL/screenshot/code) | **required** | Subject of the brief |
 | `brand/BRAND.md` | **required** (NEEDS_CONTEXT if absent) | Voice, archetype, sacred elements, lexicon rules |
 | `brand/DESIGN.md` | **required** (NEEDS_CONTEXT if absent) | Palette, typography, surface language, motion tokens |
-| Existing page state (URL/screenshot/code) | optional but recommended | Inform redesign without blocking the brief |
+| `brand/CREATIVE-DIRECTION.md` | recommended | House art direction (mood, light, framing, motion) — design against it, not tokens alone |
+| Existing page state / live site (URL/screenshot/code) | **recommended (realized surface)** | The executed taste to design against — the live site or shipped page. Per `references/_shared/realized-surface-grounding.md`: cite it or record the explicit token-only fallback |
 | Post-launch evidence (analytics, heatmaps, experiment notes) | optional | Stronger evidence for redesign hypotheses; absent → labeled assumption |
 | `research/icp-research.md` | optional | Objections + VoC for copy candidates |
 | `research/product-context.md` | optional | Product accuracy in features/proof |

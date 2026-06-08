@@ -29,6 +29,7 @@ const DEFAULT_STALE_DAYS = 90;
 const VALID_STATUSES = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const VALID_DECISION_STATES = new Set(["pending", "approved", "denied", "suggested", "not_required"]);
 const VALID_REVIEW_SURFACES = new Set(["html", "md", "none"]);
+const VALID_COLLAB_STATES = new Set(["drafting", "in_review", "exported"]);
 const VALID_STACKS = new Set(["meta", "research", "marketing", "product"]);
 const VALID_TYPES = new Set([
   "canonical", "plan", "spec", "decision", "experience", "pipeline", "snapshot",
@@ -78,6 +79,11 @@ type ArtifactEntry = {
   review_tool: string;
   reviewed_at: string;
   reviewer: string;
+  // Collaborative-doc sub-type (ADR 2026-06-08). Binding to the Proof working
+  // doc; empty for non-Proof artifacts. The MCP proxy resolves proof_slug here.
+  proof_slug: string;
+  proof_doc_id: string;
+  collab_state: string;
   size_bytes: number;
   frontmatter_present: boolean;
 };
@@ -462,6 +468,16 @@ for (const base of ARTIFACT_ROOTS) {
       reviewSurface = htmlTwinExists ? "html" : (decisionState === "not_required" ? "none" : "md");
     }
 
+    // collab_state — Proof-backed collaborative-doc lifecycle. Lenient: an
+    // unknown value is dropped with a warning (strict enforcement is in
+    // validate-artifacts), matching how decision_state/review_surface degrade.
+    const rawCollabState = textField(fm, "collab_state");
+    let collabState = "";
+    if (rawCollabState) {
+      if (VALID_COLLAB_STATES.has(rawCollabState)) collabState = rawCollabState;
+      else if (!isArchived) warnings.push(`${rel}: unknown collab_state ${JSON.stringify(rawCollabState)} dropped`);
+    }
+
     artifacts[rel] = {
       id,
       type,
@@ -499,6 +515,9 @@ for (const base of ARTIFACT_ROOTS) {
       review_tool: textField(fm, "review_tool"),
       reviewed_at: textField(fm, "reviewed_at"),
       reviewer: textField(fm, "reviewer"),
+      proof_slug: textField(fm, "proof_slug"),
+      proof_doc_id: textField(fm, "proof_doc_id"),
+      collab_state: collabState,
       size_bytes: stat.size,
       frontmatter_present: fm !== null,
     };

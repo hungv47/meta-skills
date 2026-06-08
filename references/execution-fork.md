@@ -77,6 +77,29 @@ Category by skill family: `brief-landing-page` → `design`; `brief-graphic` /
 
 ---
 
+## Closing the loop — render → check → accept (brief-first + return-leg)
+
+The fork doesn't end at "rendered." Two bookends make the brief binding:
+
+1. **Brief-first (entry).** No render before a brief exists. A producing skill invoked
+   without its brief returns `NEEDS_CONTEXT` — never renders from a bare prompt or vibes.
+   This is the entry gate the brief-skills + `produce-asset`/`produce-video` enforce.
+2. **Check-then-accept (return-leg).** An Assisted/Direct render is **not "done" until it
+   is scored against its brief *and* its realized surface** — via the matching eval
+   (`evaluate-asset` for static, `evaluate-shortform` for video, `evaluate-landing-page`
+   for pages) or, for a quick pass, an explicit squint-test against the cited realized
+   surface (`realized-surface-grounding.md`). Re-ingest the real render and score *that*,
+   never the prompt (CLOSED-LOOP §6 return-leg). **Off-brief output is not accepted and not
+   committed** — it routes back to the brief or a re-render. For brand-critical visuals the
+   default is render → show the human → iterate before accept (`render-engines.md`
+   checkpoint).
+
+Skipping the return-leg — accepting a render no one scored against the brief — is the
+exact gap that ships generic, off-brand output. The loop closes on the render, not the
+prompt.
+
+---
+
 ## How a skill cites this
 
 In the SKILL.md body, replace the bare handoff ending with one line:

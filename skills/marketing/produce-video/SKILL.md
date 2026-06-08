@@ -11,14 +11,14 @@ metadata:
 
 # Produce Video — Multi-Runtime Export Bundle Orchestrator
 
-Converts a `brief-shortform` OR `brief-app-preview` handoff into a runtime-agnostic export bundle: manifest + per-shot prompts + HyperFrames + Remotion scaffolds + Vercel AI CLI README. **Operator picks the runtime.** Capability metadata: [`routing.yaml`](routing.yaml). Agent table + 2 routes + 4/7 critic gates: [`references/agent-manifest.md`](references/agent-manifest.md).
+Converts a `brief-shortform` OR `brief-app-preview` handoff into a runtime-agnostic export bundle. **Operator picks the runtime.** Capability metadata: [`routing.yaml`](routing.yaml). Agent table + 2 routes + 4/7 critic gates: [`references/agent-manifest.md`](references/agent-manifest.md).
 
 **Two modes** (auto-detected from brief frontmatter `type`; schema in [`references/video-brief-schema.md`](references/video-brief-schema.md) § App-Preview):
 
 - **shortform** — social/promo from `brief-shortform`. Hook-driven, narrative arc, CTA-anchored.
 - **app-preview** — screenshot-driven product demo from `brief-app-preview`'s `handoff-produce-video.md`. Composition over real UI; no synthesis.
 
-**Core question:** Could any downstream runtime (HyperFrames / Remotion / Vercel AI CLI / Hyx / Freepik / human editor) produce the right video from this bundle without a follow-up question?
+**Core question:** Could any downstream runtime produce the right video from this bundle without a follow-up question?
 
 ## Critical Gates — load first
 
@@ -53,7 +53,7 @@ Canonical: [`references/_shared/artifact-contract-template.md`](references/_shar
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) — 6 orchestrator + 3 app-preview + 4 cross-cutting. Most common: hallucinated logos, caption-pace overshoot, invented CTAs; invented UI, synthetic pointers, handoff drift.
+[`references/anti-patterns.md`](references/anti-patterns.md) — 6 orchestrator + 3 app-preview + 4 cross-cutting.
 
 ## Durable Rules (protected)
 
@@ -71,7 +71,7 @@ Canonical: [`references/_shared/artifact-contract-template.md`](references/_shar
 
 ## Execution
 
-Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
+Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct across a multi-shot run, batch-check the render surface first — all blockers at once + named fallback, no serial pivots — [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example
 

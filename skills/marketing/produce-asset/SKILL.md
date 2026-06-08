@@ -13,9 +13,9 @@ metadata:
 
 *Production skill. Converts brief-graphic → render-ready prompts + asset manifest.*
 
-**Core Question:** "Can any downstream tool (image engine / Figma / designer) produce the right asset from this prompt without follow-up?"
+**Core Question:** "Can any downstream tool produce the right asset from this prompt without follow-up?"
 
-> Tool-agnostic — emits prompts + manifest, no API keys. **No output variation by design** (VERBATIM, tier C — `_shared/options-selection.md`): "more" = a manifest re-run, not extra renders. Schema: [`references/format-conventions.md`](references/format-conventions.md).
+> Tool-agnostic — emits prompts + manifest, no API keys. **No output variation** (VERBATIM, tier C — `_shared/options-selection.md`): "more" = a manifest re-run. Schema: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Critical Gates — Read First
 
@@ -46,7 +46,7 @@ FAIL → re-dispatch prompt-author with feedback (max 2 cycles). PASS twice with
 
 ## Agents + Dispatch
 
-2 agents, sequential: **Prompt Author** (`agents/prompt-author-agent.md`) per slot → **Critic** (`agents/critic-agent.md`) on assembled manifest. Single route (export-mode). Pseudocode (Pre-Dispatch reads → per-slot dispatch → critic gate → FAIL re-dispatch loop → manifest write → next-step return), re-run triggers, chain position: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Shared 2-agent pattern: [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
+2 agents, sequential: **Prompt Author** (`agents/prompt-author-agent.md`) per slot → **Critic** (`agents/critic-agent.md`) on assembled manifest. Single route (export-mode). Pseudocode, re-run triggers, chain position: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Shared 2-agent pattern: [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
 
 ## Artifact Contract
 
@@ -62,7 +62,7 @@ Full template + per-slot prompt schema: [`references/format-conventions.md`](ref
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 5 orchestrator (skip brief read, hallucinate logos, silent aspect overrides, copy synonymizing, render-mode misroute) + 4 cross-cutting marketing-stack rows. Most common: copy synonymizing (Gate 4), hallucinated logos (Gate 2).
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 5 orchestrator (skip brief read, hallucinate logos, silent aspect overrides, copy synonymizing, render-mode misroute) + 4 cross-cutting marketing-stack rows.
 
 ## Durable Rules (protected)
 
@@ -82,7 +82,7 @@ End with one status:
 
 ## Execution
 
-Offer the registry-gated fork (category `image`) — **Brief-only**: run the prompts, mark the manifest checklist (feeds `evaluate-asset`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
+Offer the registry-gated fork (category `image`) — **Brief-only**: run the prompts, mark the manifest checklist (feeds `evaluate-asset`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct across a multi-slot manifest, batch-check the render surface first — all blockers at once + named fallback, no serial pivots — [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## References
 

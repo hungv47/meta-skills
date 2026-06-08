@@ -10,6 +10,8 @@ If an upstream caller passes `--publish` or `--api-render`, return:
 
 > `BLOCKED — this stack emits render-ready prompts; it does not call render engines. Run the emitted prompt through your engine.`
 
+**There is no `/produce-graphic` verb** — `produce-asset` is the closest skill and it does not render. The engines that actually turn the prompt into pixels (OpenDesign / Paper / Gemini), their prerequisites, the always-available headless HTML + `@font-face` fallback, and the render→show→iterate checkpoint for brand-critical output: [`../_shared/render-engines.md`](../_shared/render-engines.md). Rendering happens through the operator's own connected engine via the `execution-fork.md` Assisted/Direct path — batch-checked first by `capability-preflight.md`.
+
 No silent fall-throughs.
 
 ## 2. No hallucinated logos or brand marks
@@ -23,3 +25,10 @@ Every prompt carries the platform-aware aspect ratio (1:1 / 4:5 / 9:16 / 16:9 / 
 ## 4. Copy-to-render preserved verbatim
 
 When the brief carries copy slots (headline, CTA, captions), the prompt instructs the renderer to render the exact strings — no synonymizing, no "improving" the copy, no font substitutions that compromise legibility. The brief is the source of truth for what the asset says.
+
+## Brief-first + closing the loop (entry/exit bookends)
+
+These are not numbered gates — they are the entry and exit conditions that make the brief binding, shared across the producing skills via `../_shared/execution-fork.md` § "Closing the loop".
+
+- **Brief-first (entry).** No prompts/manifest before a brief exists. Invoked without a `brief-graphic` / `brief-landing-page` slot artifact → `NEEDS_CONTEXT` (defer to `brief-graphic`). Never synthesize prompts from a bare ask or token docs alone — the brief is the spec.
+- **Check-then-accept (exit, Assisted/Direct).** When the operator picks Assisted/Direct and a real render is produced, the render is **not "done" until scored against the brief *and* its realized surface** — `evaluate-asset` inside an eval loop, or an explicit squint-test against the cited realized surface (`../_shared/realized-surface-grounding.md`) for a quick pass. Score the re-ingested render, never the prompt. Off-brief output is not accepted or committed — it routes back to the brief or a re-render.

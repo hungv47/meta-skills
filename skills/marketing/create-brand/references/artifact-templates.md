@@ -269,6 +269,72 @@ The body is the legend + 5 fixed sections + per-platform blocks + summary (+ opt
 
 ---
 
+## CREATIVE-DIRECTION.md Template
+
+Written to `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md`. The art-direction layer — *how the world looks and feels* — authored from BRAND.md + DESIGN.md + the origin/mood (+ any `inspiration/` frames). **Additive: it names what tokens mean, never redefines them.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "CREATIVE-DIRECTION.md structure". Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
+
+```yaml
+---
+skill: create-brand
+version: [integer — increments on each in-place re-run; starts at 1]
+date: [ISO YYYY-MM-DD]
+status: done | done_with_concerns | blocked | needs_context
+stack: marketing
+review_surface: html
+id: creative-direction
+type: canonical
+keywords: [creative-direction, art-direction, mood, photography, motion]
+summary: "[Brand] art direction — the look-and-feel soul under the brand"
+purpose: "How every surface should look, light, frame, and move — the taste a campaign or render briefs against"
+use_when: "Art-directing a shoot, render, landing page, or campaign for [Brand]"
+upstream: "brand, design"
+downstream: "plan-campaign, brief-graphic, brief-shortform, brief-landing-page, brief-app-preview, write-ad"
+decision_state: pending
+review_tool: roughdraft
+reviewed_at:
+reviewer:
+---
+```
+
+Body skeleton (each `## [Section]` filled per the structure reference; every named value quoted from DESIGN.md):
+
+```markdown
+# [Brand] Creative Direction
+
+> **At a glance**
+> - **One idea:** [the single creative idea, one line]
+> - **The world:** [the scene/place this brand lives in]
+> - **Light:** [time of day, direction, quality]
+> - **Feeling:** [the gut-feel in 3-5 words]
+> - **Palette as landscape:** [tokens → meaning, one line]
+> - **Boundary:** [the neighbouring brand/system this must NOT bleed into]
+
+## The Thesis
+## Source / Mood
+## Movements / Modes
+## Light & Atmosphere
+## Color as Landscape
+## Texture & Grain
+## Composition & Framing
+## Photographic & Render Direction
+## Motion & Pacing
+## Type & Mark in the Landscape
+## The Feeling We're Protecting
+## Anti-Patterns
+## Surface Cues (fast reference)
+## Sources
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+```
+
+---
+
 ## DESIGN.md Template
 
 ```markdown

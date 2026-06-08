@@ -24,6 +24,7 @@ Produce a graphic-design brief for a single visual asset — social posts, thumb
 - **Do NOT render.** Brief only — spec + reference direction + image-gen prompt. Rendering happens downstream.
 - **Do NOT proceed without brand anchors.** Missing `brand/BRAND.md` or `brand/DESIGN.md` → `NEEDS_CONTEXT`, recommend `create-brand`. Hard gate fires BEFORE Cold Start (survives `--fast`).
 - **Do NOT invent tokens, fonts, or motion specs.** Every visual decision traces to DESIGN.md. Gap → flag, don't guess.
+- **Reference realized surfaces, not just tokens.** Before writing reference direction, pull ≥1 realized surface (live page screenshot · shipped HTML · approved exploration · existing exemplar) and design the concept against it — tokens are the floor, the realized surface is the taste. No surface available → record the explicit token-only fallback line. Silent token-only design fails the rubric. Contract: [`references/_shared/realized-surface-grounding.md`](references/_shared/realized-surface-grounding.md).
 - **Do NOT use stock-AI defaults.** No purple-blue gradients, centered-on-white, faux-3D bevels, glassmorphism — unless DESIGN.md specifies. 13-pattern detector scores explicitly.
 - **Do NOT skip the brief approval gate.** Brief is a candidate, not a delivery — user reviews before rendering.
 - **Platform spec mandatory.** Every brief includes aspect ratio, safe zones, mobile readability, file format, file-size cap.
@@ -46,10 +47,12 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 |---|---|---|
 | `brand/BRAND.md` | create-brand | **REQUIRED** (hard gate) — voice, archetype, sacred elements |
 | `brand/DESIGN.md` | create-brand | **REQUIRED** (hard gate) — palette, type, surface, motion |
+| `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction (mood, light, framing, motion); design against it, not just tokens |
 | `brand/ASSETS.md` | create-brand B | Optional — auto-fill dimensions + checkbox tick |
+| realized surface (live URL · shipped HTML · `explorations/*` · exemplar asset) | the live brand | Recommended — the executed taste to design against; see realized-surface-grounding |
 | `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — LP slot spec |
 | `.forsvn/artifacts/marketing/content/[slug].copy.md` | write-copy | Optional — copy that renders IN the asset |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — campaign context |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — campaign context + `## Creative Direction` (per-campaign art direction) |
 | `research/icp-research.md` | research-icp | Optional — audience visual preferences |
 
 ## Pre-Dispatch + Mode
@@ -93,7 +96,7 @@ Full template + per-route Downstream Handoff Block schemas + ASSETS.md auto-tick
 
 ## Execution
 
-Offer the registry-gated fork (category `image`) — **Brief-only**: hand the approved brief to the renderer named by `downstream_route` (→ `produce-asset` → `evaluate-asset`); **Assisted/Direct**: render via a verified engine, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. On render dissatisfaction, re-invoke — `pipeline` lifecycle overwrites.
+Offer the registry-gated fork (category `image`) — **Brief-only**: hand the approved brief to the renderer named by `downstream_route` (→ `produce-asset` → `evaluate-asset`); **Assisted/Direct**: render via a verified engine, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. On render dissatisfaction, re-invoke — `pipeline` lifecycle overwrites. When picking Assisted/Direct, batch-check the render surface first (all blockers at once + named fallback) — see [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example
 

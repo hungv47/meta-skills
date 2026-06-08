@@ -17,7 +17,7 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 
 ## Critical Gates — load first
 
-- **No brief without brand artifacts.** Missing `brand/BRAND.md` or `brand/DESIGN.md` → return `NEEDS_CONTEXT`. Brief depends on tokens, voice rules, sacred elements.
+- **No brief without brand artifacts.** Missing `brand/BRAND.md` or `brand/DESIGN.md` → return `NEEDS_CONTEXT`. Brief depends on tokens, voice rules, sacred elements. **Design against the realized surface** — the live site / shipped page / approved exploration / house `CREATIVE-DIRECTION.md` — not tokens alone; cite ≥1 or record the explicit token-only fallback (`references/_shared/realized-surface-grounding.md`).
 - **Conversion rubric is mandatory.** Every section spec is gated by `references/conversion-principles.md` CP-01 → CP-14. Brand-good but conversion-bad = failure.
 - **Sacred elements are rails, not options.** Logo geometry, primary palette anchor, tagline wording, signature treatments are "do not touch."
 - **Envelope: 250-500 lines.** <250 = insufficient depth (designer asks follow-ups). >500 = bloat (designer skims). Brand-voice critic G6 FAILs both directions.

@@ -1157,7 +1157,7 @@
       "domain": "marketing",
       "public": true,
       "command": "/create-brand",
-      "summary": "Build a brand identity system as BRAND.md (story, voice, archetype), DESIGN.md (AI-readable design tokens), and ASSETS.md (per-platform inventory).",
+      "summary": "Build a brand identity system as BRAND.md (story, voice, archetype), DESIGN.md (AI-readable design tokens), CREATIVE-DIRECTION.md (art-direction layer), and ASSETS.md (per-platform inventory).",
       "aliases": [
         "brand",
         "design-system",
@@ -1196,7 +1196,7 @@
           "Established product, rebrand, or canonical brand-of-record artifact."
         ],
         "critic_required_when": [
-          "Any BRAND.md, DESIGN.md, or ASSETS.md write — canonical artifact.",
+          "Any BRAND.md, DESIGN.md, CREATIVE-DIRECTION.md, or ASSETS.md write — canonical artifact.",
           "Re-run on top of an existing brand folder.",
           "External-facing identity, design tokens, or platform asset inventory."
         ]
@@ -1270,6 +1270,12 @@
             "id": "design",
             "lifecycle": "canonical",
             "produced_when": "Route B completes Layer 2 critic PASS."
+          },
+          {
+            "path": ".forsvn/canonical/marketing/CREATIVE-DIRECTION.md",
+            "id": "creative-direction",
+            "lifecycle": "canonical",
+            "produced_when": "Route B Step 8.6 (orchestrator-written art-direction layer), or the standalone refresh-only path on a locked brand."
           },
           {
             "path": ".forsvn/canonical/marketing/ASSETS.md",
@@ -3098,7 +3104,8 @@
         ],
         "prerequisites": {
           "recommended": [
-            "id:brand"
+            "id:brand",
+            "id:creative-direction"
           ],
           "hard": [
             "id:icp-research",

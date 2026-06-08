@@ -162,6 +162,7 @@ Source: `references/brand-kit-rendering.md`. Runs ONLY when visual-agent produce
 - [ ] **Strategy-to-visual traceability** — Every color, font, radius, imagery traces to archetype and positioning in BRAND.md.
 - [ ] **Cross-element coherence** — Radius matches archetype, typography personality matches archetype, color emotion aligns, imagery reflects archetype.
 - [ ] **Voice-visual alignment** — The tone described in BRAND.md matches the atmosphere described in DESIGN.md.
+- [ ] **Creative-direction ↔ token coherence** (only when `CREATIVE-DIRECTION.md` is present) — Its "Color as Landscape" maps every named token to a meaning that exists in DESIGN.md; it **redefines nothing** (no new hex/font/duration); its movements/light/motion are consistent with DESIGN.md's atmosphere and motion permissions and with BRAND.md's archetype. **FAIL signal:** a hex or font defined in CREATIVE-DIRECTION.md that contradicts or duplicates DESIGN.md; art direction that contradicts the archetype.
 - [ ] **AI slop check** — Run the ai-slop-detection checklist. 0-1 items clean. 2-3 needs review. 4+ FAIL.
 - [ ] **Anchoring bias check** — If output shares visual language with the quality guide examples (glass surfaces, amethyst palette, geometric type, spring-physics notes, infinite canvas) without justification from the brief, flag as anchoring bias from reference examples. The guides teach structural quality, not design direction.
 

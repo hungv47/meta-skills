@@ -25,6 +25,7 @@ metadata:
 - **No channel assignment without habitat data** from ICP research. No habitat → interview for it.
 - **Match cadence to declared team capacity.** Over-scheduling guarantees missed deadlines.
 - **Stale ICP (>30 days)** → recommend `research-icp` re-run (soft gate).
+- **Inherit house creative direction; never re-derive or contradict it.** When `CREATIVE-DIRECTION.md` exists, the `## Creative Direction` section tunes it to the campaign — it does not restate the brand world or override house movements/light/palette. Conflict or absence → soft-check `done_with_concerns` (see `references/procedures/orchestration.md`).
 
 ## Quality Gate
 
@@ -51,6 +52,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load context + 
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended — positioning + accuracy + unique mechanism |
 | `research/icp-research.md` | research-icp | Recommended — persona + pains + habitats + VoC + awareness |
+| `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction; inherited into the `## Creative Direction` section (soft gate — absent → that section degrades to a one-line note + `done_with_concerns`) |
 | `.forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | Optional — strategic alignment |
 | `.forsvn/experience/{product,audience,business,goals}.md` | any | Optional — keys fill gaps from prior runs |
 
@@ -83,7 +85,7 @@ Spawn mechanics, orchestrator-written sections (Growth Motion / Foundation / Cha
 - **Path:** `.forsvn/artifacts/marketing/campaign-plan.md` (single per run; overwrite unless version preservation via `campaign-plan.v[N].md`)
 - **Lifecycle:** `pipeline` — re-run on ICP update / new launch / channel reallocation / growth-motion change / capacity change
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer` (+ optional: `campaign_name`, `goal`, `audience`, `growth_motion`, `team_size`, `budget_tier`, `duration_days`)
-- **Consumed by:** `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, `plan-funnel` — hypothesis grounding + channel-aware composition
+- **Consumed by:** `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, `plan-funnel` — hypothesis grounding + channel-aware composition. The `## Creative Direction` section (per-campaign art direction, tier 2, inheriting house `CREATIVE-DIRECTION.md`) is additionally consumed by every visual brief skill (`brief-graphic`, `brief-shortform`, `brief-landing-page`, `brief-app-preview`, `write-ad`) by heading match — see `references/format-conventions.md` "Creative Direction section"
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter — required fields" + § "Body section order" — downstream jumps by heading match
 
 

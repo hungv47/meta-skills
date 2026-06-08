@@ -39,7 +39,7 @@ Critic agent verifies before delivery (all five PASS required, max 2 rewrite cyc
 - [ ] **Screenshot grounding** — every beat names a real source file + crop rectangle (or component selector); zero invented UI; brand colors / type / spacing match source
 - [ ] **Component-level focal beats** — no whole-screen tours; each beat crops to the region that proves the action; full-screen beats have a written one-line justification
 - [ ] **Beat clarity** — every beat proves exactly one user-visible action or state change; idle / hover / "show off the UI" beats fail
-- [ ] **Brand fidelity** — motion + caption + pointer specs respect `brand/BRAND.md` voice + `brand/DESIGN.md` tokens when supplied, or carry a `brand_source: cold-start-hint` flag
+- [ ] **Brand fidelity** — motion + caption + pointer specs respect `brand/BRAND.md` voice + `brand/DESIGN.md` tokens + `brand/CREATIVE-DIRECTION.md` motion/pacing direction when supplied, or carry a `brand_source: cold-start-hint` flag. (The operator screenshots are themselves the realized surface — design the motion against what the UI actually shows; `references/_shared/realized-surface-grounding.md`.)
 - [ ] **Platform fit** — output respects the target surface's hard constraints (App Store policy, onboarding-card autoplay rules, website embed muting, social aspect/captioning); platform-format-agent's hard rules satisfied
 
 Full 5-sub-critic rubric (Grounding / Component Focus / Beat Clarity / Brand Fidelity / Platform Fit) + binary verdicts + Rewrite Routing Table live in `agents/critic-agent.md`.
@@ -55,6 +55,7 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load ICP + BRA
 | Screenshots directory (≥2 per screen/state; resting + interaction + result + optional variant) | Operator-supplied | **Hard-required** (Critical Gate 1) — `NEEDS_CONTEXT` if missing |
 | `brand/BRAND.md` | create-brand | Soft-required — proceeds with `brand_source: cold-start-hint` flag if missing; critic warns on motion specs that contradict typical brand discipline |
 | `brand/DESIGN.md` | create-brand | Soft-required — same cold-start handling as BRAND.md; tokens (color hex, radius, type scale) lifted into motion-spec output when present |
+| `brand/CREATIVE-DIRECTION.md` | create-brand | Optional — house motion/pacing direction; informs beat rhythm + pointer feel when present |
 | `research/icp-research.md` | research-icp | Optional — informs caption register and feature framing |
 | Prior `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` | this skill | Optional — re-run with `--rev=N` to preserve prior brief |
 

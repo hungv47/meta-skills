@@ -39,7 +39,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `research/product-context.md` | research-icp | Recommended — voice adjectives + proof points + Unique Mechanism |
 | `research/icp-research.md` | research-icp | Recommended — primary persona + VoC pain language |
 | `brand/BRAND.md` | create-brand | Recommended — voice anchors + banned-language list |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route B from broader campaign |
+| `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended (visual creative) — house art direction for the ad's visual concept; design against it + a realized exemplar, not tokens alone (`references/_shared/realized-surface-grounding.md`) |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route B from broader campaign + `## Creative Direction` (per-campaign art direction) |
 | `.forsvn/experience/{audience,product,business,brand}.md` | (any skill) | Optional — persisted `Product — current offer` / `Product — proof points` keys |
 
 ## Pre-Dispatch + Mode

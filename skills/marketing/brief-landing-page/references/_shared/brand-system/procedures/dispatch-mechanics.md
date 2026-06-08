@@ -172,6 +172,14 @@ ASSETS.md is a **living file** — overwrite `.forsvn/canonical/marketing/ASSETS
 
 Route B only. Route A captures platform list but emits no inventory until the full pipeline runs.
 
+## Step 8.6: CREATIVE-DIRECTION.md (Route B; also the standalone refresh-only path)
+
+Orchestrator-written — **no sub-agent** (keeps the dispatch at 8 agents). After the critic gate passes and ASSETS is projected, the orchestrator synthesizes the art-direction layer from: strategy-agent output (archetype, positioning, origin), visual-agent output (palette, type, atmosphere), and the operator's mood/origin inputs (+ any `inspiration/` reference frames). It writes `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` per the section order + frontmatter in `references/format-conventions.md` "CREATIVE-DIRECTION.md structure" and the template in `references/artifact-templates.md`.
+
+Hard rule: **it names what DESIGN.md tokens mean; it redefines nothing.** Every hex/font/duration it mentions is quoted from DESIGN.md. The critic's "Creative-direction ↔ token coherence" check (Cross-File checklist) gates it — a contradicting or duplicating value is a FAIL, re-dispatch to the orchestrator step (max 2 cycles).
+
+**Refresh-only path.** When BRAND.md + DESIGN.md already exist and the ask is art direction (not tokens), this step runs **standalone**: read BRAND/DESIGN (+ frames), write/overwrite CREATIVE-DIRECTION.md, bump its integer `version:`, leave all other canonical files byte-unchanged. No Layer 1/2, no ASSETS re-projection.
+
 ## Step 9: Visual Renderings (optional)
 
 The spec — BRAND.md / DESIGN.md / ASSETS.md — is canonical. Renderings are **derivative presentations**, not source of truth. Three optional paths:

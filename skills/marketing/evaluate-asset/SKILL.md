@@ -34,6 +34,8 @@ metadata:
 
 `/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-render brief-fidelity + brand-fit snapshots scored against one re-ingested asset. `/produce-asset` owns rendering. `/brief-graphic` owns the brief. `/evaluate-content` + `/evaluate-ad` own the asset's live-post performance lanes.
 
+**This skill is the formal return-leg gate** (`execution-fork.md` → "Closing the loop"): a brand-critical render is not "done" until scored here against its brief **and** its realized surface. Inside an eval loop this is the required closing step; without a loop, the lighter fallback is an explicit squint-test against the cited realized surface (`realized-surface-grounding.md`). Either way, **off-brief output is not accepted or committed** — score the real re-ingested render, never the prompt.
+
 ## Inputs
 
 **Required:** loop slug/path · re-ingested asset path/id (the `asset_picked` / `assets` attachment on `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — image / graphic / carousel frame) · source brief artifact (`.forsvn/artifacts/marketing/design-briefs/[slug].md`) · render engine + `execution_mode` (brief-only / assisted / direct) · primary metric (brief-fidelity score · acceptance-criteria pass rate · or a downstream metric if the asset is live).

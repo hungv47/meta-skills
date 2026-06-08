@@ -17,8 +17,10 @@ blows the per-skill body budget). The human always owns the gate; the pre-checke
 is always the portable, tool-agnostic brief.
 
 Built on CLOSED-LOOP.md §3 (registry) + §4 (the terminal fork) primitives; the upstream
-redirect itself is a program extension, not a separate canonical section. Companion:
-`execution-fork.md` (terminal).
+redirect itself is a program extension, not a separate canonical section. Companions:
+`execution-fork.md` (terminal, per-category) and `capability-preflight.md` (the batch
+liveness check a *multi-engine / multi-stage* run runs once, up front — this redirect is
+the single-skill, build-in-tool case; the pre-flight is the whole-run case).
 
 ---
 

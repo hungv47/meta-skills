@@ -31,7 +31,7 @@ All four PASS required, max 2 rewrite cycles. Full 4-sub-critic rubric + Rewrite
 - [ ] Hook — clears platform's hook window from research; visual + verbal + text triad simultaneous; 3Q test passes; archetype tagged
 - [ ] Production — every shot/scene has timing (seconds), framing, action, on-screen text, audio sync; audio names a track or VO direction; production notes filled
 - [ ] Algorithm-fit — aligns with target platform's algorithmic preferences (completion thresholds, hold rates, audio rules, captions, watermarks)
-- [ ] Brand-fit — caption + verbal lines use VoC phrases from ICP; voice matches `BRAND.md` archetype; no generic founder/company tropes
+- [ ] Brand-fit — caption + verbal lines use VoC phrases from ICP; voice matches `BRAND.md` archetype; visual/motion direction anchored to `CREATIVE-DIRECTION.md` (when present) and to a realized exemplar (a shipped on-brand video / live product capture) rather than tokens alone — or the explicit token-only fallback is recorded (`references/_shared/realized-surface-grounding.md`); no generic founder/company tropes
 
 ## Before Starting
 
@@ -42,7 +42,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `.forsvn/artifacts/research/research-shortform/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
 | `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
 | `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs if `[slug]` matches |
+| `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction (movement, light, pacing); anchor visuals to it + a realized exemplar, not tokens alone |
+| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs + `## Creative Direction` (per-campaign art direction) if `[slug]` matches |
 
 ## Pre-Dispatch + Mode
 
@@ -90,7 +91,7 @@ Most common in practice: AI-slop openers ("Hey guys"), vague action verbs ("show
 
 ## Execution
 
-Offer the registry-gated fork (category `video`) — **Brief-only**: hand the brief to `produce-video` for the render-ready scaffold (→ `evaluate-shortform`); **Assisted/Direct**: a verified engine renders, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
+Offer the registry-gated fork (category `video`) — **Brief-only**: hand the brief to `produce-video` for the render-ready scaffold (→ `evaluate-shortform`); **Assisted/Direct**: a verified engine renders, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. When picking Assisted/Direct, batch-check the render surface first (all blockers at once + named fallback) — see [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example
 

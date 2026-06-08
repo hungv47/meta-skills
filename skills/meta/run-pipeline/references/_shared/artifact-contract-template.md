@@ -239,7 +239,7 @@ Full semantics: [[reviewable-artifact-contract]].
 | Field | Type | Example |
 |---|---|---|
 | `decision_state` | enum | `pending` \| `approved` \| `denied` \| `suggested` \| `not_required` |
-| `review_tool` | enum | `roughdraft` \| `inline` \| `none` |
+| `review_tool` | enum | `roughdraft` \| `inline` \| `none` \| `proof` |
 | `reviewed_at` | ISO `YYYY-MM-DD` or empty | `2026-05-22` |
 | `reviewer` | string or empty | `operator` |
 
@@ -247,6 +247,27 @@ Fields are flat by design — `manifest-sync.ts` parses flat YAML only. Absent o
 unrecognized `decision_state` normalizes to `not_required`, so legacy artifacts
 index unchanged. `manifest-sync` indexes `decision_state` into a Decision column
 in `artifact-index.md`.
+
+### Collaborative-doc sub-type (`review_tool: proof`)
+
+An opt-in sub-type for iterative, long-form artifacts reviewed in the **Proof**
+editor instead of via the checkbox + CriticMarkup path (ADR
+`docs/adr/2026-06-08-proof-collab-docs.md`). When `review_tool: proof`, three
+additive flat-scalar fields bind the artifact to its Proof working doc:
+
+| Field | Type | Example | Notes |
+|---|---|---|---|
+| `proof_slug` | string | `mx6sy15o` | **Required** when `review_tool: proof` — the MCP proxy resolves the working doc by this. |
+| `proof_doc_id` | string or empty | `5c7bdbfe-…` | Proof's stable doc UUID; informational. |
+| `collab_state` | enum | `drafting` \| `in_review` \| `exported` | Lifecycle of the Proof-backed doc. |
+
+Proof owns only *transient working state*; this `.md` stays canonical and is
+updated on human accept via `forsvn collab export` — written by the plugin's atomic
+byte-fidelity writer on the CLI path and by `forsvn-core` on the desktop path (deferred
+with editor embedding); one trusted writer per path. Agents post *suggestions* via the
+MCP proxy and never write the
+decision (§9.2=B). `validate-artifacts --strict` requires `proof_slug` whenever
+`review_tool: proof`; `manifest-sync` drops an unknown `collab_state` with a warning.
 
 **When to set `decision_state: pending`** — by lifecycle:
 

@@ -1,6 +1,6 @@
 ---
 name: create-brand
-description: "Builds a brand identity system as up to three artifacts — BRAND.md (story, voice, positioning, archetype), DESIGN.md (AI-readable design tokens), ASSETS.md (per-platform inventory). Runs Quick Brand (Route A) or full brand-system (Route B). Use to define or rebrand a product's identity. Not for marketing copy (use write-copy), user flows (use map-user-flow), campaign planning (use plan-campaign), or audience research (use research-icp)."
+description: "Builds a brand identity system as up to four artifacts — BRAND.md (story, voice, positioning, archetype), DESIGN.md (AI-readable design tokens), CREATIVE-DIRECTION.md (art-direction layer — mood, light, motion), ASSETS.md (per-platform inventory). Runs Quick Brand (Route A) or full brand-system (Route B). Use to define or rebrand a product's identity. Not for marketing copy (use write-copy), user flows (use map-user-flow), campaign planning (use plan-campaign), or audience research (use research-icp)."
 argument-hint: "[product or brand to design]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -10,6 +10,8 @@ metadata:
 ---
 
 # Brand Identity & Design System — Orchestrator
+
+<!-- BUDGET_EXCEPTION: This orchestrator now produces FOUR canonical artifacts (BRAND + DESIGN + CREATIVE-DIRECTION + ASSETS, up from three). The 4th — CREATIVE-DIRECTION.md (art-direction layer) — adds load-bearing body surface that cannot move to references/: its Output-table row, its Route-B Step 8.6 + refresh-only path in Routing, and its path/id in the Artifact Contract are the contract tools read by name. The skill was already at the deep cap as a 3-artifact 8-agent orchestrator; the 4th artifact's irreducible contract surface puts it ~100 tokens over. Detail (schema, template, section order) already lives in references/. -->
 
 Coordinates 8 specialized agents to transform product context into a brand narrative + AI-readable design system. Capability metadata (routes, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Agent table + per-route dispatch graphs + pattern-catalog map: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology and history: [`references/playbook.md`](references/playbook.md).
 
@@ -29,9 +31,10 @@ Coordinates 8 specialized agents to transform product context into a brand narra
 |---|---|---|---|
 | `.forsvn/canonical/marketing/BRAND.md` | Founders, marketers, copywriters, designers | Prose — brand book | A + B |
 | `.forsvn/canonical/marketing/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
+| `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | Art directors, photographers, campaign + render briefs | Art direction — mood, light, framing, motion (references tokens, never redefines) | B (+ refresh-only) |
 | `.forsvn/canonical/marketing/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
 
-ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board (Step 9).
+ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. CREATIVE-DIRECTION.md is **orchestrator-written** (no new agent) — names what DESIGN.md tokens *mean*; additive, refreshable standalone. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board (Step 9).
 
 ## Quality Gate — critic check-groups
 
@@ -67,7 +70,8 @@ Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.m
 Ask: *"Full brand system or quick brand for MVP?"*
 
 - **Route A — Quick Brand (MVP):** Step 0 → Layer 1 parallel (strategy + visual color/typography-only, logo deferred) → critic (strategy↔visual coherence only) → re-dispatch on FAIL (max 2 cycles) → deliver + "Run full brand-system when ready to build the design system."
-- **Route B — Full Brand System:** Step 0 → Layer 1 parallel (4 agents) → Merge → Layer 2 sequential (3 agents) → critic → Step 8.5 ASSETS projection → Step 9 (optional Visual Renderings) → Step 10 deliver. Max 2 rewrite cycles.
+- **Route B — Full Brand System:** Step 0 → Layer 1 parallel (4 agents) → Merge → Layer 2 sequential (3 agents) → critic → Step 8.5 ASSETS projection → Step 8.6 orchestrator writes CREATIVE-DIRECTION.md (art-direction synthesis; critic checks token coherence) → Step 9 (optional Visual Renderings) → Step 10 deliver. Max 2 rewrite cycles.
+- **Refresh-only:** on a locked brand, (re)write `CREATIVE-DIRECTION.md` standalone (read BRAND/DESIGN + any `inspiration/` frames; bump its `version:`; touch no other canonical file). Schema + section order: `references/format-conventions.md` "CREATIVE-DIRECTION.md structure".
 
 Full dispatch graphs, spawn mechanics, single-agent fallback, Layer 1→Merge→Layer 2 semantics (coherence check, palette ownership, accessibility hand-back), Step 8.5 7-step projection + invariants, Step 9 sub-paths (9a Paper MCP / 9b Claude Design / 9c None / 9d Brand-Kit Board): [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) + [`references/agent-manifest.md`](references/agent-manifest.md). Step 9a artboard rules: [`references/artboard-generation.md`](references/artboard-generation.md); Step 9d gated by [`references/brand-kit-rendering.md`](references/brand-kit-rendering.md) + critic BK-G1-G9.
 
@@ -75,9 +79,9 @@ Key invariants (always-on): every ASSETS row has spec ref + target path · ASSET
 
 ## Artifact Contract
 
-- **Paths (Route B):** `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS}.md` (ids `brand`, `design`, `assets`) · **Route A:** `.forsvn/canonical/marketing/BRAND.md` only.
+- **Paths (Route B):** `.forsvn/canonical/marketing/{BRAND,DESIGN,CREATIVE-DIRECTION,ASSETS}.md` (ids `brand`, `design`, `creative-direction`, `assets`) · **Route A:** `.forsvn/canonical/marketing/BRAND.md` only.
 - **Lifecycle:** `canonical` — brand-of-record artifacts consumed by 10+ downstream marketing + product skills.
-- **Versioning:** all three overwrite in place + increment the integer `version:` on re-run (prior versions live in git history). ASSETS.md additionally moves dropped-platform rows to `## Orphaned` (preserved). Never a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots.
+- **Versioning:** all overwrite in place + increment the integer `version:` on re-run (prior versions live in git history). ASSETS.md additionally moves dropped-platform rows to `## Orphaned` (preserved). Never a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots.
 - **Frontmatter + section schema:** [`references/format-conventions.md`](references/format-conventions.md).
 
 - **Cross-stack contract:** schema changes (frontmatter, section headings, table columns) require atomic update of `format-conventions.md` + every downstream caller (write-copy, write-ad, write-outreach, brief-landing-page, brief-graphic, plan-campaign, humanmaxxing, polish-vn, brief-shortform, map-user-flow). The four review fields are additive — downstream callers consume brand content by heading match.

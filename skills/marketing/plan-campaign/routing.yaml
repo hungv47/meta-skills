@@ -52,6 +52,7 @@ capability:
     prerequisites:
       recommended:
         - "id:brand"
+        - "id:creative-direction"
       hard:
         - "id:icp-research"
         - "id:product-context"

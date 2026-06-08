@@ -8,17 +8,17 @@ The 8-dimension scoring rubric used by critic-agent. Each dimension scores 0–4
 
 ## Dimension 1 — Brand Fidelity
 
-**What it measures:** Do the visual decisions trace to BRAND.md and DESIGN.md tokens?
+**What it measures:** Do the visual decisions trace to BRAND.md and DESIGN.md tokens **and anchor on a realized surface**? Tokens are the floor; the realized surface (live page / shipped HTML / approved exploration / `CREATIVE-DIRECTION.md` art direction) is the executed taste. Per `references/_shared/realized-surface-grounding.md`.
 
 | Score | Criteria |
 |-------|----------|
-| 4 | Every palette hex and type token used matches DESIGN.md exactly. Sacred elements honored. Voice rules respected if copy is in asset. |
-| 3 | One minor deviation (e.g., body weight off by one step, 60px logo height rendered at 56px). Substantive direction matches. |
-| 2 | Multiple minor deviations OR one major (wrong primary color, font family substitution). |
+| 4 | Every palette hex and type token used matches DESIGN.md exactly. Sacred elements honored. Voice rules respected if copy is in asset. **Concept is anchored to a cited realized surface** (or the explicit token-only fallback is recorded), and to CREATIVE-DIRECTION.md art direction when present. |
+| 3 | One minor deviation (e.g., body weight off by one step, 60px logo height rendered at 56px). Substantive direction matches. Realized surface cited or fallback recorded. |
+| 2 | Multiple minor deviations OR one major (wrong primary color, font family substitution); OR designed from tokens only with **no realized-surface line at all** (silent token-only). |
 | 1 | Output reads as a different brand entirely. Tokens unrecognizable. |
 | 0 | No brand reference visible. Generic AI default aesthetic. |
 
-**Auto-FAIL:** Score <3 on cycle 1 = FAIL re-dispatch.
+**Auto-FAIL:** Score <3 on cycle 1 = FAIL re-dispatch. Silent token-only design (no realized-surface line, no fallback) caps this dimension at 2.
 
 ---
 

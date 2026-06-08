@@ -88,6 +88,10 @@ Full 11-row Quality Gate Checklist + 4 Internal Consistency Checks + 9-row Rewri
 
 When **Social media** is a selected channel, its Channel Execution Brief should be grounded in `references/platform-channels.md` → the `references/platform-intelligence/` catalog (§2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms). An ungrounded Social-media brief — or one grounded in a stale (>90-day) catalog file — ships `done_with_concerns`, flagged in the artifact. It never blocks the plan.
 
+### Soft check — Creative-direction inheritance
+
+When `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` exists, the `## Creative Direction` section must **inherit and tune** it, not re-derive or contradict it: cite the house CD + version, carry its movements/light/palette unchanged, and express only campaign-specific deltas (movement lead, season, platform emphasis, hero concept, per-channel cues). A campaign art call that contradicts a house-CD element (new palette, off-world light, a betrayed house anti-pattern) ships `done_with_concerns` with the conflict named. When no house CD exists, the section is a one-line deferral note ("run `create-brand` to add the house layer") and the plan ships `done_with_concerns`. Never fabricate a brand world in the campaign plan. Never blocks.
+
 ---
 
 ## Single-agent fallback
