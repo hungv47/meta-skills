@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440" role="img" aria-label="The Agent Skills stack — 49 skills across Research, Marketing, Product, and Meta feed a central .forsvn artifact store, which feeds manifest, loops, and review.">
-<title>Agent Skills — how the stack chains</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440" role="img" aria-label="The FORSVN stack — Research, Marketing, Product, and Meta feed a central .forsvn artifact store, which feeds manifest, loops, and review.">
+<title>FORSVN — how the stack chains</title>
 <desc>A system map: four skill domains (Research, Marketing, Product, Meta) feed a central .forsvn artifact store; the store feeds three outputs — manifest, loops, and review. Leaf-green pulses glide left to right along the connections.</desc>
 <style>
   .bg { fill:#004700; }
@@ -32,8 +32,8 @@
   <path d="M804.008 498.492L461 964.164L650.798 498.492H804.008Z"/>
   <path d="M552.93 348H908.5L821.328 471.801H501.888L552.93 348Z"/>
 </g>
-<text class="ink" x="92" y="46" font-family="'Space Grotesk',ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="16" font-weight="600" letter-spacing="2.6">AGENT SKILLS</text>
-<text class="dim" x="1234" y="46" text-anchor="end" font-family="'Space Grotesk',ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="14.5" letter-spacing="0.4">40 skills · 4 domains · one stack</text>
+<text class="ink" x="92" y="46" font-family="'Space Grotesk',ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="16" font-weight="600" letter-spacing="2.6">FORSVN</text>
+<text class="dim" x="1234" y="46" text-anchor="end" font-family="'Space Grotesk',ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif" font-size="14.5" letter-spacing="0.4">RESEARCH · MARKETING · PRODUCT · META</text>
 <line class="div" x1="44" y1="82" x2="1236" y2="82"/>
 
 <!-- connections: domains -> hub -->
