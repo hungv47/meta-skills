@@ -4,7 +4,7 @@ description: "Writes and evaluates cold outreach — email, LinkedIn, Twitter/X,
 argument-hint: "[target/signal + channel + mode, or reply text to respond to]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -33,7 +33,7 @@ Before delivering, the **critic agent** verifies (5 dimensions, 0-10 each):
 - [ ] **Signal connection** ≥ 6 — personalization connects to the ask; remove-the-opener test passes (email shouldn't still make sense without it)
 - [ ] **CTA friction** ≥ 6 — one ask, low-friction; no "30-min call" in first touch
 - [ ] **You > me ratio** ≥ 6 — "you/your" dominates "I/we/our"; reader's world, not yours
-- [ ] **Specificity** ≥ 6 — concrete proof (number, named outcome, named company); no "leading provider" / "trusted by many"
+- [ ] **Specificity** ≥ 6 — concrete proof (number, named outcome, named company); no "leading provider" / "trusted by many". Every proof line also passes the **competitor swap test** — if a rival vendor could send it truthfully, it's generic; independent auto-fail. Procedure: [`references/_shared/copy-validation-rubric.md`](references/_shared/copy-validation-rubric.md) (shared across the write-\* skills).
 
 **Gate:** Total ≥ 35/50 **AND every dim ≥ 6**. Total 35-39 with all dims ≥ 6 = PASS as `DONE_WITH_CONCERNS`. Any dim < 6 = FAIL regardless of total.
 
@@ -59,6 +59,8 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load product-co
 Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]).
 
 **Needed dimensions:** mode (services-sell / saas-sell / partnership-sell / community-sell), channel (email / LinkedIn / Twitter DM / other), target (name + role + company), trigger (specific signal + strength 1-5), desired outcome (reply / call / resource open / connection accept), bridge (problem we solve that connects to trigger), proof (case studies + logos + metrics + testimonials).
+
+**Framework selector (strategist hook).** From recipient *seniority* + decision *profile* (data-driven / emotional / brevity-obsessed) + relationship *warmth*, the strategist shortlists the top 2-3 body frameworks (PAS, AIDA, QVC, BAB, PASTOR, …) + a one-line reason, then commits to one. Library (structure + best-for + worked example per framework) + the selector decision table: [`references/frameworks/cold-email-frameworks.md`](references/frameworks/cold-email-frameworks.md). Distinct from `structures.md` (which picks message *shape* from signal strength); the two compose.
 
 Full read-order + Warm/Cold Start prompts (7-question Cold Start) + Missing-Input Hard Blocks + Pre-Writing Assembly + write-back map + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
 

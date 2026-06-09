@@ -4,7 +4,7 @@ description: "Monitors AI-search visibility across answer engines and generative
 argument-hint: "[domain or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -56,6 +56,8 @@ Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protoc
 
 **Needed dimensions:** mode (default `full-report`), subject domain, target query set (or ICP source to derive it), competitor domains, available providers/exports.
 
+**Query-set design (Layer 0, locked).** Pre-Dispatch produces a **balanced, locked** `query-set.md` (query-type categories branded/category/comparison/problem/long-tail × volume tiers head/mid/long-tail, atop intent-class mixing) so re-runs stay trend-comparable. Design contract: `references/procedures/pre-dispatch.md` § "Query-set design".
+
 Full read-order + Cold Start prompt + Warm Start prompt + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
 
 ## Mode Resolution
@@ -80,7 +82,7 @@ Default is `full-report` (snapshot is the primary job). Single-mode runs are opt
 | Spot check: do AI providers cite us for these queries? | **ai-citations** | A |
 | Spot check: AI Overview presence on target keywords | **geo-overview** | B |
 | Read AI referral evidence from analytics | **ai-referrals** | C |
-| Bing Webmaster / IndexNow / sitemap posture | **bing-readiness** | D |
+| Bing Webmaster / IndexNow / sitemap posture **+ Bing-channel traffic** | **bing-readiness** | D |
 | `llms.txt` / `llms-full.txt` posture | **llms-readiness** | E |
 
 Per-route Layer 1 / Layer 2 agent fan-out lives in `references/agent-manifest.md` § "Per-route expansion". Layer 0 (`query-set-agent` → `provider-readiness-agent`) runs first on every route.
@@ -107,7 +109,7 @@ Output path: `.forsvn/artifacts/marketing/aeo-monitor/[slug]/` — directory, no
 
 `[slug]` = kebab-cased subject domain (e.g., `example-com` for `example.com`). Snapshot files are written only when their mode (or `full-report`) ran.
 
-**Lifecycle:** snapshots are append-only (one set per date). `report.md`, `query-set.md`, and `handoff-optimize-seo.md` are rewritten in place each run; prior copies remain in git history. Trend computation reads `snapshots/*.json`.
+**Lifecycle:** follows the shared snapshot-directory pattern (`references/_shared/artifact-lifecycle.md` [PROCEDURE]): snapshots append-only (one set per date), `report.md` / `query-set.md` / `handoff-optimize-seo.md` rewritten in place (prior copies in git). Trend computation reads `snapshots/*.json`.
 
 **Frontmatter (REQUIRED on `report.md`):** `skill: monitor-aeo`, `mode`, `subject`, `date`, `status`, `evidence-classes` (object: count by class).
 
@@ -156,5 +158,5 @@ End-to-end Route Z walkthrough (Pre-Dispatch → Layer 0 → parallel Layer 1 �
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` [PROCEDURE]
 - **Example:** `references/examples/aeo-walkthrough.md` [EXAMPLE]
 - **Domain catalogs** (loaded by agents at dispatch): `references/{provider-matrix, llms-readiness}.md`
-- **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, evidence-classes}.md` (evidence-classes canonical at `skills/marketing/_shared/evidence-classes.md`, shared with `optimize-seo`)
+- **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, evidence-classes, artifact-lifecycle}.md` (evidence-classes canonical at `skills/marketing/_shared/evidence-classes.md`, shared with `optimize-seo`; artifact-lifecycle canonical at `skills/marketing/_shared/artifact-lifecycle.md`)
 - **Agents:** 8 sub-agents in `agents/` — see `references/agent-manifest.md`. `critic-agent.md` holds the canonical 8-item quality gate + Rewrite Routing Table.

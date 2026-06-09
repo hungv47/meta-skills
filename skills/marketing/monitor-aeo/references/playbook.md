@@ -34,6 +34,8 @@ AEO/GEO outcomes are **stochastic and provider-specific**. The same query on the
 
 **Evidence > Inference > Hypothesis.** Every metric is tagged by class. `observed-test` for actual export ingest; `single-run` for n=1; `unavailable` for missing input; `practitioner-inference` and `hypothesis` should never appear in a monitor run (they belong in `optimize-seo` strategy work).
 
+**Stochastic results state their confidence inline.** A single-run cell carries `(single-run observation)`; a multi-run cell carries `(n=5 runs, 80% agreement)` — the agreement rate, not just the count. Full register contract: `references/_shared/evidence-classes.md` § "Stochastic-outcome confidence framing" (shared with `optimize-seo`).
+
 **Pure orchestration.** This skill never calls a provider API or scrapes a SERP. It builds query sets, ingests operator-supplied exports, dispatches the critic gate, and writes the snapshot. The operator (or their CI) runs the actual queries / pulls.
 
 ---

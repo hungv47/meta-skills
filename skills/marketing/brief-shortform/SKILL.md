@@ -4,7 +4,7 @@ description: "Production-ready brief for short-form video — hook, shot list, o
 argument-hint: "[angle or topic] [--platforms tiktok,reels,...] [--brand-mode founder|company]"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: deep
   estimated-cost: "$2-4 (single platform) / $4-8 (1 hero + 2 variants)"
 ---
@@ -31,7 +31,7 @@ All four PASS required, max 2 rewrite cycles. Full 4-sub-critic rubric + Rewrite
 - [ ] Hook — clears platform's hook window from research; visual + verbal + text triad simultaneous; 3Q test passes; archetype tagged
 - [ ] Production — every shot/scene has timing (seconds), framing, action, on-screen text, audio sync; audio names a track or VO direction; production notes filled
 - [ ] Algorithm-fit — aligns with target platform's algorithmic preferences (completion thresholds, hold rates, audio rules, captions, watermarks)
-- [ ] Brand-fit — caption + verbal lines use VoC phrases from ICP; voice matches `BRAND.md` archetype; visual/motion direction anchored to `CREATIVE-DIRECTION.md` (when present) and to a realized exemplar (a shipped on-brand video / live product capture) rather than tokens alone — or the explicit token-only fallback is recorded (`references/_shared/realized-surface-grounding.md`); no generic founder/company tropes
+- [ ] Brand-fit — caption + verbal lines use VoC phrases from ICP; voice matches `BRAND.md` archetype; visual/motion direction anchored to `CREATIVE-DIRECTION.md` + `FRAME.md` (when present — FRAME.md gives the frame-composition layer: safe areas, type-at-distance, on-screen pacing) and to a realized exemplar (a shipped on-brand video / live product capture) rather than tokens alone — or the explicit fallback is recorded (`frame_direction: absent` when FRAME.md missing; token-only per `references/_shared/realized-surface-grounding.md`); no generic founder/company tropes
 
 ## Before Starting
 
@@ -43,6 +43,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
 | `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
 | `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction (movement, light, pacing); anchor visuals to it + a realized exemplar, not tokens alone |
+| `brand/FRAME.md` | create-brand | Soft-required — frame direction (safe areas, type-at-distance, on-screen pacing, bumper grammar); matched by canonical path + headings. Present → spec shots/text to its safe areas + type floors + hold times. Absent → flag `frame_direction: absent` and fall back to `CREATIVE-DIRECTION.md` + `DESIGN.md` tokens, never silently (`references/_shared/realized-surface-grounding.md`) |
 | `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs + `## Creative Direction` (per-campaign art direction) if `[slug]` matches |
 
 ## Pre-Dispatch + Mode
@@ -60,7 +61,7 @@ Single route — always runs Layer 1 + Layer 1.5 + Layer 2. Multi-platform invoc
 - **Hero path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md`.
 - **Variant path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`.
 - **Lifecycle:** `pipeline` — one artifact per (angle, platform-set, market); re-run on angle/platform/market pivot.
-- **Frontmatter:** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied`.
+- **Frontmatter:** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `frame_direction`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied`.
 - **Hero body sections (15, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap · Review Gate.
 - **Variant body sections:** What Changed From Hero · Hook · Storyboard delta · Audio Plan · Caption · CTA.
 - **Consumed by:** human producers / video editors / motion designers; `produce-video` (consumes the brief to emit multi-runtime export bundles).

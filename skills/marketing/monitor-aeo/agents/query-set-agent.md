@@ -32,16 +32,29 @@ Return a single markdown document with exactly these sections:
 [How you derived the query set. Cite source: ICP file path + which sections used, OR operator-supplied list, OR prior query-set with delta. If neither ICP nor operator queries exist, write `[BLOCKED: no query source — need ICP path or operator-supplied queries]`.]
 
 ## Query × Provider Matrix
-| # | Query | Intent class | Target providers | Query language | Geo |
-|---|---|---|---|---|---|
-| 1 | "...the literal prompt..." | informational | OpenAI, Perplexity, Google AI Overview | en | US |
-| 2 | "..." | comparison | OpenAI, Perplexity | en | US |
-[10-30 queries — fewer if subject is narrow. Use literal prompts, not keyword stems. Cap target providers per query at what's reasonable; not every query needs every provider.]
+| # | Query | Category | Tier | Intent class | Target providers | Query language | Geo |
+|---|---|---|---|---|---|---|---|
+| 1 | "...the literal prompt..." | category | mid | informational | OpenAI, Perplexity, Google AI Overview | en | US |
+| 2 | "..." | comparison | head | comparison | OpenAI, Perplexity | en | US |
+[10-30 queries — fewer if subject is narrow. Use literal prompts, not keyword stems. Cap target providers per query at what's reasonable; not every query needs every provider. `Category` ∈ branded/category/comparison/problem/long-tail; `Tier` ∈ head/mid/long-tail (see `references/procedures/pre-dispatch.md` § "Query-set design").]
 
 ## Competitor Set
 [3-7 competitor domains the run should record cited-domain share against, with one-line rationale per competitor (named in ICP / observed in operator-supplied SERPs / standard market alternative).]
 
 ## Coverage Map
+[Two tables — the set must balance across both axes, not just intent.]
+
+**By query-type category × volume tier:**
+| Category | head | mid | long-tail | Total |
+|---|---|---|---|---|
+| branded | N | N | N | N |
+| category | N | N | N | N |
+| comparison | N | N | N | N |
+| problem | N | N | N | N |
+| long-tail | — | — | N | N |
+[Confirm every category the subject competes in is covered, and ≥2 volume tiers are present.]
+
+**By intent class:**
 | Intent class | Query count | Rationale |
 |---|---|---|
 | informational | N | [why this many] |
@@ -66,6 +79,7 @@ Return a single markdown document with exactly these sections:
 1. **Audience-grounded.** A query the ICP would never type is monitor pollution. Every query must trace to a documented ICP behavior or operator-supplied evidence.
 2. **Literal-prompt fidelity.** AI provider responses are stochastic *and* prompt-shape-sensitive. Don't paraphrase. The exact string the operator's audience would type is the only honest input.
 3. **Mix the intent classes.** A query set that's 100% comparison queries measures only one shelf. Aim for distribution across at least 3 intent classes unless the operator's brief restricts scope.
+3b. **Balance category × volume tier.** Beyond intent, the locked set must span the five query-type categories (branded/category/comparison/problem/long-tail) the subject competes in AND at least two volume tiers (head/mid/long-tail). A branded-only set can't see category-level invisibility; a head-only set is all noise. Design contract: `references/procedures/pre-dispatch.md` § "Query-set design".
 4. **Provider × query is not a cross-product.** Don't assign every provider to every query — assign by where that intent is actually answered (AI Overview answers informational; ChatGPT/Perplexity answer comparison + troubleshooting; navigational queries are usually no-op for AEO).
 
 ### Techniques
@@ -102,6 +116,8 @@ Before returning your output, verify every item:
 
 - [ ] Every query is a literal prompt, not a keyword stem
 - [ ] Every query has an intent class label from the allowed set
+- [ ] Every query has a query-type category (branded/category/comparison/problem/long-tail) and a volume tier (head/mid/long-tail)
+- [ ] The set covers every category the subject competes in AND spans ≥2 volume tiers (Coverage Map confirms)
 - [ ] Every query traces to ICP § / operator note / prior-snapshot continuity
 - [ ] Provider × query mapping is intent-driven, not cross-product
 - [ ] Competitor set has 3-7 domains with named rationale

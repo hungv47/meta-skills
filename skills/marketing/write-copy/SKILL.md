@@ -4,7 +4,7 @@ description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, t
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -23,7 +23,7 @@ These five gates are the safety floor; `--fast` does not skip them.
 
 1. **Argument Engineering before word-choice.** Audience + the one shift + Unique Mechanism + belief sequence must be resolved in Pre-Dispatch BEFORE any agent dispatches. Skipping these produces generic copy that scores V/F but fails U.
 2. **V/F/U is per-line, not per-piece.** Every key line gets scored 1-5 on Visual / Falsifiable / Uniquely-Ours. Average ≥3.5 PASS; below 3.0 on any single dimension FAIL regardless of average.
-3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F. Critic auto-fail.
+3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F. Critic auto-fail. Procedure + swappable-vs-defensible examples: [`references/_shared/copy-validation-rubric.md`](references/_shared/copy-validation-rubric.md) (shared across the write-* skills).
 4. **Trigger density 3-4 for persuasion-heavy copy.** 0-2 = WEAK (FAIL → psychology-agent adds primary lever). 5-6 = GURU-ENERGY (FAIL → psychology-agent cuts lowest-load-bearing trigger).
 5. **Route classification at Step 1.** Single key line → Route A. Full page → Route B. Called by `brief-landing-page` / `plan-campaign` → Route C (caller picks agents).
 
@@ -63,6 +63,8 @@ Default English; other languages need adapted idioms. `--fast` collapses Layer 1
 Three routes — A (single key line), B (full page), C (called by another skill). Full pseudocode + agent manifest in [`references/agent-manifest.md`](references/agent-manifest.md). Spawn mechanics in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 
 **Route-collapse default (no `--fast` needed):** a ≤3-sentence single-line ask with no prior artifacts auto-resolves to **Route A** (one writing agent + critic) — the lean single-route composition. Route B's full Layer 1 + Layer 2 orchestration engages only for full-page scope, multi-line asks, or an upward override ("full page", "thorough").
+
+**Route B section sequencer:** order page sections by the reader's `awareness_stage` before writing — the body-agent picks the section stack from the awareness sequencer in [`references/page-sections.md`](references/page-sections.md) § "Section Sequencer", not a fixed template. Awareness comes from the brief; flag it if absent.
 
 ## Artifact Contract
 

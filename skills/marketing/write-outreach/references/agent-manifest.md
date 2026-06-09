@@ -56,7 +56,7 @@ Total ≥35/50 AND every dim ≥6 = PASS. Total 35-39 with all dims ≥6 = `DONE
 |---|---|---|
 | `references/channels/{email,linkedin,twitter,imessage,upwork,fiverr}.md` | composer, critic | Per-channel format + char caps + native conventions. |
 | `references/proof-types.md` | strategist, composer | Anchor-proof slot catalog (number / outcome / named company / research). |
-| `references/frameworks/` | strategist | Cold-outreach frameworks (3 sentences, RBC, problem-agitate-solve). |
+| `references/frameworks/` | strategist | Cold-outreach frameworks — message shape by signal strength (`structures`) + named body arcs (PAS, AIDA, BAB, PASTOR, …) with the seniority/profile/warmth selector (`cold-email-frameworks`). |
 | `references/modes/` | orchestrator | Reply / breakup / follow-up mode mechanics. |
 | `references/playbook.md` | all | Why, methodology, peer-voice principle, you>me rule. |
 | `references/format-conventions.md` | orchestrator (assembly) | Artifact frontmatter + body schema. |

@@ -4,7 +4,7 @@ description: "Turn a brief-shortform or brief-app-preview into a multi-runtime e
 argument-hint: "[brief slug or path] [--platforms tiktok,reels,...] [--surface app-store,onboarding,...]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-2.00"
 ---
@@ -31,29 +31,29 @@ Non-negotiable. Canonical: [`references/_shared/production-pattern.md`](referenc
 
 ## Inputs & Output
 
-Mode auto-detected from brief frontmatter `type`. Full input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: [`references/procedures/inputs-and-outputs.md`](references/procedures/inputs-and-outputs.md).
+Full input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: [`inputs-and-outputs.md`](references/procedures/inputs-and-outputs.md).
 
-- **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md`.
-- **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + on-disk source screenshots. Brand files soft-required (skippable when `brand_source: cold-start-hint`).
-- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` (collapsed in app-preview mode).
+- **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md` + **soft-required** `brand/FRAME.md` (frame direction; canonical-path + heading match). Present → compose to it; absent → flag `frame_direction: absent` + fall back to DESIGN + CREATIVE-DIRECTION tokens, never silently. Slot table + degradation: [`video-brief-schema.md`](references/video-brief-schema.md) § Brand frame inputs.
+- **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + on-disk source screenshots. Brand files soft-required (skip when `brand_source: cold-start-hint`).
+- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md`.
 
 ## Quality Gate & Routing
 
-Two routes discriminated by brief `type` at pre-dispatch (graphs + dispatch in [`references/agent-manifest.md`](references/agent-manifest.md)). Single critic before delivery: **Shortform — 4 gates** (Schema-and-CTA · Brand-mark · Caption-pace · Narrative arc [soft]); **App-preview — 7 gates** (above + Screenshot grounding + Interaction-vocab/mask-transform + Pointer/caption-band, all hard). Hard FAIL → re-dispatch prompt-author (max 2 cycles); Gate 4 FAIL → `DONE_WITH_CONCERNS`. Rubric + failures: [`references/procedures/quality-gate.md`](references/procedures/quality-gate.md).
+Two routes discriminated by brief `type` at pre-dispatch (graphs + dispatch in [`agent-manifest.md`](references/agent-manifest.md)). Single critic before delivery: **Shortform — 4 gates** (Schema-and-CTA · Brand-mark · Caption-pace · Narrative arc [soft]); **App-preview — 7 gates** (+ Screenshot grounding · Interaction-vocab/mask-transform · Pointer/caption-band, all hard). Hard FAIL → re-dispatch prompt-author (max 2 cycles); Gate 4 FAIL → `DONE_WITH_CONCERNS`. Rubric + failures: [`quality-gate.md`](references/procedures/quality-gate.md).
 
 ## Artifact Contract
 
 - **Root + lifecycle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/`, `pipeline` (regenerated on re-run).
 - **Manifest frontmatter (12):** `skill` · `version` · `date` · `status` · `slug` · `source_brief` · `target_platforms` · `aspect` · `length_seconds` · `shot_count` · `cta` · `provenance`.
 - **Per-shot frontmatter (7):** `skill` · `version` · `date` · `shot_id` · `shot_index` · `duration_seconds` · `platform`.
-- **Provenance:** `input_artifacts` = brief path + `brand/BRAND.md` + `brand/DESIGN.md`; `output_eval: null` until downstream `evaluate-shortform`/`evaluate-content`.
-- **Cross-stack:** schema changes require atomic update across `format-conventions.md` + `video-brief-schema.md` + upstream `brief-shortform`.
+- **Provenance:** `input_artifacts` = brief path + `BRAND.md` + `DESIGN.md` (+ `FRAME.md` when present) + `frame_direction` flag; `output_eval: null` until downstream `evaluate-shortform`/`evaluate-content`.
+- **Cross-stack:** schema changes update `format-conventions.md` + `video-brief-schema.md` + upstream `brief-shortform` atomically.
 
-Canonical: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md). Field defs + scaffold conventions: [`references/format-conventions.md`](references/format-conventions.md). Brief-to-schema map: [`references/video-brief-schema.md`](references/video-brief-schema.md).
+Canonical: [`artifact-contract-template.md`](references/_shared/artifact-contract-template.md). Field defs + scaffolds: [`format-conventions.md`](references/format-conventions.md). Brief-to-schema map: [`video-brief-schema.md`](references/video-brief-schema.md).
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) — 6 orchestrator + 3 app-preview + 4 cross-cutting.
+[`references/anti-patterns.md`](references/anti-patterns.md) — 6 orchestrator · 3 app-preview · 4 cross-cutting.
 
 ## Durable Rules (protected)
 
@@ -71,8 +71,8 @@ Canonical: [`references/_shared/artifact-contract-template.md`](references/_shar
 
 ## Execution
 
-Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct across a multi-shot run, batch-check the render surface first — all blockers at once + named fallback, no serial pivots — [capability-preflight.md](references/_shared/capability-preflight.md).
+Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct multi-shot runs, batch-check the render surface first — all blockers at once + named fallback — [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example
 
-App-preview Route B (Tideline / App Store iOS handoff → 5-shot bundle + critic PASS, Remotion + HyperFrames parity): [`references/examples/app-preview-tideline-walkthrough.md`](references/examples/app-preview-tideline-walkthrough.md).
+App-preview Route B (Tideline / App Store iOS handoff → 5-shot bundle + critic PASS): [`references/examples/app-preview-tideline-walkthrough.md`](references/examples/app-preview-tideline-walkthrough.md).

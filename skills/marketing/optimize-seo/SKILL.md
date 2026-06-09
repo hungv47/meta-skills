@@ -4,7 +4,7 @@ description: "Audits and plans search visibility across six modes — technical 
 argument-hint: "[url or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$2-5"
 ---
@@ -86,6 +86,10 @@ Diagnose first, then enter the right mode. Modes can run sequentially. **Start w
 
 Per-route Layer 1 + Layer 2 composition: `references/agent-manifest.md` § "Per-route composition". **Route E produces TWO artifacts** (`seo-audit.md` + `seo-ai.md`). Full pre-writing object schema, 8-step Multi-Agent Dispatch flow, Single-Agent Fallback, prioritization mechanics (Quick Wins → Strategic Investments → Low-Hanging Fruit → Backlog; P1-P4 phasing; dependency mapping), critic gate mechanics (10-item rubric, binary PASS/FAIL, max 2 rewrite cycles, 11-row Rewrite Routing Table), `--fast` execution path: `references/procedures/dispatch-mechanics.md` [PROCEDURE].
 
+**Route B control surface.** Bing backs ChatGPT/Perplexity/Copilot — confirm Bing readiness before AI-citation tactics for those products (`references/platform-intelligence/bing-readiness.md`), then score extractability (distinct from on-page) with `references/geo-citation-readiness-checklist.md`.
+
+**Route C selectors.** Pick the archetype from the 12-playbook taxonomy (`references/programmatic-template-playbooks.md` + the design/defensibility rules in `references/programmatic-seo.md`); for a proprietary-data play, run the build-vs-pitch-direct classifier in `references/linkable-asset-playbook.md`.
+
 ---
 
 ## Artifact Contract
@@ -139,7 +143,8 @@ End-to-end Route A walkthrough (Pre-Dispatch → parallel Layer 1 → merge → 
 - **Anti-patterns:** `references/anti-patterns.md` [ANTI-PATTERN]
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics}.md` + `references/agent-manifest.md` [PROCEDURE]
 - **Example:** `references/examples/seo-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, technical-crawler-checklist, ai-seo, retrieval-layer-seo, live-serp-remediation, programmatic-seo, competitor-pages, schema-reference, aso, platform-search}.md`. Shared: `references/_shared/evidence-classes.md` (canonical: `skills/marketing/_shared/evidence-classes.md`, shared with `monitor-aeo`).
+- **Domain catalogs** (loaded by agents at dispatch, not orchestrator): `references/{technical-audit, technical-crawler-checklist, ai-seo, retrieval-layer-seo, live-serp-remediation, programmatic-seo, programmatic-template-playbooks, geo-citation-readiness-checklist, linkable-asset-playbook, competitor-pages, schema-reference, aso, platform-search}.md`. Shared: `references/_shared/evidence-classes.md` (canonical: `skills/marketing/_shared/evidence-classes.md`, shared with `monitor-aeo`).
+- **AI-search control surface:** `references/platform-intelligence/bing-readiness.md` (Route B). See also Route B/C hooks under Routing Logic.
 - **Platform intelligence** (loaded by ai-presence-agent, programmatic-template-agent, comparison-page-agent, aso-keyword-agent, aso-listing-agent when their mode is active): `references/_shared/platform-intelligence/{tiktok, reels, shorts, linkedin, x, youtube}.md` — canonical at top-level `references/platform-intelligence/` (D13). Agent-to-section map in `references/platform-search.md`.
 - **Shared:** `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol}.md`
 - **Agents:** 15 sub-agents in `agents/` — see Agent Manifest above. `critic-agent.md` holds the canonical 10-item quality gate + 11-row Rewrite Routing Table.

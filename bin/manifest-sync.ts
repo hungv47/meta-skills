@@ -152,7 +152,7 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/canonical\/product\/USER-FLOW/, "map-user-flow"],
     [/^\.forsvn\/canonical\/meta\/MASTER-PLAN/, "forsvn"],
     [/^\.forsvn\/canonical\/meta\/PHASE-LEDGER/, "forsvn"],
-    [/^\.forsvn\/canonical\/marketing\/(BRAND|DESIGN)/, "create-brand"],
+    [/^\.forsvn\/canonical\/marketing\/(BRAND|DESIGN|CREATIVE-DIRECTION|FRAME)/, "create-brand"],
     [/^\.forsvn\/canonical\/research\/ICP/, "research-icp"],
     [/^\.forsvn\/canonical\/research\/MARKET/, "research-market"],
     [/^research\/icp-research/, "research-icp"],

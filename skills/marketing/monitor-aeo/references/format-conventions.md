@@ -101,13 +101,13 @@ All six top-level fields REQUIRED. `evidence-classes` object counts every eviden
 [ICP path § / operator-supplied / prior-snapshot delta]
 
 ## Query × Provider Matrix
-[Verbatim from query-set-agent.]
+[Verbatim from query-set-agent. Each query carries a query-type category (branded/category/comparison/problem/long-tail) and a volume tier (head/mid/long-tail).]
 
 ## Competitor Set
 [Verbatim from query-set-agent.]
 
 ## Coverage Map
-[Verbatim from query-set-agent.]
+[Verbatim from query-set-agent — both the category × volume-tier table AND the intent-class table. Confirms the locked set is balanced: every category the subject competes in is covered and ≥2 volume tiers are present. Query-set design contract: `references/procedures/pre-dispatch.md` § "Query-set design".]
 
 ## Change vs prior query-set
 [Added queries / removed queries / unchanged count. `n/a — first run` on initial snapshot.]
@@ -239,6 +239,16 @@ All snapshot files share a common envelope and a payload that depends on snapsho
       "observation": "...",
       "resolves_with": "..." | null,
       "evidence_class": "observed-test"
+    }
+  ],
+  "bing_traffic": [
+    {
+      "metric": "Bing organic clicks | Bing organic impressions | avg position",
+      "value": 1820,
+      "date_range_start": "YYYY-MM-DD",
+      "date_range_end": "YYYY-MM-DD",
+      "source": "Bing Webmaster Tools — Search Performance export",
+      "evidence_class": "observed-test | unavailable"
     }
   ],
   "llms_crawlers": [

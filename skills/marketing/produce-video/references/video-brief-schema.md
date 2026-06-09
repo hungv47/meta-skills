@@ -47,6 +47,18 @@ The brief MUST carry every field below or produce-video returns `NEEDS_CONTEXT` 
 | `production_notes` | free text | body § "Production Notes" | Renderer hints (e.g., "shot 3 needs animated text reveal") |
 | `success_criteria` | free text | body § "Success Criteria" | Read by future evaluate-shortform; not used by produce-video itself |
 
+## Brand frame inputs (soft-required, not brief fields)
+
+Beyond the brief, shortform mode reads brand artifacts by **logical slot** (resolved at pre-dispatch, not carried in brief frontmatter):
+
+| Slot | Required? | What it provides | On absence |
+|---|---|---|---|
+| `brand/BRAND.md` | required | Voice, archetype, sacred elements | `NEEDS_CONTEXT` → `create-brand` |
+| `brand/DESIGN.md` | required | Color tokens (hex + name), type scale, motion permissions | `NEEDS_CONTEXT` → `create-brand` |
+| `brand/FRAME.md` | **soft-required** | Frame direction — delivery-surface safe areas (title-safe / action-safe % insets), type-at-distance floors, on-screen pacing / hold times, bumper + lower-third layout. Matched by **canonical path + section headings** (per `create-brand/references/frame-direction.md` § Cross-stack note), NOT by parsing frontmatter. | Record `frame_direction: absent` in manifest provenance; fall back to `brand/DESIGN.md` + `brand/CREATIVE-DIRECTION.md` tokens. Never silent — same degradation mechanics as `realized-surface-grounding.md`. |
+
+This is additive — it adds no required brief field and changes no per-shot shape, so no schema consumer's contract is affected. The frame inputs feed per-shot prompt composition (safe-area placement, type sizing, hold timing), not field validation.
+
 ## Per-shot shape (`shots[]` entries)
 
 Each shot in the brief's Storyboard MUST yield this shape:

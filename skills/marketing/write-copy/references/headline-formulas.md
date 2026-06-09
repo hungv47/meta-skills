@@ -1,6 +1,32 @@
 # Headline Formulas
 
+Formulas are grouped by the **psychological driver** they pull — pick the driver that matches the audience's awareness state, then pick a template inside it. Drivers, in rough order of how much the reader must already know to be moved:
+
+| Driver | Pulls on | Best for awareness state | Section |
+|---|---|---|---|
+| **Outcome** | Desire for the end result | Problem-aware → solution-aware | [Outcome-Focused](#outcome-focused) |
+| **Problem** | Recognition of a felt pain | Unaware → problem-aware | [Problem-Focused](#problem-focused) |
+| **Audience** | "This is for someone like me" | Any (qualifies the reader) | [Audience-Focused](#audience-focused) |
+| **Differentiation** | "This is not the usual thing" | Solution-aware (comparing options) | [Differentiation-Focused](#differentiation-focused) |
+| **Proof** | Trust via numbers / social proof | Solution-aware → most-aware | [Proof-Focused](#proof-focused) |
+
+The [Additional Formulas](#additional-formulas) table holds cross-driver patterns; the [Objection-to-Hook](#objection-to-hook-conversion) section converts the audience's strongest *no* into a hook.
+
+## Scoring every formula: V/F/U
+
+Filling a template produces a *candidate*, not a finished line. Score each candidate per the per-line rubric:
+
+- **Visual (V)** — can the reader picture the specific situation? Concrete nouns/numbers, not abstractions.
+- **Falsifiable (F)** — can the claim be tested or disproven? A real number or mechanism is falsifiable; "better" is not.
+- **Uniquely Ours (U)** — run the **Competitor Swap Test**: replace the brand with the top competitor; if the line still reads true, U fails. Full procedure + swappable-vs-defensible worked examples: [`_shared/copy-validation-rubric.md`](_shared/copy-validation-rubric.md). The swap test is an independent auto-fail — a swappable line is rejected even with a strong V/F average.
+
+Each driver below carries a **worked V/F/U** showing a weak fill and the rewrite that earns U.
+
 ## Outcome-Focused
+
+> **Worked V/F/U** — template `{outcome} by {how product makes it possible}`.
+> Weak: "Grow faster by using our platform." V≈2 (no picture), F≈1 (untestable), U=FAIL (any vendor signs it).
+> Strong: "Get your tax refund in 10 days by filing the moment your W-2 lands." V≈5, F≈5 (the 10-day claim is testable), U=PASS (the mechanism + number are yours).
 
 **{Achieve desirable outcome} without {pain point}**
 > Understand how users are really experiencing your site without drowning in numbers
@@ -18,6 +44,10 @@
 
 ## Problem-Focused
 
+> **Worked V/F/U** — template `Stop {pain}. Start {pleasure}.`
+> Weak: "Stop wasting time. Start working smarter." V≈2, F≈1, U=FAIL (boilerplate any tool signs).
+> Strong: "Stop chasing invoices. Start getting paid the day the work ships." V≈5, F≈4, U=PASS (names a specific workflow only a payment-automation product owns).
+
 **Never {unpleasant event} again**
 > Never miss a sales opportunity again
 
@@ -30,6 +60,10 @@
 ---
 
 ## Audience-Focused
+
+> **Worked V/F/U** — template `{product type} for {audience} to {what it's used for}`.
+> Weak: "Software for teams to work better." V≈1, F≈1, U=FAIL.
+> Strong: "An online whiteboard for distributed teams to run a sprint retro in 20 minutes." V≈5, F≈4 (the 20-min claim is testable), U=PASS (qualifies a specific audience + use case).
 
 **{Key feature/product type} for {target audience}**
 > Advanced analytics for Shopify e-commerce
@@ -44,6 +78,10 @@
 
 ## Differentiation-Focused
 
+> **Worked V/F/U** — template `The {category} that {key differentiator}`.
+> Weak: "The CRM that's powerful yet easy." V≈2, F≈1, U=FAIL (every CRM claims it).
+> Strong: "The CRM that updates itself from your sent email." V≈5, F≈5, U=PASS (a proprietary mechanism the competitor can't sign).
+
 **The {opposite of usual process} way to {achieve desirable outcome}**
 > The easiest way to turn your passion into income
 
@@ -53,6 +91,10 @@
 ---
 
 ## Proof-Focused
+
+> **Worked V/F/U** — template `{Number} {people} use {product} to {outcome}`.
+> Weak: "Thousands of marketers trust us." V≈2, F≈2 (round, borrowed), U=FAIL.
+> Strong: "50,000 marketers use Drip to send better-converting email." V≈5, F≈5, U=PASS — the figure swaps out with the brand, so a competitor can't sign it (see the rubric's proof-by-number edge case).
 
 **[Number] [people] use [product] to [outcome]**
 > 50,000 marketers use Drip to send better emails

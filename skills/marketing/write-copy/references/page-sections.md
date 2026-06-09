@@ -61,6 +61,27 @@ Landing page section types, page structure templates, and testimonial selection.
 
 ---
 
+## Section Sequencer — by audience awareness
+
+The right section *order* depends on how much the reader already knows. Sequence by **awareness state** (Schwartz's five stages); the further left the reader sits, the more belief-building must come before the offer.
+
+| Awareness state | Reader knows | Lead with | Recommended section stack |
+|---|---|---|---|
+| **Unaware** | Not even the problem | Problem (make them feel it) | Hero (problem hook) → Problem/Pain → Solution → How It Works → Social Proof → Benefits → Final CTA |
+| **Problem-aware** | The pain, not a solution | Problem → your solution | Hero (problem→promise) → Social Proof bar → Problem/Pain → How It Works → Benefits → Testimonial → FAQ → Final CTA |
+| **Solution-aware** | Solutions exist, comparing | Differentiation + Proof | Hero (differentiator) → Social Proof bar → Benefits → Comparison → Case Study → How It Works → FAQ → Final CTA |
+| **Product-aware** | Your product, not convinced | Proof + Risk reversal | Hero (outcome) → Social Proof bar → Case Study → Benefits → Pricing Preview → Guarantee → Final CTA |
+| **Most-aware** | Ready, needs the nudge | Offer + urgency | Hero (offer) → Guarantee/Risk Reversal → Final CTA (short page; cut belief-building) |
+
+**Rules of the sequencer:**
+
+- **Front-load belief, back-load offer for low awareness.** An unaware reader who hits a pricing teaser before feeling the problem bounces. A most-aware reader forced to scroll past a problem section to reach the CTA loses momentum.
+- **Match the hero to the state, not the product.** The hero headline pulls the [driver](headline-formulas.md#headline-formulas) that fits the state: Problem for unaware, Differentiation for solution-aware, Proof/Offer for product- and most-aware.
+- **Awareness comes from the brief.** Read `awareness_stage` from the Pre-Dispatch / descriptive metadata block; never guess. If absent, flag the gap rather than defaulting to a generic stack.
+- **One narrative, no whiplash.** Don't mix an unaware problem-build with a most-aware hard offer on one page — split into two pages or two ad sets.
+
+The fixed templates below are starting points; the sequencer above is the selector that picks and orders them.
+
 ## Page Structure Templates
 
 ### Varied, Engaging Page (Recommended)

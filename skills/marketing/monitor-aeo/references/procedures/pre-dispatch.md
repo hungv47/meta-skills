@@ -40,6 +40,40 @@ Before asking, read in this sequence and announce what's resolved:
 
 ---
 
+## Query-set design
+
+The locked query set is the run's spine: every snapshot measures against it, and trend computation requires it stable across runs. Design it once in Layer 0 (`query-set-agent`), lock it, and write it to `query-set.md`. A balanced set spans three axes — design for all three, don't optimize one:
+
+**1. Query-type category** — what kind of search this is, from the buyer's framing:
+
+| Category | What it captures | Example shape |
+|---|---|---|
+| **branded** | The subject (or a competitor) by name | `"is [brand] any good"`, `"[brand] pricing"` |
+| **category** | The product category without a brand | `"best [category] tool"`, `"[category] for [audience]"` |
+| **comparison** | Subject vs a named alternative | `"[brand] vs [competitor]"`, `"alternatives to [competitor]"` |
+| **problem** | The pain the product solves, brand-free | `"how do I [job-to-be-done]"`, `"why is [problem] happening"` |
+| **long-tail** | Specific, low-volume, high-intent | `"best [category] for [narrow-segment] under [constraint]"` |
+
+**2. Volume tier** — search demand, which governs how stochastic the result is and how it trends:
+
+| Tier | Demand | Why it matters |
+|---|---|---|
+| **head** | High | More provider data, but contested; small share moves are noise. Re-run sensitivity is high. |
+| **mid** | Moderate | The trend sweet spot — enough signal to be stable, specific enough to move with strategy. |
+| **long-tail** | Low | Often where a small brand wins citations first; n=1 results are expected — lean on the `single-run` register. |
+
+**3. Intent class** — the existing `informational / comparison / navigational / transactional / troubleshooting` axis the `query-set-agent` already assigns, which also drives provider mapping.
+
+**Balance rules:**
+- Cover **every query-type category** the subject plausibly competes in; a branded-only set can't see category-level invisibility, and a category-only set misses defensive branded gaps.
+- Span at least **two volume tiers**; a head-only set is all noise, a long-tail-only set can't show contested movement.
+- Keep the locked set ≤30 queries (the `query-set-agent` cap). Balance beats breadth — a balanced 18 beats an unbalanced 30.
+- **Lock and record.** Once designed, the set is the contract. Any add/remove vs the prior `query-set.md` is flagged in its `## Change vs prior query-set` section so trend computation stays honest.
+
+The category × tier balance is recorded in `query-set.md`'s Coverage Map (see `references/format-conventions.md`). The `query-set-agent` owns derivation; this section is the design contract it satisfies.
+
+---
+
 ## Warm Start prompt
 
 When mode + subject supplied AND query set resolves from ICP/prior snapshot:

@@ -4,7 +4,7 @@ description: "Builds an integrated marketing plan — growth motion, messaging p
 argument-hint: "[product or campaign to plan]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -131,7 +131,7 @@ Route B end-to-end (B2B SaaS PM tool — PLG, 60 days, 500 trial signups, 4 pill
 - `references/{playbook, format-conventions, anti-patterns}.md`
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics, orchestration}.md` [PROCEDURE]
 - **Example:** `references/examples/campaign-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents): `references/{3d-angle-framework, channel-strategy, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `platform-channels.md` maps channel-agent to `references/platform-intelligence/` (§2/§3/§6) for Social-media briefs — D13.B.
+- **Domain catalogs** (loaded by agents): `references/{3d-angle-framework, channel-strategy, growth-play-patterns, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `growth-play-patterns.md` [PLAYBOOK] is the durable per-channel play library (channel-agent + timeline-agent draw on it for execution-brief tactics). `platform-channels.md` maps channel-agent to `references/platform-intelligence/` (§2/§3/§6) for Social-media briefs — D13.B.
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, marketing-foundations}.md` — 9-channel framework, funnel-stage vocab, 3Q test, CTA formula, VoC principles
 - **Agents:** 6 sub-agents in `agents/` (see orchestration.md § Agent Manifest); `critic-agent.md` holds the canonical 11-row Quality Gate Checklist
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills"

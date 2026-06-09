@@ -20,7 +20,7 @@ You do NOT:
 | **channel** | string | email / linkedin-dm / linkedin-connection / twitter-reply / twitter-dm / imessage / sms / upwork-proposal / other-platform |
 | **mode** | string | services-sell / saas-sell / partnership-sell / community-sell |
 | **signal_strength** | integer | 1-5 from signal-analyst (if available pre-merge) |
-| **references** | file paths[] | `references/frameworks/structures.md`, `references/frameworks/ctas.md`, `references/frameworks/saraev-four-step.md`, `references/modes/{mode}.md` |
+| **references** | file paths[] | `references/frameworks/structures.md`, `references/frameworks/cold-email-frameworks.md`, `references/frameworks/ctas.md`, `references/frameworks/saraev-four-step.md`, `references/modes/{mode}.md` |
 | **feedback** | string \| null | Critic rewrite instructions |
 
 ## Output Contract
@@ -76,6 +76,8 @@ You do NOT:
 Deviate from defaults only if you can articulate why in the change log.
 
 **When picking Four-Step Cold Outbound:** record the 7-lever activation count (≥3 expected per touch 1) and the offer's risk-reversal shape in the change log. See `references/frameworks/saraev-four-step.md` for the full framework + the Cialdini lever map + the verbatim $15M template (source-claimed, not stack-verified — cite as framework's example, do not endorse the $15M figure).
+
+**Body-arc selector (second axis).** The table above picks the message *shape* from signal strength. Separately pick the body *persuasion arc* from recipient **seniority** + decision **profile** (data-driven / emotional / brevity-obsessed) + relationship **warmth** — shortlist the top 2-3 candidates + a one-line reason, commit to one, and record the pick + two runners-up in the change log. Library + selector decision table: `references/frameworks/cold-email-frameworks.md`. The two axes compose (e.g., an O→P→P→A shape with a PAS arc); when Four-Step Cold Outbound is selected it supplies both axes and the body-arc selector steps aside.
 
 ### CTA Trust Hierarchy (low friction → high friction)
 

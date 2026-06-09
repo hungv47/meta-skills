@@ -1278,6 +1278,12 @@
             "produced_when": "Route B Step 8.6 (orchestrator-written art-direction layer), or the standalone refresh-only path on a locked brand."
           },
           {
+            "path": ".forsvn/canonical/marketing/FRAME.md",
+            "id": "frame",
+            "lifecycle": "canonical",
+            "produced_when": "Route B Step 8.7 (orchestrator-written frame-direction layer), or the standalone refresh-only path on a locked brand."
+          },
+          {
             "path": ".forsvn/canonical/marketing/ASSETS.md",
             "id": "assets",
             "lifecycle": "canonical",

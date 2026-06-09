@@ -245,6 +245,26 @@ Sections, in order:
 
 **Refresh-only path (additive on a locked brand).** CREATIVE-DIRECTION.md may be (re)written standalone — without re-running Layer 1/2 or touching DESIGN.md — so a locked brand can gain or refresh its art direction without regenerating tokens. On the refresh path the agent reads BRAND.md + DESIGN.md (+ any `inspiration/` frames), writes/overwrites CREATIVE-DIRECTION.md in place, bumps its integer `version:`, and leaves all other canonical files byte-unchanged.
 
+## FRAME.md structure (frame-direction layer, Route B; refreshable standalone)
+
+DESIGN.md translated **for the camera** — *how the brand's atoms behave inside a moving frame*. Read after DESIGN.md, before any video, motion piece, or full-frame social asset. **Additive and token-referencing:** it specifies frame behavior (safe area, type-at-distance, on-screen pacing, bumper layout) for DESIGN.md atoms; it never redefines a hex, font, or motion value. When a value appears here it is quoted from DESIGN.md (or CREATIVE-DIRECTION.md for scene meaning). **Atoms sacred; composition free; numbers from the script.** Full spec + section depth: [`frame-direction.md`](frame-direction.md).
+
+Register split (never mix): **DESIGN.md** = exact atom values (spec) · **CREATIVE-DIRECTION.md** = how the world looks and feels (art direction) · **FRAME.md** = how those atoms behave in a moving frame (frame direction).
+
+Sections, in order:
+
+1. **At a glance** — blockquote: shipped delivery surfaces, the primary one, the one frame rule that matters most. One line.
+2. **Delivery surfaces & aspect-ratio grammar** — table per shipped aspect ratio (9:16 · 1:1 · 16:9, only those shipped): ratio · where it runs · title-safe zone · action-safe zone · platform chrome to avoid. Safe areas as % insets, not pixels.
+3. **Type-at-distance** — how the DESIGN.md §3 type scale maps to on-screen legibility (% of frame height per role × viewing distance), NOT web breakpoints. Font/weight quoted from DESIGN.md §3; only the sizing rule is new.
+4. **Motion & pacing** — references CREATIVE-DIRECTION.md §9 + the DESIGN.md §9 duration/easing scale; introduces no new durations. Adds shot/scene minimum hold time, allowed transition family, per-surface pacing feel.
+5. **Surface cues / bumper grammar** — intro/outro bumpers, lower-thirds, logo field; references CREATIVE-DIRECTION.md §13. Layout + timing new; mark/type/color quoted from DESIGN.md.
+6. **Numbers come from the script** — durations + element sizes derive from the shot list / VO timing, bounded by the DESIGN.md motion scale; never hardcoded web values.
+7. **Anti-Patterns** — what betrays the frame direction (atom redefinition, web breakpoints, hardcoded per-shot numbers, undeclared aspect ratios).
+8. **Sources** — what this direction is derived from (DESIGN.md atoms, CREATIVE-DIRECTION.md art direction, shipped exemplars).
+9. **Review Gate** — the standard human-review block (see "Review Gate body block" above).
+
+**Refresh-only path (additive on a locked brand).** FRAME.md may be (re)written standalone — without re-running Layer 1/2 or touching DESIGN.md — so a locked brand can gain or refresh its frame direction without regenerating tokens. On the refresh path the agent reads DESIGN.md + CREATIVE-DIRECTION.md, writes/overwrites FRAME.md in place, bumps its integer `version:`, and leaves all other canonical files byte-unchanged.
+
 ## Anti-drift checks
 
 Three-way platform-set equivalence (critic enforces):

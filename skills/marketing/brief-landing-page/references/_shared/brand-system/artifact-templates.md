@@ -337,6 +337,62 @@ Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 
 ---
 
+## FRAME.md Template
+
+Written to `.forsvn/canonical/marketing/FRAME.md`. The frame-direction layer — *how the brand's atoms behave inside a moving frame* — authored from DESIGN.md + CREATIVE-DIRECTION.md. **Additive and token-referencing: it specifies frame behavior (safe area, type-at-distance, on-screen pacing, bumper layout) for DESIGN.md atoms; it never redefines a hex, font, or motion value.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "FRAME.md structure"; full section depth: [`frame-direction.md`](frame-direction.md). Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
+
+```yaml
+---
+skill: create-brand
+version: [integer — increments on each in-place re-run; starts at 1]
+date: [ISO YYYY-MM-DD]
+status: done | done_with_concerns | blocked | needs_context
+stack: marketing
+review_surface: html
+id: frame
+type: canonical
+keywords: [frame, frame-direction, aspect-ratio, safe-area, type-at-distance, motion-pacing, video]
+summary: "[Brand] frame direction — DESIGN.md atoms translated for the camera"
+purpose: "How brand atoms behave in a moving frame — safe areas, type-at-distance, on-screen pacing, bumper grammar — so video/social briefs compose for the screen, not web defaults"
+use_when: "Briefing or producing a video, motion piece, or full-frame social asset for [Brand]"
+upstream: "design, creative-direction"
+downstream: "produce-video, brief-shortform"
+decision_state: pending
+review_tool: roughdraft
+reviewed_at:
+reviewer:
+---
+```
+
+Body skeleton (each `## [Section]` filled per the structure reference; every named value quoted from DESIGN.md / CREATIVE-DIRECTION.md, never re-authored):
+
+```markdown
+# [Brand] Frame Direction
+
+> **At a glance**
+> - **Delivery surfaces:** [shipped aspect ratios, e.g. 9:16 vertical · 1:1 square]
+> - **Primary surface:** [the one that ships most]
+> - **The one rule:** [the single frame rule that matters most, e.g. "text never enters the bottom 18%"]
+
+## Delivery surfaces & aspect-ratio grammar
+## Type-at-distance
+## Motion & pacing
+## Surface cues / bumper grammar
+## Numbers come from the script
+## Anti-Patterns
+## Sources
+
+## Review Gate
+
+- [ ] Approve
+- [ ] Reject
+- [ ] Suggest changes
+
+Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+```
+
+---
+
 ## DESIGN.md Template
 
 ```markdown

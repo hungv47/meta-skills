@@ -91,6 +91,24 @@ This class is allowed in **strategy** outputs. **Not allowed in measurement** ou
 
 ---
 
+## Stochastic-outcome confidence framing
+
+AI-citation and AI-Overview outcomes are **stochastic**: the same query against the same provider/model returns different cites across turns. Evidence drawn from these surfaces is honest only when it states how many runs back it and how much they agreed. Two confidence registers, attached inline next to the metric:
+
+| Register | When | Inline notation | Confidence |
+|---|---|---|---|
+| **Single-run observation** | n=1. One chat turn, one AI Overview check for one keyword × geo × date. Tagged `single-run` per the class table above. | `(single-run observation)` | Directional only. Never reported as a rate. Re-test before promoting to a claim. |
+| **Multi-run aggregate** | n≥3 runs of the same query × provider/model, with the agreement rate computed across runs. Tagged `observed-test`. | `(n=5 runs, 80% agreement)` | A reproducible rate. Trendable across snapshots when the query × provider/model is stable. |
+
+**Agreement rate** = the share of runs that returned the same binary outcome (cited / not cited) for that cell. `(n=5 runs, 80% agreement)` means 4 of 5 runs cited the subject. Report the agreement rate, not just the count — a 5-run cell at 100% agreement and one at 60% carry very different confidence even though both are `observed-test`.
+
+Rules:
+- A `single-run` cell **must** carry the `(single-run observation)` notation; reporting an n=1 binary as a bare percentage (`cited: 100%`) is a critic FAIL — it implies stable behavior the single run can't support.
+- A multi-run cell **must** carry both `n=` and the agreement rate. `n=5` without an agreement rate hides whether the runs agreed.
+- Promotion is explicit: a cell that was `single-run` in a prior snapshot and now has multi-run backing upgrades to `observed-test` and gains the `(n=, %)` notation — recorded as an `evidence_class_change` in the trend delta (see Tag stability below).
+
+---
+
 ## Tagging discipline at cell vs row vs aggregate
 
 - **Cell:** each table cell that holds a metric or claim carries its tag.

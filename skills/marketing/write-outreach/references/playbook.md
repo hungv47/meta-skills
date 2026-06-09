@@ -93,7 +93,7 @@ Cold outreach is not template-filling. It's writing as a sharp colleague who not
 - [`examples/write-outreach-walkthrough.md`](examples/write-outreach-walkthrough.md) [EXAMPLE] — end-to-end Route A walkthrough (services-sell, email touch 1 to a named target, signal-strength 4, O→P→P→A framework, critic PASS cycle 1 at 44/50, terminal humanmaxxing with `protected_tokens`, post-humanmaxxing regression passes)
 - [`channels/`](channels/) — 5 per-channel craft refs (email, linkedin, twitter, imessage, platform-proposals)
 - [`modes/`](modes/) — 4 per-mode defaults (services, saas, partnership, community)
-- [`frameworks/`](frameworks/) — 5 framework refs (structures, personalization-signals, ctas, objections, saraev-four-step)
+- [`frameworks/`](frameworks/) — framework refs: `structures` (message shape by signal strength), `cold-email-frameworks` (named body arcs + the seniority/profile/warmth selector), `personalization-signals`, `ctas`, `objections`, `saraev-four-step`
 - [`proof-types.md`](proof-types.md) — proof hierarchy (named case study > named logo + metric > specific claim > generic)
 - [`_shared/pre-dispatch-protocol.md`](_shared/pre-dispatch-protocol.md) — canonical Pre-Dispatch spec the procedure inherits from
 - [`_shared/mode-resolver.md`](_shared/mode-resolver.md) — `--fast` behavior (this skill is `budget: deep`; `--fast` collapses Layer 1b parallel to sequential and skips post-humanmaxxing regression, but Critical Gates + Missing-Input Hard Blocks STILL enforced and Cold Start STILL fires when context missing)

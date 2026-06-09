@@ -141,6 +141,7 @@ research_artifact: .forsvn/artifacts/research/research-shortform/[slug].md
 research_trend_signals_date: YYYY-MM-DD
 research_mechanics_date: YYYY-MM-DD
 campaign_tie_in: <slug or null>
+frame_direction: present | absent   # whether brand/FRAME.md grounded the frame composition
 critic_passes: [hook, production, algorithm-fit, brand-fit]
 critic_loop_count: 1 | 2
 polish_chain_applied: vn-tone | humanmaxxing | none
