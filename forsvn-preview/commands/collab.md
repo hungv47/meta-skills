@@ -1,12 +1,12 @@
 ---
-description: Start a Proof collaborative-doc session for a long-form FORSVN artifact — turn-by-turn human↔agent editing where you suggest via forsvn-mcp and the human accepts in the Proof editor. Use for iterative docs (specs, plans, decision records) that need back-and-forth, not one-shot approve/deny (use /forsvn-preview:review for that). The doc-server is long-lived and acceptance is human-owned, so the operator runs forsvn-collab; you present the flow and collaborate via the suggest-only MCP tools.
+description: Start a Proof collaborative-doc session for a long-form FORSVN artifact — turn-by-turn human↔agent editing where you suggest via forsvn-mcp and the human accepts in the Proof editor. Use for iterative docs (specs, plans, decision records) that need back-and-forth, not one-shot approve/deny (use /forsvn:review for that). The doc-server is long-lived and acceptance is human-owned, so the operator runs forsvn-collab; you present the flow and collaborate via the suggest-only MCP tools.
 argument-hint: [artifact-path]   (empty = list collab-eligible artifacts)
 allowed-tools: Bash(bun:*), Read
 ---
 
 # FORSVN — collaborative-doc session (Proof)
 
-This is the **iterative** review surface — distinct from `/forsvn-preview:review`
+This is the **iterative** review surface — distinct from `/forsvn:review`
 (one-shot approve/deny/suggest on a rendered page). Here a long-form Markdown
 artifact opens in the **Proof** editor and you and the human iterate on it
 turn-by-turn: **you suggest** through the `forsvn-mcp` `collab_*` tools, **the
@@ -18,9 +18,9 @@ owns the server and the decision.
 ## Prerequisites (tell the operator if missing)
 
 - **`forsvn-mcp` registered** in this agent so the `collab_*` tools exist (see
-  `.mcp.json.example`, or run `/forsvn-preview:doctor`).
+  `.mcp.json.example`, or run `/forsvn:doctor`).
 - **Proof installed** and `FORSVN_PROOF_DIR` set (one-time —
-  `bun "${CLAUDE_PLUGIN_ROOT}/bin/proof-setup.ts"`, or the collaborative-docs
+  `bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/proof-setup.ts"`, or the collaborative-docs
   runbook). Without it the doc-server refuses to start.
 - **Bun** on PATH (the `forsvn-collab` CLI runs under it).
 
@@ -30,7 +30,7 @@ owns the server and the decision.
    long-form `.forsvn/artifacts/**/*.md` whose frontmatter is still `pending`
    (reuse the review queue):
    ```bash
-   bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-preview.ts" list --json
+   bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" list --json
    ```
    Summarize them and pick (or confirm) one. If `$ARGUMENTS` is a path, use it.
 
@@ -40,7 +40,7 @@ owns the server and the decision.
    forsvn-collab open <project_root>/<artifact.md>
    ```
    (`forsvn-collab` is on PATH when the plugin is enabled; otherwise
-   `bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-collab.ts" open …`.) It imports the doc,
+   `bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-collab.ts" open …`.) It imports the doc,
    writes the `proof_slug` / `collab_state: in_review` binding to frontmatter, and
    opens the editor. Tell them to leave it running.
 

@@ -259,8 +259,9 @@ bun _dev/lint-catalog-coherence.ts --strict
 flags legacy paths); `validate-artifacts --strict` enforces v2 frontmatter
 on every `.forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
 index drifted from disk (both added by skills-refactor Phase 2.5).
-HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) moved
-out to the **forsvn-preview** plugin — skills emit Markdown only.
+HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) live in
+the **forsvn-preview** review module (within the single `forsvn` plugin) — skills
+emit Markdown only.
 `check-skill-links` (dead relative links) and `audit-skill-listing --check`
 (per-skill listing caps) were already in the gate but missing from this list —
 synced 2026-06-05. `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches

@@ -84,7 +84,7 @@ Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensio
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" + `produce-video`'s `video-brief-schema.md` extension for app-preview inputs (WS4 will land that extension)
 
 
-Full template + frontmatter spec + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer rendered by the forsvn-preview plugin. Pipeline default: `decision_state: not_required`.
+Full template + frontmatter spec + per-section format rules + crop-rectangle notation + interaction-verb glossary: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. The `decision_state` / `review_tool` / `reviewed_at` / `reviewer` fields are the human-review layer rendered by the forsvn-preview review module. Pipeline default: `decision_state: not_required`.
 
 ---
 

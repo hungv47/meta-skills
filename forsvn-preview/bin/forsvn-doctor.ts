@@ -7,9 +7,9 @@
 //   bun forsvn-doctor.ts --json     # machine-readable for an agent
 //
 // Layers:
-//   1. Review surface  — Bun + git            → /forsvn-preview:review
+//   1. Review surface  — Bun + git            → /forsvn:review
 //   2. MCP contract    — forsvn-mcp resolvable → the collab_*/read tools
-//   3. Proof collab    — Node 18+ + a valid    → /forsvn-preview:collab
+//   3. Proof collab    — Node 18+ + a valid    → /forsvn:collab
 //                        FORSVN_PROOF_DIR
 
 import { spawnSync } from "node:child_process";

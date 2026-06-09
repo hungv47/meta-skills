@@ -202,4 +202,4 @@ engine `coding-agent` recorded in provenance), references specific §§ the agen
 
 **§9 What NOT To Render** — this artifact is a spec. Visual rendering, component styling,
 responsive breakpoint implementation, and the decision-capture surface belong to the build
-surface and the optional forsvn-preview plugin respectively. The skill emits plain Markdown only.
+surface and the forsvn-preview review module respectively. The skill emits plain Markdown only.

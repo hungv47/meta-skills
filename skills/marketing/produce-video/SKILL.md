@@ -31,7 +31,7 @@ Non-negotiable. Canonical: [`references/_shared/production-pattern.md`](referenc
 
 ## Inputs & Output
 
-Full input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: [`inputs-and-outputs.md`](references/procedures/inputs-and-outputs.md).
+Input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: [`inputs-and-outputs.md`](references/procedures/inputs-and-outputs.md).
 
 - **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md` + **soft-required** `brand/FRAME.md` (frame direction; canonical-path + heading match). Present → compose to it; absent → flag `frame_direction: absent` + fall back to DESIGN + CREATIVE-DIRECTION tokens, never silently. Slot table + degradation: [`video-brief-schema.md`](references/video-brief-schema.md) § Brand frame inputs.
 - **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + on-disk source screenshots. Brand files soft-required (skip when `brand_source: cold-start-hint`).
@@ -39,7 +39,7 @@ Full input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run trigger
 
 ## Quality Gate & Routing
 
-Two routes discriminated by brief `type` at pre-dispatch (graphs + dispatch in [`agent-manifest.md`](references/agent-manifest.md)). Single critic before delivery: **Shortform — 4 gates** (Schema-and-CTA · Brand-mark · Caption-pace · Narrative arc [soft]); **App-preview — 7 gates** (+ Screenshot grounding · Interaction-vocab/mask-transform · Pointer/caption-band, all hard). Hard FAIL → re-dispatch prompt-author (max 2 cycles); Gate 4 FAIL → `DONE_WITH_CONCERNS`. Rubric + failures: [`quality-gate.md`](references/procedures/quality-gate.md).
+Two routes by brief `type` at pre-dispatch (graphs + dispatch in [`agent-manifest.md`](references/agent-manifest.md)). Single critic before delivery: **Shortform — 4 gates** (Schema-and-CTA · Brand-mark · Caption-pace · Narrative arc [soft]); **App-preview — 7 gates** (+ Screenshot grounding · Interaction-vocab/mask-transform · Pointer/caption-band, all hard). Hard FAIL → re-dispatch prompt-author (max 2 cycles); Gate 4 FAIL → `DONE_WITH_CONCERNS`. Rubric + failures: [`quality-gate.md`](references/procedures/quality-gate.md).
 
 ## Artifact Contract
 

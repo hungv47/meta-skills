@@ -20,8 +20,9 @@ loop engine, manifest, or approval ledger. One `roughdraft open` opens exactly
 one `.md` file; its durable state is that file.
 
 **v2 routing note.** When `review_surface: html`, the default capture path is the
-in-page form on the HTML twin — rendered + served by the optional **forsvn-preview**
-plugin: `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>` (the skill emits
+in-page form on the HTML twin — rendered + served by the **forsvn-preview** review
+module of the single `forsvn` plugin (`/forsvn:review`, or directly
+`bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`; the skill emits
 no HTML; see [[reviewable-artifact-contract]] § "Review surface"). Roughdraft
 remains the escape hatch for reviewers who
 prefer inline CriticMarkup — opening the MD directly in Roughdraft and
@@ -52,12 +53,12 @@ can open the review when appropriate.
    `review_surface` value, and the `## Review Gate` body block. It runs
    `bun scripts/manifest-sync.ts` as usual.
 
-2. **HTML preview (when `review_surface: html`) — via the plugin, not the skill.**
-   The skill emits no HTML. If the optional **forsvn-preview** plugin is
-   installed, the operator renders + reviews the themed `.html` twin by running
-   `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>` — the plugin renders
+2. **HTML preview (when `review_surface: html`) — via the review module, not the skill.**
+   The skill emits no HTML. The operator renders + reviews the themed `.html` twin
+   via the forsvn-preview review module (`/forsvn:review`, or directly
+   `bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`) — the module renders
    the preview from the MD and serves a decision-capture surface. The preview
-   carries no content the MD doesn't have. Without the plugin, review the MD in
+   carries no content the MD doesn't have. To skip rendering, review the MD in
    Roughdraft (next step). Skip rendering entirely when `review_surface: md` or
    `none`.
 

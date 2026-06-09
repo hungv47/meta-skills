@@ -1,29 +1,29 @@
 # forsvn-preview
 
-Optional review-surface preview for FORSVN artifacts. **Skills emit plain Markdown** — install this plugin to render a themed HTML preview and capture an approve / deny / suggest decision back into the artifact's frontmatter.
+The review-surface module of the **`forsvn`** plugin. **Skills emit plain Markdown** — this module renders a themed HTML preview and captures an approve / deny / suggest decision back into the artifact's frontmatter, surfaced as `/forsvn:review`. It ships inside `forsvn`; there is no separate `forsvn-preview` plugin to install.
 
 This is the mechanism that used to live inside individual skills (the `renderReviewSurface` instruction + per-skill `forsvn-preview.ts` / `_html` copies). It now lives here, once, so the skill bundle stays lean.
 
 ## Usage
 
-### `/forsvn-preview:review` (agent-drivable entry)
+### `/forsvn:review` (agent-drivable entry)
 
 The fastest path. Once the plugin is installed, an agent or human invokes the
 command — it lists what is awaiting a decision and serves a chosen artifact for
 review:
 
 ```
-/forsvn-preview:review                 # list pending, then serve the top item
-/forsvn-preview:review pending         # just list pending/decided state
-/forsvn-preview:review <artifact.md>   # serve a specific artifact
+/forsvn:review                 # list pending, then serve the top item
+/forsvn:review pending         # just list pending/decided state
+/forsvn:review <artifact.md>   # serve a specific artifact
 ```
 
 The command drives the bundled CLI (below) via `${CLAUDE_PLUGIN_ROOT}`, so it is
-self-contained — no `forsvn-mcp` binary or `forsvn-skills` install required.
+self-contained — no `forsvn-mcp` binary required.
 **Decisions stay human-owned:** the command renders, serves, and reports the
 operator's choice; it never fabricates a decision.
 
-### `/forsvn-preview:collab` (iterative Proof session)
+### `/forsvn:collab` (iterative Proof session)
 
 The **turn-by-turn** surface, distinct from one-shot review: a long-form artifact
 opens in the **Proof** editor and the agent and human iterate on it — the agent
@@ -33,7 +33,7 @@ The operator owns the long-lived doc-server and runs `forsvn-collab open|export`
 accepts. Needs `forsvn-mcp` + the Proof SDK — documented in the app repo's
 `docs/runbooks/collaborative-docs.md` (`forsvn-com/forsvn`).
 
-### `/forsvn-preview:doctor` (install health check)
+### `/forsvn:doctor` (install health check)
 
 Reports which of the three layers — **review surface** (Bun + git), **MCP
 contract** (`forsvn-mcp`), **Proof collab** (forsvn-mcp + Node 18+ + a valid
@@ -70,12 +70,12 @@ Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: rou
 
 | Path | What |
 |---|---|
-| `commands/review.md` | `/forsvn-preview:review` — the agent-drivable entry (list pending + serve one for a human decision) |
-| `commands/collab.md` | `/forsvn-preview:collab` — set up an iterative Proof session (agent suggests, human accepts) |
-| `commands/doctor.md` | `/forsvn-preview:doctor` — per-layer install health check |
+| `commands/review.md` | `/forsvn:review` — the agent-drivable entry (list pending + serve one for a human decision) |
+| `commands/collab.md` | `/forsvn:collab` — set up an iterative Proof session (agent suggests, human accepts) |
+| `commands/doctor.md` | `/forsvn:doctor` — per-layer install health check |
 | `bin/forsvn-preview.ts` | The render + serve + decision-capture CLI (plus the `list` state-report subcommand) |
 | `bin/forsvn-collab` + `bin/forsvn-collab.ts` | Operator CLI for the Proof flow (`open`/`export`); the `forsvn-collab` shim puts it on the Bash PATH when the plugin is enabled |
-| `bin/forsvn-doctor.ts` | Layered health check (`--json` for agents) backing `/forsvn-preview:doctor` |
+| `bin/forsvn-doctor.ts` | Layered health check (`--json` for agents) backing `/forsvn:doctor` |
 | `bin/forsvn-mcp-launch.ts` | Resolves the `forsvn-mcp` binary (PATH → `$CLAUDE_PLUGIN_DATA` cache → checksum-verified release download) and execs it as the stdio MCP server, so an agent needs no Rust toolchain |
 | `bin/proof-setup.ts` | One-time guided setup for the Proof collab tier (clone + install + `FORSVN_PROOF_DIR`) |
 | `bin/lint-html-output.ts` | Lints rendered HTML against the review-surface output contract |
@@ -90,9 +90,13 @@ The **artifact contract** (what frontmatter + `## Review Gate` block to write) s
 
 ## Distribution
 
-Source home is `skills/forsvn-preview/` in the `forsvn-com/forsvn` monorepo. It ships as the **second plugin** alongside `forsvn`, registered in two marketplaces with relative sources (no separate mirror repo):
+Source home is `skills/forsvn-preview/` in the `forsvn-com/forsvn` monorepo. It is a **module within the single `forsvn` plugin**, not a separate install. Its three commands are declared by the `forsvn` plugin manifest (`skills/.claude-plugin/plugin.json` → `commands[]`) and surface under the plugin's own namespace as `/forsvn:review`, `/forsvn:collab`, `/forsvn:doctor`.
 
-- `skills/.claude-plugin/marketplace.json` (`./forsvn-preview`) — published one-way to the public mirror `github.com/hungv47/meta-skills`, the canonical install URL.
-- the monorepo's root `.claude-plugin/marketplace.json` (`./skills/forsvn-preview`) — the direct `forsvn-com/forsvn` install door.
+The module ships wherever `forsvn` ships:
 
-Install with `/plugin install forsvn-preview` after adding either marketplace.
+- `skills/.claude-plugin/marketplace.json` — the single `forsvn` plugin (source `./`), published one-way to the public mirror `github.com/hungv47/meta-skills`, the canonical install URL.
+- the monorepo's root `.claude-plugin/marketplace.json` — the same `forsvn` plugin (source `./skills`), the direct `forsvn-com/forsvn` install door.
+
+Install with `/plugin install forsvn` after adding either marketplace — that one install carries the skills and this review module.
+
+**Rename (post-v1.2.0):** `forsvn-preview` was a standalone plugin through v1.2.0; it was merged into `forsvn` and its commands re-namespaced `/forsvn-preview:*` → `/forsvn:*`. The command prefix is the plugin name, so there is no functional `/forsvn-preview:*` alias.

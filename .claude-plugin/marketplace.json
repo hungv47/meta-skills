@@ -12,22 +12,14 @@
     {
       "name": "forsvn",
       "source": "./",
-      "description": "Composable skills across research, marketing, product, and meta (process). /forsvn is the single front door — describe what you want in plain English and it routes you. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
+      "description": "Composable skills across research, marketing, product, and meta (process), plus a bundled review surface. /forsvn is the single front door — describe what you want in plain English and it routes you. Skills emit plain Markdown; /forsvn:review renders a themed preview and captures your approve / deny / request-changes decision. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
       "category": "skills",
       "tags": [
         "multi-agent", "orchestration", "forsvn", "discover", "debate-agents", "run-eval-loop",
         "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
         "create-brand", "write-copy", "write-ad", "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "brief-graphic", "optimize-seo", "monitor-aeo", "preview-og", "humanmaxxing", "write-outreach", "brief-shortform", "write-social",
-        "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs"
-      ]
-    },
-    {
-      "name": "forsvn-preview",
-      "source": "./forsvn-preview",
-      "description": "The collaborative review surface for FORSVN. Renders any Markdown artifact into a themed, on-brand HTML preview and captures your approve / deny / request-changes decision back into the artifact — the agent drafts, you decide. Install alongside forsvn for the full review UX; skills alone emit plain Markdown. Ships a /forsvn-preview:review command to list pending artifacts and serve one for a human decision.",
-      "category": "tools",
-      "tags": [
-        "forsvn", "forsvn-preview", "review", "artifact", "preview", "decision-capture", "roughdraft", "agent-drivable"
+        "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs",
+        "review", "preview", "decision-capture", "roughdraft"
       ]
     }
   ]

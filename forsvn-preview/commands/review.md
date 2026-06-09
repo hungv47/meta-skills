@@ -14,9 +14,10 @@ suggest in the browser; the CLI writes that choice back into the artifact's
 frontmatter and prints it.
 
 The CLI is bundled with this plugin. Invoke it as
-`bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-preview.ts" …` so it resolves wherever the
-plugin is installed. It is self-contained — it does **not** require the
-`forsvn-mcp` binary or the `forsvn-skills` plugin.
+`bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" …` so it resolves wherever the
+plugin is installed. The CLI ships **inside** the `forsvn` plugin (installing
+that plugin is how you get it), but once installed it is self-contained — it
+does **not** require the `forsvn-mcp` binary or any separate install.
 
 **Prerequisite — Bun.** The CLI runs under [Bun](https://bun.sh) (`curl -fsSL
 https://bun.sh/install | bash`). If `bun` is not on PATH the Bash call fails
@@ -26,7 +27,7 @@ actionable line; set `FORSVN_DEBUG=1` only when you need the full stack.)
 
 **Cross-agent.** `${CLAUDE_PLUGIN_ROOT}` is injected by Claude Code. In Codex or
 Cursor, which don't expand it, substitute the plugin's installed path explicitly:
-`bun "<plugin-dir>/bin/forsvn-preview.ts" …` (the operator can find `<plugin-dir>`
+`bun "<plugin-dir>/forsvn-preview/bin/forsvn-preview.ts" …` (the operator can find `<plugin-dir>`
 from their agent's plugin/skill install location).
 
 The CLI has exactly two forms — **never** invent others. `$ARGUMENTS` selects
@@ -46,7 +47,7 @@ relative `path`. (A path the operator types in `$ARGUMENTS` is used as-is.)
 
 1. **Report state.** Always run, regardless of `$ARGUMENTS`:
    ```bash
-   bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-preview.ts" list --json
+   bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" list --json
    ```
    Parse the JSON: `counts` (`pending`, `decided`, `other`, `total`), `pending[]`,
    `decided[]`. Each entry has
@@ -72,7 +73,7 @@ relative `path`. (A path the operator types in `$ARGUMENTS` is used as-is.)
 4. **Serve + capture.** Run (this blocks until the operator decides, up to 10 min)
    with the absolute path from step 2:
    ```bash
-   bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-preview.ts" <project_root>/<path> --json
+   bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" <project_root>/<path> --json
    ```
    It opens the browser to the local page. The page is bound to `127.0.0.1` and
    CSRF-protected; tell the operator not to run it on a shared host. The final

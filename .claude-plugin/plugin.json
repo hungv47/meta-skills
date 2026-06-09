@@ -67,5 +67,10 @@
     "./skills/product/write-docs/",
     "./skills/product/build-ios-apps/",
     "./skills/product/brief-product-ui/"
+  ],
+  "commands": [
+    "./forsvn-preview/commands/review.md",
+    "./forsvn-preview/commands/collab.md",
+    "./forsvn-preview/commands/doctor.md"
   ]
 }

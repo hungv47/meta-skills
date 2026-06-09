@@ -1,7 +1,7 @@
 {
   "name": "forsvn",
   "version": "1.2.0",
-  "description": "FORSVN turns your coding agent into a full product team — 49 composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds.",
+  "description": "FORSVN turns your coding agent into a full product team — composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds.",
   "author": {
     "name": "hungv47",
     "url": "https://github.com/hungv47"
@@ -24,9 +24,14 @@
     "clean-code"
   ],
   "skills": "./skills/",
+  "commands": [
+    "./forsvn-preview/commands/review.md",
+    "./forsvn-preview/commands/collab.md",
+    "./forsvn-preview/commands/doctor.md"
+  ],
   "interface": {
     "displayName": "FORSVN",
-    "shortDescription": "A full product team of 49 composable skills for your coding agent",
+    "shortDescription": "A full product team of composable skills for your coding agent",
     "longDescription": "FORSVN gives your coding agent a product team: research skills to understand the market and decide what to build, product skills to design and ship it, marketing skills to launch it, and meta skills that route, decompose, and review the work. Start with /forsvn and describe what you want — it reads your project state and dispatches the right skill. Every skill writes artifacts the next one reads, so context compounds instead of resetting.",
     "developerName": "hungv47",
     "category": "Developer Tools",

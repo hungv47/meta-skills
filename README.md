@@ -14,15 +14,14 @@ Pick the path that matches what you want.
 
 ### Claude Code (canonical) — skills + the review surface
 
-Installs **`forsvn`** (the skills) *and* **`forsvn-preview`** (preview any draft as a themed, on-brand page and approve / deny / request changes — the agent drafts, you decide).
+One install. **`forsvn`** carries the skills (the `/forsvn` front door) *and* the bundled review surface — preview any draft as a themed, on-brand page and approve / deny / request changes via `/forsvn:review` (the agent drafts, you decide).
 
 ```
 /plugin marketplace add hungv47/meta-skills
-/plugin install forsvn            # the skills + /forsvn front door
-/plugin install forsvn-preview    # the localhost review surface
+/plugin install forsvn            # skills + /forsvn front door + /forsvn:review|collab|doctor
 ```
 
-**`forsvn-preview` needs [Bun](https://bun.sh)** (`curl -fsSL https://bun.sh/install | bash`) — its review surface is a small localhost CLI. The skills themselves need nothing beyond your agent.
+**The review surface needs [Bun](https://bun.sh)** (`curl -fsSL https://bun.sh/install | bash`) — it's a small localhost CLI driven by `/forsvn:review`. The skills themselves need nothing beyond your agent.
 
 The review surface is one-shot approve/deny/request-changes. The richer **turn-by-turn human↔agent collaborative editing** (Proof-backed) is a separate opt-in tier that additionally needs the `forsvn-mcp` server and the Proof SDK; it is documented in the app repo's collaborative-docs runbook.
 
@@ -45,6 +44,8 @@ npx skills add hungv47/meta-skills --list               # see what's available
 > `npx plugins` / `npx skills` are a **third-party** CLI (the `claude-plugins` registry); they resolve through their own index, not this repo's `marketplace.json`. For Claude Code prefer the built-in `/plugin marketplace add` above. Run `npx skills --help` for the full surface (`list`, `update`, `remove`, `find`). Requires Node 18+.
 
 > **Renamed from `forsvn-skills` → `forsvn` (v1.2.0).** If you installed the old name, remove and reinstall: `npx skills remove forsvn-skills` (or `/plugin marketplace remove` in Claude Code), then install `forsvn` above. The repository URL stays `github.com/hungv47/meta-skills`, so existing links keep working.
+
+> **`forsvn-preview` is now a module inside `forsvn`, not a separate plugin.** Its commands re-namespace under the single plugin: `/forsvn-preview:review` → `/forsvn:review`, `/forsvn-preview:collab` → `/forsvn:collab`, `/forsvn-preview:doctor` → `/forsvn:doctor`. There is no `/forsvn-preview:*` alias — the command prefix is the plugin name. If you previously installed `forsvn-preview` separately, remove it (`/plugin marketplace remove`) and use the bundled commands; one `/plugin install forsvn` now carries both the skills and the review surface.
 
 ## Quick start
 

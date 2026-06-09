@@ -170,8 +170,9 @@ zero translation between path and frontmatter. The legacy `mkt` value is retired
 use `marketing`. `skills_involved` enumerates every contributing skill in a
 multi-skill pipeline; `skill:` (the primary producer) stays as before.
 `review_surface` declares which surface this artifact uses (`html` = HTML preview
-rendered by the forsvn-preview plugin while `decision_state: pending`; `md` =
-Markdown only; `none` = `decision_state: not_required`).
+rendered by the forsvn-preview review module (within the single `forsvn` plugin)
+while `decision_state: pending`; `md` = Markdown only; `none` =
+`decision_state: not_required`).
 
 ## v3 — the by-stack layered home + instruction core (2026-05-28)
 
@@ -216,7 +217,7 @@ registry`. (`lifecycle` stays as the manifest's sort axis; when only one of
 | Tier | Fields | Who reads it |
 |---|---|---|
 | **Instruction core** (greppable, per-type) | `id`, `type`, `stack`, `keywords`, `use_when`, `do_not_use_when` | **agents**, to decide what to load and where to look |
-| **Bookkeeping** (tooling/UI) | `version`, `date`, `status`, `decision_state`, `review_surface`, `reviewed_at`, `reviewer` | manifest, validators, the preview plugin |
+| **Bookkeeping** (tooling/UI) | `version`, `date`, `status`, `decision_state`, `review_surface`, `reviewed_at`, `reviewer` | manifest, validators, the preview module |
 | **Graph** (edges, by `id`) | `upstream`, `downstream`, `supersedes`, `superseded_by`, `references` | UI connections + agent context traversal |
 
 **Frontmatter is the source of truth; the manifest is a derived optimization.**

@@ -104,25 +104,26 @@ The human checks exactly one box. The agent reads the checked box to set
 
 When `review_surface: html`, the **durable artifact is the Markdown file**. The
 skill writes only the `.md`; the HTML preview is rendered on demand by the
-optional **forsvn-preview** plugin:
+**forsvn-preview** review module of the single `forsvn` plugin (surfaced as
+`/forsvn:review`):
 
 ```
 .forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md     ← durable (the skill writes this)
-.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview, rendered by the plugin (while pending)
+.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview, rendered by the review module (while pending)
 ```
 
 The HTML is a **rendering** of the MD frontmatter + body, themed by stack
 (meta=AIR, mkt=WATER, product=FIRE, research=EARTH). Rendering — layout, tokens,
-the themed HTML — is owned by the **forsvn-preview** plugin, not the skill. A
-skill is fully functional without the plugin; the operator reviews the Markdown
-directly (e.g. in Roughdraft).
+the themed HTML — is owned by the **forsvn-preview** review module, not the
+skill. A skill is fully functional emitting Markdown alone; the operator reviews
+the Markdown directly (e.g. in Roughdraft) without invoking the renderer.
 
 **Lifecycle:**
 
 1. Skill writes MD with `decision_state: pending`, `review_surface: html`. That is the skill's entire job — plain Markdown, no HTML.
-2. Operator runs the plugin: `bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<slug>.md`. It renders the HTML twin from the MD (themed by stack), then starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port), injects the token into the page's `#preview-config` block, opens the browser, and blocks. (Roughdraft is the escape hatch — see below.)
+2. Operator runs the review module (`/forsvn:review`, or directly `bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<slug>.md`). It renders the HTML twin from the MD (themed by stack), then starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port), injects the token into the page's `#preview-config` block, opens the browser, and blocks. (Roughdraft is the escape hatch — see below.)
 3. Operator clicks one of approve / deny / suggest changes in the in-page `<form id="decision-capture">`, optionally writes comments, clicks Done. The page POSTs `{token, decision_state, comments?, variant?}` to `/done`.
-4. The plugin validates the CSRF token, rewrites the MD frontmatter
+4. The review module validates the CSRF token, rewrites the MD frontmatter
    (`decision_state`, `reviewed_at`, `reviewer`), appends a `## Reviewer notes`
    block if comments were submitted, moves the `.html` to
    `.forsvn/artifacts/.archive/<original-filename>.html`, runs `manifest-sync`,
@@ -215,9 +216,9 @@ This artifact is review-gated. Write a plain Markdown artifact with review
 frontmatter and the `## Review Gate` block per
 `references/_shared/reviewable-artifact-contract.md`; run the review per
 `references/_shared/roughdraft-review-protocol.md`. When `review_surface: html`,
-the operator previews + records the decision by running the forsvn-preview
-plugin on the `.md` (`bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`);
-the skill itself emits no HTML.
+the operator previews + records the decision via the forsvn-preview review
+module (`/forsvn:review`, or directly `bun forsvn-preview/bin/forsvn-preview.ts
+<artifact.md>`); the skill itself emits no HTML.
 ```
 
 Do not restate the field semantics in the SKILL.md — cite this file.
@@ -264,4 +265,4 @@ the new field name) until they are migrated.
 - [[roughdraft-review-protocol]] — the procedure for opening and processing a review
 - [[artifact-contract-template]] — the full frontmatter schema these fields extend
 - [[manifest-spec]] — how `decision_state` is indexed into `manifest.json`
-- **forsvn-preview plugin** — owns HTML rendering (the themed preview surface, tokens, the `base.html` template). Skills emit Markdown only; the plugin renders it. Lives at top-level `forsvn-preview/` (`references/review-surface-design.md`, `references/review-surface-template.md`).
+- **forsvn-preview review module** — the review module within the single `forsvn` plugin (commands `/forsvn:review`, `/forsvn:collab`, `/forsvn:doctor`); owns HTML rendering (the themed preview surface, tokens, the `base.html` template). Skills emit Markdown only; the module renders it. Lives at `forsvn-preview/` (`references/review-surface-design.md`, `references/review-surface-template.md`).

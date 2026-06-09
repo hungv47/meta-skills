@@ -106,7 +106,7 @@ function main(): number {
   out(``);
   out(`    export FORSVN_PROOF_DIR="${dir}"`);
   out(``);
-  out(`  Then: forsvn-collab open <artifact.md>  (or /forsvn-preview:collab).`);
+  out(`  Then: forsvn-collab open <artifact.md>  (or /forsvn:collab).`);
   return 0;
 }
 

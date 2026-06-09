@@ -1,5 +1,5 @@
 ---
-description: Diagnose the FORSVN install — report which of the three layers (review surface, MCP contract, Proof collab) are live and what's missing, each with a one-line fix. Use when /forsvn-preview:review or :collab isn't working, or to confirm a fresh install is usable, not just installed.
+description: Diagnose the FORSVN install — report which of the three layers (review surface, MCP contract, Proof collab) are live and what's missing, each with a one-line fix. Use when /forsvn:review or :collab isn't working, or to confirm a fresh install is usable, not just installed.
 argument-hint: (none)
 allowed-tools: Bash(bun:*), Read
 ---
@@ -9,7 +9,7 @@ allowed-tools: Bash(bun:*), Read
 Run the layered health check and relay it to the operator:
 
 ```bash
-bun "${CLAUDE_PLUGIN_ROOT}/bin/forsvn-doctor.ts" --json
+bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-doctor.ts" --json
 ```
 
 Parse the JSON: `checks[]` (`name`, `ok`, `detail`, `fix?`) and `tiers`
