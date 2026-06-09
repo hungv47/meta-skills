@@ -262,7 +262,7 @@ additive flat-scalar fields bind the artifact to its Proof working doc:
 | `collab_state` | enum | `drafting` \| `in_review` \| `exported` | Lifecycle of the Proof-backed doc. |
 
 Proof owns only *transient working state*; this `.md` stays canonical and is
-updated on human accept via `forsvn collab export` — written by the plugin's atomic
+updated on human accept via `forsvn-collab export` — written by the plugin's atomic
 byte-fidelity writer on the CLI path and by `forsvn-core` on the desktop path (deferred
 with editor embedding); one trusted writer per path. Agents post *suggestions* via the
 MCP proxy and never write the

@@ -5,14 +5,14 @@
     "url": "https://github.com/hungv47"
   },
   "metadata": {
-    "description": "FORSVN turns your coding agent into a full product team — 49 composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Single install from github.com/hungv47/meta-skills.",
+    "description": "FORSVN turns your coding agent into a full product team — composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Single install from github.com/hungv47/meta-skills.",
     "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "forsvn",
       "source": "./",
-      "description": "All 49 skills across research, marketing, product, and meta (process). /forsvn is the single front door — describe what you want in plain English and it routes you. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
+      "description": "Composable skills across research, marketing, product, and meta (process). /forsvn is the single front door — describe what you want in plain English and it routes you. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
       "category": "skills",
       "tags": [
         "multi-agent", "orchestration", "forsvn", "discover", "debate-agents", "run-eval-loop",

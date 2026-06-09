@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+# forsvn-collab — operator entry point for the Proof collaborative-doc flow.
+# Plugin bin/ dirs are added to the Bash tool PATH when the plugin is enabled,
+# so `forsvn-collab open|export <artifact.md>` works without a raw `bun …` path.
+# Thin shim: forward every arg to the Bun CLI living next to this file.
+exec bun "$(dirname "$0")/forsvn-collab.ts" "$@"

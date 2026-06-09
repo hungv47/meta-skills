@@ -1,8 +1,8 @@
 # FORSVN
 
-![FORSVN](./assets/banners/forsvn-hero.png)
+![FORSVN — turn your coding agent into a full product team](./assets/banners/forsvn-hero-anim.svg)
 
-**Turn your coding agent into a full product team — 49 composable skills across research, marketing, product, and process, from one install.**
+**Turn your coding agent into a full product team — composable skills across research, marketing, product, and process, from one install.**
 
 Call any skill by verb (`/research-icp`, `/write-copy`, `/architect-system`, `/review-work`) or let the front door route for you (`/forsvn`). Skills chain — each one reads what earlier skills left behind, so output compounds the more you use the stack.
 
@@ -12,31 +12,29 @@ Call any skill by verb (`/research-icp`, `/write-copy`, `/architect-system`, `/r
 
 Pick the path that matches what you want.
 
-### Full experience — skills + the collaborative review UX
+### Claude Code (canonical) — skills + the review surface
 
 Installs **`forsvn`** (the skills) *and* **`forsvn-preview`** (preview any draft as a themed, on-brand page and approve / deny / request changes — the agent drafts, you decide).
 
-```bash
-npx plugins add hungv47/meta-skills
-```
-
-Claude Code:
-
 ```
 /plugin marketplace add hungv47/meta-skills
-/plugin install forsvn
-/plugin install forsvn-preview
+/plugin install forsvn            # the skills + /forsvn front door
+/plugin install forsvn-preview    # the localhost review surface
 ```
 
-### Skills only — no preview UI
+**`forsvn-preview` needs [Bun](https://bun.sh)** (`curl -fsSL https://bun.sh/install | bash`) — its review surface is a small localhost CLI. The skills themselves need nothing beyond your agent.
 
-Just the 49 skills, plain Markdown output, no review surface. Works in Cursor, Codex, Windsurf, Gemini CLI, and VS Code.
+The review surface is one-shot approve/deny/request-changes. The richer **turn-by-turn human↔agent collaborative editing** (Proof-backed) is a separate opt-in tier that additionally needs the `forsvn-mcp` server and the Proof SDK; it is documented in the app repo's collaborative-docs runbook.
+
+### Other agents (Cursor, Codex, Windsurf, Gemini CLI, VS Code) — skills
+
+Just the skills, plain Markdown output, no review surface.
 
 ```bash
 npx skills add hungv47/meta-skills
 ```
 
-### Useful flags (both CLIs)
+Useful flags:
 
 ```bash
 npx skills add hungv47/meta-skills -g                   # install globally
@@ -44,7 +42,7 @@ npx skills add hungv47/meta-skills --skill write-copy   # cherry-pick one
 npx skills add hungv47/meta-skills --list               # see what's available
 ```
 
-Run `npx plugins --help` or `npx skills --help` for the full command surface (`list`, `update`, `remove`, `find`). Requires Node 18+.
+> `npx plugins` / `npx skills` are a **third-party** CLI (the `claude-plugins` registry); they resolve through their own index, not this repo's `marketplace.json`. For Claude Code prefer the built-in `/plugin marketplace add` above. Run `npx skills --help` for the full surface (`list`, `update`, `remove`, `find`). Requires Node 18+.
 
 > **Renamed from `forsvn-skills` → `forsvn` (v1.2.0).** If you installed the old name, remove and reinstall: `npx skills remove forsvn-skills` (or `/plugin marketplace remove` in Claude Code), then install `forsvn` above. The repository URL stays `github.com/hungv47/meta-skills`, so existing links keep working.
 
@@ -77,7 +75,7 @@ A few of the things `/forsvn` routes to — type any of these in plain English:
 
 ## What to expect
 
-- **49 skills, 4 domains.** Research (8) · Marketing (25) · Product (8) · Meta (8).
+- **Four domains.** Research · Marketing · Product · Meta.
 - **One install, every editor.** Claude Code plugin or `npx skills add` for Cursor, Codex, Windsurf, Gemini CLI, VS Code.
 - **A single front door.** `/forsvn` reads your project state, asks ≤2 questions if needed, and routes you to the right skill (or resumes a prior initiative).
 - **Context compounds.** Skills write artifacts into the `.forsvn/` data model (canonical truth · working output · experience, each by stack). Every downstream skill reads them automatically — no copy-paste, no re-asking.
@@ -91,7 +89,7 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ![Research](./assets/banners/domain-research.png)
 
-> [`skills/research/`](./skills/research/) · 8 skills
+> [`skills/research/`](./skills/research/)
 
 `research-icp` · `research-market` · `diagnose` · `prioritize` · `plan-funnel` · `research-shortform` · `research-platform` · `evaluate-shortform`
 
@@ -99,7 +97,7 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ![Marketing](./assets/banners/domain-marketing.png)
 
-> [`skills/marketing/`](./skills/marketing/) · 25 skills
+> [`skills/marketing/`](./skills/marketing/)
 
 `create-brand` · `plan-campaign` · `brief-landing-page` · `brief-graphic` · `brief-shortform` · `brief-app-preview` · `write-copy` · `write-ad` · `write-outreach` · `write-social` · `optimize-seo` · `monitor-aeo` · `preview-og` · `humanmaxxing` · `polish-vn` · `produce-asset` · `produce-video` · `publish-social` · `evaluate-ad` · `evaluate-asset` · `evaluate-campaign` · `evaluate-content` · `evaluate-landing-page` · `evaluate-outreach` · `evaluate-seo`
 
@@ -107,7 +105,7 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ![Product](./assets/banners/domain-product.png)
 
-> [`skills/product/`](./skills/product/) · 8 skills
+> [`skills/product/`](./skills/product/)
 
 `map-user-flow` · `architect-system` · `clean-code` · `clean-machine` · `write-docs` · `build-ios-apps` · `extract-service`
 
@@ -115,7 +113,7 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 ![Meta](./assets/banners/domain-meta.png)
 
-> [`skills/meta/`](./skills/meta/) · 8 skills
+> [`skills/meta/`](./skills/meta/)
 
 `forsvn` (front door) · `discover` · `debate-agents` · `run-eval-loop` · `breakdown-tasks` · `review-work` · `clean-artifacts`
 
@@ -131,14 +129,14 @@ Plus `index/` (the manifest API + human index), `context/`, `routing/`. Every ar
 
 ## Tips
 
-- **Run `/research-icp` first when starting any marketing work.** It writes `research/product-context.md` — the foundation 13+ downstream skills read. Skip it and they all re-ask you for audience details.
+- **Run `/research-icp` first when starting any marketing work.** It writes `research/product-context.md` — the foundation downstream skills read. Skip it and they all re-ask you for audience details.
 - **Answer Pre-Dispatch questions in one reply.** Skills bundle 3–7 context questions per dispatch so they can run parallel sub-agents. Answer all at once to save a re-prompt round.
 - **Run `/review-work` before shipping.** Auto-triggers on security and data-mutation work. Run it manually on copy, briefs, and architecture docs.
 - **Install globally for the meta layer.** `/forsvn`, `/discover`, `/run-eval-loop`, `/debate-agents`, `/breakdown-tasks`, `/review-work` are useful in every project — `npx skills add hungv47/meta-skills -g`.
 
 ## Performance & invocation reliability
 
-Claude Code reserves a **skill-listing budget** — by default `skillListingBudgetFraction: 0.01` (1% of the context window) for all installed skills' descriptions. This 48-skill stack alone is ≈ 2.7% of a 200k-token context, and most users run it alongside other plugins. On overflow, the least-used skills' **descriptions collapse to name-only**, which degrades *auto-selection* (Claude picking a skill without being asked).
+Claude Code reserves a **skill-listing budget** — by default `skillListingBudgetFraction: 0.01` (1% of the context window) for all installed skills' descriptions. The full stack alone is ≈ 2.7% of a 200k-token context, and most users run it alongside other plugins. On overflow, the least-used skills' **descriptions collapse to name-only**, which degrades *auto-selection* (Claude picking a skill without being asked).
 
 - **Explicit invocation always works.** Skill *names* are never dropped — `/<skill-name>` or `Skill(forsvn:<name>)` resolves even under a full budget. Only description-driven auto-selection degrades.
 - **Power-user config** (`settings.json`) to keep auto-selection sharp with the full stack:
@@ -158,7 +156,7 @@ A `UserPromptSubmit` hook (`hooks/user-prompt-submit-skill-router.mjs`, suggesti
 To run skills live from a working copy (Claude Code v2.1.157+) without the published marketplace cache going stale, symlink the repo's `skills/` into your project's `.claude/skills/` so edits load immediately:
 
 ```bash
-ln -s "$(pwd)/skills/skills" .claude/skills   # auto-loads the 49 skills; no /plugin install
+ln -s "$(pwd)/skills/skills" .claude/skills   # auto-loads the skills; no /plugin install
 ```
 
 This loads the **skills** live for fast iteration on skill content. It does **not** load the plugin's auto-discovered `hooks/` (e.g. the suggestion router) — those load only when Claude Code discovers the plugin root (`.claude-plugin/plugin.json` + sibling `hooks/`). To dogfood hook changes, install the plugin from the local repo as a marketplace (`/plugin marketplace add <path-to>/skills` → `/plugin install forsvn`) and reload, or use the published marketplace path below.
@@ -168,6 +166,12 @@ Keep the marketplace install (`/plugin install forsvn`) as the path for end user
 ## Inside Codex
 
 FORSVN ships a `.codex-plugin/` manifest, so inside Codex it renders a full card — logo, brand color, an attractive description, and clickable **preview prompts** that drop you straight into a use case. Same skills, native-feeling surface.
+
+## About
+
+FORSVN turns your coding agent into a full product team. Composable skills span research, marketing, product, and process — each reads what earlier skills left behind, so output compounds the more you use the stack. One install works across Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and VS Code.
+
+This repo is the public mirror; the source of truth lives in [`forsvn-com/forsvn`](https://github.com/forsvn-com/forsvn).
 
 ## Changelog & license
 

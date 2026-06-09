@@ -18,6 +18,17 @@ The CLI is bundled with this plugin. Invoke it as
 plugin is installed. It is self-contained — it does **not** require the
 `forsvn-mcp` binary or the `forsvn-skills` plugin.
 
+**Prerequisite — Bun.** The CLI runs under [Bun](https://bun.sh) (`curl -fsSL
+https://bun.sh/install | bash`). If `bun` is not on PATH the Bash call fails
+before the CLI can report anything — if you hit a "command not found", tell the
+operator to install Bun, don't retry. (Errors *from* the CLI are already a single
+actionable line; set `FORSVN_DEBUG=1` only when you need the full stack.)
+
+**Cross-agent.** `${CLAUDE_PLUGIN_ROOT}` is injected by Claude Code. In Codex or
+Cursor, which don't expand it, substitute the plugin's installed path explicitly:
+`bun "<plugin-dir>/bin/forsvn-preview.ts" …` (the operator can find `<plugin-dir>`
+from their agent's plugin/skill install location).
+
 The CLI has exactly two forms — **never** invent others. `$ARGUMENTS` selects
 between them but is **not** passed verbatim:
 - `list …` — report state (always run first).

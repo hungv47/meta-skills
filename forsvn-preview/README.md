@@ -23,6 +23,24 @@ self-contained — no `forsvn-mcp` binary or `forsvn-skills` install required.
 **Decisions stay human-owned:** the command renders, serves, and reports the
 operator's choice; it never fabricates a decision.
 
+### `/forsvn-preview:collab` (iterative Proof session)
+
+The **turn-by-turn** surface, distinct from one-shot review: a long-form artifact
+opens in the **Proof** editor and the agent and human iterate on it — the agent
+suggests via the `forsvn-mcp` `collab_*` tools, the human accepts in the editor.
+The operator owns the long-lived doc-server and runs `forsvn-collab open|export`
+(on PATH when the plugin is enabled); the agent never runs the CLI and never
+accepts. Needs `forsvn-mcp` + the Proof SDK — documented in the app repo's
+`docs/runbooks/collaborative-docs.md` (`forsvn-com/forsvn`).
+
+### `/forsvn-preview:doctor` (install health check)
+
+Reports which of the three layers — **review surface** (Bun + git), **MCP
+contract** (`forsvn-mcp`), **Proof collab** (forsvn-mcp + Node 18+ + a valid
+`FORSVN_PROOF_DIR`) — are live, each failing check with a one-line fix. Read-only:
+it diagnoses, never installs. Run it when `:review`/`:collab` misbehave or to
+confirm a fresh install is usable, not just installed.
+
 ### CLI
 
 ```bash
@@ -53,7 +71,13 @@ Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: rou
 | Path | What |
 |---|---|
 | `commands/review.md` | `/forsvn-preview:review` — the agent-drivable entry (list pending + serve one for a human decision) |
+| `commands/collab.md` | `/forsvn-preview:collab` — set up an iterative Proof session (agent suggests, human accepts) |
+| `commands/doctor.md` | `/forsvn-preview:doctor` — per-layer install health check |
 | `bin/forsvn-preview.ts` | The render + serve + decision-capture CLI (plus the `list` state-report subcommand) |
+| `bin/forsvn-collab` + `bin/forsvn-collab.ts` | Operator CLI for the Proof flow (`open`/`export`); the `forsvn-collab` shim puts it on the Bash PATH when the plugin is enabled |
+| `bin/forsvn-doctor.ts` | Layered health check (`--json` for agents) backing `/forsvn-preview:doctor` |
+| `bin/forsvn-mcp-launch.ts` | Resolves the `forsvn-mcp` binary (PATH → `$CLAUDE_PLUGIN_DATA` cache → checksum-verified release download) and execs it as the stdio MCP server, so an agent needs no Rust toolchain |
+| `bin/proof-setup.ts` | One-time guided setup for the Proof collab tier (clone + install + `FORSVN_PROOF_DIR`) |
 | `bin/lint-html-output.ts` | Lints rendered HTML against the review-surface output contract |
 | `lib/render.ts` | `renderArtifactToHtml()` — Markdown → themed HTML (the real `renderReviewSurface`) |
 | `assets/_html/` | `base.html`, `tokens.css`, `chrome.css`, `chrome.js`, per-stack `exemplars/` |
@@ -64,6 +88,11 @@ Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: rou
 
 The **artifact contract** (what frontmatter + `## Review Gate` block to write) stays skill-side in `meta-skills/references/reviewable-artifact-contract.md`. Only **rendering + capture** live here. A skill is fully functional without this plugin; it just emits Markdown and the operator reviews it however they like (e.g. Roughdraft).
 
-## Distribution (open)
+## Distribution
 
-Source home is this top-level `forsvn-preview/` dir in the `forsvn-com/forsvn` repo. How it reaches users via the marketplace is an open operator decision — either its own published mirror repo (referenced by a `github:` source) or bundled into the `meta-skills` publish. The `marketplace.json` entry currently uses a relative `./forsvn-preview` source as a placeholder.
+Source home is `skills/forsvn-preview/` in the `forsvn-com/forsvn` monorepo. It ships as the **second plugin** alongside `forsvn`, registered in two marketplaces with relative sources (no separate mirror repo):
+
+- `skills/.claude-plugin/marketplace.json` (`./forsvn-preview`) — published one-way to the public mirror `github.com/hungv47/meta-skills`, the canonical install URL.
+- the monorepo's root `.claude-plugin/marketplace.json` (`./skills/forsvn-preview`) — the direct `forsvn-com/forsvn` install door.
+
+Install with `/plugin install forsvn-preview` after adding either marketplace.

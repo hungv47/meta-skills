@@ -772,7 +772,13 @@ function err(msg: string): void { console.error(`[forsvn-preview] ${msg}`); }
 
 if (import.meta.main) {
   main().then((code) => { process.exit(code); }).catch((e) => {
-    err(`unexpected: ${e instanceof Error ? e.stack ?? e.message : String(e)}`);
+    // One actionable line by default; full stack only under FORSVN_DEBUG. A raw
+    // trace on an installed user's terminal reads as "the plugin is broken"
+    // rather than "something went wrong rendering/serving this one artifact".
+    const msg = e instanceof Error ? e.message : String(e);
+    err(`could not preview this artifact: ${msg}`);
+    err(`(re-run with FORSVN_DEBUG=1 for the full stack)`);
+    if (process.env.FORSVN_DEBUG && e instanceof Error && e.stack) console.error(e.stack);
     process.exit(2);
   });
 }
