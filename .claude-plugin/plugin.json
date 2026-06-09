@@ -1,5 +1,6 @@
 {
   "name": "forsvn",
+  "displayName": "FORSVN",
   "description": "FORSVN turns your coding agent into a full product team — 49 composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request to the right workflow; every skill writes artifacts the next one reads, so your context compounds the more you work. Critic-gated pipelines with quantitative rubrics and anti-sycophancy checks. Distributed from github.com/hungv47/meta-skills (formerly the forsvn-skills plugin).",
   "version": "1.2.0",
   "author": { "name": "hungv47" },

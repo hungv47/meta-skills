@@ -24,11 +24,6 @@
     "clean-code"
   ],
   "skills": "./skills/",
-  "commands": [
-    "./forsvn-preview/commands/review.md",
-    "./forsvn-preview/commands/collab.md",
-    "./forsvn-preview/commands/doctor.md"
-  ],
   "interface": {
     "displayName": "FORSVN",
     "shortDescription": "A full product team of composable skills for your coding agent",

@@ -11,9 +11,10 @@
   "plugins": [
     {
       "name": "forsvn",
+      "displayName": "FORSVN",
       "source": "./",
+      "category": "development",
       "description": "Composable skills across research, marketing, product, and meta (process), plus a bundled review surface. /forsvn is the single front door — describe what you want in plain English and it routes you. Skills emit plain Markdown; /forsvn:review renders a themed preview and captures your approve / deny / request-changes decision. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
-      "category": "skills",
       "tags": [
         "multi-agent", "orchestration", "forsvn", "discover", "debate-agents", "run-eval-loop",
         "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
