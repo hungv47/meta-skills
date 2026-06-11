@@ -27,6 +27,14 @@
 <html lang="en" data-stack="{{stack}}">
 <head>
   <meta charset="utf-8">
+  <!-- Images are local-only: an external img src would load on open — a beacon
+       channel — so only local images render; http(s) sources are blocked. Belt
+       for the renderer's safeSrc local-only rule. `file:` keeps relative images
+       working when the HTML twin is opened directly via file:// (opaque origin,
+       so 'self' matches nothing there) and is inert on the served path (http
+       pages can't load file: subresources). Deliberately scoped to img-src so
+       the hosted font links below keep working. -->
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: file:">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{title}} · {{skill}} · {{date}}</title>
 
@@ -63,9 +71,9 @@
   <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
     <fieldset class="decision-radio">
       <legend>Decision</legend>
-      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
-      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
-      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
+      <label><input type="radio" name="decision" value="approved" aria-keyshortcuts="Alt+A"><span>Approve</span></label>
+      <label><input type="radio" name="decision" value="denied" aria-keyshortcuts="Alt+D"><span>Deny</span></label>
+      <label><input type="radio" name="decision" value="suggested" aria-keyshortcuts="Alt+S"><span>Suggest changes</span></label>
     </fieldset>
     <label class="decision-comments">
       <span>Comments (optional)</span>

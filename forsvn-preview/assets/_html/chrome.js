@@ -17,15 +17,19 @@
         if (!src) return;
         var text = src.textContent || "";
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(function () { flash(btn, "copied"); });
+          navigator.clipboard.writeText(text).then(
+            function () { flash(btn, "copied"); },
+            function () { flash(btn, "copy failed"); }
+          );
         } else {
           var ta = document.createElement("textarea");
           ta.value = text;
           document.body.appendChild(ta);
           ta.select();
-          try { document.execCommand("copy"); } catch (_) {}
+          var ok = false;
+          try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
           document.body.removeChild(ta);
-          flash(btn, "copied");
+          flash(btn, ok ? "copied" : "copy failed"); // fail loudly, not silently
         }
       });
     });
@@ -144,6 +148,13 @@
             pill.textContent = payload.decision_state;
           }
           form.setAttribute("data-active", "false");
+          // Focus return: the form just collapsed (display:none), so a
+          // keyboard user's focus would be orphaned on the hidden Done button.
+          // Move it to the decision pill, which now reflects the new state.
+          if (pill) {
+            pill.setAttribute("tabindex", "-1");
+            pill.focus();
+          }
         } else {
           resp.text().then(function (t) {
             if (status) {
@@ -160,6 +171,35 @@
         }
         if (doneBtn) doneBtn.disabled = false;
       });
+    });
+
+    // Keyboard model: ⌥A approve · ⌥D deny · ⌥S suggest (matched on physical
+    // e.code, since macOS ⌥ remaps e.key to a glyph); ⌘↵ / Ctrl+↵ submits.
+    // ⌥-decisions are suppressed while the comment textarea has focus so typing
+    // a note isn't hijacked. Recorded UX choices: comments stay optional for all
+    // three decisions, and Deny has no confirm modal — an accidental deny in this
+    // single-operator local context is recoverable via git.
+    document.addEventListener("keydown", function (e) {
+      if (form.getAttribute("data-active") !== "true") return;
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        // Same in-flight guard as the pointer path: a disabled Done button
+        // means a POST is underway — don't fire a duplicate submit.
+        if (doneBtn && doneBtn.disabled) return;
+        if (form.requestSubmit) form.requestSubmit();
+        else form.dispatchEvent(new Event("submit", { cancelable: true }));
+        return;
+      }
+      var inTextarea = document.activeElement && document.activeElement.tagName === "TEXTAREA";
+      if (inTextarea) return;
+      if (e.altKey && !e.metaKey && !e.ctrlKey && !e.shiftKey) {
+        var decision = { KeyA: "approved", KeyD: "denied", KeyS: "suggested" }[e.code];
+        if (decision) {
+          e.preventDefault();
+          var radio = form.querySelector('input[name="decision"][value="' + decision + '"]');
+          if (radio) { radio.checked = true; radio.focus(); }
+        }
+      }
     });
   }
 

@@ -14,7 +14,8 @@
 
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join, resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 type Check = { name: string; ok: boolean; detail: string; fix?: string };
 
@@ -36,6 +37,23 @@ function checkGit(): Check {
   return v
     ? { name: "git", ok: true, detail: v }
     : { name: "git", ok: false, detail: "not found", fix: "install git — the review surface refuses to rewrite a dirty tree without it" };
+}
+
+function checkAssets(): Check {
+  // The review surface renders from assets/_html/base.html bundled beside this
+  // CLI. A partial/corrupted install can have Bun + git yet be unable to render,
+  // so the base tier must confirm the HTML assets actually resolve — otherwise
+  // "review surface ✓" overpromises.
+  const here = dirname(fileURLToPath(import.meta.url)); // .../forsvn-preview/bin
+  const dir = resolve(here, "..", "assets", "_html");
+  // The rendered page needs all four bundled assets, not just the template —
+  // a partial install missing chrome.css/js or tokens.css still can't render.
+  const missing = ["base.html", "chrome.css", "chrome.js", "tokens.css"]
+    .map((f) => resolve(dir, f))
+    .filter((p) => !existsSync(p));
+  return missing.length === 0
+    ? { name: "assets", ok: true, detail: dir }
+    : { name: "assets", ok: false, detail: `missing ${missing.join(", ")}`, fix: "reinstall the forsvn plugin — the review-surface HTML assets are incomplete" };
 }
 
 function checkMcp(): Check {
@@ -77,11 +95,11 @@ function checkProof(): Check {
 }
 
 function main(): number {
-  const bun = checkBun(), git = checkGit(), mcp = checkMcp(), node = checkNode(), proof = checkProof();
-  const checks = [bun, git, mcp, node, proof];
+  const bun = checkBun(), git = checkGit(), assets = checkAssets(), mcp = checkMcp(), node = checkNode(), proof = checkProof();
+  const checks = [bun, git, assets, mcp, node, proof];
 
   const tiers = {
-    "review surface": bun.ok && git.ok,
+    "review surface": bun.ok && git.ok && assets.ok,
     "MCP contract": mcp.ok,
     "Proof collab": mcp.ok && node.ok && proof.ok,
   };

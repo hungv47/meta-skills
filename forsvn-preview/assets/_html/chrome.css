@@ -1,6 +1,7 @@
 /* chrome.css — constant chrome regions for the review-surface HTML preview.
-   v2 (2026-05-26): FORSVN brand chrome — Bricolage Grotesque wordmark + signal-lime
-   accent in topbar across all stacks. Typography unified per D14. */
+   v2 (2026-05-26): FORSVN brand chrome — Bricolage Grotesque wordmark + Leaf
+   accent in topbar across all stacks. Typography unified per D14.
+   (Signal Lime is retired — the accent is Leaf #74B36B via --chrome-accent.) */
 
 *, *::before, *::after { box-sizing: border-box; }
 
@@ -38,7 +39,7 @@ body {
   font-size: 12.5px;
 }
 
-/* FORSVN brand mark — wordmark in Bricolage Grotesque ExtraBold + signal-lime */
+/* FORSVN brand mark — wordmark in Bricolage Grotesque ExtraBold + Leaf accent */
 .brand-mark {
   display: inline-flex;
   align-items: baseline;
@@ -345,6 +346,21 @@ body {
 }
 .decision-capture .decision-status[data-tone="error"] { color: var(--pill-pending-fg); }
 .decision-capture .decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
+
+/* ============ FOCUS VISIBLE (a11y) ============
+   Keyboard focus ring = Leaf accent, 2px, 2px offset — via :focus-visible so a
+   pointer click doesn't draw it. The radios use appearance:none and otherwise
+   show no ring at all; this is the keyboard operator's only position cue. */
+.decision-capture input[type="radio"]:focus-visible,
+.decision-capture .decision-done:focus-visible,
+.decision-capture textarea:focus-visible,
+.left-controls button:focus-visible,
+.left-controls .picker-item:focus-visible,
+.footer-action:focus-visible,
+.decision-pill:focus-visible {
+  outline: 2px solid var(--chrome-accent);
+  outline-offset: 2px;
+}
 
 /* ============ RESPONSIVE FALLBACK ============ */
 @media (max-width: 800px) {

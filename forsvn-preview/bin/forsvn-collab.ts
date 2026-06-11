@@ -28,6 +28,25 @@ function openBrowser(url: string): void {
   try { spawn(cmd, [url], { stdio: "ignore", detached: true }).unref(); } catch { /* headless; URL is printed anyway */ }
 }
 
+function reportExport(out: { path: string; decision: string; bodyChanged: boolean }, unreviewedOk: boolean): void {
+  console.log(`  exported → ${out.path}  (decision_state: ${out.decision})`);
+  if (!out.bodyChanged) return;
+  if (unreviewedOk) {
+    console.log("  note: canonical body changed; --unreviewed-ok set (you confirmed you reviewed in Proof).");
+    return;
+  }
+  // Export-time detection (U6): the body's content changed vs. what `open` imported
+  // (Proof's benign first-export reformat is normalized out, so this is a real edit).
+  // Usually it's your own edits — but the loopback doc-server runs AUTH_MODE=none, so
+  // a suggestion *could* have been accepted out-of-channel (bypassing the suggest-only
+  // MCP proxy). Surfacing this is the procedural backstop for that residual risk;
+  // --unreviewed-ok silences it once you've reviewed.
+  console.log("  ⚠ done_with_concerns: the canonical body's content changed.");
+  console.log("    Common cause: your own edits in the Proof editor. But if you did NOT make");
+  console.log("    these changes, a suggestion may have been accepted out-of-channel — review now.");
+  console.log("    Check the git diff before committing; pass --unreviewed-ok to silence this.");
+}
+
 async function cmdOpen(artifactPath: string): Promise<void> {
   const base = arg("--base");
   const projectRoot = findProjectRoot(artifactPath);
@@ -82,7 +101,7 @@ async function cmdOpen(artifactPath: string): Promise<void> {
       return;
     }
     const out = await exportArtifact(client, artifactPath, { decision });
-    console.log(`  exported → ${out.path}  (decision_state: ${out.decision})`);
+    reportExport(out, has("--unreviewed-ok"));
   } finally {
     if (handle) await handle.stop();
   }
@@ -92,7 +111,7 @@ async function main(): Promise<void> {
   const sub = process.argv[2];
   const artifactPath = process.argv[3] && !process.argv[3].startsWith("--") ? resolve(process.argv[3]) : undefined;
   if (!sub || !artifactPath || sub === "--help" || sub === "-h") {
-    console.log("usage: forsvn-collab <open|export> <artifact.md> [--base URL] [--decision approved|denied|suggested] [--no-open] [--keep-open]");
+    console.log("usage: forsvn-collab <open|export> <artifact.md> [--base URL] [--decision approved|denied|suggested] [--no-open] [--keep-open] [--unreviewed-ok]");
     process.exit(artifactPath ? 0 : 1);
   }
   if (sub === "open") return cmdOpen(artifactPath);
@@ -104,7 +123,7 @@ async function main(): Promise<void> {
     const baseUrl = base ? base.replace(/\/$/, "") : handle!.baseUrl;
     try {
       const out = await exportArtifact(new ProofClient(baseUrl), artifactPath, { decision: arg("--decision", "approved") as string });
-      console.log(`  exported → ${out.path}  (decision_state: ${out.decision})`);
+      reportExport(out, has("--unreviewed-ok"));
     } finally {
       if (handle) await handle.stop();
     }

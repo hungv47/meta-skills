@@ -56,7 +56,10 @@ owns the server and the decision.
    ```
    (or they press Enter in the `open` terminal). Export is structure-preserving,
    not byte-identical once collaborated on (it reflows tables — expected); the
-   open→export hash guard refuses if the on-disk file changed out of band.
+   open→export hash guard refuses if the on-disk file changed out of band. When the
+   canonical body changed, export prints a `done_with_concerns` warning (review the
+   git diff for any out-of-channel accept) — the operator passes `--unreviewed-ok`
+   to silence it once they've reviewed in the editor.
 
 ## Invariants
 - **Suggest-only.** You propose; the human accepts. The guard is the *absence* of

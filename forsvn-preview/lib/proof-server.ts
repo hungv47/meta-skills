@@ -135,8 +135,11 @@ export async function startProofServer(opts: ProofServerOptions): Promise<ProofS
     // approve the artifact: canonical decision_state is written only by the
     // operator-run `forsvn collab export`, and the operator reviews the editor
     // before exporting. Residual risk = un-reviewed body reaching canonical if the
-    // operator exports without looking. Hardening follow-up (deferred, out of the
-    // accepted threat model): an owner-scoped accept token the proxy never holds.
+    // operator exports without looking. Backstop (U6, landed): export now DETECTS a
+    // changed body and warns done_with_concerns (suppressible only via the explicit
+    // --unreviewed-ok flag), so an out-of-channel accept can't land silently. Deeper
+    // option still deferred: an owner-scoped accept token the proxy never holds,
+    // which would make the boundary technical rather than procedural.
     PROOF_SHARE_MARKDOWN_AUTH_MODE: opts.authMode ?? "none",
     PROOF_LEGACY_CREATE_MODE: "allow",
     // Proof ships projection repair OFF, which leaves docs containing GFM tables

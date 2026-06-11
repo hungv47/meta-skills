@@ -63,14 +63,42 @@ function safeHref(href: string): string {
   return h.replace(/"/g, "&quot;");
 }
 
+// Control-char-strip (as safeHref), then LOCAL-ONLY for image `src`: any
+// scheme (http(s) included) or protocol-relative src is neutered to "#".
+// Unlike links — which navigate only on a deliberate click — an <img> src
+// loads the moment the review opens, so an external src is a beacon channel
+// ("artifact X reviewed, from this IP, now") and v0 is local-first/no-telemetry.
+// Artifact images are relative repo paths. base.html's CSP (img-src 'self'
+// data:) is the document-level belt for the same rule.
+function safeSrc(src: string): string {
+  const s = src.trim().replace(/[\x00-\x20]/g, "");
+  // [/\\]{2}: browsers parse backslashes as forward slashes in special URL
+  // schemes, so \\host\p and /\host/p are protocol-relative too — reject any
+  // two leading slash-or-backslash chars, not just "//".
+  if (/^(?:[a-z][a-z0-9+.-]*:|[/\\]{2})/i.test(s)) return "#";
+  return s.replace(/"/g, "&quot;");
+}
+
 function inline(s: string): string {
   // order matters: escape first, then re-introduce safe inline markup
-  let t = esc(s);
-  t = t.replace(/`([^`]+)`/g, (_m, c) => `<code>${c}</code>`);
+  let t = esc(s).replace(/\u0000/g, "");
+  // Protect code spans behind NUL-delimited placeholder tokens (NULs are
+  // stripped from the input above, so a token can't collide with content) so
+  // the bold/em/image/link rules never rewrite literal markup inside <code> —
+  // `![x](y)` in a code span stays literal text instead of a live <img>.
+  const spans: string[] = [];
+  t = t.replace(/`([^`]+)`/g, (_m, c) => {
+    spans.push(`<code>${c}</code>`);
+    return `\u0000${spans.length - 1}\u0000`;
+  });
   t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   t = t.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  // images BEFORE links: `![alt](src)` contains a `[..](..)` the link rule
+  // would otherwise half-match, leaving a stray `!`. alt is already escaped by
+  // the leading esc(); src goes through safeSrc.
+  t = t.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_m, alt, src) => `<img src="${safeSrc(src)}" alt="${alt}">`);
   t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, txt, href) => `<a href="${safeHref(href)}">${txt}</a>`);
-  return t;
+  return t.replace(/\u0000(\d+)\u0000/g, (_m, i) => spans[Number(i)]);
 }
 
 // Compact block-level Markdown → HTML.
@@ -108,11 +136,16 @@ export function markdownToHtml(md: string): string {
       continue;
     }
 
-    // blockquote
-    if (/^>\s?/.test(line)) {
+    // blockquote (multi-paragraph: a bare `>` line separates paragraphs)
+    if (/^>/.test(line)) {
       const buf: string[] = [];
-      while (i < lines.length && /^>\s?/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ""));
-      out.push(`<blockquote>${inline(buf.join(" "))}</blockquote>`);
+      while (i < lines.length && /^>/.test(lines[i])) buf.push(lines[i++].replace(/^>\s?/, ""));
+      const paras = buf
+        .join("\n")
+        .split(/\n\s*\n/)
+        .map((p) => p.replace(/\n/g, " ").trim())
+        .filter(Boolean);
+      out.push(`<blockquote>${paras.map((p) => `<p>${inline(p)}</p>`).join("")}</blockquote>`);
       continue;
     }
 
@@ -128,22 +161,21 @@ export function markdownToHtml(md: string): string {
       continue;
     }
 
-    // lists (task list, unordered, ordered)
-    if (/^\s*[-*]\s+\[[ xX]\]\s+/.test(line) || /^\s*[-*]\s+/.test(line) || /^\s*\d+\.\s+/.test(line)) {
-      const ordered = /^\s*\d+\.\s+/.test(line);
-      const buf: string[] = [];
-      while (i < lines.length && (/^\s*[-*]\s+/.test(lines[i]) || /^\s*\d+\.\s+/.test(lines[i]))) {
-        const task = lines[i].match(/^\s*[-*]\s+\[([ xX])\]\s+(.*)$/);
-        if (task) {
-          const checked = task[1].toLowerCase() === "x";
-          buf.push(`<li class="task"><input type="checkbox" disabled${checked ? " checked" : ""}> ${inline(task[2])}</li>`);
-        } else {
-          const item = lines[i].replace(/^\s*([-*]|\d+\.)\s+/, "");
-          buf.push(`<li>${inline(item)}</li>`);
-        }
+    // lists (task / unordered / ordered) — indent-aware nesting
+    if (/^\s*(?:[-*]|\d+\.)\s+/.test(line)) {
+      const items: ListItem[] = [];
+      while (i < lines.length && /^\s*(?:[-*]|\d+\.)\s+/.test(lines[i])) {
+        const m = lines[i].match(/^(\s*)([-*]|\d+\.)\s+(.*)$/)!;
+        const indent = m[1].replace(/\t/g, "  ").length;
+        const ordered = /\d+\./.test(m[2]);
+        const task = m[3].match(/^\[([ xX])\]\s+(.*)$/);
+        const html = task
+          ? `<input type="checkbox" disabled${task[1].toLowerCase() === "x" ? " checked" : ""}> ${inline(task[2])}`
+          : inline(m[3]);
+        items.push({ indent, ordered, task: !!task, html });
         i++;
       }
-      out.push(`<${ordered ? "ol" : "ul"}>${buf.join("")}</${ordered ? "ol" : "ul"}>`);
+      out.push(renderList(items));
       continue;
     }
 
@@ -166,6 +198,32 @@ export function markdownToHtml(md: string): string {
 
 function splitRow(line: string): string[] {
   return line.replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+}
+
+type ListItem = { indent: number; ordered: boolean; task: boolean; html: string };
+
+// Build (possibly nested) <ul>/<ol> from flat items using an indent stack.
+// A deeper-indented item nests inside the current <li> (the <li> is left open
+// when we descend); a shallower item closes lists back down to its level.
+// Known limit (frozen-set scope): mixed ordered/unordered markers at the *same*
+// indent inherit the already-open list type rather than switching mid-list.
+function renderList(items: ListItem[]): string {
+  let out = "";
+  const stack: { ordered: boolean; indent: number }[] = [];
+  for (const it of items) {
+    while (stack.length && it.indent < stack[stack.length - 1].indent) {
+      out += `</li></${stack.pop()!.ordered ? "ol" : "ul"}>`;
+    }
+    if (!stack.length || it.indent > stack[stack.length - 1].indent) {
+      out += `<${it.ordered ? "ol" : "ul"}>`;
+      stack.push({ ordered: it.ordered, indent: it.indent });
+    } else {
+      out += "</li>";
+    }
+    out += `<li${it.task ? ' class="task"' : ""}>${it.html}`;
+  }
+  while (stack.length) out += `</li></${stack.pop()!.ordered ? "ol" : "ul"}>`;
+  return out;
 }
 
 export type RenderResult = { html: string; htmlPath: string; element: string };

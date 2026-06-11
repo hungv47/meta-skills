@@ -101,6 +101,52 @@ export function upsertFrontmatter(text: string, fields: Record<string, string>):
   return head + fm + tail;
 }
 
+/**
+ * Strip Proof's benign first-export canonical reformat so a content comparison
+ * fires only on real edits. Reformat-only deltas normalized away: Markdown table
+ * cell padding (`| 1 | 2 |` → `|1|2|`), the separator/alignment row representation
+ * (`|---|` and `| :- |` collapse to the same canonical form), and a single blank
+ * line Proof inserts immediately after the frontmatter close (a leading blank line
+ * of the body). Lines inside fenced code blocks are never normalized — a pipe-shaped
+ * edit in a fenced example is a real content change and must stay visible to
+ * `bodyChanged`. Real content changes survive untouched.
+ *
+ * Known limits (accepted): an edit that ONLY changes column alignment markers
+ * (`:-` ↔ `-:`) normalizes identically and won't flip `bodyChanged`; pipe-shaped
+ * lines in indented (4-space) code blocks are normalized like prose — only
+ * fenced blocks are protected; rows authored WITHOUT the leading pipe aren't
+ * recognized as table rows, so Proof adding leading pipes on reformat raises a
+ * false-positive warning (fails safe: extra warning, never a missed detection);
+ * and a genuinely empty trailing cell normalizes away (`| a | |` ≡ `| a |` — the
+ * GFM optional-trailing-pipe pop swallows it), so adding/removing an empty last
+ * column alone won't flip `bodyChanged`.
+ */
+export function normalizeBody(body: string): string {
+  let fence: { char: string; len: number } | null = null;
+  const lines = body.split("\n").map((line) => {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line);
+    if (m) {
+      if (!fence) fence = { char: m[1][0], len: m[1].length };
+      else if (m[1][0] === fence.char && m[1].length >= fence.len && m[2].trim() === "")
+        fence = null;
+      return line;
+    }
+    if (fence) return line;
+    if (!line.trim().startsWith("|")) return line;
+    // Split into cells; drop the leading/trailing empties only when they come
+    // from the boundary pipes — a GFM-legal row without a trailing pipe
+    // (`| a | b`) keeps its final cell, so an edit there stays visible AND
+    // Proof adding the trailing pipe on reformat normalizes identically.
+    const cells = line.trim().split("|").map((c) => c.trim());
+    if (cells[0] === "") cells.shift();
+    if (cells.length > 0 && cells[cells.length - 1] === "") cells.pop();
+    if (cells.length === 0) return line;
+    const isSeparator = cells.every((c) => /^:?-+:?$/.test(c));
+    return "|" + (isSeparator ? cells.map(() => "-") : cells).join("|") + "|";
+  });
+  return lines.join("\n").replace(/^\n/, "");
+}
+
 /** Cheap non-crypto content hash for our own open→export conflict guard. */
 export function contentHash(text: string): string {
   let h = 0x811c9dc5;
@@ -130,7 +176,9 @@ export interface OpenResult {
 
 /**
  * Import the artifact into Proof (or reuse an existing binding), write the
- * binding back to frontmatter. Returns the editor URL. Does not block.
+ * binding back to frontmatter. Returns the editor URL. On a fresh import this
+ * blocks briefly on `waitReady` until the projection settles, so the caller
+ * doesn't report "ready"/open the editor mid-build (R4 / FINDINGS readiness race).
  */
 export async function openArtifact(client: ProofClient, baseUrl: string, artifactPath: string, opts: { agent?: boolean } = {}): Promise<OpenResult> {
   const path = resolve(artifactPath);
@@ -166,6 +214,11 @@ export async function openArtifact(client: ProofClient, baseUrl: string, artifac
   atomicWrite(path, updated);
   // import-time body hash → working state (the open→export conflict guard).
   writeBaseHash(projectRoot, doc.slug, splitDoc(text).body);
+  // Readiness gate (R4): wait out the post-create PROJECTION_STALE window so the
+  // caller doesn't open the editor before the projection is built. Bounded; on
+  // timeout it proceeds (the agent ops path retries STALE on its own).
+  const ready = await client.waitReady(doc.slug);
+  if (!ready) console.error("[collab] readiness probe did not confirm ready (stale window still open, or probe unavailable) — proceeding; the editor may briefly show a building state");
   // re-index so forsvn-mcp can resolve the new binding for agents immediately.
   runManifestSync(projectRoot);
   return { slug: doc.slug, editorUrl: `${baseUrl}${doc.url ?? `/d/${doc.slug}`}`, created: true, doc };
@@ -176,6 +229,14 @@ const VALID_EXPORT_DECISIONS = new Set(["approved", "denied", "suggested"]);
 export interface ExportResult {
   path: string;
   decision: string;
+  /** True when the written canonical body has a REAL content change vs. the
+   *  current on-disk body (identical to what `open` imported while the
+   *  open→export hash guard is intact; once the guard's working state is
+   *  cleared, an out-of-band disk edit is indistinguishable from a Proof edit).
+   *  Proof's benign first-export reformat (padded tables, blank line after
+   *  frontmatter) is normalized out, so a reformat-only export does not flag.
+   *  Callers surface this as a done_with_concerns cue to review the git diff. */
+  bodyChanged: boolean;
 }
 
 /**
@@ -225,10 +286,14 @@ export async function exportArtifact(
   });
   const newFm = splitDoc(newFrontmatter).frontmatter;
   const merged = newFm + proofBody;
+  // Did the canonical body's content actually change? Normalize out Proof's benign
+  // first-export reformat so this fires only on real edits — not on every export of
+  // a table-containing artifact. Surfaced so the operator knows to review the diff.
+  const bodyChanged = normalizeBody(proofBody) !== normalizeBody(onDiskBody);
   atomicWrite(path, merged);
   // session done; a later re-open recreates the guard hash from the new body.
   clearBaseHash(projectRoot, slug);
   // re-index so MCP get_artifact/list_pending reflect the new decision_state.
   runManifestSync(projectRoot);
-  return { path, decision };
+  return { path, decision, bodyChanged };
 }

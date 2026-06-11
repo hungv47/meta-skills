@@ -69,6 +69,34 @@ export class ProofClient {
     return typeof r.json?.markdown === "string" ? r.json.markdown : r.text;
   }
 
+  /** Operator-facing readiness gate for `open`: poll a non-mutating endpoint
+   *  until the doc's projection-backed surface responds, so `open` doesn't print
+   *  "ready" / launch the editor mid-build (the immediately-after-create
+   *  PROJECTION_STALE window, _spike/FINDINGS.md §Readiness race). The agent ops
+   *  path below retries STALE independently — this is belt + braces for the human.
+   *  Bounded by the deadline, never throws: stale responses — and thrown fetch
+   *  rejections, treated as transiently stale — are retried until the deadline
+   *  (worst case: a flapping loopback polls the full window before proceeding);
+   *  an auth/other response just means we can't probe this way, so we proceed
+   *  rather than block. */
+  async waitReady(slug: string, deadlineMs = 30_000): Promise<boolean> {
+    const deadline = Date.now() + deadlineMs;
+    for (;;) {
+      let stale: boolean;
+      try {
+        const r = await this.req("GET", `/documents/${slug}/events/pending?limit=1`);
+        if (r.status === 200) return true;
+        stale = r.status === 409 || r.json?.code === STALE_CODE;
+      } catch {
+        // A thrown fetch rejection (loopback dropped the connection mid-probe) is
+        // treated like a transient not-ready response so no error escapes.
+        stale = true;
+      }
+      if (!stale || Date.now() >= deadline) return false;
+      await new Promise((res) => setTimeout(res, 300));
+    }
+  }
+
   /** POST /ops with automatic retry on the PROJECTION_STALE window (high variance:
    *  observed 17ms–>10s depending on the repair worker; 30s is a safe ceiling). */
   private async ops(slug: string, op: Record<string, unknown>, bearer?: string, retryStaleMs = 30_000): Promise<any> {

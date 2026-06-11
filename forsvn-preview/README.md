@@ -35,8 +35,8 @@ accepts. Needs `forsvn-mcp` + the Proof SDK — documented in the app repo's
 
 ### `/forsvn:doctor` (install health check)
 
-Reports which of the three layers — **review surface** (Bun + git), **MCP
-contract** (`forsvn-mcp`), **Proof collab** (forsvn-mcp + Node 18+ + a valid
+Reports which of the three layers — **review surface** (Bun + git + the bundled
+HTML assets), **MCP contract** (`forsvn-mcp`), **Proof collab** (forsvn-mcp + Node 18+ + a valid
 `FORSVN_PROOF_DIR`) — are live, each failing check with a one-line fix. Read-only:
 it diagnoses, never installs. Run it when `:review`/`:collab` misbehave or to
 confirm a fresh install is usable, not just installed.
