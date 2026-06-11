@@ -22,6 +22,7 @@
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import { resolveTier, hintLine } from "../forsvn-preview/lib/mono";
 
 const STRICT = process.argv.includes("--strict");
 const ROOT = (() => {
@@ -55,7 +56,7 @@ if (existingLayers.length === 0) {
 }
 
 type Issue = { file: string; problems: string[] };
-type ArtifactRecord = { rel: string; fm: string; id: string | null; problems: string[] };
+type ArtifactRecord = { rel: string; fm: string; id: string | null; problems: string[]; warnings: string[] };
 const EDGE_FIELDS = ["upstream", "downstream", "supersedes", "superseded_by", "references"];
 const records: ArtifactRecord[] = [];
 let checked = 0;
@@ -157,9 +158,10 @@ function validate(abs: string, rel: string): void {
   const txt = readFileSync(abs, "utf-8");
   const m = txt.match(/^---\n([\s\S]*?)\n---/);
   const problems: string[] = [];
+  const warnings: string[] = [];
   if (!m) {
     problems.push("no frontmatter block");
-    records.push({ rel, fm: "", id: null, problems });
+    records.push({ rel, fm: "", id: null, problems, warnings });
     return;
   }
   const fm = m[1];
@@ -204,6 +206,15 @@ function validate(abs: string, rel: string): void {
   if (decision !== null && decision !== "" && !DECISION.has(decision))
     problems.push(`\`decision_state\` invalid: "${decision}" (expected ${[...DECISION].join(" | ")})`);
 
+  // Silent-skip hazard (spec P-09): an artifacts-layer file with NO
+  // decision_state is invisible to the review scanner — it never queues, and
+  // nobody is told. Warn-only by design: experience/ and canonical/ docs
+  // legitimately carry no decision_state, and several live artifacts-layer
+  // records predate the field, so this must never count toward --strict's
+  // exit-1 set. Scoped to .forsvn/artifacts/ only.
+  if ((decision === null || decision === "") && rel.startsWith(".forsvn/artifacts/"))
+    warnings.push("missing `decision_state` — the review scanner will silently skip this artifact; emit `decision_state: pending` to make it reviewable");
+
   // review_tool enum (optional field)
   const reviewTool = field(fm, "review_tool");
   if (reviewTool !== null && reviewTool !== "" && !REVIEW_TOOL.has(reviewTool))
@@ -220,10 +231,24 @@ function validate(abs: string, rel: string): void {
     if (slug === null || slug === "") problems.push("`review_tool: proof` requires a `proof_slug` binding");
   }
 
-  records.push({ rel, fm, id, problems });
+  records.push({ rel, fm, id, problems, warnings });
+}
+
+// Findings render per spec P-09: one finding per line, path-first. Warn-only
+// findings carry the ⚠ glyph and never affect the exit code (tier-resolved
+// against the destination stream; piped consumers get plain ASCII).
+const errTier = resolveTier(process.stderr);
+const warnGlyph = errTier === 2 ? "⚠" : "warn:";
+const warned = records.filter((r) => r.warnings.length > 0);
+
+function printWarnings(): void {
+  for (const r of warned) {
+    for (const w of r.warnings) console.error(`  ${warnGlyph} ${r.rel} ${w}`);
+  }
 }
 
 if (issues.length === 0) {
+  printWarnings();
   console.log(`[validate-artifacts] OK — ${checked} artifact(s) conform to the v3 contract.`);
   process.exit(0);
 }
@@ -231,7 +256,8 @@ if (issues.length === 0) {
 const tag = STRICT ? "FAIL" : "WARN";
 console.error(`[validate-artifacts] ${tag} — ${issues.length}/${checked} artifact(s) non-conforming:`);
 for (const i of issues) {
-  console.error(`  ${i.file}`);
-  for (const p of i.problems) console.error(`    - ${p}`);
+  for (const p of i.problems) console.error(`  ${i.file} ${p}`);
 }
+printWarnings();
+console.error(hintLine("fix frontmatter · not reviewable until valid", errTier));
 process.exit(STRICT ? 1 : 0);

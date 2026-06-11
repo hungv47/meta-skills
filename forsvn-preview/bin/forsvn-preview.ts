@@ -19,9 +19,27 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync, readdirSync } from "node:fs";
 import { join, dirname, basename, resolve, relative, sep, extname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { renderArtifactToHtml } from "../lib/render";
+import {
+  resolveTier,
+  dim,
+  artifactRow,
+  queueHeading,
+  hintLine,
+  resultLine,
+  refusalLine,
+  REFUSAL_EXIT,
+  bannerBlock,
+  DECISION_STATES,
+  type DecisionState,
+  type RefusalVariant,
+  type Tier,
+} from "../lib/mono";
+import { initialState, step, promptIntro } from "../lib/tty-prompt";
+
+const DECISION_ENUM = new Set<string>(DECISION_STATES);
 
 const HOST = "127.0.0.1";
 const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
@@ -51,6 +69,8 @@ type Payload = {
   variant?: string;
 };
 
+type ServeResult = { ok: true; payload: Payload } | { ok: false; reason: "timeout" | "quit" };
+
 // --- Entry --------------------------------------------------------------
 
 async function main(): Promise<number> {
@@ -70,14 +90,20 @@ async function main(): Promise<number> {
 
   const flagJson = args.includes("--json");
   const flagNoOpen = args.includes("--no-open");
+  // Headless review is OPT-IN via the explicit flag — never inferred from
+  // piped stdio or browser-open failure (the e2e suite spawns with piped
+  // stdio and --no-open and must keep hitting the plain serve path).
+  // Auto-detection heuristics are a follow-up.
+  const flagHeadless = args.includes("--headless");
   const positional = args.filter((a) => !a.startsWith("--"));
 
   if (positional.length !== 1) {
-    err(`usage: forsvn-preview <path-to-artifact.md|.html> [--no-open] [--json]`);
+    err(`usage: forsvn-preview <path-to-artifact.md|.html> [--no-open] [--headless] [--json]`);
     err(`       forsvn-preview list [--root <dir>] [--state pending|decided|all] [--json]`);
     err(`       forsvn-preview attach <artifact.md> <file-or-url> [--picked] [--root <dir>] [--json]`);
     return 1;
   }
+  const outTier = resolveTier(process.stdout);
   const input = resolve(positional[0]);
   let mdPath: string;
   let htmlPath: string;
@@ -88,12 +114,12 @@ async function main(): Promise<number> {
     htmlPath = input;
     mdPath = input.replace(/\.html$/, ".md");
   } else {
-    err(`expected an .md or .html file, got ${input}`);
-    return 1;
+    refuse("precondition", `expected an .md or .html file, got ${input}`, "pass the artifact's .md (or its .html twin)");
+    return REFUSAL_EXIT.precondition;
   }
   if (!existsSync(mdPath)) {
-    err(`Markdown artifact not found: ${mdPath}`);
-    return 1;
+    refuse("precondition", `Markdown artifact not found: ${mdPath}`, "check the path, or re-run the emitting skill to regenerate it");
+    return REFUSAL_EXIT.precondition;
   }
 
   const projectRoot = findProjectRoot(htmlPath);
@@ -101,63 +127,137 @@ async function main(): Promise<number> {
   // Refuse if the target .md has uncommitted changes — we're about to rewrite
   // it, so the caller should commit or stash first to keep the diff legible.
   if (gitIsDirty(projectRoot, mdPath)) {
-    err(`target file has uncommitted changes; commit or stash before previewing: ${relative(projectRoot, mdPath)}`);
-    return 1;
+    refuse("precondition", `target file has uncommitted changes: ${relative(projectRoot, mdPath)}`, "commit or stash the artifact before previewing");
+    return REFUSAL_EXIT.precondition;
   }
 
   const mdSource = readFileSync(mdPath, "utf8");
   const fm = parseFrontmatter(mdSource);
   if (!fm) {
-    err(`could not read frontmatter from ${mdPath}`);
-    return 1;
+    refuse("precondition", `could not read frontmatter from ${mdPath}`, "fix the frontmatter block, then re-serve");
+    return REFUSAL_EXIT.precondition;
   }
   if (fm.decision_state !== "pending") {
-    err(`decision_state is ${JSON.stringify(fm.decision_state ?? "<unset>")}, not "pending" — refusing to start.`);
-    return 1;
+    refuse("precondition", `decision_state is ${JSON.stringify(fm.decision_state ?? "<unset>")}, not "pending" — refusing to start`, "already decided — nothing to do; emit a new pending artifact to re-review");
+    return REFUSAL_EXIT.precondition;
+  }
+
+  // The human-owned gate survives headless: the TTY prompt requires a real
+  // interactive stdin. Piped/non-interactive stdin is refused pre-loop —
+  // no fabricated decision, ever (spec node I0).
+  if (flagHeadless && !process.stdin.isTTY) {
+    refuse("non-interactive", "refusing to capture a decision — stdin is not interactive", "re-run --headless from a real TTY, or tunnel the port (ssh -L) and use the browser form");
+    return REFUSAL_EXIT["non-interactive"];
   }
 
   // The plugin owns rendering: (re)generate the HTML twin from the Markdown
   // so the preview always reflects the current artifact. This replaces the
   // old per-skill "hand-build the HTML" step (the renderReviewSurface fiction).
+  console.log(dim("rendering HTML twin…", outTier));
   renderArtifactToHtml(mdPath, BUNDLED_CHROME_DIR, relative(projectRoot, mdPath));
 
   const htmlSource = readFileSync(htmlPath, "utf8");
   const token = randomBytes(TOKEN_BYTES).toString("hex");
+  // Conflict-guard basis: the decision applies to the bytes the human READ.
+  const mdHash = createHash("sha256").update(mdSource).digest("hex");
 
-  const server = Bun.serve({
-    hostname: HOST,
-    port: 0,
-    fetch: makeHandler({ htmlSource, htmlPath, mdPath, token, projectRoot }),
-  });
+  let server: ReturnType<typeof Bun.serve>;
+  try {
+    server = Bun.serve({
+      hostname: HOST,
+      port: 0,
+      fetch: makeHandler({ htmlSource, htmlPath, mdPath, token, projectRoot, mdHash }),
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    refuse("bind", `could not bind ${HOST}: ${msg}`, "port 0 pre-empts collisions, so this is a genuine failure — check sandbox/firewall restrictions, then re-run");
+    return REFUSAL_EXIT.bind;
+  }
 
   const port = (server as { port?: number }).port ?? 0;
   // Browser opens at the mirrored HTML URL so the HTML's relative <link>/<script>
   // hrefs resolve to real file paths under the project root.
   const htmlUrlPath = "/" + relative(projectRoot, htmlPath).split(sep).join("/");
   const url = `http://${HOST}:${port}${htmlUrlPath}`;
-  log(`forsvn preview · serving ${relative(projectRoot, htmlPath)} at ${url}`);
-  log(`csrf token = ${token.slice(0, 8)}…  (full token wired into page config)`);
-  log(`security · bound to 127.0.0.1 only; local-trust model — any process on this host can read the token from GET ${htmlUrlPath} and POST a decision. Don't run on shared boxes.`);
+  // BannerBlock — the serving line stays one unbroken line: the e2e suite
+  // scrapes the URL from it and humans copy-paste it. Headless adds the
+  // tunnel hint and hands off to the TTY prompt ("or decide here:").
+  for (const line of bannerBlock({
+    variant: flagHeadless ? "headless" : "gui",
+    servingLine: `serving ${relative(projectRoot, htmlPath)} at ${url}`,
+    csrfPreview: token.slice(0, 8),
+    trustHint: `bound to 127.0.0.1 only; local-trust model — any process on this host can read the token from GET ${htmlUrlPath} and POST a decision. Don't run on shared boxes.`,
+    tunnelHint: `ssh -L ${port}:127.0.0.1:${port} <remote-host>`,
+  }, outTier)) {
+    console.log(line);
+  }
 
-  if (!flagNoOpen) openBrowser(url);
+  if (!flagNoOpen && !flagHeadless) openBrowser(url);
 
-  // The shutdown handler set in makeHandler() resolves this promise once
-  // POST /done lands a valid payload (or rejects on idle timeout).
-  const result = await new Promise<{ ok: true; payload: Payload } | { ok: false; reason: "timeout" }>((resolve) => {
-    state.resolve = resolve;
-    state.idleTimer = setTimeout(() => {
-      log(`idle timeout — shutting down after ${IDLE_TIMEOUT_MS / 1000}s with no decision`);
-      resolve({ ok: false, reason: "timeout" });
-    }, IDLE_TIMEOUT_MS);
-  });
+  // The shutdown handler set in makeHandler() resolves this promise once a
+  // decision lands — POST /done OR the TTY prompt; both race for the same
+  // single-shot resolve (first wins, the loser is torn down before any
+  // mutation). Idle timeout re-arms on every TTY keypress.
+  let promptCleanup: (() => void) | undefined;
+  let result: ServeResult;
+  try {
+    result = await new Promise<ServeResult>((resolveServe) => {
+      state.resolve = resolveServe;
+      state.arm = () => {
+        if (state.idleTimer) clearTimeout(state.idleTimer);
+        state.idleTimer = setTimeout(() => {
+          resolveServe({ ok: false, reason: "timeout" });
+        }, IDLE_TIMEOUT_MS);
+      };
+      state.arm();
+
+      if (flagHeadless) {
+        const claimSlot = (): typeof state.resolve => {
+          // Same one-shot claim discipline as POST /done: take the slot or
+          // lose the race; the losing channel never reaches the write path.
+          if (!state.resolve) return undefined;
+          const r = state.resolve;
+          state.resolve = undefined;
+          if (state.idleTimer) clearTimeout(state.idleTimer);
+          return r;
+        };
+        promptCleanup = startTtyPrompt({
+          tier: outTier,
+          meta: { name: basename(mdPath), skill: fm.skill ?? "?", state: "pending", excerpt: fm.summary },
+          activity: () => { if (state.resolve) state.arm?.(); },
+          decide: (decision_state, comment) => {
+            const r = claimSlot();
+            if (!r) return;
+            r({ ok: true, payload: { token, decision_state, ...(comment ? { comments: comment } : {}) } });
+          },
+          quit: () => {
+            const r = claimSlot();
+            if (!r) return;
+            r({ ok: false, reason: "quit" });
+          },
+        });
+      }
+    });
+  } finally {
+    // Raw mode is restored on EVERY exit path — decision, quit, timeout,
+    // and anything thrown — or the operator's shell is left unusable.
+    promptCleanup?.();
+  }
 
   // Graceful stop — let any in-flight response (including the deferred /done
   // resolve) drain before the socket closes.
   await server.stop();
 
+  if (!result.ok && result.reason === "quit") {
+    // q: world unchanged — no write, decision_state stays pending.
+    if (flagJson) console.log(JSON.stringify({ ok: false, reason: "quit" }));
+    return 0;
+  }
+
   if (!result.ok) {
+    refuse("timeout", `no decision after ${IDLE_TIMEOUT_MS / 60000} minutes — exiting`, "nothing was written; decision_state is still pending; re-serve any time");
     if (flagJson) console.log(JSON.stringify({ ok: false, reason: result.reason }));
-    return 124;
+    return REFUSAL_EXIT.timeout;
   }
 
   // Apply mutations after the server stops so failure leaves the world
@@ -174,14 +274,14 @@ async function main(): Promise<number> {
   if (result.payload.variant) decisionUpdates.asset_picked = result.payload.variant;
   const updated = applyDecision(mdSource, decisionUpdates, result.payload.comments);
   writeFileSync(mdPath, updated, "utf8");
-  log(`md updated → decision_state: ${result.payload.decision_state}, reviewed_at: ${today}${result.payload.variant ? `, asset_picked: ${result.payload.variant}` : ""}`);
 
   const archivedRel = archiveHtml(projectRoot, htmlPath);
-  log(`html archived → ${archivedRel}`);
 
   runManifestSync(projectRoot);
 
   if (flagJson) {
+    // ResultLine(json): the decision object is the FINAL stdout line — nothing
+    // prints after it (manifest-sync stdio is captured above).
     console.log(JSON.stringify({
       ok: true,
       decision_state: result.payload.decision_state,
@@ -193,7 +293,10 @@ async function main(): Promise<number> {
       asset_picked: result.payload.variant ?? null,
     }));
   } else {
-    log(`done · decision: ${result.payload.decision_state}`);
+    // ResultLine(human) — one line closes the loop; the frontmatter rewrite
+    // and archive it reports are the single statement of what happened.
+    console.log("");
+    console.log(resultLine("human", result.payload.decision_state, outTier));
   }
   return 0;
 }
@@ -223,6 +326,7 @@ type ArtifactEntry = {
 async function listMode(args: string[]): Promise<number> {
   const flagJson = args.includes("--json");
   const rootArg = argValue(args, "--root");
+  const stateExplicit = argValue(args, "--state") !== undefined;
   const stateArg = (argValue(args, "--state") ?? "all").toLowerCase();
   if (!["pending", "decided", "all"].includes(stateArg)) {
     err(`--state must be pending | decided | all (got ${JSON.stringify(stateArg)})`);
@@ -233,8 +337,8 @@ async function listMode(args: string[]): Promise<number> {
   const projectRoot = findProjectRootFromDir(startDir);
   const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
   if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) {
-    err(`no .forsvn/artifacts under ${projectRoot} — run inside a FORSVN project or pass --root <dir>`);
-    return 1;
+    refuse("precondition", `no .forsvn/artifacts under ${projectRoot}`, "run inside a FORSVN project or pass --root <dir>");
+    return REFUSAL_EXIT.precondition;
   }
 
   const entries = scanArtifacts(artifactsDir, projectRoot);
@@ -262,18 +366,56 @@ async function listMode(args: string[]): Promise<number> {
     return 0;
   }
 
-  // Human-readable: one block per requested bucket. Decisions are human-owned —
-  // this view is for the operator (and for an agent narrating what's queued).
-  const show = (label: string, rows: ArtifactEntry[]): void => {
-    log(`${label} (${rows.length})`);
-    if (rows.length === 0) { console.log("  —"); return; }
-    for (const e of rows) {
-      const tag = `${e.stack ?? "?"}/${e.skill ?? "?"}`;
-      console.log(`  ${e.decision_state.padEnd(9)} ${(e.date ?? "----------").padEnd(10)} ${tag.padEnd(28)} ${e.path}`);
+  // Human-readable: spec §5 P-01 row grammar through the mono module.
+  // Decisions are human-owned — this view is for the operator (and for an
+  // agent narrating what's queued).
+  const outTier = resolveTier(process.stdout);
+  const width = process.stdout.columns ?? 120;
+  const others = entries.filter((e) => e.decision_state !== "pending" && !DECIDED_STATES.has(e.decision_state));
+  const padTo = Math.max(0, ...pending.map((e) => e.path.length));
+  const rowOf = (e: ArtifactEntry, pad: number): string => artifactRow({
+    state: (DECISION_ENUM.has(e.decision_state) ? e.decision_state : "pending") as DecisionState,
+    path: e.path,
+    meta: [e.stack ?? "?", e.skill ?? "?", (e.date ?? "").slice(5) || "?"],
+    excerpt: e.summary ?? "",
+  }, outTier, { padTo: pad, width });
+
+  if (!stateExplicit) {
+    // Default view (J3-W1): pending expanded, decided collapsed behind the
+    // dim-suffix hint. Zero pending → zero message, stop (no decided section).
+    console.log(queueHeading("pending", pending.length, outTier));
+    if (pending.length === 0) {
+      console.log(hintLine("nothing awaiting review", outTier));
+      return 0;
     }
-  };
-  if (stateArg === "pending" || stateArg === "all") show("pending", pending);
-  if (stateArg === "decided" || stateArg === "all") show("decided", decided);
+    for (const e of pending) console.log(rowOf(e, padTo));
+    console.log("");
+    console.log(queueHeading("decided", decided.length, outTier, "use --state all to show"));
+    return 0;
+  }
+
+  let printedGroup = false;
+  const gap = (): void => { if (printedGroup) console.log(""); printedGroup = true; };
+  if (stateArg === "pending" || stateArg === "all") {
+    gap();
+    console.log(queueHeading("pending", pending.length, outTier));
+    if (pending.length === 0) console.log(hintLine("nothing awaiting review", outTier));
+    for (const e of pending) console.log(rowOf(e, padTo));
+  }
+  if (stateArg === "decided" || stateArg === "all") {
+    gap();
+    const decidedPad = Math.max(0, ...decided.map((e) => e.path.length));
+    console.log(queueHeading("decided", decided.length, outTier));
+    if (decided.length === 0) console.log(hintLine("none yet", outTier));
+    for (const e of decided) console.log(rowOf(e, decidedPad));
+  }
+  if (stateArg === "all" && others.length > 0) {
+    // `not_required` (and any unknown-state) entries surface only in the full
+    // view; each row carries its own `○ not_required` badge, dim.
+    gap();
+    const otherPad = Math.max(0, ...others.map((e) => e.path.length));
+    for (const e of others) console.log(rowOf(e, otherPad));
+  }
   return 0;
 }
 
@@ -454,15 +596,17 @@ type HandlerArgs = {
   mdPath: string;
   token: string;
   projectRoot: string;
+  mdHash: string;   // sha256 of the .md at render time (conflict guard)
 };
 
 const state: {
-  resolve?: (v: { ok: true; payload: Payload } | { ok: false; reason: "timeout" }) => void;
+  resolve?: (v: ServeResult) => void;
   idleTimer?: ReturnType<typeof setTimeout>;
+  arm?: () => void;   // (re)arms the idle timer; TTY keypresses call it
 } = {};
 
 function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
-  const { htmlSource, htmlPath, mdPath, token, projectRoot } = args;
+  const { htmlSource, htmlPath, mdPath, token, projectRoot, mdHash } = args;
   // The HTML is served at the URL path that mirrors its location under the
   // project root — so an exemplar at references/_html/exemplars/foo.html is
   // served at /references/_html/exemplars/foo.html, and its `<link
@@ -544,7 +688,25 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         return jsonResp(403, { error: "bad token" }, noStore);
       }
       if (typeof raw.decision_state !== "string" || !(VALID_DECISIONS as readonly string[]).includes(raw.decision_state)) {
+        // The POST-accepted set is exactly approved/denied/suggested —
+        // `not_required` and `pending` exist in the schema enum but are never
+        // valid decisions to record.
         return jsonResp(400, { error: `decision_state must be ${VALID_DECISIONS.join(" | ")}` }, noStore);
+      }
+
+      // Conflict guard (flow-recommended /done re-hash): if the artifact's
+      // bytes changed on disk between render and decide, refuse — the human
+      // approved what they READ, not what is now on disk. Nothing is written,
+      // decision_state stays pending, and the server stays up so a re-serve
+      // can review the current file.
+      let currentHash: string | null = null;
+      try {
+        currentHash = createHash("sha256").update(readFileSync(mdPath, "utf8")).digest("hex");
+      } catch {
+        currentHash = null; // unreadable/deleted counts as changed
+      }
+      if (currentHash !== mdHash) {
+        return jsonResp(409, { error: "file changed on disk since this form was rendered — nothing was written; re-serve to review the current file" }, noStore);
       }
       const parsed: Payload = {
         token,
@@ -569,6 +731,58 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
     }
 
     return new Response("not found", { status: 404, headers: noStore });
+  };
+}
+
+// --- TTY prompt wiring (P-04 headless review) -----------------------------
+// The pure state machine lives in lib/tty-prompt.ts; this only binds it to
+// raw stdin. It never calls the write path: a decision/quit resolves the
+// same single-shot promise as POST /done via the callbacks, so the existing
+// post-stop applyDecision/archive/manifest-sync sequence runs exactly once.
+
+type TtyPromptOpts = {
+  tier: Tier;
+  meta: { name: string; skill: string; state: string; excerpt?: string };
+  activity: () => void;
+  decide: (decision_state: Decision, comment?: string) => void;
+  quit: () => void;
+};
+
+function startTtyPrompt(opts: TtyPromptOpts): () => void {
+  const stdin = process.stdin as NodeJS.ReadStream & { setRawMode?: (b: boolean) => void };
+  for (const line of promptIntro(opts.meta, opts.tier, process.stdout.columns ?? 80)) {
+    console.log(line);
+  }
+
+  let machine = initialState();
+  let settled = false;
+  const onData = (chunk: Buffer): void => {
+    opts.activity(); // any keypress resets the idle timer
+    for (const key of chunk.toString("utf8")) {
+      if (settled) return;
+      const r = step(machine, key, opts.tier);
+      machine = r.state;
+      if (r.write) process.stdout.write(r.write);
+      if (r.outcome) {
+        settled = true;
+        if (r.outcome.kind === "quit") opts.quit();
+        else opts.decide(r.outcome.decision_state, r.outcome.comment);
+        return;
+      }
+    }
+  };
+
+  stdin.setRawMode?.(true);
+  stdin.resume();
+  stdin.on("data", onData);
+
+  let cleaned = false;
+  return () => {
+    if (cleaned) return;
+    cleaned = true;
+    stdin.off("data", onData);
+    try { stdin.setRawMode?.(false); } catch { /* stdin may already be gone */ }
+    stdin.pause();
   };
 }
 
@@ -767,6 +981,13 @@ function jsonResp(status: number, body: unknown, headers: Record<string, string>
 
 function log(msg: string): void { console.log(`[forsvn-preview] ${msg}`); }
 function err(msg: string): void { console.error(`[forsvn-preview] ${msg}`); }
+
+// RefusalLine to stderr — reason + exit code + recovery hint, never silent.
+// The tier resolves against stderr independently of stdout, so a redirected
+// log never receives escape bytes even while stdout is a live TTY.
+function refuse(variant: RefusalVariant, reason: string, recovery: string): void {
+  console.error(refusalLine(variant, reason, recovery, resolveTier(process.stderr)));
+}
 
 // --- Run ----------------------------------------------------------------
 

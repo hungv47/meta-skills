@@ -98,20 +98,46 @@
     }
 
     form.setAttribute("data-active", "true");
+    document.body.setAttribute("data-capture", "active");
 
     var status = form.querySelector(".decision-status");
     var doneBtn = form.querySelector(".decision-done");
+    var outcome = form.querySelector(".decision-outcome");
+    var alertBox = form.querySelector(".decision-alert");
+
+    var STATE_GLYPH = { approved: "✓", denied: "✗", suggested: "~" };
+
+    // Done is discoverable-but-inert until a radio is picked: aria-disabled
+    // (not `disabled` — that drops it from some AT traversal) + the
+    // describedby "pick a decision first" hint carries the why.
+    form.querySelectorAll('input[name="decision"]').forEach(function (radio) {
+      radio.addEventListener("change", function () {
+        if (doneBtn) doneBtn.setAttribute("aria-disabled", "false");
+      });
+    });
+
+    // Error states render in-bar with recovery copy, role="alert", focused
+    // programmatically, and never auto-dismissed.
+    function showAlert(reason, recovery) {
+      if (!alertBox) return;
+      alertBox.textContent = "";
+      var r1 = document.createElement("strong");
+      r1.textContent = reason;
+      var r2 = document.createElement("span");
+      r2.textContent = recovery;
+      alertBox.appendChild(r1);
+      alertBox.appendChild(r2);
+      alertBox.hidden = false;
+      alertBox.focus();
+      if (status) status.textContent = "";
+      if (doneBtn) doneBtn.disabled = false;
+    }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (doneBtn && doneBtn.getAttribute("aria-disabled") === "true") return; // no POST before a pick
       var picked = form.querySelector('input[name="decision"]:checked');
-      if (!picked) {
-        if (status) {
-          status.textContent = "pick a decision";
-          status.setAttribute("data-tone", "error");
-        }
-        return;
-      }
+      if (!picked) return; // structural guard; the server still enum-validates
       var payload = {
         token: config.token,
         decision_state: picked.value,
@@ -124,7 +150,8 @@
         if (v) payload.variant = v;
       }
 
-      if (doneBtn) doneBtn.disabled = true;
+      if (doneBtn) doneBtn.disabled = true; // request-duration only — no spinner
+      if (alertBox) alertBox.hidden = true;
       if (status) {
         status.textContent = "submitting…";
         status.removeAttribute("data-tone");
@@ -138,38 +165,52 @@
         body: JSON.stringify(payload),
       }).then(function (resp) {
         if (resp.ok) {
-          if (status) {
-            status.textContent = "decision recorded · server exiting…";
-            status.setAttribute("data-tone", "ok");
-          }
+          // Swap the bar content to the confirmation block (role="status"),
+          // then move focus to it (spec §7).
           var pill = document.querySelector(".decision-pill");
           if (pill) {
             pill.setAttribute("data-state", payload.decision_state);
             pill.textContent = payload.decision_state;
           }
-          form.setAttribute("data-active", "false");
-          // Focus return: the form just collapsed (display:none), so a
-          // keyboard user's focus would be orphaned on the hidden Done button.
-          // Move it to the decision pill, which now reflects the new state.
-          if (pill) {
-            pill.setAttribute("tabindex", "-1");
-            pill.focus();
+          [".decision-radio", ".decision-comments", ".decision-actions"].forEach(function (sel) {
+            var el = form.querySelector(sel);
+            if (el) el.hidden = true;
+          });
+          if (outcome) {
+            outcome.textContent = "decision recorded · server exiting";
+            var stateLine = document.createElement("span");
+            stateLine.className = "state-line";
+            stateLine.textContent = (STATE_GLYPH[payload.decision_state] || "") + " " + payload.decision_state + " · written to frontmatter";
+            outcome.appendChild(stateLine);
+            outcome.setAttribute("data-state", payload.decision_state);
+            outcome.hidden = false;
+            outcome.focus();
           }
+        } else if (resp.status === 403) {
+          showAlert(
+            "bad token — this form isn't the one the CLI served",
+            "return to the terminal and re-serve"
+          );
         } else {
-          resp.text().then(function (t) {
-            if (status) {
-              status.textContent = "server rejected: " + t.slice(0, 80);
-              status.setAttribute("data-tone", "error");
+          resp.json().then(function (j) {
+            var msg = (j && j.error) ? String(j.error) : ("server refused (" + resp.status + ")");
+            if (/changed on disk/.test(msg)) {
+              showAlert(
+                "file changed on disk since this form was rendered",
+                "nothing was written — re-serve to review the current file"
+              );
+            } else {
+              showAlert("server refused: " + msg.slice(0, 120), "return to the terminal and re-serve");
             }
-            if (doneBtn) doneBtn.disabled = false;
+          }).catch(function () {
+            showAlert("server refused (" + resp.status + ")", "return to the terminal and re-serve");
           });
         }
       }).catch(function () {
-        if (status) {
-          status.textContent = "network error — is the CLI still running?";
-          status.setAttribute("data-tone", "error");
-        }
-        if (doneBtn) doneBtn.disabled = false;
+        showAlert(
+          "network error — is the CLI still running?",
+          "re-run forsvn-preview <path> to get a fresh form"
+        );
       });
     });
 

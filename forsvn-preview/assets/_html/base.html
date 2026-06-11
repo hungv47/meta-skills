@@ -60,17 +60,19 @@
     {{left_controls_html}}
   </aside>
 
-  <main class="stage">
+  <main class="stage" tabindex="0" aria-label="Artifact body">
     {{stage_html}}
   </main>
 
-  <!-- Decision capture (WS-V3). Always present in markup. chrome.js activates
-       it only when the `forsvn preview` CLI has injected a token into the
-       preview-config block AND the artifact's decision_state is "pending".
-       Otherwise the form stays display:none — the page reads as read-only. -->
-  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
-    <fieldset class="decision-radio">
-      <legend>Decision</legend>
+  <!-- Decision capture — DecisionBar(pinned). Always present in markup.
+       chrome.js activates it only when the `forsvn preview` CLI has injected
+       a token into the preview-config block AND the artifact's decision_state
+       is "pending". Otherwise the form stays display:none — read-only page.
+       The bar is the system's ONLY interactive decision place; the in-body
+       Review Gate echo is an aria-hidden read-only mirror. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)" aria-label="Decision">
+    <fieldset class="decision-radio" role="radiogroup" aria-labelledby="decision-label" aria-required="true">
+      <legend id="decision-label">Decision</legend>
       <label><input type="radio" name="decision" value="approved" aria-keyshortcuts="Alt+A"><span>Approve</span></label>
       <label><input type="radio" name="decision" value="denied" aria-keyshortcuts="Alt+D"><span>Deny</span></label>
       <label><input type="radio" name="decision" value="suggested" aria-keyshortcuts="Alt+S"><span>Suggest changes</span></label>
@@ -81,8 +83,11 @@
     </label>
     <div class="decision-actions">
       <span class="decision-status" aria-live="polite"></span>
-      <button type="submit" class="decision-done">Done</button>
+      <button type="submit" class="decision-done" aria-disabled="true" aria-describedby="decision-done-hint">Done</button>
+      <span id="decision-done-hint" class="sr-only">pick a decision first</span>
     </div>
+    <div class="decision-outcome" role="status" tabindex="-1" hidden></div>
+    <div class="decision-alert" role="alert" tabindex="-1" hidden></div>
   </form>
 
   <footer class="footer">

@@ -21,15 +21,31 @@
   --brand-void:          #0A120D;             /* legacy alias → Forest Shadow */
   --brand-paper:         #F7F0D4;             /* Sunset Cream */
 
-  /* ============ Decision pill colors ============ */
-  --pill-pending-bg:     #2a2a2e;
-  --pill-pending-fg:     #fbbf24;
-  --pill-approved-bg:    #004700;
-  --pill-approved-fg:    #EFE9D1;
-  --pill-denied-bg:      #7f1d1d;
-  --pill-denied-fg:      #fecaca;
-  --pill-suggested-bg:   #1e3a8a;
-  --pill-suggested-fg:   #93c5fd;
+  /* ============ Decision-state semantic layer ============ */
+  /* Spec §4.1 (brief-product-ui 2026-06-10): one token per T5 state, each a
+     DESIGN-descent alias — approved=Leaf (--primary), pending=muted neutral
+     (--muted-foreground), denied=Warm Red dim (--destructive), suggested=
+     amber (--chart-2 dark, promoted to a status role pending DESIGN.md
+     back-fill). `not_required` carries no token: it renders in the pending
+     muted treatment with the secondary ○ glyph. Color is never alone — every
+     renderer pairs it with glyph + state word. */
+  --decision-pending:    #8A9784;             /* --muted-foreground descent */
+  --decision-approved:   #74B36B;             /* --primary (Leaf) descent */
+  --decision-suggested:  #E0A23A;             /* --chart-2 dark amber descent */
+  --decision-denied:     #E5654D;             /* --destructive (Warm Red dim) descent */
+
+  /* ============ Decision pill colors (derived from --decision-*) ============ */
+  /* Text/dot in the state token; fill = same token at badge-tint opacity
+     (DESIGN §5.10 pattern). Replaces the pre-spec ad-hoc values (pending
+     amber, suggested blue, denied pink) — a deliberate visual correction. */
+  --pill-pending-bg:     color-mix(in srgb, var(--decision-pending) 15%, transparent);
+  --pill-pending-fg:     var(--decision-pending);
+  --pill-approved-bg:    color-mix(in srgb, var(--decision-approved) 15%, transparent);
+  --pill-approved-fg:    var(--decision-approved);
+  --pill-denied-bg:      color-mix(in srgb, var(--decision-denied) 15%, transparent);
+  --pill-denied-fg:      var(--decision-denied);
+  --pill-suggested-bg:   color-mix(in srgb, var(--decision-suggested) 15%, transparent);
+  --pill-suggested-fg:   var(--decision-suggested);
 
   /* ============ Unified typography (D14 — one stack everywhere) ============ */
   --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;

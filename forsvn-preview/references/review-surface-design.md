@@ -259,13 +259,19 @@ brand. WS-V4 updates `scripts/lint-html-output.ts` check #8 to enforce this.
 Each `decision_state` value renders a distinct pill in the topbar. The pill is
 **read-only** — it reflects MD frontmatter, never captures input.
 
-| State | Background | Foreground | Decoration |
+Pill colors derive from the **first-class decision tokens** in `tokens.css`
+(the spec §4.1 semantic layer — refit 2026-06-10): text/dot in the state token,
+fill = the same token at a 15% badge tint. Every state is a glyph + word +
+color triple; color is never the only channel. No infinite animations — the
+pending shimmer is retired (stillness, spec §7).
+
+| State | Token | Value | Decoration |
 |---|---|---|---|
-| `pending` | `--pill-pending-bg` `#2a2a2e` | `--pill-pending-fg` `#fbbf24` | 1.5s opacity shimmer (0.6 → 1.0 → 0.6) |
-| `approved` | `--pill-approved-bg` `#064e3b` | `--pill-approved-fg` `#6ee7b7` | Solid, no motion |
-| `denied` | `--pill-denied-bg` `#7f1d1d` | `--pill-denied-fg` `#fecaca` | Strike-through on label text |
-| `suggested` | `--pill-suggested-bg` `#1e3a8a` | `--pill-suggested-fg` `#93c5fd` | Wavy underline on label text |
-| `not_required` | — | — | Pill not rendered |
+| `pending` | `--decision-pending` | `#8A9784` (muted) | Calm — no motion |
+| `approved` | `--decision-approved` | `#74B36B` (Leaf) | Solid |
+| `denied` | `--decision-denied` | `#E5654D` (warm red) | Strike-through on label text |
+| `suggested` | `--decision-suggested` | `#E0A23A` (amber) | Wavy underline on label text |
+| `not_required` | (no token) | pending treatment at 0.7 opacity | Renders dim where listed |
 
 Shared markup:
 
@@ -282,12 +288,53 @@ Shared markup:
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.decision-pill[data-state="pending"]   { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   animation: pill-shimmer 1.5s ease-in-out infinite; }
-.decision-pill[data-state="approved"]  { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
-.decision-pill[data-state="denied"]    { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
-.decision-pill[data-state="suggested"] { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
-@keyframes pill-shimmer { 0%, 100% { opacity: 1 } 50% { opacity: 0.6 } }
+.decision-pill[data-state="pending"]      { background: var(--pill-pending-bg);   color: var(--pill-pending-fg); }
+.decision-pill[data-state="approved"]     { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
+.decision-pill[data-state="denied"]       { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
+.decision-pill[data-state="suggested"]    { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
+.decision-pill[data-state="not_required"] { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   opacity: 0.7; }
 ```
+
+### 5.1 Terminal (mono) renderer — `lib/mono.ts`
+
+Every CLI surface (pending list, serve banner, write-back confirmation,
+refusals, validator findings) renders through one dep-free module. Binding
+conventions:
+
+- **Tier gate, per destination stream:** ANSI-16 when that stream
+  `isTTY && !NO_COLOR && TERM !== "dumb"`, plain glyph otherwise — stdout and
+  stderr resolve independently, so a redirected stream never receives escape
+  bytes.
+- **Never paint a background** (no SGR 40–47/100–107); the user's terminal
+  theme is inherited. No 256-color/truecolor. Standard green `SGR 32`, never
+  bright `SGR 92` (the Signal-Lime ghost).
+- **Glyph triples with ASCII fallbacks:** `✓ approved`→`[ok] approved`,
+  `● pending`→`* pending`, `✗ denied`→`x denied`, `~ suggested` (already
+  ASCII), `○ not_required` dim; box-drawing `─` → `-` at tier 3.
+- **Refusals are never silent:** reason + exit code + recovery hint, every
+  variant (precondition·1, bind·2, timeout·124, non-interactive, conflict).
+
+### 5.2 TTY decision prompt — `lib/tty-prompt.ts` (`--headless`)
+
+The headless review path (SSH/container): `forsvn-preview <artifact.md>
+--headless` from a **real interactive TTY** prints the tunnel hint
+(`ssh -L port:127.0.0.1:port <remote-host>`), then a sequential
+`[a]pprove [d]eny [s]uggest [q]uit` keypress prompt + optional comment,
+writing back through the same `applyDecision` path as the browser form. The
+prompt and POST `/done` race for one single-shot decision slot — first wins.
+Piped/non-interactive stdin is refused with no fabricated decision. Manual
+SSH-style run:
+
+```bash
+ssh <host> -t 'cd <project> && bun <plugin>/forsvn-preview/bin/forsvn-preview.ts   .forsvn/artifacts/<stack>/<artifact>.md --headless'
+```
+
+### 5.3 `/done` acceptance set
+
+POST `/done` records exactly `approved | denied | suggested`. `not_required`
+and `pending` are schema states, never recordable decisions (400). A POST
+after the artifact's bytes changed on disk is refused (409, nothing written)
+— the re-hash conflict guard; re-serve to review the current file.
 
 ---
 

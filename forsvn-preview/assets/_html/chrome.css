@@ -1,4 +1,7 @@
 /* chrome.css — constant chrome regions for the review-surface HTML preview.
+   v3 (2026-06-10): plugin in-harness UI refit — pinned DecisionBar (opaque,
+   matte, fixed bottom), decision-state pills derived from the --decision-*
+   semantic layer, ≥44px hit areas, aria-driven outcome states.
    v2 (2026-05-26): FORSVN brand chrome — Bricolage Grotesque wordmark + Leaf
    accent in topbar across all stacks. Typography unified per D14.
    (Signal Lime is retired — the accent is Leaf #74B36B via --chrome-accent.) */
@@ -16,15 +19,19 @@ html, body {
 
 body {
   display: grid;
-  grid-template-rows: var(--chrome-topbar-h) 1fr auto var(--chrome-footer-h);
+  grid-template-rows: var(--chrome-topbar-h) 1fr var(--chrome-footer-h);
   grid-template-columns: var(--chrome-left-w) 1fr;
   grid-template-areas:
     "topbar topbar"
     "left   stage"
-    "capture capture"
     "footer footer";
   min-height: 100vh;
 }
+
+/* While the DecisionBar is active (fixed, overlaying the page bottom), pad
+   the in-flow content so the stage tail and the footer stay reachable above
+   the bar. */
+body[data-capture="active"] { padding-bottom: 188px; }
 
 /* ============ TOPBAR ============ */
 .topbar {
@@ -106,15 +113,14 @@ body {
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
-.decision-pill[data-state="pending"]   { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   animation: pill-shimmer 1.5s ease-in-out infinite; }
-.decision-pill[data-state="approved"]  { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
-.decision-pill[data-state="denied"]    { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
-.decision-pill[data-state="suggested"] { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
-@keyframes pill-shimmer { 0%, 100% { opacity: 1 } 50% { opacity: 0.6 } }
-/* Respect reduced-motion — the pill stays in its idle state instead of running
-   the infinite shimmer (a11y + battery for forgotten review tabs). */
+/* One pill per T5 state — glyph + word + color, color never alone. No
+   infinite animations on these surfaces (spec §7); stillness is the default. */
+.decision-pill[data-state="pending"]      { background: var(--pill-pending-bg);   color: var(--pill-pending-fg); }
+.decision-pill[data-state="approved"]     { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
+.decision-pill[data-state="denied"]       { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
+.decision-pill[data-state="suggested"]    { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
+.decision-pill[data-state="not_required"] { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   opacity: 0.7; }
 @media (prefers-reduced-motion: reduce) {
-  .decision-pill[data-state="pending"] { animation: none; }
   .stage { animation: none; }
 }
 
@@ -138,6 +144,7 @@ body {
 .left-controls .picker-item {
   display: block;
   width: 100%;
+  min-height: 44px;       /* a11y floor: rail rows pad to the hit-area minimum */
   text-align: left;
   padding: 10px 12px;
   background: var(--chrome-panel);
@@ -231,20 +238,29 @@ body {
 }
 .footer-meta { flex: 1; color: var(--chrome-text-muted); }
 
-/* ============ DECISION CAPTURE ============
+/* ============ DECISION CAPTURE — DecisionBar(pinned) ============
    Form is always present in markup; activated by chrome.js only when the
    `forsvn preview` CLI has injected a token + endpoint and the artifact is
    still pending. Otherwise the form is display:none and the chrome reads
-   read-only. */
+   read-only. Pinned: fixed to the viewport bottom so a long artifact body
+   never buries Done. Opaque, matte (never frosted), top hairline, top
+   corners rounded — the stage scrolls under it. */
 .decision-capture {
-  grid-area: capture;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
   display: none;
   flex-direction: row;
   align-items: stretch;
+  flex-wrap: wrap;
   gap: 16px;
   padding: 16px 24px;
   background: var(--chrome-panel);
   border-top: 1px solid var(--chrome-border);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.20);
 }
 .decision-capture[data-active="true"] { display: flex; }
 .decision-capture fieldset {
@@ -268,10 +284,12 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;       /* a11y floor: the full label row is the hit area */
   font: 400 13px/1.3 var(--chrome-sans);
   color: var(--chrome-text);
   cursor: pointer;
 }
+.decision-capture .decision-radio label { min-height: 44px; }
 .decision-capture label > span { user-select: none; }
 .decision-capture input[type="radio"] {
   appearance: none;
@@ -321,6 +339,7 @@ body {
   gap: 8px;
 }
 .decision-capture .decision-done {
+  min-height: 44px;       /* a11y floor */
   padding: 10px 18px;
   border-radius: 6px;
   border: 1px solid var(--chrome-accent);
@@ -332,6 +351,9 @@ body {
   transition: filter var(--t-hover) var(--ease);
 }
 .decision-capture .decision-done:hover { filter: brightness(1.08); }
+/* Pre-pick state uses aria-disabled (stays in AT traversal, carries the
+   describedby "pick a decision first"); request-duration uses disabled. */
+.decision-capture .decision-done[aria-disabled="true"],
 .decision-capture .decision-done:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -344,7 +366,7 @@ body {
   color: var(--chrome-text-muted);
   align-self: center;
 }
-.decision-capture .decision-status[data-tone="error"] { color: var(--pill-pending-fg); }
+.decision-capture .decision-status[data-tone="error"] { color: var(--decision-denied); }
 .decision-capture .decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
 
 /* ============ FOCUS VISIBLE (a11y) ============
@@ -362,12 +384,50 @@ body {
   outline-offset: 2px;
 }
 
+/* Outcome states swap into the bar; neither is ever auto-dismissed. */
+.decision-capture .decision-outcome,
+.decision-capture .decision-alert {
+  flex-basis: 100%;
+  padding-top: 12px;
+  font: 400 13px/1.5 var(--chrome-sans);
+  color: var(--chrome-text);
+  outline: none;
+}
+.decision-capture .decision-outcome { border-top: 1px solid var(--chrome-accent); }
+.decision-capture .decision-outcome .state-line { font-family: var(--chrome-mono); display: block; margin-top: 4px; }
+.decision-capture .decision-outcome[data-state="approved"]  .state-line { color: var(--decision-approved); }
+.decision-capture .decision-outcome[data-state="denied"]    .state-line { color: var(--decision-denied); }
+.decision-capture .decision-outcome[data-state="suggested"] .state-line { color: var(--decision-suggested); }
+.decision-capture .decision-alert { border-top: 1px solid var(--decision-denied); }
+.decision-capture .decision-alert strong {
+  display: block;
+  color: var(--decision-denied);
+  font-weight: 500;
+}
+
+/* DecisionSet(mirror): the in-body Review Gate echo is read-only — never a
+   second interactive decision place. */
+.stage .mirror-gate { pointer-events: none; opacity: 0.75; }
+
+/* Visually-hidden (AT-only) helper. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ============ RESPONSIVE FALLBACK ============ */
 @media (max-width: 800px) {
   body {
     grid-template-columns: 1fr;
-    grid-template-rows: var(--chrome-topbar-h) auto 1fr auto var(--chrome-footer-h);
-    grid-template-areas: "topbar" "left" "stage" "capture" "footer";
+    grid-template-rows: var(--chrome-topbar-h) auto 1fr var(--chrome-footer-h);
+    grid-template-areas: "topbar" "left" "stage" "footer";
   }
   .left-controls { border-right: none; border-bottom: 1px solid var(--chrome-border); max-height: 240px; }
   .stage { padding: 24px; }

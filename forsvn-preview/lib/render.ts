@@ -244,7 +244,16 @@ export function renderArtifactToHtml(mdPath: string, assetsDir: string, repoRelM
   const mdRel = repoRelMdPath || basename(mdPath);
 
   const base = readFileSync(join(assetsDir, "base.html"), "utf8");
-  const stageHtml = `<article class="md-stage">\n${markdownToHtml(body)}\n</article>`;
+  // DecisionSet(mirror): the artifact's `## Review Gate` checkbox block is a
+  // read-only echo — the pinned DecisionBar is the system's only interactive
+  // decision place. Mark the gate section's task lists aria-hidden so AT
+  // never announces a second radio group for one decision (spec §7).
+  const bodyHtml = markdownToHtml(body).replace(
+    /(<h([1-6])>\s*Review Gate\s*<\/h\2>)([\s\S]*?)(?=<h[1-6]>|$)/i,
+    (_m, headingTag: string, _lvl: string, rest: string) =>
+      headingTag + rest.replace(/<ul>(?=\s*<li class="task")/g, '<ul class="mirror-gate" aria-hidden="true">'),
+  );
+  const stageHtml = `<article class="md-stage">\n${bodyHtml}\n</article>`;
   const leftControls = `<div class="control-group">\n  <h2>Export</h2>\n  <button type="button" data-copy-source="artifact-data">Copy as JSON</button>\n</div>`;
 
   const repl: Record<string, string> = {

@@ -36,6 +36,11 @@ await run("list: --state pending filters to the pending bucket only", listStateF
 await run("list: refuses with exit 1 when no .forsvn/artifacts under root", listNoArtifacts);
 await run("list: prefers .forsvn over a closer .git ancestor (nested-repo drift)", listPrefersForsvnOverGit);
 await run("list: human-readable output, invalid --state rejected, argValue flag-guard", listHumanAndArgGuards);
+await run("tier: piped stdout and stderr carry zero ANSI escape bytes", pipedStreamsNoAnsi);
+await run("headless: piped stdin is refused — no fabricated decision", headlessRefusesPipedStdin);
+await run("form: served HTML carries the a11y contract; mirror gate aria-hidden; bar pinned", formA11yContract);
+await run("protocol: /done rejects not_required and pending with 400", doneRejectsNonDecisions);
+await run("conflict: /done refused when the artifact changed on disk since render", doneConflictRehash);
 
 const failed = results.filter((r) => !r.ok);
 for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name}${r.message ? ` — ${r.message}` : ""}`);
@@ -350,6 +355,145 @@ async function listPrefersForsvnOverGit(): Promise<void> {
     assertEq(j.pending[0].id, "x", "the gp artifact, not a parent-repo one");
   } finally {
     try { rmSync(gp, { recursive: true, force: true }); } catch {}
+  }
+}
+
+async function headlessRefusesPipedStdin(): Promise<void> {
+  // --headless requires a real interactive stdin (the human-owned gate). A
+  // piped/non-interactive stdin is refused pre-loop with a RefusalLine —
+  // non-zero exit, no fabricated decision, no file mutation. Headless stays
+  // OPT-IN: every other scenario in this suite spawns with piped stdio and
+  // must keep hitting the plain serve path.
+  const ctx = setupProject();
+  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--headless", "--json"], 5000);
+  assertEq(exit.code, 1, `expected exit 1 for piped-stdin headless; got ${exit.code}`);
+  assertMatches(ctx.stderrBuf.text, /stdin is not interactive/, "refusal names the reason");
+  assertMatches(ctx.stderrBuf.text, /exit 1/, "refusal carries the exit code");
+  assertMatches(ctx.stderrBuf.text, /real TTY|browser form/, "refusal carries a recovery hint");
+  const md = readFileSync(ctx.mdPath, "utf8");
+  assertMatches(md, /^decision_state:\s*pending$/m, "decision_state untouched — nothing written");
+  ctx.cleanup();
+}
+
+async function formA11yContract(): Promise<void> {
+  // U5 (spec §7): the served twin must carry the accessibility floor in its
+  // structure — radiogroup semantics, aria-disabled Done with the describedby
+  // hint, role=status/alert outcome regions, focusable stage, and the in-body
+  // Review Gate mirror aria-hidden. The pinned bar + activation guard are
+  // pinned at the asset level (fixed positioning in chrome.css; the
+  // localhost-/done guard in chrome.js).
+  const ctx = setupProject();
+  // Give the artifact a Review Gate section so the mirror-gate marking renders.
+  const md = readFileSync(ctx.mdPath, "utf8") + `\n## Review Gate\n\n- [ ] Approve\n- [ ] Deny\n- [ ] Suggest changes\n\n## After\n\nTail.\n`;
+  writeFileSync(ctx.mdPath, md);
+  bunGit(ctx.root, ["add", "."]);
+  bunGit(ctx.root, ["commit", "--quiet", "-m", "gate"]);
+
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    const html = await (await fetch(url)).text();
+    assertMatches(html, /<main class="stage" tabindex="0" aria-label="Artifact body">/, "stage is a labeled, focusable scroll region");
+    assertMatches(html, /role="radiogroup"/, "radiogroup role");
+    assertMatches(html, /aria-labelledby="decision-label"/, "radiogroup labelled by the DECISION label");
+    assertMatches(html, /aria-required="true"/, "radiogroup required");
+    assertMatches(html, /aria-disabled="true" aria-describedby="decision-done-hint"/, "Done starts aria-disabled with the why");
+    assertMatches(html, /pick a decision first/, "describedby hint copy");
+    assertMatches(html, /role="status"/, "confirmation region present");
+    assertMatches(html, /role="alert"/, "alert region present");
+    assertMatches(html, /<ul class="mirror-gate" aria-hidden="true">/, "Review Gate mirror is aria-hidden");
+
+    const origin = url.match(/^(http:\/\/[\d.:]+)\//)![1];
+    const htmlDir = url.slice(origin.length).replace(/\/[^/]*$/, "");
+    const chromeCss = await (await fetch(`${origin}${htmlDir}/chrome.css`)).text();
+    assertMatches(chromeCss, /\.decision-capture \{[^}]*position: fixed/, "DecisionBar is pinned (fixed positioning)");
+    assertMatches(chromeCss, /min-height: 44px/, "44px hit-area floor present");
+    const chromeJs = await (await fetch(`${origin}${htmlDir}/chrome.js`)).text();
+    assertMatches(chromeJs, /decision-capture stays inert/, "activation guard survived the refit");
+    assertMatches(chromeJs, /127\\\.0\\\.0\\\.1\|localhost/, "localhost-/done endpoint regex intact");
+    if (/server rejected/.test(chromeJs)) throw new Error("forbidden vocabulary: chrome.js still says 'rejected'");
+
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function doneRejectsNonDecisions(): Promise<void> {
+  // The POST-accepted set is exactly approved/denied/suggested. The schema
+  // enum's other two values are never recordable decisions: `not_required`
+  // never enters the queue, and `pending` is the state being left.
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    for (const bad of ["not_required", "pending", "rejected"]) {
+      const r = await postDone(url, { token: cfg.token, decision_state: bad });
+      assertEq(r.status, 400, `decision_state=${bad} should 400`);
+    }
+    const good = await postDone(url, { token: cfg.token, decision_state: "approved" });
+    assertEq(good.status, 200, "valid decision still lands after rejections");
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function doneConflictRehash(): Promise<void> {
+  // Flow-recommended /done re-hash guard: the decision applies to the bytes
+  // the human read. Mutate the .md after render → a valid POST is refused
+  // with the conflict copy, nothing is written, decision_state stays pending.
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    appendFileSync(ctx.mdPath, "\nAn out-of-band edit after render.\n");
+    const r = await postDone(url, { token: cfg.token, decision_state: "approved" });
+    assertEq(r.status, 409, `conflict POST should 409; got ${r.status}`);
+    const body = await r.json() as { error?: string };
+    assertMatches(body.error ?? "", /changed on disk/, "conflict reason names the cause");
+    assertMatches(body.error ?? "", /nothing was written/, "conflict reason carries recovery");
+    const md = readFileSync(ctx.mdPath, "utf8");
+    assertMatches(md, /^decision_state:\s*pending$/m, "frontmatter untouched");
+    if (/## Reviewer notes/.test(md)) throw new Error("conflict must not append reviewer notes");
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    await new Promise((r) => setTimeout(r, 200));
+    ctx.cleanup();
+  }
+}
+
+async function pipedStreamsNoAnsi(): Promise<void> {
+  // The §4.3 tier gate resolves per destination stream: every spawn here uses
+  // piped stdio, so BOTH streams must be tier 3 — zero \x1b bytes, ever.
+  const ctx = setupListProject();
+  try {
+    // stdout: human list (rows + headings) through the mono renderer.
+    const human = await runList(ctx.root, []);
+    assertEq(human.code, 0, `human list should exit 0; stderr=${human.stderr.slice(-200)}`);
+    if (/\x1b/.test(human.stdout)) throw new Error(`piped stdout contains ANSI escapes: ${JSON.stringify(human.stdout.slice(0, 120))}`);
+    const all = await runList(ctx.root, ["--state", "all"]);
+    if (/\x1b/.test(all.stdout)) throw new Error("piped stdout (--state all) contains ANSI escapes");
+  } finally {
+    ctx.cleanup();
+  }
+  // stderr: a RefusalLine (missing artifacts dir) on a redirected stream.
+  const empty = mkdtempSync(join(tmpdir(), "forsvn-preview-ansi-"));
+  try {
+    const r = await runList(empty, ["--root", empty]);
+    assertEq(r.code, 1, `refusal should exit 1; got ${r.code}`);
+    if (/\x1b/.test(r.stderr)) throw new Error(`piped stderr contains ANSI escapes: ${JSON.stringify(r.stderr.slice(0, 120))}`);
+    assertMatches(r.stderr, /no \.forsvn\/artifacts/, "refusal reason present");
+    assertMatches(r.stderr, /exit 1/, "refusal carries its exit code");
+    assertMatches(r.stderr, /--root/, "refusal carries a recovery hint");
+  } finally {
+    try { rmSync(empty, { recursive: true, force: true }); } catch {}
   }
 }
 

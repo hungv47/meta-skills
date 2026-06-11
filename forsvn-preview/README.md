@@ -47,6 +47,9 @@ confirm a fresh install is usable, not just installed.
 # Serve one artifact for review (blocks until the operator decides):
 bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<stack>/<skill>-<date>-<slug>.md
 
+# Headless review (SSH/container, no GUI) — requires a real interactive TTY:
+bun forsvn-preview/bin/forsvn-preview.ts <artifact.md> --headless
+
 # Report review state (the PP-3 surface an agent reads first):
 bun forsvn-preview/bin/forsvn-preview.ts list [--root <dir>] [--state pending|decided|all] [--json]
 ```
@@ -55,14 +58,26 @@ What the serve path does:
 
 1. **Renders** the Markdown artifact → an HTML twin (`<same-name>.html`) via `assets/_html/base.html`, themed by the artifact's `stack` frontmatter (`meta`→air, `marketing`→water, `product`→fire, `research`→earth). See `lib/render.ts`.
 2. **Serves** the preview on a CSRF-protected `127.0.0.1` Bun server and opens the browser.
-3. On **Done**, writes `decision_state` (approved | denied | suggested) + comments back into the `.md` frontmatter and archives the HTML to `.forsvn/artifacts/.archive/`.
+3. On **Done**, writes `decision_state` (approved | denied | suggested — `/done` accepts exactly that set; `not_required`/`pending` are 400) + comments back into the `.md` frontmatter and archives the HTML to `.forsvn/artifacts/.archive/`. A POST after the artifact changed on disk is refused (409 re-hash conflict guard, nothing written).
 
 The artifact's `decision_state` must be `pending` to start. The MD is the source of truth; the HTML twin is regenerated each run.
+
+With `--headless` (opt-in, never auto-detected) the CLI prints an `ssh -L`
+tunnel hint and runs a sequential `[a]pprove [d]eny [s]uggest [q]uit` TTY
+prompt through the same write path — the prompt and the browser form race for
+one single-shot decision, first wins. Piped/non-interactive stdin is refused
+with no fabricated decision.
+
+All terminal output renders through `lib/mono.ts`: ANSI-16 only when the
+destination stream is a TTY (and `!NO_COLOR`, `TERM !== "dumb"`), resolved per
+stream; plain ASCII-safe glyphs otherwise; never a painted background; standard
+green `SGR 32`, never bright `SGR 92`.
 
 `list` is read-only: it scans `.forsvn/artifacts/` (excluding `.archive/`), reports
 every artifact carrying a `decision_state`, and buckets them into `pending` vs
 `decided`. `--json` emits `{ ok, project_root, counts, pending[], decided[] }` for
-an agent; the bare form prints a human table.
+an agent; the bare form prints the spec row grammar — `pending (N)` glyph rows
+with the decided queue collapsed behind `decided (N) — use --state all to show`.
 
 Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: roughdraft`).
 
@@ -80,8 +95,10 @@ Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: rou
 | `bin/proof-setup.ts` | One-time guided setup for the Proof collab tier (clone + install + `FORSVN_PROOF_DIR`) |
 | `bin/lint-html-output.ts` | Lints rendered HTML against the review-surface output contract |
 | `lib/render.ts` | `renderArtifactToHtml()` — Markdown → themed HTML (the real `renderReviewSurface`) |
-| `assets/_html/` | `base.html`, `tokens.css`, `chrome.css`, `chrome.js`, per-stack `exemplars/` |
-| `references/` | `review-surface-design.md` (visual tokens) + `review-surface-template.md` (structural HTML contract) |
+| `lib/mono.ts` | Shared terminal renderer — per-stream tier gate (ANSI-16 / plain), T5 glyph triples, row/banner/refusal formatters |
+| `lib/tty-prompt.ts` | Pure state machine for the `--headless` TTY decision prompt |
+| `assets/_html/` | `base.html`, `tokens.css` (incl. the `--decision-*` semantic layer), `chrome.css`, `chrome.js`, per-stack `exemplars/` |
+| `references/` | `review-surface-design.md` (visual tokens + mono/TTY conventions) + `review-surface-template.md` (structural HTML contract) |
 | `test/test-forsvn-preview.ts` | End-to-end CLI test |
 
 ## Contract split

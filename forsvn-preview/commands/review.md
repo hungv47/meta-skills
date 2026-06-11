@@ -37,6 +37,22 @@ between them but is **not** passed verbatim:
   file; the words `pending`/`list` are report-only sentinels, not paths — never
   run `forsvn-preview.ts pending`.
 
+**Output shapes (for parsing/narration).** Human `list` prints a `pending (N)`
+heading with one glyph row per artifact (`●` + path + dim `stack · skill ·
+date · "summary"`), and the decided queue collapsed behind `decided (N) — use
+--state all to show`; `pending (0)` prints "nothing awaiting review" and stops.
+Serve prints a banner whose `serving <path> at <url>` line is one unbroken
+copyable line. Refusals always carry a reason + exit code + recovery hint on
+stderr. Piped output never contains ANSI escapes — you can parse it as plain
+text; prefer `--json` anyway.
+
+**Headless TTY fallback (human-only).** When the operator has no usable GUI
+(SSH/container), THEY can run serve with `--headless` from a real interactive
+terminal: it prints an `ssh -L` tunnel hint and runs an `[a]pprove [d]eny
+[s]uggest [q]uit` keypress prompt through the same write path. You (the agent)
+must NOT run `--headless` — your stdin is not interactive, and the CLI refuses
+it with no decision written. Keep using the normal serve + `--json` flow.
+
 **Path resolution.** `list` reports each entry's `path` **relative to the
 `project_root`** it also returns (both in the JSON). Serve mode resolves its
 argument against *your current directory*, so to be cwd-independent always serve
@@ -89,5 +105,12 @@ relative `path`. (A path the operator types in `$ARGUMENTS` is used as-is.)
 ## Invariants
 - **Human-owned decisions.** You only render, serve, and report. Never POST a
   decision yourself or edit `decision_state` by hand.
+- **`/done` accepts exactly `approved | denied | suggested`.** `not_required`
+  and `pending` are schema states, never recordable decisions — the server
+  400s them. A POST after the artifact changed on disk is refused (409,
+  nothing written) — re-serve to review the current file.
+- **Vocabulary.** `pending / approved / suggested / denied / not_required` are
+  the only decision words on any surface. Never say "rejected" or
+  "changes requested" when relaying an outcome.
 - **One artifact per serve.** To review several, repeat step 4 per artifact.
 - **Local-first.** No cloud, no telemetry; `127.0.0.1` + CSRF only.
