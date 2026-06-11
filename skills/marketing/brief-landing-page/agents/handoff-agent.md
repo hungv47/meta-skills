@@ -203,7 +203,7 @@ Libraries (CDN, version-pinned):
 - GSAP Core v3.12.5, ScrollTrigger v3.12.5, Lenis v1.1.13
   (sync Lenis RAF with GSAP ticker)
 Fonts: Geist Sans (display), Inter (body) — Google Fonts <link>
-Theme tokens: BG #F5F4EE, Text #1A1A1A, Primary #004700, Accent #B7FF6E
+Theme tokens: BG #F5F4EE, Text #1A1A1A, Primary #004700, Accent #74B36B
 Global treatments: NONE (brand_digest does not declare noise/cursor/preloader)
 
 2. ASSET PLACEHOLDERS
@@ -242,7 +242,7 @@ Build a landing page for [Page] targeting [audience].
 Hypothesis: [1-line claim].
 
 Brand:
-- Palette anchors: #004700 (primary), #B7FF6E (accent)
+- Palette anchors: #004700 (primary), #74B36B (accent)
 - Type: Geist Sans display, Inter body
 - Surface: matte, never glass
 

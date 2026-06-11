@@ -9,8 +9,8 @@ load_class: PLAYBOOK
 
 # Review-Surface Design System
 
-> [!IMPORTANT]
-> **Palette superseded by the forest-only "sunset" rebrand (2026-06-07).** Signal Lime `#B7FF6E` and the Pure-Void `#000000` canvas described below are **retired**. The current live tokens are forest-only — Leaf `#74B36B` accent on a Forest Shadow `#0A120D` canvas, Warm Cream text. **Source of truth for live values:** `forsvn-preview/assets/_html/tokens.css` and `_biz-ops/forsvn-ops/brand/DESIGN.md`. The structure below (five regions, stack registers, FOUC handling, motion) is current; the specific hex values and contrast tables describe the retired palette and await a forest-only rewrite (rebrand pass 2).
+> [!NOTE]
+> **Forest-only since the "sunset" rebrand (2026-06-07; this spec synced in rebrand pass 2, 2026-06-11).** Signal Lime `#B7FF6E` and the Pure-Void `#000000` canvas of the original v2/v3 spec are **retired** — the palette below is Leaf `#74B36B` on a Forest Shadow `#0A120D` canvas with Warm Cream text. **Source of truth for live values stays** `forsvn-preview/assets/_html/tokens.css` and `_biz-ops/forsvn-ops/brand/DESIGN.md`; on any disagreement, tokens.css wins.
 
 **The visual contract for every `review_surface: html` artifact. Five-region
 layout, one FORSVN brand chrome, one typography stack, one motion vocabulary
@@ -63,26 +63,28 @@ regardless of skill.
 ```css
 :root {
   /* Chrome surfaces — FORSVN-branded dark across all stacks */
-  --chrome-bg:           #0a0a0a;
-  --chrome-panel:        #111114;
-  --chrome-border:       #1f1f24;
-  --chrome-text:         #e4e4e7;
-  --chrome-text-muted:   #71717a;
-  --chrome-accent:       #B7FF6E;             /* signal-lime — FORSVN brand mark */
-  /* Brand palette (Pure Void canonical) */
-  --brand-lime:          #B7FF6E;
+  --chrome-bg:           #0A120D;             /* Forest Shadow — never pure black */
+  --chrome-panel:        #111B14;
+  --chrome-border:       #1E2A22;
+  --chrome-text:         #EFE9D1;             /* Warm Cream */
+  --chrome-text-muted:   #8A9784;
+  --chrome-accent:       #74B36B;             /* Leaf — FORSVN brand mark (lime retired) */
+  /* Brand palette (sunset / forest-only) */
+  --brand-leaf:          #74B36B;             /* dark-mode accent */
+  --brand-honey:         #F2CE6B;             /* logo field / warm glow */
+  --brand-lime:          #74B36B;             /* legacy alias → Leaf */
   --brand-forest:        #004700;
-  --brand-void:          #000000;
-  --brand-paper:         #F5F5F5;
-  /* Decision-state pill colors */
-  --pill-pending-bg:     #2a2a2e;
-  --pill-pending-fg:     #fbbf24;
-  --pill-approved-bg:    #004700;
-  --pill-approved-fg:    #B7FF6E;
-  --pill-denied-bg:      #7f1d1d;
-  --pill-denied-fg:      #fecaca;
-  --pill-suggested-bg:   #1e3a8a;
-  --pill-suggested-fg:   #93c5fd;
+  --brand-void:          #0A120D;             /* legacy alias → Forest Shadow */
+  --brand-paper:         #F7F0D4;             /* Sunset Cream */
+  /* Decision-state semantic layer (spec §4.1) — pill colors derive from these:
+     text/dot in the state token, fill = same token at 15% badge tint */
+  --decision-pending:    #8A9784;
+  --decision-approved:   #74B36B;             /* Leaf */
+  --decision-suggested:  #E0A23A;
+  --decision-denied:     #E5654D;
+  --pill-approved-bg:    color-mix(in srgb, var(--decision-approved) 15%, transparent);
+  --pill-approved-fg:    var(--decision-approved);
+  /* …same -bg/-fg pattern for pending / denied / suggested */
   /* Unified typography (D14 — one stack everywhere) */
   --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
   --font-body:           'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
@@ -107,7 +109,7 @@ regardless of skill.
 ```
 
 The chrome is **FORSVN-branded across all four stacks** — same Bricolage Grotesque
-wordmark, same signal-lime brand mark, same Pure Void background, same JetBrains
+wordmark, same Leaf brand mark, same Forest Shadow background, same JetBrains
 Mono meta text. Only the **stage backdrop and accent** are themed by stack. This
 is deliberate: a user opening a meta artifact next to an marketing artifact should feel
 they're the same product, in different moods. Same brand, different rooms.
@@ -145,7 +147,7 @@ JetBrains Mono is the canonical mono. Source of truth: [`_biz-ops/brand/forsvn/e
 
 ### 3.2 One motion vocabulary (D14)
 
-Pure-Void brand motion. Clean entrances, no bounce. One easing curve, four
+Forest-Shadow brand motion. Clean entrances, no bounce. One easing curve, four
 timing tokens that map roughly to "snap / hover / enter / ripple". Per-stack
 **timing differences** are kept ≤80ms variance so motion *feels* consistent
 across stacks; per-stack **motion motifs** are gone.
@@ -170,23 +172,23 @@ Per-stack variation is collapsed to **exactly 5 stage tokens**. Everything else
 
 | Stack | `--stage-bg` | `--stage-fg` | `--stage-accent` | `--stage-accent-2` | `--stage-border` |
 |---|---|---|---|---|---|
-| **meta** (`data-stack="air"`) — color register: AIR | `#000000` Pure Void | `#F5F5F5` paper | `#B7FF6E` signal-lime | `#004700` forest | `#1A1A1A` |
-| **marketing** (`data-stack="water"`) — color register: WATER | `#050d18` midnight | `#f0f6ff` ice | `#B7FF6E` signal-lime | `#004700` forest | `#1a2e44` |
-| **product** (`data-stack="fire"`) — color register: FIRE | `#1a1410` warm char. | `#fdf4ee` cream-fg | `#B7FF6E` signal-lime | `#004700` forest | `#2d2520` |
-| **research** (`data-stack="earth"`) — color register: EARTH (only light-mode stack) | `#f4ede0` cream | `#1a1410` ink | `#004700` forest | `#B7FF6E` signal-lime | `#c4b594` |
+| **meta** (`data-stack="air"`) — color register: AIR | `#0A120D` Forest Shadow | `#EFE9D1` warm cream | `#74B36B` leaf | `#004700` forest | `#1E2A22` |
+| **marketing** (`data-stack="water"`) — color register: WATER | `#0C1A13` deep green (blue retired) | `#EFE9D1` warm cream | `#74B36B` leaf | `#004700` forest | `#1E2E22` |
+| **product** (`data-stack="fire"`) — color register: FIRE | `#1a1410` warm char. | `#fdf4ee` cream-fg | `#74B36B` leaf | `#004700` forest | `#2d2520` |
+| **research** (`data-stack="earth"`) — color register: EARTH (only light-mode stack) | `#F7F0D4` Sunset Cream | `#15190F` ink | `#004700` forest | `#74B36B` leaf | `#E3D7A8` |
 
-**Why the swap on research:** signal-lime on cream is `~1.3:1` — fails WCAG AA
+**Why the swap on research:** leaf on Sunset Cream is `~2.2:1` — fails WCAG AA
 for any text role. Research is the only light-mode stack, so it pulls forest
-into the primary stage-accent slot (forest on cream is `~8.5:1`, well above AA)
-and keeps signal-lime as decorative `--stage-accent-2` (used for hover states,
+into the primary stage-accent slot (forest on cream is `~9.7:1`, well above AA)
+and keeps leaf as decorative `--stage-accent-2` (used for hover states,
 borders, dot indicators — non-text usages where AA doesn't apply). All four
-stacks still draw from the same FORSVN palette (`lime + forest`); only the
+stacks still draw from the same FORSVN palette (`leaf + forest`); only the
 ordering swaps for light-mode legibility.
 
-**Brand chrome is invariant.** The signal-lime FORSVN wordmark and topbar
-brand-mark indicator are `var(--chrome-accent)` (always `#B7FF6E`) regardless
-of stack — the chrome bg is always Pure Void near-black, so signal-lime always
-holds AA in chrome.
+**Brand chrome is invariant.** The Leaf FORSVN wordmark and topbar
+brand-mark indicator are `var(--chrome-accent)` (always `#74B36B`) regardless
+of stack — the chrome bg is always Forest Shadow near-black, so Leaf always
+holds AA in chrome (`7.6:1`).
 
 ### 3.4 Derived helpers (shared)
 
@@ -224,27 +226,34 @@ for any text role; decorative non-text usage is allowed below that bar.
 
 | Stack | `fg` on `bg` | `fg-muted` on `bg` | `accent` on `bg` | `accent-2` on `bg` |
 |---|---|---|---|---|
-| **meta** (Pure Void) | `#F5F5F5/#000` → 19.3:1 ✅ | derived 7.2:1 ✅ | `#B7FF6E/#000` → 14.8:1 ✅ | `#004700/#000` → 1.4:1 (non-text only) |
-| **marketing** (midnight) | `#f0f6ff/#050d18` → 16.7:1 ✅ | derived 6.4:1 ✅ | `#B7FF6E/#050d18` → 12.9:1 ✅ | `#004700/#050d18` → 1.3:1 (non-text only) |
-| **product** (warm char.) | `#fdf4ee/#1a1410` → 14.3:1 ✅ | derived 5.6:1 ✅ | `#B7FF6E/#1a1410` → 12.1:1 ✅ | `#004700/#1a1410` → 1.4:1 (non-text only) |
-| **research** (cream) | `#1a1410/#f4ede0` → 14.6:1 ✅ | derived 5.8:1 ✅ | `#004700/#f4ede0` → 8.5:1 ✅ | `#B7FF6E/#f4ede0` → 1.3:1 (non-text only) |
+| **meta** (Forest Shadow) | `#EFE9D1/#0A120D` → 15.6:1 ✅ | derived 5.8:1 ✅ | `#74B36B/#0A120D` → 7.6:1 ✅ | `#004700/#0A120D` → 1.7:1 (non-text only) |
+| **marketing** (deep green) | `#EFE9D1/#0C1A13` → 14.7:1 ✅ | derived 5.6:1 ✅ | `#74B36B/#0C1A13` → 7.2:1 ✅ | `#004700/#0C1A13` → 1.6:1 (non-text only) |
+| **product** (warm char.) | `#fdf4ee/#1a1410` → 16.8:1 ✅ | derived 6.3:1 ✅ | `#74B36B/#1a1410` → 7.3:1 ✅ | `#004700/#1a1410` → 1.7:1 (non-text only) |
+| **research** (Sunset Cream) | `#15190F/#F7F0D4` → 15.6:1 ✅ | derived 4.2:1 ⚠ large/secondary text only | `#004700/#F7F0D4` → 9.7:1 ✅ | `#74B36B/#F7F0D4` → 2.2:1 (non-text only) |
 
-`--stage-accent-2` is always the *opposite* token in the lime/forest pair —
+`--stage-accent-2` is always the *opposite* token in the leaf/forest pair —
 intentionally low-contrast on the same bg, used only for borders, hover tints,
-or decorative dots/lines. Exemplars do not use it for text.
+or decorative dots/lines. Exemplars do not use it for text. Research's derived
+`fg-muted` (58% ink on cream) sits at 4.2:1 — below the 4.5:1 body bar — so on
+the earth stack muted text is held to large/secondary roles only.
 
 ---
 
 ## 4. Font loading
 
 One unified font block on every page — all four stacks load the same families
-via a single `<link rel="stylesheet">` with `display=swap` to avoid FOIT.
+via a single self-hosted stylesheet (`font-display: swap` in every `@font-face`
+to avoid FOIT). The hosted Google Fonts `<link>` of the original spec is
+retired — it was a review-time beacon to Google; v0 is local-first and the
+surface now makes zero external requests.
 
 ```html
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./fonts.css">
 ```
+
+`fonts.css` + the woff2 files (latin / latin-ext / vietnamese subsets of all
+three families, OFL 1.1) live in `assets/_html/fonts/` and resolve through the
+preview CLI's bundled-asset fallback, like the rest of the chrome.
 
 This is intentionally **identical across exemplars** — `grep "font-family"
 references/_html/exemplars/*.html` should return only `var(--font-head)`,

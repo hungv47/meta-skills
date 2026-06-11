@@ -214,7 +214,7 @@ For asset types where some patterns are N/A (e.g., motion + audio rows on a stat
 
 | Dimension | Score | Notes |
 |-----------|-------|-------|
-| 1. Brand fidelity | 4/4 | #004700 wall + #B7FF6E headline accent + Geist Sans Bold all match DESIGN.md tokens |
+| 1. Brand fidelity | 4/4 | #004700 wall + #74B36B headline accent + Geist Sans Bold all match DESIGN.md tokens |
 | 2. Sacred respected | 4/4 | Logo at 60px bottom-right per BRAND.md |
 | 3. Hierarchy | 3/4 | Empty room reads first; headline second; logo tertiary. Right-side chair mildly competes. |
 | 4. Composition | 4/4 | Subject left third, headline lower-left negative space, balanced |

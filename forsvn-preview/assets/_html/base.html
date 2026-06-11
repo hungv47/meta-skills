@@ -32,16 +32,17 @@
        for the renderer's safeSrc local-only rule. `file:` keeps relative images
        working when the HTML twin is opened directly via file:// (opaque origin,
        so 'self' matches nothing there) and is inert on the served path (http
-       pages can't load file: subresources). Deliberately scoped to img-src so
-       the hosted font links below keep working. -->
+       pages can't load file: subresources). Scoped to img-src — the page
+       makes no other external requests (type is self-hosted below). -->
   <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: file:">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{title}} · {{skill}} · {{date}}</title>
 
-  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro + JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Be+Vietnam+Pro:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro +
+       JetBrains Mono — self-hosted (fonts.css + ./fonts/*.woff2); the hosted
+       Google Fonts links were a review-time beacon, retired with v0's
+       local-first rule. Resolved by the preview CLI's bundled-asset fallback. -->
+  <link rel="stylesheet" href="./fonts.css">
 
   <link rel="stylesheet" href="{{tokens_css_href}}">
   <link rel="stylesheet" href="{{chrome_css_href}}">

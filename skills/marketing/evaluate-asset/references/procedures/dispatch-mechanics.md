@@ -116,7 +116,7 @@ bun scripts/manifest-sync.ts
 - **Confidence honesty:** Confidence is one of `high | medium | low | blocked`. Low-confidence and no-baseline findings ship as `watch` or `blocked`, not `keep`. Critic dimension "Attribution Honesty" enforces.
 - **Return-leg discipline:** Score the re-ingested render, never the prompt. Critical Gate 2 + Critic Hard Fail #2 enforce.
 - **Brief-fidelity discipline:** Every HARD acceptance criterion is checked against the render; a hard miss blocks `keep`. Critic Hard Fail #11 enforces.
-- **Brand-fit discipline:** Palette / Signal-Lime <10% / type / logo checked against brand tokens; an off-brand keep is Critic Hard Fail #12.
+- **Brand-fit discipline:** Palette / Leaf <10% / type / logo checked against brand tokens; an off-brand keep is Critic Hard Fail #12.
 - **Boundary respect:** Recommendations route next work (e.g., "Route next work to: produce-asset --rev=N+1 — re-render, constrain in-image headline to ≤4 words"). Do NOT write the next prompt or composition — that's produce-asset's / brief-graphic's job. Critical Gate 8 + Critic dimension "Decision Discipline" enforce.
 - **Component-granular recommendations:** Name the specific component to change (the copy slot | the palette | the aspect ratio | the variant pick), not "redo the asset."
 - **Learning promotion conservatism:** Default to NOT promote. Criteria: high-confidence + status keep/discard + lesson reusable beyond this exact render + engine/brief-type/brand-scoped + a baseline exists.

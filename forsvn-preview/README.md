@@ -97,7 +97,7 @@ Roughdraft remains the escape-hatch for Markdown-first review (`review_tool: rou
 | `lib/render.ts` | `renderArtifactToHtml()` — Markdown → themed HTML (the real `renderReviewSurface`) |
 | `lib/mono.ts` | Shared terminal renderer — per-stream tier gate (ANSI-16 / plain), T5 glyph triples, row/banner/refusal formatters |
 | `lib/tty-prompt.ts` | Pure state machine for the `--headless` TTY decision prompt |
-| `assets/_html/` | `base.html`, `tokens.css` (incl. the `--decision-*` semantic layer), `chrome.css`, `chrome.js`, per-stack `exemplars/` |
+| `assets/_html/` | `base.html`, `tokens.css` (incl. the `--decision-*` semantic layer), `chrome.css`, `chrome.js`, `fonts.css` + self-hosted `fonts/*.woff2` (retires the Google Fonts beacon), per-stack `exemplars/` |
 | `references/` | `review-surface-design.md` (visual tokens + mono/TTY conventions) + `review-surface-template.md` (structural HTML contract) |
 | `test/test-forsvn-preview.ts` | End-to-end CLI test |
 

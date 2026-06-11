@@ -13,7 +13,7 @@ Score each of the 7 dimensions 0-10 per `references/rubric.md`. Aggregate agains
 3. **Attribution Honesty** — render engine + execution_mode, render settings, known-engine failure modes, and subjective-vs-measurable split are stated without overclaiming.
 4. **Decision Discipline** — keep/discard/watch/blocked follows recommendation-agent's Decision Rules; verdict matches the hard-constraint check + brand-fit read, not render beauty.
 5. **Brief-Fidelity Discrimination** — each HARD acceptance criterion was checked against the actual render; a hard-constraint miss blocked `keep`; soft preferences were not allowed to read as hard failures.
-6. **Render-Quality & Brand-Fit** — technical integrity (text legibility, artifacts, resolution) AND brand-token adherence (palette, type, logo safe-zone, Signal-Lime <10%) were assessed; an off-brand or broken render did not earn `keep`.
+6. **Render-Quality & Brand-Fit** — technical integrity (text legibility, artifacts, resolution) AND brand-token adherence (palette, type, logo safe-zone, Leaf <10%) were assessed; an off-brand or broken render did not earn `keep`.
 7. **Ledger Correctness** — exactly one valid `results.tsv` row, no tabs in description, asset id + engine present in description, artifact path relative to loop, status ∈ `{keep, discard, watch, blocked}`.
 
 ## Pass Gate
@@ -64,7 +64,7 @@ Any of these = FAIL regardless of dimension scores:
 9. Learning promoted from low-confidence, blocked, OR single-render-with-no-baseline evidence.
 10. A variant set exists but the picked variant was not identified (scored an ambiguous "the asset").
 11. A `keep` verdict on a render that missed a HARD acceptance criterion (wrong aspect ratio, absent required copy slot, off-brand palette) — visual polish does not rescue a hard-constraint miss.
-12. Brand-fit failure ignored (Signal-Lime >10%, off-token palette, logo safe-zone violation) while status = `keep`.
+12. Brand-fit failure ignored (Leaf >10%, off-token palette, logo safe-zone violation) while status = `keep`.
 
 ## Revision Loop
 

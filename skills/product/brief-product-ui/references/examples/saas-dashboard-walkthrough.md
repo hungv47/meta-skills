@@ -25,7 +25,7 @@ intake through critic, all 9 artifact sections illustrated, including a realisti
 Skill finds `map-user-flow` artifact at
 `.forsvn/artifacts/product/flow/team-billing-dashboard-2026-06-01.md`.
 Parseable: 4 screens declared (Billing Overview, Manage Plan, Payment Methods, Invoices).
-Brand source: FORSVN house tokens (dark default; Signal Lime `#B7FF6E` state-cue only; matte).
+Brand source: FORSVN house tokens (dark default; Leaf `#74B36B` state-cue only; matte).
 Target engine: coding-agent (no design-tool connected). **GO.**
 
 No invented screens permitted from this point — every spec section must trace back to the flow.
@@ -68,16 +68,16 @@ Token map excerpt:
 |---|---|---|
 | Page background | `color.bg.base` (`ink-950`) | All screens |
 | Section surface | `color.bg.elevated` (`ink-900`) | Cards, panels |
-| Primary CTA ("Upgrade") | `color.action.primary` → `signal-lime.500` | Resting only |
-| Active plan badge | `color.accent.active` → `signal-lime.500` | Current plan `PlanCard` only |
+| Primary CTA ("Upgrade") | `color.action.primary` → `leaf.500` | Resting only |
+| Active plan badge | `color.accent.active` → `leaf.500` | Current plan `PlanCard` only |
 | Payment-failed banner | `color.feedback.error` → `red.600` | payment-failed state |
 | Body text | `color.text.primary` (`ink-50`) | |
 | Secondary text | `color.text.secondary` (`ink-400`) | |
-| Focus ring | `color.focus` → `signal-lime.500` | All interactive elements |
+| Focus ring | `color.focus` → `leaf.500` | All interactive elements |
 | Border radius (card) | `radius.card` (`6px`) | |
 | Spacing unit | `space.4` (`16px`) base grid | |
 
-Signal Lime appears in exactly 3 places: active plan badge, primary CTA resting state, focus ring.
+Leaf appears in exactly 3 places: active plan badge, primary CTA resting state, focus ring.
 No raw hex values — all token references.
 
 ## Merge step
@@ -156,11 +156,11 @@ Critic runs all 8 checkpoints. Initial pass:
 | CP-08 | No-render discipline | PASS |
 
 **CP-03 FAIL detail:** in the Interaction & State Spec, the `Button` hover state was written
-as `background: #B7FF6E` — a raw hex, not a token reference. Violates the "tokens not raw values"
+as `background: #74B36B` — a raw hex, not a token reference. Violates the "tokens not raw values"
 rule (Gate 4 / CP-03).
 
 **Fix cycle:** critic re-dispatches `token-application-agent` on the hover state row.
-Agent replaces `#B7FF6E` with `color.action.primary-hover`. Critic re-evaluates CP-03:
+Agent replaces `#74B36B` with `color.action.primary-hover`. Critic re-evaluates CP-03:
 no raw values remain in the spec. **PASS.**
 
 Final verdict: **8/8 PASS. Gate cleared.**
@@ -180,7 +180,7 @@ Below are compressed illustrations of each of the 9 required sections — not th
 **§1 TL;DR**
 > Team Billing Dashboard UI spec: 4 screens (Billing Overview, Manage Plan, Payment Methods,
 > Invoices), 13 components (8 primitives + 5 composites), FORSVN house tokens (dark default,
-> Signal Lime state-cue only), target engine: coding-agent.
+> Leaf state-cue only), target engine: coding-agent.
 
 **§2 Screen Inventory** — 4-row table as shown in Layer 1 above.
 

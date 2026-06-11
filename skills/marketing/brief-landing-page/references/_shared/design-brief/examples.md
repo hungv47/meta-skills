@@ -23,14 +23,14 @@ End-to-end runs of design-brief across all four downstream routes. Used as ancho
 ### Step 0: Pre-Dispatch
 
 - BRAND.md present: forsvn brand, archetype "restrained editorial."
-- DESIGN.md present: Deep Forest #004700, Signal Lime #B7FF6E, Geist Sans display, no glass.
+- DESIGN.md present: Deep Forest #004700, Leaf #74B36B, Geist Sans display, no glass.
 - ASSETS.md row matches: `brand/og/blog/standups-killed.png — 1200×630 — [ ]`
 - Route auto-selected: **P** (photographic concept fits asset-type table).
 
 ### Layer 1 (parallel)
 
 **Brand-anchor-agent output:**
-- Palette: primary-anchor #004700, accent #B7FF6E, surface #FAFAFA, text-on-primary #FFFFFF
+- Palette: primary-anchor #004700, accent #74B36B, surface #FAFAFA, text-on-primary #FFFFFF
 - Typography: display-l = Geist Sans Bold 96px (for overlay headline)
 - Sacred respected: logo white at 60px height, bottom-right, 60px from edges
 - Voice: forbidden — leverage / unlock / seamlessly / robust; preferred — concrete numbers
@@ -65,7 +65,7 @@ wide shot of an empty corporate conference room at dusk, abandoned ergonomic mes
 **Variants:** lighting (dusk → noon), framing (wide → tight).
 
 **Post-processing:**
-- Overlay "12 hours/week. Gone." Geist Sans Bold 96px #B7FF6E bottom-left, 60px from edges
+- Overlay "12 hours/week. Gone." Geist Sans Bold 96px #74B36B bottom-left, 60px from edges
 - Overlay logo white 60px height bottom-right, 60px from edges
 - Tool: Pencil (`mcp__pencil__batch_design`)
 
@@ -138,7 +138,7 @@ Brief A:
 ```
 mcp__pencil__get_editor_state
 mcp__pencil__open_document("new")
-mcp__pencil__set_variables({ "primary": "#004700", "accent": "#B7FF6E", "surface": "#FAFAFA" })
+mcp__pencil__set_variables({ "primary": "#004700", "accent": "#74B36B", "surface": "#FAFAFA" })
 mcp__pencil__batch_design([8 frames, each 1080x1350, populated])
 mcp__pencil__get_screenshot
 ```

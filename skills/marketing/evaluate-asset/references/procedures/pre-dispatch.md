@@ -35,7 +35,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what changed this cycle + prior verdicts
 5. **Source brief** at `.forsvn/artifacts/marketing/design-briefs/[slug].md` — the acceptance criteria are the benchmark for the Brief-Fidelity Check
 6. **The re-ingested asset** at `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — confirm `asset_picked` / `assets`; **open the image with Read** to confirm it is viewable
-7. Brand tokens: `brand/BRAND.md`, `brand/DESIGN.md` — palette, type, logo safe-zone, Signal-Lime <10%
+7. Brand tokens: `brand/BRAND.md`, `brand/DESIGN.md` — palette, type, logo safe-zone, Leaf <10%
 8. Relevant canonical artifacts: `research/icp-research.md` if audience-fit matters
 
 If `.forsvn/index/manifest.json` is stale or missing, run:

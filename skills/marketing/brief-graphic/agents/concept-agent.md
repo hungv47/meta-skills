@@ -120,7 +120,7 @@ If any two columns share 3+ axis values → **REVISE** before returning. Two con
 ### Examples
 
 **Asset:** Instagram carousel announcing pricing change
-**Brand digest:** Deep Forest #004700 + Signal Lime #B7FF6E, Geist Sans, restrained editorial archetype, no glass.
+**Brand digest:** Deep Forest #004700 + Leaf #74B36B, Geist Sans, restrained editorial archetype, no glass.
 
 ✅ Good 3-concept set:
 - **A. Receipt** — typographic, full-bleed receipt design, hours/dollars enumerated, lime accents on totals. Mode: typography. Mood: restrained, factual.

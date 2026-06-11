@@ -140,7 +140,7 @@ I need an Open Graph share image (1200×630px) for a blog post titled "Why we ki
 
 Mood: melancholic, editorial, restrained.
 Composition: wide shot of an empty conference room at dusk, abandoned mesh chairs, low light.
-Palette: anchor #004700 (deep forest), accent #B7FF6E (signal lime), photographic primary tone.
+Palette: anchor #004700 (deep forest), accent #74B36B (leaf), photographic primary tone.
 Type: headline "12 hours/week. Gone." in Geist Sans Bold, accent color, lower-left.
 References for direction (NOT to copy): editorial restraint of late-period Helmut Newton conference shots.
 ```

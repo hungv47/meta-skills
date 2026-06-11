@@ -57,7 +57,11 @@ const MAX_ROOT_WALK_DEPTH = 12;              // upper bound when probing for .gi
 // copy assets next to its artifact.
 const CLI_INSTALL_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const BUNDLED_CHROME_DIR = join(CLI_INSTALL_ROOT, "assets", "_html");
-const BUNDLED_CHROME_ASSETS = new Set(["tokens.css", "chrome.css", "chrome.js", "base.html"]);
+const BUNDLED_CHROME_ASSETS = new Set(["tokens.css", "chrome.css", "chrome.js", "base.html", "fonts.css"]);
+// Self-hosted woff2 files referenced by fonts.css as `./fonts/<name>` — same
+// fallback as above but namespaced under fonts/ so an arbitrary project file
+// can't shadow a font (and vice versa). Extension-pinned to .woff2.
+const BUNDLED_FONT_RE = /(?:^|\/)fonts\/([a-z0-9-]+\.woff2)$/;
 
 const VALID_DECISIONS = ["approved", "denied", "suggested"] as const;
 type Decision = typeof VALID_DECISIONS[number];
@@ -657,17 +661,21 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(canonical) } });
       }
       // Project-rooted lookup missed. If the request is for a bundled chrome
-      // asset by basename (tokens.css / chrome.css / chrome.js / base.html),
-      // serve it from the CLI's install dir so skill-emitted previews like
+      // asset by basename (tokens.css / chrome.css / chrome.js / base.html /
+      // fonts.css) or a self-hosted font (fonts/<name>.woff2), serve it from
+      // the CLI's install dir so skill-emitted previews like
       // `<userProject>/brand/BRAND.html` with `<link href="./tokens.css">`
       // resolve cleanly without forcing every emitter to co-locate assets.
       const base = basename(rel);
-      if (BUNDLED_CHROME_ASSETS.has(base)) {
-        const bundled = join(BUNDLED_CHROME_DIR, base);
-        if (existsSync(bundled) && !statSync(bundled).isDirectory()) {
-          const body = readFileSync(bundled);
-          return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(bundled) } });
-        }
+      const fontMatch = BUNDLED_FONT_RE.exec(rel);
+      const bundled = fontMatch
+        ? join(BUNDLED_CHROME_DIR, "fonts", fontMatch[1])
+        : BUNDLED_CHROME_ASSETS.has(base)
+          ? join(BUNDLED_CHROME_DIR, base)
+          : null;
+      if (bundled && existsSync(bundled) && !statSync(bundled).isDirectory()) {
+        const body = readFileSync(bundled);
+        return new Response(body, { headers: { ...noStore, "Content-Type": guessMime(bundled) } });
       }
       return new Response("not found", { status: 404, headers: noStore });
     }
@@ -969,6 +977,7 @@ function guessMime(path: string): string {
   if (path.endsWith(".js")) return "text/javascript; charset=utf-8";
   if (path.endsWith(".json")) return "application/json; charset=utf-8";
   if (path.endsWith(".svg")) return "image/svg+xml";
+  if (path.endsWith(".woff2")) return "font/woff2";
   return "application/octet-stream";
 }
 

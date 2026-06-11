@@ -229,4 +229,4 @@ In order. Renaming or reordering breaks downstream consumers + critic.
 
 - Date: ISO `YYYY-MM-DD` in frontmatter; in body text use the same format for consistency.
 - Resolution: state pixel dimensions explicitly when the platform has a canonical size (e.g., IG square = 1080×1080); use "aspect-only" when the renderer chooses (e.g., Midjourney with `--ar 1:1` outputs at its current default).
-- Hex: 6-character lowercase with `#` prefix (`#b7ff6e`, not `#B7FF6E` or `b7ff6e`).
+- Hex: 6-character lowercase with `#` prefix (`#74b36b`, not `#74B36B` or `74b36b`).

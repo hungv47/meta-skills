@@ -22,9 +22,9 @@ load_class: ANTI-PATTERN
 **Fix:** Brief-Fidelity Discrimination dim requires every hard criterion checked against the render; a hard miss blocks `keep`. Critic Hard Fail #11 enforces.
 
 ### 3. Off-brand render kept on visual appeal
-**Pattern:** The render uses a vivid palette that drifts off the brand tokens, or floods the frame with Signal-Lime; the artifact keeps it because "it pops."
-**Why it fails:** Off-brand assets erode the brand system the loop is supposed to protect. Signal-Lime is a state-cue (<10%), not a fill.
-**Fix:** Render-Quality & Brand-Fit dim checks palette adherence, the Signal-Lime <10% rule, type, and logo safe-zone against the brand tokens. Critic Hard Fail #12 enforces a brand-fit failure under a `keep`.
+**Pattern:** The render uses a vivid palette that drifts off the brand tokens, or floods the frame with Leaf; the artifact keeps it because "it pops."
+**Why it fails:** Off-brand assets erode the brand system the loop is supposed to protect. Leaf is a state-cue (<10%), not a fill.
+**Fix:** Render-Quality & Brand-Fit dim checks palette adherence, the Leaf <10% rule, type, and logo safe-zone against the brand tokens. Critic Hard Fail #12 enforces a brand-fit failure under a `keep`.
 
 ### 4. Scope drift to "re-render everything"
 **Pattern:** One copy slot was mangled; recommendation suggests "new composition + new palette + new engine + new aspect ratio + new brief."

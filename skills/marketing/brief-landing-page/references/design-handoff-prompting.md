@@ -41,7 +41,7 @@ Fields 4, 5, and 8 are **verbatim lifts** — paraphrase is drift. Field 5 is th
 
 Restate, in the opening block:
 
-- **Palette** — every hex with its token name (`#004700` primary, `#B7FF6E` accent, `#F5F4EE` warm-neutral background). Not "the brand palette."
+- **Palette** — every hex with its token name (`#004700` primary, `#74B36B` accent, `#F5F4EE` warm-neutral background). Not "the brand palette."
 - **Type** — display + body family, weights used, the size/leading scale. Not "brand typography."
 - **Spacing** — the scale or rhythm the page uses. Not "consistent spacing."
 - **Surface** — the architectural rule (matte / no glass / paper). Not "on-brand surfaces."

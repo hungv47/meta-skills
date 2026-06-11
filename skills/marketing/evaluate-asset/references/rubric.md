@@ -117,15 +117,15 @@ Was each HARD acceptance criterion checked against the actual render? Was a hard
 
 ## 6. Render-Quality & Brand-Fit (0-10)
 
-Was technical render integrity assessed (text legibility, artifacts, resolution) AND brand-token adherence (palette, type, logo safe-zone, Signal-Lime <10%)? Did a broken or off-brand render get refused?
+Was technical render integrity assessed (text legibility, artifacts, resolution) AND brand-token adherence (palette, type, logo safe-zone, Leaf <10%)? Did a broken or off-brand render get refused?
 
 | Band | Description |
 |------|-------------|
-| 9-10 | Technical integrity assessed (in-image text legible, no malformed subject, resolution sufficient for the surface); brand tokens checked (palette on-token, Signal-Lime <10%, type stack, logo safe-zone); an off-brand or broken render was named as such and did not earn `keep` |
+| 9-10 | Technical integrity assessed (in-image text legible, no malformed subject, resolution sufficient for the surface); brand tokens checked (palette on-token, Leaf <10%, type stack, logo safe-zone); an off-brand or broken render was named as such and did not earn `keep` |
 | 7-8 | Both assessed; verdict rests on them; one minor slip — a near-token palette not explicitly flagged but verdict correct |
 | 5-6 | Technical OR brand assessed but not both; the cleaner of the two carried the read implicitly |
 | 3-4 | Render quality OR brand-fit assessed only as "looks fine"; an artifact or off-token fill went unflagged |
-| 0-2 | A `keep` rests on a broken render (mangled text, malformed subject) OR an off-brand palette / Signal-Lime overrun was ignored |
+| 0-2 | A `keep` rests on a broken render (mangled text, malformed subject) OR an off-brand palette / Leaf overrun was ignored |
 
 **Auto-fail conditions:**
 
@@ -162,7 +162,7 @@ A dim score is only valid if the evaluator can name **what evidence would have m
 - Attribution Honesty 6 → 8: name the render engine's known text-mangling failure mode as a confounder.
 - Decision Discipline 6 → 8: tighten routing from "brief rewrite" to "produce-asset re-render with a tightened prompt".
 - Brief-Fidelity 7 → 9: check each hard criterion against the render with visible evidence and rest the verdict on it.
-- Render-Quality & Brand-Fit 6 → 8: state the palette delta against the brand tokens and the Signal-Lime share.
+- Render-Quality & Brand-Fit 6 → 8: state the palette delta against the brand tokens and the Leaf share.
 - Ledger Correctness 8 → 10: include the asset id + engine verbatim in the description.
 
 If you can't name the next-band evidence, you're scoring vibes, not the rubric.
@@ -177,7 +177,7 @@ For each per-dim score in the Critic Verdict, include 1 sentence of rationale ti
 - attribution_honesty: 8 — engine + execution_mode stated; text-mangling failure mode named; one seed-variance confounder missed
 - decision_discipline: 9 — verdict matches the hard-constraint check; routing to produce-asset re-render is correctly narrow
 - brief_fidelity_discrimination: 9 — all 5 hard criteria checked against the render; aspect-ratio miss blocked keep
-- render_quality_and_brand_fit: 8 — palette read against tokens; Signal-Lime 7%; in-image headline legible
+- render_quality_and_brand_fit: 8 — palette read against tokens; Leaf 7%; in-image headline legible
 - ledger_correctness: 10 — one row; description includes "v3 / fal"; 8 columns clean
 ```
 

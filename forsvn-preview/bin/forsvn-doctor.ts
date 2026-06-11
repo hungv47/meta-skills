@@ -46,9 +46,11 @@ function checkAssets(): Check {
   // "review surface ✓" overpromises.
   const here = dirname(fileURLToPath(import.meta.url)); // .../forsvn-preview/bin
   const dir = resolve(here, "..", "assets", "_html");
-  // The rendered page needs all four bundled assets, not just the template —
-  // a partial install missing chrome.css/js or tokens.css still can't render.
-  const missing = ["base.html", "chrome.css", "chrome.js", "tokens.css"]
+  // The rendered page needs all five bundled assets, not just the template —
+  // a partial install missing chrome.css/js, tokens.css or fonts.css still
+  // can't render correctly (fonts.css carries the self-hosted brand type;
+  // missing woff2 files degrade to system faces, so only the css is gating).
+  const missing = ["base.html", "chrome.css", "chrome.js", "tokens.css", "fonts.css"]
     .map((f) => resolve(dir, f))
     .filter((p) => !existsSync(p));
   return missing.length === 0

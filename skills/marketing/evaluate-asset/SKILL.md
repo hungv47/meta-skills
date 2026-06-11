@@ -40,7 +40,7 @@ metadata:
 
 **Required:** loop slug/path · re-ingested asset path/id (the `asset_picked` / `assets` attachment on `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — image / graphic / carousel frame) · source brief artifact (`.forsvn/artifacts/marketing/design-briefs/[slug].md`) · render engine + `execution_mode` (brief-only / assisted / direct) · primary metric (brief-fidelity score · acceptance-criteria pass rate · or a downstream metric if the asset is live).
 
-**Recommended:** brand tokens (`brand/BRAND.md` + `brand/DESIGN.md` — palette, type, logo safe-zone, Signal-Lime <10%) · the brief's explicit acceptance criteria (composition, required copy slots, aspect ratio/dimensions, art direction) · variant set with the picked variant flagged · baseline/prior-cycle render · downstream usage context (where the asset will ship).
+**Recommended:** brand tokens (`brand/BRAND.md` + `brand/DESIGN.md` — palette, type, logo safe-zone, Leaf <10%) · the brief's explicit acceptance criteria (composition, required copy slots, aspect ratio/dimensions, art direction) · variant set with the picked variant flagged · baseline/prior-cycle render · downstream usage context (where the asset will ship).
 
 ## Outputs
 
@@ -81,7 +81,7 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — asset-eval rows + 4 cross-cutting marketing-stack rows. Most common: scoring the prompt instead of the re-ingested render (Gate 2 + Critic Hard Fail), a pretty render that misses a hard brief constraint read as keep (Gate 5 + Critic "Brief-Fidelity Discrimination"), off-brand palette / Signal-Lime overrun ignored (Critic "Render-Quality & Brand-Fit"), scope drift to produce-asset re-rendering (Gate 8 + Critic "Decision Discipline").
+[`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — asset-eval rows + 4 cross-cutting marketing-stack rows. Most common: scoring the prompt instead of the re-ingested render (Gate 2 + Critic Hard Fail), a pretty render that misses a hard brief constraint read as keep (Gate 5 + Critic "Brief-Fidelity Discrimination"), off-brand palette / Leaf overrun ignored (Critic "Render-Quality & Brand-Fit"), scope drift to produce-asset re-rendering (Gate 8 + Critic "Decision Discipline").
 
 ## Durable Rules (protected)
 

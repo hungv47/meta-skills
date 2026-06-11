@@ -15,7 +15,7 @@ All tokens are CSS custom properties. Use semantic names — never literals.
 | Surface (layered panels) | `--color-surface-<N>` | `--color-surface-1`, `--color-surface-2` |
 | Text | `--color-text[-<role>]` | `--color-text`, `--color-text-muted`, `--color-text-disabled` |
 | Border | `--color-border[-<role>]` | `--color-border`, `--color-border-subtle` |
-| Accent / brand cue | `--color-<name>` | `--color-signal-lime`, `--color-deep-forest` |
+| Accent / brand cue | `--color-<name>` | `--color-leaf`, `--color-deep-forest` |
 | Interactive states | `--color-interactive-<state>[-<dimension>]` | `--color-interactive-hover-bg`, `--color-interactive-active-bg` |
 | Semantic / status | `--color-<semantic>` | `--color-success`, `--color-warning`, `--color-danger` |
 
@@ -60,9 +60,9 @@ Every interactive element must carry all reachable state deltas. List only the d
 | Default | base token (e.g. `--color-surface-1`) |
 | Hover | `--color-interactive-hover-bg` (bg shifts); text stays unless noted |
 | Active / pressed | `--color-interactive-active-bg`; accent cue may appear |
-| Focus | focus ring = `--color-signal-lime` at width `--focus-ring-width`; never omit on keyboard-reachable elements |
+| Focus | focus ring = `--color-leaf` at width `--focus-ring-width`; never omit on keyboard-reachable elements |
 | Disabled | `--color-text-disabled` for text; `--color-interactive-disabled-bg` for fill; `--color-border-subtle` for border; no state transitions |
-| Selected | `--color-deep-forest` as fill anchor; `--color-signal-lime` as active indicator (state cue) |
+| Selected | `--color-deep-forest` as fill anchor; `--color-leaf` as active indicator (state cue) |
 
 ---
 
@@ -73,7 +73,7 @@ The literal hex values appear here **only** as the brand source being tokenized.
 | Brand value | Token | Allowed role | Constraint |
 |-------------|-------|-------------|------------|
 | Ink `#0C1211` | `--color-bg` | Default dark background | Never map any element to pure black; Ink is the floor |
-| Signal Lime `#B7FF6E` | `--color-signal-lime` | State cue: active selection, focus ring, primary CTA, "ready" indicator | <10 % of pixels; never a large-surface fill, panel background, or header fill |
+| Leaf `#74B36B` | `--color-leaf` | State cue: active selection, focus ring, primary CTA, "ready" indicator | <10 % of pixels; never a large-surface fill, panel background, or header fill |
 | Deep Forest `#004700` | `--color-deep-forest` | Selected / active fill anchor | Only in selected or active state roles |
 | — | `--color-surface-1..N` | Panel / card fills | Matte only — no `backdrop-filter`, no frosted-glass token |
 | Space Grotesk | `--font-heading` | Headings | All heading tokens must resolve to this family |
@@ -104,8 +104,8 @@ Use this column order in the Token Application Map:
 |---------|--------------|--------------|-------------|----------------|----------------------|
 | Panel background | `--color-surface-1` | `--space-4` (inset) | — | `--radius-md` | Matte; no shadow unless elevated layer |
 | Body text | `--color-text` | — | `--type-body-md` | — | Disabled: `--color-text-disabled` |
-| Primary CTA button | `--color-signal-lime` (bg) / `--color-bg` (label) | `--space-3` v · `--space-5` h | `--type-label-md` | `--radius-md` | Hover: `--color-interactive-hover-bg`; Focus: `--color-signal-lime` + `--focus-ring-width`; Disabled: `--color-interactive-disabled-bg` |
-| Selected list item | `--color-deep-forest` | `--space-3` v · `--space-4` h | `--type-body-md` | `--radius-sm` | Active indicator: `--color-signal-lime` (left border or dot, <10 % of element pixels) |
+| Primary CTA button | `--color-leaf` (bg) / `--color-bg` (label) | `--space-3` v · `--space-5` h | `--type-label-md` | `--radius-md` | Hover: `--color-interactive-hover-bg`; Focus: `--color-leaf` + `--focus-ring-width`; Disabled: `--color-interactive-disabled-bg` |
+| Selected list item | `--color-deep-forest` | `--space-3` v · `--space-4` h | `--type-body-md` | `--radius-sm` | Active indicator: `--color-leaf` (left border or dot, <10 % of element pixels) |
 | Path / timestamp | `--color-text-muted` | — | `--type-code-sm` | — | `--font-mono`; no state change |
 
 Write `—` only when a dimension genuinely does not apply. Every row for an interactive element must carry state delta tokens in the last column.

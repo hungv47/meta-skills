@@ -185,7 +185,7 @@ Theme tokens (from brand/DESIGN.md):
 - BG: #F5F4EE (warm-neutral)
 - Text: #1A1A1A
 - Primary: #004700 (deep green)
-- Accent: #B7FF6E (signal-lime)
+- Accent: #74B36B (leaf)
 
 Global treatments: NONE (brand_digest does not declare noise/cursor/preloader).
 
@@ -287,7 +287,7 @@ Build a landing page for /pricing targeting engineering managers at 10–50 pers
 Hypothesis: Right-size proof leads — segmenting proof by team size lifts conversion ≥15% on small-team traffic.
 
 BRAND
-- Palette: #004700 primary, #B7FF6E accent, #F5F4EE warm-neutral background
+- Palette: #004700 primary, #74B36B accent, #F5F4EE warm-neutral background
 - Type: Geist Sans display (--font-geist-sans), Inter body (--font-inter)
 - Surface: matte (no glass, no frost, no transparent overlays)
 - Motion: ease-out, duration-md (240ms) for fade-up; static for decision moments

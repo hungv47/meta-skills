@@ -525,6 +525,6 @@ In order. Renaming or reordering breaks downstream consumers + critic. Both mode
 
 - Date: ISO `YYYY-MM-DD` in frontmatter; same format in body text.
 - Aspect: `W:H` form with no spaces; resolution implied from platform (e.g., `9:16` → 1080×1920 for short-form).
-- Hex: 6-character lowercase with `#` prefix (`#b7ff6e`, not `#B7FF6E` or `b7ff6e`).
+- Hex: 6-character lowercase with `#` prefix (`#74b36b`, not `#74B36B` or `74b36b`).
 - Duration: integer or one-decimal float (e.g., `2.5s`); no zero-padding.
 - Words-per-second cap (Gate 3): `3.0` exactly; per-shot only.

@@ -57,12 +57,12 @@ Mapping conventions SoT: `references/token-application-patterns.md`. Apply it fo
    is expressed as a CSS custom property name (e.g., `--color-surface-primary`, `--space-4`,
    `--type-label-sm`). If the DESIGN file does not define a needed token, introduce a **placeholder**
    using semantic naming (e.g., `--color-interactive-disabled-bg`) and list it in Cold-Start Flags.
-   Never write `#B7FF6E`, `12px`, or any literal value in the Token Application Map.
+   Never write `#74B36B`, `12px`, or any literal value in the Token Application Map.
 2. **Per-state token deltas are explicit.** Hover, active, focus, and disabled states each carry
    their own token references in the Surface/state notes column. "Darker on hover" is not a spec;
    `--color-interactive-hover-bg` is.
-3. **House brand rules are non-negotiable when `brand_source: house`.** Signal Lime
-   (`--color-signal-lime`) is a state-cue token — active/focus/primary-CTA/"ready" — applied at
+3. **House brand rules are non-negotiable when `brand_source: house`.** Leaf
+   (`--color-leaf`) is a state-cue token — active/focus/primary-CTA/"ready" — applied at
    <10% pixel coverage. It must never appear as a large-surface fill. Deep Forest
    (`--color-deep-forest`) is the selected/active fill anchor. Ink (`--color-ink`) is the default
    dark background; never map any element to pure black. Matte surfaces only — no frosted or glass
@@ -83,7 +83,7 @@ Mapping conventions SoT: `references/token-application-patterns.md`. Apply it fo
 3. For every interactive element, enumerate the state delta tokens in the Surface/state notes column:
    default → hover → active/pressed → focus → disabled. List only the dimensions that change; leave
    unchanged dimensions implied.
-4. Check house brand rules (Principle 3) for every Signal Lime or Deep Forest token binding — ensure
+4. Check house brand rules (Principle 3) for every Leaf or Deep Forest token binding — ensure
    usage context matches the allowed role before committing the token name.
 5. If a token is used in the map but absent from the DESIGN file, add it to Cold-Start Flags with
    its semantic intent so the designer can back-fill it in the DESIGN file.
@@ -101,8 +101,8 @@ Mapping conventions SoT: `references/token-application-patterns.md`. Apply it fo
   placeholder — never a literal.
 - **Single-state entries for interactive elements** — specifying only the default token and omitting
   hover/focus/disabled. Every element a user can interact with must carry all reachable state deltas.
-- **Abusing Signal Lime as a surface fill** — mapping Signal Lime to a panel background, header fill,
-  or any large-area token. Signal Lime is a state cue. Violations breach the house brand and fail
+- **Abusing Leaf as a surface fill** — mapping Leaf to a panel background, header fill,
+  or any large-area token. Leaf is a state cue. Violations breach the house brand and fail
   CP-03 on any `brand_source: house` brief.
 - **Palette invention during cold start** — writing `#3A7BD5` because it "looks right" when no
   DESIGN file was provided. Name a placeholder (`--color-interactive-primary`) and surface it in
@@ -114,7 +114,7 @@ Before returning your output, verify every item:
 
 - [ ] Every row in the Token Application Map uses named tokens or named placeholders — zero raw hex/px values
 - [ ] Every interactive element has per-state delta tokens in the Surface/state notes column
-- [ ] Signal Lime bindings appear only in state-cue roles and at <10% pixel coverage (house brand check)
+- [ ] Leaf bindings appear only in state-cue roles and at <10% pixel coverage (house brand check)
 - [ ] Deep Forest bindings appear only as selected/active fill anchors (house brand check)
 - [ ] Ink is used as the dark background token; no pure-black token reference exists in the map
 - [ ] All placeholder tokens are listed in Cold-Start Flags with their semantic intent

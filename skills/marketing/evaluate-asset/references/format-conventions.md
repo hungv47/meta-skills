@@ -58,7 +58,7 @@ Date format: ISO `YYYY-MM-DD`. `lifecycle: evaluation` is required (eval-loop sp
 
 1. **Title** — H1 `# [Asset-id] Cycle N Evaluation`
 2. **Verdict** — 5 bullets: Status / Confidence / Asset-id + Engine / Primary metric / Decision (one sentence)
-3. **Evidence** — table (Signal / Current / Baseline / Window / Source / Caveat columns) — scoped to the one asset; signals include brief-fidelity, hard-criteria pass count, palette delta, Signal-Lime share, resolution
+3. **Evidence** — table (Signal / Current / Baseline / Window / Source / Caveat columns) — scoped to the one asset; signals include brief-fidelity, hard-criteria pass count, palette delta, Leaf share, resolution
 4. **What Changed This Cycle** — source brief link + re-ingested asset link + render/prompt/variant changes since prior cycle
 5. **Diagnosis** — Brief-Fidelity Check + Render-Quality Signals + Brand-Fit Signals + Confounders (4 H3 subsections)
 6. **Next Cycle Recommendation** — Keep / Discard / Watch / Route-next-work-to lines (component granularity, not "the asset")
@@ -110,7 +110,7 @@ provenance:
 | hard criteria met (N/M) |  |  |  |  |  |
 | brief-fidelity |  |  |  |  |  |
 | palette adherence |  |  |  |  |  |
-| signal-lime share |  |  |  |  |  |
+| leaf share |  |  |  |  |  |
 | resolution / dimensions |  |  |  |  |  |
 | render integrity |  |  |  |  |  |
 
@@ -135,7 +135,7 @@ provenance:
 ### Brand-Fit Signals
 
 - palette_adherence: on-token | near | off-brand
-- signal_lime_share: [<10% | overrun]
+- leaf_share: [<10% | overrun]
 - type_and_logo: [matches | drift | n/a]
 - brand_read: strong | mixed | off-brand
 
@@ -170,7 +170,7 @@ Six columns mandatory:
 
 | Signal | Current | Baseline | Window | Source | Caveat |
 
-- **Signal** — name of the metric (primary metric mandatory; secondary signals: hard-criteria pass count, brief-fidelity, palette adherence, Signal-Lime share, resolution/dimensions, render integrity)
+- **Signal** — name of the metric (primary metric mandatory; secondary signals: hard-criteria pass count, brief-fidelity, palette adherence, Leaf share, resolution/dimensions, render integrity)
 - **Current** — current cycle's value (right-aligned)
 - **Baseline** — comparison value / the prior render (right-aligned)
 - **Window** — render context (engine + execution_mode + render date), since asset eval has no measurement "window" the way analytics do
@@ -179,7 +179,7 @@ Six columns mandatory:
 
 Unknown values stay unknown. Never assert a dimension or visual detail not present in the attached render.
 
-**Asset-specific signal expectations:** the hard-criteria pass count (N/M) is always populated (per Critical Gate 5 + the Brief-Fidelity dim). Palette adherence + Signal-Lime share are populated whenever brand tokens are supplied (per the Render-Quality & Brand-Fit dim).
+**Asset-specific signal expectations:** the hard-criteria pass count (N/M) is always populated (per Critical Gate 5 + the Brief-Fidelity dim). Palette adherence + Leaf share are populated whenever brand tokens are supplied (per the Render-Quality & Brand-Fit dim).
 
 ## Results Row format (8 columns mandatory)
 

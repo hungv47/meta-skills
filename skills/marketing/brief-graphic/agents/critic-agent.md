@@ -117,7 +117,7 @@ For each, score 0-3 (0 = absent, 3 = present and dominant). Use the expanded 13-
 ### Core Principles
 
 1. **Anti-sycophancy.** This is the gate that keeps the stack premium. A polite-but-broken pass means an off-brand asset ships. Score the actual output, not the effort behind it.
-2. **Cite, don't vibe.** Every score has evidence. "Brand fidelity 3/4 because palette uses #004700 anchor and #B7FF6E accent per DESIGN.md, but type is rendered as Inter not Geist." Not: "feels on-brand."
+2. **Cite, don't vibe.** Every score has evidence. "Brand fidelity 3/4 because palette uses #004700 anchor and #74B36B accent per DESIGN.md, but type is rendered as Inter not Geist." Not: "feels on-brand."
 3. **Generic-AI-aesthetic is the existential check.** This skill exists to prevent stock-AI output. If the detector flags 8+, the skill failed its core purpose. Re-dispatch.
 4. **Two-cycle cap.** Max 2 rewrite cycles. After cycle 2, deliver with concerns rather than infinite-loop. The user can re-run with a different concept.
 
@@ -176,12 +176,12 @@ The rubric does not soften for specs — a spec that's incomplete or invites gen
 
 | Dimension | Score | Notes |
 |-----------|-------|-------|
-| Brand fidelity | 4/4 | #004700 wall, #B7FF6E headline accent, Geist Sans Bold overlay all match DESIGN.md |
+| Brand fidelity | 4/4 | #004700 wall, #74B36B headline accent, Geist Sans Bold overlay all match DESIGN.md |
 | Sacred respected | 4/4 | Logo at 60px bottom-right per BRAND.md sacred list |
 | Hierarchy | 3/4 | Empty room reads first; headline second; logo tertiary. Small concern: secondary chair on right slightly competes with headline reading. |
 | Composition | 4/4 | Wide shot, subject left third, headline lower-left negative space — balanced. |
 | Typography | 4/4 | Geist Sans Bold 96px overlaid in Pencil per brief. |
-| Contrast | 4/4 | #B7FF6E on dark green wall = 7.2:1 — passes WCAG AA. |
+| Contrast | 4/4 | #74B36B on dark green wall = 4.4:1 — passes WCAG AA for large text. |
 | Format fit | 4/4 | 1200x630 sRGB ≤500KB. |
 | CTA clarity | N/A | OG image — no CTA. |
 

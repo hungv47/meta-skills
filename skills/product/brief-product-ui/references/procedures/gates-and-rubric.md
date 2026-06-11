@@ -23,7 +23,7 @@ declared is inventing product, not specifying it.
    differentiator from external renderers (impeccable / hallmark / stitch / frontend-design).
 4. **Tokens, not raw values.** Every color / space / type / radius references a DESIGN token, never
    a raw hex/px. When the house brand is the source, FORSVN brand rules hold (dark default; Signal
-   Lime `#B7FF6E` <10%, state-cue only; matte not glass; no purple/blue AI gradients). Tokens absent
+   Leaf `#74B36B` <10%, state-cue only; matte not glass; no purple/blue AI gradients). Tokens absent
    → set `brand_source: cold-start-hint` and proceed with named placeholders, never inventing a palette.
 5. **Every state gets a visual treatment.** Every interactive element specifies its full state set;
    every screen's empty / loading / error has a concrete visual spec, never "show an error."

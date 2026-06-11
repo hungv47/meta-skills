@@ -114,7 +114,7 @@ Catalog of common failure modes for visual creative. Used by concept-agent (avoi
 
 ### A1. Insufficient contrast
 
-**What it looks like:** Body text at #B7FF6E on #FAFAFA — 1.7:1 contrast. Fails WCAG AA (need ≥4.5:1).
+**What it looks like:** Body text at #74B36B on #FAFAFA — 2.4:1 contrast. Fails WCAG AA (need ≥4.5:1).
 
 **Why it fails:** Unreadable for low-vision users; legally exposes the brand in some jurisdictions.
 

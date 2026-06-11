@@ -45,7 +45,7 @@ Rules that meet **all three** of these tests:
 
 Seed candidates (Phase 1.2 migration script will hydrate these when run):
 
-- **Brand fidelity invariants.** Signal Lime <10% of pixels. No purple/blue AI gradients. No glass/frosted panels. Dark default, never pure black.
+- **Brand fidelity invariants.** Leaf `#74B36B` <10% of pixels. No purple/blue AI gradients. No glass/frosted panels. Dark default, never pure black.
 - **Completion status contract.** Every skill ends with one of DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT — no implicit "here's the output."
 - **Pinned anti-regressions.** Rules a prior `/review-work` or `/clean-code` review identified as load-bearing. Each pinned rule should cite the artifact path that justified pinning it.
 
@@ -98,7 +98,7 @@ These five gates are the safety floor; `--fast` does not skip them.
 <!-- SLOW_UPDATE_START -->
 ## Durable Rules (protected)
 
-- **Brand fidelity:** Signal Lime is a state cue only — <10% of pixels, never a large background. Deep Forest `#004700` is the brand anchor for selected/active fills. No purple/blue AI gradients, no glass/frosted panels.
+- **Brand fidelity:** Leaf `#74B36B` is a state cue only — <10% of pixels, never a large background. Deep Forest `#004700` is the brand anchor for selected/active fills. No purple/blue AI gradients, no glass/frosted panels.
 - **Completion status:** Every run terminates with DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT. Implicit completion is a contract violation.
 - **Competitor Swap Test (pinned 2026-05-12, `.forsvn/.../meta-review-work-2026-05-12-competitor-swap-regression.md`):** if a competitor could sign the headline without lying, U fails regardless of V/F. Auto-fail at critic.
 <!-- SLOW_UPDATE_END -->

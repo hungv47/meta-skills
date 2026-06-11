@@ -7,7 +7,7 @@ Loaded by the orchestrator at Layer 1 dispatch.
 | Agent | Layer | File | Focus |
 |---|---|---|---|
 | Metric Ingest | 1 (parallel) | `agents/metric-ingest-agent.md` | Confirms the asset is re-ingested + viewable; normalizes dimensions, format, engine, execution_mode, primary metric, baseline, and the brief's acceptance criteria (hard/soft). |
-| Diagnosis | 1 (parallel; reads Metric Ingest output) | `agents/diagnosis-agent.md` | Checks the render against the brief's acceptance criteria (composition, copy slots, aspect ratio) + render-quality signals + brand-fit (palette, Signal-Lime <10%, type, logo). |
+| Diagnosis | 1 (parallel; reads Metric Ingest output) | `agents/diagnosis-agent.md` | Checks the render against the brief's acceptance criteria (composition, copy slots, aspect ratio) + render-quality signals + brand-fit (palette, Leaf <10%, type, logo). |
 | Recommendation | 2 | `agents/recommendation-agent.md` | Chooses keep / discard / watch / blocked + next-cycle action (re-render via produce-asset · fix the spec via brief-graphic · fix tokens via create-brand). |
 | Critic | 3 | `agents/critic-agent.md` | Enforces the 7-dim rubric, return-leg discipline, brief-fidelity honesty, brand-fit integrity, ledger correctness, no fabricated visual claims. |
 

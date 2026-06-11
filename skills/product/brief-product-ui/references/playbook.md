@@ -51,7 +51,7 @@ Full artifact structure (9 required sections) is defined in [`format-conventions
 
 **Systematic.** Components are extracted once and reused across screens — not defined per-screen. A component defined for Screen 3 that also appears on Screen 7 is the same component, not two independent descriptions. Repetition is a failure mode, not thoroughness.
 
-**Token-true.** No raw color values, spacing numbers, or font sizes appear in the spec. Every visual value references a design token (from DESIGN/BRAND files). Brand rules are honored: signal-lime as state cue only, no glass panels, matte surfaces, correct typeface roles. A spec that hard-codes `#B7FF6E` has failed token-application.
+**Token-true.** No raw color values, spacing numbers, or font sizes appear in the spec. Every visual value references a design token (from DESIGN/BRAND files). Brand rules are honored: leaf as state cue only, no glass panels, matte surfaces, correct typeface roles. A spec that hard-codes `#74B36B` has failed token-application.
 
 **Buildable without questions.** The Core Question: _can a frontend engineer or design tool implement this spec without asking a single clarifying question?_ If the answer is no — a state is unspecified, a token is missing, a component prop is ambiguous — the spec is not done. The handoff block is the final checkpoint for this.
 

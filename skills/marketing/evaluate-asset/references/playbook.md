@@ -19,7 +19,7 @@ The return-leg (CLOSED-LOOP.md §6 — asset re-ingest + option-picker, shipped 
 
 1. **Score the render, never the prompt.** The single discipline this skill enforces: you cannot evaluate an asset that is not in the graph. If only a prompt exists, route to `produce-asset` + re-ingest first.
 2. **Refuse "pretty but off-spec" as success.** A striking render that misses a hard acceptance criterion (wrong aspect ratio, missing required copy slot, off-brand palette) did not do the job. Brief-fidelity gates the verdict; render beauty does not.
-3. **Hold brand discipline.** Palette adherence, the Signal-Lime <10% state-cue rule, type stack, and logo safe-zone are checked against the brand tokens — an off-brand render is not a keep.
+3. **Hold brand discipline.** Palette adherence, the Leaf <10% state-cue rule, type stack, and logo safe-zone are checked against the brand tokens — an off-brand render is not a keep.
 4. **Promote durable lessons to learnings.md.** Conservatively — engine/brief-type/brand-scoped, high-confidence only.
 
 ## Philosophy

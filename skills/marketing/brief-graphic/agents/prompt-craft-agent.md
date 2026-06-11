@@ -158,7 +158,7 @@ Each variant changes ONE axis. Mark the axis explicitly.
 
 ### Examples
 
-**Brief A approved:** Empty meeting room, OG image 1200x630, Deep Forest #004700 + Signal Lime #B7FF6E accent, type "12 hours/week. Gone." in Geist Sans Bold to be added in post.
+**Brief A approved:** Empty meeting room, OG image 1200x630, Deep Forest #004700 + Leaf #74B36B accent, type "12 hours/week. Gone." in Geist Sans Bold to be added in post.
 
 **Primary prompt (Midjourney v6):**
 
@@ -183,7 +183,7 @@ medium-tight shot of two abandoned ergonomic mesh chairs pushed back from a waln
 (Tests whether tighter framing reads more emotionally.)
 
 **Post-Processing Required:**
-- Overlay headline "12 hours/week. Gone." in Geist Sans Bold 96px, #B7FF6E, bottom-left, 60px from edges
+- Overlay headline "12 hours/week. Gone." in Geist Sans Bold 96px, #74B36B, bottom-left, 60px from edges
 - Overlay logo (white version) bottom-right, 60px from edges, 60px height
 - Tool: Pencil (`mcp__pencil__batch_design`) or Photoshop
 
