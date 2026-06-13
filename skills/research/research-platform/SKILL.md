@@ -46,13 +46,14 @@ Critic verifies before delivery (all 5 PASS required, max 2 rewrite cycles; full
 Per [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `--fast` collapses to single-pass intake + synthesis with critic skipped — but the 5 Critical Gates STILL enforce (safety supersedes `--fast`). Cold Start still fires when platform scope or account ownership is unresolved.
+   Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path.
 2. Read `.forsvn/index/manifest.json` — check for prior `platform-evidence` artifact (warm-start) and for `.forsvn/loops/*/evals/` artifacts (a `prior_eval` source the operator may not have mentioned).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — needed dimensions, evidence-intake prompt, warm/cold start, write-back map.
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/loops/*/evals/*.md` | run-eval-loop / evaluate-* | Optional — becomes a `prior_eval` evidence source |
+| `.forsvn/loops/*/evals/*.md` | run-pipeline / evaluate-* | Optional — becomes a `prior_eval` evidence source |
 | `research/icp-research.md` | research-icp | Optional — audience grounding for reading segments |
 
 ## Artifact Contract

@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | Outreach is a draft — not sent, no reply/bounce data | Return NEEDS_CONTEXT; route to `write-outreach`. This skill scores what shipped (Critical Gate 2) |
 | Loop exists but no reply evidence for the cycle (no primary metric value-source-window) | Return BLOCKED with missing-evidence list |
 | No deliverability/compliance evidence (bounce, spam complaints, opt-out status) | Return BLOCKED — Critical Gate 6. A cycle that ignores deliverability can be burning the domain |
@@ -72,7 +72,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 6. Sends? Reply breakdown (positive / meeting / qualified / neutral / negative / auto / opt-out)? Deliverability (bounce rate, spam-complaint rate) + compliance (opt-out honored, regime)?
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-outreach. **If the outreach is a draft, route to `write-outreach`. If it is an organic post or paid ad, route to `evaluate-content` / `evaluate-ad` instead of asking the rest.**
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-outreach. **If the outreach is a draft, route to `write-outreach`. If it is an organic post or paid ad, route to `evaluate-content` / `evaluate-ad` instead of asking the rest.**
 
 ## Needed dimensions (6)
 

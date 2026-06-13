@@ -92,7 +92,7 @@ After Pre-Dispatch answers come in AND auto-scan completes, populate `.forsvn/ca
 
 This write-back IS in the original SKILL.md (lines 211-219) and IS preserved here verbatim. The key insight: **Q1 writes to TWO places** — the per-domain `experience/product.md` (skill-internal) AND the canonical `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (cross-stack record). Q2-Q4 write only to `experience/audience.md`. Q5 (route) is routing-only — it informs which agents get dispatched but doesn't persist.
 
-**Pre-Dispatch is NOT the only producer of PRODUCT-CONTEXT.md.** Pre-Dispatch SEEDS the file with the 8-section schema (per `format-conventions.md` and the canonical 12-section spec at `references/product-marketing-context-schema.md`). Layer 1 agents + Step 0 dispatch then enrich it with differentiator, social proof, voice, primary CTA, canonical terminology. The file ships as part of the icp-research artifact bundle.
+**Pre-Dispatch is NOT the only producer of PRODUCT-CONTEXT.md.** Pre-Dispatch SEEDS the file with the 8-section schema (per `format-conventions.md` and the canonical 12-section spec at `references/_shared/product-marketing-context-schema.md`). Layer 1 agents + Step 0 dispatch then enrich it with differentiator, social proof, voice, primary CTA, canonical terminology. The file ships as part of the icp-research artifact bundle.
 
 ---
 

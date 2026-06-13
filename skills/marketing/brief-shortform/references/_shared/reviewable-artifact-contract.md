@@ -267,4 +267,4 @@ the new field name) until they are migrated.
 - [[roughdraft-review-protocol]] — the procedure for opening and processing a review
 - [[artifact-contract-template]] — the full frontmatter schema these fields extend
 - [[manifest-spec]] — how `decision_state` is indexed into `manifest.json`
-- **forsvn-preview review module** — the review module within the single `forsvn` plugin (commands `/forsvn:review`, `/forsvn:collab`, `/forsvn:doctor`); owns HTML rendering (the themed preview surface, tokens, the `base.html` template). Skills emit Markdown only; the module renders it. Lives at `forsvn-preview/` (`references/review-surface-design.md`, `references/review-surface-template.md`).
+- **forsvn-preview review module** — the review module within the single `forsvn` plugin (commands `/forsvn:review`, `/forsvn:collab`, `/forsvn:doctor`); owns HTML rendering (the themed preview surface, tokens, the `base.html` template). Skills emit Markdown only; the module renders it. Lives at `forsvn-preview/` (`forsvn-preview/references/review-surface-design.md`, `forsvn-preview/references/review-surface-template.md`).

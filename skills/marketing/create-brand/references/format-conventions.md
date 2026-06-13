@@ -58,7 +58,7 @@ Canonical output paths: `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATI
 
 ### Review fields (human-review layer)
 
-The review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. WATER-themed HTML preview spec: `references/_shared/review-surface-design.md` + `references/_shared/review-surface-template.md`. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
+The review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. The WATER-themed HTML preview is rendered by the forsvn-preview review module (`/forsvn:review`) from the Markdown — skills emit no HTML and ship no surface spec. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
 
 Per-file defaults:
 

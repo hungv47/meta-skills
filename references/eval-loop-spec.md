@@ -10,7 +10,7 @@ Eval loops make the improvement unit explicit. They borrow the useful operating 
 
 ## One Scaffold, Many Evaluators
 
-`run-eval-loop` is the single scaffold and ledger entrypoint. It creates/resumes the loop workspace, defines the measurable surface, records the metric contract, and owns `program.md`, `context.md`, `results.tsv`, and `learnings.md`.
+`run-pipeline` is the single scaffold and ledger entrypoint (full pipeline or its eval-only mode). It creates/resumes the loop workspace, defines the measurable surface, records the metric contract, and owns `program.md`, `context.md`, `results.tsv`, and `learnings.md`.
 
 It is not the universal evaluator. Surface-specific eval skills produce the actual measurement artifacts under `evals/`:
 
@@ -51,8 +51,8 @@ Loop ownership rules:
 
 | Path | Role | Owner |
 |---|---|---|
-| `program.md` | Operating instructions: goal, metric, mutable surface, guardrails, cycle protocol, promotion rule | `run-eval-loop` |
-| `context.md` | Loop-local assumptions, baseline, canonical artifact links, constraints, open questions | `run-eval-loop` plus downstream skills |
+| `program.md` | Operating instructions: goal, metric, mutable surface, guardrails, cycle protocol, promotion rule | `run-pipeline` |
+| `context.md` | Loop-local assumptions, baseline, canonical artifact links, constraints, open questions | `run-pipeline` plus downstream skills |
 | `strategy/` | Strategy artifacts that define what should change: briefs, hypotheses, plans, test designs | Strategy skills |
 | `execution/` | Marketing/content assets ready to publish elsewhere: copy variants, posts, ad sets, sequences | Execution skills |
 | `evals/` | Post-execution evidence: metric snapshots, qualitative review, source citations, confidence | Evaluation skills |
@@ -76,6 +76,7 @@ The stack uses three artifact surfaces. Loops are deliberately separate from one
 - `.forsvn/artifacts/meta/` — cross-domain process artifacts (specs, decisions, sketches, records, tasks.md, roadmap.md)
 - `.forsvn/artifacts/{mkt,product,research}/` — one-shot pipeline outputs by domain (briefs, copy, plans, audits)
 - `.forsvn/loops/[slug]/` — measurable strategy -> execution -> evaluation workspaces
+- `.forsvn/performance/` — cross-initiative channel-performance store (operator-fed snapshots + publish ledger; **data, not artifacts** — not walked by manifest-sync or validate-artifacts). Loops are per-initiative; channel history outlives them. Loop evals whose Metric Packet carries the full (platform, post id/URL, measurement window) key append there in addition to their loop's `results.tsv`; keyless rows stay loop-local. Contract: `references/performance-data.md`.
 - `.forsvn/artifacts/.archive/` — cleanup-artifacts target (never deleted)
 
 Top-level `brand/`, `research/`, and `architecture/` remain canonical sources of truth — human-maintained, not agent-generated, and they live outside `.forsvn/artifacts/`.
@@ -183,7 +184,7 @@ Examples:
 
 Research artifacts such as ICP or market research are not evaluated with generic taste rubrics. They are evaluated through downstream usefulness: cite frequency, repeated contradiction from loop evidence, operator reports of off-target outputs, or obvious staleness after a market shift. When that threshold is met, write the review under the relevant loop's `evals/` folder or `.forsvn/artifacts/research/evals/` if the evidence spans multiple loops. Update canonical `research/` only as a separate, explicit revision after the evidence is accepted.
 
-`run-eval-loop` may route to the relevant evaluator, but it should not fake surface-specific scoring itself. If no evaluator exists yet, it creates the loop and marks the next eval step as a gap rather than inventing a generic rubric.
+`run-pipeline` may route to the relevant evaluator, but it should not fake surface-specific scoring itself. If no evaluator exists yet, it creates the loop and marks the next eval step as a gap rather than inventing a generic rubric.
 
 ## Scaffold Command
 

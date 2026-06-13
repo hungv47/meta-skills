@@ -1,315 +1,203 @@
 <!doctype html>
+<!--
+  base.html — the structural template for every review-surface HTML preview.
+  v4 (2026-06-12, U9 design pass · revision 2): a reading-and-deciding
+  instrument. One centered 72ch reading column under a quiet chrome strip,
+  the collaboration workbench (Marker / Comment / Edit — agents only suggest),
+  an adaptive dark/light theme (system default + explicit choice), and the
+  pinned decision ledger as the one interactive capture place. No artifact
+  paths anywhere in the UI — identity is title + skill + stack + date.
+  v2 (2026-05-26) was the five-region chrome; the marginalia gutter, left
+  controls, footer, and metadata rows are gone (workflow and decision first).
+  Skill emitters never touch this file; lib/render.ts fills the {{...}}
+  placeholders.
+
+  Placeholders (written {ph: name} here so this comment survives the
+  global replacement; the live slots below use the double-brace form):
+    {ph: stack}             — air | water | fire | earth (the elemental register)
+    {ph: stack_name}        — meta | marketing | product | research (the stack word)
+    {ph: title}             — artifact title (masthead h1)
+    {ph: skill}             — kebab-case skill slug
+    {ph: date}              — YYYY-MM-DD
+    {ph: deck}              — one-line summary (masthead deck; may be empty)
+    {ph: decision_state}    — pending | approved | denied | suggested | not_required
+    {ph: tokens_css_href}   — path to tokens.css (typically "./tokens.css")
+    {ph: chrome_css_href}   — path to chrome.css
+    {ph: chrome_js_src}     — path to chrome.js
+    {ph: artifact_data_json}— JSON blob mirroring the MD frontmatter
+    {ph: stage_html}        — rendered artifact body (typeset Markdown, never syntax)
+    {ph: preview_config_json}— JSON consumed by chrome.js + the preview CLI.
+                             Pending preview: {"token":"…","endpoint":"…","mdPath":"…",
+                             "gate_warning":null,"pending_count":N,"suggestions":[]}.
+                             Static / archived: {"static":true} — capture + workbench hidden.
+-->
 <html lang="en" data-stack="earth">
 <head>
   <meta charset="utf-8">
+  <!-- Theme boot — BEFORE the stylesheets so there is no flash of the wrong
+       theme. Default follows prefers-color-scheme (no attribute); an explicit
+       operator choice persists in localStorage as data-theme="dark|light". -->
+  <script>
+    (function () {
+      try {
+        var v = localStorage.getItem("forsvn-theme");
+        if (v === "dark" || v === "light") document.documentElement.setAttribute("data-theme", v);
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Images are local-only: an external img src would load on open — a beacon
+       channel — so only local images render; http(s) sources are blocked. Belt
+       for the renderer's safeSrc local-only rule. `file:` keeps relative images
+       working when the HTML twin is opened directly via file:// (opaque origin,
+       so 'self' matches nothing there) and is inert on the served path (http
+       pages can't load file: subresources). Scoped to img-src — the page
+       makes no other external requests (type is self-hosted below). -->
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: file:">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ICP — solo studio operator · research-icp · 2026-05-26</title>
+  <title>ICP Refinement — Plugin Operators · research-icp · 2026-06-12</title>
 
+  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro +
+       JetBrains Mono — self-hosted (fonts.css + ./fonts/*.woff2); the hosted
+       Google Fonts links were a review-time beacon, retired with v0's
+       local-first rule. Resolved by the preview CLI's bundled-asset fallback. -->
   <link rel="stylesheet" href="../fonts.css">
 
   <link rel="stylesheet" href="../tokens.css">
   <link rel="stylesheet" href="../chrome.css">
-
-  <style>
-    /* EARTH register — light mode (only stack on cream). Book-page columns,
-       dense reading. Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
-    .stage {
-      background-image:
-        radial-gradient(circle at 50% 0%, rgba(120,90,50,0.04), transparent 60%),
-        repeating-linear-gradient(0deg, transparent 0 28px, rgba(120,90,50,0.02) 28px 29px);
-    }
-    .dossier-head {
-      max-width: var(--max-measure);
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--stage-border);
-      margin-bottom: 32px;
-    }
-    .dossier-head .meta {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      margin-bottom: 8px;
-    }
-    .dossier-head h1 {
-      font-family: var(--font-head);
-      font-size: 52px;
-      font-weight: 700;
-      font-variation-settings: "opsz" 96;
-      letter-spacing: -0.02em;
-      margin: 0 0 12px 0;
-      color: var(--stage-fg);
-    }
-    .dossier-head .lede {
-      font-family: var(--font-body);
-      font-size: 18px;
-      line-height: 1.55;
-      font-weight: 400;
-      color: var(--fg-muted);
-      max-width: 56ch;
-    }
-
-    .columns {
-      column-count: 2;
-      column-gap: 56px;
-      column-rule: 1px solid var(--stage-border);
-      max-width: 1100px;
-    }
-    .columns h2 {
-      font-family: var(--font-head);
-      font-size: 24px;
-      font-weight: 600;
-      margin: 0 0 8px 0;
-      column-span: all;
-      padding-top: 32px;
-      border-top: 1px solid var(--stage-border);
-      color: var(--stage-fg);
-    }
-    .columns p {
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.65;
-      margin: 0 0 1em 0;
-      orphans: 3;
-      widows: 3;
-      color: var(--stage-fg);
-    }
-    .columns .first-letter::first-letter {
-      font-family: var(--font-head);
-      font-size: 56px;
-      float: left;
-      line-height: 0.85;
-      padding: 4px 8px 0 0;
-      font-weight: 700;
-      color: var(--stage-accent);
-    }
-    .columns sup {
-      font-size: 0.7em;
-      color: var(--stage-accent);
-      cursor: help;
-      vertical-align: super;
-    }
-
-    .pull-quote {
-      font-family: var(--font-head);
-      font-style: italic;
-      font-size: 22px;
-      line-height: 1.4;
-      color: var(--stage-fg);
-      border-left: 3px solid var(--stage-accent-2);
-      padding: 8px 0 8px 20px;
-      margin: 24px 0;
-      break-inside: avoid;
-      font-weight: 500;
-    }
-    .pull-quote cite {
-      display: block;
-      margin-top: 8px;
-      font-style: normal;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-    }
-
-    .facts-table {
-      width: 100%;
-      border-collapse: collapse;
-      max-width: 720px;
-      margin: 32px 0;
-      font-family: var(--font-body);
-      font-size: 15px;
-      color: var(--stage-fg);
-    }
-    .facts-table th,
-    .facts-table td {
-      text-align: left;
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--stage-border);
-    }
-    .facts-table thead th {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-      border-bottom-width: 1px;
-      border-bottom-color: var(--border-strong);
-      background: rgba(120,90,50,0.05);
-    }
-    .facts-table tbody tr:hover { background: rgba(120,90,50,0.03); }
-    .source-weight {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--stage-accent);
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-    .source-weight.weak { background: var(--stage-accent-2); opacity: 0.5; }
-
-    .footnotes {
-      margin-top: 56px;
-      padding-top: 20px;
-      border-top: 1px solid var(--stage-border);
-      max-width: var(--max-measure);
-      font-family: var(--font-body);
-      font-size: 13.5px;
-      color: var(--fg-muted);
-    }
-    .footnotes ol {
-      list-style: decimal;
-      padding-left: 1.4em;
-      margin: 0;
-    }
-    .footnotes ol li {
-      margin-bottom: 6px;
-      line-height: 1.5;
-    }
-    .footnotes ol li::marker { color: var(--stage-accent); }
-  </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
-    <span class="brand-divider" aria-hidden="true"></span>
-    <span class="stack-chip">EARTH</span>
-    <span class="topbar-meta"><strong>research-icp</strong> · 2026-05-26 · solo-studio-operator</span>
+  <!-- Chrome strip: identity + theme + state. One state, one place (the pill).
+       The logo glyph swaps with the active theme: cream glyph on dark surfaces,
+       forest glyph on light (BRAND.md § Logo Color Combinations). -->
+  <header class="strip">
+    <span class="wordmark" aria-label="FORSVN">
+      <img class="logo logo-on-dark" src="../logo-glyph-cream.svg" alt="" aria-hidden="true">
+      <img class="logo logo-on-light" src="../logo-glyph-forest.svg" alt="" aria-hidden="true">
+      <span class="name">FORSVN</span>
+    </span>
+    <span class="crumb"><b>review</b><span data-pending-count></span></span>
+    <span class="el el-earth"><span class="swatch"></span>research · earth</span>
+    <span class="grow"></span>
+    <div class="theme-seg" role="group" aria-label="Theme">
+      <button type="button" data-set="system" aria-pressed="true">auto</button>
+      <button type="button" data-set="dark" aria-pressed="false">dark</button>
+      <button type="button" data-set="light" aria-pressed="false">light</button>
+    </div>
     <span class="decision-pill" data-state="pending">pending</span>
   </header>
 
-  <aside class="left-controls">
-    <div class="control-group" data-picker-group>
-      <h2>Personas</h2>
-      <button class="picker-item" data-picker-value="solo-studio" aria-selected="true">Solo studio operator</button>
-      <button class="picker-item" data-picker-value="small-agency" aria-selected="false">Small agency (2–5)</button>
-      <button class="picker-item" data-picker-value="builder-engineer" aria-selected="false">Builder-engineer</button>
-    </div>
+  <!-- Stage: one centered reading column, themed by the elemental register.
+       The workbench (Marker / Comment / Edit + "read as") is the HUMAN's
+       collaboration bar — chrome.js activates it only on a live pending serve;
+       deciding stays in the ledger below, the bar never captures a verdict. -->
+  <main class="stage" tabindex="0" aria-label="Artifact body">
+    <div class="sheet" id="sheet">
 
-    <div class="control-group">
-      <h2>Compare</h2>
-      <button type="button" data-toggle="comparison">Side-by-side · off</button>
-    </div>
-
-    <div class="control-group">
-      <h2>View</h2>
-      <button type="button" data-toggle="density">Density · book</button>
-      <button type="button" data-toggle="citations">Citation weights · on</button>
-      <button type="button" data-toggle="columns">Two-column · on</button>
-    </div>
-
-    <div class="control-group">
-      <h2>Export</h2>
-      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
-    </div>
-  </aside>
-
-  <main class="stage">
-    <section class="dossier-head">
-      <div class="meta">RESEARCH · ICP · n=23 interviews · 2026-04 to 2026-05</div>
-      <h1>The solo studio operator</h1>
-      <p class="lede">A working senior — engineer, designer, or product lead — running a one-person studio. Ships product weekly. Hates ceremony. Buys tools that compress effort, not tools that promise transformation.</p>
-    </section>
-
-    <table class="facts-table">
-      <thead>
-        <tr>
-          <th>Attribute</th>
-          <th>Value</th>
-          <th>Source weight</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Tenure</td><td>8–18 years professional</td><td><span class="source-weight"></span>strong · n=20</td></tr>
-        <tr><td>Annual revenue</td><td>$80k – $400k</td><td><span class="source-weight"></span>strong · n=18</td></tr>
-        <tr><td>Tools/month spend</td><td>$140 – $480</td><td><span class="source-weight"></span>strong · n=23</td></tr>
-        <tr><td>Daily working hours</td><td>5–8 (deep), 2–3 (shallow)</td><td><span class="source-weight weak"></span>moderate · n=13</td></tr>
-        <tr><td>Vacation taken last 12 mo.</td><td>median 9 days</td><td><span class="source-weight weak"></span>moderate · n=11</td></tr>
-        <tr><td>Decision authority</td><td>full · 23/23</td><td><span class="source-weight"></span>strong · n=23</td></tr>
-      </tbody>
-    </table>
-
-    <div class="columns">
-
-      <h2>What they're trying to do</h2>
-
-      <p class="first-letter">They are trying to build something specific in a market they understand, on a timeline measured in weeks, with a team of one. They use the word "compress" unprompted<sup>1</sup>. They are not interested in being told what to do. They are interested in being given fewer reasons to context-switch.</p>
-
-      <p>The closer a tool's onboarding looks to a SaaS funnel — pricing page, signup, drip campaign, in-app tour — the lower the chance they finish onboarding. They downloaded it because they saw it work on someone they trust, and they want to feel the cut within ten minutes<sup>2</sup>.</p>
-
-      <div class="pull-quote">
-        I don't need a workflow. I need the next five minutes to feel slightly less like wading. The thing in my way is never the feature — it's the seventeen tabs.
-        <cite>Operator interview #14 · senior product lead · solo studio · 2026-04-22</cite>
+      <div class="workbench" role="toolbar" aria-label="Work on this artifact" hidden>
+        <button class="tool" type="button" data-tool="read" aria-pressed="true"><span class="g">¶</span>Read</button>
+        <button class="tool" type="button" data-tool="marker" aria-pressed="false"><span class="g">▆</span>Marker <span class="key">M</span></button>
+        <button class="tool" type="button" data-tool="comment" aria-pressed="false"><span class="g">◍</span>Comment <span class="key">C</span></button>
+        <button class="tool" type="button" data-tool="edit" aria-pressed="false"><span class="g">✎</span>Edit <span class="key">E</span></button>
+        <span class="wb-note" data-wb-note>marks + comments ride back to the agents</span>
+        <span class="grow"></span>
+        <button class="btn-quiet" type="button" data-edit-discard hidden>Discard <span class="key">esc</span></button>
+        <button class="btn-save" type="button" data-edit-save hidden>Save edits <span class="key">⌘S</span></button>
+        <span class="readas-wrap">
+          <button class="readas" type="button" aria-haspopup="menu" aria-expanded="false">read as <b>designed html</b> ▾</button>
+          <div class="readas-menu" role="menu" hidden>
+            <div class="readas-item is-current" role="menuitem" aria-disabled="true">
+              <b>designed html</b><span>this page — read, mark, edit, decide</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>terminal</b><span>re-serve with <code>--md</code> for a read-only terminal render</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>proof collab</b><span><code>forsvn-collab open</code> — iterative co-editing; agents suggest only</span>
+            </div>
+          </div>
+        </span>
       </div>
 
-      <p>What they buy and what they keep using are different things. Adoption-stickiness correlates with two patterns: (a) the tool removes a recurring decision (file naming, code conventions, sales-email tone), and (b) the tool's output is grep-able and editable in their existing environment rather than locked behind its own app<sup>3</sup>.</p>
+      <article>
+        <!-- G1 gate-warning notice (amber, warn-and-proceed) renders here from
+             preview-config.gate_warning; agent suggestion cards render after the
+             masthead from preview-config.suggestions. Both are chrome.js-owned. -->
+        <header class="masthead">
+          <div class="eyebrow">research · research-icp · 2026-06-12 <span class="rule"></span></div>
+          <h1>ICP Refinement — Plugin Operators</h1>
+          <p class="deck">Who installs a review-surface plugin, and the moment it earns the daily loop.</p>
+        </header>
+        <div class="prose">
+<h2>The person</h2>
+<p>A solo operator running coding agents across several repos. They already trust the agents to produce; what they do not have is a fast, dignified way to say <em>no, with a reason</em> the agent actually reads.</p>
+<h2>The moment</h2>
+<p>The first <code>deny</code> that visibly changes the agent&#39;s next artifact. That is when the loop becomes daily — not at install, not at the first approve.</p>
+<h2>Evidence base</h2>
+<ul><li>Interviews: 6 operators, 4 running multi-agent setups</li><li>Recurring phrase: &quot;I rubber-stamp because reviewing is friction&quot;</li><li>Counter-signal: two operators preferred terminal-only review — the <code>--md</code></li></ul>
+<p>  surface exists for exactly this cohort</p>
+<section class="gate" id="gate-echo"><header><span class="t">Review gate</span><span class="ro">read-only echo — decide below</span></header><div class="gate-body">
+<ul class="mirror-gate" aria-hidden="true"><li class="task"><input type="checkbox" disabled> The ICP names a person, not a market</li><li class="task"><input type="checkbox" disabled> The activating moment is observable, not aspirational</li><li class="task"><input type="checkbox" disabled> Counter-signals are recorded with their product response</li></ul></div><footer>The gate is the author's claim. Your decision below is the only thing that writes.</footer></section>
+</div>
+      </article>
 
-      <h2>What they will pay for</h2>
-
-      <p>Willingness-to-pay clusters at $40–$60 per tool, per month, for a tool that compresses ≥30 minutes of recurring effort. Above $99 the framing flips — they expect "platform" affordances (team seats, audit log, SLAs) they actively don't want.</p>
-
-      <p>They will pay annually if the tool is in the stack 12 months later. They will not pay annually upfront. They will pay $200–$400 lifetime for something that <em>composes</em>: doesn't require ongoing sync, lives on their machine, doesn't expire.</p>
-
-      <h2>What they won't tolerate</h2>
-
-      <p>They won't tolerate a tool that talks about itself more than it talks about the work. Marketing copy that uses "AI-powered" without showing AI working triggers immediate skepticism<sup>4</sup>. They notice when a tool tries to be everything; it makes the tool feel cheap.</p>
-
-      <p>They are intolerant of friction at the precise moment they were ready to use the thing: a re-auth prompt, an unannounced UI change, a setting that moved. The threshold for cancellation is one bad surprise.</p>
-
-    </div>
-
-    <div class="footnotes">
-      <ol>
-        <li>"Compress" appears unprompted in 17/23 transcripts. Verb form ("compress this") more common than noun form ("compression").</li>
-        <li>Mean time-from-install to first felt value across 14 successful adoptions: 7 min 42 sec. The 5 abandoned trials all averaged &gt; 22 min before any felt value.</li>
-        <li>Adoption-stickiness measure: % of weekly active use 6 weeks post-install. Two-pattern cohort: 71%. Off-pattern cohort: 19%.</li>
-        <li>Operator #06 verbatim: "If I have to read the homepage three times to understand what it does, it does nothing."</li>
-      </ol>
+      <!-- Thread rail: comment threads anchored to highlights; they feed the
+           agents. chrome.js populates it and widens the sheet when in use. -->
+      <aside class="thread-rail" aria-label="Open comment threads" hidden></aside>
     </div>
   </main>
 
-  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
-    <fieldset class="decision-radio">
-      <legend>Decision</legend>
-      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
-      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
-      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
-    </fieldset>
-    <label class="decision-comments">
-      <span>Comments (optional)</span>
-      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
-    </label>
-    <div class="decision-actions">
-      <span class="decision-status" aria-live="polite"></span>
-      <button type="submit" class="decision-done">Done</button>
+  <!-- Ledger — the one decision place, pinned. Always present in markup.
+       chrome.js activates it only when the preview CLI has injected a token
+       into the preview-config block AND the artifact's decision_state is
+       "pending". Otherwise the form stays display:none — read-only page.
+       Keycaps live on the controls: the keyboard model is rendered, not listed. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)" aria-label="Decision">
+    <div class="ledger-inner">
+      <div class="ledger-head">
+        <span class="t" id="decision-label">Your decision</span>
+        <span class="aside">marks + comments are notes to the agents — they never decide for you</span>
+      </div>
+      <div class="decision-alert" role="alert" tabindex="-1" hidden></div>
+      <fieldset class="decision-radio ledger-row" role="radiogroup" aria-labelledby="decision-label" aria-required="true">
+        <legend class="sr-only">Decision</legend>
+        <label class="opt" data-d="approve">
+          <input type="radio" name="decision" value="approved" aria-keyshortcuts="Alt+A">
+          <span class="glyph">✓</span>
+          <span class="w"><span class="word">Approve</span><span class="sub">ship it as truth</span></span>
+          <span class="key">⌥A</span>
+        </label>
+        <label class="opt" data-d="deny">
+          <input type="radio" name="decision" value="denied" aria-keyshortcuts="Alt+D">
+          <span class="glyph">✕</span>
+          <span class="w"><span class="word">Deny</span><span class="sub">send it back</span></span>
+          <span class="key">⌥D</span>
+        </label>
+        <label class="opt" data-d="suggest">
+          <input type="radio" name="decision" value="suggested" aria-keyshortcuts="Alt+S">
+          <span class="glyph">~</span>
+          <span class="w"><span class="word">Suggest</span><span class="sub">approve with notes</span></span>
+          <span class="key">⌥S</span>
+        </label>
+        <label class="comment">
+          <span class="sr-only">Comment (optional)</span>
+          <textarea name="comments" placeholder="Optional note — saved with the decision as your reviewer notes"></textarea>
+        </label>
+        <span class="decision-actions">
+          <span class="decision-status" aria-live="polite"></span>
+          <button type="submit" class="decision-done done" aria-disabled="true" aria-describedby="decision-done-hint">Done <span class="k">⌘↵</span></button>
+          <span id="decision-done-hint" class="sr-only">pick a decision first</span>
+        </span>
+      </fieldset>
+      <div class="decision-outcome confirm" role="status" tabindex="-1" hidden></div>
     </div>
   </form>
 
-  <footer class="footer">
-    <a class="footer-action" data-roughdraft-link
-       href="roughdraft://open?path=research%2Ficp-research.md">
-      Open in Roughdraft →
-    </a>
-    <span class="footer-meta">Solo Studio Operator · 23 interviews · decision: pending</span>
-    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
-  </footer>
-
+  <!-- Preview-config: populated by the preview CLI at runtime. When this
+       artifact is opened directly (no CLI), the `static` flag tells chrome.js
+       to keep the ledger + workbench inert — a read-only page. -->
   <script type="application/json" id="preview-config">{"static":true}</script>
-  <script type="application/json" id="artifact-data">{
-  "skill": "research-icp",
-  "version": 1,
-  "date": "2026-05-26",
-  "status": "done",
-  "stack": "research",
-  "lifecycle": "canonical",
-  "summary": "Solo studio operator — senior, ships weekly, hates ceremony",
-  "decision_state": "pending",
-  "review_surface": "html"
-}</script>
+  <script type="application/json" id="artifact-data">{"skill":"research-icp","version":"2","date":"2026-06-12","status":"done","stack":"research","id":"exemplar-earth-icp","type":"dossier","title":"ICP Refinement — Plugin Operators","summary":"Who installs a review-surface plugin, and the moment it earns the daily loop.","decision_state":"pending","review_surface":"html"}</script>
   <script src="../chrome.js"></script>
 </body>
 </html>

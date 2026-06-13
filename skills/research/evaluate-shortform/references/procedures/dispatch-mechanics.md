@@ -82,4 +82,4 @@ Next: pattern-log entries are read by future `research-shortform` re-runs and (e
 - No platform-intel catalog exists → `research-shortform` first (BLOCKED if missing — eval against missing reference is meaningless)
 - Pre-publish brief authoring → `brief-shortform` (different job, marketing-skills)
 - Multi-post campaign rollup → out of scope for v0.1; one post per cycle
-- No loop workspace → `run-eval-loop` to create one first
+- No loop workspace → `run-pipeline` to create one first

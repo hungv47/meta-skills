@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # AI SEO (AEO) Reference
 
 Platform-specific optimization details and reference-optimized content templates.

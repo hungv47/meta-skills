@@ -4,7 +4,7 @@ description: "Generates a campaign-grade brief for a conversion landing page or 
 argument-hint: "[page route or campaign name, e.g. '/pricing' or 'q3-launch-lp']"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$2-4"
 ---
@@ -20,7 +20,7 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 - **No brief without brand artifacts.** Missing `brand/BRAND.md` or `brand/DESIGN.md` → return `NEEDS_CONTEXT`. Brief depends on tokens, voice rules, sacred elements. **Design against the realized surface** — the live site / shipped page / approved exploration / house `CREATIVE-DIRECTION.md` — not tokens alone; cite ≥1 or record the explicit token-only fallback (`references/_shared/realized-surface-grounding.md`).
 - **Conversion rubric is mandatory.** Every section spec is gated by `references/conversion-principles.md` CP-01 → CP-14. Brand-good but conversion-bad = failure.
 - **Sacred elements are rails, not options.** Logo geometry, primary palette anchor, tagline wording, signature treatments are "do not touch."
-- **Envelope: 250-500 lines.** <250 = insufficient depth (designer asks follow-ups). >500 = bloat (designer skims). Brand-voice critic G6 FAILs both directions.
+- **Envelope: completeness is the gate.** G6 checks each section for headline candidates + CTA + conversion checklist; 250-500 lines typical; hard FAIL ~200/~700.
 - **Don't inline the shared skill chain.** Reference by section header; add page-specific overrides only.
 - **No placeholder testimonials, fake logos, or pretend numbers.** Spec the slot ("Customer logo grid, 6 cells × 60px") and note "delete cell if not real" — never fabricate.
 
@@ -55,6 +55,7 @@ Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](refe
 Warm/Cold Start prompts + 4-question Cold Start + Write-back map + Project-Specific Workflows + Context-to-Pass + hard-block conditions: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` collapses L1/1.5/2/3/3.5/4 to single-agent execution per layer, skips Layer 5 critic dispatch (critics noted as "skipped under --fast"). **`--fast` does NOT skip Hard Gates, 3 Approval Gates, or Critical Gates 1-6.** **Lean default (no `--fast` needed):** a ≤3-sentence single-scope ask with no prior artifacts auto-applies the per-layer single-agent collapse but KEEPS the Layer 5 critic; the 3 Approval Gates + Hard/Critical Gates always fire. Full multi-agent layers engage for broad, multi-section, or evidence-anchored (Route B) asks, or an upward override.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Routing + Approval Gates
 
@@ -65,9 +66,9 @@ Three routes (Route A fresh LP · Route B existing-LP redesign with mandatory "W
 - **Path:** `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
 - **Companions:** always `handoff-implementation.md`; optional `handoff-{claude-design,figma,designer}.md` per `target_handoff`. Per-slot `asset-slots/{slot-id}.prompt.md` written downstream by `brief-graphic`.
 - **Lifecycle:** `pipeline` — versioned re-runs preserve prior versions.
-- **Frontmatter:** 17 fields — see [`references/format-conventions.md`](references/format-conventions.md) and [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) § provenance two-variants. Provenance is required so `evaluate-landing-page` can ground scoring on `input_artifacts` and `scripts/eval/promote-to-experience.ts` can walk `output_eval`.
+- **Frontmatter:** 17 fields — see [`references/format-conventions.md`](references/format-conventions.md) and [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) § provenance two-variants. Provenance is required so `evaluate-landing-page` can ground scoring on `input_artifacts` and `_dev/eval/promote-to-experience.ts` can walk `output_eval`.
 - **Body:** 15 sections (Title block · Concerns · IMC Context · Hypothesis Approved · What Changed from rev N-1 · Page Architecture · Section-by-Section Spec · Asset Slots · What NOT to Do · Implementation Prompt · Hand-Off · Pre-flight Checklist · Skill Chain · Launch Plan + Results + Why This Works · Review Gate).
-- **Envelope:** 250-500 lines, enforced strictly by brand-voice critic G6.
+- **Envelope:** completeness-gated (G6); 250-500 lines typical.
 
 - **Cross-stack contract:** consumed by human designers + coding agents + `brief-graphic` (per slot) + `evaluate-landing-page` cycles (when brief referenced from loop's `strategy/`). Schema changes require atomic update across upstream callers (`plan-campaign`) + downstream consumers (`brief-graphic`, coding agents, `evaluate-landing-page`).
 
@@ -79,7 +80,7 @@ Previous: `plan-campaign` (optional — campaign context), `create-brand` (requi
 
 **Re-run triggers:** post-launch performance evidence, BRAND.md/DESIGN.md update, ICP refresh, traffic source pivot. Increment `--rev=N`.
 
-**Skill deference:** post-launch CRO from real evidence → `evaluate-landing-page` inside `run-eval-loop`. Single visual asset spec → `brief-graphic`. No brand → `create-brand` first. Headline variations only → `write-copy`. Non-LP page (blog, docs) → out of scope.
+**Skill deference:** post-launch CRO from real evidence → `evaluate-landing-page` inside `run-pipeline`. Single visual asset spec → `brief-graphic`. No brand → `create-brand` first. Headline variations only → `write-copy`. Non-LP page (blog, docs) → out of scope.
 
 ## Anti-Patterns
 
@@ -101,6 +102,7 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before brief s
 
 ## Execution
 
+At brief-binding, bind the `design` target tool — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; tool-agnostic is the default.
 After Gate 3 PASS, offer the registry-gated fork (category `design`) — **Brief-only**: hand `handoff-implementation.md` to a coding agent / Claude Design / Figma / designer; **Assisted/Direct**: a verified engine builds it end-to-end (returns a URL → `evaluate-landing-page`), you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. Re-invoke `--rev=N` after post-launch evidence triggers a redesign.
 
 ## Worked Examples

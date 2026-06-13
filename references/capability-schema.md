@@ -251,8 +251,10 @@ bun _dev/verify-version-alignment.ts
 bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
 bun _dev/lint-description-body-coherence.ts --strict
 bun _dev/check-skill-links.ts
+bun _dev/verify-reference-integrity.ts
 bun _dev/audit-skill-listing.ts --check
 bun _dev/lint-catalog-coherence.ts --strict
+bun _dev/eval/golden-regression.ts
 ```
 
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
@@ -265,7 +267,17 @@ the **forsvn-preview** review module (within the single `forsvn` plugin) — ski
 emit Markdown only.
 `check-skill-links` (dead relative links) and `audit-skill-listing --check`
 (per-skill listing caps) were already in the gate but missing from this list —
-synced 2026-06-05. `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches
+synced 2026-06-05. `verify-reference-integrity` (audit wave 2 U1, 2026-06-12) is
+its sibling for the citation forms markdown-link checking misses: backtick
+code-span paths (with `[platform]`/`<domain>`/glob expansion against real
+directories) must resolve, and every per-skill `references/**/*.md` must be
+reachable from its own skill's files (orphans are adjudicated — cite, merge, or
+delete — never auto-deleted). Generated `references/_shared/` mirrors are
+excluded (owned by `sync-skill-support --check`); escape hatches
+`<!-- lint:reference-ok <reason> -->` (line) and
+`<!-- lint:reference-ok-file <reason> -->` (meta-documents with exemplary paths)
+are used sparingly, with reasons. Regression-pinned by
+`_dev/test-reference-integrity-fixtures.ts`. `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches
 per-skill catalog drift — a numbered rubric (critic gates, `CP-IDs`, principle
 sets) disagreeing on count, item names, or id-references across a single skill's
 files; SoT = the richest enumeration, History/Changelog + `_shared/` excluded.
@@ -275,6 +287,12 @@ plugin manifests (`.claude-plugin/plugin.json` + `marketplace.json`,
 `v*` release tag without a matching tag being cut — the silent drift that let
 `1.2.0`→`1.3.0` run past `v1.1.0`. Tag mode (`--expect vX.Y.Z`) runs in
 `publish-skills.yml` before a release is cut.
+`golden-regression` (U8 golden net, 2026-06-11, M2) re-scores every skill pinned
+in `tests/goldens/baselines.json` through `_dev/eval/critic-gate.ts` and checks
+the frozen exemplar fixtures against their `*.golden.json` sidecars — baselines
+are scorecard JSON (dimension scores), not byte-equality; the gate fails naming
+the skill + dimension on any score drop, reports rises, and `--rebaseline`
+re-pins deliberately.
 
 Trigger evals (run before merge — routing changes must keep
 `tests/triggers/` fixtures green, and `--require-all` ensures every skill

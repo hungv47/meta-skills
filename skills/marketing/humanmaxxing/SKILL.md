@@ -44,7 +44,7 @@ FAIL → re-dispatch named agent (max 2 cycles, then `DONE_WITH_CONCERNS`).
 
 ## Before Starting
 
-Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md).
+Apply `references/_shared/before-starting-check.md`.
 
 | Artifact | Source | Required? |
 |---|---|---|
@@ -55,9 +55,10 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 ## Pre-Dispatch + Mode + Routing
 
-Canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Dimensions: target voice, compression (light/moderate/heavy), register, detector mode (none/proxy/pangram), protected tokens (Route C). Warm/Cold Start + write-back: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
+Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensions: target voice, compression (light/moderate/heavy), register, detector mode (none/proxy/pangram), protected tokens (Route C). Warm/Cold Start + write-back: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
-Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)) auto-downgrades to A for ≤3 sentences + no prior artifacts. `--fast` collapses B → A (pattern-scanner + strip + critic), skips detector verification. **Never skips Cold Start, Critical Gates, or Prohibitions.**
+Mode (`references/_shared/mode-resolver.md`) auto-downgrades to A for ≤3 sentences + no prior artifacts. `--fast` collapses B → A (pattern-scanner + strip + critic), skips detector verification. **Never skips Cold Start, Critical Gates, or Prohibitions.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 Routes — **A** (<200 words, pattern-only) · **B** (≥200 words, full pipeline) · **C** (caller-driven). Spawn mechanics: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md).
 

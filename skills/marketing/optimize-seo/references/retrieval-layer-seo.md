@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # Retrieval-Layer SEO
 
 > Load when AI-SEO mode (Route B) or Full mode (Route E) is active. This reference upgrades the AI-SEO mode from "produce content AI might cite" to "produce **extraction units** AI retrieval can actually lift." Pair with `references/ai-seo.md` (platform-specific tactics, monitoring) and `references/_shared/evidence-classes.md` (every retrieval claim is tagged).

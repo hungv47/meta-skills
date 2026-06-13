@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | Loop exists but no measurement evidence supplied for the current cycle (no primary metric value-source-window) | Return BLOCKED with missing-evidence list — wait for operator to gather evidence and retry |
 | Audience-temp tag missing from operator input (cold-traffic OR retargeting) | BLOCKED — Critical Gate 4 + Critic Hard Fail #3. Ask operator to declare the audience-temp before proceeding |
 | Source ad-copy artifact path unreadable or missing | BLOCKED — Critic Hard Fail #10. Ask operator to confirm the source artifact path |
@@ -71,7 +71,7 @@ Triggered when loop exists but cycle context is missing. Ask one bundled questio
 6. Total spend during the measurement window? Frequency at window close? Conversion count (if defined in program.md)?
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-ad.
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-ad.
 
 ## Needed dimensions (6)
 

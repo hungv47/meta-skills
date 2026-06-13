@@ -159,9 +159,9 @@ Count distinct emotional triggers fired in the piece. Reference catalog: [`refer
 
 | Trigger count | Verdict | Action |
 |---|---|---|
-| **0-2** | WEAK | FAIL — fold in another lever; the piece reads as informational rather than emotionally compelling. Route to `psychology-agent` to identify the missing primary or secondary trigger. |
-| **3-4** | STRONG | PASS — target zone. Triggers compound without crowding each other. |
-| **5-6** | GURU-ENERGY RISK | FAIL — the piece reads as "trying every lever." Cut to 3-4. Route to `psychology-agent` to identify the lowest-load-bearing trigger and remove it. |
+| **0-2** | BELOW RANGE | Check the piece isn't merely informational. If persuasion is the job, route to `psychology-agent` to identify the missing primary or secondary trigger. |
+| **3-4** | OPTIMAL | Target zone. Triggers compound without crowding each other. |
+| **5-6** | ABOVE RANGE | Run the authenticity filter per trigger; cut any trigger that fails it. If all survive, justify the density in Evaluation Notes. |
 
 **Score on craft, not trigger-count alone.** A piece firing 4 triggers but doing each one weakly fails on the upstream V/F/U rubric — trigger density is a *necessary, not sufficient* condition. The order of operations is: pass V/F/U first, then check density.
 
@@ -181,7 +181,7 @@ All items must pass for a PASS verdict:
 - [ ] **Belief sequence walked across the hero** (multi-line surfaces): headline → subhead → bullets cover the belief sequence in order, AND the headline scores ≥4 on each of V/F/U — an abstract belief-1 belongs in the subhead, not forced into a weak headline
 - [ ] Every key line passes the Competitor Swap Test
 - [ ] Unique Mechanism distinctness check passed, or N/A is explicitly justified
-- [ ] 3-5 variations were generated per key line, best selected with alternatives documented
+- [ ] Alternatives explored per key line, best selected with alternatives documented
 - [ ] Every key line annotated: rule that drove the choice, cut alternative, rubric score
 - [ ] Every CTA follows formula: [action verb] + [what they get] (no "Learn More," "Click Here")
 - [ ] Every headline/hook contains concrete nouns or specific numbers
@@ -189,7 +189,7 @@ All items must pass for a PASS verdict:
 - [ ] Zero generic adjectives without factual replacement
 - [ ] Risk reversal present near every CTA
 - [ ] Objections addressed before CTAs (not after)
-- [ ] **Emotional-trigger density 3-4** for TOF / lead-magnet / persuasion-heavy copy (0-2 = WEAK, 5-6 = guru-energy risk; N/A for tactical product / nav / label copy)
+- [ ] **Emotional-trigger density in or justified against the 3-4 optimal range** for TOF / lead-magnet / persuasion-heavy copy (below 3 → confirm the piece isn't merely informational; above 4 → authenticity filter per trigger; N/A for tactical product / nav / label copy)
 - [ ] **Authenticity filter passed** for emotionally-charged copy (true / would say in person / proportional / serves reader / specific / proof present)
 
 ### Rewrite Routing

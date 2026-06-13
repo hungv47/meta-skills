@@ -145,7 +145,7 @@ provenance:
 - Keep: [target-level, not "the SEO"]
 - Discard:
 - Watch:
-- Route next work to: optimize-seo | monitor-aeo | write-copy | run-eval-loop | none
+- Route next work to: optimize-seo | monitor-aeo | write-copy | run-pipeline | none
 
 ## Results Row
 
@@ -238,7 +238,7 @@ Lesson format:
 3. **Update learnings.md** ONLY if critic approved promotion (high-confidence keyword/surface-scoped keep/discard lesson over a lag-respecting window)
 4. **Run manifest-sync** via `bun scripts/manifest-sync.ts` to refresh the manifest
 
-If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with the missing evidence. If operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/eval/log-critic-override.ts`) precedes side effect #2.
+If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with the missing evidence. If operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/log-critic-override.ts`) precedes side effect #2.
 
 ## Cross-stack contract
 

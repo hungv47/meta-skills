@@ -55,7 +55,7 @@ capability:
       - "User asks to evaluate a launched campaign cycle (post-launch review with metrics)."
       - "Loop exists; cycle N needs to be scored against the source plan-campaign hypothesis."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "User wants to plan or re-plan the campaign -> plan-campaign."
       - "Single ad performance -> evaluate-ad."
       - "Single organic post performance -> evaluate-content."

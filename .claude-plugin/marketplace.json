@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "FORSVN turns your coding agent into a full product team — composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Single install from github.com/hungv47/meta-skills.",
-    "version": "1.2.0"
+    "version": "1.3.0"
   },
   "plugins": [
     {
@@ -16,7 +16,7 @@
       "category": "development",
       "description": "Composable skills across research, marketing, product, and meta (process), plus a bundled review surface. /forsvn is the single front door — describe what you want in plain English and it routes you. Skills emit plain Markdown; /forsvn:review renders a themed preview and captures your approve / deny / request-changes decision. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
       "tags": [
-        "multi-agent", "orchestration", "forsvn", "discover", "debate-agents", "run-eval-loop",
+        "multi-agent", "orchestration", "forsvn", "discover", "debate-agents",
         "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
         "create-brand", "write-copy", "write-ad", "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "brief-graphic", "optimize-seo", "monitor-aeo", "preview-og", "humanmaxxing", "write-outreach", "brief-shortform", "write-social",
         "map-user-flow", "architect-system", "clean-code", "clean-machine", "write-docs",

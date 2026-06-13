@@ -30,6 +30,9 @@ const ROOT = (() => {
   if (i > -1 && process.argv[i + 1]) return process.argv[i + 1];
   return process.cwd();
 })();
+// Cohort: the three artifact-contract layers only. `.forsvn/performance/` is
+// deliberately exempt — operator-fed channel-performance data (TSV snapshots +
+// publish ledger), not artifacts; see references/performance-data.md.
 const LAYER_DIRS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience"];
 
 const STATUS = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);

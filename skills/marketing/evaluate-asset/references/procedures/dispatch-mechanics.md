@@ -60,7 +60,7 @@ Critic enforces the 7-dimension rubric (Loop Fit / Metric Integrity / Attributio
 When the operator explicitly decides to ship despite a critic FAIL OR accept a `pass-with-concerns` verdict, **log the override before any side effect fires**. The override log is the only mechanism that turns repeated operator pushback into a rubric-revision signal.
 
 ```bash
-bun scripts/eval/log-critic-override.ts \
+bun scripts/log-critic-override.ts \
   --skill evaluate-asset \
   --dimension "<failed rubric dimension>" \
   --artifact "<project-relative path to the eval artifact under review>" \

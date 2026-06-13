@@ -23,7 +23,7 @@ Return:
 - confidence: high | medium | low | blocked
 - keyword_cluster: [cluster] · surface: [organic-serp | ai-answers]
 - decision_sentence: [one sentence, no tabs, includes the cluster + surface + window length]
-- next_route: optimize-seo | monitor-aeo | write-copy | run-eval-loop | none
+- next_route: optimize-seo | monitor-aeo | write-copy | run-pipeline | none
 - next_action_summary: [one sentence — what the next route should target, if any]
 
 ## Keep / Discard / Watch
@@ -66,7 +66,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 - Route to `optimize-seo` when the next action is another on-page/technical change for the same cluster (deepen the content, fix internal links, add schema). Include the specific target in next_action_summary.
 - Route to `monitor-aeo` when the surface is `ai-answers` and the next action is continued AI-citation tracking or a new AEO target.
 - Route to `write-copy` when the diagnosis points at thin/weak content (the page needs real content depth, not a technical tweak).
-- Route to `run-eval-loop` when the metric contract, baseline, lag floor, or cluster/surface scope need redefinition.
+- Route to `run-pipeline` when the metric contract, baseline, lag floor, or cluster/surface scope need redefinition.
 - Route to `none` when the cycle should hold until the next window (typically `watch` — the default for under-aged SEO moves).
 
 ## Lag & Volatility Discipline

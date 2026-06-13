@@ -1,6 +1,6 @@
 ---
 name: evaluate-content
-description: "Score a published organic post (text / image / carousel) from real metrics inside an existing eval loop — one primary platform per cycle, verdict + engagement-quality diagnosis. Not for short-form video (use evaluate-shortform), paid-ad performance (use evaluate-ad), writing next-cycle copy (use write-social), or scaffolding the loop (use run-eval-loop)."
+description: "Score a published organic post (text / image / carousel) from real metrics inside an existing eval loop — one primary platform per cycle, verdict + engagement-quality diagnosis. Not for short-form video (use evaluate-shortform), paid-ad performance (use evaluate-ad), writing next-cycle copy (use write-social), or scaffolding the loop (use run-pipeline)."
 argument-hint: "[loop slug or path] [primary-platform] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Organic non-video content only.** Text / image / carousel posts. Short-form video → `evaluate-shortform`; paid-ad → `evaluate-ad`. Otherwise → `NEEDS_CONTEXT`, route to sibling.
 3. **Measurement evidence + primary metric decides the row.** Need ≥1 metric source, window, and current value for the loop's primary metric (engagement rate · save rate · CTR · conversion rate — operator-pick via `program.md`). Secondary metrics explain diagnosis; they don't override unless `program.md` defines a guardrail failure.
 4. **One primary platform per cycle.** Secondary platforms live in `Cross-Platform Context` subsection — they inform diagnosis but DO NOT drive the verdict. A 9-platform campaign = 9 separate cycles, one primary platform each.
@@ -31,7 +31,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-publish organic-content evidence snapshots scored against one primary platform. `/write-social` owns next-cycle copy. `/evaluate-shortform` + `/evaluate-ad` own their lanes.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-publish organic-content evidence snapshots scored against one primary platform. `/write-social` owns next-cycle copy. `/evaluate-shortform` + `/evaluate-ad` own their lanes.
 
 ## Inputs
 
@@ -49,7 +49,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; content is short-form video → route to `evaluate-shortform`; no measurement evidence OR missing primary-platform tag → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · primary platform · source write-social artifact path · window · primary metric value/baseline · reach). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; content is short-form video → route to `evaluate-shortform`; no measurement evidence OR missing primary-platform tag → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · primary platform · source write-social artifact path · window · primary metric value/baseline · reach). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -74,7 +75,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-content …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-content …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -97,4 +98,4 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
-- **Siblings:** `write-social` (downstream), `run-eval-loop` (loop scaffolding), `evaluate-{ad, shortform, landing-page, campaign}` (sibling lanes)
+- **Siblings:** `write-social` (downstream), `run-pipeline` (loop scaffolding), `evaluate-{ad, shortform, landing-page, campaign}` (sibling lanes)

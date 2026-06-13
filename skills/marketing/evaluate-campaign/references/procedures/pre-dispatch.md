@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | The thing under evaluation is a single paid ad | Return NEEDS_CONTEXT; route to `evaluate-ad` — that skill owns the single-ad lane |
 | The thing under evaluation is a single organic post | Return NEEDS_CONTEXT; route to `evaluate-content` |
 | The thing under evaluation is a single landing page | Return NEEDS_CONTEXT; route to `evaluate-landing-page` |
@@ -76,7 +76,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 6. The per-channel rollup — for EVERY channel the campaign ran on: spend or effort, reach, leads, conversions, revenue. And total fully-loaded spend (media + production + tooling).
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-campaign. **If the thing under evaluation is a single ad / post / page / video, route to the asset-level sibling instead of asking the rest.**
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-campaign. **If the thing under evaluation is a single ad / post / page / video, route to the asset-level sibling instead of asking the rest.**
 
 ## Needed dimensions (6)
 

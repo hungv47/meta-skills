@@ -57,7 +57,7 @@ Word-for-word text appearance with timing and position. Every text appearance is
 - 0:06–0:09 — "[next text]" — top safe area, slide-in from right
 - ...
 
-Production discipline:
+Production defaults (not hard spec — tune when the footage, brand, or platform demands it):
 - Max 2 lines per frame
 - 3-5 words per line
 - 2-4 seconds on screen per line
@@ -78,7 +78,7 @@ For motion-graphic mode: per-scene asset list + motion principles + transition.
 - Every shot/scene specifies: time (in seconds), framing (per `storyboard-grammar.md`), action (specific verb), on-screen text, audio sync.
 - "Show product" fails. "0:03–0:05, hand pulls latch on case, latch click audible" passes.
 - Text choreography is exact — word-for-word with appearance/duration/position.
-- Pacing rule from research applied (TikTok pattern-interrupt every 3-5s; Reels hold first 3s; Shorts loop ending).
+- Platform pacing evidence engaged (TikTok pattern-interrupt every 3-5s; Reels hold first 3s; Shorts loop ending) — apply it, or state an intentional departure and the reasoning.
 - For Shorts, the final shot/scene must enable a clean loop back to the opening.
 
 ## Domain Instructions
@@ -150,7 +150,7 @@ Discipline rules (cited from `caption-cta-rules.md`):
 
 - [ ] Every shot has time, framing, action, on-screen text, audio sync
 - [ ] Hook shot (0:00–0:03) inherited from hook-agent's recommended variation
-- [ ] Pacing rule applied per platform (interrupts/hold/loop)
+- [ ] Platform pacing engaged — applied per platform (interrupts/hold/loop), or an intentional departure stated with reasoning
 - [ ] Text choreography section broken out with word-for-word + timing + position
 - [ ] Production notes filled per shot (live-action) or per scene (motion-graphic)
 - [ ] Final shot enables loop (Shorts) or clean tail-out (TikTok/Reels)

@@ -1,18 +1,18 @@
 ---
 name: forsvn
-description: "Front door for the FORSVN agent stack — classifies the request, loads shared product context and prior session state, then routes to the right skill or resumes a prior initiative. Use when you don't know which skill to call, want to continue something you started, or a vague ask needs to land somewhere concrete (\"where do I start\", \"resume\", \"ship this\")."
+description: "Front door for the FORSVN agent stack — classifies the request, loads shared product context and prior session state, then routes to the right skill or resumes a prior initiative. Use when the right skill is unclear, to continue an in-flight initiative, or when a vague ask needs to land somewhere concrete (\"where to start\", \"resume\", \"ship this\")."
 argument-hint: "[free-form ask, or 'resume', or empty for state summary]"
 allowed-tools: Read Grep Glob Bash Write Edit
 user-invocable: true
 metadata:
-  version: "1.0.0"
+  version: "1.1.1"
   budget: fast
   estimated-cost: "$0.02-0.08"
 ---
 
 # /forsvn — Front Door
 
-<!-- BUDGET_EXCEPTION: Front-door dispatcher must surface the full intent-to-leaf-skill routing table inline so the classifier can pick the right route in one pass. The fast tier is correct (loaded each session); ~150 tokens over cap is the legitimate cost of the routing surface. -->
+<!-- BUDGET_EXCEPTION: Front-door dispatcher must surface the full intent-to-leaf-skill routing table inline so the classifier can pick the right route in one pass, plus the 2026-06 audit's quality machinery (classify-flow pre-dispatch, thin-critic gate, worked-example pointer). The fast tier is correct (loaded each session); the overage is the legitimate cost of the routing surface. -->
 
 Classifies the ask, loads the context, routes or resumes. Always lands on a concrete next action. Capability metadata (route triggers, prerequisites, load map, artifact contract) lives in [`routing.yaml`](routing.yaml).
 
@@ -59,7 +59,7 @@ Default to resume if the current ask is empty or "continue" / "resume". Otherwis
 | "debate this", "multiple perspectives", "poll", "consensus" | debate | `/debate-agents` |
 | "decompose", "task list", "break down", "implementation order" | decompose | `/breakdown-tasks` |
 | "review my work", "second opinion", "did I miss anything" | review | `/review-work` |
-| "improvement loop", "track metric", "experiment ledger" | loop | `/run-eval-loop` |
+| "improvement loop", "track metric", "experiment ledger" | loop | `/run-pipeline` |
 | Empty + no resume offer | summary | print state summary, exit |
 | Ambiguous, multi-domain, "launch this", "ship this" | multi | propose 2-3 step chain |
 
@@ -70,11 +70,29 @@ Rules:
 - Unclear → at most 2 clarifying questions. Hard cap. Then hand off to `/discover`.
 - Brand-gate: marketing/launch intent with `brand/BRAND.md` missing → route through `/create-brand` first.
 
-**Steps 4 + 5 — Load context, dispatch, persist routing record + bootstrap.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Always print the hand-off (`→ /<skill>`, Why, Reads, Writes); operator types the slash command — `/forsvn` does NOT auto-invoke. Then write `.forsvn/routing/last-session.md` + history snapshot.
+**Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
+
+## Pre-Dispatch — the classify flow IS the cold start
+
+Needed dimensions: **intent class** (Step 3 table), **initiative slug** (Step 2 resume check / `last-session.md`), **domain chain rule** (the matching `chains/<domain>.md` row). Unresolved after reading state → at most 2 bundled clarifying questions (the Step 3 hard cap; close-candidate presentations count toward it); still unclear → hand off to `/discover`. Dispatched leaves warm-start and skip their own pre-dispatch steps 1–2.
+
+## Quality Gate
+
+Instantiates `references/_shared/thin-critic-rubric.md` as a per-dispatch self-check (fast tier — no sub-agent):
+
+- [ ] **Classification** — intent matches a Step 3 row or a chain-file rule; two close candidates were presented, never coin-flipped.
+- [ ] **Sequencing** — routing record written (`status: dispatched`) BEFORE the Skill invocation.
+- [ ] **Announcement** — the one-line `→ Dispatching /<skill> — <why>` preceded the invocation.
+
+Auto-fail: silent dispatch (no announcement) or record-after-invoke — redo the step per `references/anti-patterns.md`.
+
+## Worked Example
+
+"Brief the landing page first, then build" → marketing chain → `brief-landing-page`: record → announce → invoke → warm handoff, with the gate self-check: [`references/examples/dispatch-walkthrough.md`](references/examples/dispatch-walkthrough.md) [EXAMPLE].
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) — 7 rules covering clarifying-question cap, auto-invoke ban, routing-record skip, chain-file read, experience grep, brand-gate bypass. Re-read before dispatch.
+[`references/anti-patterns.md`](references/anti-patterns.md) — 9 rules covering clarifying-question cap, silent dispatch, hand-off-and-stop, coin-flip auto-fire, routing-record sequencing, chain-file read, experience grep, brand-gate bypass. Re-read before dispatch.
 
 ## Durable Rules (protected)
 
@@ -85,7 +103,7 @@ Rules:
 
 ## Completion Status
 
-- **DONE** — classified intent, dispatched (or printed handoff), wrote routing record.
+- **DONE** — classified intent, wrote routing record, announced + invoked the leaf (or presented candidates / state summary).
 - **DONE_WITH_CONCERNS** — dispatched but product context was missing or stale; flagged to user.
 - **BLOCKED** — could not read project state AND could not bootstrap `.forsvn/`.
 - **NEEDS_CONTEXT** — ask was empty, no prior session, no canonical sources. Printed state summary and exited.

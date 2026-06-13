@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | No re-ingested asset — only a prompt/brief exists | Return NEEDS_CONTEXT; route to `produce-asset` + re-ingest (`forsvn-preview attach`). evaluate-asset never scores a prompt (Critical Gate 2) |
 | Asset under evaluation is a short-form video | Return NEEDS_CONTEXT; route to `evaluate-shortform` |
 | Surface under evaluation is a landing page | Return NEEDS_CONTEXT; route to `evaluate-landing-page` |
@@ -73,7 +73,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 6. What are the brief's hard acceptance criteria (aspect ratio, required copy slots, dimensions, palette)? Are brand tokens available?
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-asset. **If nothing is re-ingested (only a prompt), route to `produce-asset` + re-ingest. If the asset is video / a landing page / a live post, route to the sibling eval instead of asking the rest.**
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-asset. **If nothing is re-ingested (only a prompt), route to `produce-asset` + re-ingest. If the asset is video / a landing page / a live post, route to the sibling eval instead of asking the rest.**
 
 ## Needed dimensions (6)
 

@@ -1,28 +1,38 @@
 # Dispatch — Steps 4 & 5
 
-## Step 4 — Load context + dispatch
+## Step 4 — Load context
 
 Before dispatching:
 
 1. **Product context.** If `.forsvn/canonical/product/PRODUCT-CONTEXT.md` is missing AND the routed skill needs it (marketing, product, research) → autodraft it there from `README.md`, `brand/BRAND.md`, `research/*.md`, `package.json`. Mark `status: needs_context` (an unratified draft). Tell the user: "Autodrafted product context. Review and promote to `status: done` before treating as canonical." Drafts are usable; do not block dispatch.
 2. **Experience.** Grep `.forsvn/experience/*.md` for keywords matching the intent. Surface anything relevant: "You previously said X — still applies?"
 3. **Initiative slug.** New → propose a kebab-case slug, user confirms. Resuming → use existing slug.
+4. **Session execution profile.** The dispatcher owns the ask: if no fresh `.forsvn/routing/execution-profile.json` exists, fire the one bundled single-vs-multi (+ model, when undetected) ask per [`execution-policy.md`](../_shared/execution-policy.md) and write the profile. Every leaf dispatched this session inherits it silently — leaves never re-ask.
 
-Then print the hand-off:
+## Step 5 — Dispatch: record → announce → invoke
 
-```
-→ /<skill-name>
+Strict order. The routing record lands **before** the Skill call so a leaf crash still leaves accurate state on disk.
 
-Why: <one line>
-Reads: <key context files>
-Writes: .forsvn/artifacts/<initiative>/<skill>/...
-```
+1. **Write the routing record first** (format below): `.forsvn/routing/last-session.md` (overwrite) + append a copy to `.forsvn/routing/history/YYYY-MM-DD-HHMMSS-<intent-tag>.md`. Set `status: dispatched` and `dispatched-by: forsvn` — the warm-handoff marker the leaf reads (see [`pre-dispatch-protocol.md`](../_shared/pre-dispatch-protocol.md) § "Warm Handoff").
+2. **Announce in one line** — name the leaf and why, so a misroute is interruptible before any work starts:
 
-Operator types the slash command. `/forsvn` does NOT auto-invoke.
+   ```
+   → Dispatching /<skill-name> — <one-line why>
+   ```
 
-## Step 5 — Persist routing record
+3. **Invoke the leaf via the Skill tool**, passing the operator's ask (plus initiative slug and any surfaced context) as args. When classification is confident, the invocation IS the hand-off — do not print a hand-off block and stop, and do not wait for the operator to type the slash command.
 
-Write `.forsvn/routing/last-session.md` (overwrite) and append a copy to `.forsvn/routing/history/YYYY-MM-DD-HHMMSS-<intent-tag>.md`.
+### Ambiguity rule — never auto-fire a coin flip
+
+Two candidates scoring close (no confident winner from the chain rules) → present both with a one-line rationale each and let the operator pick. This counts toward the 2-clarifying-question cap (SKILL.md Step 3). Auto-invocation is only for confident single-candidate classification.
+
+### Misroute recovery
+
+A wrong turn is visible and reversible by construction: the announcement names the leaf before any work starts (interrupt to cancel), the routing record holds `status: dispatched` + the route, and the leaf's own artifact trail shows exactly what it produced. To recover: interrupt (or let it finish), then re-invoke `/forsvn` with the corrected intent — `last-session.md` is overwritten, `history/` keeps the audit trail.
+
+After the leaf completes — or when `/forsvn` exits without dispatching (summary, candidates presented, blocked) — update `status:` (`awaiting-user` / `completed` / `abandoned`) and `next-action` in `last-session.md`. Update `.forsvn/routing/initiatives.md` if a new initiative was created or status changed.
+
+## Routing record format
 
 ```markdown
 ---
@@ -30,6 +40,7 @@ timestamp: YYYY-MM-DD HH:MM:SS
 intent: <classified intent>
 initiative: <slug or empty>
 routed-to: /<skill-name or empty if summary>
+dispatched-by: forsvn
 status: dispatched | awaiting-user | completed | abandoned
 next-action: <one line>
 ---
@@ -44,7 +55,7 @@ next-action: <one line>
 - <paths, or "none yet">
 ```
 
-Update `.forsvn/routing/initiatives.md` if a new initiative was created or status changed.
+`dispatched-by: forsvn` is set only on records written by this dispatcher at invocation time; the leaf checks it (same session, `status: dispatched`) to run its warm start.
 
 ## Bootstrap (first run)
 

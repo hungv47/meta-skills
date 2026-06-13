@@ -58,7 +58,7 @@ capability:
       - "User asks to evaluate the ranking/visibility delta of an optimize-seo or monitor-aeo change over a measurement window."
       - "Loop exists; cycle N needs scoring for one keyword cluster + surface."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "Running the audit or applying fixes -> optimize-seo."
       - "Tracking AI Overview / LLM-answer citations live -> monitor-aeo."
       - "Organic-post engagement -> evaluate-content; paid-ad -> evaluate-ad."

@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # Playbook — Why AEO Monitor Exists
 
 > Load this when teaching the skill to a new operator, deciding whether to run it at all, or when strategy work (in `optimize-seo`) is being done against an un-sourced AI-visibility picture.

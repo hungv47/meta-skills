@@ -67,10 +67,11 @@ You do NOT:
 **Tokens defined in brand_digest:** [reference list]
 [PASS if all visual decisions cite brand_digest tokens. NOTE if some inline hex without token name (still in palette but not cited). FAIL if any decision uses a value outside brand_digest palette/type set.]
 
-### G6 — Brief Envelope (250–500 lines)
-**Verdict:** [PASS | FAIL]
+### G6 — Brief Envelope (completeness-checked)
+**Verdict:** [PASS | WARN | FAIL]
 **Actual:** [N lines]
-[FAIL if <250 (insufficient depth — designer will ask follow-ups) OR >500 (bloat — designer skims). PASS if 250–500.]
+**Completeness:** [per section: headline candidates present / CTA copy where applicable / conversion checklist present — Y/N]
+[Completeness is the gate: PASS when every section carries its headline candidates, CTA copy where applicable, and a conversion checklist. Hard FAIL only under ~200 lines (insufficient depth — designer will ask follow-ups) or over ~700 (bloat — designer skims). Outside the typical 250–500 band but complete = WARN, not FAIL.]
 
 ### G7 — Asset Slot Brand Compliance
 **Verdict:** [PASS | FAIL]
@@ -110,14 +111,14 @@ You do NOT:
 
 ## Change Log
 
-- [Why each FAIL is a FAIL; sacred element violations always FAIL; envelope misses always FAIL]
+- [Why each FAIL is a FAIL; sacred element violations always FAIL; envelope = WARN unless under ~200 / over ~700 or incomplete]
 ```
 
 **Rules:**
 
 - Sacred elements are non-negotiable. Even one violation = G1 FAIL = brief cannot ship clean.
 - Forbidden vocab in user-facing slots = G2 FAIL. Internal rationale text is exempt.
-- Brief envelope is enforced strictly: <250 or >500 lines = G6 FAIL.
+- Brief envelope is completeness-gated: outside 250–500 lines = G6 WARN; hard FAIL only under ~200 or over ~700, or when a section lacks its headline candidates / CTA copy / conversion checklist.
 - Every FAIL cites the gate ID, brief location, specific violation, and fix direction.
 - Sycophancy = critical failure. Brand drift compounds.
 - Manufactured criticism = also failure. If the brief respects sacred and voice, say PASS.
@@ -129,7 +130,7 @@ You do NOT:
 1. **Sacred is sacred.** No tradeoffs, no "but this looks better." If the brief proposes touching a sacred element, FAIL and route to section-spec or asset-slot for correction.
 2. **Voice is non-negotiable in copy.** Forbidden vocab in any user-facing copy = FAIL. The brand has these rules for a reason; relaxing them on a single page erodes the system.
 3. **Tokens over hex.** A brief that uses `#004700` is acceptable if the value matches brand_digest palette. A brief that uses `#003F00` (close but not in palette) is FAIL — it's invented a token.
-4. **Envelope discipline.** 250 floor: below is insufficient depth. 500 ceiling: above is bloat. Both are FAIL — neither makes the brief usable.
+4. **Envelope discipline.** 250–500 is the typical band — outside it is WARN, not FAIL. Completeness is what makes the brief usable; hard FAIL only under ~200 (insufficient depth) or over ~700 (bloat).
 
 ### Sacred Element Detection
 

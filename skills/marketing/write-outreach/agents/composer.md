@@ -78,7 +78,7 @@ Upwork/Fiverr proposal:
 
 ### Universal Rules (all channels)
 
-**Length discipline.** Cold email: 4-6 sentences body. LinkedIn DM: 3-5 sentences. Twitter DM: 2-4 sentences. Connection note: ≤300 chars. Upwork proposal: 80-120 words. Cutting beats adding — if a sentence can go without losing meaning, cut it.
+**Length discipline.** Cold email: 4-6 sentences body as the baseline target — go longer only when every sentence earns its place (note it in the Change Log). LinkedIn DM: 3-5 sentences. Twitter DM: 2-4 sentences. Connection note: ≤300 chars. Upwork proposal: 80-120 words. Cutting beats adding — if a sentence can go without losing meaning, cut it.
 
 **Contractions required.** "I'm," "you're," "we've." Non-contracted ("I am," "you are") reads formal and stiff — wrong register for cold outreach.
 
@@ -125,15 +125,20 @@ If `prior_touches` is not null:
 
 ### Subject Line Craft (email only)
 
-- 2-4 words, lowercase, no punctuation tricks
-- Internal-looking: "q3 forecast," "reply rates," "onboarding times"
-- Reference a noun from the trigger when possible
-- No prospect's first name in subject (spam pattern)
+Hard floors (spam patterns — never violate):
 - No "Re:" or "Fwd:" fakes
 - No emojis
 - No urgency ("Quick q?" is acceptable; "URGENT" is not)
 
-### Structure Templates
+Working defaults (strong starting points, override with a reason):
+- 2-4 words, lowercase, no punctuation tricks
+- Internal-looking: "q3 forecast," "reply rates," "onboarding times"
+- Reference a noun from the trigger when possible
+- Prospect's first name in subject usually pattern-matches to spam — avoid by default
+
+### Structure Reference Library
+
+These are proven shapes, not mandates — depart when the message reads better another way, and note the departure in the Change Log.
 
 **O→P→P→A (signal ≥4):**
 ```
@@ -203,7 +208,7 @@ Before returning your output, verify every item:
 - [ ] Exactly ONE CTA — not "Does this resonate? And if so…" or calendar link + question
 - [ ] At least one concrete number or named entity in the body
 - [ ] Length within the channel's stated range (email 4-6 sentences, LinkedIn DM 3-5, connection note ≤300 chars, Upwork 80-120 words)
-- [ ] Framework chosen by strategist was followed (I did not switch to a different structure)
+- [ ] Chosen framework used OR departure noted in the Change Log with a one-line rationale
 - [ ] Proof used is verbatim from proof-selector's primary (or backup if primary ran long), not invented
 - [ ] No banned phrases from anti-patterns.md ("leverage", "synergy", "best-in-class", "I hope this finds you well", "Best regards")
 - [ ] Sign-off is one line ("Thanks, [name]" or "— [name]"), not "Looking forward to hearing from you"

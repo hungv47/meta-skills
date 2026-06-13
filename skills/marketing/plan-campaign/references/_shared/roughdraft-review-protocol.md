@@ -51,6 +51,7 @@ can open the review when appropriate.
 1. **Write + index.** The skill writes the artifact with
    `decision_state: pending`, `review_tool: roughdraft`, the appropriate
    `review_surface` value, and the `## Review Gate` body block. It runs
+   <!-- lint:reference-ok skill-local mirrored copy; canonical bin/manifest-sync.ts -->
    `bun scripts/manifest-sync.ts` as usual.
 
 2. **HTML preview (when `review_surface: html`) — via the review module, not the skill.**
@@ -82,6 +83,7 @@ can open the review when appropriate.
 
 6. **Record + re-index + archive HTML.** Set `decision_state` from the checked
    Review Gate box, set `reviewed_at` to today and `reviewer` to the operator,
+   <!-- lint:reference-ok skill-local mirrored copy; canonical bin/manifest-sync.ts -->
    then re-run `bun scripts/manifest-sync.ts`. If a co-located `.html` twin
    exists, move it to `.forsvn/artifacts/.archive/<original-filename>.html`
    (the HTML's lifecycle is `pending`-only). If the operator requested changes,

@@ -1,6 +1,6 @@
 ---
 name: evaluate-outreach
-description: "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) from real reply data inside an existing eval loop — one channel + segment per cycle, verdict + reply-quality diagnosis with a deliverability + compliance gate. Not for writing the outreach (use write-outreach), organic-post performance (use evaluate-content), paid-ad performance (use evaluate-ad), or scaffolding the loop (use run-eval-loop)."
+description: "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) from real reply data inside an existing eval loop — one channel + segment per cycle, verdict + reply-quality diagnosis with a deliverability + compliance gate. Not for writing the outreach (use write-outreach), organic-post performance (use evaluate-content), paid-ad performance (use evaluate-ad), or scaffolding the loop (use run-pipeline)."
 argument-hint: "[loop slug or path] [channel+segment] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Sent + measured outreach only.** The sequence actually went out and reply/bounce data exists. A draft → `NEEDS_CONTEXT`, route to `write-outreach`. This skill scores what shipped, not a draft.
 3. **Source write-outreach artifact required.** The sequence being scored (`.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
 4. **One channel + segment per cycle.** `email` / `linkedin-dm` / `twitter-dm` + one ICP segment. Cross-channel or cross-segment blending is contamination → secondary channels/segments are context only, never verdict input.
@@ -32,7 +32,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-send reply-quality + deliverability snapshots scored against one channel + segment. `/write-outreach` owns next-cycle copy. `/research-icp` owns list/targeting. `/evaluate-content` + `/evaluate-ad` own their lanes.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-send reply-quality + deliverability snapshots scored against one channel + segment. `/write-outreach` owns next-cycle copy. `/research-icp` owns list/targeting. `/evaluate-content` + `/evaluate-ad` own their lanes.
 
 ## Inputs
 
@@ -50,7 +50,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; outreach is a draft (not sent) → `NEEDS_CONTEXT` + `/write-outreach`; no reply evidence OR missing channel+segment tag → `BLOCKED`; no deliverability/compliance evidence → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · channel+segment · source write-outreach artifact path · window · primary metric value/baseline · sends + reply breakdown + deliverability/compliance). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; outreach is a draft (not sent) → `NEEDS_CONTEXT` + `/write-outreach`; no reply evidence OR missing channel+segment tag → `BLOCKED`; no deliverability/compliance evidence → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · channel+segment · source write-outreach artifact path · window · primary metric value/baseline · sends + reply breakdown + deliverability/compliance). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -75,7 +76,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-outreach …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-outreach …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -98,4 +99,4 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `references/_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
-- **Siblings:** `write-outreach` (downstream), `research-icp` (list/targeting), `run-eval-loop` (loop scaffolding), `evaluate-{content, ad, asset, campaign}` (sibling lanes)
+- **Siblings:** `write-outreach` (downstream), `research-icp` (list/targeting), `run-pipeline` (loop scaffolding), `evaluate-{content, ad, asset, campaign}` (sibling lanes)

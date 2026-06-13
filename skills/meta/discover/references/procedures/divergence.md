@@ -98,6 +98,11 @@ Once the user picks (or ratifies the recommended shortlist down to one direction
   **Step 3 coverage zones** — divergence rejoins the convergent pipeline; it does not replace it.
 - A still-live 2-3 way shortlist with real tradeoffs → optionally invoke **Step 5 debate-agents** to
   narrow.
+- The shortlist needs a **scored ranking**, or the operator asks "rank these" → hand off to
+  **`prioritize` (ideation mode)**: the chosen goal becomes the ranking anchor, and the candidates get
+  force-ranked + evidence-scored per [`../_shared/idea-ranking-core.md`](../_shared/idea-ranking-core.md).
+  The inline blunt-peer shortlist above remains the right call for light cases — hand off only when the
+  set warrants real scoring.
 
 ## Feeds the wrap-up (Step 6/7 + the handoff plan)
 

@@ -150,7 +150,7 @@
 
 - **Pre-dispatch:** orchestrator re-reads this file before formatter starts (5-line scan; the patterns are stable).
 - **Critic-time:** critic dim 6 explicitly checks #2 (credential leak), #4 (mass-tagging), #5 (link-in-bio bait — flag only), #6 (shadowban triggers).
-- **Post-bundle:** if a pattern fires on the operator's side (e.g., they discover #3 char-cap silent truncation after publishing), log via `scripts/eval/log-critic-override.ts` with `--skill publish-social --dimension anti-pattern --reason <pattern-number>` so the rubric can be revised in a future slice.
+- **Post-bundle:** if a pattern fires on the operator's side (e.g., they discover #3 char-cap silent truncation after publishing), log via `scripts/log-critic-override.ts` with `--skill publish-social --dimension anti-pattern --reason <pattern-number>` so the rubric can be revised in a future slice.
 
 ## Quick Reference Card
 

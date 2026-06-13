@@ -54,7 +54,7 @@ capability:
       - "User asks to evaluate a published short-form video against its brief."
       - "Loop exists; cycle N needs scoring for one short-form post on one platform."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "Organic text/image/carousel post -> evaluate-content."
       - "Paid-ad video -> evaluate-ad."
       - "Writing the next-cycle brief -> brief-shortform."

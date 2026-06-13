@@ -29,7 +29,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 | "campaign", "marketing plan", "channel strategy", "content calendar", "GTM" | `/plan-campaign` |
 | "write copy", "headline", "tagline", "CTA", "hook", "section copy" | `/write-copy` |
 | "landing page", "redesign LP", "LP brief", "hero section", "section spec" | `/brief-landing-page` |
-| "LP analytics", "LP results", "post-launch CRO", "GA4 says", "heatmap" | `/evaluate-landing-page` (hard-gated on `/run-eval-loop`) |
+| "LP analytics", "LP results", "post-launch CRO", "GA4 says", "heatmap" | `/evaluate-landing-page` (hard-gated on `/run-pipeline`) |
 | "SEO", "keywords", "AI search", "programmatic SEO", "ASO", "search rank" | `/optimize-seo` |
 | "TikTok video brief", "Reels brief", "Shorts brief", "video storyboard" | `/brief-shortform` |
 | "Meta ads", "retargeting ads", "primary text", "paid social", "ad creative" | `/write-ad` (hard-gated on ICP) |
@@ -47,7 +47,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 3. **Brand done + campaign intent** → `/plan-campaign`.
 4. **Brand done + copy intent** → `/write-copy`. If `/plan-campaign` missing, note: "sharper with campaign positioning context."
 5. **Brand done + LP intent** → `/brief-landing-page`.
-6. **LP-eval intent** → if matching `.forsvn/loops/[slug]/` exists, propose `/evaluate-landing-page`; otherwise propose `/run-eval-loop` first.
+6. **LP-eval intent** → if matching `.forsvn/loops/[slug]/` exists, propose `/evaluate-landing-page`; otherwise propose `/run-pipeline` first.
 7. **SEO intent** → `/optimize-seo`. Ask which mode (audit / ai / programmatic / competitor / aso).
 8. **Short-form-video intent** → `/brief-shortform`. Requires matching `.forsvn/artifacts/research/research-shortform/*.md`; if missing, flag cross-chain handoff.
 9. **Paid-ads intent** → `/write-ad`. Hard requires `research/icp-research.md`. Ask audience-temperature (retargeting / cold) — single-temp per invocation.

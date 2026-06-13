@@ -10,7 +10,7 @@ canonical-source: references/platform-intelligence/ (repo root)
 
 `channel-strategy.md` is canonical for the 9-channel framework, growth-motion priority, habitat translation, and the Angle-to-Channel Fit Matrix. It treats the **Social media** channel (channel #6 of 9) at the strategy level — *which* platform, *what* role. It does not carry the per-platform format/algorithm/CTA signals a Channel Execution Brief needs to be specific rather than generic.
 
-This catalog closes that gap. It maps `plan-campaign`'s `channel-agent` to the strategy-relevant sections of the top-level `references/platform-intelligence/` catalog so a Social-media channel brief is grounded in real signals — not "post on LinkedIn."
+This catalog closes that gap. It maps `plan-campaign`'s `channel-agent` to the strategy-relevant sections of the top-level `references/_shared/platform-intelligence/` catalog so a Social-media channel brief is grounded in real signals — not "post on LinkedIn."
 
 **Scope — Social-media channel only.** The 6 platform files (linkedin, x, tiktok, reels, shorts, youtube) ground channel #6. The other 8 channels in `channel-strategy.md` (Search/AEO, Store/Listing, Bounty/Info, News, Forums/Communities, IRL, Mailbox, SMS) are out of platform-intelligence scope — `platform-channels.md` does not touch them.
 

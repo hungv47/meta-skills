@@ -119,7 +119,7 @@ The strategist runs this in Pre-Dispatch. **Inputs:** recipient *seniority*, dec
 | **Warmth — warm-adjacent / referral** | PPP, 3Cs, Star-Story-Solution (lead with the relationship or the named case) |
 | **Sequence — multi-email** | PASTOR (spread the six beats across touches) |
 
-**Resolution rule:** intersect the rows that apply. The framework appearing in the most relevant rows wins; ties break toward the shorter arc for cold/high-seniority, the richer arc for warm/emotional. If no row fits cleanly, fall back to **PAS** (problem-aware default) or **Vanilla Ice Cream** (universal base). Record the chosen framework + the two runners-up + the one-line reason in the strategist change log.
+**Resolution rule (signal-based starting point, not a mandate):** intersect the rows that apply. The framework appearing in the most relevant rows is the default pick — if a better read of this specific prospect points elsewhere, trust it and note the departure in the change log. Ties break toward the shorter arc for cold/high-seniority, the richer arc for warm/emotional. If no row fits cleanly, fall back to **PAS** (problem-aware default) or **Vanilla Ice Cream** (universal base). Record the chosen framework + the two runners-up + the one-line reason in the strategist change log.
 
 **Worked selection.** Recipient = VP Eng (mid-level→senior), profile = data-driven, warmth = cold with a real signal (a conference talk you can quote). Rows hit: data-driven → {AIDA, ACCA, SCQ}; mid-level → {PAS, ACCA, BAB}; cold-with-proof → {PAS, AIDA}. **ACCA** appears in two data-relevant rows and suits an evidence-first engineer → pick ACCA, runners-up AIDA / SCQ, reason "analytical buyer, needs proof before a meeting; contrarian hook fits the quotable talk."
 

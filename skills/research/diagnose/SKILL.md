@@ -111,6 +111,7 @@ After verdict + root cause ship: hand to `prioritize` for initiative selection (
 - `references/anti-patterns.md` [ANTI-PATTERN] — 13 patterns + 2 cross-cutting failures
 - `references/procedures/{before-starting, pre-dispatch, dispatch-mechanics}.md` [PROCEDURE] — pre-flight, Cold Start, routes, Pause handling
 - `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, hypothesis-framework, artifact-contract-template}.md`
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - `references/examples/diagnose-walkthrough.md` [EXAMPLE] — full Route B walkthrough on signup decline (10 critic gates traced)
 - `references/{watanabe-framework, logic-tree-examples}.md` — MECE methodology + 4 worked trees (SaaS churn, e-commerce, content ROI, B2B pipeline)
 - `research-skills/CLAUDE.md` — stack-level conventions

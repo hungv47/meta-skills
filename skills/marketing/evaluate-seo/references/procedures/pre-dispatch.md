@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | Loop exists but no measurement evidence for the cycle (no primary metric value-source-window) | Return BLOCKED with missing-evidence list; route the audit to `optimize-seo` if that's the real ask |
 | Keyword-cluster+surface tag missing from operator input | BLOCKED — Critical Gate 4 + Critic Hard Fail #4. Ask operator to declare the cluster + surface |
 | Source optimize-seo / monitor-aeo artifact path unreadable or missing | BLOCKED — Critic Hard Fail #3. Ask operator to confirm the source path |
@@ -73,7 +73,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 6. Visibility breakdown (target-keyword position / organic clicks / impressions / CTR / AI-citation inclusion)? Any Google core/algorithm updates in the window?
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-seo. **If the request is an audit, route to `optimize-seo`. If it is live AI-citation tracking, route to `monitor-aeo` instead of asking the rest.**
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-seo. **If the request is an audit, route to `optimize-seo`. If it is live AI-citation tracking, route to `monitor-aeo` instead of asking the rest.**
 
 ## Needed dimensions (6)
 

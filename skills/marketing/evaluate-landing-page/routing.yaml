@@ -64,7 +64,7 @@ capability:
       - "Designing the next page brief or a redesign -> brief-landing-page."
       - "Channel-strategy questions -> plan-campaign."
       - "Generic best-practice audits without measurement evidence -> out of scope."
-      - "Scaffolding the loop itself -> run-eval-loop."
+      - "Scaffolding the loop itself -> run-pipeline."
     prerequisites:
       recommended:
         - "id:brand"

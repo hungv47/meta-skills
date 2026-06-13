@@ -49,6 +49,7 @@ All 6 fire under `--fast`, Single-Agent Fallback, and dry-run modes:
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. Auto-downgrades to `fast` for single-folder targets → Single-Agent Fallback. `--fast` forces single-agent regardless of scope. **All 6 Critical Gates fire in every mode.**
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - Read `.forsvn/index/manifest.json` for prior machine-cleanup runs; surface staleness if a recent run covered this scope.
 - Read `.forsvn/experience/technical.md` for prior protected-paths list (machine-cleanup excluded paths).
 

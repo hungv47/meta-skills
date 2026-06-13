@@ -84,7 +84,7 @@ The fixed templates below are starting points; the sequencer above is the select
 
 ## Page Structure Templates
 
-### Varied, Engaging Page (Recommended)
+### Varied, Engaging Page (Reference Stack)
 
 ```
 1. Hero with clear value prop

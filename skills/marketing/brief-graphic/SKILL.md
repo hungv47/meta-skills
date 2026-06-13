@@ -4,7 +4,7 @@ description: "Produce a graphic-design brief for a single visual asset — socia
 argument-hint: "[asset description, e.g. 'instagram carousel about pricing tiers']"
 allowed-tools: Read Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$1-2"
   status: done
@@ -60,6 +60,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 Canonical Pre-Dispatch: [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). **Dimensions:** asset type · downstream route · brand ref (hard-gate auto) · copy/headline · constraints. Hard-gate semantics + Cold Start + Write-back + Step 0.5 Route Detection: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `budget: standard`. `--fast` collapses Layer 1 → single pass, Layer 1.5 → 1 brief, skips Approval Gate 1 (the SELECTION pick — 3 concepts → 1; [`options-selection.md`](references/_shared/options-selection.md), tier B). **Does NOT skip** hard gate, Cold Start, Step 0.5, Approval Gate 2, critic, or AI-Aesthetic Detector.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Routes + Downstream Handoff
 
@@ -96,6 +97,7 @@ Full template + per-route Downstream Handoff Block schemas + ASSETS.md auto-tick
 
 ## Execution
 
+At brief-binding, bind the `image` target tool (recorded as `target_tool` frontmatter on image-gen routes) — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; the image-gen prompt tunes to it, tool-agnostic stays the default.
 Offer the registry-gated fork (category `image`) — **Brief-only**: hand the approved brief to the renderer named by `downstream_route` (→ `produce-asset` → `evaluate-asset`); **Assisted/Direct**: render via a verified engine, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. On render dissatisfaction, re-invoke — `pipeline` lifecycle overwrites. When picking Assisted/Direct, batch-check the render surface first (all blockers at once + named fallback) — see [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example

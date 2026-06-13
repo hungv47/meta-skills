@@ -263,7 +263,7 @@ When `brand/BRAND.md` exists, this section cites it rather than duplicating. Whe
 
 ## Auto-draft sources
 
-`scripts/draft-product-context.ts` mechanically scaffolds this file and fills what is extractable from local sources without reasoning. Run it from a host project's root:
+The `draft-product-context` tool (packaged into each consuming skill's scripts directory via `sync-skill-support`; maintainer original at `_dev/draft-product-context.ts`) mechanically scaffolds this file and fills what is extractable from local sources without reasoning. Run it from a host project's root:
 
 ```bash
 bun scripts/draft-product-context.ts [--force]

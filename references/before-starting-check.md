@@ -70,7 +70,7 @@ Per the skill's domain, read the matching experience dimension file. Skill-to-di
 | Marketing eval (evaluate-landing-page, optimize-seo) | `audience.md`, `content.md`, `goals.md` |
 | Product (architect-system, map-user-flow, clean-code, clean-machine, write-docs) | `product.md`, `technical.md`, `patterns.md` |
 | Research (research-icp, research-market, diagnose, prioritize, plan-funnel, research-shortform, evaluate-shortform) | `audience.md`, `business.md`, `goals.md`, `patterns.md` |
-| Meta (forsvn, run-eval-loop, debate-agents, breakdown-tasks, discover, review-work, clean-artifacts) | depends per-invocation; typically `patterns.md` + domain-specific |
+| Meta (forsvn, run-pipeline, debate-agents, breakdown-tasks, discover, review-work, clean-artifacts) | depends per-invocation; typically `patterns.md` + domain-specific |
 
 Read **only** the dimensions the skill needs. Reading all 8 every time bloats Pre-Dispatch.
 

@@ -80,7 +80,7 @@ If multiple platforms requested, suggest which is the hero (most algorithmically
 - Pull algorithm signals + hard rules from research's Cross-Platform Comparison table
 
 **Pulling from platform references:**
-- `references/platforms/[platform].md` (in research-skills, accessed via the orchestrator's path resolution)
+- `references/_shared/platform-intelligence/[platform].md` (in research-skills, accessed via the orchestrator's path resolution)
 - Aspect, safe areas, file specs are stable across runs
 
 **Hero platform selection:**

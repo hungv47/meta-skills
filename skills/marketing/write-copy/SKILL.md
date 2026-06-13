@@ -4,7 +4,7 @@ description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, t
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -15,7 +15,7 @@ Drafts and critiques persuasive copy — headlines, hooks, CTAs, taglines, and l
 
 **Core question:** Is every key line visual, falsifiable, and uniquely ours?
 
-Capability metadata (routes, prerequisites, orchestration, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Routing logic, agent manifest, and full dispatch pseudocode live in [`references/agent-manifest.md`](references/agent-manifest.md).
+Capability metadata (routes, prerequisites, orchestration, load map, artifact contract) lives in [`routing.yaml`](routing.yaml). Routing logic, agent manifest, and full dispatch pseudocode live in [`references/agent-manifest.md`](references/agent-manifest.md). **Methodology + design history**: see [`references/playbook.md`](references/playbook.md) — load when questioning why a gate or agent exists before changing it.
 
 ## Critical Gates — load first
 
@@ -24,7 +24,7 @@ These five gates are the safety floor; `--fast` does not skip them.
 1. **Argument Engineering before word-choice.** Audience + the one shift + Unique Mechanism + belief sequence must be resolved in Pre-Dispatch BEFORE any agent dispatches. Skipping these produces generic copy that scores V/F but fails U.
 2. **V/F/U is per-line, not per-piece.** Every key line gets scored 1-5 on Visual / Falsifiable / Uniquely-Ours. Average ≥3.5 PASS; below 3.0 on any single dimension FAIL regardless of average.
 3. **Competitor Swap Test catches generic claims.** If a competitor could sign your headline without lying, U fails — independent of V/F. Critic auto-fail. Procedure + swappable-vs-defensible examples: [`references/_shared/copy-validation-rubric.md`](references/_shared/copy-validation-rubric.md) (shared across the write-* skills).
-4. **Trigger density 3-4 for persuasion-heavy copy.** 0-2 = WEAK (FAIL → psychology-agent adds primary lever). 5-6 = GURU-ENERGY (FAIL → psychology-agent cuts lowest-load-bearing trigger).
+4. **Trigger density 3-4 is the optimal range for persuasion-heavy copy.** Above 4 → run the authenticity filter per trigger (cut any that fail). Below 3 → check the piece isn't merely informational; if persuasion is the job, psychology-agent adds a lever.
 5. **Route classification at Step 1.** Single key line → Route A. Full page → Route B. Called by `brief-landing-page` / `plan-campaign` → Route C (caller picks agents).
 
 ## Quality Gate — critic checklist
@@ -35,7 +35,7 @@ Before delivering, the critic agent verifies:
 - [ ] Hook + body form an airtight argument: old belief, new belief, proof, Unique Mechanism, next action — no logical gap
 - [ ] Rubric average ≥3.5 across V/F/U for all key lines
 - [ ] Every key line passes the Competitor Swap Test
-- [ ] 3-5 variations per key line, best selected with top 2-3 as alternatives
+- [ ] Alternatives explored per key line, best selected with top 2-3 as alternatives
 - [ ] Every key line annotated: rule that drove the choice, cut alternative, rubric score
 - [ ] CTA follows formula: [action verb] + [what they get] — not "Learn More" / "Click Here"
 - [ ] Every headline/hook contains concrete nouns or specific numbers — no abstract "better," "innovative," "leading"
@@ -55,6 +55,7 @@ Run `references/_shared/before-starting-check.md`. Required context:
 ## Pre-Dispatch + Mode
 
 Run canonical Pre-Dispatch (`references/procedures/pre-dispatch.md`). Needed dimensions: surface, audience, the one shift, unique proof, Unique Mechanism, belief sequence, traffic source.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 Default English; other languages need adapted idioms. `--fast` collapses Layer 1 to sequential, skips variant-agent, skips Layer 2 psychology + zero-risk (keeps voice + critic). `--seven-sweeps` / `--high-stakes` adds Seven Sweeps completion critic + Expert Panel Scoring (`references/seven-sweeps.md`).
 

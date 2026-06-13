@@ -31,6 +31,7 @@ The source floor (≥5 independent sources/persona), confidence labels, and the 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. `--fast` collapses to Route A (skips habitat-agent + decision-psychology-agent) IF Warm Start has sufficient context; critic gate collapses to single pass. **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize hallucinating personas (Critical Gate 1 floor).
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - Read `.forsvn/index/manifest.json` — find any prior `.forsvn/canonical/research/ICP.md` (re-run signal) and check `.forsvn/canonical/product/PRODUCT-CONTEXT.md` staleness (Gate 4).
 - Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) — auto-scan, Warm/Cold Start, 5-question Cold Start prompt, read order, Write-back map.
 

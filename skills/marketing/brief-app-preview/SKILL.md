@@ -4,7 +4,7 @@ description: "Produces production-ready briefs for app onboarding, App Store pre
 argument-hint: "[feature name] [--surface app-store|onboarding|website|social] [--screenshots path/to/dir]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$2-4"
 ---
@@ -64,6 +64,8 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load ICP + BRA
 ## Pre-Dispatch + Mode
 
 Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensions: feature name, screenshot inventory, flow order, target surface, brand mode, market. Full read-order + Cold Start (5-question bundled) + hard-block conditions: `references/procedures/pre-dispatch.md`. Mode resolution per `references/_shared/mode-resolver.md`; `--fast` skips Layer 2 (no critic, no platform-format) — does **NOT** skip Cold Start or Critical Gates 1-6.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
+At brief-binding, bind the `video` target tool — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; tool-agnostic stays the default.
 
 ---
 
@@ -78,7 +80,7 @@ Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md`). Dimensio
 - **Output root:** `.forsvn/artifacts/marketing/app-preview-brief/[slug]/`
 - **Files (4):** `brief.md` · `assets.md` · `crop-map.md` · `handoff-produce-video.md`
 - **Lifecycle:** `pipeline` — one artifact set per (feature, surface, market); re-run on feature pivot or surface change
-- **Frontmatter fields (brief.md):** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count` (full schema in `references/format-conventions.md`)
+- **Frontmatter fields (brief.md):** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count`
 - **Body sections (brief.md, 12, in order):** TL;DR for the Editor · Feature Promise · Source Inventory · Beat Sequence · Crop / Mask Plan · Interaction Choreography · Motion Spec · Caption Pack · Pointer + Audio Plan · Platform Spec · What NOT To Do · Handoff to produce-video
 - **Consumed by:** `produce-video` (via `handoff-produce-video.md`) — emits the runtime scaffolds; never `brief-shortform`, never `publish-social`
 - **Cross-stack contract:** schema changes require atomic update of `format-conventions.md` § "Frontmatter field order" + § "Body section headers (verbatim)" + `produce-video`'s `video-brief-schema.md` extension for app-preview inputs (WS4 will land that extension)

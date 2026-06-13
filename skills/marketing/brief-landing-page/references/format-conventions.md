@@ -30,11 +30,12 @@ load_class: PROCEDURE
 - **Single-cycle re-run without `--rev`:** overwrites in place (use sparingly — loses prior history).
 - **Rejected briefs:** saved as `rejected.md` at the slug root (not in a `v[N]/` folder) — terminal state, not versioned.
 
-## Brief envelope (250–500 lines, enforced strictly)
+## Brief envelope (250–500 lines typical, completeness-gated)
 
-- **Under 250 lines:** brand-voice critic G6 FAIL — insufficient depth, designer asks follow-up questions. Re-dispatch section-spec to add detail to under-specified sections.
-- **Over 500 lines:** brand-voice critic G6 FAIL — bloat, designer skims. Re-dispatch section-spec to compress (cite shared chain instead of duplicating; cap section spec at the conversion-checklist gates).
-- **250–500 lines:** G6 PASS.
+- **Completeness is the gate:** G6 checks that every section carries its headline candidates, CTA copy where applicable, and a conversion checklist.
+- **Under 250 lines:** brand-voice critic G6 WARN — likely insufficient depth, designer asks follow-up questions. Hard FAIL only under ~200. Re-dispatch section-spec to add detail to under-specified sections.
+- **Over 500 lines:** brand-voice critic G6 WARN — likely bloat, designer skims. Hard FAIL only over ~700. Re-dispatch section-spec to compress (cite shared chain instead of duplicating; cap section spec at the conversion-checklist gates).
+- **250–500 lines:** typical band — G6 PASS when complete.
 - **Empty lines count.** The 250–500 range assumes well-spaced markdown — empty lines structure readability and are part of the envelope.
 
 ## Concerns pinning (DONE_WITH_CONCERNS only)

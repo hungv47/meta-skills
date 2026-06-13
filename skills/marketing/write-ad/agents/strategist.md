@@ -139,7 +139,7 @@ Consumer Value + Consumer Experience penalizes aggressive, low-quality, scammy, 
 
 ### Angle Archetypes (operational test)
 
-Pick 3 DISTINCT archetypes — one for hero, one for variant A, one for variant B. Surface-level paraphrase of the same archetype is a critic auto-fail on Pattern-Interruption.
+Pick 3 DISTINCT archetypes — one for hero, one for variant A, one for variant B. Using the same archetype twice *without structural differentiation* is a critic auto-fail on Pattern-Interruption.
 
 | Archetype | When | Pattern |
 |-----------|------|---------|
@@ -149,6 +149,8 @@ Pick 3 DISTINCT archetypes — one for hero, one for variant A, one for variant 
 | **specific-result** | Retargeting + named case study | "[Customer] cut [metric] from [N] to [M] using [product]." |
 | **contrast** | Cold + against the consensus | "Everyone says [assumption]. The data: [counter-stat from research]." |
 | **curiosity-gap** | Retargeting + IG engager (mid-intent) | "[Specific observation] + [implied resolution withheld]." Use sparingly — Meta penalizes click-bait. |
+
+This catalog is a starting vocabulary — if the strongest angle doesn't map to a listed archetype, name it and state its strategic job.
 
 **Tests every angle must pass:**
 1. First clause references the prospect or their situation — start with their world, not "We help..." or "Our product..."
@@ -166,6 +168,8 @@ Read `references/message-transmutation.md`. Pick a transmutation format for each
 | **AI animation** | Mechanism benefits from simple visualization or old-commercial style metaphor. | Make the mechanism memorable without pretending to be realistic. |
 | **Advertorial pre-lander** | Cold traffic is too skeptical for direct-to-product. | Install beliefs before price/product page. |
 | **Chad Funnel** | Cold traffic needs native ad -> advertorial -> product/PDP -> checkout/signup sequence. | Move belief installation out of the ad and into an editorial bridge. |
+
+This format set is a starting vocabulary — if the strongest format doesn't map, name it and state its strategic job.
 
 If `transmutation_goal` is provided, honor it unless it conflicts with audience-temp or policy. If it is `strategist choose`, assign formats based on the audience's trust gap and the available proof.
 

@@ -16,6 +16,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { resolveTier, checkRow, fixLine, tierRow, type CheckSeverity } from "../lib/mono";
 
 type Check = { name: string; ok: boolean; detail: string; fix?: string };
 
@@ -113,15 +114,48 @@ function main(): number {
     return tiers["review surface"] ? 0 : 1;
   }
 
-  const mark = (ok: boolean) => (ok ? "✓" : "✗");
+  // G3 — the human screen renders through the shared mono tier engine (the
+  // hardcoded ✓/✗ bypass is gone): glyph + name + detail per check, the
+  // `→ fix` line directly beneath each failure, and a tier summary whose
+  // one-clause translations say what each tier means in capabilities. The
+  // visual hierarchy is the triage — red = act, dim = optional, green = done.
+  const outTier = resolveTier(process.stdout);
+  // A failing base check (Bun/git/assets) blocks the review surface → `fail`
+  // (red). A failing opt-in check (forsvn-mcp/Node/Proof) only gates the
+  // optional tiers → `info` (dim, never alarming).
+  const BASE_CHECKS = new Set(["Bun", "git", "assets"]);
+  const severityOf = (c: Check): CheckSeverity => (c.ok ? "ok" : BASE_CHECKS.has(c.name) ? "fail" : "info");
+  const checkPad = Math.max(...checks.map((c) => c.name.length));
+
   console.log("FORSVN doctor\n");
   for (const c of checks) {
-    console.log(`  ${mark(c.ok)} ${c.name.padEnd(11)} ${c.detail}`);
-    if (!c.ok && c.fix) console.log(`      → ${c.fix}`);
+    console.log(checkRow(c.name, c.detail, severityOf(c), outTier, { pad: checkPad }));
+    if (!c.ok && c.fix) console.log(fixLine(c.fix, outTier));
   }
-  console.log("\n  Tiers:");
+
+  // Tier summary — capability translations, ok/fail variants per tier.
+  const TIER_CLAUSE: Record<string, { ok: string; fail: string; failSeverity: CheckSeverity }> = {
+    "review surface": {
+      ok: "/forsvn:review works on this machine",
+      fail: "/forsvn:review can't run until the failing checks above resolve",
+      failSeverity: "fail",
+    },
+    "MCP contract": {
+      ok: "agents can read the graph (forsvn-mcp resolved)",
+      fail: "agents can't read the graph until forsvn-mcp resolves",
+      failSeverity: "info",
+    },
+    "Proof collab": {
+      ok: "/forsvn:collab is ready (forsvn-collab open <artifact.md>)",
+      fail: "optional; needs MCP + Node 18+ + FORSVN_PROOF_DIR",
+      failSeverity: "info",
+    },
+  };
+  const tierPad = Math.max(...Object.keys(tiers).map((t) => t.length));
+  console.log("\n  tiers");
   for (const [tier, ok] of Object.entries(tiers)) {
-    console.log(`  ${mark(ok)} ${tier}`);
+    const clause = TIER_CLAUSE[tier];
+    console.log(tierRow(tier, ok ? clause.ok : clause.fail, ok ? "ok" : clause.failSeverity, outTier, { pad: tierPad }));
   }
   // Exit 0 if the base experience (review surface) is usable; the Proof/MCP tiers
   // are opt-in, so their absence is informational, not a failure.

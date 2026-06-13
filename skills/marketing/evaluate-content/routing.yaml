@@ -55,7 +55,7 @@ capability:
       - "User asks to evaluate a published organic post (text / image / carousel) against its write-social brief's hypothesis."
       - "Loop exists; cycle N needs scoring for one primary platform."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "Short-form video -> evaluate-shortform."
       - "Paid-ad performance -> evaluate-ad."
       - "Writing next-cycle copy -> write-social."

@@ -4,7 +4,7 @@ description: "Audits and plans search visibility across six modes — technical 
 argument-hint: "[url or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   budget: deep
   estimated-cost: "$2-5"
 ---
@@ -49,19 +49,20 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load product c
 
 ## Pre-Dispatch
 
-Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]).
+Canonical Pre-Dispatch: `references/_shared/pre-dispatch-protocol.md` [PROCEDURE].
 
 **Needed dimensions:** mode (audit / ai / programmatic / competitor / aso), site or property, audience, geographic + language scope.
 
-Full read-order + Cold Start prompt + Warm Start prompt + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
+Full read-order + Cold/Warm Start prompts + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
 
 ---
 
 ## Mode Resolution
 
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤3 sentences + no prior artifacts; `--fast` flag skips Layer 2 (no prioritization, no critic) and runs single-agent. **`--fast` does NOT skip Cold Start or Critical Gates 1-4.**
+Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade ≤3 sentences, no prior artifacts; `--fast` skips Layer 2 (no prioritization, no critic), runs single-agent. **`--fast` does NOT skip Cold Start or Critical Gates 1-4.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
-**Route-collapse default (multi-route deep override):** a ≤3-sentence single-scope ask (one mode's keywords, no prior artifacts) auto-resolves to that single mode's minimal Route (A/B/C/D/F) + critic — never Route E "Full SEO" — without needing `--fast`. Comprehensive or cross-mode asks, or an upward override ("full strategy", "thorough"), use the full multi-mode orchestration.
+**Route-collapse default (multi-route deep override):** a ≤3-sentence single-scope ask (one mode's keywords, no prior artifacts) auto-resolves to that mode's minimal Route (A/B/C/D/F) + critic — never Route E "Full SEO" — without needing `--fast`. Cross-mode asks, or an upward override ("full strategy", "thorough"), use the full multi-mode orchestration.
 
 ---
 

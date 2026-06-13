@@ -4,7 +4,7 @@ description: "Writes and evaluates cold outreach — email, LinkedIn, Twitter/X,
 argument-hint: "[target/signal + channel + mode, or reply text to respond to]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -15,7 +15,7 @@ metadata:
 
 **Core Question:** "If I removed the personalization, would this email still make sense? If yes, the personalization isn't working."
 
-> Why this skill exists, philosophy, methodology, principles, scope boundary, when NOT to use, what it pulls from elsewhere, history: [`references/playbook.md`](references/playbook.md) [PLAYBOOK].
+> Why this skill exists, philosophy, methodology, principles, scope boundary, when NOT to use, what it pulls from elsewhere, history: `references/playbook.md` [PLAYBOOK].
 
 ## Critical Gates — Read First
 
@@ -67,6 +67,7 @@ Full read-order + Warm/Cold Start prompts (7-question Cold Start) + Missing-Inpu
 ## Mode Resolution
 
 Per `references/_shared/mode-resolver.md` [PROCEDURE] — this skill is `budget: deep`; `--fast` flag collapses Layer 1b parallel (strategist + proof-selector) to sequential and skips the post-humanmaxxing Specificity regression check. **`--fast` does NOT skip Cold Start, Critical Gates 1-5, or Missing-Input Hard Blocks** (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ---
 

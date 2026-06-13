@@ -233,8 +233,18 @@
       ],
       "minScore": 6
     },
-    "run-eval-loop": {
+    "run-pipeline": {
       "phrases": [
+        "run pipeline",
+        "closed loop pipeline",
+        "orchestrate the loop",
+        "thread the stages",
+        "brief to execute to evaluate",
+        "research brief execute evaluate",
+        "end to end loop",
+        "pipeline orchestrator",
+        "drive the whole loop",
+        "staged pipeline",
         "eval loop",
         "evaluation scaffold",
         "eval scaffold",
@@ -249,6 +259,19 @@
       ],
       "allOf": [
         [
+          "orchestrate",
+          "stages"
+        ],
+        [
+          "brief",
+          "execute",
+          "evaluate"
+        ],
+        [
+          "pipeline",
+          "loop"
+        ],
+        [
           "strategy",
           "evaluation"
         ],
@@ -262,6 +285,11 @@
         ]
       ],
       "anyOf": [
+        "execution fork",
+        "stage pipeline",
+        "ingest the asset",
+        "thread the skills",
+        "produce and measure",
         "keep discard",
         "results.tsv",
         "closed loop",
@@ -270,52 +298,13 @@
         "campaign iteration"
       ],
       "noneOf": [
-        "code benchmark",
-        "unit test",
-        "model training"
-      ],
-      "minScore": 6
-    },
-    "run-pipeline": {
-      "phrases": [
-        "run pipeline",
-        "closed loop pipeline",
-        "orchestrate the loop",
-        "thread the stages",
-        "brief to execute to evaluate",
-        "research brief execute evaluate",
-        "end to end loop",
-        "pipeline orchestrator",
-        "drive the whole loop",
-        "staged pipeline"
-      ],
-      "allOf": [
-        [
-          "orchestrate",
-          "stages"
-        ],
-        [
-          "brief",
-          "execute",
-          "evaluate"
-        ],
-        [
-          "pipeline",
-          "loop"
-        ]
-      ],
-      "anyOf": [
-        "execution fork",
-        "stage pipeline",
-        "ingest the asset",
-        "thread the skills",
-        "produce and measure"
-      ],
-      "noneOf": [
         "ci pipeline",
         "data pipeline",
         "build pipeline",
-        "ml pipeline"
+        "ml pipeline",
+        "code benchmark",
+        "unit test",
+        "model training"
       ],
       "minScore": 6
     },
@@ -459,7 +448,10 @@
         "ice score",
         "which solution",
         "strategic options",
-        "rank the options"
+        "rank the options",
+        "generate ideas and rank",
+        "rank these ideas",
+        "score the ideas"
       ],
       "allOf": [
         [

@@ -29,7 +29,8 @@ Independent reviewer + resolver loop for code, artifacts, plans, or shipped work
 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
-- **Mode** ([`_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): default `standard`; auto-escalate to `deep` for auth/sessions/access-control/payments/financial-data/migrations/bulk-mutations/PII OR diff >500 lines; auto-downgrade to `fast` for typos/log lines/config tweaks.
+- **Mode** (`references/_shared/mode-resolver.md`): default `standard`; auto-escalate to `deep` for auth/sessions/access-control/payments/financial-data/migrations/bulk-mutations/PII OR diff >500 lines; auto-downgrade to `fast` for typos/log lines/config tweaks.
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - Read `.forsvn/artifacts/meta/specs/*.md` + `tasks.md` if present — enables scope-drift detection per [`procedures/scope-drift.md`](references/procedures/scope-drift.md).
 - Read `.forsvn/artifacts/meta/records/learned-rules.md` — append to reviewer CONTEXT.
 
@@ -46,8 +47,8 @@ Mode map: `fast` = generalist, skip resolver if PASS; `standard` = generalist + 
 
 ## Pre-Dispatch + Execution
 
-- Pre-dispatch + Warm/Cold Start: [`_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md), [`procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
-- Reviewer + resolver built per-use from [`procedures/reviewer.md`](references/procedures/reviewer.md), [`resolver.md`](references/procedures/resolver.md) — no static `agents/`.
+- Pre-dispatch + Warm/Cold Start: `references/_shared/pre-dispatch-protocol.md`, `references/procedures/pre-dispatch.md`.
+- Reviewer + resolver built per-use from [`procedures/reviewer.md`](references/procedures/reviewer.md), [`resolver.md`](references/procedures/resolver.md) — no static agents dir.
 - 8-step loop (identify → spawn → evaluate → resolve → self-regulation gate → loop → report → deliver) + Configuration: [`procedures/execution.md`](references/procedures/execution.md).
 
 ## Auto-trigger rules

@@ -68,7 +68,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-asset does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-asset does not scaffold loops.
 - **Only a prompt/brief exists; nothing rendered or re-ingested.** Return NEEDS_CONTEXT, route to `produce-asset` + re-ingest (`forsvn-preview attach`). evaluate-asset never scores a prompt.
 - **The asset is a short-form video.** Route to `evaluate-shortform`.
 - **The surface is a landing page.** Route to `evaluate-landing-page`.
@@ -80,7 +80,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 - **`produce-asset`** owns rendering + the return-leg attachment. evaluate-asset reads the re-ingested asset; routes the next render to produce-asset with a tightened prompt.
 - **`brief-graphic`** owns the brief + acceptance criteria. evaluate-asset scores against them; routes spec fixes back to brief-graphic.
 - **`create-brand`** owns the brand tokens. evaluate-asset checks against them; routes token gaps to create-brand.
-- **`run-eval-loop`** owns loop scaffolding. evaluate-asset assumes a loop exists.
+- **`run-pipeline`** owns loop scaffolding. evaluate-asset assumes a loop exists.
 - **`evaluate-content` / `evaluate-ad` / `evaluate-shortform` / `evaluate-landing-page`** are sibling eval lanes — same 4-agent / 7-dim / 8-col structure; evaluate-asset mirrors them for cross-eval consistency.
 
 ## History / origin
@@ -93,7 +93,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 - 8 Critical Gates (existing loop / re-ingested asset / source brief / static-visual lane / one asset-variant / no fabricated quality / explicit attribution / does-not-produce-assets)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts`
+- Critic-override protocol via `scripts/log-critic-override.ts`
 - Generation provenance — `input_artifacts` lists the source brief + the re-ingested asset + BRAND.md
 - Results Row schema byte-identical with the eval siblings (8 cols)
 - Learning promotion engine/brief-type/brand-scoped

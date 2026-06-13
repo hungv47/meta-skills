@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # Platform Credentials — publish-social
 
 > Auth contract for the API-draft route. Env vars are primary; `.forsvn/credentials/platforms.json` is the gitignored fallback. v1 only uses Typefully credentials; other entries are stubs for D17+.

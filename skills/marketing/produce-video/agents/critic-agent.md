@@ -1,6 +1,6 @@
 # Critic Agent
 
-> Final spec-compliance gate for produce-video. Verifies the export bundle (manifest + per-shot prompts + scaffolds + Vercel AI CLI README) honors brief 04's Production Principle before delivery.
+> Final spec-compliance gate for produce-video. Verifies the export bundle (manifest + per-shot prompts + scaffolds + Vercel AI CLI README + post stage) honors brief 04's Production Principle before delivery.
 
 ## Role
 
@@ -23,6 +23,7 @@ You do NOT:
 | **hyperframes_scaffold** | html | `hyperframes/scaffold.html` |
 | **remotion_scaffold** | tsx | `remotion/scaffold.tsx` |
 | **vercel_readme** | markdown | `vercel-ai-cli.md` |
+| **post_md** | markdown | `post.md` — the assemble/grade/subtitle stage spec (post lane) |
 | **screenshots** | path[] | App-preview only — paths from the handoff `## Asset References` → `assets.md` § Screenshots; critic verifies each exists on disk for Gate 5 |
 | **feedback** | string \| null | Always null — the critic does not receive feedback; it gives feedback |
 
@@ -35,7 +36,7 @@ You do NOT:
 ## Evaluation
 
 ### Gate 1: Schema-and-CTA Compliance
-[Manifest validates against video-brief-schema.md. Per-shot durations sum to length_seconds exactly. CTA copy appears verbatim in BOTH final shot's on_screen_text AND manifest.cta (shortform; app-preview skips when cta == "(none)"). PASS / FAIL with specifics.]
+[Manifest validates against video-brief-schema.md. Per-shot durations sum to length_seconds exactly. CTA copy appears verbatim in BOTH final shot's on_screen_text AND manifest.cta (shortform; app-preview skips when cta == "(none)"). post.md stage present with its 5 sections + a recommended-lane line in Runtime Choices. PASS / FAIL with specifics.]
 
 ### Gate 2: Brand-Mark Fidelity
 [Every per-shot prompt cites brand tokens from brand/DESIGN.md only — no fabricated hex / token names. Placeholder rule active for missing assets. Sacred elements respected. App-preview accepts `(cold-start-sampled)` when brand_source: cold-start-hint. PASS / FAIL with specifics.]
@@ -106,6 +107,7 @@ You do NOT:
 6. **CTA verbatim in final shot's on-screen text** (shortform only; app-preview skips when `manifest.cta == "(none)"`): `manifest.cta` string appears character-for-character (whitespace + punctuation included) in the final shot's `## On-Screen Text` section.
 7. **CTA verbatim in manifest top-level** (shortform only; app-preview skips when `manifest.cta == "(none)"`): `manifest.cta` matches the CTA copy in the upstream brief verbatim.
 8. **Slug consistency:** `manifest.slug == upstream_brief.slug == path slug`.
+9. **Post stage present.** `post.md` exists with its Assembly / Color grade / Subtitles / Audio / Export sections; the manifest's `## Runtime Choices` carries a recommended-lane line. (App-preview: post.md may be collapsed to assembly + caption burn-in.)
 
 **Auto-FAIL:** Any check fails.
 
@@ -149,7 +151,7 @@ You do NOT:
 **Shortform:**
 
 1. **Shot 1 hook test:** Read `scenes/shot-1.md` § Visual Prompt + § On-Screen Text. Does it attempt to stop the scroll, or does it open with exposition / setup / brand-name? Hooks stop scroll; exposition doesn't.
-2. **Build test:** Middle shots (shots 2 through N-1) escalate or develop a single argument. Random topical jumps fail.
+2. **Build test:** Middle shots (shots 2 through N-1) escalate or develop a single argument, or the brief indicates an intentional structural departure. Random topical jumps fail.
 3. **Close test:** Final shot's on-screen text + visual focus on the CTA copy from `manifest.cta`.
 
 **App-preview:**
@@ -263,6 +265,7 @@ Before returning (both modes):
 - [ ] Verdict line at top is one of: PASS / PASS_WITH_CONCERNS / FAIL
 - [ ] Mode line at top declares the discriminated mode
 - [ ] Rewrite routing table referenced for each FAIL
+- [ ] Gate 1 verified post.md present (Assembly / Grade / Subtitles / Audio / Export) + a recommended-lane line in Runtime Choices
 
 Shortform-mode-only:
 

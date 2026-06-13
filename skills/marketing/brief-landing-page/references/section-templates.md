@@ -1,8 +1,8 @@
 # Section Templates — Per-Section Spec Library
 
-> Catalog of section types the section-spec-agent uses. Each template names: purpose, required slots, optional slots, conversion-checklist (mapped to CP-IDs in `conversion-principles.md`), section-specific anti-patterns.
+> Catalog of section types the section-spec-agent uses. Each template names: purpose, conversion-floor slots, common slots, conversion-checklist (mapped to CP-IDs in `conversion-principles.md`), section-specific anti-patterns.
 >
-> **Use:** when speccing a section, look up its template here. Copy the required slot list. Apply CP gates. Reject the section if any required slot can't be filled.
+> **Use:** when speccing a section, look up its template here. Copy the conversion-floor slot list. Apply CP gates. Reject the section if any conversion-floor slot can't be filled. Floors are CP-tied; everything else is the executing agent's call.
 
 ---
 
@@ -10,17 +10,19 @@
 
 **Purpose:** First-impression conversion gate. Closes the 3-second test (CP-13).
 
-**Required slots:**
+**Conversion-floor slots:**
 - Headline (3 candidates, 4-U scored — CP-01)
 - Subhead (single, ≤2 lines)
 - Primary CTA (first-person, action verb + outcome — CP-03)
 - Hero visual asset slot (named)
 - Trust signal in viewport (logo grid, customer quote, security badge — CP-11)
 
-**Optional slots:**
+**Common slots:**
 - Subhead microcopy (e.g., "No credit card required, 14-day free trial")
 - Secondary CTA (softer ask — "watch demo", "see pricing")
 - Above-fold proof element (single testimonial, key metric)
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Recommended headline ≥3/4 on 4-U (CP-01)
@@ -43,14 +45,16 @@
 
 **Purpose:** Argument scan — give the reader the 3 reasons to keep reading.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Section headline (1 candidate is fine; supporting role)
 - 3 columns (or 1 statement) — each with: column headline, icon/visual, 1–2 line description
 - Outcome metric per column (where possible)
 
-**Optional slots:**
+**Common slots:**
 - Secondary CTA at section end
 - Comparison row ("vs. competitor X")
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Each column states a benefit, not a feature (CP-08)
@@ -69,15 +73,17 @@
 
 **Purpose:** Credibility moment — buyer needs proof before continuing.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Proof element type: logo grid (≥6 cells) OR ≥1 testimonial OR case-study teaser
 - Source attribution (customer name + role + company; date or "current customer")
 - Date verification (every proof element <12 months OR flagged for replacement)
 
-**Optional slots:**
+**Common slots:**
 - Quoted metric ("Saved 40 hours/week")
 - Headshot
 - Link to full case study
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Every proof element has verifiable source (CP-09)
@@ -97,16 +103,17 @@
 
 **Purpose:** Detail layer for buyers in evaluation mode. Each feature converted to benefit + outcome.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Section headline (supporting; can be functional like "What you get")
-- Feature list (3–8 rows; primary tier ≤6, secondary tier ≤4)
+- Feature list (3–8 rows is the typical range; primary tier ≤6, secondary tier ≤4)
 - For each feature: Feature name → Benefit → Outcome (CP-08)
-- Icon or visual per row
 
-**Optional slots:**
+**Common slots:**
 - Comparison column ("vs. competitor X" / "vs. legacy approach")
 - Per-feature deep-link to docs/case study
 - Pricing tag per feature (if pricing structure has tiers per feature)
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Every feature uses [Feature → Benefit → Outcome] formula (CP-08)
@@ -126,15 +133,17 @@
 
 **Purpose:** Address top 1–2 ICP objections directly, before the buyer reaches the CTA holding them.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Objection statement (phrased as buyer would think it, not defensive)
 - Counter-evidence (specific, proof-backed)
 - Reassurance copy (1–2 sentences)
 - Trust element (logo, quote, metric tied to the objection)
 
-**Optional slots:**
+**Common slots:**
 - Risk reversal ("If X doesn't happen in N days, full refund")
 - Comparison to alternatives ("vs. doing nothing", "vs. legacy tool")
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Objection comes from ICP research (uses the source)
@@ -153,14 +162,16 @@
 
 **Purpose:** Surface-level objections the audience has but not strong enough to dedicate Objection sections to.
 
-**Required slots:**
+**Conversion-floor slots:**
 - 5–8 Q&A pairs
 - Question phrased in buyer language
 - Answer ≤3 sentences
 
-**Optional slots:**
+**Common slots:**
 - Search/filter UI (only if FAQ list >12 — otherwise overkill)
 - "Still have questions? Contact us" link at end
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Questions sourced from real audience research (ICP, support tickets, sales calls)
@@ -179,15 +190,17 @@
 
 **Purpose:** Final action moment. Pause velocity. Single primary action.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Headline (commits to action — "Start your team's pricing in 8 seconds")
 - Primary CTA copy (first-person, action verb + outcome — CP-03)
 - Trust signal in scroll-distance (CP-11)
 - Optional risk-reversal copy
 
-**Optional slots:**
+**Common slots:**
 - Secondary CTA (softer fallback)
 - Inline form (if conversion is a form submission — CP-04 ≤5 fields)
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Single primary CTA (no competing primaries)
@@ -208,16 +221,18 @@
 
 **Purpose:** Zero-ambiguity offer presentation. Buyer knows exact price + scope before being asked to act.
 
-**Required slots:**
+**Conversion-floor slots:**
 - Tier list (typically 3 tiers; ≤4)
 - Per tier: name, price (or "starts at"), 3–5 included items, primary CTA per tier
 - Comparison row at bottom (which features per tier)
 
-**Optional slots:**
+**Common slots:**
 - Annual/monthly toggle
 - Currency selector
 - "Most popular" highlight on one tier
 - Enterprise / custom tier with "contact sales" CTA
+
+*Layout, visual mode, and copy structure are the executing agent's call — spec the conversion goal, not the implementation.*
 
 **Conversion gates:**
 - [ ] Real prices (or "starts at $X") — no "contact us for pricing" if avoidable

@@ -7,7 +7,7 @@ load_class: PROCEDURE
 
 # Orchestration Steps
 
-Full step-by-step procedure for `/discover`. The SKILL.md body carries one-line summaries; this file carries the load-bearing detail. Load when the operator's depth resolves to Medium or Deep, or when running the resolution-exit gate.
+Full step-by-step procedure for `/discover`. The SKILL.md body carries one-line summaries; this file carries the load-bearing detail. Load when the operator's depth resolves to Medium or Deep, or when running the Step 6 concreteness / resolution-exit gate (the gate runs at every depth, Light included).
 
 ---
 
@@ -64,22 +64,47 @@ State zones upfront: "Here's what I think we need clarity on: [zones]. Anything 
 
 ---
 
-## Step 6 — Clarity Check
+## Step 6 — Clarity Check + Concreteness Gate
 
-When clarity is sufficient to build:
+When clarity looks sufficient to build:
 
 1. Summarize key decisions.
-2. Note remaining open questions and their impact.
-3. **Playbook-citation self-check** — verify the recommendation cited at least one applicable operator-playbook frame when one was loaded. If a founder-domain frame was loaded but no rule from it surfaced, either cite it, explain why it doesn't apply, or revisit the recommendation.
-4. **Verdict assignment** — state the explicit verdict before asking to build:
+2. **Concreteness checklist** — state the six core requirement dimensions with their current marks (gate below). The gate decides whether wrap is allowed.
+3. Note remaining open questions and their impact.
+4. **Playbook-citation self-check** — verify the recommendation cited at least one applicable operator-playbook frame when one was loaded. If a founder-domain frame was loaded but no rule from it surfaced, either cite it, explain why it doesn't apply, or revisit the recommendation.
+5. **Verdict assignment** — state the explicit verdict before asking to build:
    - **Idea-stage:** `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT`.
    - **Plan-review:** `BUILD_AS_PROPOSED` / `CHERRY-PICK_EXPANSIONS` / `EXPAND_BEYOND_PROPOSED` / `HOLD_AS_PROPOSED` / `HOLD_WITH_RISK_NOTES` / `CUT_TO_MINIMUM` / `CUT_AGGRESSIVELY`, mapped to the chosen plan-review-mode.
    The verdict is not optional. **Single verdict, two surfaces:** if the spec is saved (Step 7), the same verdict persists verbatim to `## Verdict`.
-5. Ask: "Ready to build, or go deeper on anything?"
+6. Ask: "Ready to build, or go deeper on anything?" — only once the gate passes.
 
-### Resolution-exit condition
+### Concreteness gate (the wrap condition)
 
-Replaces "if the user says go, go." The session exits when the decision tree is *resolved*, not when the user runs out of patience. **Resolved** means ALL THREE:
+The wrap condition is a six-dimension concreteness checklist. Track the six core requirement dimensions from Step 3 onward, marking each `concrete` or `open` as answers land:
+
+| Dimension | `concrete` means |
+|---|---|
+| **Problem** | One-sentence problem statement, problem-framed (not solution-framed), ratified by the user |
+| **Audience** | Who hits this — a named persona, segment, or user class; not "users" |
+| **Constraints** | Hard limits enumerated (tech, time, compatibility, budget) — or an explicit "no hard constraints" |
+| **Success criteria** | An observable / measurable done-signal; not "works well" |
+| **Scope** | What this iteration includes, bounded — re-scoped from what already exists (Step 2) |
+| **Anti-goals** | What we are explicitly NOT doing — at least one entry, or an explicit ratified "none" |
+
+These six are NOT the Step 3 coverage zones. Zones adapt per-problem and shape the questions; the six dimensions are invariant and gate the exit. A zone answer typically marks one or more dimensions concrete.
+
+**Wrap is BLOCKED while any dimension is `open`.** Two exits only:
+
+1. **Resolve it** — keep interviewing. Questions stay Socratic, one or two at a time per Step 4 discipline: the gate governs WHEN wrap is allowed, never question style or batch size.
+2. **Per-dimension operator sign-off** — the operator explicitly signs off on that specific, named dimension. A blanket "good enough, just wrap it" is NOT a sign-off: respond by listing the open dimensions and asking for sign-off on each by name ("Constraints and anti-goals are still open — sign off on each, or keep going?"). Each signed-off dimension is recorded `open — signed off`; the session exits with `status: done_with_concerns` (same status semantics as operator-overridden branches).
+
+**No handoff while the gate fails.** discover does not hand off to `architect-system`, `breakdown-tasks`, or direct implementation with a dimension that is `open` and not signed off — there is no "mostly concrete" handoff. In-context handoff requires the gate passed in conversation; cross-session handoff requires a saved spec whose `## Concreteness Checklist` shows every dimension `concrete` or `open — signed off` ([`output-formats.md`](output-formats.md)). This is a hard block, not advice.
+
+**No artificial grilling.** The gate measures state, not effort. A brief that arrives with all six dimensions already concrete passes on round one — confirm the checklist in the Step 6 summary and wrap. Depth interacts with the gate per SKILL.md § Adaptive Depth: Deep runs multi-round until the gate passes (not question-count-bounded); Light/Medium keep their question ceilings — hitting a ceiling with open dimensions triggers the per-dimension sign-off ask, then wraps `done_with_concerns`.
+
+### Resolution-exit condition (quality floor under the gate)
+
+Replaces "if the user says go, go." The concreteness gate is the wrap condition; resolution-exit is the quality floor beneath it. The session exits when the decision tree is *resolved*, not when the user runs out of patience. **Resolved** means ALL THREE:
 
 1. Every load-bearing branch has a recommended answer with a cited reason (operator-playbook rule, prior artifact, evidence surfaced this session, or explicit defer-with-trigger).
 2. Every Premise Challenge premise has the user's stance recorded (accepted / rejected / deferred — not silently passed over).
@@ -91,4 +116,4 @@ Replaces "if the user says go, go." The session exits when the decision tree is 
 - Plan-review HOLD SCOPE mode (execution-risk surfacing, not premise re-litigation)
 - Premise-skipped sessions (clause 2 N/A; note "Premise Challenge skipped" once)
 
-**Operator override is allowed; silent exit is not.** "Ship it" with unresolved branches → log them inline under `Open branches (operator-overridden):`. If saved (Step 7), set `status: done_with_concerns` and persist under spec `## Open Branches (operator-overridden)`.
+**Operator override is allowed; silent exit is not.** Override takes the per-dimension sign-off form above — never a blanket waiver. "Ship it" with unresolved branches → log them inline under `Open branches (operator-overridden):`. If saved (Step 7), set `status: done_with_concerns` and persist under spec `## Open Branches (operator-overridden)`; signed-off-open dimensions persist in the spec's `## Concreteness Checklist`.

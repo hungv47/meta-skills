@@ -54,9 +54,9 @@ Stable user-profile state worth carrying forward. Mandatory on PASS or `done_wit
 ## Consumed by
 
 - `plan-campaign` — channel-level execution; reads Channel → Funnel Stage Map and Target Table
-- Downstream measurement — `run-eval-loop` dashboards when one exists
+- Downstream measurement — `run-pipeline` dashboards when one exists
 - Future `plan-funnel` re-runs — delta detection against prior `targets-*.md`
 
 ## Cross-stack OUTPUT contract
 
-**Target Table column schema + section order are load-bearing for downstream consumers.** Schema changes require atomic update of `plan-campaign` and `run-eval-loop` (per `anti-patterns.md` row "Cross-stack contract drift"). Never silently drift the column order or rename columns without coordinating the downstream readers.
+**Target Table column schema + section order are load-bearing for downstream consumers.** Schema changes require atomic update of `plan-campaign` and `run-pipeline` (per `anti-patterns.md` row "Cross-stack contract drift"). Never silently drift the column order or rename columns without coordinating the downstream readers.

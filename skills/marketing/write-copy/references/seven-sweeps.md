@@ -91,7 +91,7 @@ For irreversible high-spend deliverables (landing-page hero, ad headlines with f
 1. **Pick 3–5 personas** matching the target audience (e.g., for B2B SaaS pricing-page hero: skeptical CFO, time-poor engineering manager, growth-marketer practitioner). Use `agents-panel` skill if installed, otherwise dispatch inline.
 2. **Each persona scores the copy 1–10** on a single dimension: "Would I take the next action after reading this?"
 3. **Revise based on the lowest score** with that persona's stated objection in mind.
-4. **Re-score** against the same panel. Ship when the floor crosses 7/10 or the operator accepts the trade-off (log via `scripts/eval/log-critic-override.ts` if a critic FAIL stands).
+4. **Re-score** against the same panel. Ship when the floor crosses 7/10 or the operator accepts the trade-off (log via `scripts/log-critic-override.ts` if a critic FAIL stands).
 
 Expert Panel Scoring is gated by `--high-stakes` mode or by `lp-brief` / `plan-campaign` upstream signaling that this is a hero deliverable. Default invocations skip it — the standard 7 sweeps + critic gate are sufficient for most copy.
 

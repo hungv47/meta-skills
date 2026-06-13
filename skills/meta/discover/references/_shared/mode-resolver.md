@@ -25,7 +25,7 @@ Every skill declares a `budget` tier in its frontmatter. This file defines what 
 | Budget | Execution | Skills at this tier |
 |--------|-----------|---------------------|
 | **fast** | Single-agent, no sub-agent spawning, no critic gate. Respond directly. | `forsvn`, `discover` |
-| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanmaxxing`, `polish-vn`, `brief-graphic`, `map-user-flow`, `write-docs`, `debate-agents`, `breakdown-tasks`, `review-work`, `clean-artifacts`, `write-social`, `evaluate-shortform`, `plan-funnel`, `run-eval-loop` |
+| **standard** | Reduced orchestration. Essential agents only, one critic pass. Skip optional refinement agents. | `humanmaxxing`, `polish-vn`, `brief-graphic`, `map-user-flow`, `write-docs`, `debate-agents`, `breakdown-tasks`, `review-work`, `clean-artifacts`, `write-social`, `evaluate-shortform`, `plan-funnel`, `run-pipeline` |
 | **deep** | Full orchestration as documented. All layers, all agents, full critic gate. | `write-copy`, `write-ad`, `plan-campaign`, `create-brand`, `optimize-seo`, `brief-landing-page`, `evaluate-landing-page`, `write-outreach`, `brief-shortform`, `architect-system`, `clean-code`, `clean-machine`, `diagnose`, `research-icp`, `research-market`, `prioritize`, `research-shortform` |
 
 A skill's `budget:` field is its **default tier** — never a ceiling, never a floor. Auto-downgrade heuristics and operator overrides shift the resolved mode at invocation.
@@ -34,7 +34,7 @@ A skill's `budget:` field is its **default tier** — never a ceiling, never a f
 
 ## Compactness caps (SKILL.md body, by tier)
 
-SkillOpt's empirical finding (arXiv:2605.23904v2 §4.4): trained skills are uniformly compact — final `best_skill.md` ranges from 379 to 1,995 tokens with **median ~920**. Bloated skill bodies are not a sign of effort; they are a signal that procedural rules and reference material have not been separated. Each tier carries a body-token cap that `scripts/audit-skill-budget.ts --enforce-caps` enforces in the pre-merge gate.
+SkillOpt's empirical finding (arXiv:2605.23904v2 §4.4): trained skills are uniformly compact — final `best_skill.md` ranges from 379 to 1,995 tokens with **median ~920**. Bloated skill bodies are not a sign of effort; they are a signal that procedural rules and reference material have not been separated. Each tier carries a body-token cap that `_dev/audit-skill-budget.ts --enforce-caps` enforces in the pre-merge gate.
 
 | Budget | Body cap (estimated tokens, chars ÷ 4) | Rationale |
 |---|---:|---|
@@ -57,6 +57,29 @@ SkillOpt's empirical finding (arXiv:2605.23904v2 §4.4): trained skills are unif
 - References multiple artifacts, is cross-domain, or is ambiguous → use full skill tier.
 
 These are heuristics, not rules. Operator overrides win (next section).
+
+---
+
+## Session execution profile — the model axis
+
+The session carries an explicit single-vs-multi-agent choice with a model-aware default,
+resolved once per session and inherited by every dispatch. Owner of the ask, the
+substrate (`.forsvn/routing/execution-profile.json`), model detection, staleness, and
+the exemption class: `execution-policy.md` (same references/ dir; `_shared/` mirror in
+consuming skills). This file stays the owner of tiers, `--fast`, and auto-downgrade.
+
+**Where the profile sits in precedence** (highest wins):
+
+1. Per-invocation flags/phrases — `--fast` and upward phrases (next section). One run only; never rewrites the profile.
+2. Session profile — `agents: single|multi` from `execution-profile.json`.
+3. Model-aware default — capable/expensive model → single; smaller model → multi (table in `execution-policy.md`).
+4. Skill `budget:` default — the tier table above.
+
+Reconciliation: a `single` profile has the same execution semantics as `--fast`'s
+single-agent collapse — **"skip the heavy lift, not the guardrails"** (see "What
+`--fast` does NOT skip"). Auto-downgrade heuristics apply only within `multi` mode;
+under `single` they are moot. An upward phrase outranks a `single` profile for that
+one invocation — announce it, don't rewrite the profile.
 
 ---
 
@@ -148,6 +171,7 @@ skip Layer-2 dispatch but still run Cold Start questions if context isn't resolv
 
 ## Related refs
 
+- [[execution-policy]] — the session execution profile: the bundled ask, the substrate, model detection, staleness, exemptions
 - [[pre-dispatch-protocol]] — what each tier does for the Pre-Dispatch interrogation step
 - [[shared-critic-rubrics]] — critic gate that `--fast` skips
 - [[quality-feedback-protocol]] — how `--fast` runs report their reduced-rigor status

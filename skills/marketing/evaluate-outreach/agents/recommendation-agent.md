@@ -23,7 +23,7 @@ Return:
 - confidence: high | medium | low | blocked
 - channel: [channel] · segment: [segment]
 - decision_sentence: [one sentence, no tabs, includes the channel + segment]
-- next_route: write-outreach | research-icp | run-eval-loop | none
+- next_route: write-outreach | research-icp | run-pipeline | none
 - next_action_summary: [one sentence — what the next route should produce, if any]
 
 ## Keep / Discard / Watch
@@ -65,7 +65,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 
 - Route to `write-outreach` when the next action is new copy/sequence authorship for the same channel + segment (revised subject, new opener, reordered steps). Include `--rev=N+1` in next_action_summary.
 - Route to `research-icp` when the diagnosis points at the LIST/TARGETING (the copy was fine but the segment was wrong, or list quality/freshness drove bounces) — fix the list before re-sending.
-- Route to `run-eval-loop` when the metric contract, baseline, guardrails, or channel/segment scope need redefinition.
+- Route to `run-pipeline` when the metric contract, baseline, guardrails, or channel/segment scope need redefinition.
 - Route to `none` when the cycle should continue unchanged until the next window (typically `watch`).
 
 ## Deliverability / Compliance Discipline

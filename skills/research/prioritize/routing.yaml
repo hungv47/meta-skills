@@ -17,6 +17,12 @@ promptSignals:
     - "which solution"
     - "strategic options"
     - "rank the options"
+    # U13 ideation entry mode — explicit generate-AND-rank intent only. Bare
+    # "brainstorm" / "generate ideas" stays with discover; these phrases all
+    # carry the ranking verb so they don't collide with discover's triggers.
+    - "generate ideas and rank"
+    - "rank these ideas"
+    - "score the ideas"
   allOf:
     - [what, build, prioritize]
     - [solution, prioritize]
@@ -47,6 +53,7 @@ capability:
       - "Problem or goal is already clear; need to decide what to build first."
       - "Force-ranked initiatives with ICE (Impact × Confidence × Effort)."
       - "Strategic options need a cut line + kill criteria."
+      - "A candidate set (discover shortlist, debate output, 'generate ideas and rank them') needs a scored ranking — ideation mode."
     not_when:
       - "Diagnosing the problem itself -> diagnose."
       - "Engineering task list from a known initiative -> breakdown-tasks."
@@ -55,9 +62,13 @@ capability:
     prerequisites:
       recommended:
         - "id:market-research"
-        - "id:diagnose"
         - "id:product-context"
-      hard: []
+      # Mode-conditional hard gate (U13): id:diagnose is HARD in the default
+      # root-cause mode (SKILL.md Critical Gates + procedures/pre-dispatch.md);
+      # in ideation mode (candidate-set input) it is replaced by a stated
+      # ranking anchor captured at Pre-Dispatch.
+      hard:
+        - "id:diagnose"
 
   orchestration:
     default: auto

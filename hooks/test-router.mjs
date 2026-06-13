@@ -20,7 +20,7 @@ const tests = [
   ["What should we build next? Prioritize the options", "prioritize"],
   ["Model the funnel from traffic to revenue", "plan-funnel"],
   ["Gather our platform analytics evidence for our X and YouTube accounts", "research-platform"],
-  ["Create an eval loop for the new pricing page", "run-eval-loop"],
+  ["Create an eval loop for the new pricing page", "run-pipeline"],
   ["Evaluate landing page analytics for the pricing page", "evaluate-landing-page"],
   // P0-C eval<->brief separation: bare eval phrasings (no "analytics" crutch)
   // must reach evaluate-landing-page, not brief-landing-page; and pure brief

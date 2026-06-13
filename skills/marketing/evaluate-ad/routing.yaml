@@ -57,7 +57,7 @@ capability:
       - "User asks to evaluate a launched Meta ad cycle with real performance metrics."
       - "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "Writing new ad creative -> write-ad."
       - "Channel-mix retrospective across campaigns -> plan-campaign."
       - "Campaign-level multi-channel scoring -> evaluate-campaign."

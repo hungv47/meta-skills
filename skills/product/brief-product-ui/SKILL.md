@@ -4,7 +4,7 @@ description: "Designs the in-product interface from a validated map-user-flow �
 argument-hint: "[feature or map-user-flow slug/path]"
 allowed-tools: Read Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -46,6 +46,7 @@ Full checkpoint detail + rewrite routing: [`references/procedures/gates-and-rubr
 ## Before Starting
 
 Apply `references/_shared/before-starting-check.md` [PLAYBOOK]. `budget: deep`; `--fast` collapses Layer 1 to single-pass per `references/_shared/mode-resolver.md` [PROCEDURE]. **Safety gates supersede `--fast`.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 | Artifact | Source | Required? |
 |---|---|---|
@@ -67,6 +68,7 @@ Apply `references/_shared/before-starting-check.md` [PLAYBOOK]. `budget: deep`; 
 ## Tooling
 
 Production mode can run **inside** a connected design tool (Figma / Stitch / Open Design) or emit a portable spec. Upstream choice (default = portable spec): [`references/_shared/tool-redirect.md`](references/_shared/tool-redirect.md). Terminal handoff, category `design`: [`references/_shared/execution-fork.md`](references/_shared/execution-fork.md). Live-drive upstream pre-answers the terminal fork — don't ask twice.
+When not live-driving, bind the `design` target tool at brief-binding (the build surface the spec's handoff tunes to) — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; the portable spec stays the default.
 
 ## Routing + Dispatch
 

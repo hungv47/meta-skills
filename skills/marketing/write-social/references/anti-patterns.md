@@ -215,7 +215,7 @@ If the body is generic (applicable to any reader, not specifically the cohort ca
 - `humanmaxxing` skill's body-section reader (reads `## Body` + `## CTA`)
 - `polish-vn` skill's body-section reader + register hook check
 - `scripts/manifest-sync.ts` artifact-type classifier (if `type` field changes)
-- `run-eval-loop` results.tsv ingestion (if `critic_score` or `critic_verdict` field semantics change)
+- `run-pipeline` results.tsv ingestion (if `critic_score` or `critic_verdict` field semantics change)
 
 = TRIGGERED.
 

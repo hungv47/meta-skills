@@ -176,6 +176,8 @@ Mike
 
 ## Framework Selection Decision Tree
 
+These routings are signal-based starting points, not hard rules — trust a better read of the prospect and note the departure.
+
 ```
 Start: What's the signal strength?
 │

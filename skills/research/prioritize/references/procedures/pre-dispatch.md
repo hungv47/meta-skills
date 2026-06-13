@@ -4,9 +4,28 @@
 
 ---
 
-## Hard gate (enforced before any agent dispatches)
+## Entry-mode resolution (before the hard gate)
 
-`id:diagnose` must resolve (diagnose's output, via `find-artifacts --resolve diagnose`).
+Two entry modes, resolved here at Pre-Dispatch:
+
+| Mode | When | Gate |
+|---|---|---|
+| **Root-cause** (DEFAULT) | Anything not matching the ideation signals below. Behavior is unchanged — everything else in this file applies as written. | Hard gate below (`id:diagnose`) |
+| **Ideation** | Input is a candidate set: a discover divergence shortlist, debate-agents poll/debate output, or a raw "generate as many ideas as possible and rank them" / "rank these ideas" ask. | **Ranking anchor** (below) replaces the diagnose hard gate |
+
+Ideation mode is signal-gated, never assumed: a vague growth ask without a candidate set or explicit generate-and-rank intent stays in root-cause mode. Echo the resolved mode in the Warm Start summary so the operator can override.
+
+### Ideation mode mechanics
+
+1. **Ranking anchor (the mode's hard gate).** Capture a stated anchor — the goal/metric the ideas serve — before any agent dispatches. Source it from the handoff artifact (discover's chosen goal, the debate's decision question) or ask one question: "What goal/metric should these ideas be ranked against?" No anchor → NEEDS_CONTEXT. The anchor stands in for the root cause everywhere downstream: hypotheses tether to it, the anti-generic test runs against it, Impact scores against it.
+2. **Phase 1 expands at volume.** The generation quota is a **parameter**: default 5-10 + 2-4 unconventional as usual; an explicit "as many as possible" / "20 ideas" ask sets the quota accordingly. Seed candidates from the input set are kept (deduplicated), expanded, then Phase 2 force-ranks and ICE-scores the whole set per [`references/_shared/idea-ranking-core.md`](../_shared/idea-ranking-core.md) [PLAYBOOK] — the ranking invariants are identical in both modes.
+3. **Everything else unchanged.** Read order (minus the diagnose requirement), staleness check (on the source artifact if any), Constraint Interview, route selection, write-back map, and Out-of-Scope persistence apply as written.
+
+---
+
+## Hard gate (root-cause mode only — enforced before any agent dispatches)
+
+`id:diagnose` must resolve (diagnose's output, via `find-artifacts --resolve diagnose`). In ideation mode this gate is replaced by the ranking anchor above.
 
 **Unresolvable → return NEEDS_CONTEXT.** Recommend:
 

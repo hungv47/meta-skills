@@ -17,6 +17,8 @@ const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && !arg.startsWith("--"
 const ROOT = realpathSync(ROOT_ARG);
 // The three layers of the `.forsvn/` home (each split by stack), plus the
 // post-v0 loop workspace. canonical/ artifacts/ experience/ ARE the data model.
+// `.forsvn/performance/` is deliberately NOT walked — operator-fed channel
+// metrics (TSV), data not artifacts; see references/performance-data.md.
 const ARTIFACT_ROOTS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops"];
 // Old flat experience files lived at `.forsvn/experience/<name>.md` (no stack
 // subdir) and were indexed as Q&A substrate. Layered experience
@@ -189,9 +191,9 @@ function inferProducer(rel: string): string {
     [/^\.forsvn\/artifacts\/research\/research-shortform/, "research-shortform"],
     [/^\.forsvn\/artifacts\/research\/platform-evidence/, "research-platform"],
     [/^\.forsvn\/artifacts\/research\/evaluate-shortform/, "evaluate-shortform"],
-    [/^\.forsvn\/loops\/[^/]+\/program\.md$/, "run-eval-loop"],
-    [/^\.forsvn\/loops\/[^/]+\/context\.md$/, "run-eval-loop"],
-    [/^\.forsvn\/loops\/[^/]+\/learnings\.md$/, "run-eval-loop"],
+    [/^\.forsvn\/loops\/[^/]+\/program\.md$/, "run-pipeline"],
+    [/^\.forsvn\/loops\/[^/]+\/context\.md$/, "run-pipeline"],
+    [/^\.forsvn\/loops\/[^/]+\/learnings\.md$/, "run-pipeline"],
   ];
   for (const [re, skill] of map) if (re.test(rel)) return skill;
   return "unknown";

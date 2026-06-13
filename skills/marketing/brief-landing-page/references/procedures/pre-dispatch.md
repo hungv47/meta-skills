@@ -121,6 +121,6 @@ This skill is `budget: deep` AND `interactive: true`. `--fast` skips multi-agent
 - Skip the Worked Example reference reads
 - Still fire Hard Gates (brand artifacts present) BEFORE any Cold Start questioning
 - Still fire Approval Gates 1/2/3 — user picks hypothesis, approves architecture, approves final brief
-- Still respect Critical Gates 1-6 (no brief without brand artifacts; no skipping conversion rubric — section-spec-agent still consults `conversion-principles.md`; no proposing changes to sacred elements; no exceeding 250-500 envelope — single-agent self-checks; no inlining full skill chain; no placeholder testimonials)
+- Still respect Critical Gates 1-6 (no brief without brand artifacts; no skipping conversion rubric — section-spec-agent still consults `conversion-principles.md`; no proposing changes to sacred elements; no breaching the brief envelope (completeness-gated; 250-500 typical, hard limits ~200/~700) — single-agent self-checks; no inlining full skill chain; no placeholder testimonials)
 
 End artifact must include: `Ran in --fast mode (single-agent per layer, critics skipped); rerun without the flag for full Route B with dual-critic gate.`

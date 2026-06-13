@@ -1,487 +1,201 @@
 <!doctype html>
+<!--
+  base.html — the structural template for every review-surface HTML preview.
+  v4 (2026-06-12, U9 design pass · revision 2): a reading-and-deciding
+  instrument. One centered 72ch reading column under a quiet chrome strip,
+  the collaboration workbench (Marker / Comment / Edit — agents only suggest),
+  an adaptive dark/light theme (system default + explicit choice), and the
+  pinned decision ledger as the one interactive capture place. No artifact
+  paths anywhere in the UI — identity is title + skill + stack + date.
+  v2 (2026-05-26) was the five-region chrome; the marginalia gutter, left
+  controls, footer, and metadata rows are gone (workflow and decision first).
+  Skill emitters never touch this file; lib/render.ts fills the {{...}}
+  placeholders.
+
+  Placeholders (written {ph: name} here so this comment survives the
+  global replacement; the live slots below use the double-brace form):
+    {ph: stack}             — air | water | fire | earth (the elemental register)
+    {ph: stack_name}        — meta | marketing | product | research (the stack word)
+    {ph: title}             — artifact title (masthead h1)
+    {ph: skill}             — kebab-case skill slug
+    {ph: date}              — YYYY-MM-DD
+    {ph: deck}              — one-line summary (masthead deck; may be empty)
+    {ph: decision_state}    — pending | approved | denied | suggested | not_required
+    {ph: tokens_css_href}   — path to tokens.css (typically "./tokens.css")
+    {ph: chrome_css_href}   — path to chrome.css
+    {ph: chrome_js_src}     — path to chrome.js
+    {ph: artifact_data_json}— JSON blob mirroring the MD frontmatter
+    {ph: stage_html}        — rendered artifact body (typeset Markdown, never syntax)
+    {ph: preview_config_json}— JSON consumed by chrome.js + the preview CLI.
+                             Pending preview: {"token":"…","endpoint":"…","mdPath":"…",
+                             "gate_warning":null,"pending_count":N,"suggestions":[]}.
+                             Static / archived: {"static":true} — capture + workbench hidden.
+-->
 <html lang="en" data-stack="water">
 <head>
   <meta charset="utf-8">
+  <!-- Theme boot — BEFORE the stylesheets so there is no flash of the wrong
+       theme. Default follows prefers-color-scheme (no attribute); an explicit
+       operator choice persists in localStorage as data-theme="dark|light". -->
+  <script>
+    (function () {
+      try {
+        var v = localStorage.getItem("forsvn-theme");
+        if (v === "dark" || v === "light") document.documentElement.setAttribute("data-theme", v);
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Images are local-only: an external img src would load on open — a beacon
+       channel — so only local images render; http(s) sources are blocked. Belt
+       for the renderer's safeSrc local-only rule. `file:` keeps relative images
+       working when the HTML twin is opened directly via file:// (opaque origin,
+       so 'self' matches nothing there) and is inert on the served path (http
+       pages can't load file: subresources). Scoped to img-src — the page
+       makes no other external requests (type is self-hosted below). -->
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: file:">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FORSVN Brand Identity · create-brand · 2026-05-26</title>
+  <title>FORSVN Brand Identity — Sunset / Forest · create-brand · 2026-06-12</title>
 
+  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro +
+       JetBrains Mono — self-hosted (fonts.css + ./fonts/*.woff2); the hosted
+       Google Fonts links were a review-time beacon, retired with v0's
+       local-first rule. Resolved by the preview CLI's bundled-asset fallback. -->
   <link rel="stylesheet" href="../fonts.css">
 
   <link rel="stylesheet" href="../tokens.css">
   <link rel="stylesheet" href="../chrome.css">
-
-  <style>
-    /* WATER register — glassmorphism + gradient + depth, fluid motion.
-       Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
-    .palette-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      max-width: 1280px;
-    }
-    .palette-card {
-      position: relative;
-      background: var(--bg-elevated);
-      border: 1px solid var(--stage-border);
-      border-radius: 12px;
-      padding: 24px;
-      backdrop-filter: var(--backdrop-blur);
-      box-shadow: var(--shadow-md), var(--shadow-sm);
-      overflow: hidden;
-    }
-    .palette-card::before {
-      content: "";
-      position: absolute; inset: 0;
-      background: var(--accent-gradient);
-      opacity: 0.04;
-      pointer-events: none;
-    }
-    .palette-card h3 {
-      font-family: var(--font-head);
-      font-size: 28px;
-      font-weight: 700;
-      font-variation-settings: "opsz" 96;
-      margin: 0 0 4px 0;
-      letter-spacing: -0.015em;
-      color: var(--stage-fg);
-    }
-    .palette-card .palette-meta {
-      color: var(--fg-muted);
-      font-size: 12.5px;
-      font-family: var(--font-mono);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-
-    .swatch-row { display: flex; gap: 8px; margin-bottom: 16px; }
-    .swatch {
-      flex: 1;
-      aspect-ratio: 2/1;
-      border-radius: 6px;
-      border: 1px solid var(--stage-border);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 8px 10px;
-      font: 500 11px/1.2 var(--font-mono);
-      letter-spacing: 0.04em;
-      cursor: pointer;
-      transition: transform var(--t-hover) var(--ease);
-    }
-    .swatch:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
-    .swatch .swatch-label { opacity: 0.85; }
-
-    .sample-block {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--stage-border);
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 16px;
-    }
-    .sample-block.preview-dark { background: #000; color: #fff; }
-    .sample-block.preview-dark .display { color: #74B36B; }
-    .display {
-      font-family: var(--font-head);
-      font-variation-settings: "opsz" 96;
-      font-weight: 700;
-      font-size: 56px;
-      line-height: 1.05;
-      letter-spacing: -0.025em;
-      margin: 0 0 8px 0;
-    }
-    .body-sample {
-      font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.55;
-      opacity: 0.85;
-    }
-    .stress {
-      font-family: var(--font-body);
-      font-size: 14.5px;
-      color: var(--stage-fg);
-      background: color-mix(in srgb, var(--stage-accent) 6%, transparent);
-      padding: 10px 14px;
-      border-left: 2px solid var(--stage-accent);
-      margin-top: 12px;
-      border-radius: 0 4px 4px 0;
-    }
-    .stress .label {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 10.5px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--stage-accent);
-      margin-bottom: 4px;
-    }
-
-    .component-matrix {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .component-matrix > div {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--stage-border);
-      border-radius: 6px;
-      padding: 14px;
-    }
-    .component-matrix .label {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--fg-muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .demo-btn-primary {
-      display: inline-block;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 999px;
-      background: var(--stage-accent);
-      color: var(--stage-bg);
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 13.5px;
-      line-height: 1;
-      cursor: pointer;
-    }
-    .demo-btn-secondary {
-      display: inline-block;
-      padding: 9px 17px;
-      background: transparent;
-      color: var(--stage-fg);
-      border: 1px solid var(--border-strong);
-      border-radius: 999px;
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 13.5px;
-      line-height: 1;
-      cursor: pointer;
-      margin-left: 8px;
-    }
-    .demo-input {
-      width: 100%;
-      padding: 9px 12px;
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--stage-border);
-      border-radius: 6px;
-      color: var(--stage-fg);
-      font-family: var(--font-body);
-      font-weight: 400;
-      font-size: 13.5px;
-      line-height: 1.4;
-    }
-    .demo-code {
-      font-family: var(--font-mono);
-      font-size: 12.5px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--stage-border);
-      border-radius: 4px;
-      padding: 8px 10px;
-      color: var(--stage-accent);
-      display: block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .demo-card-mini {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--stage-border);
-      border-radius: 6px;
-      padding: 10px 12px;
-    }
-    .demo-card-mini .title {
-      font-family: var(--font-body);
-      font-weight: 600;
-      font-size: 13px;
-      line-height: 1.2;
-      margin-bottom: 3px;
-    }
-    .demo-card-mini .desc {
-      font-family: var(--font-body);
-      font-weight: 400;
-      font-size: 11.5px;
-      line-height: 1.4;
-      color: var(--fg-muted);
-    }
-
-    .verdict-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 14px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-    }
-    .verdict {
-      padding: 3px 10px;
-      border-radius: 3px;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .verdict.pass {
-      background: color-mix(in srgb, var(--stage-accent) 18%, transparent);
-      color: var(--stage-accent);
-      border: 1px solid color-mix(in srgb, var(--stage-accent) 35%, transparent);
-    }
-    .verdict.warn {
-      background: rgba(251, 191, 36, 0.18);
-      color: #fbbf24;
-      border: 1px solid rgba(251, 191, 36, 0.35);
-    }
-    .verdict-meta { color: var(--fg-muted); }
-
-    .stage-intro {
-      max-width: var(--max-measure);
-      padding: 8px 0 24px 0;
-      border-bottom: 1px solid var(--stage-border);
-      margin-bottom: 32px;
-    }
-    .stage-intro h1 {
-      font-family: var(--font-head);
-      font-size: 48px;
-      font-variation-settings: "opsz" 96;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      margin: 0 0 8px 0;
-      color: var(--stage-fg);
-    }
-    .stage-intro p {
-      font-family: var(--font-body);
-      color: var(--fg-muted);
-      max-width: 60ch;
-    }
-  </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
-    <span class="brand-divider" aria-hidden="true"></span>
-    <span class="stack-chip">WATER</span>
-    <span class="topbar-meta"><strong>create-brand</strong> · 2026-05-26 · forsvn-forest-shadow</span>
+  <!-- Chrome strip: identity + theme + state. One state, one place (the pill).
+       The logo glyph swaps with the active theme: cream glyph on dark surfaces,
+       forest glyph on light (BRAND.md § Logo Color Combinations). -->
+  <header class="strip">
+    <span class="wordmark" aria-label="FORSVN">
+      <img class="logo logo-on-dark" src="../logo-glyph-cream.svg" alt="" aria-hidden="true">
+      <img class="logo logo-on-light" src="../logo-glyph-forest.svg" alt="" aria-hidden="true">
+      <span class="name">FORSVN</span>
+    </span>
+    <span class="crumb"><b>review</b><span data-pending-count></span></span>
+    <span class="el el-water"><span class="swatch"></span>marketing · water</span>
+    <span class="grow"></span>
+    <div class="theme-seg" role="group" aria-label="Theme">
+      <button type="button" data-set="system" aria-pressed="true">auto</button>
+      <button type="button" data-set="dark" aria-pressed="false">dark</button>
+      <button type="button" data-set="light" aria-pressed="false">light</button>
+    </div>
     <span class="decision-pill" data-state="pending">pending</span>
   </header>
 
-  <aside class="left-controls">
-    <div class="control-group" data-picker-group>
-      <h2>Variants</h2>
-      <button class="picker-item" data-picker-value="forest-shadow" aria-selected="true">
-        Forest Shadow <span style="color:var(--chrome-text-muted);font-size:11px;">· #0A120D · leaf</span>
-      </button>
-      <button class="picker-item" data-picker-value="forest" aria-selected="false">
-        Forest <span style="color:var(--chrome-text-muted);font-size:11px;">· #0a1a0e · #ffd166</span>
-      </button>
-      <button class="picker-item" data-picker-value="ink-paper" aria-selected="false">
-        Ink &amp; Paper <span style="color:var(--chrome-text-muted);font-size:11px;">· #1a1410 · #b87333</span>
-      </button>
-    </div>
+  <!-- Stage: one centered reading column, themed by the elemental register.
+       The workbench (Marker / Comment / Edit + "read as") is the HUMAN's
+       collaboration bar — chrome.js activates it only on a live pending serve;
+       deciding stays in the ledger below, the bar never captures a verdict. -->
+  <main class="stage" tabindex="0" aria-label="Artifact body">
+    <div class="sheet" id="sheet">
 
-    <div class="control-group">
-      <h2>Compare</h2>
-      <button type="button" data-toggle="comparison">Side-by-side (on)</button>
-    </div>
-
-    <div class="control-group">
-      <h2>View</h2>
-      <button type="button" data-toggle="density">Density · loose</button>
-      <button type="button" data-toggle="vn-stress">Vietnamese stress · on</button>
-      <button type="button" data-toggle="grid">8px grid overlay</button>
-    </div>
-
-    <div class="control-group">
-      <h2>Export</h2>
-      <button type="button" data-copy-source="tokens-tailwind">Copy Tailwind config</button>
-      <button type="button" data-copy-source="tokens-shadcn">Copy shadcn theme</button>
-      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
-    </div>
-  </aside>
-
-  <main class="stage">
-    <section class="stage-intro">
-      <h1>FORSVN brand exploration</h1>
-      <p>Two palette candidates against the same display, body, Vietnamese stress, and component samples. Pick the one that feels right — your decision is captured in the Markdown twin via Roughdraft.</p>
-    </section>
-
-    <div class="palette-grid">
-
-      <!-- Variant A: Forest Shadow -->
-      <article class="palette-card">
-        <h3>Forest Shadow</h3>
-        <div class="palette-meta">Variant A · proposed canonical</div>
-
-        <div class="swatch-row">
-          <div class="swatch" style="background:#0A120D;color:#74B36B;"><span class="swatch-label">#0A120D</span><strong>bg</strong></div>
-          <div class="swatch" style="background:#74B36B;color:#0A120D;"><span class="swatch-label">#74B36B</span><strong>accent</strong></div>
-          <div class="swatch" style="background:#EFE9D1;color:#0A120D;"><span class="swatch-label">#EFE9D1</span><strong>fg</strong></div>
-          <div class="swatch" style="background:#111B14;color:#fff;"><span class="swatch-label">#111B14</span><strong>panel</strong></div>
-        </div>
-
-        <div class="sample-block preview-dark">
-          <h4 class="display">Build the&nbsp;quiet&nbsp;machine.</h4>
-          <p class="body-sample">A studio for tools that compress effort. Sharp surfaces, signal-only chrome, voice that sounds like the operator — not a brand book.</p>
-          <div class="stress">
-            <span class="label">VN diacritic stress · 16px</span>
-            Đẹp đẽ kỳ lạ, chững chạc giữa biển nhiễu. Tóc rối nắng, sương lệ ngọn cỏ. Quẹo lựa rượu nồng nỗi nhớ.
+      <div class="workbench" role="toolbar" aria-label="Work on this artifact" hidden>
+        <button class="tool" type="button" data-tool="read" aria-pressed="true"><span class="g">¶</span>Read</button>
+        <button class="tool" type="button" data-tool="marker" aria-pressed="false"><span class="g">▆</span>Marker <span class="key">M</span></button>
+        <button class="tool" type="button" data-tool="comment" aria-pressed="false"><span class="g">◍</span>Comment <span class="key">C</span></button>
+        <button class="tool" type="button" data-tool="edit" aria-pressed="false"><span class="g">✎</span>Edit <span class="key">E</span></button>
+        <span class="wb-note" data-wb-note>marks + comments ride back to the agents</span>
+        <span class="grow"></span>
+        <button class="btn-quiet" type="button" data-edit-discard hidden>Discard <span class="key">esc</span></button>
+        <button class="btn-save" type="button" data-edit-save hidden>Save edits <span class="key">⌘S</span></button>
+        <span class="readas-wrap">
+          <button class="readas" type="button" aria-haspopup="menu" aria-expanded="false">read as <b>designed html</b> ▾</button>
+          <div class="readas-menu" role="menu" hidden>
+            <div class="readas-item is-current" role="menuitem" aria-disabled="true">
+              <b>designed html</b><span>this page — read, mark, edit, decide</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>terminal</b><span>re-serve with <code>--md</code> for a read-only terminal render</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>proof collab</b><span><code>forsvn-collab open</code> — iterative co-editing; agents suggest only</span>
+            </div>
           </div>
-        </div>
+        </span>
+      </div>
 
-        <div class="component-matrix">
-          <div>
-            <span class="label">Buttons</span>
-            <button class="demo-btn-primary" style="background:#74B36B;color:#0A120D;">Begin</button>
-            <button class="demo-btn-secondary" style="border-color:#74B36B;color:#74B36B;">Continue</button>
-          </div>
-          <div>
-            <span class="label">Input</span>
-            <input class="demo-input" placeholder="What are you building?" style="border-color:#111B14;color:#EFE9D1;background:#0A120D;">
-          </div>
-          <div>
-            <span class="label">Code</span>
-            <code class="demo-code" style="color:#74B36B;background:#0A120D;">bun forsvn discover</code>
-          </div>
-          <div class="demo-card-mini" style="background:#0A120D;border-color:#111B14;">
-            <div class="title" style="color:#EFE9D1;">Operator capture</div>
-            <div class="desc">23 conversations · 14 decisions · 6 specs locked</div>
-          </div>
-        </div>
-
-        <div class="verdict-row">
-          <span class="verdict pass">WCAG AA · pass</span>
-          <span class="verdict-meta">accent on bg = 7.6:1 · fg on bg = 15.6:1</span>
-        </div>
+      <article>
+        <!-- G1 gate-warning notice (amber, warn-and-proceed) renders here from
+             preview-config.gate_warning; agent suggestion cards render after the
+             masthead from preview-config.suggestions. Both are chrome.js-owned. -->
+        <header class="masthead">
+          <div class="eyebrow">marketing · create-brand · 2026-06-12 <span class="rule"></span></div>
+          <h1>FORSVN Brand Identity — Sunset / Forest</h1>
+          <p class="deck">One saturated anchor (Deep Forest), warmth from the canvas, Signal Lime retired.</p>
+        </header>
+        <div class="prose">
+<h2>Palette decision</h2>
+<p><strong>Deep Forest <code>#004700</code> is the only saturated color.</strong> On dark surfaces it lifts to Leaf <code>#74B36B</code>; warmth comes from the canvas — Warm Cream text and the honey <code>#F2CE6B</code> logo field — never from a second accent.</p>
+<ul><li>Forest Shadow <code>#0A120D</code> — the dark canvas; never pure black</li><li>Sunset Cream <code>#F7F0D4</code> — the light canvas</li><li>Honey <code>#F2CE6B</code> — logo field and marker wash only</li></ul>
+<h2>Typography</h2>
+<table><tr><th>Role</th><th>Family</th></tr><tr><td>Headings</td><td>Bricolage Grotesque</td></tr><tr><td>Body / UI</td><td>Be Vietnam Pro</td></tr><tr><td>Paths, counts, keycaps</td><td>JetBrains Mono</td></tr></table>
+<section class="gate" id="gate-echo"><header><span class="t">Review gate</span><span class="ro">read-only echo — decide below</span></header><div class="gate-body">
+<ul class="mirror-gate" aria-hidden="true"><li class="task"><input type="checkbox" disabled> Zero occurrences of retired Signal Lime</li><li class="task"><input type="checkbox" disabled> One saturated anchor; warmth from the canvas only</li><li class="task"><input type="checkbox" disabled> Type stack matches DESIGN.md §A</li></ul></div><footer>The gate is the author's claim. Your decision below is the only thing that writes.</footer></section>
+</div>
       </article>
 
-      <!-- Variant B: Forest -->
-      <article class="palette-card">
-        <h3>Forest</h3>
-        <div class="palette-meta">Variant B · alternative</div>
-
-        <div class="swatch-row">
-          <div class="swatch" style="background:#0a1a0e;color:#ffd166;"><span class="swatch-label">#0a1a0e</span><strong>bg</strong></div>
-          <div class="swatch" style="background:#ffd166;color:#0a1a0e;"><span class="swatch-label">#ffd166</span><strong>accent</strong></div>
-          <div class="swatch" style="background:#e8f0e2;color:#0a1a0e;"><span class="swatch-label">#e8f0e2</span><strong>fg</strong></div>
-          <div class="swatch" style="background:#1a2e1f;color:#e8f0e2;"><span class="swatch-label">#1a2e1f</span><strong>panel</strong></div>
-        </div>
-
-        <div class="sample-block" style="background:#0a1a0e;color:#e8f0e2;">
-          <h4 class="display" style="color:#ffd166;">Build the&nbsp;quiet&nbsp;machine.</h4>
-          <p class="body-sample" style="color:#e8f0e2;">A studio for tools that compress effort. Sharp surfaces, signal-only chrome, voice that sounds like the operator — not a brand book.</p>
-          <div class="stress" style="background:rgba(255,209,102,0.07);border-left-color:#ffd166;">
-            <span class="label" style="color:#ffd166;">VN diacritic stress · 16px</span>
-            Đẹp đẽ kỳ lạ, chững chạc giữa biển nhiễu. Tóc rối nắng, sương lệ ngọn cỏ. Quẹo lựa rượu nồng nỗi nhớ.
-          </div>
-        </div>
-
-        <div class="component-matrix">
-          <div>
-            <span class="label">Buttons</span>
-            <button class="demo-btn-primary" style="background:#ffd166;color:#0a1a0e;">Begin</button>
-            <button class="demo-btn-secondary" style="border-color:#ffd166;color:#ffd166;">Continue</button>
-          </div>
-          <div>
-            <span class="label">Input</span>
-            <input class="demo-input" placeholder="What are you building?" style="border-color:#1a2e1f;color:#e8f0e2;background:#0a1a0e;">
-          </div>
-          <div>
-            <span class="label">Code</span>
-            <code class="demo-code" style="color:#ffd166;background:#0a1a0e;">bun forsvn discover</code>
-          </div>
-          <div class="demo-card-mini" style="background:#0a1a0e;border-color:#1a2e1f;">
-            <div class="title" style="color:#e8f0e2;">Operator capture</div>
-            <div class="desc">23 conversations · 14 decisions · 6 specs locked</div>
-          </div>
-        </div>
-
-        <div class="verdict-row">
-          <span class="verdict pass">WCAG AA · pass</span>
-          <span class="verdict-meta">accent on bg = 11.2:1 · fg on bg = 13.6:1</span>
-        </div>
-      </article>
-
+      <!-- Thread rail: comment threads anchored to highlights; they feed the
+           agents. chrome.js populates it and widens the sheet when in use. -->
+      <aside class="thread-rail" aria-label="Open comment threads" hidden></aside>
     </div>
   </main>
 
-  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
-    <fieldset class="decision-radio">
-      <legend>Decision</legend>
-      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
-      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
-      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
-    </fieldset>
-    <label class="decision-comments">
-      <span>Comments (optional)</span>
-      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
-    </label>
-    <div class="decision-actions">
-      <span class="decision-status" aria-live="polite"></span>
-      <button type="submit" class="decision-done">Done</button>
+  <!-- Ledger — the one decision place, pinned. Always present in markup.
+       chrome.js activates it only when the preview CLI has injected a token
+       into the preview-config block AND the artifact's decision_state is
+       "pending". Otherwise the form stays display:none — read-only page.
+       Keycaps live on the controls: the keyboard model is rendered, not listed. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)" aria-label="Decision">
+    <div class="ledger-inner">
+      <div class="ledger-head">
+        <span class="t" id="decision-label">Your decision</span>
+        <span class="aside">marks + comments are notes to the agents — they never decide for you</span>
+      </div>
+      <div class="decision-alert" role="alert" tabindex="-1" hidden></div>
+      <fieldset class="decision-radio ledger-row" role="radiogroup" aria-labelledby="decision-label" aria-required="true">
+        <legend class="sr-only">Decision</legend>
+        <label class="opt" data-d="approve">
+          <input type="radio" name="decision" value="approved" aria-keyshortcuts="Alt+A">
+          <span class="glyph">✓</span>
+          <span class="w"><span class="word">Approve</span><span class="sub">ship it as truth</span></span>
+          <span class="key">⌥A</span>
+        </label>
+        <label class="opt" data-d="deny">
+          <input type="radio" name="decision" value="denied" aria-keyshortcuts="Alt+D">
+          <span class="glyph">✕</span>
+          <span class="w"><span class="word">Deny</span><span class="sub">send it back</span></span>
+          <span class="key">⌥D</span>
+        </label>
+        <label class="opt" data-d="suggest">
+          <input type="radio" name="decision" value="suggested" aria-keyshortcuts="Alt+S">
+          <span class="glyph">~</span>
+          <span class="w"><span class="word">Suggest</span><span class="sub">approve with notes</span></span>
+          <span class="key">⌥S</span>
+        </label>
+        <label class="comment">
+          <span class="sr-only">Comment (optional)</span>
+          <textarea name="comments" placeholder="Optional note — saved with the decision as your reviewer notes"></textarea>
+        </label>
+        <span class="decision-actions">
+          <span class="decision-status" aria-live="polite"></span>
+          <button type="submit" class="decision-done done" aria-disabled="true" aria-describedby="decision-done-hint">Done <span class="k">⌘↵</span></button>
+          <span id="decision-done-hint" class="sr-only">pick a decision first</span>
+        </span>
+      </fieldset>
+      <div class="decision-outcome confirm" role="status" tabindex="-1" hidden></div>
     </div>
   </form>
 
-  <footer class="footer">
-    <a class="footer-action" data-roughdraft-link
-       href="roughdraft://open?path=.forsvn%2Fartifacts%2Fmkt-create-brand-2026-05-26-forsvn-forest-shadow.md">
-      Open in Roughdraft →
-    </a>
-    <span class="footer-meta">FORSVN Brand Identity · decision: pending · last regenerated 2026-05-26T08:24Z</span>
-    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
-  </footer>
-
-  <!-- ====================================================================== -->
-  <!-- Exportable token blocks (hidden from view, used by Copy buttons)         -->
-  <!-- ====================================================================== -->
+  <!-- Preview-config: populated by the preview CLI at runtime. When this
+       artifact is opened directly (no CLI), the `static` flag tells chrome.js
+       to keep the ledger + workbench inert — a read-only page. -->
   <script type="application/json" id="preview-config">{"static":true}</script>
-  <script type="application/json" id="artifact-data">{
-  "skill": "create-brand",
-  "version": 1,
-  "date": "2026-05-26",
-  "status": "done",
-  "stack": "marketing",
-  "skills_involved": ["research-icp", "create-brand"],
-  "lifecycle": "canonical",
-  "summary": "FORSVN brand identity — Forest Shadow palette, Bricolage Grotesque + Be Vietnam Pro typography",
-  "decision_state": "pending",
-  "review_surface": "html"
-}</script>
-  <pre id="tokens-tailwind" hidden>// tailwind.config.ts extend block
-export default {
-  theme: {
-    extend: {
-      colors: {
-        bg:     '#0A120D',
-        fg:     '#EFE9D1',
-        panel:  '#111B14',
-        accent: '#74B36B',
-        forest: '#004700',
-      },
-      fontFamily: {
-        display: ['Bricolage Grotesque', 'sans-serif'],
-        body:    ['Be Vietnam Pro', 'sans-serif'],
-        mono:    ['JetBrains Mono', 'monospace'],
-      },
-    },
-  },
-};
-</pre>
-  <pre id="tokens-shadcn" hidden>/* globals.css :root block — shadcn convention */
-:root {
-  --background: 142 29% 5%;     /* #0A120D forest shadow */
-  --foreground: 48 48% 88%;     /* #EFE9D1 warm cream */
-  --card:       138 23% 9%;     /* #111B14 panel */
-  --primary:    113 32% 56%;    /* #74B36B leaf */
-  --primary-foreground: 142 29% 5%;
-  --accent:     120 100% 14%;    /* #004700 forest */
-  --border:     138 23% 9%;
-  --ring:       113 32% 56%;
-}
-</pre>
+  <script type="application/json" id="artifact-data">{"skill":"create-brand","version":"2","date":"2026-06-12","status":"done","stack":"marketing","id":"exemplar-water-brand","type":"brief","title":"FORSVN Brand Identity — Sunset / Forest","summary":"One saturated anchor (Deep Forest), warmth from the canvas, Signal Lime retired.","decision_state":"pending","review_surface":"html"}</script>
   <script src="../chrome.js"></script>
 </body>
 </html>

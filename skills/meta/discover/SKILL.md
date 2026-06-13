@@ -5,7 +5,7 @@ argument-hint: "[idea, feature, or task to clarify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: fast
   estimated-cost: "$0.03-0.10"
 ---
@@ -38,9 +38,9 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 |---|---|---|
 | Clear task, existing codebase, well-defined scope | **Light** (3-5 questions) | Surface assumptions, lock scope, go |
 | Feature with some ambiguity, multiple approaches | **Medium** (5-10 questions) | Explore key decisions, probe edge cases |
-| Vague idea, greenfield, "I want to build X" | **Deep** (multi-round) | Challenge premise, interview across zones, iterate |
+| Vague idea, greenfield, "I want to build X" | **Deep** (multi-round) | Challenge premise, interview across zones, iterate until the Step 6 concreteness gate passes |
 
-"That's enough, let's build" skips ahead — agent notes current clarity level.
+Depth sets the question ceiling; the Step 6 concreteness gate sets the exit. Deep is multi-round until the gate passes — not question-count-bounded. Light/Medium ceilings stand: at ceiling with open dimensions, ask per-dimension sign-off, wrap `done_with_concerns`. A fully-concrete brief passes the gate on round one — no extra grilling. "That's enough, let's build" triggers the sign-off ask, not a silent skip.
 
 ## Execution
 
@@ -54,7 +54,7 @@ Per [`references/procedures/orchestration-steps.md`](references/procedures/orche
 - **Step 3** — Adaptive Coverage Zones (3-5 zones for THIS problem, not 5 fixed dimensions). State zones upfront. Zone library by domain (product feature, business strategy, marketing initiative, infra/devops, design task) in [`procedures/orchestration-steps.md`](references/procedures/orchestration-steps.md).
 - **Step 4** — Conversation: interview techniques per [`procedures/interview-techniques.md`](references/procedures/interview-techniques.md); communication discipline (banned phrases, take-a-position rule, always-recommend rule, pushback patterns) per [`procedures/communication-discipline.md`](references/procedures/communication-discipline.md); domain probing via lazy [`references/question-bank.md`](references/question-bank.md) loads.
 - **Step 5** — Complex Decision Points → invoke `debate-agents` as sub-routine when 2+ viable approaches with non-obvious tradeoffs + decision expensive to reverse. Not when clear best answer / strong preference / easily reversible.
-- **Step 6** — Clarity Check: summarize decisions, note open questions, **playbook-citation self-check**, **verdict assignment** (idea-stage: `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT`; plan-review: one of 7 verdicts mapped to chosen mode). **Resolution-exit** (replaces patience-exit) per [`procedures/orchestration-steps.md`](references/procedures/orchestration-steps.md) § "Resolution-exit" — 3 conditions, with N/A clauses for Light / Contract / HOLD SCOPE / Premise-skipped sessions. Operator override allowed; silent exit is not — unresolved branches log inline + persist as `## Open Branches (operator-overridden)` with `status: done_with_concerns`.
+- **Step 6** — Clarity Check + **Concreteness gate**: six core requirement dimensions (problem, audience, constraints, success criteria, scope, anti-goals) each marked `concrete` or `open`; **wrap is blocked while any is `open`** unless the operator signs off on that specific dimension — sign-off is per-dimension, never blanket; no downstream handoff while the gate fails. Then summarize decisions, **playbook-citation self-check**, **verdict assignment** (idea-stage: `VALIDATED` / `NEEDS_MORE_VALIDATION` / `PIVOT`; plan-review: one of 7 verdicts mapped to chosen mode). **Resolution-exit** (replaces patience-exit) per [`procedures/orchestration-steps.md`](references/procedures/orchestration-steps.md) § "Resolution-exit" — 3 conditions, with N/A clauses for Light / Contract / HOLD SCOPE / Premise-skipped sessions. Operator override allowed; silent exit is not — signed-off dimensions + unresolved branches log inline + persist (`## Concreteness Checklist`, `## Open Branches (operator-overridden)`) with `status: done_with_concerns`.
 - **Step 7** — Output. Default: conversation context. Save only when explicitly asked / session ending / external consumer / natural milestone + confirmation. Formats: operator-grade spec (5 mandatory sections), Light-depth compact, Contract format, Handoff plan (path-free, when a fresh agent/session is the next consumer). Full: [`procedures/output-formats.md`](references/procedures/output-formats.md).
 
 ## Artifact Contract
@@ -62,7 +62,7 @@ Per [`references/procedures/orchestration-steps.md`](references/procedures/orche
 - **Path:** `.forsvn/artifacts/meta-discover-<YYYY-MM-DD>-<slug>.md` (flat v2; working draft, only on user save).
 - **Lifecycle:** `spec` — iterated until promoted to task-breakdown or system-architecture.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=md), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode`, `plan-review-mode`, `light_spec`. Full template: [`procedures/output-formats.md`](references/procedures/output-formats.md).
-- **Required sections (Medium/Deep):** Premise Challenge · Dream State Mapping · Decided Approach · Implementation Alternatives (min 2-3) · Temporal Interrogation · Key Decisions · Edge Cases · Failure Conditions · Out of Scope · Open Questions · Open Branches (only if `done_with_concerns`) · Implementation Notes · Verdict. **Light-depth saves skip 5 sections** (Premise Challenge, Dream State Mapping, Implementation Alternatives, Temporal Interrogation, Verdict) — compact format `light_spec: true`.
+- **Required sections (Medium/Deep):** Premise Challenge · Dream State Mapping · Decided Approach · Implementation Alternatives (min 2-3) · Temporal Interrogation · Key Decisions · Edge Cases · Failure Conditions · Out of Scope · Open Questions · Concreteness Checklist (both formats — Step 6 gate state) · Open Branches (only if `done_with_concerns`) · Implementation Notes · Verdict. **Light-depth saves skip 5 sections** (Premise Challenge, Dream State Mapping, Implementation Alternatives, Temporal Interrogation, Verdict) — compact format `light_spec: true`.
 - **Consumed by:** operator (audit trail) · `breakdown-tasks` · `architect-system` · `review-work` (scope-drift detection).
 - **Side effect (idea-stage only):** spawns `agents/idea-critic.md` once at Step 2.7.
 
@@ -100,7 +100,7 @@ Full configuration table (depth, mode, plan-review-mode, output, zones, idea-cri
 ## Completion Status
 
 - **DONE** — discovery converged, decision clear (optionally saved).
-- **DONE_WITH_CONCERNS** — decision made but non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved). Also fires when operator overrides resolution-exit (Open Branches section non-empty).
+- **DONE_WITH_CONCERNS** — decision made but non-blocking open questions or explicit caveats; flagged inline (and pinned to spec frontmatter if saved). Also fires when operator overrides resolution-exit (Open Branches section non-empty) or signs off an open dimension (Concreteness Checklist shows `open — signed off`).
 - **BLOCKED** — irreconcilable conflict in inputs or scope; needs human resolution.
 - **NEEDS_CONTEXT** — user cannot answer key questions; recommend upstream skill (research-icp, research-market, diagnose).
 

@@ -15,7 +15,7 @@ metadata:
 
 **Core Question:** "Can the user complete their goal without thinking — on every surface of every platform it ships on?"
 
-> Why, methodology, principles, history: [`references/playbook.md`](references/playbook.md) [PLAYBOOK].
+> Why, methodology, principles, history: `references/playbook.md` [PLAYBOOK].
 
 ## When To Use
 
@@ -50,6 +50,7 @@ Critic (`agents/critic-agent.md`) runs the full rubric. Non-negotiable PASS:
 ## Before Starting
 
 Apply `references/_shared/before-starting-check.md` [PLAYBOOK]. `budget: standard`; `--fast` forces Single-Agent Fallback per `references/_shared/mode-resolver.md` [PROCEDURE]. **Safety gates supersede `--fast`.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 | Artifact | Source | Required? |
 |---|---|---|
@@ -60,12 +61,12 @@ Apply `references/_shared/before-starting-check.md` [PLAYBOOK]. `budget: standar
 
 ## Pre-Dispatch
 
-**Dimensions:** feature, role/persona, goal, platforms (explicit), surfaces per platform, primary surface, constraints (auth + min OS). Read order + Warm/Cold Start prompts (with platforms+surfaces gate) + write-back + brief-context contract: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) · [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md) [PROCEDURE].
+**Dimensions:** feature, role/persona, goal, platforms (explicit), surfaces per platform, primary surface, constraints (auth + min OS). Read order + Warm/Cold Start prompts (with platforms+surfaces gate) + write-back + brief-context contract: `references/procedures/pre-dispatch.md` · `references/pre-dispatch-prompts.md` [PROCEDURE].
 
 ## Artifact Contract
 
 - **Path:** `.forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<flow-name>.md` (flat v2; one file per flow; index auto-generated at ≥2 slugs). **Lifecycle:** `pipeline`.
-- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack: product`, `review_surface: html` (FIRE preview while `decision_state: pending`), `decision_state`, `flow_name`, `platforms`, plus manifest-sync `lifecycle`, `produced_by`, `provenance`. v2 schema: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
+- **Frontmatter:** `skill`, `version`, `date`, `status`, `stack: product`, `review_surface: html` (FIRE preview while `decision_state: pending`), `decision_state`, `flow_name`, `platforms`, plus manifest-sync `lifecycle`, `produced_by`, `provenance`. v2 schema: `references/_shared/artifact-contract-template.md`.
 - **Required sections + per-flow template + index.md + filename + version-increment:** [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 - **Consumed by:** `architect-system`, `breakdown-tasks`, `forsvn`, `review-work`.
 

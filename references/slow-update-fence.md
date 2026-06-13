@@ -53,7 +53,9 @@ Seed candidates (Phase 1.2 migration script will hydrate these when run):
 
 ## What does NOT belong inside the fence
 
+<!-- lint:reference-ok exemplary per-skill structure, not a literal path -->
 - Per-task brief inputs, examples, or worked walkthroughs (they belong in `references/examples/`).
+<!-- lint:reference-ok exemplary per-skill structure, not a literal path -->
 - Routing pseudocode, agent manifests, dispatch mechanics (they belong in `routing.yaml` / `references/agent-manifest.md`).
 - Token-budget commentary, refactor notes, TODOs (they belong in commit messages or `.forsvn/` snapshots).
 - Anything that might rotate — model names, dependency versions, dated heuristics. The fence is for durable lessons, not load-bearing facts that change.
@@ -74,7 +76,7 @@ Until Phase 3 lands, the slow-update workflow is **a human-owned ceremony**: a d
 
 ## Lint and enforcement
 
-`scripts/audit-skill-budget.ts` extends to detect:
+`_dev/audit-skill-budget.ts` extends to detect:
 
 1. Skills missing the fence entirely (warning during Phase 1 migration; error after).
 2. Skills with malformed fences (open without close, multiple opens, content before SLOW_UPDATE_START on the same line).
@@ -114,7 +116,7 @@ The fence sits between major sections — typically after the "Critical Gates" o
 ## Anti-patterns
 
 1. **Treating the fence as a junk drawer.** Every rule earns its place by surviving the three tests. Drift toward "let's also pin this" turns the fence into ambient noise.
-2. **Inlining instance-specific examples.** Examples belong in `references/examples/`. The fence holds the *rule*, not the illustration.
+2. **Inlining instance-specific examples.** Examples belong in `references/examples/`. <!-- lint:reference-ok exemplary per-skill structure --> The fence holds the *rule*, not the illustration.
 3. **Removing the fence "to clean up."** A refactor that says "I removed the SLOW_UPDATE markers because they looked like clutter" is the exact failure mode SkillOpt's ablation documented. Reject the PR.
 4. **Slow-updating without comparing rollouts.** The slow-update workflow earns its name by comparing same-task behavior under previous vs current skill. Editing the fence without that comparison is just a step-level edit wearing a hat.
 5. **Citing as "trust me" rules.** Pinned rules should cite the artifact, decision record, or review that justified pinning. A rule with no provenance gets re-litigated every refactor.

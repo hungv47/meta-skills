@@ -25,6 +25,8 @@ load_class: PROCEDURE
 
 **Mandatory-sections rule:** the 5 mandatory sections (Premise Challenge / Dream State Mapping / Implementation Alternatives / Temporal Interrogation / Verdict) apply at Medium/Deep depth. Light-depth saves explicitly skip them. Contracts explicitly skip Premise Challenge + Dream State Mapping (scope-locking, not idea-validating); Implementation Alternatives + Temporal Interrogation + Verdict (in `BUILD_AS_PROPOSED` / `CUT_TO_MINIMUM` shape) DO apply when a contract is generated downstream of the operator-grade spec format.
 
+**Concreteness Checklist rule:** the `## Concreteness Checklist` (Step 6 gate state — six core requirement dimensions, each `concrete` or `open — signed off`) appears in **both** spec formats. It is gate output, not a depth-gated rigor section, so it is not one of the 5 and Light-depth saves do not skip it. Any `open — signed off` row forces frontmatter `status: done_with_concerns`. A spec with a dimension that is neither `concrete` nor `open — signed off` is an invalid wrap — the Step 6 gate blocks saving it ([`orchestration-steps.md`](orchestration-steps.md) § "Concreteness gate").
+
 ---
 
 ## Operator-grade spec format (Medium/Deep depth)
@@ -125,6 +127,19 @@ Any of these = not done:
 
 - [ ] [Unresolved items]
 
+## Concreteness Checklist
+
+Step 6 gate state at wrap. Each of the six core requirement dimensions is `concrete` or `open — signed off`; only signed-off rows carry a sign-off note. Any `open — signed off` row → frontmatter `status` MUST be `done_with_concerns`.
+
+| Dimension | State | Resolution / sign-off note |
+|---|---|---|
+| Problem | concrete | [the decision or section that made it concrete] |
+| Audience | concrete | |
+| Constraints | concrete | |
+| Success criteria | concrete | |
+| Scope | concrete | |
+| Anti-goals | open — signed off | [operator's per-dimension sign-off, verbatim or paraphrased, with what would close it] |
+
 ## Open Branches (operator-overridden)
 
 Only present when the session exited via operator override on the resolution-exit condition (Step 6). Each entry is a load-bearing decision-tree branch the operator chose to skip — separate from Open Questions (general unresolved items). If this section is non-empty, frontmatter `status` MUST be `done_with_concerns`.
@@ -204,6 +219,15 @@ light_spec: true
 ## Open Questions
 - [ ] [Unresolved items]
 
+## Concreteness Checklist
+
+- Problem: concrete
+- Audience: concrete
+- Constraints: concrete
+- Success criteria: concrete
+- Scope: concrete
+- Anti-goals: open — signed off ([operator's per-dimension sign-off])
+
 ## Review Gate
 
 - [ ] Approve
@@ -213,7 +237,7 @@ light_spec: true
 Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 ```
 
-Don't apply Premise Challenge or Dream State Mapping to a "add a dark mode toggle" scope — the rigor structure is for Medium/Deep work where the user is making strategic calls.
+Don't apply Premise Challenge or Dream State Mapping to a "add a dark mode toggle" scope — the rigor structure is for Medium/Deep work where the user is making strategic calls. The Concreteness Checklist stays even here: it is the Step 6 gate state, and Light depth runs the gate too — any `open — signed off` line forces `status: done_with_concerns`.
 
 ---
 
@@ -302,7 +326,7 @@ NOT IN SCOPE:
 - **Gotchas:** [non-obvious constraints]
 ```
 
-If the session exited with operator-overridden branches (Step 6), carry them verbatim into **Open branches / unresolved** — a handoff that hides unresolved branches makes the fresh agent re-discover them.
+If the session exited with operator-overridden branches or signed-off-open dimensions (Step 6), carry them verbatim into **Open branches / unresolved** — a handoff that hides unresolved branches makes the fresh agent re-discover them.
 
 ---
 

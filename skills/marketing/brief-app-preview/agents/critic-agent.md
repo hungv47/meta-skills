@@ -81,7 +81,7 @@ This is the source-of-truth list. Other refs cite this section.
 
 ### Gate 2 — Component-level focal beats
 
-**Pass criteria:** Every beat with `crop_type = full-screen` carries a one-line justification in `crop-map.md` matching the canonical exception clause ("the state change IS the layout settling," "the smallest meaningful unit is the full layout"). Beats that lack the justification, OR beats that use `full-screen` as a fallback because a region wasn't selected, FAIL.
+**Pass criteria:** Every beat with `crop_type = full-screen` carries a one-line justification in `crop-map.md` explaining why the state change requires the full layout (e.g., "the state change IS the layout settling," "the smallest meaningful unit is the full layout"). Beats that lack the justification, OR beats that use `full-screen` as a fallback because a region wasn't selected, FAIL.
 
 **Common failure shapes:**
 

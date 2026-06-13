@@ -89,7 +89,7 @@ If a section can't trace to a claim component, cut it or merge it.
 
 **Rules:**
 
-- Section count: 5–9 for primary tier; 4–7 for secondary. Going beyond bloats the brief and the page.
+- Section count heuristic: 5–9 for primary tier; 4–7 for secondary — the evidenced default, not a hard rule. Going beyond usually bloats the brief and the page; a justified departure is allowed with one line of reasoning in the Change Log.
 - Every section traces to a claim component or an evidence/audience signal. If it doesn't, it's filler.
 - Mobile fold rule is non-negotiable: primary CTA visible without scroll on 390×844.
 - Sacred elements shape architecture (e.g., "no glass surface" rules out glass-overlay heroes).

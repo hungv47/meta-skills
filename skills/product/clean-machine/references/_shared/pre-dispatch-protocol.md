@@ -42,6 +42,46 @@ If the user says proceed (or stays silent past one beat), dispatch.
 
 ---
 
+## The Session Execution-Profile Ask (rider)
+
+When no fresh `.forsvn/routing/execution-profile.json` exists at first dispatch, the
+single-vs-multi (+ model, when undetected) ask from `execution-policy.md` (same
+references/ dir; `_shared/` mirror in skills) **rides the warm-start summary** — appended
+as one extra line with a pre-selected default. It does **not** consume a cold-start
+question slot: it is session plumbing, not a context dimension, so the 3-5 cap and the
+question registry below are unaffected. On a cold start, append it after the numbered
+list the same way. Skip it entirely on `fast`-tier skills where the choice cannot
+change output (they run single-agent regardless); the answer goes to the profile file,
+never to `.forsvn/experience/`. Once the profile exists, no skill mentions it again.
+
+---
+
+## Warm Handoff (dispatched-by-forsvn)
+
+When `.forsvn/routing/last-session.md` shows `dispatched-by: forsvn` with `status:
+dispatched` for the **current session**, the leaf was invoked directly by the `/forsvn`
+dispatcher — which already grepped `.forsvn/experience/`, loaded product context,
+confirmed the initiative slug, and resolved the session execution profile. Mirroring the
+`debate-agents` sub-routine convention (caller owns framing; skip steps 1+2):
+
+- **Skip steps 1–2 of the Read-Before-Ask loop** (dimension resolution + missing-count).
+  Do not repeat the dispatcher's interrogation — no cold start, no re-grep of
+  experience/ for what the dispatcher already surfaced.
+- **Dispatcher context travels via the routing record and the profile**: read intent,
+  initiative slug, and surfaced experience from `last-session.md`; read execution mode
+  from `.forsvn/routing/execution-profile.json`. Never re-ask either.
+- **Skill-specific gaps only**: dimensions the dispatcher could not have resolved
+  (absent from the record, experience/, and pipeline artifacts) may be probed —
+  warm-start style, 1–2 inline max.
+- **Write-back is unchanged**: any newly answered question still persists to
+  `.forsvn/experience/`.
+
+A stale record (previous session) or `dispatched-by` absent → normal pre-dispatch; the
+warm handoff is an optimization for the dispatched path, never a loophole around the
+cold-start contract.
+
+---
+
 ## The Substrate: `.forsvn/experience/`
 
 The growing source of truth. Skills **read before asking**, **write after the user answers**.
@@ -172,18 +212,18 @@ The user keeps agency. Most users will answer the 3-5 questions and move on; som
 
 ## Per-Skill Question Registry
 
-Each entry: skill → cold-start question list with mapped domain. Skills with hard gates (e.g., funnel-planner requires prioritize.md) skip the registry and recommend the upstream first. Domain mappings are **suggestions**, not contracts — if the user has reorganized into different domains, write to the closest existing one.
+Each entry: skill → cold-start question list with mapped domain. Skills with hard gates (e.g., plan-funnel requires prioritize output) skip the registry and recommend the upstream first. Domain mappings are **suggestions**, not contracts — if the user has reorganized into different domains, write to the closest existing one.
 
 ### research-skills
 
-**icp-research**
+**research-icp**
 1. Product in one sentence — what it does, who pays for it. → `product`
 2. Primary buyer — role + company size + B2B/B2C. → `audience`
 3. Top 1-2 pain points the buyer articulates (verbatim if possible). → `audience`
 4. Geo focus (US/EU/global/specific). → `audience`
 5. Time-constrained or comprehensive? (Quick ICP / Full ICP) → routing only, not stored
 
-**market-research**
+**research-market**
 1. Category/niche in one phrase. → `product`
 2. Geo + time horizon (current state / forward-looking). → `business`
 3. Why now? (decision this needs to inform) → `goals`
@@ -198,18 +238,18 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 **prioritize** — *no cold start. `id:diagnose` is recommended, not hard (diagnose's output; resolve via `find-artifacts --resolve diagnose`); if absent, recommend `diagnose` first or proceed from a clearly-stated problem.*
 
-**funnel-planner** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
+**plan-funnel** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
 
 ### marketing-skills
 
-**brand-system**
+**create-brand**
 1. Product in one sentence. → `product`
 2. Audience (1-line). → `audience`
 3. Competitive landscape — 3-5 names, what they're known for. → `business`
 4. Voice intuition — 3 adjectives or 1 reference brand. → `brand`
 5. Aesthetic intuition — 3 visual references (URLs, brands, moodboard hints). → `brand`
 
-**copywriting**
+**write-copy**
 1. Surface — landing page / email / social post / headline / CTA / etc. → routing only
 2. Audience (or "use research-icp.md"). → `audience` if novel
 3. The one shift — what should the reader believe after reading? → `goals` (campaign-specific)
@@ -217,7 +257,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 5. Unique Mechanism — proprietary "how" that makes the offer different and better. → `product`
 6. Traffic source (if landing page or email). → routing only
 
-**ad-copy**
+**write-ad**
 1. Audience temperature — retargeting / cold traffic. → routing only
 2. Offer — destination + value prop. → `product`
 3. Creative format — dedicated / repurposed-UGC. → routing only
@@ -228,7 +268,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 8. Competitor pattern — hooks, tone, proof type, offer promise, or visual convention. → `business` if reusable
 9. LP description — 1-2 sentences on destination promise and action. → routing only
 
-**campaign-plan**
+**plan-campaign**
 1. Campaign goal — acquire leads / drive trial / launch / revenue / awareness. → `goals`
 2. Audience (or "use research-icp.md"). → `audience` if novel
 3. Growth motion — PLG / SLG / Hybrid. → `business`
@@ -242,31 +282,31 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 4. Detector mode — off / proxy-only / external if configured. → routing only
 5. Protected tokens — names, numbers, claims, URLs, citations, disclaimers that must survive unchanged. → routing only
 
-**vn-tone**
+**polish-vn**
 1. Target register — báo chí / semi-casual / bro / pop-marketing. → routing
 2. Dialect — north / south / neutral. → routing
 3. Subvariant (only if bro selected) — bro-otofun / bro-voz. → routing
 
-**lp-brief**
+**brief-landing-page**
 1. Page route + tier — e.g., "/pricing, Tier 1 (primary)". → routing
 2. Hypothesis — what's the redesign trying to prove? → `goals`
 3. Existing audit available? — yes (Route B) / no (Route A). → routing
 4. Goal — leads / signups / purchases / demos. → `goals`
 
-**seo**
+**optimize-seo**
 1. Mode — audit / ai / programmatic / competitor / aso. → routing
 2. Site or property — domain or app store listing. → input
 3. Audience (or "use research-icp.md"). → `audience` if novel
 4. Geographic + language scope. → `audience`
 
-**cold-outreach**
+**write-outreach**
 1. Channel — email / LinkedIn / Twitter DM / other. → routing
 2. Target persona — role + company profile. → `audience`
 3. Trigger or signal — why is now the right moment for this prospect? → routing
 4. Offer — what specifically are you proposing? → `goals`
 5. Proof — one specific client + number (revenue, %, time saved). → `product`
 
-**design-brief**
+**brief-graphic**
 1. Asset type — OG image / IG carousel / banner / hero / OOH / etc. → routing
 2. Downstream route — image-gen / vector-tool / designer-handoff / template-pack. → routing
 3. Brand reference — `brand/DESIGN.md` OR 3 adjectives. → `brand` if novel
@@ -275,30 +315,30 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 ### product-skills
 
-**code-cleanup**
+**clean-code**
 1. Codebase path / repo. → input
 2. Cleanup intent — dead code / unused deps / asset / refactor. → routing
 3. Test suite available? → routing
 4. Conventions to preserve — naming, file structure, patterns to NOT touch. → `technical` (new domain ok)
 
-**docs-writing**
+**write-docs**
 1. Audience — end-user / developer / operator / mixed. → routing
 2. Doc type — readme / user-guide / api-reference / config-guide / tutorial / ship-log. → routing
 3. Codebase path. → input
 4. Update existing or write fresh? → routing
 
-**machine-cleanup**
+**clean-machine**
 1. Scope — dotfolders / caches / packages / all. → routing
 2. Aggressiveness — conservative (skip ambiguous) / moderate / aggressive (suggest more). → routing
 3. Excluded paths — anything off-limits to scan. → routing
 
-**system-architecture**
+**architect-system**
 1. Spec/PRD reference — file path or paste. → input
 2. Scale targets — users / RPS / data volume. → `technical`
 3. Constraints — budget tier / team skills / latency / compliance. → `technical`
 4. Deployment context — greenfield / brownfield / migration. → `technical`
 
-**user-flow**
+**map-user-flow**
 1. Feature name. → input
 2. Role/persona using it. → `audience`
 3. Goal — what is the user trying to accomplish? → `goals`
@@ -307,7 +347,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 ### meta-skills
 
-**agents-panel**
+**debate-agents**
 1. Problem to debate/poll — one paragraph. → input
 2. Mode — debate / poll. → routing
 3. Number of agents (default 3 debate / 10 poll). → routing
@@ -315,12 +355,12 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 **discover** — *N/A. discover IS the multi-round interview. The Pre-Dispatch protocol applies to skills that aren't discover.*
 
-**fresh-eyes**
+**review-work**
 1. Diff or branch reference. → input
 2. Risk class — security / performance / correctness / all. → routing
 3. Prior reviewer feedback (if any). → input
 
-**task-breakdown**
+**breakdown-tasks**
 1. Source — architecture doc path / spec path / conversation context. → routing
 2. Scope mode — mvp / full / spike. → routing
 3. Autonomy bias — mostly AFK / mixed AFK+HITL / mostly HITL. → routing

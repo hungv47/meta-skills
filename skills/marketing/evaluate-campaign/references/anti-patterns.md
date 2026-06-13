@@ -81,7 +81,7 @@ load_class: ANTI-PATTERN
 ### Upstream context skipped — no loop scaffolded
 **Pattern:** Operator runs `/evaluate-campaign` without a loop ever created.
 **Why it fails:** Eval cycles assume a `program.md` + `context.md` defining the primary metric + channel set + guardrails. Without those, scoring is heuristic.
-**Fix:** Critical Gate 1 blocks. Skill returns NEEDS_CONTEXT and recommends `/run-eval-loop` to scaffold first.
+**Fix:** Critical Gate 1 blocks. Skill returns NEEDS_CONTEXT and recommends `/run-pipeline` to scaffold first.
 
 ### Polish-chain misroute
 **Pattern:** Eval artifact is sent to humanmaxxing or polish-vn after writing.

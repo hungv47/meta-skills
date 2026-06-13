@@ -125,7 +125,7 @@ Below 5, the persona is **hypothesis**, not finding. It can still be drafted, bu
 
 Critic counts independent sources per persona (synthesis-agent surfaces the count in a hidden footer the critic reads but ships strips before final artifact). If <5 for any persona slot, critic returns NEEDS_CONTEXT with the source count and instructs voc-collector-agent to gather more.
 
-Exception: if the operator explicitly invokes `--hypothesis-mode` for early-stage research where 5 sources don't yet exist, critic accepts the artifact with all personas labeled `Hypothesis Mode` and `Confidence: L`. The override is logged via `scripts/eval/log-critic-override.ts` with dimension `≥5 rule` and reason `early-stage hypothesis research`.
+Exception: if the operator explicitly invokes `--hypothesis-mode` for early-stage research where 5 sources don't yet exist, critic accepts the artifact with all personas labeled `Hypothesis Mode` and `Confidence: L`. The override is logged via `scripts/log-critic-override.ts` with dimension `≥5 rule` and reason `early-stage hypothesis research`.
 
 ---
 

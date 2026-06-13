@@ -23,7 +23,7 @@ Return:
 - confidence: high | medium | low | blocked
 - primary_platform: [platform]
 - decision_sentence: [one sentence, no tabs, includes the primary platform]
-- next_route: write-social | publish-social | produce-asset | run-eval-loop | none
+- next_route: write-social | publish-social | produce-asset | run-pipeline | none
 - next_action_summary: [one sentence — what the next route should produce, if any]
 
 ## Keep / Discard / Watch
@@ -61,7 +61,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 - Route to `write-social` for a **different platform** when the cycle reveals the content was mis-framed for the primary platform (e.g., "this reads as an X post — write a true LinkedIn variant for next cycle").
 - Route to `produce-asset` when the diagnosis points at the visual (a carousel that underperformed because of weak slide design, not weak copy).
 - Route to `publish-social` when the issue is distribution — posting time, platform mix, or scheduler handoff — not the content itself.
-- Route to `run-eval-loop` when the metric contract, baseline, guardrails, or platform scope need redefinition.
+- Route to `run-pipeline` when the metric contract, baseline, guardrails, or platform scope need redefinition.
 - Route to `none` when the cycle should continue unchanged until the next measurement window (typically `watch` status with insufficient sample confidence).
 
 ## Cross-Platform Discipline

@@ -70,6 +70,6 @@ Every visual brief includes a **Reference realized surfaces** step that does one
 
 - The brief's **reference-direction** section is built from the realized surface, not
   generic adjectives.
-- The closing **eval squint-test** (`references/_shared/execution-fork.md` →
+- The closing **eval squint-test** (`execution-fork.md` (sibling reference) →
   `evaluate-asset`) scores the rendered asset **against the same realized surface**, not
   only the token list. Same anchor in, same anchor out — that's the closed loop.

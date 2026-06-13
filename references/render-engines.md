@@ -52,6 +52,81 @@ fallback. The pre-flight probes these as a batch; never assume one is live.
 
 ---
 
+## Video engines (the `video` category — what `produce-video` routes to)
+
+Same contract as the image engines: each names what it needs, the cheap liveness probe, and
+the named fallback. `produce-video` is tool-agnostic — it emits the bundle (manifest +
+per-shot prompts + scaffolds + a post-production stage) and **routes** a script to whichever
+of these is connected via the `execution-fork.md` Assisted/Direct path. It never holds a key.
+Lane-selection logic lives in the `produce-video` skill (its `production-lanes` reference).
+
+**The video floor is the code-render lane.** Remotion / HyperFrames need only Node — no
+cloud key, deterministic, brand-tokenizable. When even that isn't wanted, the bundle
+degrades to **Brief-only** (the always-runnable handoff). No dead ends.
+
+### House lanes — deterministic, brand-tokenizable, no cloud key
+
+#### Remotion (`remotion` skill / `npx remotion`) — code-render
+- **Needs:** Node + the emitted `remotion/scaffold.tsx`; ffmpeg for trims. No API key.
+- **Verify:** `npx remotion studio` boots / `npx remotion still <id> --frame=30` renders one frame; `command -v ffmpeg`.
+- **Down →** Node/ffmpeg missing → install, or fall back to HyperFrames / Brief-only.
+
+#### HyperFrames (`hyperframes` skill / `npx hyperframes`) — code-render
+- **Needs:** Node 22+; a `DESIGN.md` (HyperFrames **hard-gates** generic color — strongest brand floor of the lane); headless Chrome (bundled). No API key.
+- **Verify:** `npx hyperframes lint && npx hyperframes validate` pass.
+- **Down →** no `DESIGN.md` → supply brand tokens, or fall back to Remotion / Brief-only.
+
+#### text-to-lottie (`text-to-lottie` skill) — code-render (vector, not film)
+- **Needs:** Node + the degit player project. **Outputs Lottie JSON, not mp4** — pair with a Remotion `<Lottie>` layer or an exporter for film output. No API key.
+- **Verify:** `node -e "JSON.parse(require('fs').readFileSync('public/lottie.json'))"`; player canvas renders non-blank.
+- **Down →** for a rendered clip use Remotion/HyperFrames instead; Lottie is for a looping UI asset.
+
+#### Manim (`manim-video` skill / `manim`) — explainer **(deferred lane)**
+- **Needs:** Python + `pip install manim` + a LaTeX install (~4GB, for `MathTex`) + ffmpeg. Heavy; install-gated. No API key.
+- **Verify:** `command -v manim latex ffmpeg`.
+- **Down →** not installed → Brief-only. Only stand this up when an actual math/diagram/algorithm explainer brief appears (see the `produce-video` DEFER disposition) — do not pre-install for a speculative need.
+
+### Operator-connected lanes — stochastic, own key/account (OS-keychain only, never brokered)
+
+These are model-driven: a STYLE/prompt steers but never locks pixels to brand tokens.
+Treat the output as a render to **show → score against the brief** (the return-leg), never
+as deterministic. The app never stores or brokers these keys (architecture §8/§9).
+
+#### Vercel AI-CLI (`ai-cli` skill / `ai video`) — generative-AI
+- **Needs:** `AI_GATEWAY_API_KEY` or a provider key; the `ai` binary. Gateway to many text/image-to-video models (a clean path to Higgsfield-class backends).
+- **Verify:** `command -v ai`; `ai models --type video`; the gateway/provider key is present.
+- **Down →** key unset → set it, or fall back to a house code-render lane.
+
+#### Higgsfield (operator account — MCP or REST) — generative-AI
+- **Needs:** a Higgsfield account: its MCP server URL (OAuth) or a Bearer token; or reach its models through AI-CLI. Text/image-to-video + consistent-character "Soul"; ~≤15s clips; paid credits.
+- **Verify:** the connected MCP responds / the token resolves in the keychain.
+- **Down →** not connected → AI-CLI or a house code-render lane.
+
+#### Invideo (`mcp__claude_ai_Invideo__generate-video-from-script`) — generative-AI
+- **Needs:** the Invideo MCP connected + authed. Script-to-video SaaS — hands-off, non-deterministic, no token control.
+- **Verify:** the MCP tool lists + responds.
+- **Down →** not connected → AI-CLI / code-render.
+
+#### HeyGen (`heygen-avatar` + `heygen-video` skills / `heygen` CLI) — avatar / talking-head
+- **Needs:** a HeyGen account: app OAuth or `HEYGEN_API_KEY` (`heygen auth login`); consumes plan credits. Presenter is model-generated — STYLE blocks steer but don't lock identity; treats the script as a concept, not verbatim.
+- **Verify:** `heygen auth status` (exit 0) / the connector is present.
+- **Down →** not connected → shoot a real live-action take and run it through the post lane, or Brief-only.
+
+### Post lane — assemble · color-grade · subtitle (deterministic editor; one cloud key)
+
+#### video-use (`video-use` skill) — post-edit
+- **Needs:** `ffmpeg` + `ffprobe`; `ELEVENLABS_API_KEY` for word-level transcription (Scribe); Python deps. Cuts on word boundaries, ASC-CDL/LUT color grade, burns subtitles, **self-verifies the rendered cut**. This is the engine the bundle's `post.md` stage targets.
+- **Verify:** `command -v ffmpeg ffprobe`; `ELEVENLABS_API_KEY` present.
+- **Down →** no key → assemble + caption with plain `ffmpeg` (no transcript-driven cut), or hand `post.md` to DaVinci / Premiere / Final Cut; the stage names both paths.
+
+> **Determinism summary** — house lanes (Remotion · HyperFrames · text-to-lottie · Manim)
+> render your exact tokens and are the brand-safe default; operator-connected lanes
+> (AI-CLI · Higgsfield · Invideo · HeyGen) are stochastic and must clear the return-leg
+> before accept; `video-use` is a deterministic editor with one keyed transcription call.
+> When nothing in the category is live, the run still completes as the Brief-only bundle.
+
+---
+
 ## Render → show → iterate (the brand-critical default)
 
 An agent cannot fully self-grade taste. For **brand-critical** visuals (hero, OG card,

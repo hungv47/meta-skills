@@ -57,7 +57,7 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
 4a. Format-checker FORMAT_FAIL (second pass, hard caps still violated) → escalate to user; do not consume a critic cycle.
 4b. Format-checker REVISION_REQUIRED on policy/substantiation → re-dispatch composer with the named violation; do not consume a critic cycle.
 5. TERMINAL: invoke `humanmaxxing` per variant with `content-type: "short-outbound"` (Light strip on AI telltales only, Full sender voice, 0-10% compression — ad copy is already tight; further compression kills specificity)
-6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved variant.
+6. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only per variant. Drops ≥2 OR any named entity/number absent post-humanmaxxing → flag the delta + the removed specific for operator review (critic-approved variant preserved alongside; operator picks).
 7. Write artifacts to `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (+ .rationale.md + .critic-score.md)
 8. Deliver hero + 2 variants + rationale inline; show scorecard only if user asks or any dim scored 6-7 OR if creative_format=repurposed-ugc (variant-level ceiling warning prominent in artifact)
 ```
@@ -136,7 +136,7 @@ After critic PASS, invoke `humanmaxxing` on each variant (hero / A / B) independ
    - Audience-temp (humanmaxxing voice-extraction reads brand voice differently for warm vs cold register)
    - `protected_tokens`: every named entity + number + URL in the critic-approved variant (humanmaxxing must not remove or paraphrase)
 3. Receive humanmaxxed variant
-4. **Regression check (automatic, not judgment):** re-run critic's **Specificity dimension only** on the humanmaxxed variant. Revert to critic-approved variant if any of:
+4. **Regression check (automatic detection, operator decision):** re-run critic's **Specificity dimension only** on the humanmaxxed variant. Flag the delta + the removed specific for operator review (critic-approved variant preserved alongside; operator picks) if any of:
    - Specificity drops ≥ 2 points
    - Any named entity pre-humanmaxxing absent post-humanmaxxing
    - Any concrete number pre-humanmaxxing absent post-humanmaxxing

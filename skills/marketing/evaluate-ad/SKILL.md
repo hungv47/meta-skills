@@ -1,10 +1,10 @@
 ---
 name: evaluate-ad
-description: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue, spend) inside an existing eval loop — verdict + diagnosis + creative-fatigue signals. One cycle per audience-temp. Meta-only at v1. Not for loop setup (use run-eval-loop), writing new creative (use write-ad), channel-mix retrospectives (use plan-campaign), or campaign-level scoring (use evaluate-campaign)."
+description: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue, spend) inside an existing eval loop — verdict + diagnosis + creative-fatigue signals. One cycle per audience-temp. Meta-only at v1. Not for loop setup (use run-pipeline), writing new creative (use write-ad), channel-mix retrospectives (use plan-campaign), or campaign-level scoring (use evaluate-campaign)."
 argument-hint: "[loop slug or path] [audience-temp: cold-traffic|retargeting] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Measurement evidence required + primary metric decides the row.** Need ≥1 metric source, window, current value for the loop's primary metric (CTR / CPA / ROAS / conversion rate — operator-pick via `program.md`). Secondary metrics (frequency, fatigue indicators, qualitative) explain diagnosis; don't override unless `program.md` defines a guardrail failure (e.g., frequency > 4).
 3. **One audience-temp per cycle.** Cold-traffic and retargeting evaluated in separate cycles. Mirrors write-ad's one-artifact-per-audience-temp. Mixed-audience metrics → split before ingest or return `BLOCKED`.
 4. **No fabricated analytics.** Unknown stays unknown. Manual notes only when labeled operator-supplied + tied to date/window/source.
@@ -30,7 +30,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch Meta-ad evidence snapshots for a loop cycle, scoped to a single audience-temp. `/write-ad` owns next-cycle creative.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch Meta-ad evidence snapshots for a loop cycle, scoped to a single audience-temp. `/write-ad` owns next-cycle creative.
 
 ## Inputs
 
@@ -48,7 +48,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; no measurement evidence → `BLOCKED`; mixed-audience metrics with no clean split → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · audience-temp · source ad-copy path · window · primary metric value/baseline · spend window). Full read-order + warm/cold templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; no measurement evidence → `BLOCKED`; mixed-audience metrics with no clean split → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · audience-temp · source ad-copy path · window · primary metric value/baseline · spend window). Full read-order + warm/cold templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -73,7 +74,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-ad …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-ad …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -96,4 +97,4 @@ Operator ships despite critic FAIL — **log BEFORE writing artifact or ledger r
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
-- **Siblings:** `write-ad` (downstream — this skill routes recommendations TO it but does not produce briefs), `run-eval-loop` (loop scaffolding + ledger schema + durable learnings), `evaluate-campaign` (multi-channel aggregate sibling)
+- **Siblings:** `write-ad` (downstream — this skill routes recommendations TO it but does not produce briefs), `run-pipeline` (loop scaffolding + ledger schema + durable learnings), `evaluate-campaign` (multi-channel aggregate sibling)

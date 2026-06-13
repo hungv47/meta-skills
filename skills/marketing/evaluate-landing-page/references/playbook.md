@@ -22,7 +22,7 @@ Six failure modes it prevents:
 
 1. **Generic heuristic audit dressed up as post-launch CRO.** Critical Gate 2 requires measurement evidence — at minimum one metric source, measurement window, and current value for the loop's primary metric. Without that, lp-eval is BLOCKED, not transformed into a brief teardown. Critic Hard Fail #4 catches "generic heuristic audit presented as evidence."
 2. **Fabricated analytics.** Critical Gate 4 forbids fabricated numbers. Critic Hard Fail #5 catches "any fabricated number, logo, testimonial, user quote, or source." Unknown values stay unknown; manual notes are allowed only when labeled as operator-supplied + tied to a date/window/source.
-3. **Scoring without a loop.** Critical Gate 1 requires an existing `.forsvn/loops/[slug]/program.md` + `context.md`. If absent → NEEDS_CONTEXT, recommend `/run-eval-loop`. lp-eval does NOT scaffold loops. Critic Hard Fail #1 enforces.
+3. **Scoring without a loop.** Critical Gate 1 requires an existing `.forsvn/loops/[slug]/program.md` + `context.md`. If absent → NEEDS_CONTEXT, recommend `/run-pipeline`. lp-eval does NOT scaffold loops. Critic Hard Fail #1 enforces.
 4. **Confidence inflation.** Critical Gate 5 requires attribution confidence to be explicit (`high | medium | low | blocked`) with sample size or traffic volume, baseline comparability, and confounders. Critic dimension "Attribution Honesty" scores 0-10 on overclaiming.
 5. **Scope drift — evaluation becomes redesign.** Critical Gate 6 prevents lp-eval from redesigning. Recommendations route next work; actual page brief/revision goes to `brief-landing-page`, execution artifacts to appropriate content/design/build workflow. Critic dimension "Boundary Control" enforces.
 6. **Promoting low-confidence learnings to durable ledger.** Critic Hard Fail #7 catches "learning promoted from low-confidence or blocked evidence." `learnings.md` updates only for high-confidence keep/discard lessons reusable beyond this exact page state.
@@ -67,7 +67,7 @@ Evaluation does NOT redesign. lp-eval recommends next changes and routes work; a
 
 ## When NOT to use this skill
 
-- **No existing eval-loop workspace.** Use `/run-eval-loop` first to scaffold `program.md` + `context.md` + `results.tsv` + strategy/execution/evals subdirs.
+- **No existing eval-loop workspace.** Use `/run-pipeline` first to scaffold `program.md` + `context.md` + `results.tsv` + strategy/execution/evals subdirs.
 - **Need the next page brief or redesign.** Use `brief-landing-page` — that's construction-time architecture, not post-launch scoring. lp-eval routes recommendations TO lp-brief but does not produce briefs.
 - **The issue is channel strategy, not landing-page evidence.** Use `plan-campaign` — channel mix lives there.
 - **No measurement evidence at all.** lp-eval returns BLOCKED. Either gather evidence first or use a different skill if a heuristic-only audit is genuinely what's needed (none of our skills do pure heuristic LP audits — that's intentional).
@@ -89,4 +89,4 @@ Evaluation does NOT redesign. lp-eval recommends next changes and routes work; a
 - Shared: `references/_shared/{before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric}.md`
 - Agents: 4 sub-agents in `agents/` — see Agent Manifest in SKILL.md. `critic-agent.md` holds the canonical 6-dimension Pass/Fail Rubric + 4-tier Verdict thresholds + 7 Hard Fails + Self-Check.
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions this skill inherits
-- Sibling coordination: `brief-landing-page` (construction-time architecture; this skill routes recommendations TO lp-brief but does not produce briefs); `run-eval-loop` (owns loop scaffolding + `program.md` + `context.md` + `results.tsv` schema + durable learning ledger)
+- Sibling coordination: `brief-landing-page` (construction-time architecture; this skill routes recommendations TO lp-brief but does not produce briefs); `run-pipeline` (owns loop scaffolding + `program.md` + `context.md` + `results.tsv` schema + durable learning ledger)

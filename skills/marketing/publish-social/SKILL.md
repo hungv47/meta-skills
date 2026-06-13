@@ -4,7 +4,7 @@ description: "Turn write-social copy into a publishing bundle — per-platform d
 argument-hint: "[write-social slug or path]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.40-1.20"
 ---
@@ -17,7 +17,7 @@ Converts a write-social artifact into a per-platform draft bundle + scheduler-im
 
 ## Critical Gates — load first
 
-Non-negotiable. Full: [`references/procedures/critical-gates.md`](references/procedures/critical-gates.md).
+Non-negotiable. Full: `references/procedures/critical-gates.md`.
 
 1. **Auto-detect never publishes** — `export`/`draft` only; live needs `--mode=publish`.
 2. **Publish opt-in and gated** — critic PASS + two-stage confirmation; `--dry-run` posts nothing.
@@ -25,7 +25,7 @@ Non-negotiable. Full: [`references/procedures/critical-gates.md`](references/pro
 4. **Char-cap** — X 280 · Threads 500 · Bluesky 300 · LinkedIn 3000 · IG 2200 · FB 63206 · YouTube 5000 · TikTok 2200 · Reddit 300+40000. One over = FAIL.
 5. **Scheduler-format validation** — Typefully JSON + Buffer/Hootsuite/generic CSVs parse cleanly (columns, UTF-8, ISO-8601).
 6. **Provenance** — `input_artifacts` = write-social + media manifests + `brand/BRAND.md`; `output_eval: null` until `evaluate-content`.
-7. **Browser-automation confirm gate (D17)** — preview + single-confirm; declined/timeout → export. [`references/confirmation-gate.md`](references/confirmation-gate.md).
+7. **Browser-automation confirm gate (D17)** — preview + single-confirm; declined/timeout → export. `references/confirmation-gate.md`.
 8. **Two-stage gate for `--mode=publish` (D18)** — dims 1-7 PASS, Stage 1 body review + Stage 2 typed `PUBLISH`. Abort → export. [`references/publish-confirmation-gate.md`](references/publish-confirmation-gate.md).
 
 ## Inputs
@@ -42,7 +42,7 @@ Missing write-social → `NEEDS_CONTEXT` (`/write-social`). Missing `brand/BRAND
 
 ## Output
 
-Bundle `.forsvn/artifacts/marketing/published-social/[slug]/`: `manifest.md`, `platforms/[platform].md` (per target), `scheduler-imports/{typefully.json,buffer.csv,hootsuite.csv,generic.csv}`, `README.md`. Schema: [`references/format-conventions.md`](references/format-conventions.md).
+Bundle `.forsvn/artifacts/marketing/published-social/[slug]/`: `manifest.md`, `platforms/[platform].md` (per target), `scheduler-imports/{typefully.json,buffer.csv,hootsuite.csv,generic.csv}`, `README.md`. Schema: `references/format-conventions.md`.
 
 ## Quality Gate
 
@@ -91,3 +91,4 @@ Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish`
 ## Execution
 
 Offer the registry-gated fork (category `publish`) — **Brief-only**: follow the manifest's per-route instruction (export · Typefully draft · automation draft · publish); **Assisted/Direct** need a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.

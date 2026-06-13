@@ -1,6 +1,6 @@
 ---
 name: evaluate-seo
-description: "Score an SEO / AEO cycle from real ranking + visibility data inside an existing eval loop — one keyword cluster + surface (organic SERP or AI answers) per cycle, verdict + visibility-delta diagnosis with a lag-and-volatility gate that refuses short-window noise. Not for running the audit/fixes (use optimize-seo), tracking AI citations (use monitor-aeo), organic-post performance (use evaluate-content), or scaffolding the loop (use run-eval-loop)."
+description: "Score an SEO / AEO cycle from real ranking + visibility data inside an existing eval loop — one keyword cluster + surface (organic SERP or AI answers) per cycle, verdict + visibility-delta diagnosis with a lag-and-volatility gate that refuses short-window noise. Not for running the audit/fixes (use optimize-seo), tracking AI citations (use monitor-aeo), organic-post performance (use evaluate-content), or scaffolding the loop (use run-pipeline)."
 argument-hint: "[loop slug or path] [keyword cluster + surface] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Measurement evidence required.** Ranking / clicks / citation data with a named source (Google Search Console · Ahrefs · Semrush · AEO monitor / `monitor-aeo` output). Absent → `BLOCKED`. This skill does not run as a heuristic audit (that is `optimize-seo`).
 3. **Source SEO/AEO artifact required.** The `optimize-seo` or `monitor-aeo` artifact whose change is being scored (`.forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md` or `.forsvn/artifacts/marketing/monitor-aeo/[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
 4. **One keyword cluster + surface per cycle.** One target keyword/cluster + one surface (`organic-serp` or `ai-answers`). Cross-cluster or cross-surface blending is contamination → secondary clusters/surfaces are context only.
@@ -32,7 +32,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-change visibility snapshots scored against one keyword cluster + surface over a lag-respecting window. `/optimize-seo` owns the audit + fixes. `/monitor-aeo` owns AI-answer tracking. `/evaluate-content` + `/evaluate-ad` own their lanes.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-change visibility snapshots scored against one keyword cluster + surface over a lag-respecting window. `/optimize-seo` owns the audit + fixes. `/monitor-aeo` owns AI-answer tracking. `/evaluate-content` + `/evaluate-ad` own their lanes.
 
 ## Inputs
 
@@ -50,7 +50,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; no measurement evidence OR missing keyword-cluster+surface tag → `BLOCKED`; window below the lag floor with intent to claim `keep` → warn (Critic Hard Fail #12 will FAIL it); custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · keyword cluster + surface · source optimize-seo/monitor-aeo artifact path · window vs lag floor · primary metric value/baseline · confounder log incl. core-update dates). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; no measurement evidence OR missing keyword-cluster+surface tag → `BLOCKED`; window below the lag floor with intent to claim `keep` → warn (Critic Hard Fail #12 will FAIL it); custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · keyword cluster + surface · source optimize-seo/monitor-aeo artifact path · window vs lag floor · primary metric value/baseline · confounder log incl. core-update dates). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -75,7 +76,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-seo …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-seo …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -98,4 +99,4 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `references/_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
-- **Siblings:** `optimize-seo` + `monitor-aeo` (upstream/downstream), `run-eval-loop` (loop scaffolding), `evaluate-{content, ad, asset, campaign}` (sibling lanes)
+- **Siblings:** `optimize-seo` + `monitor-aeo` (upstream/downstream), `run-pipeline` (loop scaffolding), `evaluate-{content, ad, asset, campaign}` (sibling lanes)

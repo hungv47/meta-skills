@@ -21,7 +21,7 @@ Canonical orchestration for produce-asset. Single route (export-mode).
 
 4. Critic FAIL → re-dispatch prompt-author-agent for the failing slot(s) with feedback
    - Max 2 cycles
-   - Critic PASS twice with operator override → log via scripts/eval/log-critic-override.ts
+   - Critic PASS twice with operator override → log via scripts/log-critic-override.ts
 
 5. Critic PASS → write manifest.md + prompts/[slot-id].md files
 

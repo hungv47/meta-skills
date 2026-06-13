@@ -16,7 +16,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 
 | Condition | Action |
 |---|---|
-| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-eval-loop` (do NOT proceed to Cold Start) |
+| `.forsvn/loops/[slug]/program.md` AND/OR `context.md` absent | Return NEEDS_CONTEXT immediately; recommend `/run-pipeline` (do NOT proceed to Cold Start) |
 | Content under evaluation is short-form video | Return NEEDS_CONTEXT; route to `evaluate-shortform` — that skill owns the video lane |
 | Content under evaluation is a paid-ad placement | Return NEEDS_CONTEXT; route to `evaluate-ad` |
 | Loop exists but no measurement evidence supplied for the current cycle (no primary metric value-source-window) | Return BLOCKED with missing-evidence list — wait for operator to gather evidence and retry |
@@ -72,7 +72,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 6. Reach/impressions for the window? Engagement breakdown (likes / saves / shares / comments)? Click-through if available?
 ```
 
-**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-eval-loop` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-content. **If the content is short-form video or a paid ad, route to `evaluate-shortform` / `evaluate-ad` instead of asking the rest.**
+**If the loop itself does not exist, return `NEEDS_CONTEXT` and recommend `/run-pipeline` instead of asking the rest.** Do NOT scaffold loops from inside evaluate-content. **If the content is short-form video or a paid ad, route to `evaluate-shortform` / `evaluate-ad` instead of asking the rest.**
 
 ## Needed dimensions (6)
 

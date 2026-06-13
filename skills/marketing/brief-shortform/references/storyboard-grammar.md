@@ -70,7 +70,9 @@ Used heavily in B-roll segments.
 
 (Shared with caption-cta-rules.md — included here for storyboard integration)
 
-| Spec | Value |
+These are production defaults, not hard spec — a producible departure is fine when the footage or brand justifies it.
+
+| Default | Value |
 |---|---|
 | Lines per frame | Max 2 |
 | Words per line | 3-5 |

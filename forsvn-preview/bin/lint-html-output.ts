@@ -40,7 +40,9 @@ type Issue = { check: number; file: string; message: string; severity: "hard" | 
 const issues: Issue[] = [];
 
 const targets: string[] = [];
-collectHtml(join(ROOT, "references/_html/exemplars"), targets);
+collectHtml(join(ROOT, "references/_html/exemplars"), targets);          // legacy exemplar home
+collectHtml(join(ROOT, "assets/_html/exemplars"), targets);              // run from forsvn-preview/
+collectHtml(join(ROOT, "forsvn-preview/assets/_html/exemplars"), targets); // run from skills/
 collectHtml(join(ROOT, ".forsvn/artifacts"), targets, /\.archive\//);
 // Canonical top-level roots — skills emit `review_surface: html` here too
 // (brand identity of record, system architecture of record, ICP/market dossiers).
@@ -98,8 +100,10 @@ function lint(file: string, html: string): void {
     .replace(/<code\b[\s\S]*?<\/code>/gi, "")
     .replace(/<script type="application\/json"[\s\S]*?<\/script>/gi, "");
 
-  // Check 1 — Five-region layout
-  for (const sel of ['class="topbar"', 'class="left-controls"', 'class="stage"', 'class="footer"', 'id="artifact-data"']) {
+  // Check 1 — U9 instrument layout: chrome strip / reading stage / pinned
+  // decision ledger / hidden artifact-data block. (The v2 five-region layout —
+  // topbar, left-controls, footer — is retired; archived twins are not scanned.)
+  for (const sel of ['class="strip"', 'class="stage"', 'id="decision-capture"', 'id="artifact-data"']) {
     if (!html.includes(sel)) issues.push({ check: 1, file, message: `missing required region (${sel})`, severity: "hard" });
   }
 
@@ -125,12 +129,20 @@ function lint(file: string, html: string): void {
     issues.push({ check: 3, file, message: `decision-pill data-state=${pillMatch[1]} != frontmatter decision_state=${fmDecisionState}`, severity: "hard" });
   }
 
-  // Check 4 — Roughdraft deeplink in footer
-  const footer = html.match(/<footer class="footer">([\s\S]*?)<\/footer>/);
-  if (!footer) {
-    issues.push({ check: 4, file, message: `<footer class="footer"> not found`, severity: "hard" });
-  } else if (!/href="roughdraft:\/\/open\?path=/.test(footer[1])) {
-    issues.push({ check: 4, file, message: `roughdraft:// deeplink missing from footer`, severity: "hard" });
+  // Check 4 — "read as" affordance (the folded preview-mode chooser). U9
+  // replaced the v2 footer Roughdraft deeplink: the workbench's read-as menu
+  // names the alternate reading surfaces (terminal --md, Proof collab).
+  // Additionally: no artifact path may appear in the visible chrome —
+  // identity is title + skill + stack + date (paths live only inside the
+  // JSON config blocks).
+  if (!/class="readas"/.test(html)) {
+    issues.push({ check: 4, file, message: `read-as affordance missing (workbench .readas)`, severity: "hard" });
+  }
+  const visibleHtml = html
+    .replace(/<script type="application\/json"[\s\S]*?<\/script>/gi, "")
+    .replace(/<!--[\s\S]*?-->/g, "");
+  if (/\.forsvn\/artifacts\//.test(visibleHtml)) {
+    issues.push({ check: 4, file, message: `artifact path leaked into the visible chrome (paths belong only in the JSON config blocks)`, severity: "hard" });
   }
 
   // Check 5 — WCAG AA. Lint does a coarse check: per-stack chrome + bg/fg combos

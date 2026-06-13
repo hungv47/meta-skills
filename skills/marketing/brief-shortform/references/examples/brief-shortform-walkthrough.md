@@ -74,7 +74,7 @@ All three return within one round-trip.
 
 After Layer 1 merges, orchestrator spawns 4 agents in one message:
 
-- **Hook Agent** — reads `references/hook-archetypes.md` + research's TikTok archetype menu; produces 3 variations, each tagged with a catalog archetype (credential-flash / contrarian-truth / before-after), each passing 3Q test. Recommended: credential-flash ("10 năm code rồi, lần đầu mình thấy standup chỉ là họp").
+- **Hook Agent** — reads `references/_shared/hook-archetypes.md` + research's TikTok archetype menu; produces 3 variations, each tagged with a catalog archetype (credential-flash / contrarian-truth / before-after), each passing 3Q test. Recommended: credential-flash ("10 năm code rồi, lần đầu mình thấy standup chỉ là họp").
 - **Storyboard Agent** — reads `references/storyboard-grammar.md`; produces shot list with timing (0:00–0:01 ECU on terminal, 0:01–0:03 cut to MCU founder, 0:03–0:08 founder verbal + UI overlay, 0:08–0:15 product reveal beat), each shot specifying framing + action.
 - **Audio Agent** — outputs VO direction (semi-casual VN, 165 wpm, mic close, sync points at 0:00 + 0:08); flags one optional named track from research ("Aesthetic Cafe" TikTok ID, low-decay).
 - **Copy Pack Agent** — reads `references/caption-cta-rules.md` + research's caption norms; produces TikTok caption (first-line VoC, 4 lines max) + CTA (overlay at 0:14, end-card optional).

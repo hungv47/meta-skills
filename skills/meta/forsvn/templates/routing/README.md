@@ -16,7 +16,8 @@ routing/
 ├── last-session.md      # most recent invocation, overwritten each time
 ├── history/
 │   └── YYYY-MM-DD-HHMMSS-<intent-tag>.md   # append-only intent log
-└── initiatives.md       # living index of active initiatives
+├── initiatives.md       # living index of active initiatives
+└── execution-profile.json   # session execution profile (model, single-vs-multi, tool targets) — created at runtime; shape owned by the plugin's shared `execution-policy.md` reference
 ```
 
 ## `last-session.md` Schema

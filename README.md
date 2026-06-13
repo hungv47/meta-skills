@@ -116,7 +116,7 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 > [`skills/meta/`](./skills/meta/)
 
-`forsvn` (front door) · `discover` · `debate-agents` · `run-eval-loop` · `breakdown-tasks` · `review-work` · `clean-artifacts`
+`forsvn` (front door) · `discover` · `debate-agents` · `run-pipeline` · `breakdown-tasks` · `review-work` · `clean-artifacts`
 
 ## Where outputs land
 
@@ -126,14 +126,22 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 - `artifacts/<stack>/` — **KNOWLEDGE**: working skill output, `<skill>-<date>-<slug>.md`
 - `experience/<stack>/` — **MEMORY**: append-only learnings; prevents re-asking
 
-Plus `index/` (the manifest API + human index), `context/`, `routing/`. Every artifact carries frontmatter — `skill, version, date, status, stack, review_surface` + the instruction core `id, type, keywords` — for greppable discovery and traceability.
+Plus `index/` (the manifest API + human index), `context/`, `routing/`, and `performance/` — the operator-fed channel-performance store (post snapshots + publish ledger; **data, not artifacts** — exempt from the artifact contract; see [`references/performance-data.md`](./references/performance-data.md)). Every artifact carries frontmatter — `skill, version, date, status, stack, review_surface` + the instruction core `id, type, keywords` — for greppable discovery and traceability.
 
 ## Tips
 
 - **Run `/research-icp` first when starting any marketing work.** It writes `research/product-context.md` — the foundation downstream skills read. Skip it and they all re-ask you for audience details.
 - **Answer Pre-Dispatch questions in one reply.** Skills bundle 3–7 context questions per dispatch so they can run parallel sub-agents. Answer all at once to save a re-prompt round.
 - **Run `/review-work` before shipping.** Auto-triggers on security and data-mutation work. Run it manually on copy, briefs, and architecture docs.
-- **Install globally for the meta layer.** `/forsvn`, `/discover`, `/run-eval-loop`, `/debate-agents`, `/breakdown-tasks`, `/review-work` are useful in every project — `npx skills add hungv47/meta-skills -g`.
+- **Install globally for the meta layer.** `/forsvn`, `/discover`, `/run-pipeline`, `/debate-agents`, `/breakdown-tasks`, `/review-work` are useful in every project — `npx skills add hungv47/meta-skills -g`.
+
+## Session execution policy
+
+The first skill you run in a session asks **one bundled question**: single-agent or multi-agent execution. The default is model-aware — a capable model runs single-agent; a smaller model fans out to multiple sub-agents. Your answer persists in `.forsvn/routing/execution-profile.json` and every skill in the session inherits it, so you're never re-asked. Precedence: per-invocation flags (`--fast`, etc.) > session profile > model default > the skill's budget default. Where the harness supports hooks, the model is detected automatically and the ask is skipped.
+
+## Tool targets
+
+Tool-agnostic by default: briefs and render-ready prompts work anywhere. When a producing/briefing skill binds a brief, it asks once **which tool the output should target** (per category — design, video, animation, image, audio) and tunes capabilities + prompt syntax for it. The choice persists per category in the session execution profile, and engines already bound for live-drive inherit silently — you're never asked twice.
 
 ## Performance & invocation reliability
 

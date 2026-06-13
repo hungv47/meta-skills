@@ -2,7 +2,7 @@
 
 > Load when the orchestrator assembles the final artifact OR when format-checker-agent validates structural compliance. Encodes the artifact path convention, the 13-field frontmatter schema, the body sectioned schema, the format-check rules, and date/number/citation conventions.
 
-The schemas in this file are **cross-stack contracts**. The frontmatter `critic_score` + `critic_verdict` fields feed `humanmaxxing` / `polish-vn` polish-chain consumers and `run-eval-loop` ledger ingestion. Renaming a field or reordering body sections requires atomic update of downstream consumers per `anti-patterns.md` row "Cross-stack contract drift."
+The schemas in this file are **cross-stack contracts**. The frontmatter `critic_score` + `critic_verdict` fields feed `humanmaxxing` / `polish-vn` polish-chain consumers and `run-pipeline` ledger ingestion. Renaming a field or reordering body sections requires atomic update of downstream consumers per `anti-patterns.md` row "Cross-stack contract drift."
 
 ---
 

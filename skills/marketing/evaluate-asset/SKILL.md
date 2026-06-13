@@ -1,6 +1,6 @@
 ---
 name: evaluate-asset
-description: "Score a produced visual asset (image / graphic / carousel frame) against its brief — render fidelity + brand-fit — inside an existing eval loop, using the re-ingested asset (the return-leg). One asset (or picked variant) per cycle, verdict + brief-fidelity diagnosis. Not for video (use evaluate-shortform), a landing page (use evaluate-landing-page), live-post engagement (use evaluate-content / evaluate-ad), generating the asset (use produce-asset), or scaffolding the loop (use run-eval-loop)."
+description: "Score a produced visual asset (image / graphic / carousel frame) against its brief — render fidelity + brand-fit — inside an existing eval loop, using the re-ingested asset (the return-leg). One asset (or picked variant) per cycle, verdict + brief-fidelity diagnosis. Not for video (use evaluate-shortform), a landing page (use evaluate-landing-page), live-post engagement (use evaluate-content / evaluate-ad), generating the asset (use produce-asset), or scaffolding the loop (use run-pipeline)."
 argument-hint: "[loop slug or path] [asset path/id] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Re-ingested asset required (the return-leg).** Score the real render, never the prompt. The asset must be attached to its manifest via the return-leg (`asset_picked` / `assets`, per `references/_shared/execution-fork.md` + CLOSED-LOOP.md §6). Only a prompt/brief present → `NEEDS_CONTEXT`, route to `produce-asset` + re-ingest (`forsvn-preview attach`).
 3. **Source brief required.** The brief-graphic / produce-asset artifact carrying the acceptance criteria to score against. Absent or unreadable → `BLOCKED`.
 4. **Static-visual lane only.** Image / graphic / carousel frame. Video → `evaluate-shortform`; landing page → `evaluate-landing-page`; the asset's live-post engagement → `evaluate-content` / `evaluate-ad`. Otherwise → `NEEDS_CONTEXT`, route to sibling.
@@ -32,7 +32,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-render brief-fidelity + brand-fit snapshots scored against one re-ingested asset. `/produce-asset` owns rendering. `/brief-graphic` owns the brief. `/evaluate-content` + `/evaluate-ad` own the asset's live-post performance lanes.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-render brief-fidelity + brand-fit snapshots scored against one re-ingested asset. `/produce-asset` owns rendering. `/brief-graphic` owns the brief. `/evaluate-content` + `/evaluate-ad` own the asset's live-post performance lanes.
 
 **This skill is the formal return-leg gate** (`execution-fork.md` → "Closing the loop"): a brand-critical render is not "done" until scored here against its brief **and** its realized surface. Inside an eval loop this is the required closing step; without a loop, the lighter fallback is an explicit squint-test against the cited realized surface (`realized-surface-grounding.md`). Either way, **off-brief output is not accepted or committed** — score the real re-ingested render, never the prompt.
 
@@ -52,7 +52,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; asset not re-ingested (only a prompt) → `NEEDS_CONTEXT` + `/produce-asset` + re-ingest; asset is video / landing page → route to `evaluate-shortform` / `evaluate-landing-page`; no source brief OR missing asset id → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · asset path/id · source brief path · render engine + `execution_mode` · primary metric value/baseline · brief acceptance criteria + brand tokens). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `references/_shared/pre-dispatch-protocol.md` + `references/_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; asset not re-ingested (only a prompt) → `NEEDS_CONTEXT` + `/produce-asset` + re-ingest; asset is video / landing page → route to `evaluate-shortform` / `evaluate-landing-page`; no source brief OR missing asset id → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · asset path/id · source brief path · render engine + `execution_mode` · primary metric value/baseline · brief acceptance criteria + brand tokens). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -77,7 +78,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-asset …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-asset …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -100,4 +101,4 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `references/_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec, execution-fork}.md`
-- **Siblings:** `produce-asset` + `brief-graphic` (upstream/downstream), `run-eval-loop` (loop scaffolding), `evaluate-{content, ad, shortform, landing-page}` (sibling lanes)
+- **Siblings:** `produce-asset` + `brief-graphic` (upstream/downstream), `run-pipeline` (loop scaffolding), `evaluate-{content, ad, shortform, landing-page}` (sibling lanes)

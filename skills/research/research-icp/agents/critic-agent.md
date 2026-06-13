@@ -212,7 +212,7 @@ Return a single markdown document with exactly these sections:
 **Check:**
 - Count independent sources contributing to each persona (using the source-independence rules from § 1).
 - If <5 for any persona: return NEEDS_CONTEXT, instruct voc-collector-agent to gather more.
-- Exception: if operator invoked `--hypothesis-mode`, accept the artifact with all personas labeled `Hypothesis Mode` and `Confidence: L` on every finding. Override must be logged via `scripts/eval/log-critic-override.ts` with dimension `≥5 rule` and reason `early-stage hypothesis research`.
+- Exception: if operator invoked `--hypothesis-mode`, accept the artifact with all personas labeled `Hypothesis Mode` and `Confidence: L` on every finding. Override must be logged via `scripts/log-critic-override.ts` with dimension `≥5 rule` and reason `early-stage hypothesis research`.
 
 **Auto-FAIL conditions:**
 - Any persona has <5 independent sources AND `--hypothesis-mode` was not invoked.

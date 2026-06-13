@@ -193,7 +193,7 @@ In order. Renaming or reordering breaks 4+ downstream consumers.
 
 The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `.forsvn/canonical/research/MARKET.md` in place (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`). The Note at the top of the Artifact Template documents this.
 
-The `skill: research-market` frontmatter field is fixed (matches the skill slug per `references/manifest-spec.md`).
+The `skill: research-market` frontmatter field is fixed (matches the skill slug per `references/_shared/manifest-spec.md`).
 
 ---
 

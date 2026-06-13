@@ -20,7 +20,7 @@ load_class: ANTI-PATTERN
 
 **Instead:** Build with the conversion rubric (CP-01 → CP-14) inside this brief; after launch, use real analytics/recordings/experiment evidence in `evaluate-landing-page` inside an existing eval-loop. Then feed the resulting eval into the next `lp-brief --rev=N` cycle.
 
-**Owned by:** Orchestrator (`Skill Deference` block in body — "Need post-launch CRO from real evidence? → `evaluate-landing-page` inside an existing `run-eval-loop`") + Critical Gate 2 (do NOT skip conversion rubric) + brand-system-stack convention (lp-brief is brief-time; lp-eval is post-launch).
+**Owned by:** Orchestrator (`Skill Deference` block in body — "Need post-launch CRO from real evidence? → `evaluate-landing-page` inside an existing `run-pipeline`") + Critical Gate 2 (do NOT skip conversion rubric) + brand-system-stack convention (lp-brief is brief-time; lp-eval is post-launch).
 
 ---
 
@@ -90,9 +90,9 @@ load_class: ANTI-PATTERN
 
 **Why it fails:** Insufficient depth means the designer (or coding agent, or Claude Design) cannot execute without filling in gaps with guesses. Every guess is a divergence from the brief. Result: page ships off-spec, not because the brief was wrong but because it was incomplete.
 
-**Instead:** Spec everything: every section, every slot, every fallback. Use the section-templates.md as a checklist — Hero, Value prop, Social proof, Features, Objection, FAQ, CTA — each has its own conversion-checklist. Critical Gate 4 (Do NOT exceed the brief length envelope — under 250 = insufficient depth) and brand-voice critic G6 catch this.
+**Instead:** Spec everything: every section, every slot, every fallback. Use the section-templates.md as a checklist — Hero, Value prop, Social proof, Features, Objection, FAQ, CTA — each has its own conversion-checklist. Critical Gate 4 (the brief length envelope — under 250 = likely insufficient depth) and brand-voice critic G6 catch this.
 
-**Owned by:** Section-spec-agent (use section-templates.md as a checklist) + Critical Gate 4 + Brand-voice critic G6 (envelope 250-500 — under 250 = FAIL — insufficient depth).
+**Owned by:** Section-spec-agent (use section-templates.md as a checklist) + Critical Gate 4 + Brand-voice critic G6 (250-500 typical band — under 250 = WARN; hard FAIL under ~200 or when sections lack their completeness items).
 
 ---
 
@@ -104,7 +104,7 @@ load_class: ANTI-PATTERN
 
 **Instead:** Cite the shared chain instead of duplicating; cap section spec at the conversion-checklist gates. If the brief has Implementation Prompt content inline, move it to `handoff-implementation.md` companion (which is the convention — keeps brief.md within envelope). Critical Gate 4 + brand-voice critic G6 + always-emitted handoff companion all support this.
 
-**Owned by:** Section-spec-agent (compress when re-dispatched) + Handoff-agent (companion file extraction) + Critical Gate 4 + Brand-voice critic G6 (envelope 250-500 — over 500 = FAIL — bloat).
+**Owned by:** Section-spec-agent (compress when re-dispatched) + Handoff-agent (companion file extraction) + Critical Gate 4 + Brand-voice critic G6 (250-500 typical band — over 500 = WARN; hard FAIL only over ~700 — bloat).
 
 ---
 
@@ -200,9 +200,9 @@ load_class: ANTI-PATTERN
 
 **Why it fails:** Cross-skill coordination requires the eval-loop to be properly scaffolded BEFORE lp-eval can measure anything. lp-brief produces strategy/execution artifacts; the eval-loop owns measurement plumbing. Skipping the loop scaffolding step breaks the downstream evaluation.
 
-**Instead:** When the brief is intended for an eval-loop cycle, scaffold the loop with `/run-eval-loop` FIRST (writes program.md, context.md, results.tsv). Then run lp-brief and copy the brief into the loop's `strategy/` directory. Then run lp-eval after launch. The Skill Chain section in brief.md step 5 explicitly names this: "[post-launch] collect analytics/recordings/experiment notes → run `evaluate-landing-page` inside the page's eval loop, then feed the resulting eval into next `lp-brief --rev=N`."
+**Instead:** When the brief is intended for an eval-loop cycle, scaffold the loop with `/run-pipeline` FIRST (writes program.md, context.md, results.tsv). Then run lp-brief and copy the brief into the loop's `strategy/` directory. Then run lp-eval after launch. The Skill Chain section in brief.md step 5 explicitly names this: "[post-launch] collect analytics/recordings/experiment notes → run `evaluate-landing-page` inside the page's eval loop, then feed the resulting eval into next `lp-brief --rev=N`."
 
-**Owned by:** Orchestrator (Skill Chain section formats the loop-coordination expectation in every brief) + lp-eval Critical Gate 1 (existing eval loop required — returns NEEDS_CONTEXT if `program.md` missing, recommends `/run-eval-loop`).
+**Owned by:** Orchestrator (Skill Chain section formats the loop-coordination expectation in every brief) + lp-eval Critical Gate 1 (existing eval loop required — returns NEEDS_CONTEXT if `program.md` missing, recommends `/run-pipeline`).
 
 ---
 

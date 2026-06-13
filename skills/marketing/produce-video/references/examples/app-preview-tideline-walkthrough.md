@@ -154,12 +154,12 @@ For each shot, mark each app-preview spec gate after the rendered video is revie
 
 ## Runtime Choices
 
-App-preview mode supports 2 runtimes (Vercel AI CLI does NOT apply — composition uses real screenshots, not synthesized images):
+**Recommended lane for this script:** code-render — app-preview composes real UI screenshots, which HyperFrames/Remotion render deterministically on-brand. Selection logic: `production-lanes.md`.
 
-1. **HyperFrames** — open `hyperframes/scaffold.html`; run `hyperframes preview` to iterate; `hyperframes render` for the final mp4
-2. **Remotion** — open `remotion/scaffold.tsx`; `npx remotion preview` to iterate; `npx remotion render` for the final mp4
+App-preview narrows to the code-render lane + post (explainer / generative / avatar do NOT apply — composition uses real screenshots, not synthesized footage):
 
-Both runtimes have functional parity for crop scaling, mask transforms, pointer overlay, caption band, and seek-driven animation. Choice is operator preference.
+1. **code-render** — HyperFrames: open `hyperframes/scaffold.html`, `hyperframes preview` → `hyperframes render`; Remotion: open `remotion/scaffold.tsx`, `npx remotion preview` → `npx remotion render`. Both have functional parity for crop scaling, mask transforms, pointer overlay, caption band, and seek-driven animation — choice is operator preference.
+2. **post** — follow `post.md` to assemble the rendered shots + burn the caption-band text (grade is a no-op; the UI is already on-brand).
 
 ## Re-run
 
@@ -167,8 +167,8 @@ If the handoff changes or the runtime choice changes: re-run `produce-video tide
 
 ## Operator Next Steps
 
-1. Pick a runtime (HyperFrames OR Remotion)
-2. Run the chosen scaffold
+1. Pick the code-render lane (HyperFrames OR Remotion)
+2. Run the chosen scaffold, then `post.md` to assemble + burn the caption band
 3. Operator-supplied audio assets: drop `audio-whoosh.mp3` and `audio-confirm.mp3` under `rendered/audio/` if available; otherwise renders fall back to silence on shots 3 and 5
 4. Mark the verification checklist for each shot after rendering
 5. When all shots verified on-spec, the produced video is ready for evaluate-shortform / evaluate-content
@@ -589,6 +589,35 @@ export const RemotionRoot = () => (
 The manifest's Audio Plan lists per-beat audio cues (UI tap, optional whoosh, optional confirm chime). Operator-supplied audio files go under `rendered/audio/`. If absent, renders fall back to silence on shots 3 and 5; the UI tap (shot 2) uses the system-default cue.
 ```
 
+### `post.md`
+
+```markdown
+# Post-Production — tideline-surge-mode-app-store-ios
+
+**Lane:** post · **Mode:** app-preview (assembly + caption burn-in only) · **Engine:** ffmpeg / video-use
+
+## 1. Assembly
+Concatenate the 5 rendered screenshot-composition shots in order (shot-1 → shot-5); per-shot durations sum to total_length_seconds. No transcription — these are composed UI crops, not spoken footage.
+
+## 2. Color grade
+No-op — the source screenshots are already on-brand (Tideline DESIGN.md tokens).
+
+## 3. Subtitles / on-screen text
+Burn each shot's caption-band text verbatim, applied LAST in the filter chain (after the pointer/overlay), at the handoff's caption-band geometry.
+
+## 4. Audio
+Per-beat cues from the Audio Plan (UI tap shot 2; optional whoosh shot 3; optional confirm shot 5); silence where assets are absent; 30ms fades at each segment boundary.
+
+## 5. Export
+H.264 mp4 at the manifest aspect (9:16 → 1080×1920); preserve sRGB; no aspect/duration override.
+
+## Self-verify
+- [ ] Duration == total_length_seconds
+- [ ] Aspect == 9:16
+- [ ] Caption-band text verbatim + legible (burned last)
+- [ ] No audible pops at cuts
+```
+
 ---
 
 ## Layer 2 — critic-agent (cycle 1)
@@ -725,7 +754,7 @@ This walkthrough exercises the full WS3 → WS4 seam:
 
 1. **Brief layer** — `brief-app-preview` emits `handoff-produce-video.md` with the per-shot specification + frontmatter discriminator (`type: produce-video-input`).
 2. **Schema layer** — `produce-video/references/video-brief-schema.md` § App-Preview Mode Extension defines the field map; pre-dispatch validates against rules A-K.
-3. **Production layer** — `prompt-author-agent` assembles the bundle in app-preview mode: 5 outputs with mode-specific shape (composition-operation per-shot prompts, scaffold parity, collapsed vercel-ai-cli).
+3. **Production layer** — `prompt-author-agent` assembles the bundle in app-preview mode: 6 outputs with mode-specific shape (composition-operation per-shot prompts, scaffold parity, collapsed vercel-ai-cli, post collapsed to assembly + caption burn-in).
 4. **Critic layer** — `critic-agent` evaluates Gates 1-7 with mode-aware behavior; Gates 5-7 are app-preview-only hard FAILs.
 5. **Runtime layer** — HyperFrames + Remotion both render from the same canonical manifest via their respective scaffolds, reaching functional parity.
 

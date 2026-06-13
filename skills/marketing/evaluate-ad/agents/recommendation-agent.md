@@ -23,7 +23,7 @@ Return:
 - confidence: high | medium | low | blocked
 - audience_temp: cold-traffic | retargeting
 - decision_sentence: [one sentence, no tabs, includes the audience-temp]
-- next_route: write-ad | brief-landing-page | plan-campaign | run-eval-loop | none
+- next_route: write-ad | brief-landing-page | plan-campaign | run-pipeline | none
 - next_action_summary: [one sentence — what the next route should produce, if any]
 
 ## Keep / Discard / Watch
@@ -62,7 +62,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 - Route to `write-ad` for the **other audience-temp** when the cycle reveals the audience-temp framing was wrong (e.g., "this cold-traffic creative is actually performing as retargeting — write a true cold variant for next cycle").
 - Route to `brief-landing-page` when high CTR + low conversion suggests the LP is the bottleneck, not the ad. Diagnosis should have flagged this; recommendation makes it the next action.
 - Route to `plan-campaign` when traffic/source mismatch is the dominant issue (wrong audience targeting selected, wrong placement mix, wrong budget allocation across audience-temps).
-- Route to `run-eval-loop` when the metric contract, baseline, guardrails, or audience-temp scope need redefinition (e.g., "this loop has been measuring ROAS but should switch to CAC for next cycle").
+- Route to `run-pipeline` when the metric contract, baseline, guardrails, or audience-temp scope need redefinition (e.g., "this loop has been measuring ROAS but should switch to CAC for next cycle").
 - Route to `none` when the cycle should continue unchanged until the next measurement window (typically `watch` status with borderline fatigue + insufficient spend confidence).
 
 ## Creative-Fatigue Specificity

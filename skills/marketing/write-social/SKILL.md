@@ -4,7 +4,7 @@ description: "Platform-native social copy (hook variants + body + CTA + format s
 argument-hint: "<topic-or-brief-path> <platform> [--variants N] [--polish-chain humanmaxxing|vn-tone|none] [--goal awareness|engagement|click|save|share]"
 allowed-tools: Read Write Bash Grep Glob
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: standard
   estimated-cost: "$0.50-1.50"
 ---
@@ -26,7 +26,7 @@ Full detail: [`references/procedures/critical-gates.md`](references/procedures/c
 
 ## Before Starting
 
-Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
+Apply `references/_shared/before-starting-check.md`. Then:
 
 | Artifact | Source | Required? |
 |---|---|---|
@@ -36,7 +36,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md` | brief-shortform | Opt — Warm Start |
 | `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Opt — cadence |
 
-Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → format-check loop = 0; `--deep` → MAX 2. **`--fast` does NOT skip Cold Start or Critical Gates.** Check `.forsvn/index/manifest.json` for prior `marketing/copy/[platform]-*-[slug].md` or upstream `brief-shortform` / `plan-campaign`. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md): auto-scan, then 5-Q Cold Start.
+Mode per `references/_shared/mode-resolver.md`. `budget: standard`. `--fast` → format-check loop = 0; `--deep` → MAX 2. **`--fast` does NOT skip Cold Start or Critical Gates.** Check `.forsvn/index/manifest.json` for prior `marketing/copy/[platform]-*-[slug].md` or upstream `brief-shortform` / `plan-campaign`. Run Pre-Dispatch per `references/procedures/pre-dispatch.md`: auto-scan, then 5-Q Cold Start.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Quality Gate — 5 dimensions
 

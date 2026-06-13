@@ -4,7 +4,7 @@ description: "Builds a brand identity system as up to five artifacts — BRAND.m
 argument-hint: "[product or brand to design]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   budget: deep
   estimated-cost: "$2-5"
 ---
@@ -65,6 +65,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: product (1-line), audience, competitive landscape (3-5 names), voice intuition (3 adjectives or reference brand), aesthetic intuition (3 visual references), **target platforms** (mandatory enumeration — drives ASSETS.md), positioning intent. Warm/Cold Start prompts + 13-platform catalog: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): auto-downgrade for ≤3 sentences AND no prior artifacts → Route A. `--fast` forces Route A regardless. **`--fast` does NOT skip Cold Start (especially Q6 platform enumeration), Critical Gates 1-5, or hard-block conditions.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
+Step 9 visual renderings bind the `design` target tool — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; tool-agnostic (no rendering, 9c) stays the default.
 
 ## Routing
 

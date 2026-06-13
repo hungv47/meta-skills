@@ -4,7 +4,7 @@ description: "Turns a brief-graphic artifact into render-ready prompts + an asse
 argument-hint: "[brief-graphic slug or path]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.1.1"
   budget: standard
   estimated-cost: "$0.50-1.50"
 ---
@@ -15,11 +15,11 @@ metadata:
 
 **Core Question:** "Can any downstream tool produce the right asset from this prompt without follow-up?"
 
-> Tool-agnostic — emits prompts + manifest, no API keys. **No output variation** (VERBATIM, tier C — `_shared/options-selection.md`): "more" = a manifest re-run. Schema: [`references/format-conventions.md`](references/format-conventions.md).
+> Tool-agnostic — emits prompts + manifest, no API keys. **No output variation** (VERBATIM, tier C — `_shared/options-selection.md`): "more" = a manifest re-run.
 
 ## Critical Gates — Read First
 
-Non-negotiable. Full text: [`references/procedures/critical-gates.md`](references/procedures/critical-gates.md) [PROCEDURE].
+Non-negotiable. Full text: `references/procedures/critical-gates.md` [PROCEDURE].
 
 1. **Tool-agnostic.** No image-gen APIs / Figma MCP. `--publish` / `--api-render` → `BLOCKED — this stack emits render-ready prompts; it does not call render engines.`
 2. **No hallucinated logos / brand marks.** Missing logo on disk → solid-color placeholder slot, never a stand-in. Critic Gate 3.
@@ -28,37 +28,42 @@ Non-negotiable. Full text: [`references/procedures/critical-gates.md`](reference
 
 ## Before Starting
 
-| Artifact | Required? | What it provides |
-|---|---|---|
-| `.forsvn/artifacts/marketing/design-briefs/[slug].md` (or brief-landing-page asset-slot) | **required** | Per-asset spec: concept, platform, aspect, safe zones, copy slots, type scale, file format, prompt seed |
-| `brand/BRAND.md` | **required** | Voice, archetype, sacred elements |
-| `brand/DESIGN.md` | **required** | Color tokens, type scale, motion permissions, surfaces |
-| Target platforms | optional | Defaults to brief's `target_platforms` |
-| Render-mode hint | optional | Default `export-mode` |
+**Required:** the brief — `.forsvn/artifacts/marketing/design-briefs/[slug].md` (or a brief-landing-page asset-slot) — plus `brand/BRAND.md` + `brand/DESIGN.md`. Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic); brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
 
-Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic). Brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
+## Pre-Dispatch (Cold Start)
+
+Resolve from the brief + brand files first; ask once (bundled) only for what's missing:
+
+1. **Brief** — brief-graphic slug or path. → routing only
+2. **Target platforms** — defaults to the brief's `target_platforms`. → routing only
+3. **Render-mode hint** — default `export-mode`. → routing only
 
 ## Quality Gate
 
-Critic (`agents/critic-agent.md`) verifies brief 04 spec compliance: (1) every brief slot has `prompts/[slot-id].md`, no orphans/extras; (2) aspect + safe-zone verbatim per prompt; (3) hallucinated-logo prohibition + placeholder rule active; (4) copy-to-render verbatim; (5) EXIF / aspect overrides forbidden; (6) manifest verification checklist matches brief spec gates (aspect, safe zones, legibility, brand-mark + color fidelity).
+Critic (`agents/critic-agent.md`) verifies brief 04 spec compliance:
 
-FAIL → re-dispatch prompt-author with feedback (max 2 cycles). PASS twice with operator override → log via `scripts/eval/log-critic-override.ts` per D8 contract.
+- [ ] Every brief slot has `prompts/[slot-id].md` — no orphans, no extras
+- [ ] Aspect + safe zones verbatim per prompt
+- [ ] Hallucinated-logo prohibition + placeholder rule active
+- [ ] Copy-to-render verbatim; EXIF / aspect overrides absent
+- [ ] Manifest verification checklist matches the brief's spec gates (aspect, safe zones, legibility, brand-mark + color fidelity)
+
+Auto-fail: any invented brand mark or non-verbatim copy slot. FAIL → re-dispatch prompt-author with feedback (max 2 cycles, then `BLOCKED`). PASS twice with operator override → log via `scripts/log-critic-override.ts` per D8 contract.
 
 ## Agents + Dispatch
 
-2 agents, sequential: **Prompt Author** (`agents/prompt-author-agent.md`) per slot → **Critic** (`agents/critic-agent.md`) on assembled manifest. Single route (export-mode). Pseudocode, re-run triggers, chain position: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Shared 2-agent pattern: [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md) § 4.
+2 agents, sequential: **Prompt Author** (`agents/prompt-author-agent.md`) per slot → **Critic** (`agents/critic-agent.md`) on assembled manifest. Single route (export-mode). Pseudocode, re-run triggers, chain position: `references/procedures/dispatch-mechanics.md` [PROCEDURE]. Shared 2-agent pattern: `references/_shared/production-pattern.md` § 4.
 
 ## Artifact Contract
 
 - **Manifest:** `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`
 - **Per-slot prompts:** `.forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[slot-id].md`
 - **Lifecycle:** `pipeline` (regenerated; not canonical)
-- **Frontmatter (manifest):** `skill` / `version` / `date` / `status` / `slug` / `source_brief` / `target_platforms` / `slot_count` / `provenance`
-- **Frontmatter (per-slot prompt):** `skill` / `version` / `date` / `slot_id` / `platform` / `aspect_ratio`
+- **Frontmatter:** manifest — `skill/version/date/status/slug/source_brief/target_platforms/slot_count/provenance`; per-slot prompt — `skill/version/date/slot_id/platform/aspect_ratio`
 - **Provenance:** `input_artifacts` = brief-graphic + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until eval scores rendered asset.
 - **Cross-stack:** consumed by downstream renderers + future `evaluate-content` / `evaluate-ad`. Schema changes require atomic update with brief-graphic + brief-landing-page — never silently drift.
 
-Full template + per-slot prompt schema: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
+Full template + per-slot prompt schema: `references/format-conventions.md` [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -82,13 +87,17 @@ End with one status:
 
 ## Execution
 
-Offer the registry-gated fork (category `image`) — **Brief-only**: run the prompts, mark the manifest checklist (feeds `evaluate-asset`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct across a multi-slot manifest, batch-check the render surface first — all blockers at once + named fallback, no serial pivots — [capability-preflight.md](references/_shared/capability-preflight.md).
+Offer the registry-gated fork (category `image`) — **Brief-only**: run the prompts, mark the manifest checklist (feeds `evaluate-asset`); **Assisted/Direct**: render via a verified engine. See `_shared/execution-fork.md`; record `execution_mode`. For Assisted/Direct multi-slot runs, batch-check the render surface first (`_shared/capability-preflight.md`).
+At brief-binding, bind the `image` target tool — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; prompt dialect tunes to it, tool-agnostic stays the default.
 
 ## References
 
 - `references/procedures/{critical-gates, dispatch-mechanics}.md`
 - `references/{format-conventions, anti-patterns}.md`
 - `references/_shared/{production-pattern, eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, anti-sycophancy, artifact-contract-template}.md`
+- `references/_shared/execution-policy.md` — session execution profile
 - Upstream: `skills/marketing/{brief-graphic, create-brand}/`
 
-Worked example deferred until first real run.
+## Worked Example
+
+A 2-slot brief → manifest + verbatim prompts, placeholder-logo discipline, critic PASS, Brief-only fork: [`references/examples/produce-asset-walkthrough.md`](references/examples/produce-asset-walkthrough.md) [EXAMPLE].

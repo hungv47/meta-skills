@@ -49,7 +49,7 @@ Total ≥49/70 AND every dim ≥6 = PASS. Total 49-55 with all dims ≥6 = `DONE
 6. **Specificity** — Specificity Floor ≥2 verifiable specifics per variant (named entity OR named number-with-context OR named research); generic flavor ("leading", "trusted") does not count.
 7. **Transmutation fit** — assigned format (AI UGC / native static / AI animation / advertorial pre-lander / Chad Funnel) is followed, proof-safe, isolates one test variable.
 
-After critic PASS, `humanmaxxing` runs as terminal pass on each variant with `protected_tokens` including URL. Orchestrator then re-runs critic Specificity dim only — drop ≥2 OR named entity/number/URL absent post-humanmaxxing → revert THAT variant to critic-approved.
+After critic PASS, `humanmaxxing` runs as terminal pass on each variant with `protected_tokens` including URL. Orchestrator then re-runs critic Specificity dim only — drop ≥2 OR named entity/number/URL absent post-humanmaxxing → flag THAT variant's delta + the removed specific for operator review (critic-approved version kept alongside; operator picks).
 
 ## Pattern Catalogs
 

@@ -82,7 +82,7 @@ Cross-variant test — scored once per variant but reflects the trio's collectiv
 **Auto-fail conditions:**
 - Two variants share the exact same anchor proof (e.g., both reference "Customer X · 9→4 day close")
 - All three variants share the same angle archetype with surface-level paraphrasing only
-- Headline distinctness < 10 chars Levenshtein-distance proxy across any pair
+- Headline distinctness < 10 chars Levenshtein-distance proxy across any pair AND the pair shares the same angle archetype → flag for operator review (not auto-fail when archetypes differ)
 
 ---
 

@@ -9,6 +9,7 @@ provenance:
 consumers: per-skill references/playbook.md authors
 load_class: PLAYBOOK
 ---
+<!-- lint:reference-ok-file template describing per-skill playbook structure; all paths exemplary -->
 
 # Playbook Ref Template
 

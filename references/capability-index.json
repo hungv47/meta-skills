@@ -438,7 +438,7 @@
           "Post-launch evidence triggers a redesign (Route B)."
         ],
         "not_when": [
-          "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-eval-loop).",
+          "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-pipeline).",
           "Single visual asset spec -> brief-graphic.",
           "Page exists but conversion is fine; just needs headline variations -> write-copy.",
           "Non-conversion pages (blog, docs hub, navigation hub) -> out of scope.",
@@ -1593,7 +1593,7 @@
           "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "Writing new ad creative -> write-ad.",
           "Channel-mix retrospective across campaigns -> plan-campaign.",
           "Campaign-level multi-channel scoring -> evaluate-campaign.",
@@ -1718,7 +1718,7 @@
           "Loop exists; the rendered asset is re-ingested (return-leg) and cycle N needs scoring for that one asset/variant."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "Only a prompt/brief exists; nothing rendered or re-ingested -> produce-asset + re-ingest.",
           "The asset is a short-form video -> evaluate-shortform.",
           "The surface is a landing page -> evaluate-landing-page.",
@@ -1849,7 +1849,7 @@
           "Loop exists; cycle N needs to be scored against the source plan-campaign hypothesis."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "User wants to plan or re-plan the campaign -> plan-campaign.",
           "Single ad performance -> evaluate-ad.",
           "Single organic post performance -> evaluate-content.",
@@ -1973,7 +1973,7 @@
           "Loop exists; cycle N needs scoring for one primary platform."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "Short-form video -> evaluate-shortform.",
           "Paid-ad performance -> evaluate-ad.",
           "Writing next-cycle copy -> write-social."
@@ -2100,7 +2100,7 @@
           "Designing the next page brief or a redesign -> brief-landing-page.",
           "Channel-strategy questions -> plan-campaign.",
           "Generic best-practice audits without measurement evidence -> out of scope.",
-          "Scaffolding the loop itself -> run-eval-loop."
+          "Scaffolding the loop itself -> run-pipeline."
         ],
         "prerequisites": {
           "recommended": [
@@ -2185,7 +2185,7 @@
           "Loop exists; cycle N needs scoring for one channel + segment."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "The outreach is still a draft, not sent -> write-outreach.",
           "Organic-post performance -> evaluate-content.",
           "Paid-ad performance -> evaluate-ad.",
@@ -2308,7 +2308,7 @@
           "Loop exists; cycle N needs scoring for one keyword cluster + surface."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "Running the audit or applying fixes -> optimize-seo.",
           "Tracking AI Overview / LLM-answer citations live -> monitor-aeo.",
           "Organic-post engagement -> evaluate-content; paid-ad -> evaluate-ad.",
@@ -2431,7 +2431,7 @@
           "Loop exists; cycle N needs scoring for one short-form post on one platform."
         ],
         "not_when": [
-          "Loop does not exist yet -> run-eval-loop.",
+          "Loop does not exist yet -> run-pipeline.",
           "Organic text/image/carousel post -> evaluate-content.",
           "Paid-ad video -> evaluate-ad.",
           "Writing the next-cycle brief -> brief-shortform."
@@ -3439,7 +3439,8 @@
         "use_when": [
           "Problem or goal is already clear; need to decide what to build first.",
           "Force-ranked initiatives with ICE (Impact × Confidence × Effort).",
-          "Strategic options need a cut line + kill criteria."
+          "Strategic options need a cut line + kill criteria.",
+          "A candidate set (discover shortlist, debate output, 'generate ideas and rank them') needs a scored ranking — ideation mode."
         ],
         "not_when": [
           "Diagnosing the problem itself -> diagnose.",
@@ -3450,10 +3451,11 @@
         "prerequisites": {
           "recommended": [
             "id:market-research",
-            "id:diagnose",
             "id:product-context"
           ],
-          "hard": []
+          "hard": [
+            "id:diagnose"
+          ]
         }
       },
       "orchestration": {
@@ -3646,7 +3648,8 @@
           {
             "if": "Pre-Dispatch (mode detection from brief frontmatter)",
             "read": [
-              "references/format-conventions.md"
+              "references/format-conventions.md",
+              "references/production-lanes.md"
             ]
           },
           {
@@ -3696,6 +3699,11 @@
             "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted (shortform); collapsed in app-preview mode."
+          },
+          {
+            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/post.md",
+            "lifecycle": "pipeline",
+            "produced_when": "Always emitted — assemble/grade/subtitle stage (post lane; video-use / ffmpeg). Collapses to assembly + caption burn-in in app-preview mode."
           }
         ]
       },
@@ -4294,117 +4302,32 @@
       "source": "skills/meta/review-work/routing.yaml",
       "skill_path": "skills/meta/review-work"
     },
-    "run-eval-loop": {
-      "id": "run-eval-loop",
+    "run-pipeline": {
+      "id": "run-pipeline",
       "domain": "meta",
       "public": true,
-      "command": "/run-eval-loop",
-      "summary": "Scaffold + own an evaluation loop workspace — program.md, context.md, results.tsv schema, learnings.md ledger. Owns loop setup; per-cycle eval skills own scoring.",
+      "command": "/run-pipeline",
+      "summary": "Orchestrate a closed-loop initiative across named stages, or scaffold the eval-only loop workspace (--eval-only). Sequences leaf skills, stops at every gate; never auto-approves.",
       "aliases": [
+        "pipeline",
+        "closed-loop-pipeline",
+        "orchestrate-loop",
         "eval-loop",
         "improvement-loop",
         "experiment-ledger"
       ],
       "route": {
         "use_when": [
-          "Need a measurable initiative scaffold (campaign / page / content series).",
-          "Define program.md + context.md + results.tsv schema.",
-          "Set up the durable learning ledger."
-        ],
-        "not_when": [
-          "Scoring a specific cycle -> evaluate-{ad/content/landing-page/campaign/shortform}.",
-          "Writing the next-cycle brief -> the relevant brief-* skill.",
-          "Diagnosing a metric decline -> diagnose."
-        ],
-        "prerequisites": {
-          "recommended": [
-            "id:icp-research",
-            "id:product-context"
-          ],
-          "hard": []
-        }
-      },
-      "orchestration": {
-        "default": "single",
-        "single_when": [
-          "Loop setup is single-agent (scaffold + critic on the schema)."
-        ],
-        "multi_when": [
-          "Never — per-cycle scoring is delegated to evaluate-* sibling skills."
-        ],
-        "critic_required_when": [
-          "Schema validation (results.tsv columns match per-eval-skill requirements).",
-          "Guardrail / kill-criteria + auto-fail thresholds explicit in program.md."
-        ]
-      },
-      "load": {
-        "always": [
-          "references/_shared/eval-loop-spec.md",
-          "references/_shared/before-starting-check.md"
-        ],
-        "when": [
-          {
-            "if": "Pre-Dispatch (Cold Start, scope + primary metric)",
-            "read": [
-              "references/_shared/pre-dispatch-protocol.md"
-            ]
-          },
-          {
-            "if": "Loop-folder scaffold + program.md schema (eval-loop-spec covers it)",
-            "read": [
-              "references/_shared/eval-loop-spec.md"
-            ]
-          }
-        ]
-      },
-      "outputs": {
-        "artifacts": [
-          {
-            "path": ".forsvn/loops/[slug]/program.md",
-            "lifecycle": "loop",
-            "produced_when": "Loop scaffolded — declares primary metric + guardrails + kill criteria."
-          },
-          {
-            "path": ".forsvn/loops/[slug]/context.md",
-            "lifecycle": "loop-context",
-            "produced_when": "Loop scaffolded — declares ICP + product + competitor context."
-          },
-          {
-            "path": ".forsvn/loops/[slug]/results.tsv",
-            "lifecycle": "evaluation",
-            "produced_when": "Loop scaffolded — 8-column header written; per-cycle rows appended by evaluate-* siblings."
-          },
-          {
-            "path": ".forsvn/loops/[slug]/learnings.md",
-            "lifecycle": "learning",
-            "produced_when": "Loop scaffolded — durable learning ledger (empty at start; per-cycle promotes by evaluate-* siblings)."
-          }
-        ]
-      },
-      "source": "skills/meta/run-eval-loop/routing.yaml",
-      "skill_path": "skills/meta/run-eval-loop"
-    },
-    "run-pipeline": {
-      "id": "run-pipeline",
-      "domain": "meta",
-      "public": true,
-      "command": "/run-pipeline",
-      "summary": "Orchestrate a closed-loop initiative across named stages — the superset of run-eval-loop sharing the loop-tree schema. Sequences leaf skills, stops at every gate; never auto-approves.",
-      "aliases": [
-        "pipeline",
-        "closed-loop-pipeline",
-        "orchestrate-loop"
-      ],
-      "route": {
-        "use_when": [
           "Thread a full produce-and-measure initiative end to end across stages.",
           "Resume a multi-stage loop from its current stage + gate.",
-          "Add the execution fork + return-leg ingest to an eval loop."
+          "Add the execution fork + return-leg ingest to an eval loop.",
+          "Eval-only (--eval-only): scaffold a measurable-initiative loop workspace — program.md + context.md + results.tsv schema + the durable learning ledger."
         ],
         "not_when": [
-          "Eval-only scaffold (program.md + results.tsv) -> run-eval-loop.",
           "One-shot artifact with no execute/evaluate cycle -> the leaf skill.",
           "Scoring one cycle -> evaluate-{ad/content/landing-page/campaign/shortform/asset/outreach/seo}.",
+          "Writing the next-cycle brief -> the relevant brief-* skill.",
+          "Diagnosing a metric decline -> diagnose.",
           "Multi-perspective debate -> debate-agents."
         ],
         "prerequisites": {
@@ -4418,14 +4341,16 @@
       "orchestration": {
         "default": "single",
         "single_when": [
-          "Pipeline setup/resume is single-agent (architect designs the stage plan; critic gates it)."
+          "Pipeline setup/resume is single-agent (architect designs the stage plan; critic gates it).",
+          "Eval-only loop setup is single-agent (scaffold + critic on the schema)."
         ],
         "multi_when": [
           "Never — each stage's work is delegated to its leaf skill, which runs its own agents."
         ],
         "critic_required_when": [
           "Stage plan validation (every stage maps to a real leaf skill or gate).",
-          "Gate discipline (execute + brief stages never auto-approve)."
+          "Gate discipline (execute + brief stages never auto-approve).",
+          "Eval-only schema validation (results.tsv columns match per-eval-skill requirements; guardrails + kill criteria explicit in program.md)."
         ]
       },
       "load": {
@@ -4447,6 +4372,12 @@
               "references/_shared/tool-registry-spec.md",
               "references/_shared/execution-fork.md"
             ]
+          },
+          {
+            "if": "Eval-only entry (--eval-only / improvement loop / experiment ledger)",
+            "read": [
+              "references/eval-only-mode.md"
+            ]
           }
         ]
       },
@@ -4455,17 +4386,27 @@
           {
             "path": ".forsvn/loops/[slug]/pipeline.md",
             "lifecycle": "loop",
-            "produced_when": "Pipeline scaffolded — staged program + current-stage pointer."
+            "produced_when": "Pipeline scaffolded — staged program + current-stage pointer (not created on eval-only runs)."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/program.md",
+            "lifecycle": "loop",
+            "produced_when": "Eval-only loop scaffolded — declares primary metric + guardrails + kill criteria."
+          },
+          {
+            "path": ".forsvn/loops/[slug]/context.md",
+            "lifecycle": "loop-context",
+            "produced_when": "Eval-only loop scaffolded — declares ICP + product + competitor context."
           },
           {
             "path": ".forsvn/loops/[slug]/results.tsv",
             "lifecycle": "evaluation",
-            "produced_when": "Pipeline scaffolded — 8-column header (shared with run-eval-loop); per-cycle rows appended by evaluate-* siblings."
+            "produced_when": "Loop scaffolded — 8-column header written; per-cycle rows appended by evaluate-* siblings."
           },
           {
             "path": ".forsvn/loops/[slug]/learnings.md",
             "lifecycle": "learning",
-            "produced_when": "Pipeline scaffolded — durable learning ledger (empty at start)."
+            "produced_when": "Loop scaffolded — durable learning ledger (empty at start; per-cycle promotes by evaluate-* siblings)."
           }
         ]
       },

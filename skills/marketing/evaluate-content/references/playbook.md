@@ -64,7 +64,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-content does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-content does not scaffold loops.
 - **The content is short-form video.** Route to `evaluate-shortform` — that skill owns the video lane.
 - **The content is a paid-ad placement.** Route to `evaluate-ad`.
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-content does not run as a heuristic audit.
@@ -75,7 +75,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## Sibling coordination
 
 - **`write-social`** owns construction-time copy authoring. evaluate-content reads write-social's artifacts as input; routes the next cycle to write-social with hypothesis seeding. evaluate-content does NOT author copy.
-- **`run-eval-loop`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-content assumes a loop exists; if missing, defers to run-eval-loop.
+- **`run-pipeline`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-content assumes a loop exists; if missing, defers to run-pipeline.
 - **`evaluate-shortform`** is the sister video-eval skill. Short-form video defers to it.
 - **`evaluate-ad`** is the sister paid-ad-eval skill — same 4-agent / 7-dim / 8-col structure; evaluate-content mirrors it for cross-eval consistency.
 - **`publish-social`** owns distribution. When evaluate-content surfaces a posting-time or platform-mix issue (not a content issue), route to publish-social.
@@ -90,7 +90,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - 8 Critical Gates (existing loop / organic-non-video-only / measurement evidence / one primary metric / one primary platform / no fabricated analytics / explicit attribution confidence / does-not-generate-content)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts` per D8 contract
+- Critic-override protocol via `scripts/log-critic-override.ts` per D8 contract
 - Generation provenance per D8 contract — `input_artifacts` lists source write-social + BRAND.md + icp-research.md
 - Results Row schema byte-identical with evaluate-ad (8 cols)
 - Learning promotion platform/format-scoped

@@ -61,7 +61,7 @@ Return a single markdown document with one section per architecture entry. Use t
 - **Body:** [type token, size, line-height]
 - **CTA position:** [above-fold / mid-section / end; button style + contrast pair from brand_digest]
 - **Background:** [hex from brand_digest OR asset slot reference like `slot:hero-bg`]
-- **Column structure:** [1col / 2col / 3col / N×N grid]
+- **Layout intent:** [what the section must accomplish spatially]
 - **Spacing:** [section padding using brand spacing tokens]
 
 ### Motion
@@ -173,15 +173,15 @@ After all sections, end with:
 
 ### Section-Type Cheat Sheet (read `references/section-templates.md` for full templates)
 
-| Section type | Always | Often | Rarely |
+| Section type | Conversion-floor (CP-cited) | Common patterns (agent decides) | Rarely |
 |--------------|--------|-------|--------|
-| Hero | Headline, subhead, primary CTA, hero visual slot, trust signal in viewport | Subhead microcopy, secondary CTA | 3rd-party badge inline |
-| Value prop | 3 columns or 1 statement, headline per column, icon/visual per column | Outcome metric per column | Body paragraph per column (usually too dense) |
-| Social proof | Logo grid OR testimonial(s), source attribution, dates | Quoted metric, headshot | Long case-study text |
-| Features | Feature list with benefits, icons, [F → B → O] formula | Feature comparison | Pricing inside features |
-| Objection | Direct objection statement, counter-evidence, proof | Sub-objection sequence | Defensive tone |
-| FAQ | 5–8 Q&A, scannable structure | Search/filter UI | Long-form essays as answers |
-| CTA block | Single primary CTA, trust signal, headline | Risk reversal copy | Multiple competing CTAs |
+| Hero | Headline (CP-01), subhead, primary CTA (CP-03), hero visual slot, trust signal in viewport (CP-11) | Subhead microcopy, secondary CTA | 3rd-party badge inline |
+| Value prop | Benefit-first reasons (CP-08), headline per reason | Outcome metric per column, icon/visual per column, column count | Body paragraph per column (usually too dense) |
+| Social proof | Verifiable source attribution + dates (CP-09) | Logo grid vs. testimonial(s), quoted metric, headshot | Long case-study text |
+| Features | [F → B → O] formula per feature (CP-08) | Feature comparison, icons, row count | Pricing inside features |
+| Objection | Direct objection statement, counter-evidence, proof (CP-09) | Sub-objection sequence | Defensive tone |
+| FAQ | Buyer-language Q&A, reading level (CP-07) | Q&A count, search/filter UI | Long-form essays as answers |
+| CTA block | Single primary CTA, first-person copy (CP-03), trust signal in scroll-distance (CP-11) | Risk reversal copy, headline framing | Multiple competing CTAs |
 
 ### Examples
 

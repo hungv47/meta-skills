@@ -93,14 +93,25 @@ relative `path`. (A path the operator types in `$ARGUMENTS` is used as-is.)
    ```
    It opens the browser to the local page. The page is bound to `127.0.0.1` and
    CSRF-protected; tell the operator not to run it on a shared host. The final
-   stdout line is JSON: `{ ok, decision_state, reviewed_at, md, archived, comments, variant }`,
-   or `{ ok: false, reason: "timeout" }` if no decision was made in time.
+   stdout line is JSON: `{ ok, decision_state, reviewed_at, md, archived,
+   comments, variant, asset_picked, annotations, next_pending }`, or
+   `{ ok: false, reason: "timeout" }` if no decision was made in time.
+
+   The page is the U9 review instrument: adaptive dark/light theme, a typeset
+   reading column, and a collaboration workbench. While reviewing, the operator
+   can **mark** passages, **comment** on them, and **edit** the Markdown body
+   in place (the edit saves through the CLI's atomic write path — so the
+   artifact file may legitimately change during a serve; the recorded decision
+   always applies to the saved bytes).
 
 5. **Report the outcome.** Relay the captured `decision_state` and any
    `comments` verbatim — that is the human's decision of record, now written into
-   the artifact frontmatter. On `denied` / `suggested`, the operator's comments
-   are your input for the next revision. On timeout, say no decision was
-   captured and offer to re-serve.
+   the artifact frontmatter. Also read back `annotations` (the operator's
+   markers and passage comments — persisted under the artifact's
+   `## Reviewer notes → ### Annotations`): on `denied` / `suggested`, the
+   comments + annotations are your input for the next revision. `next_pending`
+   names what's still owed (never auto-serve it — one artifact per serve). On
+   timeout, say no decision was captured and offer to re-serve.
 
 ## Invariants
 - **Human-owned decisions.** You only render, serve, and report. Never POST a

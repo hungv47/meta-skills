@@ -12,8 +12,8 @@ counted rubric-revision signal instead of silently eroding the quality bar.
 Log an override when the operator **explicitly chooses to ship despite a critic
 FAIL**, or accepts a `pass-with-concerns` verdict the rubric flagged. The
 override log is the only mechanism that turns repeated operator pushback into a
-rubric-revision signal — see `references/_shared/quality-feedback-protocol.md`
-§ Critic Override Log and `references/_shared/quality-dashboard-spec.md`
+rubric-revision signal — see `quality-feedback-protocol.md` (sibling of this file)
+§ Critic Override Log and `quality-dashboard-spec.md`
 § Rubric Metrics.
 
 **Log the override before doing anything else** — before writing the eval
@@ -23,7 +23,7 @@ completion.
 ## How to log
 
 ```bash
-bun scripts/eval/log-critic-override.ts \
+bun scripts/log-critic-override.ts \
   --skill <evaluate-ad | evaluate-campaign | evaluate-content | evaluate-landing-page> \
   --dimension "<failed rubric dimension>" \
   --artifact "<project-relative path to the eval artifact under review>" \
@@ -33,7 +33,8 @@ bun scripts/eval/log-critic-override.ts \
   --follow-up "<none|watch metric|revise rubric|extract shared rubric>"
 ```
 
-The invoking skill passes its own name as `--skill`. The script appends a dated
+<!-- lint:reference-ok skill-local packaged copy; resolves in consuming skills, not at canonical -->
+The invoking skill passes its own name as `--skill` and runs its packaged copy at `scripts/log-critic-override.ts` (synced from the maintainer original via `sync-skill-support`). The script appends a dated
 block to `.forsvn/artifacts/meta/records/critic-overrides.md`.
 
 ## Escalation

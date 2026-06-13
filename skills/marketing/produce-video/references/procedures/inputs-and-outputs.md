@@ -51,10 +51,11 @@ hyperframes/
   scaffold.html             # HyperFrames composition scaffold + scenes JSON inlined
 remotion/
   scaffold.tsx              # Remotion composition scaffold
-vercel-ai-cli.md            # README — how to pipe scenes/ through `npx ai` / `vercel ai`
+vercel-ai-cli.md            # README — pipe scenes/ through `npx ai` / generative video / image-gen
+post.md                     # assemble → color-grade → subtitle stage (post lane; video-use / ffmpeg)
 ```
 
-All 5 outputs always emitted (vercel-ai-cli.md collapsed in app-preview mode). The stack never invokes a runtime — the operator picks. Full template + field definitions: [`../format-conventions.md`](../format-conventions.md).
+All 6 outputs always emitted (vercel-ai-cli.md collapses in app-preview mode; post.md collapses to assembly + caption burn-in there). The stack never invokes a runtime — it recommends a production lane (`../production-lanes.md`) and the operator picks via the execution fork. Full template + field definitions: [`../format-conventions.md`](../format-conventions.md).
 
 ## Chain Position
 

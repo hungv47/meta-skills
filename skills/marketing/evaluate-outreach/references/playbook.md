@@ -66,7 +66,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-outreach does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-outreach does not scaffold loops.
 - **The outreach is still a draft.** Route to `write-outreach`. evaluate-outreach scores only sent + measured sequences.
 - **No reply / deliverability evidence.** Return BLOCKED, list missing evidence. evaluate-outreach does not run as a heuristic audit.
 - **Organic-post performance.** Route to `evaluate-content`.
@@ -77,7 +77,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 
 - **`write-outreach`** owns construction-time sequence authoring. evaluate-outreach reads its artifacts as input; routes the next cycle to write-outreach with hypothesis seeding. evaluate-outreach does NOT author copy.
 - **`research-icp`** owns list/targeting. When the diagnosis points at the list (bounces from a stale list, wrong segment), route to research-icp.
-- **`run-eval-loop`** owns loop scaffolding. evaluate-outreach assumes a loop exists.
+- **`run-pipeline`** owns loop scaffolding. evaluate-outreach assumes a loop exists.
 - **`evaluate-content` / `evaluate-ad` / `evaluate-asset`** are sibling eval lanes — same 4-agent / 7-dim / 8-col structure; evaluate-outreach mirrors them for cross-eval consistency.
 
 ## History / origin
@@ -90,7 +90,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 - 8 Critical Gates (existing loop / sent-and-measured / source sequence / one channel+segment / no fabricated replies / deliverability+compliance evidence / explicit confidence / does-not-write-outreach)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts` — never relaxes the deliverability/compliance gate
+- Critic-override protocol via `scripts/log-critic-override.ts` — never relaxes the deliverability/compliance gate
 - Generation provenance — `input_artifacts` lists the source write-outreach artifact + icp-research.md + BRAND.md
 - Results Row schema byte-identical with the eval siblings (8 cols)
 - Learning promotion channel/segment/offer-scoped

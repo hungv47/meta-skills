@@ -1,6 +1,6 @@
 ---
 name: evaluate-campaign
-description: "Score a launched multi-channel campaign from real metrics inside an existing eval loop — verdict, per-channel breakdown, unit economics. Aggregate-only: one cycle = whole campaign, all channels. Requires an eval-loop workspace. Not for loop setup (use run-eval-loop), re-planning (use plan-campaign), or per-asset eval — single ad uses evaluate-ad, post evaluate-content, page evaluate-landing-page, short-form evaluate-shortform."
+description: "Score a launched multi-channel campaign from real metrics inside an existing eval loop — verdict, per-channel breakdown, unit economics. Aggregate-only: one cycle = whole campaign, all channels. Requires an eval-loop workspace. Not for loop setup (use run-pipeline), re-planning (use plan-campaign), or per-asset eval — single ad uses evaluate-ad, post evaluate-content, page evaluate-landing-page, short-form evaluate-shortform."
 argument-hint: "[loop slug or path] [campaign name] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Aggregate-only, whole-campaign scope.** Scores campaign-level outcomes from channel-rollup metrics across every channel in one cycle. Per-asset eval artifacts are context only, never re-scored, never drive the verdict. Single-asset OR one-channel-per-cycle splitting → `NEEDS_CONTEXT`, route to the sibling (`evaluate-ad` / `evaluate-content` / `evaluate-landing-page` / `evaluate-shortform`).
 3. **Measurement evidence required + primary metric decides the row.** Need ≥1 metric source, window, and current value for the loop's primary metric (operator-pick via `program.md`: new customers · leads · revenue · blended CAC · ROI). Secondary metrics explain diagnosis; they don't override unless `program.md` defines an explicit guardrail failure.
 4. **No fabricated analytics.** Unknown values stay unknown. Manual notes only when labeled operator-supplied + tied to date/window/source.
@@ -30,7 +30,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch campaign-level evidence snapshots scored across all channels as one aggregate. `/plan-campaign` owns next-cycle planning. `/evaluate-ad` / `/evaluate-content` / `/evaluate-landing-page` / `/evaluate-shortform` own asset-level lanes.
+`/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch campaign-level evidence snapshots scored across all channels as one aggregate. `/plan-campaign` owns next-cycle planning. `/evaluate-ad` / `/evaluate-content` / `/evaluate-landing-page` / `/evaluate-shortform` own asset-level lanes.
 
 ## Inputs
 
@@ -48,7 +48,8 @@ metadata:
 
 ## Pre-Dispatch
 
-Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-eval-loop`; single-asset under eval → route to sibling; no measurement evidence OR incomplete channel rollup → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · campaign name · source plan path · window · primary metric value/baseline · per-channel rollup + fully-loaded spend). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks (BEFORE Cold Start):** missing `program.md`/`context.md` → `NEEDS_CONTEXT` + `/run-pipeline`; single-asset under eval → route to sibling; no measurement evidence OR incomplete channel rollup → `BLOCKED`; custom 10+ col `results.tsv` → warn + hand-edit. **Cold Start:** 6 bundled questions (loop · campaign name · source plan path · window · primary metric value/baseline · per-channel rollup + fully-loaded spend). Full read-order + templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Artifact Contract
 
@@ -73,7 +74,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-campaign …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-campaign …`. Three overrides → rubric-revision escalation. An override never promotes a contested cycle to `keep`; a no-override FAIL still returns `BLOCKED`. Full protocol: [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -96,4 +97,4 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
-- **Siblings:** `plan-campaign` (downstream), `run-eval-loop` (loop scaffolding), `evaluate-{ad, content, landing-page, shortform}` (asset lanes)
+- **Siblings:** `plan-campaign` (downstream), `run-pipeline` (loop scaffolding), `evaluate-{ad, content, landing-page, shortform}` (asset lanes)

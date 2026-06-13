@@ -42,7 +42,7 @@ Spawn **IN PARALLEL** after Layer 1 completes. Each Layer 1.5 agent receives all
 
 | Agent | Instruction File | Pass These Inputs | Reference Files |
 |-------|-----------------|-------------------|-----------------|
-| Hook Agent | `agents/hook-agent.md` | All Layer 1 + research's hook archetypes for hero platform | `references/hook-archetypes.md`, `references/anti-patterns.md` |
+| Hook Agent | `agents/hook-agent.md` | All Layer 1 + research's hook archetypes for hero platform | `references/_shared/hook-archetypes.md`, `references/anti-patterns.md` |
 | Storyboard Agent | `agents/storyboard-agent.md` | Format spec + production mode + recommended hook | `references/storyboard-grammar.md`, `references/anti-patterns.md` |
 | Audio Agent | `agents/audio-agent.md` | Storyboard + research's audio-trend output if applicable | — |
 | Copy Pack Agent | `agents/copy-pack-agent.md` | Format spec + VoC + research's caption/CTA findings | `references/caption-cta-rules.md` |
@@ -51,7 +51,7 @@ Spawn **IN PARALLEL** after Layer 1 completes. Each Layer 1.5 agent receives all
 
 | Agent | Instruction File | Pass These Inputs | Reference Files |
 |-------|-----------------|-------------------|-----------------|
-| Platform Tailor Agent | `agents/platform-tailor-agent.md` | Hero brief + research catalog per variant platform | `references/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/_shared/platform-intelligence/[variant-platform].md` |
+| Platform Tailor Agent | `agents/platform-tailor-agent.md` | Hero brief + research catalog per variant platform | `references/_shared/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/_shared/platform-intelligence/[variant-platform].md` |
 | Critic Agent | `agents/critic-agent.md` | Hero + variants | `references/anti-patterns.md`, `references/success-criteria-templates.md` |
 
 **Conditional dispatch:** `platform-tailor-agent` runs only when `len(platforms) >= 2`. Otherwise Layer 2 starts at critic.

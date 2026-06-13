@@ -91,6 +91,7 @@ capability:
       - if: "Pre-Dispatch (mode detection from brief frontmatter)"
         read:
           - "references/format-conventions.md"
+          - "references/production-lanes.md"
       - if: "Route A shortform dispatch"
         read:
           - "references/agent-manifest.md"
@@ -119,3 +120,6 @@ capability:
       - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md"
         lifecycle: pipeline
         produced_when: "Always emitted (shortform); collapsed in app-preview mode."
+      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/post.md"
+        lifecycle: pipeline
+        produced_when: "Always emitted — assemble/grade/subtitle stage (post lane; video-use / ffmpeg). Collapses to assembly + caption burn-in in app-preview mode."

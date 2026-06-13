@@ -38,18 +38,18 @@ You do NOT:
 - Hook clears platform's hook window from research: [yes / no]
 - Visual + verbal + text triad simultaneous: [yes / no — name missing element]
 - 3Q test passes (Visual / Falsifiable / Uniquely-ours): [pass / specific fail]
-- Hook archetype tagged from research catalog: [yes / no]
+- Hook approach reasoned (catalog-tagged OR departure justified): [yes / no]
 - AI slop opener detected: [no / yes — quote it]
 
 ### 2. Production Critic
 **Result:** [PASS | FAIL]
 **Evidence:**
 - Every shot/scene has timing in seconds: [yes / no — list missing]
-- Every shot/scene has framing tag (ECU/CU/MCU/etc.): [yes / no]
+- Every shot/scene framing producible (grammar tag OR prose a producer can frame from): [yes / no]
 - Every action is specific verb (no "show product"): [yes / no — list vague actions]
 - Audio names a track or VO direction: [yes / no — list "use trending music"-style fails]
 - Production notes filled per resolved mode: [yes / no]
-- On-screen text choreography exact (word-for-word + timing + position): [yes / no]
+- On-screen text production-executable (a producer can place every word without guessing — word-for-word + timing + position, or equivalent producible prose): [yes / no]
 
 ### 3. Algorithm-Fit Critic
 **Result:** [PASS | FAIL]

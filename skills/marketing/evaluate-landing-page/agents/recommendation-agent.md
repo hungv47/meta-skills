@@ -54,7 +54,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 - Route to `write-copy` when the next action is only headline, CTA, or section copy variation.
 - Route to `brief-graphic` when a single visual/proof asset needs specification.
 - Route to `plan-campaign` when traffic/source mismatch is the dominant issue.
-- Route to `run-eval-loop` when the metric contract, baseline, or guardrails need redefinition.
+- Route to `run-pipeline` when the metric contract, baseline, or guardrails need redefinition.
 - Route to `none` when the cycle should continue unchanged until the next measurement window.
 
 ## Self-Check

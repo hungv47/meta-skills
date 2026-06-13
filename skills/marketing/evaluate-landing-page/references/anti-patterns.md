@@ -42,7 +42,7 @@ load_class: ANTI-PATTERN
 
 **Why it fails:** Without `program.md`, the primary metric is undefined. Without `context.md`, the baseline + measurement window assumptions are missing. Without `results.tsv`, the cycle number can't be resolved. lp-eval that proceeds without the loop scaffolding produces a verdict that's structurally meaningless.
 
-**Instead:** Critical Gate 1 fires BEFORE any other work — if `program.md` and `context.md` do not exist, return NEEDS_CONTEXT immediately and recommend `/run-eval-loop`. lp-eval does NOT scaffold loops.
+**Instead:** Critical Gate 1 fires BEFORE any other work — if `program.md` and `context.md` do not exist, return NEEDS_CONTEXT immediately and recommend `/run-pipeline`. lp-eval does NOT scaffold loops.
 
 **Owned by:** Critical Gate 1 (existing eval loop required) + Critic Hard Fail #1 (no existing `.forsvn/loops/[slug]/program.md`).
 
@@ -136,13 +136,13 @@ load_class: ANTI-PATTERN
 
 ### 11. Upstream context skipped — no loop scaffolded
 
-**Pattern:** User invokes lp-eval directly without running `/run-eval-loop` first. Loop directory doesn't exist or is empty.
+**Pattern:** User invokes lp-eval directly without running `/run-pipeline` first. Loop directory doesn't exist or is empty.
 
 **Why it fails:** Without `program.md` defining the primary metric + `context.md` defining baseline assumptions + `results.tsv` for cycle resolution, lp-eval has no structural foundation. Critical Gate 1 catches this hard.
 
-**Instead:** lp-eval returns NEEDS_CONTEXT immediately, recommends `/run-eval-loop`. The eval-loop skill owns loop scaffolding; lp-eval owns post-launch evidence inside an existing loop.
+**Instead:** lp-eval returns NEEDS_CONTEXT immediately, recommends `/run-pipeline`. The eval-loop skill owns loop scaffolding; lp-eval owns post-launch evidence inside an existing loop.
 
-**Owned by:** Orchestrator (Pre-Dispatch hard gate — fires BEFORE Cold Start questioning) + Critical Gate 1 + Critic Hard Fail #1 + Responsibility Split (`/run-eval-loop` owns loop setup).
+**Owned by:** Orchestrator (Pre-Dispatch hard gate — fires BEFORE Cold Start questioning) + Critical Gate 1 + Critic Hard Fail #1 + Responsibility Split (`/run-pipeline` owns loop setup).
 
 ---
 
@@ -188,4 +188,4 @@ load_class: ANTI-PATTERN
 - For procedural correctness: see `procedures/pre-dispatch.md` (hard gates fire BEFORE any cold-start questioning — catches pattern 11) and `procedures/dispatch-mechanics.md` (8-step Dispatch procedure + Layer 3 critic gate FAIL-no-side-effects rule + `append-loop-result.ts` invocation).
 - For format-side correctness: see `format-conventions.md` (frontmatter schema + 8 body sections + Evidence table 6-column format + Results Row 8-column format + Learning Promotion rules — catches patterns 6, 7, 8, 9).
 - For shared canonical: `_shared/eval-loop-spec.md` (program.md + context.md + results.tsv schema + strategy/execution/evals subdirs).
-- Sibling coordination: lp-brief (`marketing-skills/skills/lp-brief/`) for construction-time architecture; eval-loop (`skills/meta/run-eval-loop/`) for loop scaffolding + durable learning ledger.
+- Sibling coordination: lp-brief (`marketing-skills/skills/lp-brief/`) for construction-time architecture; eval-loop (`skills/meta/run-pipeline/`) for loop scaffolding + durable learning ledger.

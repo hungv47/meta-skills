@@ -228,8 +228,19 @@ function renderList(items: ListItem[]): string {
 
 export type RenderResult = { html: string; htmlPath: string; element: string };
 
+// Canonical stack word for the masthead eyebrow + register chip (the legacy
+// `mkt` alias normalizes to the current word).
+function stackWord(stack: string): string {
+  return stack === "mkt" ? "marketing" : stack;
+}
+
 // Read a Markdown artifact and render its HTML twin from base.html.
 // `assetsDir` is the plugin's assets/_html directory (holds base.html).
+// U9 (2026-06-12): the twin is a reading-and-deciding instrument — the
+// frontmatter becomes the masthead identity line (stack · skill · date +
+// title + deck), never raw YAML; the leading H1 folds into the masthead;
+// the `## Review Gate` block renders as the sealed gate echo. No artifact
+// paths appear anywhere in the visible chrome.
 export function renderArtifactToHtml(mdPath: string, assetsDir: string, repoRelMdPath?: string): RenderResult {
   const src = readFileSync(mdPath, "utf8");
   const { fm, body } = parseFrontmatter(src);
@@ -239,37 +250,48 @@ export function renderArtifactToHtml(mdPath: string, assetsDir: string, repoRelM
   const fileSlug = basename(mdPath).replace(/\.md$/, "");
   const h1 = body.match(/^#\s+(.+)$/m);
   const title = fm.title || (h1 ? h1[1].trim() : fileSlug);
-  const slug = fm.slug || fileSlug.split("-").slice(3).join("-") || fileSlug;
   const decisionState = fm.decision_state || "not_required";
-  const mdRel = repoRelMdPath || basename(mdPath);
+  void repoRelMdPath; // identity is title + skill + stack + date — the path never renders
+
+  // Fold the leading H1 into the masthead: when the body opens with a `# …`
+  // heading it IS the title — rendering it again under the masthead would
+  // duplicate the headline.
+  let mdBody = body;
+  const lead = mdBody.match(/^\s*#\s+.+\r?\n/);
+  if (lead) mdBody = mdBody.slice(lead[0].length);
 
   const base = readFileSync(join(assetsDir, "base.html"), "utf8");
   // DecisionSet(mirror): the artifact's `## Review Gate` checkbox block is a
-  // read-only echo — the pinned DecisionBar is the system's only interactive
-  // decision place. Mark the gate section's task lists aria-hidden so AT
-  // never announces a second radio group for one decision (spec §7).
-  const bodyHtml = markdownToHtml(body).replace(
-    /(<h([1-6])>\s*Review Gate\s*<\/h\2>)([\s\S]*?)(?=<h[1-6]>|$)/i,
-    (_m, headingTag: string, _lvl: string, rest: string) =>
-      headingTag + rest.replace(/<ul>(?=\s*<li class="task")/g, '<ul class="mirror-gate" aria-hidden="true">'),
+  // read-only echo — the pinned ledger is the system's only interactive
+  // decision place. The section renders as the sealed gate card; its task
+  // list stays aria-hidden so AT never announces a second radio group for
+  // one decision (spec §7).
+  const bodyHtml = markdownToHtml(mdBody).replace(
+    /<h([1-6])>\s*Review Gate\s*<\/h\1>([\s\S]*?)(?=<h[1-6]>|$)/i,
+    (_m, _lvl: string, rest: string) =>
+      `<section class="gate" id="gate-echo">` +
+      `<header><span class="t">Review gate</span><span class="ro">read-only echo — decide below</span></header>` +
+      `<div class="gate-body">` +
+      rest.replace(/<ul>(?=\s*<li class="task")/g, '<ul class="mirror-gate" aria-hidden="true">') +
+      `</div>` +
+      `<footer>The gate is the author's claim. Your decision below is the only thing that writes.</footer>` +
+      `</section>`,
   );
-  const stageHtml = `<article class="md-stage">\n${bodyHtml}\n</article>`;
-  const leftControls = `<div class="control-group">\n  <h2>Export</h2>\n  <button type="button" data-copy-source="artifact-data">Copy as JSON</button>\n</div>`;
+  const stageHtml = `<div class="prose">\n${bodyHtml}\n</div>`;
 
   const repl: Record<string, string> = {
     stack: element,
+    stack_name: esc(stackWord(stack)),
     title: esc(title),
     skill: esc(fm.skill || ""),
     date: esc(fm.date || ""),
-    slug: esc(slug),
+    deck: esc(fm.summary || ""),
     decision_state: esc(decisionState),
     tokens_css_href: "./tokens.css",
     chrome_css_href: "./chrome.css",
     chrome_js_src: "./chrome.js",
-    md_path: encodeURIComponent(mdRel),
     artifact_data_json: escapeForScript(JSON.stringify(fm)),
     preview_config_json: escapeForScript(JSON.stringify({ static: true })),
-    left_controls_html: leftControls,
     stage_html: stageHtml,
   };
 

@@ -40,7 +40,7 @@ Critic verifies (top items shown; full 11-row checklist + 4 Internal Consistency
 - [ ] Phased timeline (3 phases) with cadence matched to team capacity
 - [ ] Launch sequence follows ORB (Owned → Rented → Borrowed)
 
-Max 2 rewrite cycles per critic verdict. **Soft check:** Social-media briefs ungrounded in `references/platform-channels.md` → `references/platform-intelligence/` (or grounded in a >90-day-stale catalog) ship `done_with_concerns` — never blocks.
+Max 2 rewrite cycles per critic verdict. **Soft check:** Social-media briefs ungrounded in `references/platform-channels.md` (or in a >90-day-stale catalog) ship `done_with_concerns` — never blocks.
 
 ---
 
@@ -62,11 +62,12 @@ Canonical Pre-Dispatch (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE
 
 **Needed dimensions:** product, audience persona (role + size + 1-2 pains), campaign goal (90-day outcome), growth motion (drives channel weighting + budget allocation), duration + cadence, constraints (team size, budget tier, channels off-limits).
 
-Full read order + Warm/Cold Start (5-Q) + Write-back map + Growth Motion → Channel Priority + intent-mismatch detection (defer `plan-funnel` for numeric targets) + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Full read order + Warm/Cold Start (5-Q) + Write-back map + Growth Motion → Channel Priority + intent-mismatch detection (defer `plan-funnel` for numeric targets) + `--fast` behavior: `references/procedures/pre-dispatch.md` [PROCEDURE].
 
 ## Mode Resolution
 
 Per `references/_shared/mode-resolver.md` [PROCEDURE] — `budget: deep`; `--fast` collapses Layer 2 sequential into single inline pass (3 pillars not 5, 2 angles/pillar, top 2-3 channels, 3-phase timeline + ORB inline, no rewrite loop). **`--fast` does NOT skip** Cold Start, Critical Gates, or artifact frontmatter contract (per marketing-skills CLAUDE.md "Safety gates supersede `--fast`").
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ---
 
@@ -131,7 +132,7 @@ Route B end-to-end (B2B SaaS PM tool — PLG, 60 days, 500 trial signups, 4 pill
 - `references/{playbook, format-conventions, anti-patterns}.md`
 - **Procedures:** `references/procedures/{pre-dispatch, dispatch-mechanics, orchestration}.md` [PROCEDURE]
 - **Example:** `references/examples/campaign-walkthrough.md` [EXAMPLE]
-- **Domain catalogs** (loaded by agents): `references/{3d-angle-framework, channel-strategy, growth-play-patterns, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `growth-play-patterns.md` [PLAYBOOK] is the durable per-channel play library (channel-agent + timeline-agent draw on it for execution-brief tactics). `platform-channels.md` maps channel-agent to `references/platform-intelligence/` (§2/§3/§6) for Social-media briefs — D13.B.
+- **Domain catalogs** (loaded by agents): `references/{3d-angle-framework, channel-strategy, growth-play-patterns, platform-channels, examples}.md`, `references/distribution-models/clipping-and-live.md`. `growth-play-patterns.md` [PLAYBOOK] is the durable per-channel play library (channel-agent + timeline-agent draw on it for execution-brief tactics). `platform-channels.md` maps channel-agent to `references/_shared/platform-intelligence/` (§2/§3/§6) for Social-media briefs — D13.B.
 - **Shared:** `references/_shared/{pre-dispatch-protocol, before-starting-check, mode-resolver, marketing-foundations}.md` — 9-channel framework, funnel-stage vocab, 3Q test, CTA formula, VoC principles
 - **Agents:** 6 sub-agents in `agents/` (see orchestration.md § Agent Manifest); `critic-agent.md` holds the canonical 11-row Quality Gate Checklist
 - `marketing-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills"

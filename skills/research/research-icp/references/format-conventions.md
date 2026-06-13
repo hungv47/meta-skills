@@ -49,7 +49,7 @@ After Pre-Dispatch, generate or update `.forsvn/canonical/product/PRODUCT-CONTEX
 
 **All marketing skills read this file for product context.**
 
-**See also:** the canonical 12-section spec at [`_shared/product-marketing-context-schema.md`](_shared/product-marketing-context-schema.md) (synced from meta-skills via `scripts/sync-skill-support.mjs` for self-contained installs). It's an evolution target — adds business-stage, channel-history, prior-experiments, success-metrics, brand-context. The 8-section schema above is the working contract icp-research currently produces; the 12-section spec is a documentation-only target for future enrichment.
+**See also:** the canonical 12-section spec at [`_shared/product-marketing-context-schema.md`](_shared/product-marketing-context-schema.md) (synced from meta-skills via `_dev/sync-skill-support.mjs` (maintainer tooling) for self-contained installs). It's an evolution target — adds business-stage, channel-history, prior-experiments, success-metrics, brand-context. The 8-section schema above is the working contract icp-research currently produces; the 12-section spec is a documentation-only target for future enrichment.
 
 ---
 
@@ -213,7 +213,7 @@ This makes the limitation visible to downstream skills (campaign-plan in particu
 
 The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `.forsvn/canonical/research/ICP.md` in place with the incremented version (prior versions live in git history — no `.v[N].md` siblings under `canonical/`). The Note at the bottom of the Artifact Template documents this.
 
-The `skill: research-icp` frontmatter field is fixed (matches the skill slug per `references/manifest-spec.md`).
+The `skill: research-icp` frontmatter field is fixed (matches the skill slug per `references/_shared/manifest-spec.md`).
 
 ---
 

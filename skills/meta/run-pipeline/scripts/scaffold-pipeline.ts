@@ -1,16 +1,16 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // scaffold-pipeline — materialize a staged closed-loop pipeline in the shared
-// loop tree (CLOSED-LOOP.md §7). run-pipeline is the SUPERSET of run-eval-loop:
+// loop tree (CLOSED-LOOP.md §7). run-pipeline is the SUPERSET of run-pipeline:
 // it threads research → brief → FORK → execute → ingest → evaluate → learn, where
 // each stage is a leaf skill and transitions pause for the execution fork (§4) and
-// the human review gate (never auto-approved). It SHARES run-eval-loop's loop-tree
+// the human review gate (never auto-approved). It SHARES run-pipeline's loop-tree
 // schema — `.forsvn/loops/<slug>/` with `results.tsv` (same 8-col ledger) +
 // `learnings.md` + the stage dirs — and adds one artifact it owns: `pipeline.md`,
 // the staged program + the resumable current-stage pointer.
 //
 // Idempotent: never clobbers an existing file (so it layers onto a loop that
-// run-eval-loop already scaffolded). Local-only; no network.
+// run-pipeline already scaffolded). Local-only; no network.
 //
 // Usage:
 //   bun /path/to/scaffold-pipeline.ts "<pipeline name or slug>" [--category image|video|design|publish|research|analytics] [project-root]
@@ -81,7 +81,7 @@ do_not_use_when: "A single one-shot artifact with no execute/evaluate cycle (use
 review_surface: none
 decision_state: not_required
 upstream: "operator intent, tool-registry, prior loop learnings"
-downstream: "run-eval-loop, the per-stage leaf skills, evaluate-* siblings"
+downstream: "run-pipeline, the per-stage leaf skills, evaluate-* siblings"
 ---
 
 # ${title} — Pipeline
@@ -143,7 +143,7 @@ _None yet._
 `,
 );
 
-// Shared with run-eval-loop: the 8-column ledger (same header — cross-stack
+// Shared with run-pipeline: the 8-column ledger (same header — cross-stack
 // contract with the evaluate-* siblings; see eval-loop-spec.md).
 writeIfAbsent(
   join(loopDir, "results.tsv"),

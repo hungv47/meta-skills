@@ -4,7 +4,7 @@ description: "Brainstorms strategic solutions when the problem or goal is alread
 argument-hint: "[problem or goal to solve]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -33,6 +33,7 @@ metadata:
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` forces Route B (skip unconventional-agent) with critic gate collapsed to single pass. **Hard gate (Critical Gates above) STILL enforced under `--fast`** — safety gates supersede mode-resolver downgrade.
+   Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) and Out-of-Scope path (`.forsvn/artifacts/meta/out-of-scope/`).
 2. Read `.forsvn/index/manifest.json` — find the matching `diagnose-*.md` (required) and prior `prioritize-*.md` (if any). Check freshness (>30 days surfaces a warning).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — hard-gate enforcement, read order, Cold/Warm Start prompts, staleness check, constraint interview, Out-of-Scope persistence on write all there.
@@ -74,6 +75,8 @@ Two routes; chosen at Pre-Dispatch and echoed in the Warm Start confirmation (op
 | **A — Full Analysis** (default) | Any non-trivial solution design |
 | **B — Quick Design** | User has candidate approaches; speed > breadth; OR `--fast` flag |
 
+Entry mode is orthogonal to route: **root-cause** (default, diagnose-gated) vs **ideation** (input is a candidate set — discover shortlist, debate output, or a "generate ideas and rank them" ask; the diagnose gate is replaced by a stated ranking anchor and Phase 1 may expand at volume). Resolution + mechanics: `references/procedures/pre-dispatch.md` § Entry-mode resolution.
+
 Mechanics (route graphs, Layer 1/1.5/2 spawn details, merge step + user feedback gate, critic FAIL routing, single-agent fallback, post-write side effects, Out-of-Scope Persistence file format, chain position, skill deference) live in [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. Load at Layer 1 dispatch entry.
 
 ---
@@ -97,7 +100,7 @@ Every run ends with explicit status:
 
 - **DONE** — initiatives generated, ICE-scored, ranked, cut-line drawn (≤3 above), kill criteria attached, critic PASS
 - **DONE_WITH_CONCERNS** — ranking complete but with sizing/impact uncertainty flagged at item level (e.g., effort estimates speculative, ICE inputs from interview not data); OR critic loop cap reached with surfaceable gate failures (pinned at top as Known Issues)
-- **BLOCKED** — `id:diagnose` unresolvable (no diagnose artifact in the manifest) AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute)
+- **BLOCKED** — root-cause mode: `id:diagnose` unresolvable (no diagnose artifact in the manifest) AND no other root-cause source available; STOP gate per Critical Gate semantics — recommend `diagnose` first (hard-gated, no INTERVIEW substitute). Ideation mode: no ranking anchor obtainable
 - **NEEDS_CONTEXT** — diagnose available but `id:product-context` unresolvable for impact estimation; recommend `research-icp`
 
 ## Next Step

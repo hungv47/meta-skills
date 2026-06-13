@@ -11,21 +11,44 @@ promptSignals:
     - "pipeline orchestrator"
     - "drive the whole loop"
     - "staged pipeline"
+    - "eval loop"
+    - "evaluation scaffold"
+    - "eval scaffold"
+    - "autoresearch style"
+    - "improvement loop"
+    - "experiment ledger"
+    - "strategy execution evaluation"
+    - "loop workspace"
+    - "where should evals live"
+    - "create a loop"
+    - "measurable initiative"
   allOf:
     - [orchestrate, stages]
     - [brief, execute, evaluate]
     - [pipeline, loop]
+    - [strategy, evaluation]
+    - [execution, evaluation]
+    - [measure, iterate]
   anyOf:
     - "execution fork"
     - "stage pipeline"
     - "ingest the asset"
     - "thread the skills"
     - "produce and measure"
+    - "keep discard"
+    - "results.tsv"
+    - "closed loop"
+    - "feedback loop"
+    - "performance loop"
+    - "campaign iteration"
   noneOf:
     - "ci pipeline"
     - "data pipeline"
     - "build pipeline"
     - "ml pipeline"
+    - "code benchmark"
+    - "unit test"
+    - "model training"
   minScore: 6
 
 capability:
@@ -33,21 +56,26 @@ capability:
   domain: meta
   public: true
   command: /run-pipeline
-  summary: "Orchestrate a closed-loop initiative across named stages — the superset of run-eval-loop sharing the loop-tree schema. Sequences leaf skills, stops at every gate; never auto-approves."
+  summary: "Orchestrate a closed-loop initiative across named stages, or scaffold the eval-only loop workspace (--eval-only). Sequences leaf skills, stops at every gate; never auto-approves."
   aliases:
     - pipeline
     - closed-loop-pipeline
     - orchestrate-loop
+    - eval-loop
+    - improvement-loop
+    - experiment-ledger
 
   route:
     use_when:
       - "Thread a full produce-and-measure initiative end to end across stages."
       - "Resume a multi-stage loop from its current stage + gate."
       - "Add the execution fork + return-leg ingest to an eval loop."
+      - "Eval-only (--eval-only): scaffold a measurable-initiative loop workspace — program.md + context.md + results.tsv schema + the durable learning ledger."
     not_when:
-      - "Eval-only scaffold (program.md + results.tsv) -> run-eval-loop."
       - "One-shot artifact with no execute/evaluate cycle -> the leaf skill."
       - "Scoring one cycle -> evaluate-{ad/content/landing-page/campaign/shortform/asset/outreach/seo}."
+      - "Writing the next-cycle brief -> the relevant brief-* skill."
+      - "Diagnosing a metric decline -> diagnose."
       - "Multi-perspective debate -> debate-agents."
     prerequisites:
       recommended:
@@ -59,11 +87,13 @@ capability:
     default: single
     single_when:
       - "Pipeline setup/resume is single-agent (architect designs the stage plan; critic gates it)."
+      - "Eval-only loop setup is single-agent (scaffold + critic on the schema)."
     multi_when:
       - "Never — each stage's work is delegated to its leaf skill, which runs its own agents."
     critic_required_when:
       - "Stage plan validation (every stage maps to a real leaf skill or gate)."
       - "Gate discipline (execute + brief stages never auto-approve)."
+      - "Eval-only schema validation (results.tsv columns match per-eval-skill requirements; guardrails + kill criteria explicit in program.md)."
 
   load:
     always:
@@ -78,15 +108,24 @@ capability:
         read:
           - "references/_shared/tool-registry-spec.md"
           - "references/_shared/execution-fork.md"
+      - if: "Eval-only entry (--eval-only / improvement loop / experiment ledger)"
+        read:
+          - "references/eval-only-mode.md"
 
   outputs:
     artifacts:
       - path: ".forsvn/loops/[slug]/pipeline.md"
         lifecycle: loop
-        produced_when: "Pipeline scaffolded — staged program + current-stage pointer."
+        produced_when: "Pipeline scaffolded — staged program + current-stage pointer (not created on eval-only runs)."
+      - path: ".forsvn/loops/[slug]/program.md"
+        lifecycle: loop
+        produced_when: "Eval-only loop scaffolded — declares primary metric + guardrails + kill criteria."
+      - path: ".forsvn/loops/[slug]/context.md"
+        lifecycle: loop-context
+        produced_when: "Eval-only loop scaffolded — declares ICP + product + competitor context."
       - path: ".forsvn/loops/[slug]/results.tsv"
         lifecycle: evaluation
-        produced_when: "Pipeline scaffolded — 8-column header (shared with run-eval-loop); per-cycle rows appended by evaluate-* siblings."
+        produced_when: "Loop scaffolded — 8-column header written; per-cycle rows appended by evaluate-* siblings."
       - path: ".forsvn/loops/[slug]/learnings.md"
         lifecycle: learning
-        produced_when: "Pipeline scaffolded — durable learning ledger (empty at start)."
+        produced_when: "Loop scaffolded — durable learning ledger (empty at start; per-cycle promotes by evaluate-* siblings)."

@@ -1,250 +1,671 @@
-/* chrome.css — constant chrome regions for the review-surface HTML preview.
-   v3 (2026-06-10): plugin in-harness UI refit — pinned DecisionBar (opaque,
-   matte, fixed bottom), decision-state pills derived from the --decision-*
-   semantic layer, ≥44px hit areas, aria-driven outcome states.
-   v2 (2026-05-26): FORSVN brand chrome — Bricolage Grotesque wordmark + Leaf
-   accent in topbar across all stacks. Typography unified per D14.
-   (Signal Lime is retired — the accent is Leaf #74B36B via --chrome-accent.) */
+/* chrome.css — the review instrument's chrome + reading experience.
+   v4 (2026-06-12, U9 design pass · revision 2): one centered 72ch reading
+   column, the chrome strip (logo · review · register chip · theme segment ·
+   state pill), the collaboration workbench (Marker / Comment / Edit + read-as),
+   typeset prose, the sealed gate echo, and the pinned decision ledger with
+   keycap-labeled controls. Adaptive dark/light via tokens.css. Matte only:
+   flat fills, 1px borders, no blur, no gradients. Sanctioned motion: hover
+   elevate (200ms), selection snap (80ms) — all collapse under
+   prefers-reduced-motion. */
 
 *, *::before, *::after { box-sizing: border-box; }
 
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   font-family: var(--chrome-sans);
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--chrome-text);
   background: var(--chrome-bg);
 }
 
 body {
   display: grid;
-  grid-template-rows: var(--chrome-topbar-h) 1fr var(--chrome-footer-h);
-  grid-template-columns: var(--chrome-left-w) 1fr;
-  grid-template-areas:
-    "topbar topbar"
-    "left   stage"
-    "footer footer";
+  grid-template-rows: auto 1fr;
   min-height: 100vh;
 }
 
-/* While the DecisionBar is active (fixed, overlaying the page bottom), pad
-   the in-flow content so the stage tail and the footer stay reachable above
-   the bar. */
-body[data-capture="active"] { padding-bottom: 188px; }
+/* While the ledger is active (fixed, overlaying the page bottom), pad the
+   in-flow content so the stage tail stays reachable above the bar. */
+body[data-capture="active"] { padding-bottom: 176px; }
 
-/* ============ TOPBAR ============ */
-.topbar {
-  grid-area: topbar;
+a { color: var(--chrome-accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+
+/* Focus — never removed, everywhere visible */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+::selection { background: color-mix(in srgb, var(--chrome-accent) 24%, transparent); }
+
+/* ============ Chrome strip ============ */
+.strip {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 24px;
+  gap: 18px;
+  min-height: 52px;
+  padding: 0 28px;
   background: var(--chrome-bg);
   border-bottom: 1px solid var(--chrome-border);
-  font-family: var(--chrome-mono);
-  font-size: 12.5px;
 }
+.strip .grow, .grow { flex: 1; }
 
-/* FORSVN brand mark — wordmark in Bricolage Grotesque ExtraBold + Leaf accent */
-.brand-mark {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  font-family: var(--chrome-display);
-  font-weight: 800;
-  font-size: 16px;
-  letter-spacing: -0.01em;
-  color: var(--chrome-accent);
-  text-decoration: none;
-  user-select: none;
-}
-.brand-mark::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: var(--chrome-accent);
-  border-radius: 2px;
-  align-self: center;
-  margin-right: 2px;
-}
-.brand-divider {
-  width: 1px;
-  height: 18px;
-  background: var(--chrome-border);
-  margin: 0 4px;
-}
-
-.stack-chip {
+/* Wordmark — the real brand glyph, theme-swapped: cream glyph on dark
+   surfaces, forest glyph on light (BRAND.md § Logo Color Combinations).
+   Glyph + wordmark pair per the lockup rules. */
+.wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 3px;
-  background: var(--chrome-panel);
-  border: 1px solid var(--chrome-border);
+  gap: 10px;
+  color: var(--chrome-text);
+  min-height: 44px;
+  user-select: none;
+}
+.wordmark .logo { width: 22px; height: 22px; display: block; }
+.wordmark .logo-on-light { display: none; }
+:root[data-theme="light"] .wordmark .logo-on-dark { display: none; }
+:root[data-theme="light"] .wordmark .logo-on-light { display: block; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .wordmark .logo-on-dark { display: none; }
+  :root:not([data-theme="dark"]) .wordmark .logo-on-light { display: block; }
+}
+.wordmark .name {
+  font-family: var(--chrome-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.strip .crumb {
   font-family: var(--chrome-mono);
   font-size: 11.5px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--chrome-text);
-}
-.stack-chip::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--stage-accent, var(--chrome-accent));
-}
-.topbar-meta {
-  flex: 1;
   color: var(--chrome-text-muted);
-  letter-spacing: 0.04em;
 }
-.topbar-meta strong { color: var(--chrome-text); font-weight: 500; }
+.strip .crumb b { color: var(--chrome-text); font-weight: 500; }
 
-/* ============ DECISION PILL ============ */
+/* Element chip — the stack's register, named */
+.el {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--chrome-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  color: var(--chrome-text-muted);
+  text-transform: uppercase;
+}
+.el .swatch {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  border: 1px solid var(--chrome-border);
+}
+.el-air .swatch   { background: #0A120D; border-color: #74B36B; }
+.el-water .swatch { background: #0C1A13; border-color: #2E4A38; }
+.el-fire .swatch  { background: #1A1410; border-color: #6B4A35; }
+.el-earth .swatch { background: #F7F0D4; border-color: #C9BC8C; }
+
+/* Theme segment — auto / dark / light. Quiet, in the chrome. */
+.theme-seg {
+  display: inline-flex;
+  border: 1px solid var(--chrome-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.theme-seg button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--chrome-text-muted);
+  font-family: var(--chrome-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 12px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.theme-seg button + button { border-left: 1px solid var(--chrome-border); }
+.theme-seg button[aria-pressed="true"] {
+  color: var(--chrome-accent);
+  background: color-mix(in srgb, var(--chrome-accent) 10%, transparent);
+}
+
+/* Decision pill — glyph + word + color, one place only. Read-only. */
 .decision-pill {
   display: inline-flex;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font: 500 12px/1 var(--chrome-mono);
-  letter-spacing: 0.04em;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font: 500 11.5px/1 var(--chrome-mono);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-/* One pill per T5 state — glyph + word + color, color never alone. No
-   infinite animations on these surfaces (spec §7); stillness is the default. */
 .decision-pill[data-state="pending"]      { background: var(--pill-pending-bg);   color: var(--pill-pending-fg); }
 .decision-pill[data-state="approved"]     { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
 .decision-pill[data-state="denied"]       { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
 .decision-pill[data-state="suggested"]    { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
 .decision-pill[data-state="not_required"] { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   opacity: 0.7; }
-@media (prefers-reduced-motion: reduce) {
-  .stage { animation: none; }
-}
 
-/* ============ LEFT CONTROLS ============ */
-.left-controls {
-  grid-area: left;
-  background: var(--chrome-bg);
-  border-right: 1px solid var(--chrome-border);
-  padding: 24px;
-  overflow-y: auto;
-}
-.left-controls h2 {
-  font: 500 11px/1.4 var(--chrome-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--chrome-text-muted);
-  margin: 0 0 12px 0;
-}
-.left-controls .control-group + .control-group { margin-top: 28px; }
-.left-controls button,
-.left-controls .picker-item {
-  display: block;
-  width: 100%;
-  min-height: 44px;       /* a11y floor: rail rows pad to the hit-area minimum */
-  text-align: left;
-  padding: 10px 12px;
-  background: var(--chrome-panel);
-  border: 1px solid var(--chrome-border);
-  border-radius: 4px;
-  color: var(--chrome-text);
-  font: 400 13px/1.4 var(--chrome-sans);
-  cursor: pointer;
-  transition: border-color var(--t-hover) var(--ease);
-}
-.left-controls button + button,
-.left-controls .picker-item + .picker-item { margin-top: 6px; }
-.left-controls button:hover,
-.left-controls .picker-item:hover { border-color: var(--chrome-text-muted); }
-.left-controls .picker-item[aria-selected="true"] { border-color: var(--chrome-accent); background: var(--chrome-panel); }
-
-/* ============ STAGE (themed by stack) ============ */
+/* ============ Stage — the reading field ============ */
 .stage {
-  grid-area: stage;
-  background: var(--stage-bg, #181818);
-  color: var(--stage-fg, #fff);
-  padding: var(--stage-pad);
+  background: var(--stage-bg, var(--chrome-bg));
+  color: var(--stage-fg, var(--chrome-text));
   overflow-y: auto;
+  padding: 0 var(--stage-pad) 96px;
   font-family: var(--font-body);
   font-size: 16px;
   line-height: var(--line-height);
-  animation: stage-enter var(--t-enter) var(--ease);
 }
-@keyframes stage-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* One centered reading column — nothing competes with the read. */
+.sheet {
+  max-width: var(--measure);
+  margin: 0 auto;
 }
-.stage h1, .stage h2, .stage h3, .stage h4 {
-  font-family: var(--font-head);
-  font-weight: 600;
-  margin: 0 0 0.6em 0;
-  letter-spacing: -0.01em;
+/* Collab layout: reading column + a quiet thread rail when threads exist */
+.sheet.sheet-collab {
+  display: grid;
+  grid-template-columns: minmax(auto, var(--measure)) 300px;
+  gap: 52px;
+  justify-content: center;
+  max-width: 1180px;
 }
-.stage h1 { font-size: 42px; font-weight: 700; letter-spacing: -0.02em; }
-.stage h2 { font-size: 24px; margin-top: 1.4em; }
-.stage h3 { font-size: 18px; margin-top: 1.2em; }
-.stage p  { max-width: var(--max-measure); margin: 0 0 1em 0; }
-.stage code,
-.stage pre { font-family: var(--font-mono); }
-.stage pre {
-  background: var(--bg-elevated, rgba(0,0,0,0.06));
-  border: 1px solid var(--stage-border, #2a2a2a);
-  border-radius: 6px;
-  padding: 12px 16px;
-  overflow-x: auto;
-  font-size: 13.5px;
+.sheet.sheet-collab > .workbench { grid-column: 1 / -1; }
+@media (max-width: 1100px) {
+  .sheet.sheet-collab { grid-template-columns: minmax(auto, var(--measure)); }
+  .thread-rail { display: none; }
 }
 
-/* ============ DECISION FOOTER ============ */
-.footer {
-  grid-area: footer;
+/* ============ Workbench — the collaboration bar ============
+   Sticky under the chrome, scoped to the reading column. Marker / Comment /
+   Edit are the HUMAN's tools; deciding stays in the ledger below — the bar
+   never captures a verdict. Hidden until chrome.js activates a live serve. */
+.workbench {
+  position: sticky;
+  top: 0;
+  z-index: 6;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 0 24px;
-  background: var(--chrome-bg);
-  border-top: 1px solid var(--chrome-border);
-  font-family: var(--chrome-mono);
-  font-size: 12.5px;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  margin-bottom: 40px;
+  background: var(--stage-bg);
+  border-bottom: 1px solid var(--stage-border);
 }
-.footer-action {
+.workbench[hidden] { display: none; }
+.tool {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
-  background: var(--chrome-panel);
-  border: 1px solid var(--chrome-border);
-  border-radius: 4px;
-  color: var(--chrome-text);
-  text-decoration: none;
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  color: var(--stage-muted);
+  font-family: var(--font-body);
+  font-size: 13.5px;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  font-family: var(--chrome-mono);
-  font-size: 12.5px;
   cursor: pointer;
-  transition: border-color var(--t-hover) var(--ease);
+  transition: border-color var(--t-snap) var(--ease), color var(--t-snap) var(--ease);
 }
-.footer-action:hover { border-color: var(--chrome-text); }
-.footer-action.primary {
-  background: var(--chrome-accent);
-  color: var(--brand-void);
-  border-color: var(--chrome-accent);
+.tool .g { font-family: var(--font-mono); font-size: 13px; }
+.tool:hover { color: var(--stage-fg); border-color: color-mix(in srgb, var(--stage-border) 40%, var(--stage-muted) 60%); }
+.tool[aria-pressed="true"] {
+  color: var(--stage-accent);
+  border-color: color-mix(in srgb, var(--stage-accent) 55%, var(--stage-border));
+  background: color-mix(in srgb, var(--stage-accent) 8%, transparent);
 }
-.footer-action.primary:hover {
-  filter: brightness(1.08);
+.tool .key, .workbench .key {
+  background: color-mix(in srgb, var(--stage-fg) 8%, transparent);
+  border-color: var(--stage-border);
+  color: var(--stage-muted);
 }
-.footer-meta { flex: 1; color: var(--chrome-text-muted); }
+.wb-note {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  color: var(--stage-muted);
+  margin-left: 8px;
+}
 
-/* ============ DECISION CAPTURE — DecisionBar(pinned) ============
+/* Read-as — the folded preview-mode chooser (informational menu) */
+.readas-wrap { position: relative; display: inline-flex; }
+.readas {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  color: var(--stage-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.readas b { color: var(--stage-fg); font-weight: 500; }
+.readas:hover { border-color: color-mix(in srgb, var(--stage-border) 40%, var(--stage-muted) 60%); }
+.readas-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 8;
+  min-width: 320px;
+  background: var(--stage-elevated, var(--chrome-panel));
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  padding: 6px;
+  box-shadow: var(--shadow-md);
+}
+.readas-menu[hidden] { display: none; }
+.readas-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  color: var(--stage-muted);
+}
+.readas-item b { color: var(--stage-fg); font-weight: 500; font-size: 13px; }
+.readas-item code { font-family: var(--font-mono); font-size: 11px; color: var(--stage-fg); }
+.readas-item.is-current { background: color-mix(in srgb, var(--stage-accent) 8%, transparent); }
+.readas-item.is-current b { color: var(--stage-accent); }
+
+/* Marker — honey wash, the brand's one decorative warmth as a literal marker */
+mark.hl {
+  background: var(--marker);
+  color: inherit;
+  padding: 0.05em 0.15em;
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+mark.hl.noted { border-bottom: 2px solid var(--decision-suggested); }
+.notechip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  vertical-align: super;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--decision-suggested);
+  border: 1px solid color-mix(in srgb, var(--decision-suggested) 50%, transparent);
+  border-radius: 999px;
+}
+
+/* Comment thread — anchored to a highlight; feeds back to the agents */
+.thread-rail {
+  position: sticky;
+  top: 86px;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.thread-rail[hidden] { display: none; }
+.thread {
+  border: 1px solid var(--stage-border);
+  background: var(--stage-elevated);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--stage-fg);
+}
+.thread .who {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--stage-muted);
+  margin-bottom: 8px;
+}
+.thread .who b { color: var(--stage-accent); font-weight: 600; }
+.thread .quote {
+  font-size: 12px;
+  color: var(--stage-muted);
+  border-left: 2px solid var(--decision-suggested);
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+.thread p { margin: 0 0 10px; line-height: 1.55; }
+.thread textarea {
+  width: 100%;
+  min-height: 44px;
+  resize: vertical;
+  background: transparent;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius-sm);
+  color: var(--stage-fg);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 8px 10px;
+}
+.thread textarea::placeholder { color: var(--stage-muted); }
+.thread .actions { display: flex; gap: 10px; margin-top: 8px; }
+
+/* Agent suggested-change card — rendered text, never raw diff syntax.
+   Agents suggest; only the human accepts. Dismissing is also yours. */
+.suggestion {
+  border: 1px solid var(--stage-border);
+  border-left: 3px solid var(--decision-suggested);
+  background: var(--stage-elevated);
+  border-radius: var(--radius);
+  margin: 22px 0;
+}
+.suggestion > header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--stage-border);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--decision-suggested);
+}
+.suggestion > header .note {
+  margin-left: auto;
+  color: var(--stage-muted);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+.suggestion .change { padding: 14px 16px 4px; font-size: 14.5px; line-height: 1.65; }
+.suggestion .change p { margin: 0 0 10px; }
+.suggestion .change del {
+  color: var(--stage-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--decision-denied);
+  text-decoration-thickness: 1.5px;
+}
+.suggestion .change ins {
+  text-decoration: none;
+  background: color-mix(in srgb, var(--stage-accent) 12%, transparent);
+  border-radius: 3px;
+  padding: 0 3px;
+}
+.suggestion > footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 16px 14px;
+}
+.suggestion > footer .ownership {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--stage-muted);
+}
+.btn-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  color: var(--stage-muted);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.btn-quiet:hover { color: var(--stage-fg); }
+.btn-quiet[hidden] { display: none; }
+.btn-accept {
+  color: var(--stage-accent);
+  border-color: color-mix(in srgb, var(--stage-accent) 55%, var(--stage-border));
+}
+
+/* Edit mode — the reading column becomes the editor. Save/discard in the bar. */
+.editfield {
+  width: 100%;
+  min-height: 60vh;
+  resize: vertical;
+  border: 1px dashed color-mix(in srgb, var(--stage-accent) 45%, var(--stage-border));
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  background: transparent;
+  color: var(--stage-fg);
+  caret-color: var(--stage-accent);
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  background: var(--chrome-accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-save[hidden] { display: none; }
+.btn-save .key { background: color-mix(in srgb, var(--on-accent) 14%, transparent); border-color: transparent; color: var(--on-accent); }
+body[data-mode="edit"] .workbench .readas-wrap,
+body[data-mode="edit"] .workbench .wb-note { display: none; }
+
+/* Masthead — editorial title block. Identity = title + skill + stack + date. */
+.masthead { margin-bottom: 48px; }
+article > .masthead { padding-top: 8px; }
+.masthead .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stage-accent);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.masthead .eyebrow .rule { flex: 1; height: 1px; background: var(--stage-border); }
+.masthead h1 {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 3.4vw, 44px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0 0 16px;
+}
+.masthead .deck {
+  font-family: var(--font-head);
+  font-weight: 300;
+  font-size: 21px;
+  letter-spacing: -0.015em;
+  line-height: 1.45;
+  color: var(--stage-muted);
+  max-width: 58ch;
+  margin: 0;
+}
+.masthead .deck:empty { display: none; }
+
+/* Prose — the artifact body is a typeset document, never markdown source */
+.prose { font-size: 16px; line-height: 1.7; }
+.prose p { margin: 0 0 18px; max-width: var(--measure); }
+.prose h1, .prose h2 {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 44px 0 14px;
+  scroll-margin-top: 90px;
+}
+.prose h3 { font-family: var(--font-head); font-size: 17px; font-weight: 600; margin: 28px 0 10px; }
+.prose h4, .prose h5, .prose h6 { font-family: var(--font-head); font-size: 15px; font-weight: 600; margin: 22px 0 8px; }
+.prose ul, .prose ol { padding-left: 22px; margin: 0 0 18px; }
+.prose li { margin-bottom: 6px; }
+.prose li.task { list-style: none; margin-left: -22px; }
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+  background: var(--stage-elevated);
+  border: 1px solid var(--stage-border);
+  padding: 1.5px 6px;
+  border-radius: var(--radius-sm);
+}
+.prose pre {
+  background: var(--stage-elevated);
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  margin: 0 0 18px;
+}
+.prose pre code { background: transparent; border: none; padding: 0; font-size: inherit; }
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 22px;
+  font-size: 13.5px;
+}
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--stage-muted);
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--stage-border) 50%, var(--stage-fg) 50%);
+}
+.prose td {
+  padding: 9px 14px 9px 0;
+  border-bottom: 1px solid var(--stage-border);
+  vertical-align: top;
+}
+.prose td:first-child { font-weight: 500; }
+.prose blockquote {
+  margin: 0 0 18px;
+  padding: 14px 20px;
+  border-left: 2px solid var(--stage-accent-2);
+  background: var(--stage-elevated);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--stage-muted);
+  font-size: 14.5px;
+}
+.prose blockquote p:last-child { margin-bottom: 0; }
+.prose hr { border: none; border-top: 1px solid var(--stage-border); margin: 32px 0; }
+.prose img { max-width: 100%; border-radius: var(--radius-sm); }
+
+/* Review Gate — read-only echo, a sealed checklist (typeset, not syntax) */
+.gate {
+  margin: 44px 0 0;
+  border: 1px solid var(--stage-border);
+  border-radius: var(--radius);
+  background: var(--stage-elevated);
+}
+.gate > header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--stage-border);
+}
+.gate > header .t {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--stage-accent);
+}
+.gate > header .ro {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--stage-muted);
+}
+.gate .gate-body { padding: 4px 22px 8px; }
+.gate ul { list-style: none; padding: 10px 0 10px; margin: 0; }
+.gate li { padding: 7px 0; font-size: 14px; color: var(--stage-fg); margin: 0; }
+.gate li.task { margin-left: 0; }
+.gate input[type="checkbox"] { accent-color: var(--stage-accent); margin-right: 10px; }
+.gate > footer {
+  padding: 12px 22px;
+  border-top: 1px solid var(--stage-border);
+  font-size: 12.5px;
+  color: var(--stage-muted);
+}
+/* The in-body gate echo is read-only — never a second interactive decision place. */
+.mirror-gate { pointer-events: none; }
+
+/* Notice strip — G1 warn-and-proceed (ambient, not an alert) */
+.notice {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 18px;
+  margin-bottom: 36px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--decision-suggested) 13%, transparent);
+  font-size: 13.5px;
+  color: var(--decision-suggested);
+}
+.notice .glyph { font-family: var(--font-mono); flex-shrink: 0; }
+.notice .fix { display: block; color: var(--stage-muted); margin-top: 2px; font-size: 12.5px; }
+/* EARTH register (dark theme): amber fails on cream — text drops to ink */
+[data-stack="earth"] .notice { color: var(--stage-fg); }
+[data-stack="earth"] .notice .glyph { color: #8A5D10; }
+
+/* Keycaps */
+.key, .done .k {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--chrome-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--chrome-text-muted);
+  background: var(--chrome-panel-2);
+  border: 1px solid var(--chrome-border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  min-height: 20px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* ============ DECISION CAPTURE — the ledger, pinned ============
    Form is always present in markup; activated by chrome.js only when the
-   `forsvn preview` CLI has injected a token + endpoint and the artifact is
-   still pending. Otherwise the form is display:none and the chrome reads
-   read-only. Pinned: fixed to the viewport bottom so a long artifact body
-   never buries Done. Opaque, matte (never frosted), top hairline, top
-   corners rounded — the stage scrolls under it. */
+   preview CLI has injected a token + endpoint and the artifact is still
+   pending. Otherwise the form is display:none and the chrome reads read-only.
+   Pinned: fixed to the viewport bottom so a long artifact body never buries
+   Done. Opaque, matte (never frosted), top hairline. */
 .decision-capture {
   position: fixed;
   bottom: 0;
@@ -252,162 +673,213 @@ body[data-capture="active"] { padding-bottom: 188px; }
   right: 0;
   z-index: 30;
   display: none;
-  flex-direction: row;
-  align-items: stretch;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 24px;
   background: var(--chrome-panel);
   border-top: 1px solid var(--chrome-border);
-  border-radius: 8px 8px 0 0;
-  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.20);
+  padding: 16px 28px 20px;
 }
-.decision-capture[data-active="true"] { display: flex; }
-.decision-capture fieldset {
+.decision-capture[data-active="true"] { display: block; }
+.ledger-inner { max-width: 1180px; margin: 0 auto; }
+.ledger-head {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border: 1px solid var(--chrome-border);
-  border-radius: 6px;
-  padding: 10px 12px;
-  margin: 0;
-  min-width: 200px;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 12px;
 }
-.decision-capture legend {
-  font: 500 11px/1 var(--chrome-mono);
-  letter-spacing: 0.12em;
+.ledger-head .t {
+  font-family: var(--chrome-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--chrome-text-muted);
-  padding: 0 4px;
 }
-.decision-capture label {
+.ledger-head .aside {
+  margin-left: auto;
+  font-family: var(--chrome-mono);
+  font-size: 11px;
+  color: var(--chrome-faint);
+  letter-spacing: 0.04em;
+}
+.ledger-row {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr auto;
+  gap: 12px;
+  align-items: stretch;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+@media (max-width: 980px) {
+  .ledger-row { grid-template-columns: 1fr 1fr 1fr; }
+  .ledger-row .comment, .ledger-row .decision-actions { grid-column: span 3; }
+}
+
+/* Decision options — one radiogroup; keycaps live on the controls. The native
+   radio is visually hidden but keeps the radiogroup keyboard model (arrows). */
+.opt {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;       /* a11y floor: the full label row is the hit area */
-  font: 400 13px/1.3 var(--chrome-sans);
-  color: var(--chrome-text);
-  cursor: pointer;
-}
-.decision-capture .decision-radio label { min-height: 44px; }
-.decision-capture label > span { user-select: none; }
-.decision-capture input[type="radio"] {
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.5px solid var(--chrome-text-muted);
-  background: transparent;
-  margin: 0;
-  cursor: pointer;
-  transition: border-color var(--t-hover) var(--ease), background var(--t-hover) var(--ease);
-}
-.decision-capture input[type="radio"]:checked {
-  border-color: var(--chrome-accent);
-  background: radial-gradient(circle, var(--chrome-accent) 0 4px, transparent 5px);
-}
-.decision-capture .decision-comments {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font: 500 11px/1 var(--chrome-mono);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--chrome-text-muted);
-}
-.decision-capture textarea {
-  flex: 1;
-  resize: vertical;
-  min-height: 60px;
-  padding: 8px 10px;
+  gap: 12px;
+  min-height: 56px;
+  min-width: 168px;
+  padding: 8px 18px 8px 14px;
   background: var(--chrome-bg);
   border: 1px solid var(--chrome-border);
-  border-radius: 4px;
-  color: var(--chrome-text);
-  font: 400 13px/1.4 var(--chrome-sans);
-  letter-spacing: 0;
-  text-transform: none;
-}
-.decision-capture textarea:focus {
-  outline: none;
-  border-color: var(--chrome-accent);
-}
-.decision-capture .decision-actions {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-}
-.decision-capture .decision-done {
-  min-height: 44px;       /* a11y floor */
-  padding: 10px 18px;
-  border-radius: 6px;
-  border: 1px solid var(--chrome-accent);
-  background: var(--chrome-accent);
-  color: var(--brand-void);
-  font: 600 13px/1 var(--chrome-sans);
-  letter-spacing: 0.04em;
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: filter var(--t-hover) var(--ease);
+  transition: border-color var(--t-snap) var(--ease), background var(--t-snap) var(--ease);
 }
-.decision-capture .decision-done:hover { filter: brightness(1.08); }
-/* Pre-pick state uses aria-disabled (stays in AT traversal, carries the
-   describedby "pick a decision first"); request-duration uses disabled. */
-.decision-capture .decision-done[aria-disabled="true"],
-.decision-capture .decision-done:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  filter: none;
+.opt:hover { border-color: color-mix(in srgb, var(--chrome-border) 40%, var(--chrome-text-muted) 60%); }
+.opt input[type="radio"] {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: 0; padding: 0;
+  opacity: 0;
+  pointer-events: none;
 }
-.decision-capture .decision-status {
+.opt .glyph { font-family: var(--chrome-mono); font-size: 15px; color: var(--chrome-text-muted); width: 18px; text-align: center; }
+.opt .w { display: flex; flex-direction: column; line-height: 1.25; }
+.opt .word { font-weight: 600; font-size: 14.5px; color: var(--chrome-text); }
+.opt .sub { font-size: 11.5px; color: var(--chrome-text-muted); }
+.opt .key { margin-left: auto; }
+.opt:has(input:checked)[data-d="approve"] { border-color: var(--decision-approved); background: color-mix(in srgb, var(--decision-approved) 9%, var(--chrome-bg)); }
+.opt:has(input:checked)[data-d="approve"] .glyph, .opt:has(input:checked)[data-d="approve"] .word { color: var(--decision-approved); }
+.opt:has(input:checked)[data-d="deny"] { border-color: var(--decision-denied); background: color-mix(in srgb, var(--decision-denied) 9%, var(--chrome-bg)); }
+.opt:has(input:checked)[data-d="deny"] .glyph, .opt:has(input:checked)[data-d="deny"] .word { color: var(--decision-denied); }
+.opt:has(input:checked)[data-d="suggest"] { border-color: var(--decision-suggested); background: color-mix(in srgb, var(--decision-suggested) 9%, var(--chrome-bg)); }
+.opt:has(input:checked)[data-d="suggest"] .glyph, .opt:has(input:checked)[data-d="suggest"] .word { color: var(--decision-suggested); }
+/* Keyboard focus lands on the hidden radio — surface it on the card */
+.opt:has(input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Comment */
+.comment { display: flex; flex-direction: column; }
+.comment textarea {
+  flex: 1;
+  min-height: 56px;       /* a11y floor: comment hit area */
+  resize: none;
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--radius);
+  color: var(--chrome-text);
+  font-family: var(--chrome-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 10px 14px;
+}
+.comment textarea::placeholder { color: var(--chrome-faint); }
+.comment textarea:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* Done — the single accent fill, never larger than this */
+.decision-actions { display: flex; align-items: stretch; gap: 12px; }
+.decision-status {
   font: 500 11.5px/1.3 var(--chrome-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--chrome-text-muted);
   align-self: center;
 }
-.decision-capture .decision-status[data-tone="error"] { color: var(--decision-denied); }
-.decision-capture .decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
-
-/* ============ FOCUS VISIBLE (a11y) ============
-   Keyboard focus ring = Leaf accent, 2px, 2px offset — via :focus-visible so a
-   pointer click doesn't draw it. The radios use appearance:none and otherwise
-   show no ring at all; this is the keyboard operator's only position cue. */
-.decision-capture input[type="radio"]:focus-visible,
-.decision-capture .decision-done:focus-visible,
-.decision-capture textarea:focus-visible,
-.left-controls button:focus-visible,
-.left-controls .picker-item:focus-visible,
-.footer-action:focus-visible,
-.decision-pill:focus-visible {
-  outline: 2px solid var(--chrome-accent);
-  outline-offset: 2px;
+.decision-status[data-tone="error"] { color: var(--decision-denied); }
+.decision-status[data-tone="ok"]    { color: var(--chrome-accent); }
+.done {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 56px;       /* ≥ the 44px a11y floor */
+  min-width: 124px;
+  padding: 0 26px;
+  background: var(--chrome-accent);
+  color: var(--on-accent);
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--chrome-sans);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform var(--t-snap) var(--ease);
 }
+.done:hover { transform: translateY(-1px); }
+.done:active { transform: scale(0.98); }
+.done .k { font-size: 10px; font-weight: 500; opacity: 0.85; background: transparent; border: none; color: var(--on-accent); padding: 0; min-height: 0; }
+/* Pre-pick state uses aria-disabled (stays in AT traversal, carries the
+   describedby "pick a decision first"); request-duration uses disabled. */
+.done[aria-disabled="true"], .done:disabled {
+  background: var(--chrome-panel-2);
+  color: var(--chrome-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+.done[aria-disabled="true"] .k, .done:disabled .k { color: var(--chrome-disabled); }
 
-/* Outcome states swap into the bar; neither is ever auto-dismissed. */
-.decision-capture .decision-outcome,
-.decision-capture .decision-alert {
-  flex-basis: 100%;
-  padding-top: 12px;
-  font: 400 13px/1.5 var(--chrome-sans);
+/* In-ledger alert (409/stale) — role=alert, never auto-dismissed */
+.decision-alert {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  border-radius: var(--radius);
+  border-left: 3px solid var(--decision-denied);
+  background: color-mix(in srgb, var(--decision-denied) 10%, var(--chrome-bg));
+  font-size: 14px;
   color: var(--chrome-text);
   outline: none;
 }
-.decision-capture .decision-outcome { border-top: 1px solid var(--chrome-accent); }
-.decision-capture .decision-outcome .state-line { font-family: var(--chrome-mono); display: block; margin-top: 4px; }
-.decision-capture .decision-outcome[data-state="approved"]  .state-line { color: var(--decision-approved); }
-.decision-capture .decision-outcome[data-state="denied"]    .state-line { color: var(--decision-denied); }
-.decision-capture .decision-outcome[data-state="suggested"] .state-line { color: var(--decision-suggested); }
-.decision-capture .decision-alert { border-top: 1px solid var(--decision-denied); }
-.decision-capture .decision-alert strong {
-  display: block;
-  color: var(--decision-denied);
-  font-weight: 500;
-}
+.decision-alert[hidden] { display: none; }
+.decision-alert strong { color: var(--decision-denied); font-weight: 600; }
+.decision-alert .rec { display: block; color: var(--chrome-text-muted); font-size: 12.5px; margin-top: 3px; }
 
-/* DecisionSet(mirror): the in-body Review Gate echo is read-only — never a
-   second interactive decision place. */
-.stage .mirror-gate { pointer-events: none; opacity: 0.75; }
+/* Confirmation — the verdict colors the close-out hairline */
+.decision-outcome { outline: none; }
+.decision-outcome[hidden] { display: none; }
+.confirm { padding-top: 4px; }
+.confirm .hairline { height: 2px; border-radius: 1px; margin-bottom: 16px; background: var(--chrome-border); }
+.confirm[data-state="approved"]  .hairline, .confirm[data-state="approved"]  .state { background-color: var(--decision-approved); }
+.confirm[data-state="denied"]    .hairline, .confirm[data-state="denied"]    .state { background-color: var(--decision-denied); }
+.confirm[data-state="suggested"] .hairline, .confirm[data-state="suggested"] .state { background-color: var(--decision-suggested); }
+.confirm[data-state="approved"]  .state { background: none; color: var(--decision-approved); }
+.confirm[data-state="denied"]    .state { background: none; color: var(--decision-denied); }
+.confirm[data-state="suggested"] .state { background: none; color: var(--decision-suggested); }
+.confirm .recorded {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  font-size: 15px;
+  flex-wrap: wrap;
+}
+.confirm .recorded .state { font-family: var(--chrome-mono); font-weight: 600; font-size: 15px; }
+.confirm .recorded .meta { color: var(--chrome-text-muted); font-size: 13px; }
+.confirm .note-echo { margin-top: 10px; color: var(--chrome-text-muted); font-size: 13px; }
+.confirm .next {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--chrome-border);
+  font-size: 13px;
+  color: var(--chrome-text-muted);
+}
+.confirm .next .name { color: var(--chrome-text); font-weight: 500; }
+.confirm .next .hint { display: block; margin-top: 3px; font-size: 12px; color: var(--chrome-faint); }
+.confirm .next .hint code { font-family: var(--chrome-mono); color: var(--chrome-text-muted); }
+
+/* ============ FOCUS VISIBLE (a11y) ============
+   Keyboard focus ring = the theme signal, 2px, 2px offset — via :focus-visible
+   so a pointer click doesn't draw it. */
+.theme-seg button:focus-visible,
+.tool:focus-visible,
+.readas:focus-visible,
+.btn-quiet:focus-visible,
+.btn-save:focus-visible,
+.done:focus-visible,
+.editfield:focus-visible,
+.decision-capture textarea:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
 
 /* Visually-hidden (AT-only) helper. */
 .sr-only {
@@ -422,14 +894,14 @@ body[data-capture="active"] { padding-bottom: 188px; }
   border: 0;
 }
 
-/* ============ RESPONSIVE FALLBACK ============ */
+/* ============ RESPONSIVE ============ */
 @media (max-width: 800px) {
-  body {
-    grid-template-columns: 1fr;
-    grid-template-rows: var(--chrome-topbar-h) auto 1fr var(--chrome-footer-h);
-    grid-template-areas: "topbar" "left" "stage" "footer";
-  }
-  .left-controls { border-right: none; border-bottom: 1px solid var(--chrome-border); max-height: 240px; }
-  .stage { padding: 24px; }
-  .decision-capture { flex-direction: column; }
+  .stage { padding: 0 24px 96px; }
+  .strip { padding: 0 16px; gap: 12px; }
+  .strip .crumb { display: none; }
+}
+
+/* Reduced motion: everything snaps */
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
 }

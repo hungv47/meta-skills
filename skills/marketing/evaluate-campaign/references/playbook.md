@@ -68,7 +68,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-campaign does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-campaign does not scaffold loops.
 - **A single ad / post / page / video.** Route to `evaluate-ad` / `evaluate-content` / `evaluate-landing-page` / `evaluate-shortform` — those own the asset-level lanes.
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-campaign does not run as a heuristic audit.
 - **The next action is campaign planning, not scoring.** Route to `plan-campaign` with `--rev=N+1`.
@@ -78,7 +78,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## Sibling coordination
 
 - **`plan-campaign`** owns construction-time campaign planning. evaluate-campaign reads plan-campaign's artifact as input; routes the next cycle to plan-campaign with hypothesis seeding. evaluate-campaign does NOT author campaign plans.
-- **`run-eval-loop`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-campaign assumes a loop exists; if missing, defers to run-eval-loop.
+- **`run-pipeline`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-campaign assumes a loop exists; if missing, defers to run-pipeline.
 - **`evaluate-ad` / `evaluate-content` / `evaluate-landing-page` / `evaluate-shortform`** are the asset-level eval skills — same 4-agent / 8-section / 8-col structure; evaluate-campaign mirrors them for cross-eval consistency and aggregates above them, never re-scoring their assets.
 
 ## History / origin
@@ -91,7 +91,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - 8 Critical Gates (existing loop / aggregate-only campaign scope / measurement evidence / one primary metric / whole-campaign all-channels scope / no fabricated analytics / explicit attribution confidence / does-not-generate-strategy)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts` per D8 contract
+- Critic-override protocol via `scripts/log-critic-override.ts` per D8 contract
 - Generation provenance per D8 contract — `input_artifacts` lists source plan-campaign + BRAND.md + icp-research.md
 - Results Row schema byte-identical with evaluate-ad / evaluate-content (8 cols)
 - Learning promotion campaign-type/channel-mix-scoped

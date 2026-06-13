@@ -1,6 +1,6 @@
 ---
 name: evaluate-shortform
-description: "Closes the feedback loop for short-form video — scores a published post against its original brief and the matching short-form platform-intelligence catalog on a 4-dimension rubric, then logs a falsifiable pattern entry to the eval loop. Use to review a post after publishing or run an eval cycle in an existing loop. Not for pre-publish brief authoring (use brief-shortform) or catalog discovery (use research-shortform); needs a loop workspace (see run-eval-loop)."
+description: "Closes the feedback loop for short-form video — scores a published post against its original brief and the matching short-form platform-intelligence catalog on a 4-dimension rubric, then logs a falsifiable pattern entry to the eval loop. Use to review a post after publishing or run an eval cycle in an existing loop. Not for pre-publish brief authoring (use brief-shortform) or catalog discovery (use research-shortform); needs a loop workspace (see run-pipeline)."
 argument-hint: "<loop-slug> <post-url> <brief-path>"
 allowed-tools: Read Grep Glob Bash WebFetch Write
 metadata:
@@ -41,6 +41,7 @@ Critic verifies before delivery (all four binary PASS required, max 2 rewrite cy
 Apply the [before-starting-check](references/_shared/before-starting-check.md) [PLAYBOOK]:
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: standard`; `--fast` collapses to single-pass eval-runner (skip hook-strength parallel + skip pattern-extractor as separate Layer-2 agent), but Critical Gates STILL enforced. Cold Start fires under `--fast` if catalog/brief/loop unresolvable.
+   Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output paths match canonical inventory (`.forsvn/loops/[slug]/evals/` + `results.tsv`).
 2. Read `.forsvn/index/manifest.json` — find matching `research-shortform` catalog by topic+market; check freshness.
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — read order, Cold/Warm prompts, hard-block conditions, catalog-freshness handling.
@@ -81,5 +82,5 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 - `references/{playbook, anti-patterns, format-conventions, rubric}.md`
 - `references/procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `references/_shared/{before-starting-check, mode-resolver, pre-dispatch-protocol, artifact-contract-template, platform-intelligence/}` (canonical at top-level `references/`, synced)
-- **Sibling coordination:** `brief-shortform` (upstream — produces the hypothesis this skill scores), `research-shortform` (upstream catalog + downstream pattern-log consumer), `run-eval-loop` (owns loop scaffolding + ledger schema)
+- **Sibling coordination:** `brief-shortform` (upstream — produces the hypothesis this skill scores), `research-shortform` (upstream catalog + downstream pattern-log consumer), `run-pipeline` (owns loop scaffolding + ledger schema)
 - `research-skills/CLAUDE.md` §"Pre-Dispatch Protocol" + §"Complexity Routing" + §"Multi-Agent Skills" — stack-level conventions inherited

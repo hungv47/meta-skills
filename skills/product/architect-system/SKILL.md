@@ -81,6 +81,7 @@ Re-run triggers: product spec changes significantly, scale requirements change (
 ## Dispatch
 
 Multi-agent default (7 agents: stack-selection · infrastructure · schema · api · integration · scaling · critic). Single-agent fallback when mode-resolver downgrades to `fast`. Full execution layers, dispatch protocol, routing logic, and fallback steps: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md). Per-agent role + file paths: [`references/agent-manifest.md`](references/agent-manifest.md).
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Anti-Patterns
 

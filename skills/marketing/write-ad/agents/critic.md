@@ -147,7 +147,7 @@ Are hero + Variant A + Variant B genuinely distinct, and does the hero break the
 **Auto-fail conditions:**
 - Two variants share the exact same anchor proof (e.g., both reference "Customer X · 9→4 day close")
 - Three variants share the same angle archetype with surface-level paraphrasing
-- Headline distinctness < 10 chars Levenshtein-distance proxy across any pair
+- Headline distinctness < 10 chars Levenshtein-distance proxy across any pair AND the pair shares the same angle archetype → flag for operator review (not auto-fail when archetypes differ)
 - Competitor-pattern context is provided and the hero repeats that pattern without a deliberate inverse move
 
 #### 5. Policy + claim compliance (0-10)

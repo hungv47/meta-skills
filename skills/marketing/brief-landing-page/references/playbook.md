@@ -20,8 +20,8 @@ This skill is the canonical producer of `.forsvn/artifacts/marketing/brief-landi
 
 Six failure modes it prevents:
 
-1. **Designer asks 5 follow-up questions.** A brief under 250 lines under-specifies sections, asset slots, and conversion gates. brand-voice critic G6 enforces ≥250 lines; the conversion critic enforces per-section conversion-checklist completeness.
-2. **Designer skims; misses critical spec.** Briefs over 500 lines bloat past the readable envelope. brand-voice critic G6 enforces ≤500 lines. Project skill-chain content is REFERENCED by section header, never inline-duplicated.
+1. **Designer asks 5 follow-up questions.** A brief under 250 lines typically under-specifies sections, asset slots, and conversion gates. brand-voice critic G6 gates on completeness (headline candidates + CTA copy + conversion checklist per section), WARNs under 250, hard-FAILs under ~200; the conversion critic enforces per-section conversion-checklist completeness.
+2. **Designer skims; misses critical spec.** Briefs over 500 lines bloat past the readable envelope. brand-voice critic G6 WARNs over 500 and hard-FAILs over ~700. Project skill-chain content is REFERENCED by section header, never inline-duplicated.
 3. **Brand-good but conversion-bad output.** A brief that respects sacred + voice but ignores CP-01 (4-U headline), CP-02 (above-fold value), CP-03 (CTA first-person), CP-04 (5-field form maximum), CP-05 (message match), CP-08 (benefit-first), CP-09 (social proof authenticity), CP-11 (trust signal clustering), or CP-13 (3-second test) ships a beautiful page that doesn't convert. Conversion critic FAILs and re-dispatches section-spec.
 4. **Conversion-good but brand-bad output.** A brief that hits every CP gate but proposes new logo treatment, glassmorphic hero overlay on a "matte" brand, or "Unlock seamless leverage" hero copy violates sacred and voice rules. Brand-voice critic G1 (sacred 4/4 required, non-negotiable) auto-FAILs and re-dispatches section-spec or asset-slot or brand-anchor.
 5. **Coding agent invents asset URLs.** Implementation prompt without the verbatim Asset Placeholder Rule → coding agent fills `<img>` tags with hallucinated Unsplash URLs that 404 or load wrong imagery. Brand-voice critic G8b enforces the Asset Placeholder Rule verbatim + "Invent or substitute asset URLs" ban in the DO NOT block + closing rule verbatim ("Write production-ready, flawless code. Do not truncate. Do not use placeholder copy or invented imagery.").
@@ -64,9 +64,9 @@ The artifact IS the contract — a 14-section body schema with a 12-field frontm
 
 ## Principles
 
-- **Critical Gates are binary.** 6 gates so load-bearing that violation = NEEDS_CONTEXT or auto-FAIL before delivery. (1) No brief without brand artifacts. (2) No skipping conversion rubric. (3) No proposing changes to sacred elements. (4) No exceeding 250-500 line envelope. (5) No inlining the full skill chain. (6) No injecting placeholder testimonials, fake logos, or pretend numbers.
+- **Critical Gates are binary.** 6 gates so load-bearing that violation = NEEDS_CONTEXT or auto-FAIL before delivery. (1) No brief without brand artifacts. (2) No skipping conversion rubric. (3) No proposing changes to sacred elements. (4) No breaching the brief envelope — completeness-gated, hard limits ~200/~700, 250-500 typical. (5) No inlining the full skill chain. (6) No injecting placeholder testimonials, fake logos, or pretend numbers.
 - **Hard gates fire before any cold-start questioning.** Brand artifacts missing → NEEDS_CONTEXT immediately, before asking the user the 4 cold-start questions. Brand artifacts >60 days stale → warn before proceeding.
-- **The 250-500 line envelope is enforced strictly.** Under 250 = insufficient depth (designer asks follow-ups). Over 500 = bloat (designer skims). Brand-voice critic G6 auto-FAILs both. The envelope assumes well-spaced markdown — empty lines count.
+- **The 250-500 line envelope is the typical band; completeness is the gate.** Brand-voice critic G6 checks every section carries its headline candidates, CTA copy where applicable, and a conversion checklist. Outside 250-500 = WARN; hard FAIL only under ~200 (insufficient depth — designer asks follow-ups) or over ~700 (bloat — designer skims). The envelope assumes well-spaced markdown — empty lines count.
 - **Per-FAIL routing comes from critics, not from the orchestrator.** Each FAIL includes `fix direction` naming the responsible agent. Orchestrator follows that direction; do not assume failure-class → agent mappings.
 - **DONE_WITH_CONCERNS is the floor.** No silent FAIL outputs. Every critic concern visible in the artifact, pinned at top.
 - **Sacred elements are rails, not options.** Inside-the-rails creativity only. G1 (sacred) auto-FAILs on a single violation — non-negotiable.
@@ -76,7 +76,7 @@ The artifact IS the contract — a 14-section body schema with a 12-field frontm
 
 ## When NOT to use this skill
 
-- **Need post-launch CRO from real evidence.** Use `evaluate-landing-page` inside an existing `run-eval-loop`. lp-brief can read prior evals when producing the next brief, but does not pretend best-practice review is optimization.
+- **Need post-launch CRO from real evidence.** Use `evaluate-landing-page` inside an existing `run-pipeline`. lp-brief can read prior evals when producing the next brief, but does not pretend best-practice review is optimization.
 - **Single visual asset spec, not whole page.** Use `brief-graphic` — per-asset brief, consumes BRAND.md + DESIGN.md.
 - **No brand defined yet.** Use `create-brand` FIRST. Hard gate fires — lp-brief returns NEEDS_CONTEXT when BRAND.md or DESIGN.md is missing.
 - **Need only headline variations.** Use `write-copy` — voice consumer, not page architect.

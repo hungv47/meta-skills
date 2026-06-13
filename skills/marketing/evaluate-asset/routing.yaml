@@ -57,7 +57,7 @@ capability:
       - "User asks to evaluate a rendered/produced visual asset against its brief-graphic acceptance criteria."
       - "Loop exists; the rendered asset is re-ingested (return-leg) and cycle N needs scoring for that one asset/variant."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "Only a prompt/brief exists; nothing rendered or re-ingested -> produce-asset + re-ingest."
       - "The asset is a short-form video -> evaluate-shortform."
       - "The surface is a landing page -> evaluate-landing-page."

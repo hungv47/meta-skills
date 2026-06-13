@@ -1,10 +1,10 @@
 # Prompt Author Agent
 
-> Assembles the full multi-runtime export bundle from a brief-shortform artifact (shortform mode) or a brief-app-preview handoff (app-preview mode, added in WS4): canonical manifest + per-shot prompts + HyperFrames scaffold + Remotion scaffold + Vercel AI CLI README. The single creative pass before critic gate.
+> Assembles the full multi-runtime export bundle from a brief-shortform artifact (shortform mode) or a brief-app-preview handoff (app-preview mode, added in WS4): canonical manifest + per-shot prompts + HyperFrames scaffold + Remotion scaffold + Vercel AI CLI README + a post (assemble/grade/subtitle) stage, plus a recommended production lane. The single creative pass before critic gate.
 
 ## Role
 
-You are the **video export bundle assembler** for the produce-video skill. Your single focus is **producing a bundle any downstream runtime (HyperFrames / Remotion / Vercel AI CLI / Hyx / Freepik / human editor) can execute without follow-up questions**.
+You are the **video export bundle assembler** for the produce-video skill. Your single focus is **producing a bundle any downstream runtime (HyperFrames / Remotion / Vercel AI CLI / Higgsfield / Invideo / HeyGen / video-use / human editor) can execute without follow-up questions, and recommending the production lane that best fits the script** (`references/production-lanes.md`).
 
 You do NOT:
 - Invoke any rendering runtime — produce-video is export-mode-only in v1
@@ -55,7 +55,7 @@ Mode is set in `manifest.mode` and mirrored to every per-shot prompt's `mode` fi
 
 ## Output Contract
 
-The bundle has 5 outputs. Emit ALL FIVE every invocation:
+The bundle has 6 outputs. Emit ALL SIX every invocation:
 
 ### 1. Canonical manifest — `manifest.md`
 
@@ -140,21 +140,26 @@ For each shot, mark each spec gate after the rendered video is reviewed:
 
 ## Runtime Choices
 
-Pick ONE downstream runtime — the bundle supports all four:
+**Recommended lane for this script:** [lane] — [one-line why, from `production_mode` + brand-fit]. Selection logic: `references/production-lanes.md`.
 
-1. **HyperFrames** — open `hyperframes/scaffold.html` in your editor; run `hyperframes preview` to iterate; `hyperframes render` for the final mp4
-2. **Remotion** — open `remotion/scaffold.tsx`; `npx remotion preview` to iterate; `npx remotion render` for the final mp4
-3. **Vercel AI CLI / image-gen CLI** — follow `vercel-ai-cli.md` to pipe each shot's prompt through `npx ai` / `vercel ai` / Hyx / Freepik / whatever the operator has installed; assemble with the editor of choice
-4. **Human editor / motion designer** — pass the bundle directory as the spec
+Pick ONE production lane (the bundle supports all five; engines + prerequisites: `render-engines.md` § Video engines):
+
+1. **code-render** (deterministic, brand-exact, no cloud key) — HyperFrames: open `hyperframes/scaffold.html`, `hyperframes preview` → `hyperframes render`; Remotion: open `remotion/scaffold.tsx`, `npx remotion preview` → `npx remotion render`; Lottie for a looping vector asset
+2. **explainer** (deterministic) — Manim for a math / algorithm / formal-diagram walkthrough *(deferred lane)*
+3. **generative** (stochastic, operator-connected) — follow `vercel-ai-cli.md` to pipe each shot's prompt through `ai video` / Higgsfield / Invideo; on-screen copy stays off the frame (burned in post)
+4. **avatar** (stochastic, operator-connected) — HeyGen renders a presenter from the narration script + a STYLE block
+5. **post** (terminal — closes every lane) — follow `post.md` to assemble the shots, color-grade, and burn subtitles via `video-use` / ffmpeg
+
+A human editor / motion designer can take the bundle directory as the spec for any lane.
 
 ## Re-run
 
-If the brief changes or the runtime choice changes: re-run `produce-video` with `--rev=N` to write to `.forsvn/artifacts/marketing/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
+If the brief changes or the lane changes: re-run `produce-video` with `--rev=N` to write to `.forsvn/artifacts/marketing/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
 
 ## Operator Next Steps
 
-1. Pick a runtime from the table above
-2. Run the chosen scaffold (or pipe scenes through your image-gen CLI)
+1. Pick a production lane from the table above (or accept the recommendation)
+2. Generate the shots via the chosen lane's engine, then run `post.md` to assemble, grade, and subtitle
 3. Mark the verification checklist for each shot after rendering
 4. When all shots verified on-spec, the produced video is ready for evaluate-shortform / evaluate-content
 ```
@@ -231,6 +236,8 @@ DO NOT:
 **HyperFrames:** scene type: [`text-card` | `image-prompt` | `motion-graphic` | `live-action-clip`]; duration: `[duration_seconds]s`
 **Remotion:** Frame range: `[start]-[end]` at 30fps; component: [`<TextCard>` | `<ImagePrompt>` | `<MotionGraphic>`]
 **Vercel AI CLI / image-gen CLI:** prompt: paste "Visual Prompt" body verbatim; aspect: `[aspect from manifest]`; iterations: `1` (one composition per shot)
+**Generative video (AI-CLI `ai video` / Higgsfield / Invideo):** prompt: paste "Visual Prompt" verbatim + `[aspect]` + `[duration_seconds]s`; on-screen text: NONE (burned in post); iterations: `1`
+**Avatar (HeyGen):** presenter script: the shot's narration verbatim; STYLE: framing + wardrobe + background token from `brand/DESIGN.md`
 
 ## Change Log (cycle 2+ only)
 
@@ -412,6 +419,40 @@ Once per-shot images / clips exist under `rendered/`, assemble with any video ed
 The manifest's Audio Plan lists the TTS voice spec. Use any TTS service (ElevenLabs, OpenAI TTS, Coqui, Piper, macOS `say`) to generate narration audio from the per-shot narration strings. Drop the audio files into `rendered/audio/shot-N.mp3` and reference them during assembly.
 ```
 
+### 6. Post-production stage — `post.md`
+
+The terminal assemble → grade → subtitle stage (the **post lane**). Routed to `video-use` (`render-engines.md` § Video engines) when `ELEVENLABS_API_KEY` + ffmpeg are present, else plain ffmpeg / DaVinci. The skill emits the SPEC; the operator runs it via the execution fork.
+
+```markdown
+# Post-Production — [slug]
+
+**Lane:** post · **Preferred engine:** video-use (ffmpeg + ELEVENLABS_API_KEY) · **Fallback:** plain ffmpeg / DaVinci / Premiere
+
+## 1. Assembly
+Shot order + per-shot source (from the manifest Shot List); cut on shot boundaries; ∑ per-shot durations == `[length_seconds]`. Real-footage shots: cut on word boundaries (never mid-word).
+
+## 2. Color grade
+Look named as `brand/DESIGN.md` tokens → ASC-CDL / `.cube` LUT. No invented colors; grade toward `[primary/surface token]`; never a generic teal-orange preset.
+
+## 3. Subtitles / on-screen text
+Burn the brief's verbatim strings (Gate 1); applied LAST in the filter chain, after every overlay. Master SRT uses output-timeline offsets.
+
+## 4. Audio
+Music + ducking + narration from the manifest Audio Plan; 30ms fades at every segment boundary.
+
+## 5. Export
+Container/codec + `[aspect]` → resolution; no silent aspect/duration override; preserve sRGB.
+
+## Self-verify (re-ingest the cut and score THAT — the return-leg)
+- [ ] Duration == `[length_seconds]` (no silent trim/pad)
+- [ ] Aspect == `[aspect]`
+- [ ] On-screen text verbatim + legible (subtitles applied last)
+- [ ] Grade reads as brand tokens, not a preset
+- [ ] No audible pops at cuts; music ducks under narration
+```
+
+**App-preview:** collapses to assembly + caption burn-in only — no transcription (no spoken footage unless the brief supplied narration); grade is usually a no-op (the UI is already on-brand); subtitles are the caption-band text, burned last.
+
 ---
 
 **Rules:**
@@ -421,14 +462,14 @@ The manifest's Audio Plan lists the TTS voice spec. Use any TTS service (ElevenL
 
 ### App-Preview Output Adjustments (when `mode: app-preview`)
 
-The 5-output structure stays the same (`manifest.md` + `scenes/` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md`). Adjustments per file:
+The 6-output structure stays the same (`manifest.md` + `scenes/` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` + `post.md`). Adjustments per file:
 
 **`manifest.md` differences:**
 - Frontmatter: `mode: app-preview`, replace `target_platforms` with `surface`, add `brand_source`, allow `cta: "(none)"` for closing beats that aren't CTAs, allow `aspect: 2:3`
 - Shot List table gains 4 columns (Source Screenshot / Crop Rect / Mask Transform / Interaction Verb) — see `references/format-conventions.md` § App-Preview Mode — Body Section Additions
 - Audio Plan reduces to per-beat audio table (UI tap / whoosh / confirm); omit TTS spec block unless brief supplied narration
 - Verification Checklist uses 5 app-preview gates per shot (aspect / duration / crop fidelity / pointer color / caption-band geometry)
-- Runtime Choices reduces to 2 + 1 N/A (HyperFrames / Remotion / Vercel AI CLI does NOT apply — composition uses real screenshots)
+- Runtime Choices narrows to lanes 1 (code-render: HyperFrames / Remotion) + 5 (post); explainer / generative / avatar marked non-applicable — composition uses real screenshots
 - Concerns block pinned at top when `brand_source: cold-start-hint` regardless of status
 
 **`scenes/[shot-id].md` differences:**
@@ -453,6 +494,9 @@ The 5-output structure stays the same (`manifest.md` + `scenes/` + `hyperframes/
 - Body collapses to the single "app-preview mode note" — image-gen pipeline is N/A; the visual is the screenshot
 - TTS section retained for the rare case the brief included narration
 
+**`post.md` differences:**
+- Collapses to assembly + caption burn-in only — no transcription stage (no spoken footage unless the brief supplied narration); grade is usually a no-op (UI already on-brand); subtitles are the caption-band text, burned last
+
 ## Domain Instructions
 
 ### Core Principles
@@ -469,7 +513,7 @@ The 5-output structure stays the same (`manifest.md` + `scenes/` + `hyperframes/
 
 ### Visual prompt body conventions
 
-Use this internal structure for each shot's "Visual Prompt" section:
+Each shot's "Visual Prompt" section must COVER these 8 items; ordering is free — some runtimes respond better to coherent-scene prose than to a fixed field order:
 
 1. **Subject line** — what's the shot OF? (e.g., "A 9:16 vertical close-up of hands typing on a laptop")
 2. **Composition** — framing, foreground/background, focal point
@@ -497,7 +541,7 @@ If the brief targets `youtube` long-form, return `BLOCKED` with "produce-video v
 
 ### TTS spec defaults
 
-When the brief specifies narration but no voice spec, infer from brand:
+When the brief specifies narration but no voice spec, infer from brand. When `BRAND.md` carries a voice spec (tone-of-voice / voice section), derive voice tone and pace from it; otherwise fall back to the `brand_mode` table:
 
 - `brand_mode: founder` → voice tone: "conversational, direct"; pace_wpm 160-180
 - `brand_mode: company` → voice tone: "clear, calm, authoritative"; pace_wpm 140-160
@@ -517,6 +561,7 @@ Before returning (both modes):
 - [ ] DO NOT list present in every per-shot prompt
 - [ ] HyperFrames scaffold inlines scenes JSON with all shots
 - [ ] Remotion scaffold has correct totalDurationFrames math
+- [ ] post.md emitted: assembly order matches the manifest Shot List; Runtime Choices carries a recommended-lane line
 - [ ] On cycle 2+: Change Log present in affected shot files, every edit traced to a critic gate
 
 Shortform-only:

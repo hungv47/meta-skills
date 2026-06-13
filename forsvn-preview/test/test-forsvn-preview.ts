@@ -41,6 +41,24 @@ await run("headless: piped stdin is refused — no fabricated decision", headles
 await run("form: served HTML carries the a11y contract; mirror gate aria-hidden; bar pinned", formA11yContract);
 await run("protocol: /done rejects not_required and pending with 400", doneRejectsNonDecisions);
 await run("conflict: /done refused when the artifact changed on disk since render", doneConflictRehash);
+await run("G1: missing Review Gate warns on the banner and proceeds; gate_warning rides preview-config", g1GateWarnAndProceed);
+await run("G1: a well-formed Review Gate serves silently (no warn, gate_warning null)", g1NoWarnWhenGatePresent);
+await run("G2: deciding the seeded sample prints the one-time aha block (human mode only)", g2SeededSampleAha);
+await run("G4: notify appends the inbox grammar line; duplicate push is an idempotent skip", g4NotifyAppendAndSkip);
+await run("G4: a state change is a new event — notify appends again", g4NotifyStateChangeAppends);
+await run("G5: --json decision object carries additive next_pending and stays the final stdout line", g5JsonNextPending);
+await run("G5: human write-back offers the next pending artifact; empty queue says queue clear", g5HumanNextHint);
+await run("md mode: --md renders a legible terminal preview, read-only, zero ANSI when piped", mdModePreview);
+await run("md mode: --md refuses to combine with --json/--headless/--html", mdModeFlagGuard);
+await run("U9 theme: boot script precedes the stylesheets; segment present; chrome.js persists the override", u9ThemeBootAndPersistence);
+await run("U9 logo: brand glyphs served via bundled fallback; chrome references both theme variants", u9LogoAssets);
+await run("U9 typeset: no raw markdown syntax or frontmatter YAML leaks into the rendered body; no artifact path in the visible chrome", u9NoRawLeak);
+await run("U9 annotations: ride POST /done additively, persist into the review record, surface in --json", u9AnnotationsRoundTrip);
+await run("U9 annotations: malformed array is a 400 — nothing written", u9AnnotationsRejected);
+await run("U9 edit: POST /edit saves the body (frontmatter intact), moves the conflict basis, re-renders the twin", u9EditSave);
+await run("U9 edit: stale on-disk hash is a 409 and bad token a 403 — nothing written", u9EditConflictAndToken);
+await run("U9 suggestions: preview-config carries the additive seam (empty) + pending_count; card logic shipped", u9SuggestionSeam);
+await run("U9 confirm: /done 200 body names the next pending artifact by title — never a path", u9DoneNextPending);
 
 const failed = results.filter((r) => !r.ok);
 for (const r of results) console.log(`  ${r.ok ? "✓" : "✗"} ${r.name}${r.message ? ` — ${r.message}` : ""}`);
@@ -495,6 +513,595 @@ async function pipedStreamsNoAnsi(): Promise<void> {
   } finally {
     try { rmSync(empty, { recursive: true, force: true }); } catch {}
   }
+}
+
+// --- U10 G-gap scenarios (flow: map-user-flow-2026-06-11-review-round-trip) ---
+
+async function g1GateWarnAndProceed(): Promise<void> {
+  // Variant 1 (missing heading): the stock fixture has no `## Review Gate` —
+  // serve must warn on the banner (warn-and-proceed, never refuse, never
+  // silent) and carry the same fact into preview-config as `gate_warning`.
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx); // proves it proceeded to serve
+  try {
+    assertMatches(ctx.stdoutBuf.text, /warning: no "## Review Gate" block found/, "tier-3 warn line on the piped banner");
+    assertMatches(ctx.stdoutBuf.text, /pinned decision bar still captures/, "warn carries the capability reassurance");
+    assertMatches(ctx.stdoutBuf.text, /artifact-contract-template\.md/, "warn carries the recovery pointer");
+    if (/\x1b/.test(ctx.stdoutBuf.text)) throw new Error("piped warn carries ANSI escapes");
+    const cfg = await fetchPreviewConfig(url) as { token: string; gate_warning?: string | null };
+    assertMatches(cfg.gate_warning ?? "", /no "## Review Gate" block/, "gate_warning rides preview-config (NoticeStrip data seam)");
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, "decision still lands despite the warn");
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+
+  // Variant 2 (malformed): heading present but zero checkbox lines → the
+  // malformed-block warn fires instead.
+  const ctx2 = setupProject();
+  const md = readFileSync(ctx2.mdPath, "utf8") + `\n## Review Gate\n\nprose only, no checkboxes\n`;
+  writeFileSync(ctx2.mdPath, md);
+  bunGit(ctx2.root, ["add", "."]);
+  bunGit(ctx2.root, ["commit", "--quiet", "-m", "malformed gate"]);
+  const child2 = startCli(ctx2, [ctx2.htmlPath, "--no-open", "--json"]);
+  const url2 = await waitForUrl(ctx2);
+  try {
+    assertMatches(ctx2.stdoutBuf.text, /has no checkbox lines/, "malformed-gate warn variant");
+    const cfg2 = await fetchPreviewConfig(url2);
+    await postDone(url2, { token: cfg2.token, decision_state: "approved" });
+    await onExit(child2, 8000);
+  } finally {
+    try { child2.kill("SIGKILL"); } catch {}
+    ctx2.cleanup();
+  }
+}
+
+async function g1NoWarnWhenGatePresent(): Promise<void> {
+  const ctx = setupProject();
+  const md = readFileSync(ctx.mdPath, "utf8") + `\n## Review Gate\n\n- [ ] Approve\n- [ ] Deny\n- [ ] Suggest changes\n`;
+  writeFileSync(ctx.mdPath, md);
+  bunGit(ctx.root, ["add", "."]);
+  bunGit(ctx.root, ["commit", "--quiet", "-m", "gate"]);
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    if (/warning:/.test(ctx.stdoutBuf.text)) throw new Error(`well-formed gate must not warn: ${ctx.stdoutBuf.text.slice(0, 200)}`);
+    const cfg = await fetchPreviewConfig(url) as { token: string; gate_warning?: string | null };
+    assertEq(cfg.gate_warning, null, "gate_warning null when the gate renders fine");
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, "clean serve exits 0");
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function g2SeededSampleAha(): Promise<void> {
+  // Human mode, seeded-sample id → the one-time three-line aha block lands
+  // between the ResultLine and the next hint, ending in the /forsvn call to
+  // action. Keyed on the sample's frontmatter id — no counter, no state file.
+  const ctx = setupProject();
+  stampSeededSampleId(ctx);
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  await postDone(url, { token: cfg.token, decision_state: "approved" });
+  const exit = await onExit(child, 8000);
+  try {
+    assertEq(exit.code, 0, "decision recorded");
+    assertMatches(ctx.stdoutBuf.text, /that was the whole loop/, "aha line 1");
+    assertMatches(ctx.stdoutBuf.text, /rode back into the file the agent reads next/, "aha line 2");
+    assertMatches(ctx.stdoutBuf.text, /run \/forsvn in any repo/, "aha ends on the single next action");
+    const ahaIdx = ctx.stdoutBuf.text.indexOf("that was the whole loop");
+    const resultIdx = ctx.stdoutBuf.text.indexOf("approved · written to frontmatter");
+    if (resultIdx === -1 || ahaIdx < resultIdx) throw new Error("aha must follow the ResultLine");
+  } finally {
+    ctx.cleanup();
+  }
+
+  // --json mode: the aha never prints — the decision object stays the final line.
+  const ctx2 = setupProject();
+  stampSeededSampleId(ctx2);
+  const child2 = startCli(ctx2, [ctx2.htmlPath, "--no-open", "--json"]);
+  const url2 = await waitForUrl(ctx2);
+  const cfg2 = await fetchPreviewConfig(url2);
+  await postDone(url2, { token: cfg2.token, decision_state: "approved" });
+  await onExit(child2, 8000);
+  try {
+    if (/whole loop/.test(ctx2.stdoutBuf.text)) throw new Error("aha leaked into --json mode");
+    const last = ctx2.stdoutBuf.text.trim().split(/\r?\n/).pop() ?? "";
+    const j = JSON.parse(last);
+    assertEq(j.ok, true, "final stdout line is still the decision JSON");
+  } finally {
+    ctx2.cleanup();
+  }
+}
+
+function stampSeededSampleId(ctx: Ctx): void {
+  const md = readFileSync(ctx.mdPath, "utf8").replace(/^skill: create-brand$/m, "skill: create-brand\nid: forsvn-sample");
+  writeFileSync(ctx.mdPath, md);
+  bunGit(ctx.root, ["add", "."]);
+  bunGit(ctx.root, ["commit", "--quiet", "-m", "seed sample id"]);
+}
+
+async function g4NotifyAppendAndSkip(): Promise<void> {
+  const ctx = setupProject();
+  try {
+    // First push: one ResultLine out, one inbox line in.
+    const r1 = await runPreview(ctx.root, ["notify", ctx.mdPath]);
+    assertEq(r1.code, 0, `notify should exit 0; stderr=${r1.stderr.slice(-200)}`);
+    assertMatches(r1.stdout, /\* pending recorded in \.forsvn\/inbox/, "stdout ResultLine");
+    const inboxPath = join(ctx.root, ".forsvn", "inbox");
+    if (!existsSync(inboxPath)) throw new Error("inbox not created");
+    const lines1 = readFileSync(inboxPath, "utf8").trim().split("\n");
+    assertEq(lines1.length, 1, "exactly one event line");
+    // Grammar: ISO-8601Z · ascii glyph · state word · path · skill · "excerpt".
+    assertMatches(lines1[0], /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z \* pending {2}\S+\.md\s+create-brand · "Synthetic test artifact"$/, "inbox line grammar");
+    if (/\x1b/.test(lines1[0])) throw new Error("inbox line carries ANSI escapes");
+    if (/[^\x20-\x7e]/.test(lines1[0].replace(/[·]/g, ""))) throw new Error(`non-ASCII structural bytes in inbox line: ${JSON.stringify(lines1[0])}`);
+    // Path is artifact-home-relative (the `.forsvn/artifacts/` prefix stripped).
+    assertMatches(lines1[0], new RegExp(` ${ctx.slug}\\.md`), "path relative to the artifact home");
+
+    // Duplicate push, same state → idempotent skip; the journal is unchanged.
+    const r2 = await runPreview(ctx.root, ["notify", ctx.mdPath]);
+    assertEq(r2.code, 0, "idempotent skip still exits 0");
+    assertMatches(r2.stdout, /already recorded/, "stdout names the skip");
+    const lines2 = readFileSync(inboxPath, "utf8").trim().split("\n");
+    assertEq(lines2.length, 1, "no duplicate appended");
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function g4NotifyStateChangeAppends(): Promise<void> {
+  const ctx = setupProject();
+  try {
+    await runPreview(ctx.root, ["notify", ctx.mdPath]);
+    // The artifact gets decided, then re-pushed: a NEW event, appends.
+    setDecisionState(ctx, "approved");
+    const r2 = await runPreview(ctx.root, ["notify", ctx.mdPath]);
+    assertEq(r2.code, 0, "state-change notify exits 0");
+    assertMatches(r2.stdout, /\[ok\] approved recorded/, "approved rides the [ok] ascii glyph");
+    const inboxPath = join(ctx.root, ".forsvn", "inbox");
+    let lines = readFileSync(inboxPath, "utf8").trim().split("\n");
+    assertEq(lines.length, 2, "state change appended");
+    assertMatches(lines[1], /\[ok\] approved/, "latest event records the new state");
+    // A re-push that RESET the decision back to pending is again a new event.
+    setDecisionState(ctx, "pending");
+    await runPreview(ctx.root, ["notify", ctx.mdPath]);
+    lines = readFileSync(inboxPath, "utf8").trim().split("\n");
+    assertEq(lines.length, 3, "reset-to-pending appended (journal, not state)");
+    assertMatches(lines[2], /\* pending/, "reset event recorded");
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+function setDecisionState(ctx: Ctx, state: string): void {
+  const md = readFileSync(ctx.mdPath, "utf8").replace(/^decision_state: .*$/m, `decision_state: ${state}`);
+  writeFileSync(ctx.mdPath, md);
+}
+
+async function g5JsonNextPending(): Promise<void> {
+  const ctx = setupProject();
+  seedSecondPending(ctx);
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  await postDone(url, { token: cfg.token, decision_state: "approved" });
+  const exit = await onExit(child, 8000);
+  try {
+    assertEq(exit.code, 0, "decision recorded");
+    // The last-stdout-line contract survives: the FINAL line is the decision
+    // object, and the G5 fact rides INSIDE it — no trailing human hint.
+    const last = ctx.stdoutBuf.text.trim().split(/\r?\n/).pop() ?? "";
+    const j = JSON.parse(last);
+    assertEq(j.ok, true, "final line parses as the decision object");
+    assertEq(j.decision_state, "approved", "decision intact");
+    if (!j.next_pending) throw new Error("next_pending missing from the decision object");
+    assertEq(j.next_pending.path, ".forsvn/artifacts/marketing/write-copy-2026-05-25-next-one.md", "next_pending names the remaining pending artifact");
+    assertEq(j.next_pending.skill, "write-copy", "next_pending.skill");
+    assertEq(j.next_pending.stack, "marketing", "next_pending.stack");
+    if (/next pending:/.test(ctx.stdoutBuf.text)) throw new Error("human-mode hint leaked into --json mode");
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function g5HumanNextHint(): Promise<void> {
+  // (a) another artifact still pending → the named, read-only next hint.
+  const ctx = setupProject();
+  seedSecondPending(ctx);
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  await postDone(url, { token: cfg.token, decision_state: "suggested" });
+  const exit = await onExit(child, 8000);
+  try {
+    assertEq(exit.code, 0, "decision recorded");
+    assertMatches(ctx.stdoutBuf.text, /next pending: \* \.forsvn\/artifacts\/marketing\/write-copy-2026-05-25-next-one\.md/, "next-pending line names the artifact");
+    assertMatches(ctx.stdoutBuf.text, /review it: \/forsvn:review/, "re-invoke hint present");
+    if (/whole loop/.test(ctx.stdoutBuf.text)) throw new Error("aha fired on a non-sample artifact");
+  } finally {
+    ctx.cleanup();
+  }
+
+  // (b) queue empty after the decision → explicit queue clear, never silence.
+  const ctx2 = setupProject();
+  const child2 = startCli(ctx2, [ctx2.htmlPath, "--no-open"]);
+  const url2 = await waitForUrl(ctx2);
+  const cfg2 = await fetchPreviewConfig(url2);
+  await postDone(url2, { token: cfg2.token, decision_state: "approved" });
+  const exit2 = await onExit(child2, 8000);
+  try {
+    assertEq(exit2.code, 0, "decision recorded");
+    assertMatches(ctx2.stdoutBuf.text, /pending \(0\) — queue clear/, "explicit queue-clear line");
+  } finally {
+    ctx2.cleanup();
+  }
+}
+
+function seedSecondPending(ctx: Ctx): void {
+  writeAt(join(ctx.root, ".forsvn", "artifacts", "marketing", "write-copy-2026-05-25-next-one.md"), `---
+skill: write-copy
+version: 1
+date: 2026-05-25
+status: done
+stack: marketing
+id: next-one
+type: copy
+decision_state: pending
+review_surface: html
+summary: "The next artifact in the queue"
+---
+
+# Next One
+`);
+  bunGit(ctx.root, ["add", "."]);
+  bunGit(ctx.root, ["commit", "--quiet", "-m", "second pending"]);
+}
+
+async function mdModePreview(): Promise<void> {
+  const ctx = setupProject();
+  try {
+    const r = await runPreview(ctx.root, [ctx.mdPath, "--md"]);
+    assertEq(r.code, 0, `--md should exit 0; stderr=${r.stderr.slice(-200)}`);
+    if (/\x1b/.test(r.stdout)) throw new Error("piped --md output carries ANSI escapes");
+    assertMatches(r.stdout, /fields folded/, "frontmatter folded into the compact header");
+    if (/^decision_state: pending$/m.test(r.stdout)) throw new Error("raw YAML leaked into the terminal preview");
+    assertMatches(r.stdout, /FORSVN Brand \(test\)/, "body heading rendered");
+    assertMatches(r.stdout, /read-only preview/, "read-only chooser hint at the tail");
+    // Read-only: nothing was served, nothing was written.
+    const md = readFileSync(ctx.mdPath, "utf8");
+    assertMatches(md, /^decision_state:\s*pending$/m, "artifact untouched");
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function mdModeFlagGuard(): Promise<void> {
+  const ctx = setupProject();
+  try {
+    for (const extra of ["--json", "--headless", "--html"]) {
+      const r = await runPreview(ctx.root, [ctx.mdPath, "--md", extra]);
+      assertEq(r.code, 1, `--md ${extra} should exit 1; got ${r.code}`);
+      assertMatches(r.stderr, /usage: forsvn-preview/, "usage block on the guard");
+      assertMatches(r.stderr, /--md is a read-only view/, "guard names the why");
+    }
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+// --- U9 review-webapp scenarios (design pass revision 2, 2026-06-12) --------
+
+async function u9ThemeBootAndPersistence(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    const html = await (await fetch(url)).text();
+    // No flash-of-wrong-theme: the inline boot script reads the stored choice
+    // BEFORE any stylesheet link.
+    const bootIdx = html.indexOf("forsvn-theme");
+    const cssIdx = html.indexOf('rel="stylesheet"');
+    if (bootIdx === -1) throw new Error("theme boot script missing from served HTML");
+    if (cssIdx === -1) throw new Error("stylesheets missing");
+    if (bootIdx > cssIdx) throw new Error("theme boot script must precede the stylesheets (flash-of-wrong-theme)");
+    // The strip's quiet auto/dark/light segment.
+    assertMatches(html, /class="theme-seg" role="group" aria-label="Theme"/, "theme segment present");
+    assertMatches(html, /data-set="system"/, "auto option");
+    assertMatches(html, /data-set="dark"/, "dark option");
+    assertMatches(html, /data-set="light"/, "light option");
+
+    const origin = url.match(/^(http:\/\/[\d.:]+)\//)![1];
+    const htmlDir = url.slice(origin.length).replace(/\/[^/]*$/, "");
+    const chromeJs = await (await fetch(`${origin}${htmlDir}/chrome.js`)).text();
+    assertMatches(chromeJs, /localStorage\.setItem\(THEME_KEY, mode\)/, "explicit choice persists");
+    assertMatches(chromeJs, /localStorage\.removeItem\(THEME_KEY\)/, "system choice clears the override");
+    const tokensCss = await (await fetch(`${origin}${htmlDir}/tokens.css`)).text();
+    assertMatches(tokensCss, /prefers-color-scheme: light/, "system preference drives the default theme");
+    assertMatches(tokensCss, /\[data-theme="light"\]/, "explicit light override tokens present");
+    if (/B7FF6E/i.test(tokensCss)) throw new Error("retired Signal Lime leaked into tokens.css");
+
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9LogoAssets(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    const html = await (await fetch(url)).text();
+    assertMatches(html, /logo-glyph-cream\.svg/, "cream glyph referenced (dark surfaces)");
+    assertMatches(html, /logo-glyph-forest\.svg/, "forest glyph referenced (light surfaces)");
+    if (/class="field">F</.test(html)) throw new Error("placeholder F tile survived — the real glyph must replace it");
+
+    const origin = url.match(/^(http:\/\/[\d.:]+)\//)![1];
+    const htmlDir = url.slice(origin.length).replace(/\/[^/]*$/, "");
+    // Served via the bundled-asset fallback (no co-located copy in the fixture).
+    const cream = await fetch(`${origin}${htmlDir}/logo-glyph-cream.svg`);
+    assertEq(cream.status, 200, `cream glyph should serve; got ${cream.status}`);
+    assertEq(cream.headers.get("content-type"), "image/svg+xml", "svg mime");
+    assertMatches(await cream.text(), /FDFACC/i, "cream glyph carries the cream fill");
+    const forest = await fetch(`${origin}${htmlDir}/logo-glyph-forest.svg`);
+    assertEq(forest.status, 200, `forest glyph should serve; got ${forest.status}`);
+    assertMatches(await forest.text(), /004700/i, "forest glyph carries the Deep Forest fill");
+
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9NoRawLeak(): Promise<void> {
+  const ctx = setupProject();
+  // Give the artifact markdown-heavy content: headings, bold, a table, a gate.
+  const md = readFileSync(ctx.mdPath, "utf8") +
+    `\n## Findings\n\nSome **bold** and *italic* text with \`code\`.\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n## Review Gate\n\n- [ ] Check one\n`;
+  writeFileSync(ctx.mdPath, md);
+  bunGit(ctx.root, ["add", "."]);
+  bunGit(ctx.root, ["commit", "--quiet", "-m", "md-rich body"]);
+
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    const html = await (await fetch(url)).text();
+    // Rendered body must carry no literal markdown syntax…
+    if (/^##\s/m.test(html)) throw new Error("literal '## ' heading syntax leaked into the served body");
+    if (/\*\*bold\*\*/.test(html)) throw new Error("literal '**' bold syntax leaked");
+    assertMatches(html, /<h2>Findings<\/h2>/, "headings are headings");
+    assertMatches(html, /<strong>bold<\/strong>/, "bold renders as <strong>");
+    assertMatches(html, /<th>a<\/th>/, "table renders as a table");
+    // …and no raw frontmatter YAML: the YAML line shape never appears outside
+    // the JSON blobs (JSON encodes it as "decision_state":"pending").
+    if (/^decision_state:\s/m.test(html)) throw new Error("raw frontmatter YAML leaked into the page");
+    // Frontmatter becomes the eyebrow identity line: stack · skill · date.
+    assertMatches(html, /class="eyebrow">marketing · create-brand · 2026-05-26/, "eyebrow identity line (legacy mkt normalizes to marketing)");
+    // The gate renders as the sealed checklist, read-only.
+    assertMatches(html, /<section class="gate" id="gate-echo">/, "gate echo section");
+    assertMatches(html, /read-only echo — decide below/, "gate read-only label");
+    // No artifact path in the visible chrome: the file's relative path may
+    // appear ONLY inside the preview-config JSON (the edit-source seam).
+    const visible = html
+      .replace(/<script type="application\/json" id="preview-config">[\s\S]*?<\/script>/, "")
+      .replace(/<script type="application\/json" id="artifact-data">[\s\S]*?<\/script>/, "");
+    if (visible.includes(ctx.slug + ".md") || visible.includes(".forsvn/artifacts/")) {
+      throw new Error("artifact path leaked into the visible chrome");
+    }
+
+    const cfg = await fetchPreviewConfig(url);
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9AnnotationsRoundTrip(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  const annotations = [
+    { kind: "marker", quote: "Body text." },
+    { kind: "comment", quote: "FORSVN Brand", body: "tighten this headline — name the wedge" },
+  ];
+  const r = await postDone(url, { token: cfg.token, decision_state: "suggested", comments: "see annotations", annotations });
+  assertEq(r.status, 200, "decision with annotations lands");
+  const exit = await onExit(child, 8000);
+  try {
+    assertEq(exit.code, 0, "CLI exits 0");
+    // The review record carries the annotations exactly where reviewer notes go.
+    const md = readFileSync(ctx.mdPath, "utf8");
+    assertMatches(md, /^decision_state:\s*suggested$/m, "decision recorded");
+    assertMatches(md, /## Reviewer notes/, "reviewer notes block present");
+    assertMatches(md, /### Annotations/, "annotations section present");
+    assertMatches(md, /- \*\*marker\*\* — "Body text\."/, "marker annotation persisted");
+    assertMatches(md, /- \*\*comment\*\* — "FORSVN Brand": tighten this headline — name the wedge/, "comment annotation persisted with its body");
+    // The agent-readable JSON result line carries them additively.
+    const last = ctx.stdoutBuf.text.trim().split(/\r?\n/).pop() ?? "";
+    const j = JSON.parse(last);
+    assertEq(j.ok, true, "final stdout line is the decision object");
+    assertEq(Array.isArray(j.annotations), true, "annotations array in JSON");
+    assertEq(j.annotations.length, 2, "both annotations in JSON");
+    assertEq(j.annotations[1].body, "tighten this headline — name the wedge", "comment body intact");
+  } finally {
+    ctx.cleanup();
+  }
+}
+
+async function u9AnnotationsRejected(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    for (const bad of [
+      "not-an-array",
+      [{ kind: "delete-everything", quote: "x" }],
+      [{ kind: "marker" }],                       // missing quote
+      [{ kind: "comment", quote: "q", body: 42 }], // non-string body
+    ]) {
+      const r = await postDone(url, { token: cfg.token, decision_state: "approved", annotations: bad });
+      assertEq(r.status, 400, `malformed annotations (${JSON.stringify(bad).slice(0, 40)}) should 400`);
+    }
+    const md = readFileSync(ctx.mdPath, "utf8");
+    assertMatches(md, /^decision_state:\s*pending$/m, "nothing written on the 400s");
+    const good = await postDone(url, { token: cfg.token, decision_state: "approved" });
+    assertEq(good.status, 200, "clean decision still lands");
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9EditSave(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    const before = readFileSync(ctx.mdPath, "utf8");
+    const fmBlock = before.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/)![0];
+    const newBody = "\n# FORSVN Brand (test)\n\nEdited body — saved from the reading column.\n";
+    const r = await fetch(`${url}edit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: cfg.token, body_md: newBody }),
+    });
+    assertEq(r.status, 200, `edit save should 200; got ${r.status}`);
+    const j = await r.json() as { ok: boolean; md_hash?: string };
+    assertEq(j.ok, true, "edit response ok");
+    assertEq(typeof j.md_hash, "string", "edit response carries the new conflict basis");
+
+    const after = readFileSync(ctx.mdPath, "utf8");
+    assertEq(after.startsWith(fmBlock), true, "frontmatter preserved verbatim");
+    assertMatches(after, /Edited body — saved from the reading column\./, "body replaced");
+    assertMatches(after, /^decision_state:\s*pending$/m, "edit never records a decision");
+
+    // The twin re-rendered: a reload serves the edited content.
+    const reloaded = await (await fetch(url)).text();
+    assertMatches(reloaded, /Edited body — saved from the reading column\./, "served twin reflects the edit");
+
+    // The conflict basis moved: a decision on the edited bytes still lands.
+    const done = await postDone(url, { token: cfg.token, decision_state: "approved" });
+    assertEq(done.status, 200, "decision after edit lands (hash basis advanced)");
+    const exit = await onExit(child, 8000);
+    assertEq(exit.code, 0, "CLI exits 0");
+    const final = readFileSync(ctx.mdPath, "utf8");
+    assertMatches(final, /^decision_state:\s*approved$/m, "decision written onto the edited file");
+    assertMatches(final, /Edited body — saved from the reading column\./, "edit survived the decision write-back");
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9EditConflictAndToken(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    // Bad token → 403, nothing written.
+    const forged = await fetch(`${url}edit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: "0".repeat(32), body_md: "\nforged\n" }),
+    });
+    assertEq(forged.status, 403, "bad token should 403");
+
+    // External out-of-band change → 409, nothing written.
+    appendFileSync(ctx.mdPath, "\nAn out-of-band edit after render.\n");
+    const stale = await fetch(`${url}edit`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: cfg.token, body_md: "\nstale save attempt\n" }),
+    });
+    assertEq(stale.status, 409, `stale edit should 409; got ${stale.status}`);
+    const body = await stale.json() as { error?: string };
+    assertMatches(body.error ?? "", /changed on disk/, "conflict names the cause");
+    const md = readFileSync(ctx.mdPath, "utf8");
+    if (/stale save attempt|forged/.test(md)) throw new Error("a refused edit reached the file");
+    assertMatches(md, /An out-of-band edit after render\./, "the external change is what's on disk");
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    await new Promise((r) => setTimeout(r, 200));
+    ctx.cleanup();
+  }
+}
+
+async function u9SuggestionSeam(): Promise<void> {
+  const ctx = setupProject();
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  try {
+    const cfg = await fetchPreviewConfig(url) as { token: string; suggestions?: unknown[]; pending_count?: number };
+    if (!Array.isArray(cfg.suggestions)) throw new Error("preview-config must carry the additive suggestions seam");
+    assertEq(cfg.suggestions.length, 0, "suggestions seam is empty until the Proof-collab bridge populates it");
+    assertEq(typeof cfg.pending_count, "number", "pending_count rides preview-config");
+
+    const origin = url.match(/^(http:\/\/[\d.:]+)\//)![1];
+    const htmlDir = url.slice(origin.length).replace(/\/[^/]*$/, "");
+    const chromeJs = await (await fetch(`${origin}${htmlDir}/chrome.js`)).text();
+    assertMatches(chromeJs, /no agent can apply this — only you/, "ownership copy shipped");
+    assertMatches(chromeJs, /config\.suggestions/, "cards render from the config seam");
+    assertMatches(chromeJs, /Accept into text/, "accept affordance shipped");
+
+    await postDone(url, { token: cfg.token, decision_state: "approved" });
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+async function u9DoneNextPending(): Promise<void> {
+  const ctx = setupProject();
+  seedSecondPending(ctx);
+  const child = startCli(ctx, [ctx.htmlPath, "--no-open", "--json"]);
+  const url = await waitForUrl(ctx);
+  const cfg = await fetchPreviewConfig(url);
+  try {
+    const r = await postDone(url, { token: cfg.token, decision_state: "approved" });
+    assertEq(r.status, 200, "decision lands");
+    const j = await r.json() as { ok: boolean; next_pending?: { title?: string | null; skill?: string; path?: string } | null };
+    if (j.next_pending === undefined) throw new Error("/done 200 body must name the next pending artifact (additive)");
+    if (j.next_pending === null) throw new Error("expected a named next pending, got queue-clear");
+    assertEq(j.next_pending.skill, "write-copy", "next pending names the artifact by identity");
+    if ("path" in (j.next_pending as object)) throw new Error("the /done response must not carry a path — title + skill + stack + date only");
+    await onExit(child, 8000);
+  } finally {
+    try { child.kill("SIGKILL"); } catch {}
+    ctx.cleanup();
+  }
+}
+
+// Generic one-shot runner for subcommands/modes that exit on their own.
+async function runPreview(root: string, args: string[]): Promise<{ code: number | null; stdout: string; stderr: string }> {
+  const out = { text: "" };
+  const errb = { text: "" };
+  const child = spawn("bun", [PREVIEW, ...args], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
+  child.stdout!.on("data", (b) => { out.text += b.toString(); });
+  child.stderr!.on("data", (b) => { errb.text += b.toString(); });
+  const { code } = await onExit(child, 8000);
+  return { code, stdout: out.text, stderr: errb.text };
 }
 
 function setupListProject(): { root: string; cleanup: () => void } {

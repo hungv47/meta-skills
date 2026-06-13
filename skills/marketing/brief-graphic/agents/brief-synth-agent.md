@@ -65,6 +65,7 @@ You do NOT:
 - **Headline:** "[exact text from copy-anchor]" — [position, type token from brand_digest, contrast pair]
 - **Body:** "[exact text]" — [position, type token]
 - **CTA:** "[exact text]" — [position, type token, contrast pair]
+- *Route conditioning:* image-gen routes keep pixel-specific composition; vector-tool / designer-handoff routes spec intent + constraints ("lower-left quadrant, high contrast, anchor color"), not coordinates.
 
 **Brand anchors used:**
 - Palette: [primary + accent hex from brand_digest]
@@ -119,7 +120,7 @@ C: [one-liner]
 
 ### Core Principles
 
-1. **Specificity is the deliverable.** A brief that says "headline at top, large" is failure. A brief that says "headline 96px Geist Sans Bold #74B36B, 60px from top edge, 60px left margin" is success.
+1. **Specificity is the deliverable.** A brief that says "headline at top, large" is failure. A brief that says "headline 96px Geist Sans Bold #74B36B, 60px from top edge, 60px left margin" is success. Route-conditioned: that pixel-level bar applies to image-gen routes; for vector-tool / designer-handoff routes, specify intent + constraints ("lower-left quadrant, high contrast, anchor color") rather than coordinates — the tool or designer owns exact placement.
 2. **Inherit, don't redo.** brand_digest already pulled tokens; concepts already chose direction; copy is already resolved. Your job is assembly with format precision, not regeneration.
 3. **Route-aware spec depth.** `image-gen` and `template-pack` briefs need composition + mood + lighting/lens direction (so prompt-craft can craft — template-pack runs prompt-craft per format). `vector-tool` briefs need exact pixel placement and vector primitives. `designer-handoff` briefs need full token paths and component references.
 4. **Falsifiable Why.** Each brief's Why is one sentence, audience-claim, testable. Same rule as concept-agent — re-state at brief level for the approval moment.

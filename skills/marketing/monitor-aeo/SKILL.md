@@ -4,7 +4,7 @@ description: "Monitors AI-search visibility across answer engines and generative
 argument-hint: "[domain or mode]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -52,19 +52,20 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load product c
 
 ## Pre-Dispatch
 
-Run the canonical Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]).
+Canonical Pre-Dispatch: `references/_shared/pre-dispatch-protocol.md` [PROCEDURE].
 
 **Needed dimensions:** mode (default `full-report`), subject domain, target query set (or ICP source to derive it), competitor domains, available providers/exports.
 
 **Query-set design (Layer 0, locked).** Pre-Dispatch produces a **balanced, locked** `query-set.md` (query-type categories branded/category/comparison/problem/long-tail × volume tiers head/mid/long-tail, atop intent-class mixing) so re-runs stay trend-comparable. Design contract: `references/procedures/pre-dispatch.md` § "Query-set design".
 
-Full read-order + Cold Start prompt + Warm Start prompt + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
+Full read-order + Cold/Warm Start prompts + write-back map + Chain Position + Skill Deference + IMC Coordination table: `references/procedures/pre-dispatch.md` [PROCEDURE].
 
 ## Mode Resolution
 
-Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade for ≤3 sentences + no prior artifacts; `--fast` flag skips Layer 2 (no critic, single-agent execution). **`--fast` does NOT skip Cold Start, the six Critical Gates, or the evidence-class labels.**
+Per `references/_shared/mode-resolver.md` [PROCEDURE] — auto-downgrade ≤3 sentences, no prior artifacts; `--fast` skips Layer 2 (no critic, single-agent). **`--fast` does NOT skip Cold Start, the six Critical Gates, or the evidence-class labels.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
-**Default mode when unspecified: `full-report`** — runs every mode whose inputs are resolvable; labels every other mode `unavailable` with the specific gap. Operators get one dated snapshot per run; cherry-picking a single mode requires asking for it.
+**Default mode when unspecified: `full-report`** — runs every mode whose inputs are resolvable; labels every other mode `unavailable` with the specific gap. One dated snapshot per run; single-mode runs are opt-in.
 
 ---
 

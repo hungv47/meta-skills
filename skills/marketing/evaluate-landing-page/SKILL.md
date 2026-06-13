@@ -1,6 +1,6 @@
 ---
 name: evaluate-landing-page
-description: "Scores a launched landing page from real performance evidence inside an existing eval loop — writes a cycle eval snapshot and appends the loop results ledger. Use for post-launch CRO cycles backed by analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Not for designing the next page brief or a redesign (use brief-landing-page), channel strategy (use plan-campaign), best-practice audits without evidence, or scaffolding the loop (use run-eval-loop)."
+description: "Scores a launched landing page from real performance evidence inside an existing eval loop — writes a cycle eval snapshot and appends the loop results ledger. Use for post-launch CRO cycles backed by analytics, experiment results, recordings, form-funnel data, or qualified manual metric notes. Not for designing the next page brief or a redesign (use brief-landing-page), channel strategy (use plan-campaign), best-practice audits without evidence, or scaffolding the loop (use run-pipeline)."
 argument-hint: "[loop slug or path] [page URL/route] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -21,7 +21,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Existing eval loop required.** If `.forsvn/loops/[slug]/program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-eval-loop`. This skill does not create loops.
+1. **Existing eval loop required.** If `.forsvn/loops/[slug]/program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Measurement evidence required.** Not a generic heuristic audit. Require ≥1 metric source, measurement window, and current value for the loop's primary metric.
 3. **One primary metric decides the ledger row.** Secondary metrics and qualitative evidence explain diagnosis; they do not override the primary metric unless `program.md` defines an explicit guardrail failure.
 4. **No fabricated analytics.** Unknown values stay unknown. Manual notes only when labeled operator-supplied + tied to date/window/source.
@@ -30,7 +30,7 @@ metadata:
 
 ## Responsibility Split
 
-`/run-eval-loop` owns loop setup, `program.md`, `context.md`, `results.tsv` schema, durable learning ledger. **This skill** owns post-launch landing-page evidence snapshots for a loop cycle. `/brief-landing-page` owns new-page and redesign briefs after an eval identifies what should change.
+`/run-pipeline` owns loop setup, `program.md`, `context.md`, `results.tsv` schema, durable learning ledger. **This skill** owns post-launch landing-page evidence snapshots for a loop cycle. `/brief-landing-page` owns new-page and redesign briefs after an eval identifies what should change.
 
 ## Inputs
 
@@ -50,7 +50,7 @@ Side effects: append one row to `.forsvn/loops/[slug]/results.tsv` via `scripts/
 
 ## Pre-Dispatch
 
-Canonical: `references/_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks:** missing `program.md`/`context.md` → NEEDS_CONTEXT + recommend `/run-eval-loop`; no measurement evidence → BLOCKED; custom 10+ col `results.tsv` → warn + require hand-edit. **Cold Start:** 5 bundled questions (loop slug · page URL · window · primary metric value/baseline · what changed). Full read-order + warm/cold templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Canonical: `references/_shared/pre-dispatch-protocol.md` + `_shared/eval-loop-spec.md`. **Hard-blocks:** missing `program.md`/`context.md` → NEEDS_CONTEXT + recommend `/run-pipeline`; no measurement evidence → BLOCKED; custom 10+ col `results.tsv` → warn + require hand-edit. **Cold Start:** 5 bundled questions (loop slug · page URL · window · primary metric value/baseline · what changed). Full read-order + warm/cold templates + `--fast` behavior: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
 
 ## Artifact Contract
 
@@ -74,7 +74,7 @@ Do not append on Critic FAIL — return `BLOCKED` instead.
 
 ## Critic Override Protocol
 
-When operator ships a cycle despite critic FAIL — **log the override BEFORE writing artifact or ledger row:** `bun scripts/eval/log-critic-override.ts --skill evaluate-landing-page …`. Full protocol (invocation, 3-override escalation, two rules an override never relaxes): [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
+When operator ships a cycle despite critic FAIL — **log the override BEFORE writing artifact or ledger row:** `bun scripts/log-critic-override.ts --skill evaluate-landing-page …`. Full protocol (invocation, 3-override escalation, two rules an override never relaxes): [`references/_shared/critic-override-protocol.md`](references/_shared/critic-override-protocol.md) [PROCEDURE].
 
 ## Anti-Patterns
 
@@ -98,5 +98,6 @@ When operator ships a cycle despite critic FAIL — **log the override BEFORE wr
 - `references/playbook.md`, `format-conventions.md`, `anti-patterns.md`
 - `references/procedures/{pre-dispatch, dispatch-mechanics}.md`
 - `references/_shared/{eval-loop-spec, before-starting-check, manifest-spec, mode-resolver, pre-dispatch-protocol, anti-sycophancy, artifact-contract-template, thin-critic-rubric, critic-override-protocol}.md`
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - 4 sub-agents in `agents/`; `critic-agent.md` holds the 6-dimension 0-10 rubric (Loop Fit / Metric Integrity / Attribution Honesty / Decision Discipline / Boundary Control / Ledger Correctness) + 4-tier Verdict + 7 Hard Fails
-- **Sibling coordination:** `brief-landing-page` (this skill routes recommendations TO it but does not produce briefs); `run-eval-loop` (owns loop scaffolding + ledger schema + durable learnings)
+- **Sibling coordination:** `brief-landing-page` (this skill routes recommendations TO it but does not produce briefs); `run-pipeline` (owns loop scaffolding + ledger schema + durable learnings)

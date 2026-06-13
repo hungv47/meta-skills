@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # llms.txt + AI Crawler Readiness
 
 > The technical-readiness surface this skill owns. Bing/IndexNow checks live alongside in `readiness-agent`; this ref focuses on the AI-specific layer: `llms.txt`, `llms-full.txt`, and AI crawler access posture.

@@ -170,4 +170,4 @@ Default to the tool-agnostic brief; record `execution_mode` if live-driven.
 ```
 
 That keeps the contract in one place and the skill body under its budget cap. The terminal
-`references/_shared/execution-fork.md` citation still closes the skill.
+`execution-fork.md` (sibling reference) citation still closes the skill.

@@ -8,8 +8,9 @@ load_class: EXAMPLE
 
 # Worked Example: Team Billing Dashboard
 
-**Load when:** the operator needs an anchor for what a full brief-product-ui run looks like —
+**Load when:** the operator wants to see what a full brief-product-ui run looks like —
 intake through critic, all 9 artifact sections illustrated, including a realistic FAIL→fix cycle.
+Triangulate from this, don't copy — these specific choices are for the billing-dashboard feature.
 
 ---
 

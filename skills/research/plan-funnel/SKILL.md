@@ -47,7 +47,8 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 | `.forsvn/index/manifest.json` | manifest-sync | Recommended — >30d warns |
 | Industry baselines | `references/benchmarks.md` | Fallback when user lacks rates |
 
-**Mode** (`standard`): `--fast` forces Route C if conditions hold, else Route B (no critic). Hard gates above still enforced. [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. **Pre-Dispatch** (hard-gate, read order, Cold/Warm Start, staleness, growth-motion ID, write-back): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+**Mode** (`standard`): `--fast` forces Route C if conditions hold, else Route B (no critic). Hard gates above still enforced. `references/_shared/mode-resolver.md` [PROCEDURE]. **Pre-Dispatch** (hard-gate, read order, Cold/Warm Start, staleness, growth-motion ID, write-back): `references/procedures/pre-dispatch.md` [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ---
 
@@ -58,7 +59,7 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=none)
 - **Required sections (cross-stack contract):** Funnel Stages · Target Table · Channel → Funnel Stage Map · Three-Outcome Validation · Validation · Baselines
 - **Side effects:** append baselines + growth motion + unit economics to `experience/business.md` (mandatory on PASS / done_with_concerns)
-- **Consumed by:** `plan-campaign`, `run-eval-loop`, future re-runs (delta detection)
+- **Consumed by:** `plan-campaign`, `run-pipeline`, future re-runs (delta detection)
 
 Full schema: [`references/procedures/contract.md`](references/procedures/contract.md) + [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 

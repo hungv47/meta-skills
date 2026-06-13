@@ -211,6 +211,94 @@ export function refusalLine(
   return `${head}\n${hintLine(recovery, tier)}`;
 }
 
+// --- WarnLine (G1) -----------------------------------------------------------------
+// Warn-and-proceed grammar: the RefusalLine shape minus the exit code (it does
+// not exit). Used for soft degradations the operator must KNOW about but that
+// never block the decision — e.g. a missing `## Review Gate` mirror block.
+// Recovery may span multiple lines (split on \n, each a HintLine).
+
+export function warnLine(reason: string, recovery: string, tier: Tier): string {
+  const head = tier === 2 ? paint(`⚠ ${reason}`, SGR.yellow, tier) : `warning: ${reason}`;
+  const hints = recovery.split("\n").map((l) => hintLine(l, tier));
+  return [head, ...hints].join("\n");
+}
+
+// --- NextPendingLine (G5) ----------------------------------------------------------
+// Read-only post-decision affordance: names the next pending artifact and the
+// two re-invoke forms; never auto-chains (one artifact per serve stays the
+// invariant). `null` entry = queue empty → explicit "queue clear", never silence.
+
+export type NextPendingEntry = {
+  path: string;        // project-relative, posix
+  meta: string[];      // [stack, skill, date] — joined with ` · `
+};
+
+export function nextPendingHint(entry: NextPendingEntry | null, tier: Tier): string[] {
+  if (entry === null) {
+    return [hintLine("pending (0) — queue clear", tier)];
+  }
+  const glyph = paint(stateGlyph("pending", tier), GLYPHS.pending.sgr, tier);
+  const metaText = dim(entry.meta.filter(Boolean).join(" · "), tier);
+  return [
+    `next pending: ${glyph} ${entry.path}   ${metaText}`,
+    hintLine(`review it: /forsvn:review  ·  or: bun forsvn-preview/bin/forsvn-preview.ts ${entry.path}`, tier),
+  ];
+}
+
+// --- CheckRow / TierRow (G3 doctor) -------------------------------------------------
+// Doctor rows through the shared tier engine. Three severities: `ok` (green ✓),
+// `fail` (red ✗ — act now), `info` (dim ✗ — optional tier absent, informational,
+// never alarming). The visual hierarchy IS the triage.
+
+export type CheckSeverity = "ok" | "fail" | "info";
+
+const CHECK_GLYPH: Record<CheckSeverity, { glyph: string; ascii: string; sgr: string }> = {
+  ok:   { glyph: "✓", ascii: "[ok]", sgr: SGR.green },
+  fail: { glyph: "✗", ascii: "x",    sgr: SGR.red },
+  info: { glyph: "✗", ascii: "x",    sgr: SGR.dim },
+};
+
+// Glyph column padded to a constant width per tier ("[ok]" is 4 chars at
+// tier 3) so check names stay ledger-aligned across ok/fail/info rows.
+function checkGlyph(severity: CheckSeverity, tier: Tier): string {
+  const g = CHECK_GLYPH[severity];
+  const raw = tier === 2 ? g.glyph : g.ascii.padEnd(4);
+  return paint(raw, g.sgr, tier);
+}
+
+// `  ✓ Bun         bun 1.2.9` — glyph + name + detail; informational detail dim.
+export function checkRow(
+  name: string,
+  detail: string,
+  severity: CheckSeverity,
+  tier: Tier,
+  opts: { pad?: number } = {},
+): string {
+  const pad = Math.max(opts.pad ?? 0, name.length);
+  const detailText = severity === "info" ? dim(detail, tier) : detail;
+  return `${INDENT}${checkGlyph(severity, tier)} ${name.padEnd(pad)} ${detailText}`;
+}
+
+// The `→ fix` line directly beneath a failing check — the fix is the screen's
+// product. 6-space indent (under the check's detail column lead-in).
+export function fixLine(fix: string, tier: Tier): string {
+  const arrow = tier === 2 ? "→" : "->";
+  return `      ${dim(`${arrow} ${fix}`, tier)}`;
+}
+
+// `  ✓ review surface   — /forsvn:review works on this machine` — tier summary
+// row with the one-clause capability translation.
+export function tierRow(
+  name: string,
+  clause: string,
+  severity: CheckSeverity,
+  tier: Tier,
+  opts: { pad?: number } = {},
+): string {
+  const pad = Math.max(opts.pad ?? 0, name.length);
+  return `${INDENT}${checkGlyph(severity, tier)} ${name.padEnd(pad)} ${dim(`— ${clause}`, tier)}`;
+}
+
 // --- BannerBlock ---------------------------------------------------------------------
 // Serve-launch announcement. `gui`: URL + CSRF preview + local-trust note.
 // `headless`: no-GUI line + tunnel hint + "or decide here:" handoff to the

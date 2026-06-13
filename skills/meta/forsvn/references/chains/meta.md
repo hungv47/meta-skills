@@ -16,7 +16,7 @@ Meta is not a linear pipeline — it's a set of process tools wrapped around dom
 discover           — scope unclear, conversation needed
 breakdown-tasks    — spec/architecture done, need a buildable task list
 debate-agents       — complex decision, multiple perspectives wanted
-run-eval-loop      — measurable initiative needs strategy → execution → eval workspace
+run-pipeline       — measurable initiative needs a staged loop workspace (eval-only or full produce-and-measure)
 review-work        — post-implementation independent review
 clean-artifacts    — .forsvn/ artifact tree needs grooming
 ```
@@ -28,8 +28,9 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 | "scope this", "clarify", "what should we build", "requirements unclear" | `/discover` |
 | "decompose", "task list", "break down", "implementation order" | `/breakdown-tasks` |
 | "debate this", "multiple perspectives", "poll", "consensus" | `/debate-agents` |
+| "generate ideas and rank them", "rank these ideas", "score the ideas" | `/prioritize` (ideation mode — ranking anchor replaces the diagnose gate) |
 | "review my work", "second opinion", "did I miss anything" | `/review-work` |
-| "improvement loop", "track metric", "experiment ledger" | `/run-eval-loop` |
+| "improvement loop", "track metric", "experiment ledger" | `/run-pipeline` |
 | "groom artifacts", "clean up .forsvn", "audit the artifact tree" | `/clean-artifacts` |
 
 ## Routing rules
@@ -40,7 +41,7 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 4. **`/breakdown-tasks` is hard-gated** — only recommend if `.forsvn/artifacts/meta/specs/*.md` OR `architecture/system-architecture.md` exists.
 5. **Wrap-around:** if the recommendation touches security/auth/data-mutation/critical artifacts → append `(optional /review-work after)`.
 6. **Don't `/discover` defensively** — patronizing when intent is clear; only recommend for genuinely unclear scope.
-7. **`/run-eval-loop`** is the prerequisite for `/evaluate-landing-page` and similar in-loop evaluations.
+7. **`/run-pipeline`** is the prerequisite for `/evaluate-landing-page` and similar in-loop evaluations.
 
 ## Anti-patterns
 

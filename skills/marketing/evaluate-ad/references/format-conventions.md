@@ -151,7 +151,7 @@ provenance:
 - Keep: [component-level, not campaign-level]
 - Discard:
 - Watch:
-- Route next work to: write-ad | brief-landing-page | plan-campaign | run-eval-loop | none
+- Route next work to: write-ad | brief-landing-page | plan-campaign | run-pipeline | none
 
 ## Results Row
 
@@ -244,7 +244,7 @@ Lesson format:
 3. **Update learnings.md** ONLY if critic approved promotion (high-confidence audience-temp-scoped keep/discard lesson)
 4. **Run manifest-sync** via `bun scripts/manifest-sync.ts` to refresh the manifest
 
-If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with missing evidence. If critic PASS but operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/eval/log-critic-override.ts`) precedes side effect #2.
+If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with missing evidence. If critic PASS but operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/log-critic-override.ts`) precedes side effect #2.
 
 ## Cross-stack contract
 

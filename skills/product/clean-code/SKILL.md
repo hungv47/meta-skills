@@ -47,6 +47,7 @@ Before delivering, the critic-agent verifies ALL golden rules pass:
 **If any golden rule fails:** the critic identifies the specific change that violated it and recommends reverting. Never silently bypass — the rules are the safety contract. Full failure-handling flow: [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] "When the critic FAILs."
 
 **Safety supersedes `--fast`:** all 5 rules fire under `--fast`, single-agent fallback, and dry-run modes (per mode-resolver safety-gates-supersede contract).
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Before Starting
 

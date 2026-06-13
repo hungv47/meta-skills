@@ -29,7 +29,7 @@ Each agent must return structured output that can be mechanically compared. Pick
 | **Binary** | Yes/no decision | "YES or NO, top 3 reasons" |
 | **Scoring** | Multi-criteria | "Score each option 1-10 on [criteria]" |
 
-Free-form prose can't be aggregated. If the operator asks "what do you think about X," propose the most-fitting schema and confirm before spawning.
+Ranking/Scoring schemas follow the stack ranking invariants — evidence-cited scores, no naked numbers ([`../_shared/idea-ranking-core.md`](../_shared/idea-ranking-core.md)); the std-dev discipline in B4 already covers differentiation. Free-form prose can't be aggregated. If the operator asks "what do you think about X," propose the most-fitting schema and confirm before spawning.
 
 ## B2. Generate Framing Variations
 

@@ -1,19 +1,19 @@
 ---
 name: produce-video
-description: "Turn a brief-shortform or brief-app-preview into a multi-runtime export bundle — manifest, per-shot prompts, HyperFrames + Remotion scaffolds, Vercel AI CLI README. Two modes: shortform (social/promo) and app-preview (screenshot-driven product demo). Tool-agnostic — emits scaffolds + prompts; does NOT invoke render engines. Not for writing the brief (use brief-shortform / brief-app-preview) or publishing (use publish-social)."
+description: "Turn a brief-shortform or brief-app-preview into a multi-runtime export bundle — manifest, per-shot prompts, production-lane scaffolds, and a post (assemble · grade · subtitle) stage. Two modes: shortform (social/promo) and app-preview (screenshot-driven product demo). Tool-agnostic — emits scaffolds + prompts and routes a script to a production lane; does NOT invoke render engines. Not for writing the brief (use brief-shortform / brief-app-preview) or publishing (use publish-social)."
 argument-hint: "[brief slug or path] [--platforms tiktok,reels,...] [--surface app-store,onboarding,...]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   budget: standard
   estimated-cost: "$0.75-2.00"
 ---
 
 # Produce Video — Multi-Runtime Export Bundle Orchestrator
 
-Converts a `brief-shortform` OR `brief-app-preview` handoff into a runtime-agnostic export bundle. **Operator picks the runtime.** Capability metadata: [`routing.yaml`](routing.yaml). Agent table + 2 routes + 4/7 critic gates: [`references/agent-manifest.md`](references/agent-manifest.md).
+Converts a `brief-shortform` OR `brief-app-preview` handoff into a runtime-agnostic export bundle. **Recommends a production lane; the operator picks the engine** ([`production-lanes.md`](references/production-lanes.md)). Capability metadata: `routing.yaml`. Agent table + 2 routes + 4/7 critic gates: `references/agent-manifest.md`.
 
-**Two modes** (auto-detected from brief frontmatter `type`; schema in [`references/video-brief-schema.md`](references/video-brief-schema.md) § App-Preview):
+**Two modes** (auto-detected from brief frontmatter `type`; schema in `references/video-brief-schema.md` § App-Preview):
 
 - **shortform** — social/promo from `brief-shortform`. Hook-driven, narrative arc, CTA-anchored.
 - **app-preview** — screenshot-driven product demo from `brief-app-preview`'s `handoff-produce-video.md`. Composition over real UI; no synthesis.
@@ -22,7 +22,7 @@ Converts a `brief-shortform` OR `brief-app-preview` handoff into a runtime-agnos
 
 ## Critical Gates — load first
 
-Non-negotiable. Canonical: [`references/_shared/production-pattern.md`](references/_shared/production-pattern.md).
+Non-negotiable. Canonical: `references/_shared/production-pattern.md`.
 
 1. **Tool-agnostic.** Stack does NOT invoke any runtime — holds no API keys. `--publish` / `--render` / `--auto-run` → `BLOCKED — emits render-ready prompts; does not call render engines.`
 2. **Schema-and-CTA** (Gate 1). `manifest.md` validates against `video-brief-schema.md` (required fields, valid aspect, shot durations sum to total length). CTA verbatim in final shot's `on_screen_text` AND manifest top-level `cta`.
@@ -31,11 +31,11 @@ Non-negotiable. Canonical: [`references/_shared/production-pattern.md`](referenc
 
 ## Inputs & Output
 
-Input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: [`inputs-and-outputs.md`](references/procedures/inputs-and-outputs.md).
+Input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: `references/procedures/inputs-and-outputs.md`.
 
-- **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md` + **soft-required** `brand/FRAME.md` (frame direction; canonical-path + heading match). Present → compose to it; absent → flag `frame_direction: absent` + fall back to DESIGN + CREATIVE-DIRECTION tokens, never silently. Slot table + degradation: [`video-brief-schema.md`](references/video-brief-schema.md) § Brand frame inputs.
-- **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + on-disk source screenshots. Brand files soft-required (skip when `brand_source: cold-start-hint`).
-- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md`.
+- **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md` + **soft-required** `brand/FRAME.md` (frame direction; path + heading match). Absent → flag `frame_direction: absent`, fall back to DESIGN/CREATIVE-DIRECTION tokens (never silent). Slot table + degradation: [`video-brief-schema.md`](references/video-brief-schema.md) § Brand frame inputs.
+- **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + source screenshots on disk. Brand files soft-required (skip when `brand_source: cold-start-hint`).
+- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` + `post.md` (post stage).
 
 ## Quality Gate & Routing
 
@@ -49,7 +49,7 @@ Two routes by brief `type` at pre-dispatch (graphs + dispatch in [`agent-manifes
 - **Provenance:** `input_artifacts` = brief path + `BRAND.md` + `DESIGN.md` (+ `FRAME.md` when present) + `frame_direction` flag; `output_eval: null` until downstream `evaluate-shortform`/`evaluate-content`.
 - **Cross-stack:** schema changes update `format-conventions.md` + `video-brief-schema.md` + upstream `brief-shortform` atomically.
 
-Canonical: [`artifact-contract-template.md`](references/_shared/artifact-contract-template.md). Field defs + scaffolds: [`format-conventions.md`](references/format-conventions.md). Brief-to-schema map: [`video-brief-schema.md`](references/video-brief-schema.md).
+Canonical: `references/_shared/artifact-contract-template.md`. Field defs + scaffolds: `references/format-conventions.md`. Brief-to-schema map: `references/video-brief-schema.md`.
 
 ## Anti-Patterns
 
@@ -71,7 +71,7 @@ Canonical: [`artifact-contract-template.md`](references/_shared/artifact-contrac
 
 ## Execution
 
-Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold, mark the per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. For Assisted/Direct multi-shot runs, batch-check the render surface first — all blockers at once + named fallback — [capability-preflight.md](references/_shared/capability-preflight.md).
+Offer the registry-gated fork (category `video`) — **Brief-only**: run the scaffold + per-shot checklist (feeds `evaluate-shortform`); **Assisted/Direct**: render via a verified engine ([execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`). Multi-shot Assisted/Direct: batch-check the render surface first ([capability-preflight.md](references/_shared/capability-preflight.md)). Bind the `video` target tool at brief-binding — inherit `tool_targets` or ask once (`references/_shared/tool-target.md`); tool-agnostic default. Session profile (single/multi): `references/_shared/execution-policy.md`.
 
 ## Worked Example
 

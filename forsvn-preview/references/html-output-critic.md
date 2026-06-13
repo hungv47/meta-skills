@@ -2,33 +2,31 @@
 title: HTML Output Critic — quality rubric for review-surface HTML previews
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (v3 review-surface overhaul, 2026-05-26)
-consumers: every skill that emits `review_surface: html`; `scripts/lint-html-output.ts`
+produced_by: meta-skills (U9 review-webapp design pass rev 2, 2026-06-12; v3 overhaul 2026-05-26)
+consumers: bin/lint-html-output.ts; the plugin renderer; exemplar maintenance
 load_class: PLAYBOOK
 ---
 
 # HTML Output Critic
 
-**The quality rubric every `review_surface: html` artifact must pass. Ten
-binary checks; nine PASS = ship-ready. One FAIL = fix before merging.**
+**The quality rubric every `review_surface: html` twin must pass. Ten binary
+checks; one hard FAIL = fix before merging.**
 
-The lint script `scripts/lint-html-output.ts` runs this rubric in the
-pre-merge gate. Skills emitting HTML should also run it locally before
-opening the preview for review.
+`bin/lint-html-output.ts` runs this rubric (exemplars + live artifact twins).
+Since U9 the twin is produced only by the plugin renderer, so the rubric's job
+is catching **renderer/template regressions and hand-edited drift**, not
+per-skill authoring mistakes.
 
-The visual contract is [[review-surface-design]]. This file is the *checker*
-— what we verify before declaring the HTML good.
+The visual contract is [[review-surface-design]]; the structural contract is
+[[review-surface-template]]. This file is the *checker*.
 
 ---
 
 ## When this critic fires
 
-- Every HTML file under `references/_html/exemplars/`
-- Every HTML file under `.forsvn/artifacts/*.html`
-- Every HTML emitted by a skill that declares `review_surface: html`
-
-Not run on archived HTML in `.forsvn/artifacts/.archive/` — those have
-served their purpose.
+- Every HTML file under `assets/_html/exemplars/`
+- Every live `.forsvn/artifacts/**.html` twin (not `.archive/`)
+- Canonical top-level roots (`brand/`, `architecture/`, `research/`)
 
 ---
 
@@ -36,53 +34,44 @@ served their purpose.
 
 | # | Check | Failure surface | Severity |
 |---|---|---|---|
-| 1 | **Five-region layout present** — topbar / left-controls / stage / footer / hidden artifact-data block (left-controls may collapse responsively at <800px but the region must exist in markup) | Missing `.topbar`, `.left-controls`, `.stage`, `.footer`, or `#artifact-data` selector | hard fail |
-| 2 | **`data-stack` attribute on `<html>`** matches `air \| water \| fire \| earth` | Wrong stack chip color, wrong theme tokens loaded | hard fail |
-| 3 | **Decision-state pill** present in topbar and matches MD frontmatter | Operator sees stale state | hard fail |
-| 4 | **Roughdraft deeplink** in footer (`href` starts with `roughdraft://open?path=`) | Operator can't return to MD review | hard fail |
-| 5 | **WCAG AA contrast** (4.5:1 minimum on body text against its background) | Unreadable on certain monitors | hard fail |
-| 6 | **Decision capture only through the documented `forsvn preview` localhost contract** — allowed: one `<form id="decision-capture">` with `action="javascript:void(0)"` (or `/done`/`http://127.0.0.1:.../done`) plus a `<script id="preview-config">` block. Forbidden: any other `<form>`, inline `onclick=`, `fetch()` to a non-localhost target, `XMLHttpRequest`, or `WebSocket` | Decision capture drift or unbounded postback | hard fail |
-| 7 | **Tokens.css imported** via `<link rel="stylesheet" href="…tokens.css">`; no inline `:root { --bg: … }` overrides for chrome tokens | Element drift between skills | hard fail |
-| 8 | **Stage typography uses element's `--font-head` / `--font-body`** (system-font-only fallback is allowed where the documented stack provides it; mixing fonts across elements is not) | Visual incoherence between exemplars | soft fail |
-| 9 | **Motion is CSS only** — no `<script src>` referencing GSAP / motion-one / animejs / lottie / popmotion; one inline `<script>` block (max) wired to `data-toggle` attributes is allowed | Bundle bloat; preview becomes a runtime, not a static artifact | hard fail |
-| 10 | **`<title>` tag** matches `<artifact-title> · <skill> · <date>` pattern | Hard to identify in a browser tab list | soft fail |
+| 1 | **Instrument layout present** — chrome strip (`.strip`), reading stage (`.stage`), pinned ledger (`#decision-capture`), hidden `#artifact-data` block | Missing region = renderer/template drift | hard fail |
+| 2 | **`data-stack` on `<html>`** matches `air \| water \| fire \| earth` | Wrong register loaded | hard fail |
+| 3 | **Decision-state pill** present in the strip and matches the `#artifact-data` mirror | Operator sees stale state | hard fail |
+| 4 | **Read-as affordance present** (`.readas` — the folded preview-mode chooser) AND **no artifact path in visible chrome** (paths live only in the JSON config blocks) | Orientation loss / identity-by-path drift | hard fail |
+| 5 | **WCAG AA contrast** (4.5:1 body text) — token pairs pre-verified per theme in the design spec; the lint flags suspicious inline color/background pairs | Unreadable on certain monitors | soft fail |
+| 6 | **Decision capture only through the documented localhost contract** — one `<form id="decision-capture">` (`action="javascript:void(0)"` or `/done` on localhost) + `#preview-config` declaring `{"static":true}` at rest. Forbidden: any other `<form>`, inline `onclick=`, `fetch()` to a non-localhost target, `XMLHttpRequest`, `WebSocket`. (chrome.js's runtime targets — `/done`, `/edit`, the artifact source path — are all same-origin localhost.) | Decision/edit capture drift or unbounded postback | hard fail |
+| 7 | **tokens.css linked**; no inline `:root { --chrome-* }` overrides | Theme drift | hard fail |
+| 8 | **Typography via the token families only** (`var(--font-head/-body/-mono)`; no literal foreign families) | Visual incoherence | soft fail |
+| 9 | **Motion is CSS only** — no GSAP / motion-one / animejs / lottie / popmotion | Preview becomes a runtime | hard fail |
+| 10 | **`<title>`** matches `<artifact-title> · <skill> · <date>` | Hard to identify in a tab list | soft fail |
 
-**Severity:**
-- **hard fail** — the lint script exits non-zero; the pre-merge gate blocks the merge.
-- **soft fail** — warning emitted; merge proceeds but the producer is notified.
+**Severity:** hard fail → lint exits non-zero, gate blocks; soft fail →
+warning, producer notified.
 
 ---
 
-## How `scripts/lint-html-output.ts` implements each check
+## Implementation notes (bin/lint-html-output.ts)
 
-Implementation reference for the lint script in WS-10. The script does not
-render the HTML; it parses the source via regex against the markup contract.
-
-| # | Detection |
-|---|---|
-| 1 | `<header class="topbar">` and `<aside class="left-controls">` and `<main class="stage">` and `<footer class="footer">` and `id="artifact-data"` all present |
-| 2 | `<html ... data-stack="(air\|water\|fire\|earth)"` |
-| 3 | `<span class="decision-pill" data-state="(pending\|approved\|denied\|suggested)">` matches the same value as `decision_state` in the `#artifact-data` JSON block |
-| 4 | `href="roughdraft://open?path=…"` present in `.footer` markup |
-| 5 | Tokens.css computed contrasts (chrome + stack pairs) precomputed in this rubric; checked by element. New per-page inline color overrides flagged separately (manual review). |
-| 6 | Allowed: `<form id="decision-capture">` whose `action` is `javascript:void(0)` / `/done` / `http(s)://(127.0.0.1\|localhost)(:port)?/done`, paired with a `<script id="preview-config">` block (chrome.js activates the form when the config carries a `token` + `endpoint`). Any other `<form>` element = fail. No inline `onclick=` (use `data-toggle`/`data-copy-source` instead). `fetch()` targets must be relative (`/done`) or `127.0.0.1`/`localhost`. `XMLHttpRequest` and `new WebSocket` always forbidden. |
-| 7 | `<link rel="stylesheet" href=` contains `tokens.css`; no `<style>` block that defines `--chrome-bg` / `--chrome-panel` / `--chrome-border` / `--chrome-text` |
-| 8 | Per-element CSS `font-family:` in inline `<style>` only references the documented font names for that element |
-| 9 | No `<script src="…(gsap\|motion-one\|animejs\|lottie\|popmotion)…">` |
-| 10 | `<title>` content matches regex `<artifact-title> · <skill> · \d{4}-\d{2}-\d{2}` |
+- Check #6 strips `<pre>`/`<code>`/comments/JSON-script blocks first so
+  documentation examples don't false-positive.
+- Check #4's path scan also strips the JSON blocks — `preview-config.mdPath`
+  is the legitimate (and only) home of the artifact path.
+- Check #3 cross-references the pill's `data-state` with the
+  `#artifact-data` JSON (`decision_state`).
+- The v2-era Roughdraft-deeplink requirement is **retired** with the footer;
+  the read-as menu is its successor (terminal `--md` / Proof collab).
 
 ---
 
 ## Anti-patterns the critic catches
 
-1. **Skill author copies brand-explore.html shape, forgets the topbar** → check 1 fails.
-2. **Skill loads water tokens for a product artifact** → check 2 fails (wrong `data-stack`) or check 7 fails (inline override).
-3. **Skill stamps `decision_state: approved` in the HTML pill but MD says `pending`** → check 3 fails (mirror inconsistency).
-4. **Skill adds a second `<form>` to the page** (analytics, copy-via-POST, etc.) → check 6 fails — only `<form id="decision-capture">` is allowed.
-5. **Skill hardcodes a remote `fetch()` target** (e.g. `https://analytics.example.com`) → check 6 fails — fetch must be relative or localhost.
-6. **Skill drops in GSAP for a fancy reveal** → check 9 fails.
-
-Each of these is a real failure mode the rubric was designed against.
+1. **A hand-edited twin reintroducing the old five-region chrome** → #1.
+2. **A twin checked in with a live (non-static) preview-config** → #6 — a
+   remote `endpoint` would aim the reviewer's decision off-box.
+3. **Pill says `approved` while the mirror says `pending`** → #3.
+4. **A path pasted into the masthead or crumb** → #4.
+5. **A second `<form>` or a remote `fetch()`** → #6.
+6. **GSAP for a fancy reveal** → #9.
 
 ---
 

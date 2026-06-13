@@ -47,7 +47,7 @@ Full 4-sub-critic rubric + binary verdicts + format-fit test + 13-row Rewrite Ro
 
 | Reference | Consumed by | Purpose |
 |---|---|---|
-| `references/hook-archetypes.md` | hook | Tier-1/2 archetype menu per platform. |
+| `references/_shared/hook-archetypes.md` | hook | Tier-1/2 archetype menu per platform. |
 | `references/storyboard-grammar.md` | storyboard | Shot/scene timing + framing tags + on-screen text choreography. |
 | `references/caption-cta-rules.md` | copy-pack | Per-platform caption + hashtag + CTA conventions. |
 | `references/production-modes.md` | production-mode | Live-action vs motion-graphic; mixed-mode transition principle. |

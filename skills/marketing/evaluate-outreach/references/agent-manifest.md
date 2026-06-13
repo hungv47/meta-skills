@@ -43,7 +43,7 @@ Hard Fails:
 Operator ships despite a critic FAIL → **log the override BEFORE writing the artifact or appending the ledger row**:
 
 ```bash
-bun scripts/eval/log-critic-override.ts --skill evaluate-outreach …
+bun scripts/log-critic-override.ts --skill evaluate-outreach …
 ```
 
 Override never promotes a contested cycle to `keep`, and never relaxes the deliverability/compliance gate. A no-override FAIL still returns `BLOCKED`. Three overrides → rubric-revision escalation. Full protocol: [`_shared/critic-override-protocol.md`](_shared/critic-override-protocol.md).

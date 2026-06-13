@@ -1,241 +1,201 @@
 <!doctype html>
+<!--
+  base.html — the structural template for every review-surface HTML preview.
+  v4 (2026-06-12, U9 design pass · revision 2): a reading-and-deciding
+  instrument. One centered 72ch reading column under a quiet chrome strip,
+  the collaboration workbench (Marker / Comment / Edit — agents only suggest),
+  an adaptive dark/light theme (system default + explicit choice), and the
+  pinned decision ledger as the one interactive capture place. No artifact
+  paths anywhere in the UI — identity is title + skill + stack + date.
+  v2 (2026-05-26) was the five-region chrome; the marginalia gutter, left
+  controls, footer, and metadata rows are gone (workflow and decision first).
+  Skill emitters never touch this file; lib/render.ts fills the {{...}}
+  placeholders.
+
+  Placeholders (written {ph: name} here so this comment survives the
+  global replacement; the live slots below use the double-brace form):
+    {ph: stack}             — air | water | fire | earth (the elemental register)
+    {ph: stack_name}        — meta | marketing | product | research (the stack word)
+    {ph: title}             — artifact title (masthead h1)
+    {ph: skill}             — kebab-case skill slug
+    {ph: date}              — YYYY-MM-DD
+    {ph: deck}              — one-line summary (masthead deck; may be empty)
+    {ph: decision_state}    — pending | approved | denied | suggested | not_required
+    {ph: tokens_css_href}   — path to tokens.css (typically "./tokens.css")
+    {ph: chrome_css_href}   — path to chrome.css
+    {ph: chrome_js_src}     — path to chrome.js
+    {ph: artifact_data_json}— JSON blob mirroring the MD frontmatter
+    {ph: stage_html}        — rendered artifact body (typeset Markdown, never syntax)
+    {ph: preview_config_json}— JSON consumed by chrome.js + the preview CLI.
+                             Pending preview: {"token":"…","endpoint":"…","mdPath":"…",
+                             "gate_warning":null,"pending_count":N,"suggestions":[]}.
+                             Static / archived: {"static":true} — capture + workbench hidden.
+-->
 <html lang="en" data-stack="air">
 <head>
   <meta charset="utf-8">
+  <!-- Theme boot — BEFORE the stylesheets so there is no flash of the wrong
+       theme. Default follows prefers-color-scheme (no attribute); an explicit
+       operator choice persists in localStorage as data-theme="dark|light". -->
+  <script>
+    (function () {
+      try {
+        var v = localStorage.getItem("forsvn-theme");
+        if (v === "dark" || v === "light") document.documentElement.setAttribute("data-theme", v);
+      } catch (e) {}
+    })();
+  </script>
+  <!-- Images are local-only: an external img src would load on open — a beacon
+       channel — so only local images render; http(s) sources are blocked. Belt
+       for the renderer's safeSrc local-only rule. `file:` keeps relative images
+       working when the HTML twin is opened directly via file:// (opaque origin,
+       so 'self' matches nothing there) and is inert on the served path (http
+       pages can't load file: subresources). Scoped to img-src — the page
+       makes no other external requests (type is self-hosted below). -->
+  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: file:">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pricing decision: Conquis desktop · debate-agents · 2026-05-26</title>
+  <title>Should v0 Ship Without Cloud Sync? · debate-agents · 2026-06-12</title>
 
+  <!-- FORSVN unified typography: Bricolage Grotesque + Be Vietnam Pro +
+       JetBrains Mono — self-hosted (fonts.css + ./fonts/*.woff2); the hosted
+       Google Fonts links were a review-time beacon, retired with v0's
+       local-first rule. Resolved by the preview CLI's bundled-asset fallback. -->
   <link rel="stylesheet" href="../fonts.css">
 
   <link rel="stylesheet" href="../tokens.css">
   <link rel="stylesheet" href="../chrome.css">
-
-  <style>
-    /* AIR register — transparent, hairline, opacity-led motion.
-       Per-stack variation is COLOR-only; typography + motion come from tokens.css. */
-    .meta-label {
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--fg-muted);
-    }
-    .perspectives {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0;
-      border-top: 1px solid var(--border-strong);
-      border-bottom: 1px solid var(--border-strong);
-      margin-top: 24px;
-    }
-    .perspective {
-      padding: 32px 24px;
-      border-right: 1px solid var(--stage-border);
-      animation: drift-fade var(--t-enter) var(--ease) backwards;
-    }
-    .perspective:nth-child(1) { animation-delay: 0ms; }
-    .perspective:nth-child(2) { animation-delay: 80ms; }
-    .perspective:nth-child(3) { animation-delay: 160ms; border-right: none; }
-    @keyframes drift-fade {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    .perspective h2 {
-      font-family: var(--font-head);
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-      margin: 8px 0 6px 0;
-      color: var(--stage-fg);
-    }
-    .perspective h2 + .meta-label { display: block; margin-bottom: 18px; }
-    .perspective .position {
-      font-family: var(--font-body);
-      font: 500 14.5px/1.5 var(--font-body);
-      color: var(--stage-fg);
-      margin: 0 0 16px 0;
-    }
-    .perspective .arg-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      font-family: var(--font-body);
-    }
-    .perspective .arg-list li {
-      padding: 8px 0;
-      border-top: 1px solid var(--stage-border);
-      font-size: 13.5px;
-      color: var(--fg-muted);
-    }
-    .perspective .arg-list li::before {
-      content: "→ ";
-      color: var(--stage-accent);
-      font-weight: 600;
-    }
-    .verdict-block {
-      max-width: var(--max-measure);
-      margin: 40px 0 24px 0;
-      padding: 24px;
-      background: var(--bg-elevated);
-      border: 1px solid var(--stage-border);
-      border-radius: 6px;
-    }
-    .verdict-block .meta-label { margin-bottom: 8px; }
-    .verdict-block h3 {
-      font-family: var(--font-head);
-      font-size: 24px;
-      font-weight: 600;
-      margin: 0 0 12px 0;
-      color: var(--stage-fg);
-    }
-    .verdict-block p {
-      font-family: var(--font-body);
-      margin: 0;
-      color: var(--fg-muted);
-    }
-
-    .stage-intro h1 {
-      font-family: var(--font-head);
-      font-size: 42px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin: 0 0 8px 0;
-      color: var(--stage-fg);
-    }
-    .stage-intro p {
-      font-family: var(--font-body);
-      color: var(--fg-muted);
-      max-width: 60ch;
-    }
-  </style>
 </head>
 <body>
 
-  <header class="topbar">
-    <span class="brand-mark" aria-label="FORSVN">FORSVN</span>
-    <span class="brand-divider" aria-hidden="true"></span>
-    <span class="stack-chip">AIR</span>
-    <span class="topbar-meta"><strong>debate-agents</strong> · 2026-05-26 · conquis-desktop-pricing</span>
+  <!-- Chrome strip: identity + theme + state. One state, one place (the pill).
+       The logo glyph swaps with the active theme: cream glyph on dark surfaces,
+       forest glyph on light (BRAND.md § Logo Color Combinations). -->
+  <header class="strip">
+    <span class="wordmark" aria-label="FORSVN">
+      <img class="logo logo-on-dark" src="../logo-glyph-cream.svg" alt="" aria-hidden="true">
+      <img class="logo logo-on-light" src="../logo-glyph-forest.svg" alt="" aria-hidden="true">
+      <span class="name">FORSVN</span>
+    </span>
+    <span class="crumb"><b>review</b><span data-pending-count></span></span>
+    <span class="el el-air"><span class="swatch"></span>meta · air</span>
+    <span class="grow"></span>
+    <div class="theme-seg" role="group" aria-label="Theme">
+      <button type="button" data-set="system" aria-pressed="true">auto</button>
+      <button type="button" data-set="dark" aria-pressed="false">dark</button>
+      <button type="button" data-set="light" aria-pressed="false">light</button>
+    </div>
     <span class="decision-pill" data-state="pending">pending</span>
   </header>
 
-  <aside class="left-controls">
-    <div class="control-group" data-picker-group>
-      <h2>Perspectives</h2>
-      <button class="picker-item" data-picker-value="all" aria-selected="true">All three</button>
-      <button class="picker-item" data-picker-value="growth" aria-selected="false">Growth only</button>
-      <button class="picker-item" data-picker-value="finance" aria-selected="false">Finance only</button>
-      <button class="picker-item" data-picker-value="user" aria-selected="false">User only</button>
-    </div>
+  <!-- Stage: one centered reading column, themed by the elemental register.
+       The workbench (Marker / Comment / Edit + "read as") is the HUMAN's
+       collaboration bar — chrome.js activates it only on a live pending serve;
+       deciding stays in the ledger below, the bar never captures a verdict. -->
+  <main class="stage" tabindex="0" aria-label="Artifact body">
+    <div class="sheet" id="sheet">
 
-    <div class="control-group">
-      <h2>Compare</h2>
-      <button type="button" data-toggle="comparison">Show consensus → off</button>
-    </div>
+      <div class="workbench" role="toolbar" aria-label="Work on this artifact" hidden>
+        <button class="tool" type="button" data-tool="read" aria-pressed="true"><span class="g">¶</span>Read</button>
+        <button class="tool" type="button" data-tool="marker" aria-pressed="false"><span class="g">▆</span>Marker <span class="key">M</span></button>
+        <button class="tool" type="button" data-tool="comment" aria-pressed="false"><span class="g">◍</span>Comment <span class="key">C</span></button>
+        <button class="tool" type="button" data-tool="edit" aria-pressed="false"><span class="g">✎</span>Edit <span class="key">E</span></button>
+        <span class="wb-note" data-wb-note>marks + comments ride back to the agents</span>
+        <span class="grow"></span>
+        <button class="btn-quiet" type="button" data-edit-discard hidden>Discard <span class="key">esc</span></button>
+        <button class="btn-save" type="button" data-edit-save hidden>Save edits <span class="key">⌘S</span></button>
+        <span class="readas-wrap">
+          <button class="readas" type="button" aria-haspopup="menu" aria-expanded="false">read as <b>designed html</b> ▾</button>
+          <div class="readas-menu" role="menu" hidden>
+            <div class="readas-item is-current" role="menuitem" aria-disabled="true">
+              <b>designed html</b><span>this page — read, mark, edit, decide</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>terminal</b><span>re-serve with <code>--md</code> for a read-only terminal render</span>
+            </div>
+            <div class="readas-item" role="menuitem">
+              <b>proof collab</b><span><code>forsvn-collab open</code> — iterative co-editing; agents suggest only</span>
+            </div>
+          </div>
+        </span>
+      </div>
 
-    <div class="control-group">
-      <h2>View</h2>
-      <button type="button" data-toggle="density">Density · loose</button>
-      <button type="button" data-toggle="arguments">Arguments · expanded</button>
-    </div>
-
-    <div class="control-group">
-      <h2>Export</h2>
-      <button type="button" data-copy-source="artifact-data">Copy as JSON</button>
-    </div>
-  </aside>
-
-  <main class="stage">
-    <section class="stage-intro">
-      <h1>Pricing decision · Conquis desktop</h1>
-      <p>Three perspectives, run in parallel against the same brief. Each landed on a number; read the rationale side-by-side, then capture the decision in Roughdraft.</p>
-    </section>
-
-    <section class="perspectives">
-
-      <article class="perspective">
-        <span class="meta-label">Perspective · 01</span>
-        <h2>Growth</h2>
-        <span class="meta-label">Pursues breadth and acquisition velocity</span>
-        <p class="position"><strong>$29 single-tier.</strong> Low friction, broad install base, depend on volume + future expand-monetization.</p>
-        <ul class="arg-list">
-          <li>Trial-to-paid lift estimated at +18% vs. $49</li>
-          <li>Search-term competitive zone is $19–$39</li>
-          <li>Volume creates training data for v2 personalization</li>
-        </ul>
+      <article>
+        <!-- G1 gate-warning notice (amber, warn-and-proceed) renders here from
+             preview-config.gate_warning; agent suggestion cards render after the
+             masthead from preview-config.suggestions. Both are chrome.js-owned. -->
+        <header class="masthead">
+          <div class="eyebrow">meta · debate-agents · 2026-06-12 <span class="rule"></span></div>
+          <h1>Should v0 Ship Without Cloud Sync?</h1>
+          <p class="deck">Three perspectives argued to convergence — local-first wins; the dissent is recorded, not erased.</p>
+        </header>
+        <div class="prose">
+<h2>Convergence</h2>
+<p>The panel converged on <strong>local-first for v0</strong>: every byte stays on the operator&#39;s machine; sync is a post-v0 extension behind its own gate.</p>
+<table><tr><th>Perspective</th><th>Position</th><th>Strongest argument</th></tr><tr><td>Velocity</td><td>ship without sync</td><td>sync doubles the surface before the wedge is proven</td></tr><tr><td>Trust</td><td>ship without sync</td><td>&quot;your files never leave&quot; is the wedge, not a constraint</td></tr><tr><td>Growth</td><td>add sync later</td><td>multi-device pull exists but is not the first loop</td></tr></table>
+<h2>The dissent, preserved</h2>
+<blockquote><p>Growth&#39;s caveat: revisit after the dogfood gate passes — a second device is the first thing a convinced operator reaches for.</p></blockquote>
+<section class="gate" id="gate-echo"><header><span class="t">Review gate</span><span class="ro">read-only echo — decide below</span></header><div class="gate-body">
+<ul class="mirror-gate" aria-hidden="true"><li class="task"><input type="checkbox" disabled> The convergence names a single position, not a hedge</li><li class="task"><input type="checkbox" disabled> Every perspective&#39;s strongest argument is stated in its own voice</li><li class="task"><input type="checkbox" disabled> The dissent is recorded with its revisit trigger</li></ul></div><footer>The gate is the author's claim. Your decision below is the only thing that writes.</footer></section>
+</div>
       </article>
 
-      <article class="perspective">
-        <span class="meta-label">Perspective · 02</span>
-        <h2>Finance</h2>
-        <span class="meta-label">Pursues unit-economic sustainability</span>
-        <p class="position"><strong>$59 single-tier.</strong> Margin headroom for support, CAC payback in 4 mo., room to discount for enterprise.</p>
-        <ul class="arg-list">
-          <li>Current CAC ≈ $42; $29 requires 2-yr payback at 35% churn</li>
-          <li>Avoids race-to-bottom commitment</li>
-          <li>Anchors a future $99 tier with no migration friction</li>
-        </ul>
-      </article>
-
-      <article class="perspective">
-        <span class="meta-label">Perspective · 03</span>
-        <h2>User</h2>
-        <span class="meta-label">Pursues felt-value alignment</span>
-        <p class="position"><strong>$49 single-tier.</strong> Operators self-report willingness-to-pay $40–60; sub-$50 reads as utility, super-$50 reads as platform.</p>
-        <ul class="arg-list">
-          <li>14/20 interviewed operators named a number in $40–60</li>
-          <li>$59 triggers "is this a SaaS" hesitation in 4/20</li>
-          <li>$29 triggers "is this real" hesitation in 5/20</li>
-        </ul>
-      </article>
-
-    </section>
-
-    <section class="verdict-block">
-      <span class="meta-label">Operator decision · committed</span>
-      <h3>$59 single-tier — Finance + User compromise</h3>
-      <p>Finance's CAC math holds; user's willingness-to-pay supports it; growth concedes that volume can come from a discounted enterprise track. Revisit at month 3 if trial-to-paid lands under 18%.</p>
-    </section>
+      <!-- Thread rail: comment threads anchored to highlights; they feed the
+           agents. chrome.js populates it and widens the sheet when in use. -->
+      <aside class="thread-rail" aria-label="Open comment threads" hidden></aside>
+    </div>
   </main>
 
-  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)">
-    <fieldset class="decision-radio">
-      <legend>Decision</legend>
-      <label><input type="radio" name="decision" value="approved"><span>Approve</span></label>
-      <label><input type="radio" name="decision" value="denied"><span>Deny</span></label>
-      <label><input type="radio" name="decision" value="suggested"><span>Suggest changes</span></label>
-    </fieldset>
-    <label class="decision-comments">
-      <span>Comments (optional)</span>
-      <textarea name="comments" rows="3" placeholder="What changed your mind, or what would you push back on?"></textarea>
-    </label>
-    <div class="decision-actions">
-      <span class="decision-status" aria-live="polite"></span>
-      <button type="submit" class="decision-done">Done</button>
+  <!-- Ledger — the one decision place, pinned. Always present in markup.
+       chrome.js activates it only when the preview CLI has injected a token
+       into the preview-config block AND the artifact's decision_state is
+       "pending". Otherwise the form stays display:none — read-only page.
+       Keycaps live on the controls: the keyboard model is rendered, not listed. -->
+  <form id="decision-capture" class="decision-capture" data-active="false" action="javascript:void(0)" aria-label="Decision">
+    <div class="ledger-inner">
+      <div class="ledger-head">
+        <span class="t" id="decision-label">Your decision</span>
+        <span class="aside">marks + comments are notes to the agents — they never decide for you</span>
+      </div>
+      <div class="decision-alert" role="alert" tabindex="-1" hidden></div>
+      <fieldset class="decision-radio ledger-row" role="radiogroup" aria-labelledby="decision-label" aria-required="true">
+        <legend class="sr-only">Decision</legend>
+        <label class="opt" data-d="approve">
+          <input type="radio" name="decision" value="approved" aria-keyshortcuts="Alt+A">
+          <span class="glyph">✓</span>
+          <span class="w"><span class="word">Approve</span><span class="sub">ship it as truth</span></span>
+          <span class="key">⌥A</span>
+        </label>
+        <label class="opt" data-d="deny">
+          <input type="radio" name="decision" value="denied" aria-keyshortcuts="Alt+D">
+          <span class="glyph">✕</span>
+          <span class="w"><span class="word">Deny</span><span class="sub">send it back</span></span>
+          <span class="key">⌥D</span>
+        </label>
+        <label class="opt" data-d="suggest">
+          <input type="radio" name="decision" value="suggested" aria-keyshortcuts="Alt+S">
+          <span class="glyph">~</span>
+          <span class="w"><span class="word">Suggest</span><span class="sub">approve with notes</span></span>
+          <span class="key">⌥S</span>
+        </label>
+        <label class="comment">
+          <span class="sr-only">Comment (optional)</span>
+          <textarea name="comments" placeholder="Optional note — saved with the decision as your reviewer notes"></textarea>
+        </label>
+        <span class="decision-actions">
+          <span class="decision-status" aria-live="polite"></span>
+          <button type="submit" class="decision-done done" aria-disabled="true" aria-describedby="decision-done-hint">Done <span class="k">⌘↵</span></button>
+          <span id="decision-done-hint" class="sr-only">pick a decision first</span>
+        </span>
+      </fieldset>
+      <div class="decision-outcome confirm" role="status" tabindex="-1" hidden></div>
     </div>
   </form>
 
-  <footer class="footer">
-    <a class="footer-action" data-roughdraft-link
-       href="roughdraft://open?path=.forsvn%2Fartifacts%2Fmeta-debate-agents-2026-05-26-conquis-desktop-pricing.md">
-      Open in Roughdraft →
-    </a>
-    <span class="footer-meta">Conquis Desktop Pricing · decision: pending · 3 perspectives reconciled</span>
-    <button class="footer-action" type="button" data-copy-source="artifact-data">Copy as JSON</button>
-  </footer>
-
+  <!-- Preview-config: populated by the preview CLI at runtime. When this
+       artifact is opened directly (no CLI), the `static` flag tells chrome.js
+       to keep the ledger + workbench inert — a read-only page. -->
   <script type="application/json" id="preview-config">{"static":true}</script>
-  <script type="application/json" id="artifact-data">{
-  "skill": "debate-agents",
-  "version": 1,
-  "date": "2026-05-26",
-  "status": "done",
-  "stack": "meta",
-  "lifecycle": "decision",
-  "summary": "Conquis desktop pricing: $59 single-tier (Finance + User compromise)",
-  "decision_state": "pending",
-  "review_surface": "html"
-}</script>
+  <script type="application/json" id="artifact-data">{"skill":"debate-agents","version":"2","date":"2026-06-12","status":"done","stack":"meta","id":"exemplar-air-debate","type":"decision","title":"Should v0 Ship Without Cloud Sync?","summary":"Three perspectives argued to convergence — local-first wins; the dissent is recorded, not erased.","decision_state":"pending","review_surface":"html"}</script>
   <script src="../chrome.js"></script>
 </body>
 </html>

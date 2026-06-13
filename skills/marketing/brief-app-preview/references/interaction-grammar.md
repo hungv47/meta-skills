@@ -21,6 +21,8 @@ Every beat uses one of these verbs. Custom verbs FAIL Critical Gate 3.
 | **settle** | Animation ends; layout finishes | 0.3-0.5s | Final state crystallizes |
 | **transition** | One screen leaves, another enters | 0.4-0.8s | Crossfade OR slide between screens |
 
+**Composite escape hatch.** An interaction not covered by one verb may be decomposed into a **named composite** of the listed verbs (e.g., `pinch-zoom = drag + reveal`), with the decomposition stated wherever the composite is used. The verb set stays closed because each verb maps to a runtime scaffold primitive — composites stay renderable by decomposing into them. An undeclared custom verb still FAILS Critical Gate 3.
+
 ---
 
 ## §2 — Beat-verb pairings (canonical sequences)
@@ -95,7 +97,7 @@ The band geometry is locked by `platform-format-agent` per surface. The appearan
 - **Hold duration ≥ 2 seconds**
 - **One caption per beat** — never spanning beats
 - **Beat-scoped, not feature-scoped** — the caption describes what *this beat* proves, not what the feature does for the user's life
-- **Present tense, descriptive** — "Tap to begin a surge" not "Will save you time" / "The fastest focus tool"
+- **Describes what this beat shows** — "Tap to begin a surge" not "Will save you time" / "The fastest focus tool"
 - **No performance claims** — no "saves X hours," no "Y% faster," no "Z× better"
 - **No comparative superlatives** — no "best," "fastest," "most"
 - **No competitor names**

@@ -115,6 +115,36 @@ says *what is available*.
 
 ---
 
+## Target-tool catalog — what an output can TARGET (tool-target fork)
+
+The brief-binding tool-target fork ([`tool-target.md`](tool-target.md)) offers a
+per-category list of tools an output can **target** — prompt-dialect / capability tuning
+of the brief, **not** execution and **not** liveness. This catalog is the single source
+for those names; skills never hardcode their own lists. Entries are deliberately short
+and **extensible** — add a name when a skill learns its prompt dialect. Listing a target
+implies no discovery, no `EngineEntry`, and no `status`.
+
+| Category | Target tools (extensible) |
+|---|---|
+| `design` | Figma · Open Design · Paper · Stitch · generic HTML/CSS (coding agent) |
+| `video` | Veo · Sora · Runway · CapCut · Remotion · HyperFrames |
+| `animation`* | Lottie · Rive · GSAP |
+| `image` | Midjourney · gpt-image (DALL·E) · Gemini imagegen (Imagen) · Ideogram |
+| `audio`* | ElevenLabs · Suno |
+
+Every category additionally offers **tool-agnostic** — the current generic brief,
+unchanged — as the first-class, pre-checked default.
+
+\* `animation` and `audio` are **target-only categories**: valid keys in the session
+profile's `tool_targets` map, deliberately NOT added to the fixed `categories` enum
+(anti-sprawl, CLOSED-LOOP §11 R1) — no `EngineEntry`, no discovery pass, no schema
+change. Where a target name matches a catalog engine (`figma`, `open-design`, `paper`,
+`stitch`, `veo`, `sora`, `remotion`, `hyperframes`, `midjourney`, `dall-e`, `imagen`,
+`ideogram`), it is the same tool; targets without an engine entry (Runway, CapCut,
+Lottie, Rive, GSAP, ElevenLabs, Suno, gpt-image) are prompt-dialect targets only.
+
+---
+
 ## Idempotence + the gate
 
 `build-tool-registry.ts --check` regenerates in memory and diffs against disk with the

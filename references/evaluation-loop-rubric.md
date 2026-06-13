@@ -12,6 +12,7 @@ provenance:
 
 # Evaluation-Loop Rubric — Shared Frame
 
+<!-- lint:reference-ok per-skill instrument; each eval skill owns its own references/rubric.md -->
 **The common contract behind every eval-loop critic rubric: the scoring scale, the pass gate, the five shared dimensions, the universal Hard Fails, the revision-trigger mechanism, and the falsifiability discipline. `evaluate-ad`, `evaluate-campaign`, and `evaluate-content` each own a `references/rubric.md` that scores 7 dimensions — 5 defined here, 2 domain-specific — and inherits this frame.**
 
 > Why this is shared: the three eval-loop critics gate post-launch cycle artifacts before a `results.tsv` row is written. The *contract* — what a passing score is, what a Hard Fail is, what makes a score falsifiable — must be identical and must change in lockstep. The *band tables* are domain-specialized (audience-temp, channel-mix, engagement-quality) and revise independently per domain; they stay in each skill's `rubric.md`. This file is the frame; `rubric.md` is the domain instrument.

@@ -54,7 +54,7 @@ capability:
       - "User needs a designer-ready brief (Claude Design / Figma / human / coding agent)."
       - "Post-launch evidence triggers a redesign (Route B)."
     not_when:
-      - "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-eval-loop)."
+      - "Post-launch CRO from real analytics evidence -> evaluate-landing-page (inside run-pipeline)."
       - "Single visual asset spec -> brief-graphic."
       - "Page exists but conversion is fine; just needs headline variations -> write-copy."
       - "Non-conversion pages (blog, docs hub, navigation hub) -> out of scope."

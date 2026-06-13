@@ -1,8 +1,8 @@
 # Component Patterns — Catalog & Reuse Heuristics
 
 > Domain-knowledge reference for the component-system-agent (CP-02). Read before constructing the
-> component taxonomy; pull from this catalog first, introduce a new pattern only when the catalog
-> has no match and the flow clearly requires it.
+> component taxonomy. The catalog is a starting vocabulary — introduce new patterns freely when
+> the flow warrants a different abstraction.
 
 ---
 
@@ -49,9 +49,9 @@ elevation) are token-application-agent territory — not a new component.
 
 ## 3. Bounded Primitive Count
 
-A typical product feature requires **8–15 primitives**. Flag the spec for CP-02 review if:
+A typical product feature requires **8–15 primitives** as a reference range. Flag the spec for CP-02 review only on clear consolidation opportunities, not on count alone:
 
-- Primitive count exceeds **15** — suggests redundant atoms or unexploded composites.
+- Redundant atoms or unexploded composites — near-duplicate primitives that could merge.
 - A primitive appears on exactly one screen and cannot be folded into a composite — likely a one-off
   (anti-pattern #4 in `references/anti-patterns.md`).
 - Checkbox, Radio, Toggle, and Switch appear as four separate entries — consolidate to the narrowest

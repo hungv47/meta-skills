@@ -4,7 +4,7 @@ description: "Production-ready brief for short-form video — hook, shot list, o
 argument-hint: "[angle or topic] [--platforms tiktok,reels,...] [--brand-mode founder|company]"
 allowed-tools: Read Edit Write Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$2-4 (single platform) / $4-8 (1 hero + 2 variants)"
 ---
@@ -51,6 +51,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: angle · platforms (1-3 typical; more extends recuts with a cost warning) · brand_mode (founder | company) · production_mode (auto | live-action | motion-graphic | mixed) · market · optional campaign tie-in. Warm/Cold Start (5-question bundled) + Write-back map + VN auto-routing for polish chain: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `--fast` skips Layer 2 (no critic, no platform-tailor) and runs Layer 1 + 1.5 single-pass via single-agent fallback. **`--fast` does NOT skip Cold Start or Critical Gates 1-6.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Routing
 
@@ -92,6 +93,7 @@ Most common in practice: AI-slop openers ("Hey guys"), vague action verbs ("show
 
 ## Execution
 
+At brief-binding, bind the `video` target tool — inherit `tool_targets` or ask once per `references/_shared/tool-target.md`; production notes tune to it, tool-agnostic stays the default.
 Offer the registry-gated fork (category `video`) — **Brief-only**: hand the brief to `produce-video` for the render-ready scaffold (→ `evaluate-shortform`); **Assisted/Direct**: a verified engine renders, you approve at the gate. See [execution-fork.md](references/_shared/execution-fork.md); record `execution_mode`. When picking Assisted/Direct, batch-check the render surface first (all blockers at once + named fallback) — see [capability-preflight.md](references/_shared/capability-preflight.md).
 
 ## Worked Example

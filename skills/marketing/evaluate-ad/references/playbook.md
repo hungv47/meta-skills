@@ -1,4 +1,7 @@
 ---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
 title: Ad-Eval Playbook
 lifecycle: canonical
 status: stable
@@ -72,7 +75,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-ad does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-ad does not scaffold loops.
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-ad does not run as a heuristic audit.
 - **Mixed-audience metric ingest with no clean split.** Return BLOCKED. Cold and retargeting are evaluated separately.
 - **The next action is creative authorship, not scoring.** Route to `write-ad` with `--rev=N+1`.
@@ -84,7 +87,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 ## Sibling coordination
 
 - **`write-ad`** owns construction-time creative authoring. evaluate-ad reads write-ad's artifacts as input; routes next cycle to write-ad with hypothesis seeding. evaluate-ad does NOT author copy.
-- **`run-eval-loop`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-ad assumes a loop exists; if missing, defers to run-eval-loop.
+- **`run-pipeline`** owns loop scaffolding (program.md, context.md, results.tsv schema, durable learnings ledger). evaluate-ad assumes a loop exists; if missing, defers to run-pipeline.
 - **`evaluate-landing-page`** is the sister LP-eval skill. When ad-eval surfaces a high-CTR + low-conversion signal, route diagnosis to lp-eval — don't score LP signal inside an ad-eval artifact.
 - **`plan-campaign`** owns multi-channel strategy retrospectives. When ad-eval surfaces a channel-mix or budget-allocation issue (not a creative issue), route to plan-campaign.
 
@@ -98,7 +101,7 @@ v0.1. Mandatory revision after cycles 2-3 per brief 05's revision trigger. The 7
 - 7 Critical Gates (existing loop / measurement evidence / one primary metric / one audience-temp / no fabricated analytics / explicit attribution confidence / does-not-generate-creative)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts` per D8 contract
+- Critic-override protocol via `scripts/log-critic-override.ts` per D8 contract
 - Generation provenance per D8 contract — `input_artifacts` lists source ad-copy + BRAND.md + icp-research.md
 - Results Row schema byte-identical with evaluate-landing-page (8 cols)
 - Learning promotion audience-temp-scoped

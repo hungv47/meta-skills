@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # Session Cookie Export — Operator Guide
 
 > How to export session cookies from your logged-in browser into `.forsvn/credentials/platforms.json` so publish-social can draft on your behalf. Step-by-step per platform.

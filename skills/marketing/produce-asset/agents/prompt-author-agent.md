@@ -113,7 +113,7 @@ Use this internal structure for the "Render-Ready Prompt" section:
 7. **Copy placement** — where the copy strings sit in the composition
 8. **Anti-patterns** — the DO NOT list
 
-This order matches how most image-gen models tokenize prompts (subject-first → style → specifics). Human designers also benefit from the structure.
+This order matches how most image-gen models tokenize prompts (subject-first → style → specifics). Human designers also benefit from the structure. (Reorganize if a specific renderer responds better to a different prompt shape; note the departure in the change log.)
 
 ### Platform-aware spec injection
 

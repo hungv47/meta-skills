@@ -4,8 +4,9 @@ description: "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/S
 argument-hint: "[scope path | --dry-run | --apply | --threshold-days N]"
 allowed-tools: Read Grep Glob Bash Edit
 user-invocable: true
+disable-model-invocation: true
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: standard
   estimated-cost: "$0.05-0.20"
 ---
@@ -26,9 +27,10 @@ Single-agent — orchestrator IS the runner; critic in-procedure. Audit + groom 
 
 ## Before Starting + Pre-Dispatch
 
-Apply [`_shared/before-starting-check.md`](references/_shared/before-starting-check.md) + [`pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) + [`mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`; `--fast` bypasses prompts — **Critical Gates supersede `--fast`**. Read `.forsvn/index/{manifest.json,artifact-index.md}` + `.forsvn/experience/technical.md` (prior excludes). Manifest missing/stale (>1d) → `NEEDS_CONTEXT`. Dimensions: scope, mode, threshold (90d), excludes.
+Apply `references/_shared/{before-starting-check, pre-dispatch-protocol, mode-resolver}.md`. `budget: standard`; `--fast` bypasses prompts — **Critical Gates supersede `--fast`**. Read `.forsvn/index/{manifest.json,artifact-index.md}` + `.forsvn/experience/technical.md` (prior excludes). Manifest missing/stale (>1d) → `NEEDS_CONTEXT`. Dimensions: scope, mode, threshold (90d), excludes.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
-### Warm Start (scope clear)
+### Warm Start ([`procedure`](references/procedures/warm-start.md))
 
 `` ! `<cmd>` `` interpolation fires ONLY from SKILL.md slash invocation (not refs) — that is why this prompt stays in body.
 
@@ -45,7 +47,7 @@ Default --dry-run, threshold 90d. Override (e.g., --apply, --threshold-days 30) 
 
 ### Cold Start (no scope hint)
 
-[`references/procedures/cold-start.md`](references/procedures/cold-start.md) — 4-question prompt, persist excludes to `.forsvn/experience/technical.md`.
+[`procedure`](references/procedures/cold-start.md) — 4-question prompt, persist excludes to `.forsvn/experience/technical.md`.
 
 ## Decision Tree
 

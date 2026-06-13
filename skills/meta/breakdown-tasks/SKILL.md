@@ -48,6 +48,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 ## Pre-Dispatch
 
 Per [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md) [PROCEDURE]. Warm/Cold Start prompts, dimensions, write-back: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Multi-Agent Architecture
 

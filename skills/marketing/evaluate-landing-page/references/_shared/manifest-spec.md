@@ -60,7 +60,7 @@ Schema:
       "frontmatter_present": true
     },
     ".forsvn/loops/pricing-page/program.md": {
-      "produced_by": "run-eval-loop",
+      "produced_by": "run-pipeline",
       "produced_at": "2026-05-13",
       "status": "done",
       "schema_version": 1,

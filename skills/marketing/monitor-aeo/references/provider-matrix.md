@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave2
+churn: high
+---
+
 # Provider Matrix — AEO Surfaces, Inputs, Crawlers
 
 > Canonical list of providers/surfaces the monitor measures, the input shapes each accepts, and the crawler user-agents that feed each provider's training/retrieval. Used by query-set-agent (provider mapping), provider-readiness-agent (ledger inventory), citation-monitor / geo-monitor / traffic-monitor / readiness (per-provider behavior).

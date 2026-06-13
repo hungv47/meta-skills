@@ -36,7 +36,7 @@ Critic 7-check rubric (zero Hard Tells from 28-pattern catalog · pronoun pair h
 
 ## Before Starting
 
-Per [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) — load brand voice + register-mapping experience.
+Per `references/_shared/before-starting-check.md` — load brand voice + register-mapping experience.
 
 | Artifact | Source | Required? |
 |---|---|---|
@@ -46,9 +46,10 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 
 ## Pre-Dispatch + Mode
 
-Protocol: [`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md). **Needed dimensions:** register · dialect (north/south/neutral) · subvariant (if bro: otofun/voz). Read-order + Register Resolution priority + Warm/Cold Start + write-back + hard-blocks: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
+Protocol: `references/_shared/pre-dispatch-protocol.md`. **Needed dimensions:** register · dialect (north/south/neutral) · subvariant (if bro: otofun/voz). Read-order + Register Resolution priority + Warm/Cold Start + write-back + hard-blocks: [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE].
 
-Per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) — `--fast` runs single-pass polisher only (skips diagnostic + critic). **`--fast` does NOT skip Register Resolution, Critical Gates 1-4, or Absolute Prohibitions.**
+Per `references/_shared/mode-resolver.md` — `--fast` runs single-pass polisher only (skips diagnostic + critic). **`--fast` does NOT skip Register Resolution, Critical Gates 1-4, or Absolute Prohibitions.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ---
 

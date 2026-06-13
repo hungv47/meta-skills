@@ -73,7 +73,7 @@ On PASS or `done_with_concerns`, the orchestrator:
 
 ## Chain Position
 
-Previous: `research-icp` (optional — supplies the niche/audience context for benchmark cohorts); `run-eval-loop` / `evaluate-*` (optional — their eval artifacts feed `prior_eval` evidence).
+Previous: `research-icp` (optional — supplies the niche/audience context for benchmark cohorts); `run-pipeline` / `evaluate-*` (optional — their eval artifacts feed `prior_eval` evidence).
 
 Next: `write-social`, `optimize-seo`, `research-shortform`, `evaluate-content`, `evaluate-shortform`, `publish-social` — each reads Per-Platform Evidence + Recommendations to ground a decision in measured performance.
 

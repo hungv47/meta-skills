@@ -55,7 +55,7 @@ use the upstream names in the spec.
 
 ## 2 · Density Tiers
 
-Pick one tier per surface. State it in the Per-Screen Layout Spec; never leave it implicit.
+Pick one tier per surface — or declare your own named tier and define its row height + spacing multiplier. State it in the Per-Screen Layout Spec; never leave it implicit.
 
 | Tier | Base row height | Spacing multiplier | When to use |
 |------|-----------------|--------------------|-------------|
@@ -70,7 +70,7 @@ declare `compact` for the table region and `comfortable` for the hero region, na
 
 ## 3 · Responsive / Adaptive Behavior
 
-Four named patterns — declare exactly one per screen:
+Four named patterns — declare exactly one per screen, or declare your own named pattern and define it explicitly:
 
 | Pattern | Description | Typical trigger |
 |---------|-------------|-----------------|
@@ -80,6 +80,8 @@ Four named patterns — declare exactly one per screen:
 | **Platform-split** | Separate layout spec per declared surface (e.g., desktop vs. mobile vs. tablet). | Any feature shipping on 2+ surface classes |
 
 ### Standard collapse rules (Adaptive / Platform-split)
+
+Defaults for conventional navigation — override per screen when the flow calls for different behavior; declare the override explicitly.
 
 | Element | Collapses to | Breakpoint |
 |---------|--------------|------------|

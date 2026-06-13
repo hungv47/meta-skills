@@ -27,6 +27,7 @@ Strategy track entry point. Maps market landscape, competitors, identifies gaps 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. `--fast` forces Route A (Quick Validation) — skip sizing + opportunity agents; consumer-landscape optional; critic gate collapses to single pass. `--deep` forces Route C. **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize scoping a market with no specified category (Critical Gates 1-4 floor).
+- `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - Read `.forsvn/index/manifest.json` — find any prior `id:market-research` at `.forsvn/canonical/research/MARKET.md` (re-run signal); check `id:product-context` resolves (recommend `research-icp` first if missing).
 - Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) — Warm Start with product+B2B/B2C pre-fill OR Cold Start 5-question prompt, Write-back map (Q1 → product.md; Q2+Q4 → business.md; Q3 → goals.md; Q5 → audience.md — all 5 Q's persist), route selection (A/B/C).
 

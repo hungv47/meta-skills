@@ -41,7 +41,7 @@ Per-field semantics + enum values: [`../format-conventions.md`](../format-conven
 ## Consumed by
 
 - **`humanmaxxing` + `polish-vn`** (polish chain) — read `## Body` + `## CTA`, rewrite in place, **preserve Hook variants for A/B comparability**, update `polish_chain_applied` frontmatter.
-- **`run-eval-loop`** — reads `critic_score` + `critic_verdict` + `goal` + `platform` from frontmatter, appends a row to `results.tsv`.
+- **`run-pipeline`** — reads `critic_score` + `critic_verdict` + `goal` + `platform` from frontmatter, appends a row to `results.tsv`.
 - **Operator publish workflow** — reads selected variant + format spec to render the actual post.
 
 ## Cross-stack contract (load-bearing)
@@ -50,7 +50,7 @@ The 13-field frontmatter + 6-section body + 5-dim critic verdict table + Anti-pa
 
 1. Update `../format-conventions.md` § "Frontmatter field order".
 2. Update polish-chain (`humanmaxxing`, `polish-vn`) artifact-reader code.
-3. Update `run-eval-loop` row-extractor.
+3. Update `run-pipeline` row-extractor.
 4. Update operator-workflow renderer.
 
 All four atomic in a single PR.

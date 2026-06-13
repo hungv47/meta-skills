@@ -150,7 +150,7 @@ For every Accepted finding, the loop is:
 4. If reruns pass → mark Accepted entry as "Fixed + Verified" with the rerun commands run.
 5. If reruns FAIL → the fix introduced a regression. Two options:
    a. Roll back the fix; mark the Accepted entry as "Attempted, Rolled Back" with rationale; downgrade to Deferred (`accepted_deferred`) for follow-up.
-   b. Operator decides to ship the regression knowingly (rare); critic override log per scripts/eval/log-critic-override.ts captures the decision.
+   b. Operator decides to ship the regression knowingly (rare); critic override log per scripts/log-critic-override.ts captures the decision.
 ```
 
 The fix-then-rerun loop is NOT optional for Accepted findings. The whole point of review-work is "fix is verified by the rerun, not by the reviewer's intuition that the fix works." Brief 06 § Review Workflow: "fix accepted findings, rerun relevant checks."

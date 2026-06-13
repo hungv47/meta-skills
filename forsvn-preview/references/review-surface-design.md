@@ -1,406 +1,229 @@
 ---
-title: Review-Surface Design System — FORSVN-unified token spec for the HTML preview surface
+title: Review-Surface Design System — the FORSVN review instrument (U9 spec)
 lifecycle: canonical
 status: stable
-produced_by: meta-skills (v3 review-surface overhaul, 2026-05-26; v2 brand-unification 2026-05-26)
-consumers: every reviewable skill that emits `review_surface: html`; the shared HTML template
+produced_by: meta-skills (U9 review-webapp design pass rev 2, 2026-06-12; v3 overhaul 2026-05-26)
+consumers: the plugin renderer (lib/render.ts + assets/_html/*); every reviewable skill that emits `review_surface: html`
 load_class: PLAYBOOK
 ---
 
 # Review-Surface Design System
 
 > [!NOTE]
-> **Forest-only since the "sunset" rebrand (2026-06-07; this spec synced in rebrand pass 2, 2026-06-11).** Signal Lime `#B7FF6E` and the Pure-Void `#000000` canvas of the original v2/v3 spec are **retired** — the palette below is Leaf `#74B36B` on a Forest Shadow `#0A120D` canvas with Warm Cream text. **Source of truth for live values stays** `forsvn-preview/assets/_html/tokens.css` and `_biz-ops/forsvn-ops/brand/DESIGN.md`; on any disagreement, tokens.css wins.
+> **U9 (2026-06-12, operator-approved revision 2)** replaced the v2/v3
+> five-region chrome (topbar / left-controls / stage / footer) with the
+> **reading-and-deciding instrument**: one centered 72ch reading column under
+> a quiet chrome strip, the collaboration workbench, and the pinned decision
+> ledger. Forest-only since the "sunset" rebrand (2026-06-07): Signal Lime
+> `#B7FF6E` is **retired** — zero occurrences anywhere. **Source of truth for
+> live values stays** `forsvn-preview/assets/_html/tokens.css` and
+> `_biz-ops/forsvn-ops/brand/DESIGN.md`; on any disagreement, tokens.css wins.
 
-**The visual contract for every `review_surface: html` artifact. Five-region
-layout, one FORSVN brand chrome, one typography stack, one motion vocabulary
-shared across all stacks. Per-stack variation lives in 5 stage color tokens
-(`--stage-bg / -fg / -accent / -accent-2 / -border`). Skills emit HTML against
-this spec — they never invent their own.**
+**The visual contract for every `review_surface: html` artifact. Skills emit
+plain Markdown; the plugin renderer (`lib/render.ts` + `assets/_html/base.html`)
+produces the twin. Nothing per-skill touches the chrome.**
 
-The HTML preview surface captures the decision via an in-page form posting to
-the `forsvn preview` localhost CLI (WS-V2/V3). Roughdraft remains as an
-escape-hatch path for inline CriticMarkup commenting on the MD twin.
-See [[reviewable-artifact-contract]] for the full review-surface contract.
+Each artifact is a manuscript on a desk: an editorial sheet to read, a ledger
+line to sign. Everything that isn't the read or the decision is gone — no
+marginalia gutter, no metadata rows, no redundant keyboard legends, **no
+artifact paths anywhere in the UI** (identity is title + skill + stack + date).
 
 ---
 
-## 1. Five-region layout (constant chrome + themed stage)
+## 1. Layout — strip / stage / ledger
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│ TOPBAR (chrome — constant across elements)                         │
-│ • Stack chip (AIR / WATER / FIRE / EARTH)                          │
-│ • Skill name · date · slug                                         │
-│ • decision_state pill                                              │
-├──────────────────────┬─────────────────────────────────────────────┤
-│ LEFT CONTROLS        │ CENTER STAGE                                │
-│ (chrome — constant)  │ (themed by stack — § 3)                     │
-│ ~320px wide          │                                             │
-│                      │ Per-skill content. The only region that     │
-│ • Variant picker     │ varies by skill type:                       │
-│ • Comparison toggle  │   create-brand → palette + font preview     │
-│ • View mode toggles  │   map-user-flow → flow diagram + edges      │
-│ • Export             │   architect-system → schema + topology      │
-│                      │   debate-agents → perspective matrix        │
-├──────────────────────┴─────────────────────────────────────────────┤
-│ DECISION FOOTER (chrome — constant)                                │
-│ • Open in Roughdraft (roughdraft://open?path=…)                    │
-│ • Read-only decision summary (mirrors MD frontmatter)              │
-│ • Copy frontmatter / Copy as JSON                                  │
+│ STRIP (chrome) — logo glyph + FORSVN · review · N pending ·        │
+│   stack·register chip · auto/dark/light segment · decision pill    │
+├────────────────────────────────────────────────────────────────────┤
+│ STAGE (themed by the elemental register)                           │
+│   one centered 72ch reading column (.sheet):                       │
+│   · WORKBENCH (sticky) — Read · Marker M · Comment C · Edit E ·    │
+│     "read as ▾"   (live serves only; never captures a verdict)     │
+│   · gate-warning notice (amber, G1 — only when gate_warning set)   │
+│   · MASTHEAD — eyebrow (stack · skill · date) + title + deck       │
+│   · agent suggestion cards (from preview-config.suggestions)       │
+│   · PROSE — the typeset artifact body, never markdown syntax       │
+│   · GATE ECHO — the sealed `## Review Gate` checklist, read-only   │
+│   · THREAD RAIL (right, ≥1100px) — comment threads on highlights   │
+├────────────────────────────────────────────────────────────────────┤
+│ LEDGER (pinned, the ONE decision place)                            │
+│   Approve ⌥A · Deny ⌥D · Suggest ⌥S · comment · Done ⌘↵            │
+│   → confirmation: verdict hairline + note echo + next pending      │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-Skill HTML emitters fill **only the center stage**. The topbar / left controls
-/ decision footer come from the shared chrome (`references/_html/chrome.css` +
-`chrome.js`). This is what gives every artifact's HTML preview the same shape
-regardless of skill.
+- The **pill is the only state location**; the ledger is the only interactive
+  capture place; the in-body gate echo is a sealed, read-only mirror.
+- The masthead is rendered **from frontmatter** — raw YAML never reaches the
+  page. The body's leading H1 folds into the masthead (no duplicate headline).
+- Keycaps live **on the controls** — the keyboard model is rendered, not
+  listed.
 
----
+## 2. Adaptive theme — two themes, one signal
 
-## 2. Shared chrome tokens (constant — never override per stack)
+Default follows `prefers-color-scheme` (no attribute on `<html>`); the strip's
+quiet **auto / dark / light** segment makes the choice explicit, persisted in
+`localStorage` (`forsvn-theme`). An inline boot script in `<head>` applies the
+stored choice **before** the stylesheets — no flash of the wrong theme.
 
-```css
-:root {
-  /* Chrome surfaces — FORSVN-branded dark across all stacks */
-  --chrome-bg:           #0A120D;             /* Forest Shadow — never pure black */
-  --chrome-panel:        #111B14;
-  --chrome-border:       #1E2A22;
-  --chrome-text:         #EFE9D1;             /* Warm Cream */
-  --chrome-text-muted:   #8A9784;
-  --chrome-accent:       #74B36B;             /* Leaf — FORSVN brand mark (lime retired) */
-  /* Brand palette (sunset / forest-only) */
-  --brand-leaf:          #74B36B;             /* dark-mode accent */
-  --brand-honey:         #F2CE6B;             /* logo field / warm glow */
-  --brand-lime:          #74B36B;             /* legacy alias → Leaf */
-  --brand-forest:        #004700;
-  --brand-void:          #0A120D;             /* legacy alias → Forest Shadow */
-  --brand-paper:         #F7F0D4;             /* Sunset Cream */
-  /* Decision-state semantic layer (spec §4.1) — pill colors derive from these:
-     text/dot in the state token, fill = same token at 15% badge tint */
-  --decision-pending:    #8A9784;
-  --decision-approved:   #74B36B;             /* Leaf */
-  --decision-suggested:  #E0A23A;
-  --decision-denied:     #E5654D;
-  --pill-approved-bg:    color-mix(in srgb, var(--decision-approved) 15%, transparent);
-  --pill-approved-fg:    var(--decision-approved);
-  /* …same -bg/-fg pattern for pending / denied / suggested */
-  /* Unified typography (D14 — one stack everywhere) */
-  --font-head:           'Bricolage Grotesque', 'Inter Tight', system-ui, sans-serif;
-  --font-body:           'Be Vietnam Pro', 'Inter', system-ui, sans-serif;
-  --font-mono:           'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
-  --chrome-sans:         var(--font-body);
-  --chrome-mono:         var(--font-mono);
-  --chrome-display:      var(--font-head);
-  /* Unified motion (D14 — one vocabulary; ≤80ms per-stack drift) */
-  --ease:                cubic-bezier(0.4, 0, 0.2, 1);
-  --t-snap:              80ms;
-  --t-hover:             200ms;
-  --t-enter:             360ms;
-  --t-ripple:            480ms;
-  /* Layout */
-  --chrome-topbar-h:     56px;
-  --chrome-left-w:       320px;
-  --chrome-footer-h:     72px;
-  --stage-pad:           48px;
-  --line-height:         1.55;
-  --max-measure:         72ch;
-}
-```
-
-The chrome is **FORSVN-branded across all four stacks** — same Bricolage Grotesque
-wordmark, same Leaf brand mark, same Forest Shadow background, same JetBrains
-Mono meta text. Only the **stage backdrop and accent** are themed by stack. This
-is deliberate: a user opening a meta artifact next to an marketing artifact should feel
-they're the same product, in different moods. Same brand, different rooms.
-
----
-
-## 3. Unified brand + per-stack color register
-
-v2 unifies the four stacks under one FORSVN brand. Typography, motion, layout
-tokens are **identical across all stacks**. The only per-stack variation is the
-5-token color register on the stage. The four element labels (AIR / WATER /
-FIRE / EARTH) survive as **color register names**, not as separate type/motion
-systems.
-
-### 3.1 One typography stack (D14)
-
-Bricolage Grotesque + Be Vietnam Pro + JetBrains Mono, everywhere. No per-stack
-font drift.
-
-| Role | Font | Where used | Size | Weight |
-|---|---|---|---|---|
-| Display | Bricolage Grotesque (opsz 96) | Stage h1, marketing/dossier headlines, FORSVN wordmark | 42-56px | 700 |
-| H1 / H2 | Bricolage Grotesque | Stage h1/h2 | 24-42px | 600-700 |
-| H3 | Bricolage Grotesque | Stage h3, card titles | 17-22px | 600-700 |
-| Body | Be Vietnam Pro | Stage paragraphs, UI controls, demo content | 15-17px | 400 |
-| UI label | Be Vietnam Pro | Buttons, picker items | 13-13.5px | 500-600 |
-| Meta label | JetBrains Mono | Topbar meta, chrome chips, `META · SKILL` tags | 10.5-12.5px | 500 (UPPERCASE, +6-12% tracking) |
-| Code | JetBrains Mono | Inline code, demo-code blocks | 12.5-14.5px | 400-500 |
-
-**Why this combo:** Bricolage Grotesque collapses the four v1 display fonts
-(Inter Tight, Fraunces, Sora, Newsreader) into one variable family with
-opsz/weight ranges that cover every former role. Be Vietnam Pro is the brand
-body — built for Vietnamese diacritics, neutral across the four moods.
-JetBrains Mono is the canonical mono. Source of truth: [`_biz-ops/brand/forsvn/explorations/picked-combo.md`](../../_biz-ops/brand/forsvn/explorations/picked-combo.md).
-
-### 3.2 One motion vocabulary (D14)
-
-Forest-Shadow brand motion. Clean entrances, no bounce. One easing curve, four
-timing tokens that map roughly to "snap / hover / enter / ripple". Per-stack
-**timing differences** are kept ≤80ms variance so motion *feels* consistent
-across stacks; per-stack **motion motifs** are gone.
-
-| Token | Value | Use |
+| | Dark (brand default) | Light |
 |---|---|---|
-| `--ease` | `cubic-bezier(0.4, 0, 0.2, 1)` | All transitions, no exceptions |
-| `--t-snap` | 80ms | Decision feedback (click, selection flicker) |
-| `--t-hover` | 200ms | Standard hover transitions |
-| `--t-enter` | 360ms | First-render stage fade + translateY |
-| `--t-ripple` | 480ms | Click-origin radial expand (marketing emphasis only) |
+| Canvas | Forest Shadow `#0A120D` | Sunset Cream `#F7F0D4` |
+| Text | Warm Cream `#EFE9D1` | Warm Ink `#15190F` |
+| The signal | **Leaf `#74B36B`** — selection, focus, Done fill; <10%, never a surface | **Deep Forest `#004700`** — Leaf never carries text on cream (fails AA) |
+| Logo | cream glyph (`logo-glyph-cream.svg`) | forest glyph (`logo-glyph-forest.svg`) |
 
-A stage entry animation (`stage-enter`) fires once on first render: opacity 0→1,
-translateY 8px → 0, duration `--t-enter`. Drift-fade on perspective cards
-(AIR/meta exemplar) uses `--t-enter` + staggered delays. No JS motion libraries
-(check #9 still enforced).
+Honey `#F2CE6B` stays decorative: the logo field and the **marker wash** only.
+Verdicts carry hue + glyph + word in both themes — color never alone. Matte
+only: flat fills, 1px borders, no blur, no gradients.
 
-### 3.3 Stage tokens — 5 per stack (D17)
+The logo treatment follows BRAND.md § Logo Color Combinations: the chrome
+pairs the glyph with the mono wordmark and **swaps the glyph with the active
+theme** (both `<img>`s ship; CSS shows one).
 
-Per-stack variation is collapsed to **exactly 5 stage tokens**. Everything else
-(typography, motion, layout, derived shadows/borders) is shared in `:root`.
+## 3. Elemental registers — the reading field only
 
-| Stack | `--stage-bg` | `--stage-fg` | `--stage-accent` | `--stage-accent-2` | `--stage-border` |
-|---|---|---|---|---|---|
-| **meta** (`data-stack="air"`) — color register: AIR | `#0A120D` Forest Shadow | `#EFE9D1` warm cream | `#74B36B` leaf | `#004700` forest | `#1E2A22` |
-| **marketing** (`data-stack="water"`) — color register: WATER | `#0C1A13` deep green (blue retired) | `#EFE9D1` warm cream | `#74B36B` leaf | `#004700` forest | `#1E2E22` |
-| **product** (`data-stack="fire"`) — color register: FIRE | `#1a1410` warm char. | `#fdf4ee` cream-fg | `#74B36B` leaf | `#004700` forest | `#2d2520` |
-| **research** (`data-stack="earth"`) — color register: EARTH (only light-mode stack) | `#F7F0D4` Sunset Cream | `#15190F` ink | `#004700` forest | `#74B36B` leaf | `#E3D7A8` |
+The chrome stays constant within a theme; only the stage shifts per stack.
+EARTH is the one light room in the dark theme — its light tokens ARE the
+light-theme system (one light system, two doors).
 
-**Why the swap on research:** leaf on Sunset Cream is `~2.2:1` — fails WCAG AA
-for any text role. Research is the only light-mode stack, so it pulls forest
-into the primary stage-accent slot (forest on cream is `~9.7:1`, well above AA)
-and keeps leaf as decorative `--stage-accent-2` (used for hover states,
-borders, dot indicators — non-text usages where AA doesn't apply). All four
-stacks still draw from the same FORSVN palette (`leaf + forest`); only the
-ordering swaps for light-mode legibility.
+**Dark theme** (`--stage-bg/-fg/-accent/-accent-2/-border`):
 
-**Brand chrome is invariant.** The Leaf FORSVN wordmark and topbar
-brand-mark indicator are `var(--chrome-accent)` (always `#74B36B`) regardless
-of stack — the chrome bg is always Forest Shadow near-black, so Leaf always
-holds AA in chrome (`7.6:1`).
+| Stack | register | bg | fg | accent | accent-2 | border |
+|---|---|---|---|---|---|---|
+| meta | AIR | `#0A120D` | `#EFE9D1` | `#74B36B` | `#004700` | `#1E2A22` |
+| marketing | WATER | `#0C1A13` | `#EFE9D1` | `#74B36B` | `#004700` | `#1E2E22` |
+| product | FIRE | `#1A1410` | `#FDF4EE` | `#74B36B` | `#004700` | `#2D2520` |
+| research | EARTH | `#F7F0D4` | `#15190F` | `#004700` | `#74B36B` | `#E3D7A8` |
 
-### 3.4 Derived helpers (shared)
+**Light theme**: all four registers move to cream-family tints of the same hue
+logic (AIR `#F6F0DA`, WATER `#EFF2DE`, FIRE `#FAEFDE`, EARTH `#F7F0D4`), ink
+text, Deep Forest accent everywhere. EARTH-in-dark amber remediation: notice
+text drops to ink, amber glyph only.
 
-These come from the 5 stage tokens via `color-mix()`; no per-stack overrides.
+`--stage-accent-2` is always the opposite token in the leaf/forest pair —
+non-text usage only (borders, hover tints, dots). Light-stage muted text uses
+the deeper 68% ink mix to hold AA on cream.
 
-```css
-:root[data-stack] {
-  /* Back-compat aliases (legacy --bg, --fg, --accent, --border still work) */
-  --bg:            var(--stage-bg);
-  --fg:            var(--stage-fg);
-  --accent:        var(--stage-accent);
-  --accent-2:      var(--stage-accent-2);
-  --accent-fg:     var(--stage-bg);
-  --border:        var(--stage-border);
+## 4. Typography & motion
 
-  /* Derived neutrals */
-  --fg-muted:      color-mix(in srgb, var(--stage-fg) 58%, var(--stage-bg));
-  --border-strong: color-mix(in srgb, var(--stage-border) 50%, var(--stage-fg) 50%);
-  --bg-elevated:   color-mix(in srgb, var(--stage-bg) 94%, var(--stage-fg) 6%);
+Editorial three-voice system, identical across stacks (self-hosted woff2 via
+`fonts.css` — **zero external requests**; the Google Fonts CDN is forbidden):
 
-  /* Derived effects */
-  --shadow-sm:     0 1px 2px rgba(0,0,0,0.18);
-  --shadow-md:     0 8px 24px rgba(0,0,0,0.20);
-  --shadow-glow:   0 0 24px color-mix(in srgb, var(--stage-accent) 32%, transparent);
-  --backdrop-blur: blur(24px);
-  --glass-tint:    color-mix(in srgb, var(--stage-fg) 4%, transparent);
-  --accent-gradient: linear-gradient(135deg, var(--stage-accent) 0%, var(--stage-accent-2) 100%);
-}
-```
-
-### 3.5 WCAG AA contrast (against `--stage-bg`)
-
-Verified per token pairing. Body / fg / accent / accent-2 must all clear 4.5:1
-for any text role; decorative non-text usage is allowed below that bar.
-
-| Stack | `fg` on `bg` | `fg-muted` on `bg` | `accent` on `bg` | `accent-2` on `bg` |
-|---|---|---|---|---|
-| **meta** (Forest Shadow) | `#EFE9D1/#0A120D` → 15.6:1 ✅ | derived 5.8:1 ✅ | `#74B36B/#0A120D` → 7.6:1 ✅ | `#004700/#0A120D` → 1.7:1 (non-text only) |
-| **marketing** (deep green) | `#EFE9D1/#0C1A13` → 14.7:1 ✅ | derived 5.6:1 ✅ | `#74B36B/#0C1A13` → 7.2:1 ✅ | `#004700/#0C1A13` → 1.6:1 (non-text only) |
-| **product** (warm char.) | `#fdf4ee/#1a1410` → 16.8:1 ✅ | derived 6.3:1 ✅ | `#74B36B/#1a1410` → 7.3:1 ✅ | `#004700/#1a1410` → 1.7:1 (non-text only) |
-| **research** (Sunset Cream) | `#15190F/#F7F0D4` → 15.6:1 ✅ | derived 4.2:1 ⚠ large/secondary text only | `#004700/#F7F0D4` → 9.7:1 ✅ | `#74B36B/#F7F0D4` → 2.2:1 (non-text only) |
-
-`--stage-accent-2` is always the *opposite* token in the leaf/forest pair —
-intentionally low-contrast on the same bg, used only for borders, hover tints,
-or decorative dots/lines. Exemplars do not use it for text. Research's derived
-`fg-muted` (58% ink on cream) sits at 4.2:1 — below the 4.5:1 body bar — so on
-the earth stack muted text is held to large/secondary roles only.
-
----
-
-## 4. Font loading
-
-One unified font block on every page — all four stacks load the same families
-via a single self-hosted stylesheet (`font-display: swap` in every `@font-face`
-to avoid FOIT). The hosted Google Fonts `<link>` of the original spec is
-retired — it was a review-time beacon to Google; v0 is local-first and the
-surface now makes zero external requests.
-
-```html
-<link rel="stylesheet" href="./fonts.css">
-```
-
-`fonts.css` + the woff2 files (latin / latin-ext / vietnamese subsets of all
-three families, OFL 1.1) live in `assets/_html/fonts/` and resolve through the
-preview CLI's bundled-asset fallback, like the rest of the chrome.
-
-This is intentionally **identical across exemplars** — `grep "font-family"
-references/_html/exemplars/*.html` should return only `var(--font-head)`,
-`var(--font-body)`, or `var(--font-mono)` references. Any literal font name in
-an inline `<style>` block is a sign the stack has drifted from the unified
-brand. WS-V4 updates `scripts/lint-html-output.ts` check #8 to enforce this.
-
----
-
-## 5. Decision-state pill visual spec
-
-Each `decision_state` value renders a distinct pill in the topbar. The pill is
-**read-only** — it reflects MD frontmatter, never captures input.
-
-Pill colors derive from the **first-class decision tokens** in `tokens.css`
-(the spec §4.1 semantic layer — refit 2026-06-10): text/dot in the state token,
-fill = the same token at a 15% badge tint. Every state is a glyph + word +
-color triple; color is never the only channel. No infinite animations — the
-pending shimmer is retired (stillness, spec §7).
-
-| State | Token | Value | Decoration |
-|---|---|---|---|
-| `pending` | `--decision-pending` | `#8A9784` (muted) | Calm — no motion |
-| `approved` | `--decision-approved` | `#74B36B` (Leaf) | Solid |
-| `denied` | `--decision-denied` | `#E5654D` (warm red) | Strike-through on label text |
-| `suggested` | `--decision-suggested` | `#E0A23A` (amber) | Wavy underline on label text |
-| `not_required` | (no token) | pending treatment at 0.7 opacity | Renders dim where listed |
-
-Shared markup:
-
-```html
-<span class="decision-pill" data-state="pending">pending</span>
-```
-
-```css
-.decision-pill {
-  display: inline-flex;
-  padding: 4px 12px;
-  border-radius: 9999px;
-  font: 500 12px/1 var(--chrome-mono);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.decision-pill[data-state="pending"]      { background: var(--pill-pending-bg);   color: var(--pill-pending-fg); }
-.decision-pill[data-state="approved"]     { background: var(--pill-approved-bg);  color: var(--pill-approved-fg); }
-.decision-pill[data-state="denied"]       { background: var(--pill-denied-bg);    color: var(--pill-denied-fg);    text-decoration: line-through; }
-.decision-pill[data-state="suggested"]    { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
-.decision-pill[data-state="not_required"] { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   opacity: 0.7; }
-```
-
-### 5.1 Terminal (mono) renderer — `lib/mono.ts`
-
-Every CLI surface (pending list, serve banner, write-back confirmation,
-refusals, validator findings) renders through one dep-free module. Binding
-conventions:
-
-- **Tier gate, per destination stream:** ANSI-16 when that stream
-  `isTTY && !NO_COLOR && TERM !== "dumb"`, plain glyph otherwise — stdout and
-  stderr resolve independently, so a redirected stream never receives escape
-  bytes.
-- **Never paint a background** (no SGR 40–47/100–107); the user's terminal
-  theme is inherited. No 256-color/truecolor. Standard green `SGR 32`, never
-  bright `SGR 92` (the Signal-Lime ghost).
-- **Glyph triples with ASCII fallbacks:** `✓ approved`→`[ok] approved`,
-  `● pending`→`* pending`, `✗ denied`→`x denied`, `~ suggested` (already
-  ASCII), `○ not_required` dim; box-drawing `─` → `-` at tier 3.
-- **Refusals are never silent:** reason + exit code + recovery hint, every
-  variant (precondition·1, bind·2, timeout·124, non-interactive, conflict).
-
-### 5.2 TTY decision prompt — `lib/tty-prompt.ts` (`--headless`)
-
-The headless review path (SSH/container): `forsvn-preview <artifact.md>
---headless` from a **real interactive TTY** prints the tunnel hint
-(`ssh -L port:127.0.0.1:port <remote-host>`), then a sequential
-`[a]pprove [d]eny [s]uggest [q]uit` keypress prompt + optional comment,
-writing back through the same `applyDecision` path as the browser form. The
-prompt and POST `/done` race for one single-shot decision slot — first wins.
-Piped/non-interactive stdin is refused with no fabricated decision. Manual
-SSH-style run:
-
-```bash
-ssh <host> -t 'cd <project> && bun <plugin>/forsvn-preview/bin/forsvn-preview.ts   .forsvn/artifacts/<stack>/<artifact>.md --headless'
-```
-
-### 5.3 `/done` acceptance set
-
-POST `/done` records exactly `approved | denied | suggested`. `not_required`
-and `pending` are schema states, never recordable decisions (400). A POST
-after the artifact's bytes changed on disk is refused (409, nothing written)
-— the re-hash conflict guard; re-serve to review the current file.
-
----
-
-## 6. Anti-patterns
-
-1. **Mixing color registers within one HTML page.** A product artifact uses
-   `data-stack="fire"` only. Never load tokens.css with multiple
-   `data-stack` blocks active.
-2. **Hardcoded font names in inline styles.** Stage CSS uses
-   `font-family: var(--font-head)` / `var(--font-body)` / `var(--font-mono)`.
-   Any literal `'Bricolage Grotesque'` / `'Inter Tight'` / `'Fraunces'` etc.
-   in an exemplar's inline `<style>` is a drift signal.
-3. **Per-stack motion easing.** All stacks share `--ease` and the four timing
-   tokens. Per-stack ≤80ms drift is allowed via the tokens; defining a new
-   easing curve per stack is not.
-4. **Decision capture in HTML outside the documented contract.** The only
-   form allowed is `<form id="decision-capture">` posting to `/done` on
-   `127.0.0.1`/`localhost` per [[reviewable-artifact-contract]] § Review surface
-   (WS-V3). Any other `<form>`, `onclick=`, `fetch()`, or `XMLHttpRequest` =
-   hard fail. Lint check #6 enforces this (WS-V4).
-5. **Server-side rendering at preview time.** HTML is a static file emitted
-   once by the skill. The `forsvn preview` CLI serves it locally with a CSRF
-   token; the page itself contains no server-rendered state.
-6. **JS animation libraries** (GSAP, motion-one, animejs, lottie). CSS
-   transitions only.
-7. **Overriding chrome tokens per stack.** Chrome (topbar, left controls,
-   footer, brand-mark, decision-pill) is invariant across stacks. Override
-   the 5 stage tokens only.
-8. **Extra per-stack tokens beyond the documented 5.** If a stack needs
-   more than `--stage-bg / -fg / -accent / -accent-2 / -border`, derive in
-   `:root` via `color-mix()` — do not add per-stack overrides.
-
----
-
-## 7. 10-check HTML output critic rubric (used by WS-8 + WS-10)
-
-Every emitted HTML must pass these checks. The `lint-html-output.ts` script
-runs them automatically in the pre-merge gate.
-
-| # | Check | Failure mode |
+| Voice | Family | Where |
 |---|---|---|
-| 1 | Five-region layout present (topbar, left controls, stage, footer; left controls may be collapsed at <800px) | Missing region = anchor missing |
-| 2 | `data-stack` attribute on `<html>` matches one of `air/water/fire/earth` | Wrong stack chip color, wrong theme loaded |
-| 3 | Decision-state pill present in topbar, matches MD frontmatter | Stale state shown to operator |
-| 4 | Roughdraft deeplink in footer (`href` starts with `roughdraft://open?path=`) | Operator can't get back to review |
-| 5 | WCAG AA contrast (4.5:1) on every body text against its background | Unreadable on certain monitors |
-| 6 | No `<form>`, no `<button onclick>` that mutates state, no postback handlers (only allowed action: external `roughdraft://` open) | Decision capture drift |
-| 7 | Tokens.css imported; no inline `:root { --bg: ... }` overrides for chrome tokens | Element drift |
-| 8 | Stage typography uses the element's `--font-head` / `--font-body` (no system-font fallback for stage content beyond the documented stack) | Visual incoherence between exemplars |
-| 9 | Motion uses CSS transitions only (no `<script>` referencing GSAP/motion-one/animejs) | Bundle bloat / JS dep on a preview |
-| 10 | `<title>` matches `<artifact-title> · <skill> · <date>` pattern | Hard to identify in tab list |
+| Masthead | Bricolage Grotesque 700/-0.03em (Light 300 for decks) | h1 + deck |
+| Body | Be Vietnam Pro 16/1.7 in a 72ch measure | prose, controls |
+| Ledger-like | JetBrains Mono, +0.06–0.22em tracking | dates, counts, keycaps, eyebrows |
 
----
+Sanctioned motion only: hover elevate (200ms), selection snap (80ms),
+confirmation cross-fade — all collapse under `prefers-reduced-motion`. No JS
+animation libraries, ever.
 
-## 8. Related refs
+## 5. The workbench — the collaboration bar
 
+Sticky under the chrome, scoped to the reading column — far from the ledger so
+deciding stays the terminal act. **The bar never captures a verdict.** Hidden
+on static/archived pages; chrome.js activates it on a live pending serve.
+
+- **Marker (M)** — lays the honey wash (`mark.hl`) on a selection. Recorded as
+  `{ kind: "marker", quote }`.
+- **Comment (C)** — highlight + notechip + a thread card in the rail; the
+  queued comment is `{ kind: "comment", quote, body }`.
+- **Annotations persistence**: they ride the decision POST additively
+  (`annotations: [...]` on `/done`) and the CLI persists them under the same
+  `## Reviewer notes` block as the comment — a `### Annotations` list — so
+  agents read them back from the artifact record. They also surface in the
+  CLI's `--json` decision object (additive `annotations` field).
+- **Edit (E)** — the reading column becomes the editor (dashed frame), editing
+  the **Markdown source body** (never an HTML round-trip). Save (⌘S) POSTs
+  `{ token, body_md }` to the CSRF-protected **`POST /edit`**: same
+  constant-time token check, on-disk re-hash **409** conflict guard (nothing
+  written), atomic byte-fidelity write (frontmatter preserved verbatim), twin
+  re-rendered, conflict basis advanced so the subsequent decision applies to
+  the saved bytes. Discard (esc) restores. Human-only by construction —
+  localhost + token, exactly like decisions.
+- **Agent suggestion cards** — rendered old → new text (`del`/`ins`), header
+  `agent suggestion · <author> · <when>`, footer Accept / Dismiss + the
+  ownership line *"no agent can apply this — only you."* Data seam:
+  **`preview-config.suggestions`** (additive, `[]` today) — the Proof-collab
+  bridge is the intended populator; accepting applies the replacement through
+  the same `/edit` write path. No accept/approve tool exists on any agent
+  channel.
+- **read as ▾** — the folded preview-mode chooser (informational): designed
+  html (this page) / terminal `--md` / Proof collab (`forsvn-collab open`).
+
+## 6. The ledger — decision capture
+
+POST `/done` records exactly `approved | denied | suggested` (`not_required`
+and `pending` are schema states — 400). Constant-time token; one-shot slot
+(duplicate POST → 409); re-hash conflict guard (409, nothing written, copy
+names the cause and the recovery). The `/done` 200 body additively carries
+`next_pending` (`{title, skill, stack, date}` — **never a path** — or `null`
+for queue-clear) so the confirmation names what's next without auto-opening it.
+
+The confirmation colors the close-out hairline with the verdict, echoes the
+reviewer note as prose, and states "server exiting · nothing more will change
+on disk". Alerts (409/stale) render in-ledger, `role="alert"`, never
+auto-dismissed, never write.
+
+Accessibility floor: ≥44px hit areas, 2px focus ring offset 2px (never
+removed), one tab stop into the radio group (native radios, visually hidden),
+`aria-disabled` Done with the "pick a decision first" describedby, AA contrast
+in **both** themes.
+
+## 7. Preview-config — the data seams
+
+The CLI injects `<script type="application/json" id="preview-config">`:
+
+| Field | Type | Seam |
+|---|---|---|
+| `token`, `endpoint`, `mdPath` | string | decision capture (v2, unchanged) |
+| `gate_warning` | string \| null | G1 amber notice strip |
+| `pending_count` | number (absent when no queue) | strip crumb "review · N pending" |
+| `suggestions` | array (`[]` today) | agent suggestion cards — Proof-collab integration point |
+
+All additions are additive; `{"static":true}` keeps everything inert.
+
+## 8. Terminal surfaces (U10 — reference sync)
+
+The terminal twin of this spec lives in `lib/mono.ts` + `lib/md-term.ts`
+(tier-gated ANSI, zero escapes when piped):
+
+- **`notify`** (G4) — the agent's post-push signal: one inbox journal line
+  (`.forsvn/inbox`, tier-3 ASCII grammar) + a stdout ResultLine; idempotent on
+  same-state re-push.
+- **`--md`** — read-only terminal render of the artifact (no decision capture,
+  no git gate); the chooser's "terminal" surface.
+- **`next_pending`** (G5) — rides the `--json` decision object additively and
+  prints as the named, read-only hint in human mode; the webapp consumes the
+  same fact from the `/done` 200 body.
+- **doctor** — six checks, fixes beneath failures, tiers as capabilities
+  (shipped pre-U9; the doctor.html mock is terminal-surface reference only).
+
+## 9. Anti-patterns
+
+1. **Re-introducing chrome regions** (left controls, footers, marginalia) —
+   if removing it doesn't hurt the read or the decision, it stays gone.
+2. **Any artifact path in the visible UI.** Paths live only inside the JSON
+   config blocks.
+3. **Raw markdown or frontmatter YAML reaching the page.** Headings are
+   headings; the gate is a designed checklist; frontmatter is the masthead.
+4. **A second interactive decision place.** The gate echo is sealed; the
+   workbench never captures a verdict.
+5. **Google Fonts / any external request.** Self-hosted woff2 only.
+6. **Leaf text on cream**, lime anywhere, glass/blur, gradients, new hues.
+7. **Decision capture outside the documented contract** — one
+   `<form id="decision-capture">`; fetch targets only `/done`, `/edit`, or the
+   artifact's own source path on localhost.
+8. **Giving any agent channel an accept/approve tool.** Suggestions render;
+   only the human accepts (the guard is the absence).
+
+## 10. Related refs
+
+- [[review-surface-template]] — the structural contract base.html implements
+- [[html-output-critic]] — the 10-check rubric (`bin/lint-html-output.ts`)
 - [[reviewable-artifact-contract]] — when to emit `review_surface: html`
-- [[review-surface-template]] — the structural HTML template skill authors fill in
-- [[roughdraft-review-protocol]] — how the HTML twin interacts with the Roughdraft flow
-- [[manifest-spec]] — how `review_surface` is indexed
+- `commands/review.md` — how `/forsvn:review` drives the CLI

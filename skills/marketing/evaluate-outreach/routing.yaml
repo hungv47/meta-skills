@@ -57,7 +57,7 @@ capability:
       - "User asks to evaluate a sent outreach sequence against its write-outreach hypothesis using reply data."
       - "Loop exists; cycle N needs scoring for one channel + segment."
     not_when:
-      - "Loop does not exist yet -> run-eval-loop."
+      - "Loop does not exist yet -> run-pipeline."
       - "The outreach is still a draft, not sent -> write-outreach."
       - "Organic-post performance -> evaluate-content."
       - "Paid-ad performance -> evaluate-ad."

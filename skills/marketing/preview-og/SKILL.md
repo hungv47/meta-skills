@@ -4,7 +4,7 @@ description: "Previews, validates, and fixes Open Graph / Twitter share cards �
 argument-hint: "[url or localhost dev server]"
 allowed-tools: Read Edit Write Grep Glob Bash
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: standard
   estimated-cost: "$0.10-0.50"
 ---
@@ -18,7 +18,11 @@ Runs the **metaprev** CLI against a URL (local dev server or deployed), reads ho
 ## Critical Gates — load first
 
 1. **CLI present before running.** metaprev runs on Bun. Probe for it; install if missing — never stall on a missing tool. Exact probe + install commands: [`references/playbook.md`](references/playbook.md) § Install.
-2. **Verify after fixing (objective gate).** Re-run metaprev after every fix; the run must report the issue cleared. The tool, not the agent's judgment, is the pass/fail signal. This is the critic — re-running beats self-assessment.
+2. **Verify after fixing (objective gate).** Re-run metaprev after every fix; the tool, not the agent's judgment, is the pass/fail signal. The re-run passes only when:
+   - [ ] `metaprev issues <url> --json` exits 0 — zero errors (advisory warns allowed)
+   - [ ] `og:image` is an absolute URL returning HTTP 200 with an image content-type
+   - [ ] declared `og:image:width`/`og:image:height` match the real file's dimensions
+   Auto-fail: a 4th fix cycle — stop at 3 and report `DONE_WITH_CONCERNS`.
 3. **`og:image` must be an absolute URL.** A relative `/og.png` resolves to nothing when a crawler fetches it standalone — the #1 silent break. Always emit a full `https://…`.
 4. **Noise pushback.** `title is short` / `description is short` are advisory SEO heuristics, not breaks — a canonical brand or product title is intentional. Surface them; never pad copy to hit a char count. § Pushback in the playbook.
 5. **Scope.** Touch only the meta / OG surface (head tags, og:image config). No unrelated refactors.
@@ -26,6 +30,15 @@ Runs the **metaprev** CLI against a URL (local dev server or deployed), reads ho
 ## Before Starting
 
 Per `references/_shared/before-starting-check.md` [PROCEDURE]. Resolve the **target**: a localhost dev server (any framework / port) or a deployed URL. If none is derivable from the request or repo, ask once (Cold Start). Mode resolution per `references/_shared/mode-resolver.md` [PROCEDURE]; `--fast` runs one diagnose→fix→verify pass without the artifact write.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
+
+## Pre-Dispatch (Cold Start)
+
+Needed dimensions — resolve from the repo / running dev server first, ask once (bundled) only for what's missing:
+
+1. **Target** — localhost dev-server URL/port or deployed URL. → routing only
+2. **Canonical production origin** — the absolute base URL `og:image` must resolve against (Gate 3). → `technical`
+3. **Platforms that matter** — Facebook / X / LinkedIn / Discord-Slack (default: all four). → routing only
 
 ## Pipeline
 

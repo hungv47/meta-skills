@@ -83,11 +83,11 @@ README carries per-platform instructions + scheduler-import file map + setup poi
 
 ### Step 7: Critic-agent dispatch
 
-Critic pass scores dims 1–7. For export / draft the critic runs after emission; for `--mode=publish` it runs **before** the two-stage confirmation gate as the content gate (a live post cannot be fixed afterward). Dim 8 (Live-Publish Safety) is applied by the orchestrator's post-publish Self-Check, not the critic. FAIL → re-dispatch formatter for failing platform(s) (max 2 cycles); persistent publish-run FAIL → BLOCKED. PASS twice with operator override → log via `scripts/eval/log-critic-override.ts` (per D8 contract; production skill but uses eval-skill logging mechanism for override audit trail).
+Critic pass scores dims 1–7. For export / draft the critic runs after emission; for `--mode=publish` it runs **before** the two-stage confirmation gate as the content gate (a live post cannot be fixed afterward). Dim 8 (Live-Publish Safety) is applied by the orchestrator's post-publish Self-Check, not the critic. FAIL → re-dispatch formatter for failing platform(s) (max 2 cycles); persistent publish-run FAIL → BLOCKED. PASS twice with operator override → log via `scripts/log-critic-override.ts` (per D8 contract; production skill but uses eval-skill logging mechanism for override audit trail).
 
 ### Step 8: Delivery
 
-Return bundle root path + Mode Summary line + next-step instruction matched to detected route.
+Return bundle root path + Mode Summary line + next-step instruction matched to detected route (per-route operator copy: `procedures/next-step.md`).
 
 ## History
 

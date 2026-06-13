@@ -85,7 +85,7 @@ The loop slug (positional arg 1) is per-run and does NOT write-back.
 
 ## Hard-block conditions
 
-- **Loop slug doesn't resolve to existing workspace** → BLOCKED; recommend `run-eval-loop` to create the workspace first.
+- **Loop slug doesn't resolve to existing workspace** → BLOCKED; recommend `run-pipeline` to create the workspace first.
 - **Brief path doesn't exist** → BLOCKED; ask operator for correct path.
 - **Post URL unfetchable** (404, rate-limited, paywalled) → BLOCKED; state what's needed.
 - **No matching catalog after Cold Start** → BLOCKED; defer to `research-shortform`.

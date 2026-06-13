@@ -46,6 +46,7 @@ Critic FAIL → identifies which agent must fix it; orchestrator re-dispatches. 
 ## Before Starting + Pre-Dispatch
 
 Full procedure (before-starting checks, mode resolution, dimensions, read order, Warm/Cold Start, route-locked Pre-Dispatch for D + E, write-back rules): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 Needed dimensions: **audience** (end-user / developer / operator / mixed), **doc-type** (readme / user-guide / api-reference / config-guide / tutorial / ship-log / release-notes / runbook), codebase path, fresh-write vs update-existing.
 

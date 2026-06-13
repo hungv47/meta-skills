@@ -5,7 +5,7 @@ argument-hint: "[problem or decision to analyze]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 user-invocable: true
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.15-0.50"
 ---
@@ -32,6 +32,7 @@ Synthesis must name real **tradeoffs** (not collapse to consensus), surface wher
 ## Before Starting
 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md) [PLAYBOOK]. **Step 0 — Mode resolution:** load [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]; `standard` default; auto-downgrade ≤3-sentence single-decision → `fast` (debate 2×2 / poll 5×1). `--fast` does NOT skip structured-output or early-convergence detection. **Sub-routine invocations skip steps 1+2** — caller owns problem framing and context. No `experience/` read — each invocation is fresh.
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Pre-Dispatch
 

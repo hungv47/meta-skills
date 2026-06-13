@@ -1,13 +1,14 @@
 # Pipeline Spec — the staged closed-loop runtime
 
 The contract for `run-pipeline`: the stage model, the gate rules, and the loop-tree
-layout it shares with `run-eval-loop`. Canonical design: CLOSED-LOOP.md §7 (+ §1, §4, §6).
+layout shared with its **eval-only mode**. Canonical design: CLOSED-LOOP.md §7 (+ §1, §4, §6).
 
-`run-pipeline` is the **superset** of `run-eval-loop` (open decision D3 resolved: a
-superset skill sharing the loop-tree schema, not a rewrite). `run-eval-loop` stays the
-eval-only entry point; `run-pipeline` also drives brief → execute → ingest. They share
-`.forsvn/loops/<slug>/` — `results.tsv` (same 8-col ledger) + `learnings.md` + the stage
-dirs. `run-pipeline` adds one artifact it owns: `pipeline.md`.
+`run-pipeline` owns both entries on one loop tree (the 2026-06 audit merged the former
+eval-only sibling skill into this one): **eval-only mode** scaffolds just the loop
+workspace (`program.md` + `context.md` + `results.tsv` + `learnings.md` — see
+`references/eval-only-mode.md`); the **full pipeline** also drives brief → execute →
+ingest. Both live in `.forsvn/loops/<slug>/` — `results.tsv` (same 8-col ledger) +
+`learnings.md` + the stage dirs. The full pipeline adds one artifact: `pipeline.md`.
 
 ---
 
@@ -84,8 +85,8 @@ Created by `scripts/scaffold-pipeline.ts`. `lifecycle: loop`, `type: loop`,
 ```
 
 `results.tsv`'s 8-column header is the **cross-stack contract** with the `evaluate-*`
-siblings — identical to `run-eval-loop`'s (see `_shared/eval-loop-spec.md` § results.tsv
-schema). Changing it ripples there. If `run-eval-loop` already scaffolded the loop,
+siblings — identical across both modes (see `_shared/eval-loop-spec.md` § results.tsv
+schema). Changing it ripples there. If an eval-only run already scaffolded the loop,
 `scaffold-pipeline.ts` only adds `pipeline.md` (idempotent — it never clobbers).
 
 ---

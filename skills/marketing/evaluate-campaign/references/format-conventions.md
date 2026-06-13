@@ -155,7 +155,7 @@ provenance:
 - Keep: [channel-level or budget-level, not "the campaign"]
 - Discard:
 - Watch:
-- Route next work to: plan-campaign | write-ad | write-social | run-eval-loop | none
+- Route next work to: plan-campaign | write-ad | write-social | run-pipeline | none
 
 ## Results Row
 
@@ -262,7 +262,7 @@ Lesson format:
 3. **Update learnings.md** ONLY if critic approved promotion (high-confidence campaign-type/channel-mix-scoped keep/discard lesson)
 4. **Run manifest-sync** via `bun scripts/manifest-sync.ts` to refresh the manifest
 
-If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with missing evidence. If critic PASS but operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/eval/log-critic-override.ts`) precedes side effect #2.
+If critic FAIL after revision: skip all 4 side effects. Return BLOCKED with missing evidence. If critic PASS but operator overrides on a `PASS_WITH_CONCERNS` verdict, the override-log invocation (`scripts/log-critic-override.ts`) precedes side effect #2.
 
 ## Cross-stack contract
 

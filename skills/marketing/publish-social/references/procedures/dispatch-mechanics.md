@@ -104,7 +104,7 @@ Max 2 re-dispatch cycles. Each cycle:
 
 After 2 cycles still FAILing:
 - Orchestrator surfaces FAIL to operator with all critic feedback.
-- Operator can: (a) override critic (log via `scripts/eval/log-critic-override.ts`), (b) edit write-social upstream + re-run, (c) accept partial bundle and proceed manually.
+- Operator can: (a) override critic (log via `scripts/log-critic-override.ts`), (b) edit write-social upstream + re-run, (c) accept partial bundle and proceed manually.
 
 ## Layer 4: Delivery
 
@@ -157,16 +157,16 @@ v1 publish-social runs strictly sequential. v2+ candidates:
 
 ## D8 Critic-Override Log (NOT wired in v1)
 
-Production skills (publish-social, produce-asset, produce-video) do NOT wire `scripts/eval/log-critic-override.ts` by default. The override-log is for eval-skill overrides (evaluate-landing-page, evaluate-ad).
+Production skills (publish-social, produce-asset, produce-video) do NOT wire `scripts/log-critic-override.ts` by default. The override-log is for eval-skill overrides (evaluate-landing-page, evaluate-ad).
 
-**Exception:** if operator overrides publish-social critic FAIL repeatedly on the same dim → operator can manually invoke `scripts/eval/log-critic-override.ts --skill publish-social --dimension <N> --reason <text>` to surface a rubric-revision signal.
+**Exception:** if operator overrides publish-social critic FAIL repeatedly on the same dim → operator can manually invoke `scripts/log-critic-override.ts --skill publish-social --dimension <N> --reason <text>` to surface a rubric-revision signal.
 
 ## Cross-Skill Routing
 
 After delivery, orchestrator may emit a soft next-skill prompt:
 
 - If bundle delivered AND `evaluate-content` exists → "evaluate-content can score this bundle's downstream engagement vs the write-social brief's hypothesis; consider running after publishing."
-- If bundle delivered AND `run-eval-loop` exists with a current loop → "results.tsv slot available; consider appending after publishing + measurement window."
+- If bundle delivered AND `run-pipeline` exists with a current loop → "results.tsv slot available; consider appending after publishing + measurement window."
 
 These are prompts, not auto-invocations. Operator decides.
 

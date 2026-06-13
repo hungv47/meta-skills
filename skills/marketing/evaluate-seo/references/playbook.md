@@ -66,7 +66,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 
 ## When NOT to use
 
-- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-eval-loop`. evaluate-seo does not scaffold loops.
+- **No existing eval loop.** Return NEEDS_CONTEXT, recommend `/run-pipeline`. evaluate-seo does not scaffold loops.
 - **No measurement evidence.** Return BLOCKED, list missing evidence. evaluate-seo does not run as a heuristic audit.
 - **The request is the audit or the fix.** Route to `optimize-seo`.
 - **The request is live AI-citation tracking.** Route to `monitor-aeo`.
@@ -78,7 +78,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 - **`optimize-seo`** owns the audit + on-page/technical fixes. evaluate-seo reads its change as the source hypothesis; routes the next target back to optimize-seo.
 - **`monitor-aeo`** owns AI-answer citation tracking. evaluate-seo reads its data for the `ai-answers` surface; routes continued tracking to monitor-aeo.
 - **`write-copy`** owns content authorship. When the diagnosis points at thin content, route to write-copy.
-- **`run-eval-loop`** owns loop scaffolding. evaluate-seo assumes a loop exists.
+- **`run-pipeline`** owns loop scaffolding. evaluate-seo assumes a loop exists.
 - **`evaluate-content` / `evaluate-ad` / `evaluate-asset` / `evaluate-outreach`** are sibling eval lanes — same 4-agent / 7-dim / 8-col structure; evaluate-seo mirrors them for cross-eval consistency.
 
 ## History / origin
@@ -91,7 +91,7 @@ v0.1. Mandatory revision after cycles 2-3. The 7 dimensions (Loop Fit / Metric I
 - 8 Critical Gates (existing loop / measurement evidence / source SEO-AEO artifact / one cluster+surface / no fabricated ranking data / minimum lag window / explicit confidence / does-not-optimize)
 - 4-agent dispatch (Metric Ingest + Diagnosis + Recommendation + Critic)
 - 7-dim rubric pass gate: aggregate ≥ 49 AND every per-dim ≥ 6
-- Critic-override protocol via `scripts/eval/log-critic-override.ts` — never relaxes the lag gate
+- Critic-override protocol via `scripts/log-critic-override.ts` — never relaxes the lag gate
 - Generation provenance — `input_artifacts` lists the source optimize-seo/monitor-aeo artifact + icp-research.md
 - Results Row schema byte-identical with the eval siblings (8 cols)
 - Learning promotion keyword/surface-scoped with a next-core-update expiry

@@ -144,4 +144,4 @@ For NEW audience-temp (warm + cold for same offer same day): write fresh `[slug]
 
 **Critic FAIL on dim <6 in any variant** → re-dispatch FULL Layer 2 chain (composer → format-checker → voice-auditor → critic) with feedback. Max 2 cycles. Cycle 2 FAIL → surface scorecard + best draft + per-variant blocking issues as DWC.
 
-**Post-humanmaxxing Specificity regression FAIL per variant** → revert THAT variant to critic-approved (do NOT cascade revert across all 3; do NOT try to re-fix humanmaxxing). Frontmatter `critic_per_variant.X` reflects critic-approved score in this case (humanmaxxing improvement on Specificity was negative; reverting is the correct action).
+**Post-humanmaxxing Specificity regression FAIL per variant** → flag THAT variant's delta + the removed specific for operator review, with the critic-approved version preserved alongside (do NOT cascade-flag all 3; do NOT try to re-fix humanmaxxing). Frontmatter `critic_per_variant.X` reflects the critic-approved score until the operator picks (the humanmaxxing change on Specificity was negative; the operator decides which version ships).

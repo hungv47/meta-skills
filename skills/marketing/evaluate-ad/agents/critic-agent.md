@@ -72,7 +72,7 @@ On FAIL: orchestrator re-dispatches Recommendation (and optionally Diagnosis or 
 
 ## Critic Override Logging
 
-If operator chooses to ship despite your FAIL (or accept your PASS_WITH_CONCERNS), the orchestrator MUST call `bun scripts/eval/log-critic-override.ts --skill evaluate-ad --dimension "<failed dim>" --artifact "<path>" --critic-verdict <fail|pass-with-concerns> --operator-decision ship --reason "<sentence>" --follow-up "<none|watch metric|revise rubric|extract shared rubric>"` BEFORE the ledger row is appended. Three valid overrides on the same `evaluate-ad:dimension` pair triggers rubric revision (D8 contract).
+If operator chooses to ship despite your FAIL (or accept your PASS_WITH_CONCERNS), the orchestrator MUST call `bun scripts/log-critic-override.ts --skill evaluate-ad --dimension "<failed dim>" --artifact "<path>" --critic-verdict <fail|pass-with-concerns> --operator-decision ship --reason "<sentence>" --follow-up "<none|watch metric|revise rubric|extract shared rubric>"` BEFORE the ledger row is appended. Three valid overrides on the same `evaluate-ad:dimension` pair triggers rubric revision (D8 contract).
 
 ## Self-Check
 

@@ -30,6 +30,8 @@ Scored against `references/_shared/platform-intelligence/[platform].md` §1 Hook
 
 **Archetype tiers are platform-specific.** Check the platform-intelligence file for the current platform, not a different one. TikTok's Callout Cliffhanger is a Tier 1 on TikTok; it may not exist as a category on LinkedIn.
 
+**Novel-tension exception:** a hook may also score 5–10 if it demonstrates a clearly novel tension structure not in the catalog — describe the mechanism (what tension it creates and how) and score execution quality, not catalog membership.
+
 ---
 
 ## Dimension 2 — Char/Word Limit Compliance (0–10)
@@ -82,6 +84,8 @@ Calibrated per platform because TikTok audiences expect faster rhythm than Linke
 | 0 | 0 interrupts | 0 interrupts | 0 interrupts | 0 interrupts |
 
 **Over-density penalty (LinkedIn only):** >3 per 100 chars on LinkedIn reads as aggressive and signals low-quality content to the professional feed. Score 5–7 (not 8–10) for over-density on LinkedIn.
+
+**Count targets are the heuristic floor, not the ceiling** — an unconventional rhythm that demonstrably serves the platform (state how) may score high even when it deviates from the table.
 
 ---
 

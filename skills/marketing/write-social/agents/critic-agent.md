@@ -82,6 +82,7 @@ Read `references/rubric.md` for exact thresholds. Summary:
 - 5–7: Hook matches a Tier 2 archetype OR Tier 1 with a weak variant (archetype is recognizable but execution is generic).
 - 1–4: Generic / category cliché (no archetype match).
 - 0: No recognizable hook structure at all.
+- Novel-tension exception: a hook with no catalog match may still score 5–10 if it demonstrates a clearly novel tension structure not in the catalog — describe the mechanism and score execution quality.
 
 **Dimension 2 — Char/word limit compliance (0–10):**
 - 10: All elements (hook, body, CTA, hashtags) within all hard caps AND within soft visible-window limits.

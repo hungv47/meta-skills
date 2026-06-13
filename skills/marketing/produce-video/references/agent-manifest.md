@@ -6,7 +6,7 @@ Loaded by the orchestrator at dispatch.
 
 | Agent | Layer | File | Focus |
 |---|---|---|---|
-| Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-shot prompt (visual + OST + voice spec) + HyperFrames scaffold + Remotion scaffold + vercel-ai-cli README. Assembles the full bundle. |
+| Prompt Author | 1 | `agents/prompt-author-agent.md` | Per-shot prompt (visual + OST + voice spec) + HyperFrames scaffold + Remotion scaffold + vercel-ai-cli README + post.md stage + a recommended production lane. Assembles the full bundle. |
 | Critic | 2 (final) | `agents/critic-agent.md` | 4 gates (shortform) or 7 gates (app-preview). Schema-and-CTA · Brand-mark fidelity · Caption-pace · Narrative arc · (app-preview only) Screenshot grounding · Interaction-vocabulary + mask-transform · Pointer-and-caption-band fidelity. |
 
 Intentionally lean: sequential prompt-author → critic. Mirrors the shared production pattern ([`_shared/production-pattern.md`](_shared/production-pattern.md) § 4). Per-shot parallelism and long-video narrative coherence are out of scope — this skill targets short-form.
@@ -26,7 +26,7 @@ Two routes — discriminated by input brief's `type` frontmatter at pre-dispatch
 4. Critic FAIL on Gate 1/2/3 → re-dispatch prompt-author-agent with feedback (max 2 cycles)
 5. Critic FAIL on Gate 4 only → ship done_with_concerns
 6. Critic PASS → write bundle to .forsvn/artifacts/marketing/produced-videos/[slug]/
-7. Return bundle path + shot count + runtime choices
+7. Return bundle path + shot count + recommended production lane + lane choices
 ```
 
 ### Route B — app-preview mode
@@ -44,16 +44,16 @@ Two routes — discriminated by input brief's `type` frontmatter at pre-dispatch
 4. Critic FAIL on any hard gate → re-dispatch prompt-author-agent with feedback (max 2 cycles)
 5. Critic FAIL on Gate 4 only → ship done_with_concerns
 6. Critic PASS → write bundle to .forsvn/artifacts/marketing/produced-videos/[slug]/
-7. Return bundle path + shot count + 2 runtime choices ("Run hyperframes/scaffold.html through
-   `hyperframes preview`, OR remotion/scaffold.tsx through `npx remotion preview`.
-   Vercel AI CLI does NOT apply in app-preview — visuals are real screenshots.")
+7. Return bundle path + shot count + lane choices ("App-preview narrows to the code-render lane —
+   hyperframes/scaffold.html via `hyperframes preview` OR remotion/scaffold.tsx via `npx remotion preview` —
+   then post.md to assemble + caption. Explainer / generative / avatar do NOT apply — visuals are real screenshots.")
 ```
 
 ## Critic Gates
 
 **Shortform mode — 4 gates:**
 
-- **Gate 1 — Schema-and-CTA:** manifest validates against `video-brief-schema.md`; per-shot durations sum to total length; CTA copy present verbatim in BOTH the final shot's `on_screen_text` AND the manifest's `cta` field.
+- **Gate 1 — Schema-and-CTA:** manifest validates against `video-brief-schema.md`; per-shot durations sum to total length; CTA copy present verbatim in BOTH the final shot's `on_screen_text` AND the manifest's `cta` field; `post.md` stage present (assembly order matches the Shot List) + a recommended-lane line in Runtime Choices.
 - **Gate 2 — Brand-mark fidelity:** every per-shot prompt cites brand tokens from `brand/DESIGN.md` only; no fabricated hex/token names; placeholder rule active for missing assets; sacred elements from `brand/BRAND.md` respected.
 - **Gate 3 — Caption-pace:** for every shot, `words(on_screen_text) ÷ duration_seconds ≤ 3.0`. Flagged shots → fix instruction (shorten copy OR extend duration).
 - **Gate 4 — Narrative arc:** shot 1 reads as a hook; middle shots build (problem → mechanism / proof / contrast); final shot closes with CTA. **Soft check** — FAILs are warnings, not blocks.
@@ -64,7 +64,7 @@ Two routes — discriminated by input brief's `type` frontmatter at pre-dispatch
 - **Gate 6 — Interaction-vocabulary + mask-transform compliance (hard FAIL):** every `interaction_verb` is in the canonical 10; every `mask_transform` is in the canonical 6; verb-duration coherence.
 - **Gate 7 — Pointer-and-caption-band fidelity (hard FAIL):** pointer color cited (hex + token OR `(cold-start-sampled)`); pointer position crop-relative and inside the crop rect; caption-band geometry matches the handoff; no synthetic effects (gradient / glow / neon).
 
-Critic FAIL on any hard gate → re-dispatch prompt-author with specific feedback (max 2 cycles). Critic FAIL on Gate 4 only → ship `done_with_concerns` with arc concerns pinned. Critic PASS twice with operator override → log override via `scripts/eval/log-critic-override.ts`.
+Critic FAIL on any hard gate → re-dispatch prompt-author with specific feedback (max 2 cycles). Critic FAIL on Gate 4 only → ship `done_with_concerns` with arc concerns pinned. Critic PASS twice with operator override → log override via `scripts/log-critic-override.ts`.
 
 ## Pattern Catalogs (consumed by named agents)
 

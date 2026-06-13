@@ -23,7 +23,7 @@ Return:
 - confidence: high | medium | low | blocked
 - asset_id: [the render under evaluation]
 - decision_sentence: [one sentence, no tabs, includes the asset id + render engine]
-- next_route: produce-asset | brief-graphic | create-brand | run-eval-loop | none
+- next_route: produce-asset | brief-graphic | create-brand | run-pipeline | none
 - next_action_summary: [one sentence — what the next route should produce, if any]
 
 ## Keep / Discard / Watch
@@ -61,7 +61,7 @@ cycle	date	artifact	primary_metric	value	baseline	status	description
 - Route to `produce-asset` when the fix is a re-render with the SAME brief (tighten the prompt, fix a mangled copy slot, re-roll for a clean variant). Include `--rev=N+1` semantic in next_action_summary.
 - Route to `brief-graphic` when the diagnosis points at the BRIEF (the acceptance criteria were ambiguous, the composition spec was wrong, the aspect ratio was mis-specified) — fix the spec before re-rendering.
 - Route to `create-brand` when the failure is a brand-token gap (the render is off-brand because the tokens themselves are under-specified for this asset class).
-- Route to `run-eval-loop` when the metric contract, baseline, guardrails, or asset scope need redefinition.
+- Route to `run-pipeline` when the metric contract, baseline, guardrails, or asset scope need redefinition.
 - Route to `none` when the cycle should hold (typically `watch` with insufficient comparison).
 
 ## Variant Discipline

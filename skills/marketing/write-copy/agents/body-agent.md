@@ -78,6 +78,7 @@ Choose the structure before writing:
 |---|---|---|
 | Awareness-building, product education, homepage/feature sections, problem-aware readers who need clarity | **Problem -> Solution -> How It Works** | The reader needs recognition, category clarity, and reduced perceived complexity. |
 | Direct-response landing page, sales page, offer page, lead-magnet page, persuasion-heavy email, cold traffic that must create demand | **6 Necessary Beliefs** | The reader must accept a sequence of beliefs before the offer becomes the logical next step. |
+| Neither fits, or the piece genuinely needs a hybrid | **Custom / hybrid structure — justify in the Change Log** | The two named architectures are defaults, not a closed set; an unusual brief may demand its own spine. State why neither default serves it. |
 
 If the brief is mixed, default to 6 Necessary Beliefs when the output has a direct conversion ask and a named offer. Default to Problem -> Solution -> How It Works when the ask is explanatory or awareness-building.
 

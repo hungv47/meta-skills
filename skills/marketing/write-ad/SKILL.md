@@ -4,7 +4,7 @@ description: "Writes and evaluates Meta paid-ad copy (retargeting + cold-traffic
 argument-hint: "[audience-temp + offer + creative-format, e.g. 'cold-traffic / 14-day trial / dedicated']"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
   budget: deep
   estimated-cost: "$1-2"
 ---
@@ -19,16 +19,16 @@ Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic audienc
 
 1. **Audience-temp is non-negotiable.** Missing audience-temp BLOCKs (drives entire strategist tree — warm objection map vs cold objection map). Offer + creative-format + proof also hard-block via Missing-Input Hard Blocks.
 2. **One audience-temp per artifact.** Run twice for campaigns spanning warm + cold; do NOT stack two audience-temps in one artifact.
-3. **Hero + 2 distinct variants per artifact.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants isolate ONE variable each (Variable Subtraction). Count is **structural** (Meta A/B) — **not loosened**: mode + tier in [`references/_shared/options-selection.md`](references/_shared/options-selection.md) (DELIVERY, tier B).
+3. **Hero + 2 distinct variants per artifact is the default.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants isolate ONE variable each (Variable Subtraction). The count serves Meta A/B structure; an operator may override it — log the override + reason in the rationale. Mode + tier in [`references/_shared/options-selection.md`](references/_shared/options-selection.md) (DELIVERY, tier B).
 4. **Format-checker is a HARD gate, not a critic dim.** Bounces on Meta char-cap violation / banned policy phrase / unsubstantiated measured claim. PASSED / REVISION_REQUIRED (does NOT consume critic cycle) / FORMAT_FAIL (escalate to user).
-5. **Humanmaxxing runs ONCE per variant with `protected_tokens` including URL.** Post-humanmaxxing Specificity regression is **automatic, not judgment** per variant — drops ≥2 OR named entity/number/URL absent → revert THAT variant to critic-approved.
+5. **Humanmaxxing runs ONCE per variant with `protected_tokens` including URL.** Post-humanmaxxing Specificity regression check per variant — drops ≥2 OR named entity/number/URL absent → flag the delta + the removed specific for operator review (critic-approved draft preserved alongside; operator picks).
 
 ## Quality Gate — 7 dimensions
 
 Full rubric + Pass/Fail + per-dim scoring bands: [`references/agent-manifest.md`](references/agent-manifest.md) § 7-Dim Critic Rubric. Domain rubric: [`references/rubric.md`](references/rubric.md).
 
 - **Gate:** Total ≥49/70 AND every dim ≥6. Total 49-55 with all dims ≥6 = PASS as `DONE_WITH_CONCERNS`. Any dim <6 = FAIL.
-- **Terminal humanmaxxing** runs per variant after critic PASS. Orchestrator re-runs critic's **Specificity dim only** on humanmaxxed text — Specificity drops ≥2 OR named entity/number absent → revert that variant to critic-approved draft. Protects the specificity anchor.
+- **Terminal humanmaxxing** runs per variant after critic PASS. Orchestrator re-runs critic's **Specificity dim only** on humanmaxxed text — Specificity drops ≥2 OR named entity/number absent → flag the delta + removed specific for operator review (both versions kept). Protects the specificity anchor.
 
 ## Before Starting
 
@@ -50,6 +50,7 @@ Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](refe
 Warm/Cold Start prompts (10-question Cold Start + retargeting follow-ups) + Missing-Input Hard Blocks (5 conditions): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
 Mode ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)): `budget: deep`. `--fast` skips post-humanmaxxing Specificity regression check per variant (saves 3 critic-Specificity-dim invocations for hero + A + B). **`--fast` does NOT skip Cold Start, Critical Gates 1-5, Missing-Input Hard Blocks, or Format-Checker Hard Gate.**
+Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ## Routes
 

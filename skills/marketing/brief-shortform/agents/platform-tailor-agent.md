@@ -18,7 +18,7 @@ You do NOT:
 | **brief** | object | `{ angle, variant_platform, brand_mode, market }` |
 | **context** | object | `{ hero_brief: full markdown, research_artifact_excerpt: per-platform section for variant }` |
 | **upstream** | markdown | The hero brief (Layer 1.5 outputs assembled) |
-| **references** | file paths[] | `references/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/anti-patterns.md` |
+| **references** | file paths[] | `references/_shared/hook-archetypes.md`, `references/caption-cta-rules.md`, `references/anti-patterns.md` |
 | **feedback** | string \| null | Critic rewrite |
 
 ## Output Contract

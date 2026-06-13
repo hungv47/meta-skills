@@ -16,12 +16,13 @@
 //   2   server error (port bind, IO)
 //   124 idle timeout (no Done click within 10 min)
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync, statSync, realpathSync, copyFileSync, unlinkSync, readdirSync, appendFileSync } from "node:fs";
 import { join, dirname, basename, resolve, relative, sep, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { renderArtifactToHtml } from "../lib/render";
+import { atomicWrite } from "../lib/collab";
 import {
   resolveTier,
   dim,
@@ -32,11 +33,15 @@ import {
   refusalLine,
   REFUSAL_EXIT,
   bannerBlock,
+  warnLine,
+  nextPendingHint,
+  stateGlyph,
   DECISION_STATES,
   type DecisionState,
   type RefusalVariant,
   type Tier,
 } from "../lib/mono";
+import { renderMarkdownTerm } from "../lib/md-term";
 import { initialState, step, promptIntro } from "../lib/tty-prompt";
 
 const DECISION_ENUM = new Set<string>(DECISION_STATES);
@@ -57,7 +62,12 @@ const MAX_ROOT_WALK_DEPTH = 12;              // upper bound when probing for .gi
 // copy assets next to its artifact.
 const CLI_INSTALL_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const BUNDLED_CHROME_DIR = join(CLI_INSTALL_ROOT, "assets", "_html");
-const BUNDLED_CHROME_ASSETS = new Set(["tokens.css", "chrome.css", "chrome.js", "base.html", "fonts.css"]);
+const BUNDLED_CHROME_ASSETS = new Set([
+  "tokens.css", "chrome.css", "chrome.js", "base.html", "fonts.css",
+  // U9 chrome: the real brand glyphs (theme-swapped by chrome.css — cream on
+  // dark surfaces, forest on light, per BRAND.md § Logo Color Combinations).
+  "logo-glyph-cream.svg", "logo-glyph-forest.svg",
+]);
 // Self-hosted woff2 files referenced by fonts.css as `./fonts/<name>` — same
 // fallback as above but namespaced under fonts/ so an arbitrary project file
 // can't shadow a font (and vice versa). Extension-pinned to .woff2.
@@ -66,11 +76,20 @@ const BUNDLED_FONT_RE = /(?:^|\/)fonts\/([a-z0-9-]+\.woff2)$/;
 const VALID_DECISIONS = ["approved", "denied", "suggested"] as const;
 type Decision = typeof VALID_DECISIONS[number];
 
+// U9 collab bar: Marker + Comment annotations ride the decision POST
+// additively and persist into the artifact's review record so agents can
+// read them back. Validated server-side (kind enum + length caps).
+type Annotation = { kind: "marker" | "comment"; quote: string; body?: string };
+const ANNOTATIONS_MAX = 100;
+const ANNOTATION_QUOTE_MAX = 2000;
+const ANNOTATION_BODY_MAX = 5000;
+
 type Payload = {
   token: string;
   decision_state: Decision;
   comments?: string;
   variant?: string;
+  annotations?: Annotation[];
 };
 
 type ServeResult = { ok: true; payload: Payload } | { ok: false; reason: "timeout" | "quit" };
@@ -91,6 +110,9 @@ async function main(): Promise<number> {
   if (args[0] === "attach") {
     return attachMode(args.slice(1));
   }
+  if (args[0] === "notify") {
+    return notifyMode(args.slice(1));
+  }
 
   const flagJson = args.includes("--json");
   const flagNoOpen = args.includes("--no-open");
@@ -99,12 +121,27 @@ async function main(): Promise<number> {
   // stdio and --no-open and must keep hitting the plain serve path).
   // Auto-detection heuristics are a follow-up.
   const flagHeadless = args.includes("--headless");
+  // Preview-mode chooser (terminal seam). Three modes per review:
+  //   --html  serve the designed review webapp (default — behavior unchanged)
+  //   --md    render the Markdown right here in the terminal (read-only)
+  //   Proof   iterative collab editing — `forsvn-collab open <artifact.md>`
+  //           (separate CLI; see docs/runbooks/collaborative-docs.md)
+  // The chooser's full UX (visual/webapp form) lands after the OD design pass;
+  // this is the flag seam only.
+  const flagMd = args.includes("--md");
+  const flagHtml = args.includes("--html");
   const positional = args.filter((a) => !a.startsWith("--"));
 
-  if (positional.length !== 1) {
-    err(`usage: forsvn-preview <path-to-artifact.md|.html> [--no-open] [--headless] [--json]`);
+  if (positional.length !== 1 || (flagMd && (flagHtml || flagHeadless || flagJson))) {
+    err(`usage: forsvn-preview <path-to-artifact.md|.html> [--html | --md] [--no-open] [--headless] [--json]`);
     err(`       forsvn-preview list [--root <dir>] [--state pending|decided|all] [--json]`);
     err(`       forsvn-preview attach <artifact.md> <file-or-url> [--picked] [--root <dir>] [--json]`);
+    err(`       forsvn-preview notify <artifact.md> [--root <dir>]`);
+    err(`preview modes:`);
+    err(`  --html     serve the designed review webapp on 127.0.0.1 (default)`);
+    err(`  --md       render the Markdown in the terminal — read-only preview, no decision capture`);
+    err(`  (collab)   iterative Proof editing: forsvn-collab open <artifact.md> — see docs/runbooks/collaborative-docs.md`);
+    if (flagMd) err(`note: --md is a read-only view — it does not combine with --html, --headless, or --json`);
     return 1;
   }
   const outTier = resolveTier(process.stdout);
@@ -124,6 +161,18 @@ async function main(): Promise<number> {
   if (!existsSync(mdPath)) {
     refuse("precondition", `Markdown artifact not found: ${mdPath}`, "check the path, or re-run the emitting skill to regenerate it");
     return REFUSAL_EXIT.precondition;
+  }
+
+  // --md: terminal Markdown preview. Read-only — no git-dirty gate, no
+  // pending gate (viewing never mutates, so a decided artifact is viewable
+  // too). Decision capture stays on the serve/headless paths.
+  if (flagMd) {
+    const source = readFileSync(mdPath, "utf8");
+    const cols = process.stdout.columns ?? 80;
+    console.log(renderMarkdownTerm(source, outTier, { width: cols }));
+    console.log("");
+    console.log(dim("read-only preview — to decide, re-run without --md (serves the review webapp)", outTier));
+    return 0;
   }
 
   const projectRoot = findProjectRoot(htmlPath);
@@ -160,17 +209,42 @@ async function main(): Promise<number> {
   console.log(dim("rendering HTML twin…", outTier));
   renderArtifactToHtml(mdPath, BUNDLED_CHROME_DIR, relative(projectRoot, mdPath));
 
-  const htmlSource = readFileSync(htmlPath, "utf8");
+  // G1 — render-time Review Gate check (after pre-flight, before serve).
+  // Warn-and-proceed, never refuse, never silent: the pinned DecisionBar is
+  // the only interactive capture point, so a missing in-body gate echo costs
+  // orientation, not capability — the operator must KNOW the preview is
+  // partial, then decide anyway. The same fact rides into preview-config as
+  // the additive `gate_warning` field (the webapp NoticeStrip's data seam).
+  const gateWarning = reviewGateWarning(mdSource, basename(mdPath));
+  if (gateWarning) {
+    console.log(warnLine(
+      gateWarning,
+      "the pinned decision bar still captures your decision; add the block per\nreferences/artifact-contract-template.md to restore the in-body mirror",
+      outTier,
+    ));
+  }
+
   const token = randomBytes(TOKEN_BYTES).toString("hex");
-  // Conflict-guard basis: the decision applies to the bytes the human READ.
-  const mdHash = createHash("sha256").update(mdSource).digest("hex");
+  // Session state is MUTABLE because POST /edit (the workbench's Edit mode)
+  // legitimately rewrites the artifact body mid-serve: after a successful
+  // edit the conflict-guard basis moves to the saved bytes and the twin is
+  // re-rendered, so the decision still applies to exactly what the human
+  // read last. External (out-of-band) changes still 409.
+  const session: ServeSession = {
+    htmlSource: readFileSync(htmlPath, "utf8"),
+    // Conflict-guard basis: the decision applies to the bytes the human READ.
+    mdHash: createHash("sha256").update(mdSource).digest("hex"),
+    gateWarning,
+    // The chrome strip's "N pending" crumb (additive preview-config field).
+    pendingCount: scanPendingCount(projectRoot),
+  };
 
   let server: ReturnType<typeof Bun.serve>;
   try {
     server = Bun.serve({
       hostname: HOST,
       port: 0,
-      fetch: makeHandler({ htmlSource, htmlPath, mdPath, token, projectRoot, mdHash }),
+      fetch: makeHandler({ session, htmlPath, mdPath, token, projectRoot }),
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
@@ -276,16 +350,30 @@ async function main(): Promise<number> {
   // never persisted ("accepted but ignored"). Record it as `asset_picked` so the
   // canonical choice survives in frontmatter and is indexed for downstream skills.
   if (result.payload.variant) decisionUpdates.asset_picked = result.payload.variant;
-  const updated = applyDecision(mdSource, decisionUpdates, result.payload.comments);
+  // Re-read from disk, not the serve-time snapshot: a workbench Edit save may
+  // have legitimately rewritten the body mid-serve (the /done conflict guard
+  // already proved the decision applies to these exact bytes).
+  const finalSource = readFileSync(mdPath, "utf8");
+  const updated = applyDecision(finalSource, decisionUpdates, result.payload.comments, result.payload.annotations);
   writeFileSync(mdPath, updated, "utf8");
 
   const archivedRel = archiveHtml(projectRoot, htmlPath);
 
   runManifestSync(projectRoot);
 
+  // G5 — next-pending affordance: re-scan the queue AFTER the write-back so
+  // the just-decided artifact is already out of the pending bucket. A read-only
+  // named hint, never auto-chaining (one artifact per serve stays the
+  // invariant). `undefined` = no .forsvn/artifacts queue around this artifact
+  // (e.g. a canonical brand emit) — say nothing rather than lie about a queue.
+  const nextPending = scanNextPending(projectRoot);
+
   if (flagJson) {
     // ResultLine(json): the decision object is the FINAL stdout line — nothing
-    // prints after it (manifest-sync stdio is captured above).
+    // prints after it (manifest-sync stdio is captured above). The G5 fact
+    // rides INSIDE the object as the additive `next_pending` field; the
+    // human-mode hint never prints in --json mode (a trailing line would
+    // break consumers that pop() the last stdout line).
     console.log(JSON.stringify({
       ok: true,
       decision_state: result.payload.decision_state,
@@ -295,14 +383,94 @@ async function main(): Promise<number> {
       comments: result.payload.comments ?? null,
       variant: result.payload.variant ?? null,
       asset_picked: result.payload.variant ?? null,
+      annotations: result.payload.annotations ?? null,
+      next_pending: nextPending
+        ? { path: nextPending.path, skill: nextPending.skill, stack: nextPending.stack, date: nextPending.date }
+        : null,
     }));
   } else {
     // ResultLine(human) — one line closes the loop; the frontmatter rewrite
     // and archive it reports are the single statement of what happened.
     console.log("");
     console.log(resultLine("human", result.payload.decision_state, outTier));
+    // G2 — the one-time first-run "aha": fires only on the run that decides
+    // the SEEDED SAMPLE artifact (matched by its well-known frontmatter `id`,
+    // not a counter or state file — the sample is decided exactly once, so
+    // the block fires exactly once). Plain text, no banner art: the calm is
+    // the brand; the content is the aha.
+    if (fm.id === SEEDED_SAMPLE_ID) {
+      console.log("");
+      console.log("that was the whole loop: an agent produced this artifact, you decided,");
+      console.log("and the decision just rode back into the file the agent reads next.");
+      console.log(hintLine("try it on real work: run /forsvn in any repo you work in.", outTier));
+    }
+    if (nextPending !== undefined) {
+      console.log("");
+      for (const line of nextPendingHint(
+        nextPending === null ? null : { path: nextPending.path, meta: [nextPending.stack ?? "?", nextPending.skill ?? "?", (nextPending.date ?? "").slice(5) || "?"] },
+        outTier,
+      )) {
+        console.log(line);
+      }
+    }
   }
   return 0;
+}
+
+// G2 — the seeded sample's well-known frontmatter id. The first-run bootstrap
+// (J1 P-07: `/forsvn` scaffolds `.forsvn/` and seeds one guaranteed-valid
+// pending sample) MUST stamp this id on the sample artifact; the aha block
+// above keys on it and on nothing else.
+const SEEDED_SAMPLE_ID = "forsvn-sample";
+
+// G5 — top pending artifact after a decision. Returns `undefined` when the
+// project has no .forsvn/artifacts tree at all (no queue concept), `null`
+// when the queue exists but is empty (explicit "queue clear"), else the top
+// pending entry in `list` order (newest date first, then path).
+// `excludePath` (project-relative posix) lets the /done responder name the
+// next artifact BEFORE the just-decided one is rewritten on disk.
+function scanNextPending(projectRoot: string, excludePath?: string): ArtifactEntry | null | undefined {
+  const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
+  try {
+    if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) return undefined;
+    const pending = scanArtifacts(artifactsDir, projectRoot)
+      .filter((e) => e.decision_state === "pending")
+      .filter((e) => !excludePath || e.path !== excludePath);
+    return pending.length > 0 ? pending[0] : null;
+  } catch {
+    // A broken queue scan must never take down a recorded decision.
+    return undefined;
+  }
+}
+
+// U9 — the chrome strip's pending count (additive preview-config field).
+// `undefined` when the project has no queue concept; the chrome shows
+// nothing rather than lying about a queue.
+function scanPendingCount(projectRoot: string): number | undefined {
+  const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
+  try {
+    if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) return undefined;
+    return scanArtifacts(artifactsDir, projectRoot).filter((e) => e.decision_state === "pending").length;
+  } catch {
+    return undefined;
+  }
+}
+
+// G1 — does the artifact carry a usable `## Review Gate` block? Returns the
+// warn reason when the heading is missing or its section parses to zero
+// checkbox lines; null when the gate echo will render fine.
+function reviewGateWarning(mdSource: string, name: string): string | null {
+  const m = mdSource.match(/^#{1,6}[ \t]+Review Gate[ \t]*$/im);
+  if (!m) {
+    return `no "## Review Gate" block found in ${name} — preview renders without the gate echo`;
+  }
+  const after = mdSource.slice((m.index ?? 0) + m[0].length);
+  const section = after.split(/^#{1,6}[ \t]+\S/m)[0];
+  const boxes = section.match(/^\s*[-*]\s+\[[ xX]\]/gm);
+  if (!boxes || boxes.length === 0) {
+    return `the "## Review Gate" block in ${name} has no checkbox lines — preview renders without the gate echo`;
+  }
+  return null;
 }
 
 // --- list subcommand ----------------------------------------------------
@@ -318,6 +486,7 @@ const DECIDED_STATES = new Set<string>(VALID_DECISIONS);
 type ArtifactEntry = {
   id: string | null;
   path: string;            // project-relative, posix-separated
+  title: string | null;    // display identity (the UI never shows paths)
   skill: string | null;
   stack: string | null;
   date: string | null;
@@ -524,6 +693,99 @@ function serializeList(items: string[]): string {
   return `[${items.join(", ")}]`;
 }
 
+// --- notify subcommand (G4 — the agent's post-push signal) -----------------
+// `forsvn-preview notify <artifact.md>` is what an agent fires after pushing
+// an artifact when no app is running. Two effects, both one line: append an
+// event to `.forsvn/inbox` and print a ResultLine to stdout. The inbox is a
+// journal, not state — `list` remains the truth; the file is transient signal
+// (gitignored, safe to truncate).
+//
+// Inbox line grammar (the T-0 row grammar with a timestamp prefix, so
+// `tail -f` reads as a pending list accruing in time):
+//   <ISO-8601Z> <glyph> <state>  <path>  <skill> · "<excerpt>"
+// A log file is a non-TTY consumer: ALWAYS tier-3 ASCII — zero escape bytes,
+// ASCII glyphs, ASCII ellipsis. The stdout ResultLine uses the same plain
+// grammar (flow S-07).
+//
+// Idempotency (the dedupe rule): before appending, read the inbox tail — if
+// the most recent line for the same artifact already records the same
+// decision_state, skip the append and say so. A re-push that reset a decided
+// artifact back to `pending` is a NEW event and appends. Append-only otherwise.
+
+const INBOX_REL = ".forsvn/inbox";
+const INBOX_PATH_PAD = 24;
+const INBOX_EXCERPT_MAX = 60;
+
+async function notifyMode(args: string[]): Promise<number> {
+  const rootArg = argValue(args, "--root");
+  const positional: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i].startsWith("-")) continue;
+    if (i > 0 && args[i - 1] === "--root") continue;
+    positional.push(args[i]);
+  }
+  if (positional.length !== 1) {
+    err(`usage: forsvn-preview notify <artifact.md> [--root <dir>]`);
+    return 1;
+  }
+  const mdPath = resolve(positional[0]);
+  if (!mdPath.endsWith(".md")) {
+    refuse("precondition", `expected an .md artifact, got ${mdPath}`, "notify signals the Markdown artifact the agent just pushed");
+    return REFUSAL_EXIT.precondition;
+  }
+  if (!existsSync(mdPath)) {
+    refuse("precondition", `artifact not found: ${mdPath}`, "check the path — notify fires after the artifact is written");
+    return REFUSAL_EXIT.precondition;
+  }
+  const fm = parseFrontmatter(readFileSync(mdPath, "utf8"));
+  if (!fm || !fm.decision_state) {
+    refuse("precondition", `artifact carries no decision_state — nothing to signal`, "only decision-tracked artifacts ride the inbox; see references/artifact-contract-template.md");
+    return REFUSAL_EXIT.precondition;
+  }
+
+  const projectRoot = rootArg ? findProjectRootFromDir(resolve(rootArg)) : findProjectRootFromDir(dirname(mdPath));
+  const state = fm.decision_state;
+  // ASCII state glyph, tier-independent (the inbox is always tier 3; the
+  // stdout line mirrors the same grammar). Unknown states keep their word
+  // with the neutral `*` glyph — rendered, never dropped.
+  const glyph = DECISION_ENUM.has(state) ? stateGlyph(state as DecisionState, 3) : "*";
+  const rel = inboxPathOf(projectRoot, mdPath);
+  const inboxPath = join(projectRoot, INBOX_REL);
+
+  // Tail check — most recent line for the same artifact path.
+  if (existsSync(inboxPath)) {
+    const lines = readFileSync(inboxPath, "utf8").split("\n").filter((l) => l.trim().length > 0);
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const parts = lines[i].split(/\s+/);
+      if (parts.length < 4) continue;          // unrecognized line — skip, never crash
+      const [, , lineState, linePath] = parts;
+      if (linePath !== rel) continue;
+      if (lineState === state) {
+        console.log(`${glyph} ${state} already recorded in ${INBOX_REL} for ${rel} — skipped`);
+        return 0;
+      }
+      break; // most recent event for this artifact differs — a new event, append
+    }
+  }
+
+  const excerptRaw = (fm.summary ?? "").replace(/\s+/g, " ").trim();
+  const excerpt = excerptRaw.length > INBOX_EXCERPT_MAX ? `${excerptRaw.slice(0, INBOX_EXCERPT_MAX - 3)}...` : excerptRaw;
+  const ts = new Date().toISOString().replace(/\.\d+Z$/, "Z");
+  const line = `${ts} ${glyph} ${state}  ${rel.padEnd(INBOX_PATH_PAD)}  ${fm.skill ?? "?"} · "${excerpt}"`;
+  mkdirSync(dirname(inboxPath), { recursive: true });
+  appendFileSync(inboxPath, `${line}\n`, "utf8");
+  console.log(`${glyph} ${state} recorded in ${INBOX_REL} — the operator will see it on next tail/list`);
+  return 0;
+}
+
+// Inbox paths read like the flow's journal examples: relative to the artifact
+// home (`product/spec.md`) when the artifact lives under .forsvn/artifacts/,
+// project-relative otherwise. Posix separators always.
+function inboxPathOf(projectRoot: string, mdPath: string): string {
+  const rel = relative(projectRoot, mdPath).split(sep).join("/");
+  return rel.startsWith(".forsvn/artifacts/") ? rel.slice(".forsvn/artifacts/".length) : rel;
+}
+
 function scanArtifacts(dir: string, projectRoot: string): ArtifactEntry[] {
   const out: ArtifactEntry[] = [];
   const walk = (current: string): void => {
@@ -542,6 +804,7 @@ function scanArtifacts(dir: string, projectRoot: string): ArtifactEntry[] {
       out.push({
         id: fm.id ?? null,
         path: relative(projectRoot, abs).split(sep).join("/"),
+        title: fm.title ?? null,
         skill: fm.skill ?? null,
         stack: fm.stack ?? null,
         date: fm.date ?? null,
@@ -594,13 +857,21 @@ function findProjectRootFromDir(startDir: string): string {
 
 // --- HTTP handler -------------------------------------------------------
 
-type HandlerArgs = {
+// Mutable per-serve session: POST /edit moves the conflict-guard basis to the
+// saved bytes and swaps in the re-rendered twin; everything else reads it.
+type ServeSession = {
   htmlSource: string;
+  mdHash: string;              // sha256 of the .md the human last READ (conflict guard)
+  gateWarning: string | null;  // G1 — additive preview-config field (notice-strip data seam)
+  pendingCount: number | undefined; // U9 — chrome strip crumb (additive)
+};
+
+type HandlerArgs = {
+  session: ServeSession;
   htmlPath: string;
   mdPath: string;
   token: string;
   projectRoot: string;
-  mdHash: string;   // sha256 of the .md at render time (conflict guard)
 };
 
 const state: {
@@ -610,7 +881,7 @@ const state: {
 } = {};
 
 function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
-  const { htmlSource, htmlPath, mdPath, token, projectRoot, mdHash } = args;
+  const { session, htmlPath, mdPath, token, projectRoot } = args;
   // The HTML is served at the URL path that mirrors its location under the
   // project root — so an exemplar at references/_html/exemplars/foo.html is
   // served at /references/_html/exemplars/foo.html, and its `<link
@@ -632,11 +903,17 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
     }
 
     if (req.method === "GET" && url.pathname === htmlUrlPath) {
-      const injected = injectPreviewConfig(htmlSource, {
+      const injected = injectPreviewConfig(session.htmlSource, {
         token,
         port: url.port,
         endpoint: `${url.origin}/done`,
         mdPath: relative(projectRoot, mdPath),
+        gate_warning: session.gateWarning,
+        // U9 additive fields: the chrome strip's pending count, and the agent
+        // suggestion seam (empty until the Proof-collab bridge populates it —
+        // see references/review-surface-design.md § suggestions).
+        ...(session.pendingCount !== undefined ? { pending_count: session.pendingCount } : {}),
+        suggestions: [],
       });
       return new Response(injected, { headers: { ...noStore, "Content-Type": "text/html; charset=utf-8" } });
     }
@@ -704,16 +981,17 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
 
       // Conflict guard (flow-recommended /done re-hash): if the artifact's
       // bytes changed on disk between render and decide, refuse — the human
-      // approved what they READ, not what is now on disk. Nothing is written,
-      // decision_state stays pending, and the server stays up so a re-serve
-      // can review the current file.
+      // approved what they READ (the session basis, which a workbench Edit
+      // save legitimately advances), not what is now on disk. Nothing is
+      // written, decision_state stays pending, and the server stays up so a
+      // re-serve can review the current file.
       let currentHash: string | null = null;
       try {
         currentHash = createHash("sha256").update(readFileSync(mdPath, "utf8")).digest("hex");
       } catch {
         currentHash = null; // unreadable/deleted counts as changed
       }
-      if (currentHash !== mdHash) {
+      if (currentHash !== session.mdHash) {
         return jsonResp(409, { error: "file changed on disk since this form was rendered — nothing was written; re-serve to review the current file" }, noStore);
       }
       const parsed: Payload = {
@@ -726,6 +1004,25 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
       if (typeof raw.variant === "string" && raw.variant.trim().length > 0) {
         parsed.variant = raw.variant.trim();
       }
+      // U9 — annotations ride the decision additively. Strictly validated:
+      // a malformed array is a 400 (nothing written), never silently dropped.
+      if (raw.annotations !== undefined) {
+        const parsedAnnotations = parseAnnotations(raw.annotations);
+        if (parsedAnnotations === null) {
+          return jsonResp(400, { error: `annotations must be an array of { kind: marker|comment, quote, body? } (max ${ANNOTATIONS_MAX})` }, noStore);
+        }
+        if (parsedAnnotations.length > 0) parsed.annotations = parsedAnnotations;
+      }
+
+      // G5 in the webapp confirmation: name the next pending artifact in the
+      // 200 body (additive), excluding the one being decided right now —
+      // title + skill + stack + date only, never a path.
+      const np = scanNextPending(projectRoot, relative(projectRoot, mdPath).split(sep).join("/"));
+      const nextPendingLite = np === undefined
+        ? undefined
+        : np === null
+          ? null
+          : { title: np.title, skill: np.skill, stack: np.stack, date: np.date };
 
       // Claim the slot now so any concurrent POST returns 409 above. Defer the
       // resolve so the browser sees the 200 before server.stop() fires.
@@ -735,11 +1032,97 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         if (state.idleTimer) clearTimeout(state.idleTimer);
         resolveFn({ ok: true, payload: parsed });
       });
-      return jsonResp(200, { ok: true }, noStore);
+      return jsonResp(200, {
+        ok: true,
+        ...(nextPendingLite !== undefined ? { next_pending: nextPendingLite } : {}),
+      }, noStore);
+    }
+
+    // U9 — POST /edit: the workbench's Edit mode saves the MARKDOWN BODY back
+    // to the artifact. Same security discipline as /done: localhost bind,
+    // constant-time token check, on-disk re-hash 409 conflict guard, atomic
+    // byte-fidelity write (lib/collab.ts atomicWrite — temp + same-dir rename).
+    // The frontmatter block is preserved verbatim; only the body is replaced.
+    // Human-only by construction; this endpoint never records a decision.
+    if (req.method === "POST" && url.pathname === "/edit") {
+      let body: unknown;
+      try { body = await req.json(); }
+      catch { return jsonResp(400, { error: "invalid JSON body" }, noStore); }
+      const raw = body as Record<string, unknown>;
+      if (typeof raw.token !== "string" || !constantTimeEqual(raw.token, token)) {
+        return jsonResp(403, { error: "bad token" }, noStore);
+      }
+      if (typeof raw.body_md !== "string") {
+        return jsonResp(400, { error: "body_md (string) is required — the Markdown body to save" }, noStore);
+      }
+      if (raw.body_md.length > EDIT_BODY_MAX_BYTES) {
+        return jsonResp(400, { error: `body_md exceeds ${EDIT_BODY_MAX_BYTES} bytes` }, noStore);
+      }
+
+      // Conflict guard: the edit applies on top of the bytes the human read.
+      let currentSource: string;
+      try {
+        currentSource = readFileSync(mdPath, "utf8");
+      } catch {
+        return jsonResp(409, { error: "file changed on disk since this form was rendered — nothing was written; re-serve to review the current file" }, noStore);
+      }
+      const currentHash = createHash("sha256").update(currentSource).digest("hex");
+      if (currentHash !== session.mdHash) {
+        return jsonResp(409, { error: "file changed on disk since this form was rendered — nothing was written; re-serve to review the current file" }, noStore);
+      }
+
+      // Splice: frontmatter block verbatim + the new body, byte-for-byte.
+      const fmMatch = currentSource.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
+      const fmBlock = fmMatch ? fmMatch[0] : "";
+      const nextSource = fmBlock + raw.body_md;
+      try {
+        atomicWrite(mdPath, nextSource);
+      } catch (e) {
+        return jsonResp(500, { error: `could not write the artifact: ${e instanceof Error ? e.message : String(e)}` }, noStore);
+      }
+
+      // Move the session basis to the saved bytes + re-render the twin so a
+      // reload shows exactly what is now on disk.
+      session.mdHash = createHash("sha256").update(nextSource).digest("hex");
+      session.gateWarning = reviewGateWarning(nextSource, basename(mdPath));
+      try {
+        renderArtifactToHtml(mdPath, BUNDLED_CHROME_DIR, relative(projectRoot, mdPath));
+        session.htmlSource = readFileSync(htmlPath, "utf8");
+      } catch {
+        // The save landed; a re-render failure only degrades the reload.
+      }
+      if (state.arm) state.arm(); // editing is activity — re-arm the idle timer
+      return jsonResp(200, { ok: true, md_hash: session.mdHash }, noStore);
     }
 
     return new Response("not found", { status: 404, headers: noStore });
   };
+}
+
+const EDIT_BODY_MAX_BYTES = 2 * 1024 * 1024;
+
+// Validate the additive `annotations` array. Returns null when the shape is
+// invalid (caller 400s); trims + caps individual fields.
+function parseAnnotations(raw: unknown): Annotation[] | null {
+  if (!Array.isArray(raw) || raw.length > ANNOTATIONS_MAX) return null;
+  const out: Annotation[] = [];
+  for (const item of raw) {
+    if (typeof item !== "object" || item === null) return null;
+    const a = item as Record<string, unknown>;
+    if (a.kind !== "marker" && a.kind !== "comment") return null;
+    if (typeof a.quote !== "string" || a.quote.trim().length === 0) return null;
+    const ann: Annotation = {
+      kind: a.kind,
+      quote: a.quote.trim().slice(0, ANNOTATION_QUOTE_MAX),
+    };
+    if (a.body !== undefined) {
+      if (typeof a.body !== "string") return null;
+      const b = a.body.trim().slice(0, ANNOTATION_BODY_MAX);
+      if (b.length > 0) ann.body = b;
+    }
+    out.push(ann);
+  }
+  return out;
 }
 
 // --- TTY prompt wiring (P-04 headless review) -----------------------------
@@ -796,7 +1179,7 @@ function startTtyPrompt(opts: TtyPromptOpts): () => void {
 
 // --- Helpers ------------------------------------------------------------
 
-function injectPreviewConfig(html: string, config: { token: string; port: string | number; endpoint: string; mdPath: string }): string {
+function injectPreviewConfig(html: string, config: { token: string; port: string | number; endpoint: string; mdPath: string; gate_warning: string | null; pending_count?: number; suggestions?: unknown[] }): string {
   const json = JSON.stringify(config);
   const tagRe = /<script type="application\/json" id="preview-config">[\s\S]*?<\/script>/;
   if (!tagRe.test(html)) {
@@ -826,7 +1209,7 @@ function parseFrontmatter(source: string): Record<string, string> | null {
   return out;
 }
 
-function applyDecision(source: string, updates: Record<string, string>, comments: string | undefined): string {
+function applyDecision(source: string, updates: Record<string, string>, comments: string | undefined, annotations?: Annotation[]): string {
   const match = source.match(/^(---\r?\n)([\s\S]*?)(\r?\n---)(\r?\n|$)/);
   if (!match) {
     throw new Error("expected frontmatter at top of file");
@@ -851,18 +1234,32 @@ function applyDecision(source: string, updates: Record<string, string>, comments
   }
 
   let rest = source.slice(match[0].length);
-  if (comments) {
-    const block = renderCommentBlock(comments, updates.reviewed_at, updates.reviewer);
+  if (comments || (annotations && annotations.length > 0)) {
+    const block = renderCommentBlock(comments, updates.reviewed_at, updates.reviewer, annotations);
     rest = appendCommentBlock(rest, block);
   }
   return openFence + updatedLines.join("\n") + closeFence + afterFence + rest;
 }
 
-function renderCommentBlock(comments: string, reviewedAt: string, reviewer: string): string {
-  const lines = comments.split(/\r?\n/).map((l) => l.trimEnd());
-  while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
-  const indented = lines.map((l) => `> ${l}`).join("\n");
-  return `\n\n## Reviewer notes\n_${reviewer} · ${reviewedAt}_\n\n${indented}\n`;
+function renderCommentBlock(comments: string | undefined, reviewedAt: string, reviewer: string, annotations?: Annotation[]): string {
+  let out = `\n\n## Reviewer notes\n_${reviewer} · ${reviewedAt}_\n`;
+  if (comments) {
+    const lines = comments.split(/\r?\n/).map((l) => l.trimEnd());
+    while (lines.length > 0 && lines[lines.length - 1] === "") lines.pop();
+    out += `\n${lines.map((l) => `> ${l}`).join("\n")}\n`;
+  }
+  // U9 — Marker/Comment annotations persist with the reviewer notes so the
+  // producing agent reads them back from the same record as the decision.
+  if (annotations && annotations.length > 0) {
+    out += `\n### Annotations\n`;
+    for (const a of annotations) {
+      const quote = a.quote.replace(/\s+/g, " ").trim();
+      out += a.kind === "comment" && a.body
+        ? `- **comment** — "${quote}": ${a.body.replace(/\s+/g, " ").trim()}\n`
+        : `- **${a.kind}** — "${quote}"\n`;
+    }
+  }
+  return out;
 }
 
 function appendCommentBlock(body: string, block: string): string {

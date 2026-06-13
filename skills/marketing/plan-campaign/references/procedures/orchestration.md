@@ -86,7 +86,7 @@ Full 11-row Quality Gate Checklist + 4 Internal Consistency Checks + 9-row Rewri
 
 ### Soft check — Social-media grounding
 
-When **Social media** is a selected channel, its Channel Execution Brief should be grounded in `references/platform-channels.md` → the `references/platform-intelligence/` catalog (§2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms). An ungrounded Social-media brief — or one grounded in a stale (>90-day) catalog file — ships `done_with_concerns`, flagged in the artifact. It never blocks the plan.
+When **Social media** is a selected channel, its Channel Execution Brief should be grounded in `references/platform-channels.md` → the `references/_shared/platform-intelligence/` catalog (§2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms). An ungrounded Social-media brief — or one grounded in a stale (>90-day) catalog file — ships `done_with_concerns`, flagged in the artifact. It never blocks the plan.
 
 ### Soft check — Creative-direction inheritance
 

@@ -2,7 +2,7 @@
 
 # Brand Archetypes
 
-The 12 Jungian brand archetypes — universal patterns of character that anchor all identity decisions. Select one primary (70%) and one secondary (30%) archetype. Every visual and verbal choice flows from this selection.
+The 12 Jungian brand archetypes — universal patterns of character that anchor all identity decisions. Typically one primary archetype with a secondary influence, though some brands resist neat categorization. Use the archetype as a reference lens — a choice justified by the brief that departs from it is valid.
 
 ## The 12 Archetypes
 

@@ -19,7 +19,7 @@ You do NOT:
 | **brief** | object | `{ angle, hero_platform, brand_mode, production_mode, market }` |
 | **context** | object | `{ format_spec, voc_phrases, production_notes, research_archetypes }` — orchestrator-curated from Layer 1 + research artifact |
 | **upstream** | null | Layer 1.5 parallel — runs after Layer 1 |
-| **references** | file paths[] | `references/hook-archetypes.md`, `references/anti-patterns.md` |
+| **references** | file paths[] | `references/_shared/hook-archetypes.md`, `references/anti-patterns.md` |
 | **feedback** | string \| null | Critic rewrite |
 
 ## Output Contract
@@ -87,7 +87,7 @@ For this angle on this platform, why these three archetypes? One paragraph tying
 
 **Archetype selection (from research catalog):**
 
-The research artifact's per-platform Recommendations section names which archetypes performed in the sample. Pull from there. If it lists "credential flash 8/12, pattern interrupt 5/12, contrarian claim 4/12," your three variations should use three of those — start with the highest-frequency.
+The research artifact's per-platform Recommendations section names which archetypes performed in the sample. Pull from there. If it lists "credential flash 8/12, pattern interrupt 5/12, contrarian claim 4/12," consider these the evidenced options; a well-reasoned departure is welcome — document the reasoning.
 
 **3Q test:**
 
