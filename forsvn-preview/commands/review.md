@@ -1,5 +1,5 @@
 ---
-description: Open the FORSVN artifact review surface — list what is awaiting a human decision and serve a chosen artifact on a local CSRF-protected page so the operator can approve, deny, or request changes. Use after producing/updating a `.forsvn/artifacts/` artifact to hand it to a human, or to check what is pending. Decisions stay human-owned; this only presents and reports.
+description: Open the FORSVN artifact review surface — list what is awaiting a human decision and serve a chosen artifact on a local CSRF-protected page so the operator can approve, deny, or request changes. Use after producing/updating a `docs/forsvn/artifacts/` artifact to hand it to a human, or to check what is pending. Decisions stay human-owned; this only presents and reports.
 argument-hint: [artifact-path | "pending"]   (empty = list pending, then serve the top item)
 allowed-tools: Bash(bun:*), Read
 ---
@@ -7,7 +7,7 @@ allowed-tools: Bash(bun:*), Read
 # FORSVN — review an artifact
 
 You are driving **forsvn-preview**, the local review surface. Artifacts are plain
-Markdown under `.forsvn/artifacts/`; this command renders one into a themed HTML
+Markdown under `docs/forsvn/artifacts/`; this command renders one into a themed HTML
 twin and serves it on `127.0.0.1` so the operator can decide. **You present and
 report — you never fabricate a decision.** The human clicks approve / deny /
 suggest in the browser; the CLI writes that choice back into the artifact's

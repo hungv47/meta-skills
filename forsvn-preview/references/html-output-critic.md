@@ -25,7 +25,7 @@ The visual contract is [[review-surface-design]]; the structural contract is
 ## When this critic fires
 
 - Every HTML file under `assets/_html/exemplars/`
-- Every live `.forsvn/artifacts/**.html` twin (not `.archive/`)
+- Every live `docs/forsvn/artifacts/**.html` twin (not `.archive/`)
 - Canonical top-level roots (`brand/`, `architecture/`, `research/`)
 
 ---
