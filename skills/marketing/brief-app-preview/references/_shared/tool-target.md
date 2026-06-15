@@ -68,7 +68,7 @@ The choice is **per category, never global, session-scoped**:
   independent `tool_targets` entries, each asked (or inherited) at its own stage's
   brief-binding.
 - Persisted in `execution-profile.json` `tool_targets` only — never in a durable config,
-  never in `.forsvn/experience/`. Next session starts clean.
+  never in `docs/forsvn/experience/`. Next session starts clean.
 - When rewriting the profile for any other reason, preserve `tool_targets` entries
   (execution-policy.md staleness rule already mandates this).
 

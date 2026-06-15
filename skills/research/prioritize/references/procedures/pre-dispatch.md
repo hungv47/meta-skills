@@ -50,10 +50,10 @@ The hard gate fires under `--fast` too. Safety gates supersede the mode-resolver
 2. **Pipeline (optional):** `id:product-context` — business profile (constraints + capabilities). Improves impact estimation.
 3. **Pipeline (optional):** `research/icp-research.md` — audience-fit scoring for customer-facing initiatives.
 4. **Pipeline (optional):** `research/market-research.md` — market gaps + competitive intel sharpen initiative generation.
-5. **Experience (read, don't ask):** `.forsvn/experience/{goals,business,product}.md` — team capacity, prior attempts, constraint context.
-6. **Prior runs (warm-start signal):** `.forsvn/artifacts/meta/sketches/prioritize-*.md` (newest if any). If present and same root cause → flag staleness; new run will rename to `prioritize.v[N].md`.
+5. **Experience (read, don't ask):** `docs/forsvn/experience/{goals,business,product}.md` — team capacity, prior attempts, constraint context.
+6. **Prior runs (warm-start signal):** `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` (newest if any). If present and same root cause → flag staleness; new run will rename to `prioritize.v[N].md`.
 
-(The Out-of-Scope directory at `.forsvn/artifacts/meta/out-of-scope/` is WRITTEN by this skill on Kill decisions — see `dispatch-mechanics.md` Out-of-Scope Persistence section. The original SKILL.md does NOT have prioritize self-read this directory; that read is delegated to downstream `discover` and `orchestrate-*` skills per the original "Why" rationale. A self-read here would be net-new behavior — deferred to v6.3.0 if the operator wants it.)
+(The Out-of-Scope directory at `docs/forsvn/artifacts/meta/out-of-scope/` is WRITTEN by this skill on Kill decisions — see `dispatch-mechanics.md` Out-of-Scope Persistence section. The original SKILL.md does NOT have prioritize self-read this directory; that read is delegated to downstream `discover` and `orchestrate-*` skills per the original "Why" rationale. A self-read here would be net-new behavior — deferred to v6.3.0 if the operator wants it.)
 
 ---
 
@@ -139,7 +139,7 @@ Echo the chosen route in the Warm Start summary (per above). Operator can overri
 
 **Experience write-back: NONE.** Original SKILL.md is explicit: "prioritize doesn't seed dimensions to experience/ — initiatives are project-specific tactics, not stable user-profile state." Constraint Interview answers feed dispatch as in-context input only; they do not persist.
 
-The Out-of-Scope persistence IS the long-lived record of what was decided. After dispatch completes AND artifact ships PASS or done_with_concerns, write one file per Kill to `.forsvn/artifacts/meta/out-of-scope/[kebab-name].md` per `dispatch-mechanics.md` Out-of-Scope Persistence section.
+The Out-of-Scope persistence IS the long-lived record of what was decided. After dispatch completes AND artifact ships PASS or done_with_concerns, write one file per Kill to `docs/forsvn/artifacts/meta/out-of-scope/[kebab-name].md` per `dispatch-mechanics.md` Out-of-Scope Persistence section.
 
 ---
 

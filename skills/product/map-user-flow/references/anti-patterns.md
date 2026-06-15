@@ -32,7 +32,7 @@ load_class: ANTI-PATTERN
 
 **"Cross-platform" as a platform answer** — Collapses platform-specific surface decisions into nothing. macOS, iOS, and Android surfaces are different — a flow on "cross-platform" has no defined surface set. INSTEAD: Enumerate every platform. "Cross-platform" is a refusal to enumerate.
 
-**Pooling many flows into one file** — One `FLOW.md` for checkout + onboarding + password reset drifts quickly. INSTEAD: One flow per file at `.forsvn/artifacts/product/flow/<flow-name>.md`. Use `index.md` for the catalog view.
+**Pooling many flows into one file** — One `FLOW.md` for checkout + onboarding + password reset drifts quickly. INSTEAD: One flow per file at `docs/forsvn/artifacts/product/flow/<flow-name>.md`. Use `index.md` for the catalog view.
 
 **Skipping per-surface coverage** — Picking surfaces at Step 0 but only wireframing main screens, or treating "widget refresh budget exhausted" / "Live Activity 8h ceiling hit" / "universal link fell back to web" as generic "network errors." Each declared surface has specific layout constraints and specific failure modes. INSTEAD: One mini-frame per selected surface at its native dimensions, plus a per-surface edge-state table — both pulled from `references/platform-touchpoints.md`.
 

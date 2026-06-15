@@ -16,7 +16,7 @@ Per [`../_shared/mode-resolver.md`](../_shared/mode-resolver.md) [PROCEDURE]. Sk
 
 ### 1. Canonical path check
 
-Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/canonical/research/DIAGNOSE.md`).
+Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`docs/forsvn/canonical/research/DIAGNOSE.md`).
 
 ### 2. Prior-run staleness check
 

@@ -67,9 +67,9 @@ Critic returns one of:
 
 On PASS or `done_with_concerns`, the orchestrator:
 
-1. Writes the artifact to `.forsvn/artifacts/research/platform-evidence/[slug].md`
+1. Writes the artifact to `docs/forsvn/artifacts/research/platform-evidence/[slug].md`
 2. Runs `bun scripts/manifest-sync.ts` so the artifact indexes into `.forsvn/index/`
-3. Writes back to `.forsvn/experience/content.md` per the Pre-Dispatch Write-back map
+3. Writes back to `docs/forsvn/experience/content.md` per the Pre-Dispatch Write-back map
 
 ## Chain Position
 

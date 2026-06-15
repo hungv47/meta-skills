@@ -52,9 +52,9 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK] — load context + 
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended — positioning + accuracy + unique mechanism |
 | `research/icp-research.md` | research-icp | Recommended — persona + pains + habitats + VoC + awareness |
-| `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction; inherited into the `## Creative Direction` section (soft gate — absent → that section degrades to a one-line note + `done_with_concerns`) |
-| `.forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | Optional — strategic alignment |
-| `.forsvn/experience/{product,audience,business,goals}.md` | any | Optional — keys fill gaps from prior runs |
+| `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction; inherited into the `## Creative Direction` section (soft gate — absent → that section degrades to a one-line note + `done_with_concerns`) |
+| `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | Optional — strategic alignment |
+| `docs/forsvn/experience/{product,audience,business,goals}.md` | any | Optional — keys fill gaps from prior runs |
 
 ## Pre-Dispatch
 
@@ -83,7 +83,7 @@ Spawn mechanics, orchestrator-written sections (Growth Motion / Foundation / Cha
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/marketing/campaign-plan.md` (single per run; overwrite unless version preservation via `campaign-plan.v[N].md`)
+- **Path:** `docs/forsvn/artifacts/marketing/campaign-plan.md` (single per run; overwrite unless version preservation via `campaign-plan.v[N].md`)
 - **Lifecycle:** `pipeline` — re-run on ICP update / new launch / channel reallocation / growth-motion change / capacity change
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer` (+ optional: `campaign_name`, `goal`, `audience`, `growth_motion`, `team_size`, `budget_tier`, `duration_days`)
 - **Consumed by:** `brief-landing-page`, `write-outreach`, `write-ad`, `optimize-seo`, `brief-shortform`, `plan-funnel` — hypothesis grounding + channel-aware composition. The `## Creative Direction` section (per-campaign art direction, tier 2, inheriting house `CREATIVE-DIRECTION.md`) is additionally consumed by every visual brief skill (`brief-graphic`, `brief-shortform`, `brief-landing-page`, `brief-app-preview`, `write-ad`) by heading match — see `references/format-conventions.md` "Creative Direction section"

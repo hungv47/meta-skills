@@ -124,7 +124,7 @@ PASS. All 6 golden rules satisfied:
 
 ## Artifact saved
 
-`.forsvn/artifacts/meta/records/machine-cleanup-2026-05-17-aitool-purge.md`. Total reclaim: 11.2 GB. 18 targets nuked, 9 kept, 1 deferred to manual follow-up (`~/Library/Application Support/snaply`).
+`docs/forsvn/artifacts/meta/records/machine-cleanup-2026-05-17-aitool-purge.md`. Total reclaim: 11.2 GB. 18 targets nuked, 9 kept, 1 deferred to manual follow-up (`~/Library/Application Support/snaply`).
 
 `status: done`. Re-Auth Commands section lists 3 commands (`gh auth login`, `gcloud auth login`, kimi API-key re-add).
 

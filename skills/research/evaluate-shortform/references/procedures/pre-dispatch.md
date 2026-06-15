@@ -24,9 +24,9 @@ load_class: PROCEDURE
 
 1. `.forsvn/loops/[loop-slug]/program.md`, `context.md`, and `results.tsv` — confirm the loop exists and find the next cycle.
 2. `<brief-path>` — confirm it exists, parse frontmatter for topic, market, target platform, hook archetype claim.
-3. `.forsvn/artifacts/research/research-shortform/[slug].md` — locate the matching catalog by topic+market; if multiple match, ask user once.
+3. `docs/forsvn/artifacts/research/research-shortform/[slug].md` — locate the matching catalog by topic+market; if multiple match, ask user once.
 4. `.forsvn/index/manifest.json` — confirm catalog freshness (warn if stale; don't block).
-5. `.forsvn/experience/content.md` — most recent entries for market and audience register.
+5. `docs/forsvn/experience/content.md` — most recent entries for market and audience register.
 
 ---
 
@@ -36,7 +36,7 @@ load_class: PROCEDURE
 Found:
 - brief: [path] (topic="[topic]", market="[market]", platform=[platform])
 - loop: .forsvn/loops/[slug]/
-- catalog: .forsvn/artifacts/research/research-shortform/[slug].md (last refreshed [date])
+- catalog: docs/forsvn/artifacts/research/research-shortform/[slug].md (last refreshed [date])
 - prior cycles in results.tsv: N → this is cycle N+1
 - post URL: [url]
 
@@ -71,7 +71,7 @@ Answer 1-4 in one response. I'll resolve the loop, catalog, and dispatch.
 
 If no catalog matches after the cold-start answer, return **BLOCKED** with the recommendation: "Run `research-shortform` for `[topic]` / `[market]` first; eval against missing reference is meaningless."
 
-## Write-back to `.forsvn/experience/content.md`
+## Write-back to `docs/forsvn/experience/content.md`
 
 After Cold Start answers received, append to `content.md`:
 

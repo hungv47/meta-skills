@@ -128,6 +128,8 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 Plus `index/` (the manifest API + human index), `context/`, `routing/`, and `performance/` — the operator-fed channel-performance store (post snapshots + publish ledger; **data, not artifacts** — exempt from the artifact contract; see [`references/performance-data.md`](./references/performance-data.md)). Every artifact carries frontmatter — `skill, version, date, status, stack, review_surface` + the instruction core `id, type, keywords` — for greppable discovery and traceability.
 
+**The marketing loop closes on your own data.** The producers (`write-social`, `write-ad`, `brief-shortform`, `plan-campaign`) ground each generation in your channel history before they write: an empty store falls back to platform-intelligence priors ("no own data yet"), a sparse one treats your numbers as anecdote, and a sufficient one lets your own data win account-specific calls while priors keep platform mechanics. `publish-social` logs a ledger row at export and `evaluate-content` imports the real metrics, so the store fills as you ship — and a brand floor always outranks the data (a top performer that's off-brand is recorded as "performs but violates floor — not adopted," never copied).
+
 ## Tips
 
 - **Run `/research-icp` first when starting any marketing work.** It writes `research/product-context.md` — the foundation downstream skills read. Skip it and they all re-ask you for audience details.

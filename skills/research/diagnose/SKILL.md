@@ -38,7 +38,7 @@ Pre-Dispatch detail (always-cold-start contract, 4-question Cold Start prompt, r
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/canonical/research/DIAGNOSE.md` (canonical singleton — the current diagnosis of record; re-run overwrites in place and bumps `version`. Prior runs live in git history, NOT as concurrent files.)
+- **Path:** `docs/forsvn/canonical/research/DIAGNOSE.md` (canonical singleton — the current diagnosis of record; re-run overwrites in place and bumps `version`. Prior runs live in git history, NOT as concurrent files.)
 - **Lifecycle:** `canonical`; `type: canonical`; `review_surface: none`; `decision_state: not_required` (diagnose stays un-gated)
 - **Frontmatter:** `skill`, `version` (integer, increment on re-run), `date`, `status`, `stack: research`, `review_surface: none`, `id: diagnose`, `type: canonical`, `keywords: [diagnose, root-cause, hypothesis-tree, metric-decline, if-then-because]`. Schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required body sections (cross-stack contract — load-bearing):** Phase 1 (Problem Statement, Logic Tree, MECE Check, External Factor Scan 6-row table) · Phase 2 (Hypotheses with If/Then/Because + 6 sub-fields each) · Phase 3 (Verdict Table + Root Cause Statement) · Next Step block. Full schemas + Logic Tree code-fence + Verdict Table columns in [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. Optional: Known Issues · Change Log.

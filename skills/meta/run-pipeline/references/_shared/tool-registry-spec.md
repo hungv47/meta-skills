@@ -6,7 +6,7 @@
 read-only, local. Source of record for what `build-tool-registry.ts` emits, what
 `forsvn-mcp list_tools` returns, and what the desktop Settings → Tools pane reads.
 
-Canonical design: [`.forsvn/canonical/product/CLOSED-LOOP.md`](../../.forsvn/canonical/product/CLOSED-LOOP.md) §3.
+Canonical design: [`docs/forsvn/canonical/product/CLOSED-LOOP.md`](../../docs/forsvn/canonical/product/CLOSED-LOOP.md) §3.
 
 ---
 
@@ -14,7 +14,7 @@ Canonical design: [`.forsvn/canonical/product/CLOSED-LOOP.md`](../../.forsvn/can
 
 | Consumer | Surface | Shape |
 |---|---|---|
-| Humans + greppable agents | `.forsvn/canonical/meta/TOOL-REGISTRY.md` (`type: registry`) | rendered tables by category |
+| Humans + greppable agents | `docs/forsvn/canonical/meta/TOOL-REGISTRY.md` (`type: registry`) | rendered tables by category |
 | Agents / skills / desktop | `.forsvn/index/tools.json` (sibling to `manifest.json`) | machine index |
 | Skills at fork-time | `forsvn-mcp list_tools(category)` | reads `tools.json`, filters |
 

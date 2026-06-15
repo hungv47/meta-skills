@@ -26,7 +26,7 @@ Coordinates evidence anchoring, hypothesis generation, architecture, per-section
 
 ## Inputs + Outputs
 
-Full inputs table + output companions + per-slot artifacts: [`references/procedures/inputs-outputs.md`](references/procedures/inputs-outputs.md). Hard-required: page route/campaign name, `brand/BRAND.md`, `brand/DESIGN.md`. Main artifact: `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md`. Always-emitted companion: `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected, Asset Placeholder Rule verbatim). Optional companions per `target_handoff`: `handoff-{claude-design,figma,designer}.md`.
+Full inputs table + output companions + per-slot artifacts: [`references/procedures/inputs-outputs.md`](references/procedures/inputs-outputs.md). Hard-required: page route/campaign name, `brand/BRAND.md`, `brand/DESIGN.md`. Main artifact: `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md`. Always-emitted companion: `handoff-implementation.md` (universal coding-agent prompt, stack auto-detected, Asset Placeholder Rule verbatim). Optional companions per `target_handoff`: `handoff-{claude-design,figma,designer}.md`.
 
 ## Quality Gate
 
@@ -63,7 +63,7 @@ Three routes (Route A fresh LP · Route B existing-LP redesign with mandatory "W
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
+- **Path:** `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md` (versioned re-runs: `v[N]/brief.md` for `--rev=N`).
 - **Companions:** always `handoff-implementation.md`; optional `handoff-{claude-design,figma,designer}.md` per `target_handoff`. Per-slot `asset-slots/{slot-id}.prompt.md` written downstream by `brief-graphic`.
 - **Lifecycle:** `pipeline` — versioned re-runs preserve prior versions.
 - **Frontmatter:** 17 fields — see [`references/format-conventions.md`](references/format-conventions.md) and [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) § provenance two-variants. Provenance is required so `evaluate-landing-page` can ground scoring on `input_artifacts` and `_dev/eval/promote-to-experience.ts` can walk `output_eval`.

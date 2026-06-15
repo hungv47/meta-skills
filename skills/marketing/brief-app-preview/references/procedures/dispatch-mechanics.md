@@ -139,10 +139,10 @@ These checkpoints fire BEFORE writing the artifact. If a checkpoint fails, the o
 
 ```
 1. Validate Layer 2b PASS (or cycle-2 FAIL with concerns)
-2. Write .forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md
-3. Write .forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md
-4. Write .forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md
-5. Write .forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md  (last — pulls section content from the three siblings)
+2. Write docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md
+3. Write docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md
+4. Write docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md
+5. Write docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md  (last — pulls section content from the three siblings)
 6. Update .forsvn/index/manifest.json
 7. Return DONE / DONE_WITH_CONCERNS with the path
 ```

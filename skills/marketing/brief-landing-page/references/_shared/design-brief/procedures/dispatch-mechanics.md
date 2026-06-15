@@ -15,7 +15,7 @@ The orchestrator spawns each sub-agent by:
 1. **Read** the agent instruction file — include its FULL content in the Agent prompt.
 2. **Append** the context block (`route`, `target_tool`, `platform_module`, plus role-specific inputs per the Layer tables below) AND any upstream agent's output.
 3. **Resolve file paths to absolute:** replace relative paths with absolute paths the agent will actually read.
-4. **Pass upstream artifacts by content:** orchestrator reads `.forsvn/artifacts/` files itself, includes relevant excerpts inline.
+4. **Pass upstream artifacts by content:** orchestrator reads `docs/forsvn/artifacts/` files itself, includes relevant excerpts inline.
 5. **Append critic feedback** if it exists, under `## Critic Feedback — Address Every Point`.
 
 ---
@@ -92,7 +92,7 @@ User responses:
 - **"Revise X"** → re-dispatch concept-agent with feedback, regenerate, re-present.
 - **"None of these"** → ask one clarifying question, regenerate.
 - **"Switch route to X"** → re-dispatch brief-synth with the new route. If concept-agent's tool-feasibility for that concept was RETHINK on the new route, re-run concept-agent first.
-- **"Stop"** → save as `.forsvn/artifacts/marketing/design-briefs/[slug]-candidates.md`, exit BLOCKED.
+- **"Stop"** → save as `docs/forsvn/artifacts/marketing/design-briefs/[slug]-candidates.md`, exit BLOCKED.
 
 Under `--fast`: Approval Gate 1 is SKIPPED (only 1 candidate exists; user reviews at Gate 2 only).
 
@@ -161,11 +161,11 @@ Format:
 
 User responses:
 - **"Approve"** →
-  1. Write `.forsvn/artifacts/marketing/design-briefs/[slug].md`.
+  1. Write `docs/forsvn/artifacts/marketing/design-briefs/[slug].md`.
   2. **ASSETS.md auto-tick:** if the brief's asset path is a literal string match for a `brand/ASSETS.md` row's path field (never auto-tick on slug or asset-type heuristic), flip `[ ]` → `[x]` and append a date stamp. No match → skip; design-brief doesn't own ASSETS.md row creation (that's brand-system).
   3. Status DONE.
 - **"Revise X"** → re-dispatch brief-synth or Layer 2 agent with feedback (1 cycle), re-present.
-- **"Reject"** → save as `.forsvn/artifacts/marketing/design-briefs/[slug]-rejected.md` with a `Rejection Notes` block, exit BLOCKED.
+- **"Reject"** → save as `docs/forsvn/artifacts/marketing/design-briefs/[slug]-rejected.md` with a `Rejection Notes` block, exit BLOCKED.
 
 Approval Gate 2 fires regardless of `--fast` — user acceptance is non-optional. Per anti-pattern #2.
 
@@ -175,8 +175,8 @@ Approval Gate 2 fires regardless of `--fast` — user acceptance is non-optional
 
 **Previous:**
 - `create-brand` — REQUIRED. Hard gate on `brand/BRAND.md` + `brand/DESIGN.md`.
-- `brief-landing-page` — OPTIONAL. When design-brief is invoked from a landing-page asset slot, lp-brief passes the slot spec via `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md`.
-- `write-copy` — OPTIONAL. When in-asset copy is supplied separately via `.forsvn/artifacts/marketing/content/[slug].copy.md`.
+- `brief-landing-page` — OPTIONAL. When design-brief is invoked from a landing-page asset slot, lp-brief passes the slot spec via `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md`.
+- `write-copy` — OPTIONAL. When in-asset copy is supplied separately via `docs/forsvn/artifacts/marketing/content/[slug].copy.md`.
 
 **Next:**
 - External rendering — `image-gen` route → Claude Design / Midjourney / Imagen / DALL·E / Ideogram / Veo / Suno. `vector-tool` route → Pencil / Figma. `designer-handoff` route → human designer with the Figma spec block. `template-pack` route → multi-format renderer ingesting per-format prompts.

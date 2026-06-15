@@ -21,7 +21,7 @@ load_class: PROCEDURE
 
 Before constructing the reviewer prompt:
 
-1. **Learned rules** — read `.forsvn/artifacts/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
+1. **Learned rules** — read `docs/forsvn/artifacts/meta/records/learned-rules.md`. If any rules are relevant to the code being reviewed, append them to the CONTEXT section of the reviewer prompt.
 2. **Quality feedback** — read [`../_shared/quality-feedback-protocol.md`](../_shared/quality-feedback-protocol.md). If this review includes a critic override, repeated rubric disagreement, high-stakes artifact, or post-humanize rewrite, apply the relevant logging, dashboard creation/update, or consensus guidance.
 3. **Shared critic rubrics** — use [`../_shared/shared-critic-rubrics.md`](../_shared/shared-critic-rubrics.md) when a review needs a reusable quality dimension such as claim substantiation, protected-token preservation, mechanism distinctness, or humanize regression.
 

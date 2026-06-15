@@ -4,7 +4,7 @@ description: "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) 
 argument-hint: "[loop slug or path] [channel+segment] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -23,7 +23,7 @@ metadata:
 
 1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Sent + measured outreach only.** The sequence actually went out and reply/bounce data exists. A draft → `NEEDS_CONTEXT`, route to `write-outreach`. This skill scores what shipped, not a draft.
-3. **Source write-outreach artifact required.** The sequence being scored (`.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
+3. **Source write-outreach artifact required.** The sequence being scored (`docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
 4. **One channel + segment per cycle.** `email` / `linkedin-dm` / `twitter-dm` + one ICP segment. Cross-channel or cross-segment blending is contamination → secondary channels/segments are context only, never verdict input.
 5. **No fabricated reply data.** Unknown values stay unknown. Reply categories, bounce, and meetings must trace to a named tool (Instantly / Smartlead / Apollo / lemlist / CRM / manual export).
 6. **Deliverability + compliance evidence required.** Bounce rate, spam-complaint rate, sender reputation, and opt-out/CAN-SPAM/GDPR/platform-ToS compliance. A deliverability or compliance red flag blocks a `keep` (Critic Hard Fail #12).
@@ -36,7 +36,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · channel + segment tag (`email` · `linkedin-dm` · `twitter-dm` + ICP segment) · source write-outreach artifact (`.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) · measurement window · sends (sample-size floor) · primary metric value + source (positive-reply rate · meeting-booked rate · qualified-lead rate).
+**Required:** loop slug/path · channel + segment tag (`email` · `linkedin-dm` · `twitter-dm` + ICP segment) · source write-outreach artifact (`docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) · measurement window · sends (sample-size floor) · primary metric value + source (positive-reply rate · meeting-booked rate · qualified-lead rate).
 
 **Recommended:** baseline/prior-cycle row · reply breakdown (positive / meeting-booked / qualified vs neutral / negative / auto-reply / unsubscribe) · deliverability data (bounce rate, spam-complaint rate, sender reputation) · compliance status (opt-out honored, CAN-SPAM/GDPR/ToS) · sequence-step attribution (which step earned the reply) · guardrails from `program.md`.
 
@@ -81,6 +81,10 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — outreach-eval rows + 4 cross-cutting marketing-stack rows. Most common: open-rate vanity read as success (Gate 6 + Critic "Reply-Quality Discrimination"), a reply-winning sequence that is burning the domain or breaking opt-out (Critic "Deliverability & Compliance"), cross-channel contamination of the verdict (Gate 4), scope drift to write-outreach authorship (Gate 8 + Critic "Decision Discipline").
+
+## Worked Example
+
+Outreach cycle (reply quality acceptable, deliverability/compliance gate forces watch): [`references/examples/outreach-eval-cycle-walkthrough.md`](references/examples/outreach-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

@@ -105,21 +105,21 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/manifest.md"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/manifest.md"
         lifecycle: pipeline
         produced_when: "Critic PASS; always emitted as canonical runtime-agnostic contract."
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/scenes/[shot-id].md"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/scenes/[shot-id].md"
         lifecycle: pipeline
         produced_when: "One file per shot — visual + OST + voice spec."
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/hyperframes/scaffold.html"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/hyperframes/scaffold.html"
         lifecycle: pipeline
         produced_when: "Always emitted — HyperFrames composition scaffold + inlined scenes JSON."
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/remotion/scaffold.tsx"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/remotion/scaffold.tsx"
         lifecycle: pipeline
         produced_when: "Always emitted — Remotion composition scaffold."
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md"
         lifecycle: pipeline
         produced_when: "Always emitted (shortform); collapsed in app-preview mode."
-      - path: ".forsvn/artifacts/marketing/produced-videos/[slug]/post.md"
+      - path: "docs/forsvn/artifacts/marketing/produced-videos/[slug]/post.md"
         lifecycle: pipeline
         produced_when: "Always emitted — assemble/grade/subtitle stage (post lane; video-use / ffmpeg). Collapses to assembly + caption burn-in in app-preview mode."

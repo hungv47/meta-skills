@@ -29,12 +29,12 @@ Two strong signals point to Route A:
 Reading order per `procedures/pre-dispatch.md`:
 
 - `research/icp-research.md` → exists. Resolves Q3 audience. Search behavior: "evaluation-stage searches for 'project management for engineering teams', comparison-tier queries with competitor names, technical evaluation queries (API integrations, time tracking, Gantt)."
-- `.forsvn/artifacts/marketing/campaign-plan.md` → exists. Resolves IMC pillars.
+- `docs/forsvn/artifacts/marketing/campaign-plan.md` → exists. Resolves IMC pillars.
 - `research/product-context.md` → exists. Resolves category.
 - Q1 mode → "audit" (from diagnosis)
 - Q2 site → "https://example.com" (from user)
 - Q3 audience → resolved from research-icp
-- Q4 geo+language → check `.forsvn/experience/audience.md`. Found: "US-en primary, secondary Tier 1 EU." → resolved.
+- Q4 geo+language → check `docs/forsvn/experience/audience.md`. Found: "US-en primary, secondary Tier 1 EU." → resolved.
 
 **All four dimensions resolved. Warm Start, no Cold Start needed.** Orchestrator announces:
 
@@ -161,7 +161,7 @@ Orchestrator merges per `references/format-conventions.md`. Four agents → four
 
 ## Step 8 — Deliver
 
-Artifact written to `.forsvn/artifacts/marketing/seo-audit.md`. Frontmatter:
+Artifact written to `docs/forsvn/artifacts/marketing/seo-audit.md`. Frontmatter:
 
 ```yaml
 ---
@@ -176,7 +176,7 @@ status: done
 Operator receives:
 
 ```
-DONE — seo audit complete. Artifact at `.forsvn/artifacts/marketing/seo-audit.md`.
+DONE — seo audit complete. Artifact at `docs/forsvn/artifacts/marketing/seo-audit.md`.
 
 4 Critical findings prioritized. Quick wins (P1, Week 1-2): robots.txt fix + internal link build.
 Strategic (P2, Month 1): WebP conversion. P3 (Month 2-3): integration page enrichment.

@@ -18,7 +18,7 @@ load_class: EXAMPLE
 
 ```
 Found:
-- scope → ".forsvn/artifacts/" (full)
+- scope → "docs/forsvn/artifacts/" (full)
 - manifest snapshot → "47 artifacts, 6 stale (>90d), 3 with no manifest entry"
 - excluded paths → none recorded
 
@@ -29,18 +29,18 @@ Mode set to --apply per your request. Threshold 90 days. Proceed?
 
 **Runner Layer 1 (walk + classify):**
 
-- 47 artifacts found under `.forsvn/artifacts/`
+- 47 artifacts found under `docs/forsvn/artifacts/`
 - Classifications:
   - KEEP (38) — manifest fresh, or under HARD-NEVER (manifest, experience, tasks, roadmap)
   - STALE (4) — old fresh-eyes records from prior sessions
-  - ORPHAN (3) — `.forsvn/artifacts/meta/sketches/foo.md` referenced by no manifest entry; producing skill (`prioritize`) hasn't been run in this project
-  - LEGACY (1) — `.forsvn/artifacts/meta/specs/old-scope.md` with `status: superseded` in frontmatter
-  - EPHEMERAL (1) — `.forsvn/artifacts/.archive/2026-04-01/foo-candidates.md` (already archived; matches `-candidates.md` pattern but already in archive — KEEP, it's the archive)
+  - ORPHAN (3) — `docs/forsvn/artifacts/meta/sketches/foo.md` referenced by no manifest entry; producing skill (`prioritize`) hasn't been run in this project
+  - LEGACY (1) — `docs/forsvn/artifacts/meta/specs/old-scope.md` with `status: superseded` in frontmatter
+  - EPHEMERAL (1) — `docs/forsvn/artifacts/.archive/2026-04-01/foo-candidates.md` (already archived; matches `-candidates.md` pattern but already in archive — KEEP, it's the archive)
 
 **Runner Critic Gate:**
 
-- Spot-check 5 random STALE/ORPHAN: grep path + basename + slug across `.forsvn/artifacts/`, `brand/`, `research/`, `architecture/`
-- 1 of 4 STALE files (`2026-02-15-fresh-eyes-prior-pass.md`) cited by `.forsvn/artifacts/meta/roadmap.md` line 412 — LIVE REFERENCE
+- Spot-check 5 random STALE/ORPHAN: grep path + basename + slug across `docs/forsvn/artifacts/`, `brand/`, `research/`, `architecture/`
+- 1 of 4 STALE files (`2026-02-15-fresh-eyes-prior-pass.md`) cited by `docs/forsvn/artifacts/meta/roadmap.md` line 412 — LIVE REFERENCE
 - ESCALATE: skip confirmation, surface to operator
 
 **Runner Output:**
@@ -48,18 +48,18 @@ Mode set to --apply per your request. Threshold 90 days. Proceed?
 ```
 Critic gate FAILED — 1 of 9 STALE/ORPHAN candidates has a live reference:
   STALE: 2026-02-15-fresh-eyes-prior-pass.md
-    referenced by: .forsvn/artifacts/meta/roadmap.md:412
+    referenced by: docs/forsvn/artifacts/meta/roadmap.md:412
 
 Recommendations:
   - Re-run with that file excluded, OR
   - Edit roadmap.md to drop the stale citation, then re-run
 
-No files were moved. Report: .forsvn/artifacts/meta/records/2026-05-08-cleanup-artifacts-apply-blocked.md
+No files were moved. Report: docs/forsvn/artifacts/meta/records/2026-05-08-cleanup-artifacts-apply-blocked.md
 
 Status: BLOCKED — live reference found; operator decision needed.
 ```
 
-**Operator decides:** edits `roadmap.md` to drop the stale reference, re-runs `cleanup-artifacts --apply`. Critic passes; per-category prompts fire; operator confirms STALE+ORPHAN+LEGACY; runner moves 8 files to `.forsvn/artifacts/.archive/2026-05-08/`; manifest-sync runs; report saved with status DONE.
+**Operator decides:** edits `roadmap.md` to drop the stale reference, re-runs `cleanup-artifacts --apply`. Critic passes; per-category prompts fire; operator confirms STALE+ORPHAN+LEGACY; runner moves 8 files to `docs/forsvn/artifacts/.archive/2026-05-08/`; manifest-sync runs; report saved with status DONE.
 
 ---
 

@@ -27,7 +27,7 @@ The orchestrator gathers these before dispatching Layer 1. Each must be resolved
 ## Read order
 
 1. **Pipeline:** `research/product-context.md`, `research/icp-research.md`. Existing brand assets directory if present (`brand/` — read prior BRAND.md/DESIGN.md/ASSETS.md if any).
-2. **Experience:** `.forsvn/experience/{product, audience, brand, business}.md` for prior persisted answers.
+2. **Experience:** `docs/forsvn/experience/{product, audience, brand, business}.md` for prior persisted answers.
 
 If pipeline artifact `date` fields are >30 days old, warn and recommend re-running `research-icp` (Critical Gate 4).
 
@@ -103,7 +103,7 @@ Resolution: the orchestrator does NOT accept Q6 answer until every platform is e
 
 ## Write-back map (7 dimensions × 4 experience files)
 
-After Cold Start answers resolve, write back to `.forsvn/experience/` so subsequent skills don't re-ask:
+After Cold Start answers resolve, write back to `docs/forsvn/experience/` so subsequent skills don't re-ask:
 
 | Q | File | Key |
 |---|---|---|

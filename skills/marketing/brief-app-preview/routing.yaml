@@ -109,15 +109,15 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md"
+      - path: "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md"
         lifecycle: pipeline
         produced_when: "Critic PASS; main artifact."
-      - path: ".forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md"
+      - path: "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md"
         lifecycle: pipeline
         produced_when: "Always emitted — per-shot spec for produce-video."
-      - path: ".forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md"
+      - path: "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md"
         lifecycle: pipeline
         produced_when: "Always emitted — source-ID-to-path map."
-      - path: ".forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md"
+      - path: "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md"
         lifecycle: pipeline
         produced_when: "Always emitted — crop justifications."

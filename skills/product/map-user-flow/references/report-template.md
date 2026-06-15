@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** Layer 2b critic PASS → Assembly. Save the per-flow artifact to `.forsvn/artifacts/product/flow/<flow-name>.md`. Re-run of same flow: rename existing `<flow-name>.md` → `<flow-name>.v[N].md`, create new `<flow-name>.md` with incremented version. Multi-flow products: run once per flow — each creates its own file. After any run yielding ≥2 **distinct slugs** (excluding `.v[N]` versioned files) in the directory, orchestrator auto-creates/updates `.forsvn/artifacts/product/flow/index.md` (template below). Versioned files sit next to live ones and are excluded from slug count and index.
+**Load when:** Layer 2b critic PASS → Assembly. Save the per-flow artifact to `docs/forsvn/artifacts/product/flow/<flow-name>.md`. Re-run of same flow: rename existing `<flow-name>.md` → `<flow-name>.v[N].md`, create new `<flow-name>.md` with incremented version. Multi-flow products: run once per flow — each creates its own file. After any run yielding ≥2 **distinct slugs** (excluding `.v[N]` versioned files) in the directory, orchestrator auto-creates/updates `docs/forsvn/artifacts/product/flow/index.md` (template below). Versioned files sit next to live ones and are excluded from slug count and index.
 
 ---
 
@@ -168,7 +168,7 @@ Surface-specific failure modes that generic error/empty/loading don't capture. P
 
 ## Sub-flows
 
-- [Sub-flow name] → see `.forsvn/artifacts/product/flow/[slug]-[sub].md`
+- [Sub-flow name] → see `docs/forsvn/artifacts/product/flow/[slug]-[sub].md`
 
 ## Next Step
 

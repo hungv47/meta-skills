@@ -16,8 +16,8 @@ load_class: ANTI-PATTERN
 
 | Anti-Pattern | Problem | INSTEAD |
 |---|---|---|
-| Treating `.forsvn/artifacts/meta/records/` as ephemeral | These are dated, immutable snapshots (audit trail). Pruning by age alone destroys the trail. | Use the `EPHEMERAL pattern list` in [`cleanup-rules.md`](cleanup-rules.md). Records are STALE-only, never EPHEMERAL. |
-| Pruning `.forsvn/experience/*.md` | Append-only Q&A substrate, read by every skill. | HARD-NEVER. |
+| Treating `docs/forsvn/artifacts/meta/records/` as ephemeral | These are dated, immutable snapshots (audit trail). Pruning by age alone destroys the trail. | Use the `EPHEMERAL pattern list` in [`cleanup-rules.md`](cleanup-rules.md). Records are STALE-only, never EPHEMERAL. |
+| Pruning `docs/forsvn/experience/*.md` | Append-only Q&A substrate, read by every skill. | HARD-NEVER. |
 | Pruning `tasks.md` or `roadmap.md` | Session anchors, always loaded. | HARD-NEVER. |
 | Treating filename-match alone as EPHEMERAL | A dated record `2025-11-30-fresh-eyes-foo.md` matches no ephemeral pattern, but a careless regex could fire | Apply the "NOT under records/ or decisions/" carve-out from [`cleanup-rules.md`](cleanup-rules.md). |
 

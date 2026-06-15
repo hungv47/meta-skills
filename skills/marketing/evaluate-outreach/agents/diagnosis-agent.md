@@ -7,7 +7,7 @@ Explain why the outreach cycle likely moved, using the source write-outreach seq
 ## Inputs
 
 - Loop `program.md` and `context.md`
-- **Source write-outreach artifact** (`.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) — read the subject/opener, value prop, CTA, sequence structure, personalization, hypothesis
+- **Source write-outreach artifact** (`docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) — read the subject/opener, value prop, CTA, sequence structure, personalization, hypothesis
 - Metric Ingest output (from Layer 1 sibling) — DO NOT re-fetch; consume the normalized packet (reply breakdown, deliverability, compliance)
 - Current cycle evidence (raw tool data, reply threads, opt-out log) — read independently for behavioral signals (reply sentiment, objection patterns, which step earned the reply)
 - Canonical artifacts (`research/icp-research.md`, `brand/BRAND.md`) — for list-fit + voice check

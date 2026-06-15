@@ -32,7 +32,7 @@ This list is non-exhaustive — when an unknown folder appears, scanners should:
 | `.pencil/` | Pencil | brew cask | none |
 | `.browser-use/` | browser-use Python lib | pip / pipx | `.config/browseruse/` |
 | `.agent-browser/` | agent-browser CLI (Vercel plugin) | npm `agent-browser` | `.config/agent-browser/` |
-| `.forsvn/artifacts/` | `npx skills add` install root | npm `skills` package | `~/skills-lock.json`, sibling skills/ dirs in `.cursor/`, `.claude/`, etc. |
+| `docs/forsvn/artifacts/` | `npx skills add` install root | npm `skills` package | `~/skills-lock.json`, sibling skills/ dirs in `.cursor/`, `.claude/`, etc. |
 | `.kilocode/` | Kilo Code | direct download | none |
 | `.icube-remote-ssh/` | iCube Remote SSH plugin | unknown | usually empty |
 | `.factory/` | Factory AI | direct download | none |

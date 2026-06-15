@@ -47,7 +47,7 @@ For Route C (called by `plan-campaign`), `version` may carry the calling skill's
 
 ## Output file structure (3 files per run)
 
-Every run produces THREE files in `.forsvn/artifacts/marketing/write-outreach/`:
+Every run produces THREE files in `docs/forsvn/artifacts/marketing/write-outreach/`:
 
 | File | Content | Consumer |
 |------|---------|----------|

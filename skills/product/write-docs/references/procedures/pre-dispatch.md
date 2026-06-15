@@ -8,7 +8,7 @@ Apply [`../_shared/before-starting-check.md`](../_shared/before-starting-check.m
 
 - **Mode resolution** ([`../_shared/mode-resolver.md`](../_shared/mode-resolver.md)). `budget: standard`. `--fast` forces Single-Agent Fallback. **Safety gates supersede `--fast`.**
 - Read `.forsvn/index/manifest.json` for prior docs-writing runs against the same target; surface staleness signals.
-- Read `.forsvn/experience/technical.md` for prior doc conventions (voice, formatting preferences).
+- Read `docs/forsvn/experience/technical.md` for prior doc conventions (voice, formatting preferences).
 - Read project context: existing README, CLAUDE.md, `research/product-context.md`, `package.json#description` — all available context before scanning code.
 
 ## Pre-Dispatch needed dimensions
@@ -21,7 +21,7 @@ Apply [`../_shared/before-starting-check.md`](../_shared/before-starting-check.m
 ## Read order
 
 1. Codebase scan (existing README, docs/, package manifest, framework hints)
-2. `.forsvn/experience/technical.md` (prior doc conventions)
+2. `docs/forsvn/experience/technical.md` (prior doc conventions)
 
 ## Warm Start / Cold Start / Route-locked Pre-Dispatch (D + E override Q1+Q2) / Write-back rules
 

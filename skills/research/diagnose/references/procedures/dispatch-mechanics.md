@@ -160,7 +160,7 @@ If the full orchestration is unnecessary (single clear metric, hypothesis alread
 
 ## Post-write side effects
 
-After the artifact is written to `.forsvn/canonical/research/DIAGNOSE.md`:
+After the artifact is written to `docs/forsvn/canonical/research/DIAGNOSE.md`:
 
 1. **Overwrite in place + bump `version`.** `DIAGNOSE.md` is a canonical singleton (the current diagnosis of record). On re-run, overwrite it and increment `version`; the prior run lives in git history. Never create a `.v[N].md` sibling.
 2. **Goals write-back** per `procedures/pre-dispatch.md` Write-back map — Q1 (Metric), Q2 (Current), Q3 (Target) append to `experience/goals.md`. Q4 (Tried) is NOT persisted — diagnostic-specific.

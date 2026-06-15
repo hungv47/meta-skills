@@ -8,6 +8,8 @@ load_class: PLAYBOOK
 
 # Short-Form Research Playbook
 
+**Worked example:** [`examples/shortform-research-walkthrough.md`](examples/shortform-research-walkthrough.md) — a full sourced per-platform catalog run end to end, with the brief-shortform handoff.
+
 ## Why this skill exists
 
 Short-form video platforms (TikTok, Reels, Shorts, plus X video and LinkedIn video by opt-in) move algorithmically — what worked 60 days ago may not work today. Briefs written from stale intuition produce content that misses the platform's current rewarded behaviors (hook archetype, opening-second pacing, sound trends, CTA placement). This skill replaces "intuition + last-year's-best-practice doc" with a per-platform, per-market, per-topic catalog of what's actually working *right now* — sourced from observable performers with citations, not made up by the model.

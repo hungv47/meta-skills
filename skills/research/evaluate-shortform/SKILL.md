@@ -4,7 +4,7 @@ description: "Closes the feedback loop for short-form video — scores a publish
 argument-hint: "<loop-slug> <post-url> <brief-path>"
 allowed-tools: Read Grep Glob Bash WebFetch Write
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.50-1.50"
 ---
@@ -48,7 +48,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md` (one file per cycle; single platform, single brief — loop-internal artifacts retain the loop tree; flat v2 grammar applies only to `.forsvn/artifacts/`)
+- **Path:** `.forsvn/loops/[slug]/evals/[YYYY-MM-DD]-cycle-N.md` (one file per cycle; single platform, single brief — loop-internal artifacts retain the loop tree; flat v2 grammar applies only to `docs/forsvn/artifacts/`)
 - **Lifecycle:** `evaluation` (lives inside the marketing eval-loop workspace; `decision_state: not_required`)
 - **Frontmatter fields (17):** `skill`, `type`, `status`, `date`, `stack` (=research), `review_surface` (=none), `cycle`, `loop`, `post_url`, `brief_path`, `catalog_path`, `catalog_freshness`, `topic`, `market`, `platform`, `rubric_version`, `rubric_status`, `weighting`, `scores`. Cross-stack v2 contract: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections (7, in order):** TL;DR · Observation · Brief vs Observed · Rubric Scores (v0.1, provisional) · Pattern-Log Entry · Open Risks & Caveats · Recommendations for next cycle / catalog
@@ -63,6 +63,10 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 15 failure modes. Re-read before any output ships. Covers premature rubric lock, treating cycle 1 as graded test, fabricated metrics, free-form pattern claims, skipping refutability, author-discretion dominating, missing post-write side effects, cross-stack contract drift.
+
+## Worked Example
+
+Short-form hold-rate cycle (retention curve vs platform-intelligence catalog benchmark, critic PASS): [`references/examples/shortform-eval-cycle-walkthrough.md`](references/examples/shortform-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

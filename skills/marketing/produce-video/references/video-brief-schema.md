@@ -139,7 +139,7 @@ The hand-written form is validated against the same field requirements as the br
 
 ## App-Preview Mode Extension
 
-App-preview mode replaces the narrative shot list with a screenshot-driven beat list — each beat is a crop of a real UI screenshot plus an interaction overlay. The input is **`brief-app-preview`'s `handoff-produce-video.md`** artifact at `.forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md`. The companion `brief.md` is human context only — `handoff-produce-video.md` is the produce-video spec.
+App-preview mode replaces the narrative shot list with a screenshot-driven beat list — each beat is a crop of a real UI screenshot plus an interaction overlay. The input is **`brief-app-preview`'s `handoff-produce-video.md`** artifact at `docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md`. The companion `brief.md` is human context only — `handoff-produce-video.md` is the produce-video spec.
 
 ### App-preview required fields
 

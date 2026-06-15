@@ -1,13 +1,13 @@
 # Format Conventions — AEO Monitor Artifacts
 
-> Load this when writing or reading `.forsvn/artifacts/marketing/aeo-monitor/[slug]/`. Conventions are contract-level — schema changes break trend computation across runs and the `optimize-seo` handoff consumer.
+> Load this when writing or reading `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/`. Conventions are contract-level — schema changes break trend computation across runs and the `optimize-seo` handoff consumer.
 
 ---
 
 ## Artifact directory
 
 ```
-.forsvn/artifacts/marketing/aeo-monitor/[slug]/
+docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/
   report.md                            # rewritten in place each run
   query-set.md                         # rewritten in place each run
   handoff-optimize-seo.md              # rewritten in place each run
@@ -122,7 +122,7 @@ This file locks the query set used for THIS run. Future trend computation agains
 ```markdown
 # Handoff to optimize-seo — [subject] — [date]
 
-Source snapshot: `.forsvn/artifacts/marketing/aeo-monitor/[slug]/report.md` ([date])
+Source snapshot: `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/report.md` ([date])
 
 ## Gaps (clustered, evidence-tagged)
 

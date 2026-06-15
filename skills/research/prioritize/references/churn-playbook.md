@@ -9,7 +9,7 @@
 - OR: User describes their churn situation
 
 ## Output
-- `.forsvn/artifacts/meta/records/churn-prevention.md`
+- `docs/forsvn/artifacts/meta/records/churn-prevention.md`
 
 ## Quality Gate
 Before delivering, verify:

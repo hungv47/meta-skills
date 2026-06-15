@@ -28,7 +28,7 @@ Non-negotiable. Full text: `references/procedures/critical-gates.md` [PROCEDURE]
 
 ## Before Starting
 
-**Required:** the brief — `.forsvn/artifacts/marketing/design-briefs/[slug].md` (or a brief-landing-page asset-slot) — plus `brand/BRAND.md` + `brand/DESIGN.md`. Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic); brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
+**Required:** the brief — `docs/forsvn/artifacts/marketing/design-briefs/[slug].md` (or a brief-landing-page asset-slot) — plus `brand/BRAND.md` + `brand/DESIGN.md`. Brief missing → `NEEDS_CONTEXT` (defer to brief-graphic); brand files missing → `NEEDS_CONTEXT` (defer to create-brand).
 
 ## Pre-Dispatch (Cold Start)
 
@@ -56,8 +56,8 @@ Auto-fail: any invented brand mark or non-verbatim copy slot. FAIL → re-dispat
 
 ## Artifact Contract
 
-- **Manifest:** `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`
-- **Per-slot prompts:** `.forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[slot-id].md`
+- **Manifest:** `docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`
+- **Per-slot prompts:** `docs/forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[slot-id].md`
 - **Lifecycle:** `pipeline` (regenerated; not canonical)
 - **Frontmatter:** manifest — `skill/version/date/status/slug/source_brief/target_platforms/slot_count/provenance`; per-slot prompt — `skill/version/date/slot_id/platform/aspect_ratio`
 - **Provenance:** `input_artifacts` = brief-graphic + `brand/BRAND.md` + `brand/DESIGN.md`. `output_eval: null` until eval scores rendered asset.

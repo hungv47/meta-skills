@@ -57,7 +57,7 @@ ROUTE B (full plan — ICP research complete, campaign launch):
   6. Deliver artifact
 
 ROUTE C (called by another skill — brief-landing-page, write-outreach, write-ad):
-  1. Read existing .forsvn/artifacts/marketing/campaign-plan.md if available
+  1. Read existing docs/forsvn/artifacts/marketing/campaign-plan.md if available
   2. If not available OR stale (>30d), run Route B
   3. Return plan to calling skill
 ```
@@ -90,7 +90,7 @@ When **Social media** is a selected channel, its Channel Execution Brief should 
 
 ### Soft check — Creative-direction inheritance
 
-When `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` exists, the `## Creative Direction` section must **inherit and tune** it, not re-derive or contradict it: cite the house CD + version, carry its movements/light/palette unchanged, and express only campaign-specific deltas (movement lead, season, platform emphasis, hero concept, per-channel cues). A campaign art call that contradicts a house-CD element (new palette, off-world light, a betrayed house anti-pattern) ships `done_with_concerns` with the conflict named. When no house CD exists, the section is a one-line deferral note ("run `create-brand` to add the house layer") and the plan ships `done_with_concerns`. Never fabricate a brand world in the campaign plan. Never blocks.
+When `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md` exists, the `## Creative Direction` section must **inherit and tune** it, not re-derive or contradict it: cite the house CD + version, carry its movements/light/palette unchanged, and express only campaign-specific deltas (movement lead, season, platform emphasis, hero concept, per-channel cues). A campaign art call that contradicts a house-CD element (new palette, off-world light, a betrayed house anti-pattern) ships `done_with_concerns` with the conflict named. When no house CD exists, the section is a one-line deferral note ("run `create-brand` to add the house layer") and the plan ships `done_with_concerns`. Never fabricate a brand world in the campaign plan. Never blocks.
 
 ---
 

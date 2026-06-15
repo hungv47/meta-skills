@@ -82,6 +82,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md"
         lifecycle: snapshot
         produced_when: "Review writes a dated, immutable per-run report artifact."

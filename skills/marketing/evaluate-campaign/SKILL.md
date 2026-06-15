@@ -4,7 +4,7 @@ description: "Score a launched multi-channel campaign from real metrics inside a
 argument-hint: "[loop slug or path] [campaign name] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -32,9 +32,11 @@ metadata:
 
 `/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-launch campaign-level evidence snapshots scored across all channels as one aggregate. `/plan-campaign` owns next-cycle planning. `/evaluate-ad` / `/evaluate-content` / `/evaluate-landing-page` / `/evaluate-shortform` own asset-level lanes.
 
+**Channel store — read-only here.** Diagnosis may **read** per-channel history for trend context — `bun scripts/query-performance.ts <channel> --json` ([`references/_shared/performance-data.md`](references/_shared/performance-data.md)). evaluate-campaign **never appends** to the channel store: post-level keyed snapshots are owned solely by `evaluate-content`'s metric-ingest agent; aggregate campaign rollups stay in the loop's `results.tsv`.
+
 ## Inputs
 
-**Required:** loop slug/path · campaign name/tag · source plan-campaign artifact (`.forsvn/artifacts/marketing/campaign-plan.md`) · measurement window · primary metric value + source · per-channel rollup (spend / effort / reach / leads / conversions / revenue) · total fully-loaded spend (media + production + tooling).
+**Required:** loop slug/path · campaign name/tag · source plan-campaign artifact (`docs/forsvn/artifacts/marketing/campaign-plan.md`) · measurement window · primary metric value + source · per-channel rollup (spend / effort / reach / leads / conversions / revenue) · total fully-loaded spend (media + production + tooling).
 
 **Recommended:** baseline/prior-cycle row · revenue + new-customer count · attribution model · guardrails from `program.md` · per-asset eval artifacts (CONTEXT ONLY).
 
@@ -79,6 +81,10 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 8 campaign-eval rows + 4 cross-cutting marketing-stack rows. Most common: rider-channel contamination (Gate 2 + Critic "Channel-Mix Discrimination"), blended-CAC laundering (Critic "Unit-Economics Discipline" + Hard Fail #11), scope drift to plan-campaign (Gate 6 + Critic "Decision Discipline"), missing source plan-campaign artifact (Critic Hard Fail).
+
+## Worked Example
+
+Multi-channel campaign cycle (per-channel breakdown, blended CAC, fully-loaded spend, critic PASS_WITH_CONCERNS): [`references/examples/campaign-eval-cycle-walkthrough.md`](references/examples/campaign-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

@@ -66,7 +66,7 @@ More than 3 active initiatives means none get full attention. The cut-line-agent
 
 - **Proceed** — top initiatives by ICE, capped at 3 (or fewer if team capacity is tight). Each gets owner + target metric + kill criteria.
 - **Park** — high-scoring initiatives that can wait until current batch ships. Revisit explicit.
-- **Kill** — low ICE OR redundant with a Proceed initiative OR fails effort/capacity. Written to `.forsvn/artifacts/meta/out-of-scope/` so future sessions don't re-debate.
+- **Kill** — low ICE OR redundant with a Proceed initiative OR fails effort/capacity. Written to `docs/forsvn/artifacts/meta/out-of-scope/` so future sessions don't re-debate.
 
 The cut-line is where Strategy turns into Execution. Don't dilute it.
 
@@ -99,7 +99,7 @@ Default behavior is "always include unconventional" because the cost is low (one
 
 ## Out-of-scope persistence — why kills are written to disk
 
-After every run, the cut-line-agent's Kill decisions are persisted to `.forsvn/artifacts/meta/out-of-scope/[kebab-name].md`. Each file carries:
+After every run, the cut-line-agent's Kill decisions are persisted to `docs/forsvn/artifacts/meta/out-of-scope/[kebab-name].md`. Each file carries:
 
 - **Decided:** date
 - **Context:** root cause + goal that prompted this analysis

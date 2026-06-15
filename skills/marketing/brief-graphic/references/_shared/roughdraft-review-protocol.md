@@ -85,7 +85,7 @@ can open the review when appropriate.
    Review Gate box, set `reviewed_at` to today and `reviewer` to the operator,
    <!-- lint:reference-ok skill-local mirrored copy; canonical bin/manifest-sync.ts -->
    then re-run `bun scripts/manifest-sync.ts`. If a co-located `.html` twin
-   exists, move it to `.forsvn/artifacts/.archive/<original-filename>.html`
+   exists, move it to `docs/forsvn/artifacts/.archive/<original-filename>.html`
    (the HTML's lifecycle is `pending`-only). If the operator requested changes,
    the artifact stays actionable: address them, then either re-emit the HTML
    preview and re-open for another pass or leave `decision_state: suggested`
@@ -153,7 +153,7 @@ rather than guessing.
 6. **Opening more than one file per review.** Roughdraft reviews one `.md` file
    at a time.
 7. **Leaving the `.html` twin in place after the gate resolves.** Archive it
-   under `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`. The
+   under `docs/forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`. The
    HTML is preview-only and regenerable from MD.
 8. **Opening the `.html` preview in Roughdraft.** Roughdraft is a Markdown
    reviewer; the HTML opens in a browser. Decision capture happens in MD.

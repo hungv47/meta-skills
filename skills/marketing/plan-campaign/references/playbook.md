@@ -60,8 +60,8 @@ pillar-agent → angle-agent → channel-agent → timeline-agent → launch-seq
 
 - `research/product-context.md` — product positioning, accuracy constraints, unique mechanism, proof points (from `research-icp`)
 - `research/icp-research.md` — primary persona, pains, habitats, VoC quotes, awareness levels (from `research-icp`)
-- `.forsvn/artifacts/meta/sketches/prioritize-*.md` — strategic initiatives (optional, alignment only; from `prioritize` in research-skills)
-- `.forsvn/experience/{product,audience,business,goals}.md` — persisted answers from prior Cold Starts across the stack
+- `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` — strategic initiatives (optional, alignment only; from `prioritize` in research-skills)
+- `docs/forsvn/experience/{product,audience,business,goals}.md` — persisted answers from prior Cold Starts across the stack
 - `references/3d-angle-framework.md` — angle generation methodology (loaded by angle-agent)
 - `references/channel-strategy.md` — 9-channel framework + habitat-to-channel mapping (loaded by channel-agent)
 - `references/distribution-models/clipping-and-live.md` — Whop/Zagged clipping ecosystem + Jubilee format (loaded by channel-agent conditionally when target demo skews male 21-30 or habitat data flags live-streaming density)
@@ -76,7 +76,7 @@ pillar-agent → angle-agent → channel-agent → timeline-agent → launch-seq
 - `brief-shortform` — reads campaign goal + pillar context for hero video angle
 - `plan-funnel` — reads channel mix + cadence to set per-channel numeric targets
 
-The artifact at `.forsvn/artifacts/marketing/campaign-plan.md` is the shared reference these skills check before generating their own deliverables.
+The artifact at `docs/forsvn/artifacts/marketing/campaign-plan.md` is the shared reference these skills check before generating their own deliverables.
 
 ## History / origin
 

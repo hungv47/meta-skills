@@ -4,7 +4,7 @@ description: "Score a published organic post (text / image / carousel) from real
 argument-hint: "[loop slug or path] [primary-platform] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -33,9 +33,11 @@ metadata:
 
 `/run-pipeline` owns loop setup + `program.md` / `context.md` / `results.tsv` schema + durable learnings. **This skill** owns post-publish organic-content evidence snapshots scored against one primary platform. `/write-social` owns next-cycle copy. `/evaluate-shortform` + `/evaluate-ad` own their lanes.
 
+**Channel store — single write direction.** This skill's **metric-ingest agent is the sole writer** of the cross-initiative channel store (fully-keyed Metric Packets → `.forsvn/performance/<platform>.tsv` + ledger advance; see the agent's Channel Store Append step). Diagnosis may **read** it for trend context — `bun scripts/query-performance.ts <platform> --json` ([`references/_shared/performance-data.md`](references/_shared/performance-data.md)) — but never opens a second append path.
+
 ## Inputs
 
-**Required:** loop slug/path · primary-platform tag (`linkedin` · `instagram` · `x` · `facebook` · `threads`) · source write-social artifact (`.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) · measurement window · primary metric value + source · reach/impressions (sample-size floor).
+**Required:** loop slug/path · primary-platform tag (`linkedin` · `instagram` · `x` · `facebook` · `threads`) · source write-social artifact (`docs/forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) · measurement window · primary metric value + source · reach/impressions (sample-size floor).
 
 **Recommended:** baseline/prior-cycle row · engagement breakdown (likes/saves/shares/comments split — drives Engagement-Quality dim) · click-through + conversion · qualitative evidence (comment sentiment, replies, DMs — honest, not fabricated) · secondary-platform headline metrics (Cross-Platform Context) · guardrails from `program.md`.
 
@@ -80,6 +82,10 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — content-eval rows + 4 cross-cutting marketing-stack rows. Most common: vanity-metric inflation (Gate 3 + Critic "Engagement-Quality Discrimination"), cross-platform contamination of the verdict (Gate 4 + Critic "Platform-Fit"), scope drift to write-social (Gate 7 + Critic "Decision Discipline"), missing source write-social artifact (Critic Hard Fail).
+
+## Worked Example
+
+Organic content cycle (engagement-quality vs vanity, algorithm-spike → watch, critic PASS): [`references/examples/content-eval-cycle-walkthrough.md`](references/examples/content-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

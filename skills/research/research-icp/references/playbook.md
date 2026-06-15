@@ -67,10 +67,10 @@ The body Quality Gate checklist (9 bullets in SKILL.md) is a body-load reminder 
 
 icp-research creates **two canonical artifacts** that 13+ downstream skills read:
 
-1. **`.forsvn/canonical/product/PRODUCT-CONTEXT.md`** (`id: product-context`) — the cross-stack canonical record (product, buyer, problem, differentiator, social proof, model, voice, primary CTA, canonical terminology). Created on first run, updated on re-run. Consumed by: campaign-plan, brand-system, copywriting, humanmaxxing, lp-brief, design-brief, ad-copy, cold-outreach, vn-tone, social-copy, seo, short-form-research, short-form-brief.
-2. **`.forsvn/canonical/research/ICP.md`** (`id: icp-research`) — the audience profile (1-2 personas with pain + habitat + decision psychology + emotional drivers + red flags). Consumed by: campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach.
+1. **`docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`** (`id: product-context`) — the cross-stack canonical record (product, buyer, problem, differentiator, social proof, model, voice, primary CTA, canonical terminology). Created on first run, updated on re-run. Consumed by: campaign-plan, brand-system, copywriting, humanmaxxing, lp-brief, design-brief, ad-copy, cold-outreach, vn-tone, social-copy, seo, short-form-research, short-form-brief.
+2. **`docs/forsvn/canonical/research/ICP.md`** (`id: icp-research`) — the audience profile (1-2 personas with pain + habitat + decision psychology + emotional drivers + red flags). Consumed by: campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach.
 
-Both are **canonical** lifecycle (`.forsvn/canonical/` layer, not pipeline output). Edited in place on re-run; the integer `version:` increments and prior versions live in git history (no `.v[N].md` siblings under `canonical/`).
+Both are **canonical** lifecycle (`docs/forsvn/canonical/` layer, not pipeline output). Edited in place on re-run; the integer `version:` increments and prior versions live in git history (no `.v[N].md` siblings under `canonical/`).
 
 **Re-run triggers (operator judgment, not auto-emitted):** audience pivot, new market entry, major product changes, or quarterly for active products. Stale product context (>30 days) triggers an operator warning per Critical Gate 4 — but the operator decides whether to proceed or re-run upstream.
 
@@ -126,7 +126,7 @@ After 2 FAIL cycles → deliver with a "Known Issues" annotation. Don't loop. Th
   - Agent Manifest 7-agent table
   - Routes A/B/C
   - Layer 1 + Layer 2 dispatch tables
-  - Write-back 5-row map (Q1 → product.md + .forsvn/canonical/product/PRODUCT-CONTEXT.md as canonical; Q2-Q4 → audience.md; Q5 routing-only — preserved verbatim from original SKILL.md per anti-smuggle rule)
+  - Write-back 5-row map (Q1 → product.md + docs/forsvn/canonical/product/PRODUCT-CONTEXT.md as canonical; Q2-Q4 → audience.md; Q5 routing-only — preserved verbatim from original SKILL.md per anti-smuggle rule)
   - Required Artifacts table (`PRODUCT-CONTEXT.md` INTERVIEW for 8 product dimensions if missing)
   - Optional Artifacts table (diagnose.md problem context benefit)
   - Step 0 PRODUCT-CONTEXT.md schema (8 sections + Canonical Terminology subsection)

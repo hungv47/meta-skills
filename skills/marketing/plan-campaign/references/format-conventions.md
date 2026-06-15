@@ -9,7 +9,7 @@
 Single artifact per run:
 
 ```
-.forsvn/artifacts/marketing/campaign-plan.md
+docs/forsvn/artifacts/marketing/campaign-plan.md
 ```
 
 Pipeline lifecycle — overwrite on re-run unless version preservation is requested (see Re-run convention below).
@@ -69,7 +69,7 @@ The Artifact Template prescribes a fixed section order. Do **not** reorder; down
 
 ## Creative Direction section
 
-The per-campaign tier of creative direction (tier 2). It **inherits** the evergreen house `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` (tier 1, owned by `create-brand`) and tunes it to this campaign's angle, audience, season, platform mix, and offer. It does **not** re-derive the brand world or restate every house rule — it names the deltas and the campaign-specific calls.
+The per-campaign tier of creative direction (tier 2). It **inherits** the evergreen house `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md` (tier 1, owned by `create-brand`) and tunes it to this campaign's angle, audience, season, platform mix, and offer. It does **not** re-derive the brand world or restate every house rule — it names the deltas and the campaign-specific calls.
 
 Subsections (in order):
 
@@ -162,7 +162,7 @@ This `pipeline` artifact ships the block in every run, but `decision_state` defa
 
 When re-running the skill on the same product/campaign:
 
-1. **Default behavior:** overwrite `.forsvn/artifacts/marketing/campaign-plan.md` with `version: 1` (or current version), updated `date`.
+1. **Default behavior:** overwrite `docs/forsvn/artifacts/marketing/campaign-plan.md` with `version: 1` (or current version), updated `date`.
 2. **Preserve history mode:** rename existing artifact to `campaign-plan.v[N].md` (e.g., `campaign-plan.v1.md`) before writing the new version. New artifact gets `version: 2`, etc.
 3. **Re-run triggers:** ICP research updated (>30d freshness recommendation), new product/campaign launch, channel performance data suggests reallocation, growth motion changes (PLG → Hybrid, etc.).
 4. **Cite the trigger** in the Foundation section's core message rationale when re-running, so the diff vs. prior version is obvious.
@@ -172,7 +172,7 @@ When re-running the skill on the same product/campaign:
 When the critic-agent fails on cycle 1 + 2 (max cycles exhausted) and the orchestrator delivers as `DONE_WITH_CONCERNS`, an optional sidecar may be written:
 
 ```
-.forsvn/artifacts/marketing/campaign-plan.critic-notes.md
+docs/forsvn/artifacts/marketing/campaign-plan.critic-notes.md
 ```
 
 Contents: full critic feedback per cycle, named re-dispatch targets, what was fixed / what wasn't. Not mandatory; useful when handing off to a human reviewer.

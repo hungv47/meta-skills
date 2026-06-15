@@ -38,7 +38,7 @@ Orchestrator reads in order:
 1. `references/_shared/copywriting-research-workflow.md` → SOP (Research Doc → Avatar & Offer Brief → Belief Engineering → Unique Mechanism)
 2. `research/product-context.md` → voice adjectives "direct, warm, evidence-led"; accuracy constraint "never round trial-start count or App Store rating"; Unique Mechanism "AI-generated weekly meal plan from goals + preferences"
 3. `research/icp-research.md` → busy-professional persona (28-42, household income $75K+, cooks <2x/week, has tried HelloFresh once); VoC pain phrase "I have no idea what to eat" used 18x in interviews
-4. No `.forsvn/artifacts/marketing/campaign-plan.md` (standalone ad-copy, not part of broader campaign)
+4. No `docs/forsvn/artifacts/marketing/campaign-plan.md` (standalone ad-copy, not part of broader campaign)
 5. `brand/BRAND.md` → voice anchors "specific, second-person, no hype"; banned-language list includes "revolutionary", "transform", "game-changing"
 
 Emit warm-start summary:
@@ -264,7 +264,7 @@ All 3 variants pass regression → ship humanmaxxed versions.
 
 ## Step 4 — Write artifacts
 
-Orchestrator writes 3 files to `.forsvn/artifacts/marketing/write-ad/`:
+Orchestrator writes 3 files to `docs/forsvn/artifacts/marketing/write-ad/`:
 
 - **`cold-2026-05-18-mealkit-trial.md`** — hero + A + B humanmaxxed + frontmatter (`skill: write-ad`, `version: 1`, `date: 2026-05-18`, `status: done`, `network: meta`, `surface: meta-full-ad`, `audience_temp: cold`, `creative_format: dedicated`, `production_model: in-house`, `conversion_event: trial_start`, `critic_total: 168/210`, `critic_per_variant: {hero: 58/70, variant_a: 56/70, variant_b: 54/70}`)
 - **`cold-2026-05-18-mealkit-trial.rationale.md`** — angle + audience-temp framing + creative-format + production-model + anchor-proof per variant + anti-patterns avoided + Pre-Dispatch dimensions resolved

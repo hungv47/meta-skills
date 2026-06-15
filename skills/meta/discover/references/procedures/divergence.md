@@ -111,7 +111,7 @@ Divergence output has three existing sinks (see `output-formats.md`) — invent 
 - **Chosen direction + why** → Step 6 Key Decisions; the handoff plan's "Decisions locked" / "Where we
   are"; the spec's "Decided Approach".
 - **Parked / rejected directions + why-parked** → the handoff plan's "Open branches / unresolved" and
-  "Context a fresh agent needs → Don't redo"; the existing `.forsvn/artifacts/meta/out-of-scope/`
+  "Context a fresh agent needs → Don't redo"; the existing `docs/forsvn/artifacts/meta/out-of-scope/`
   institutional-memory file (see output-formats.md § Out-of-scope persistence). A fresh agent must not
   re-explore what this session already ruled out.
 - **The shortlist** → the operator-grade spec's existing "Implementation Alternatives (min 2-3)"

@@ -28,7 +28,7 @@ For ASO mode, `site_url` is the app store / marketplace listing URL; `site_type`
 
 Default execution path for `standard` and `deep` budget tiers.
 
-1. **Gather context.** Read `research/product-context.md`, `research/icp-research.md`, `.forsvn/artifacts/marketing/campaign-plan.md`. Identify site type, CMS/framework, known issues. Resolve all four Pre-Dispatch dimensions (mode, site, audience, geo+language).
+1. **Gather context.** Read `research/product-context.md`, `research/icp-research.md`, `docs/forsvn/artifacts/marketing/campaign-plan.md`. Identify site type, CMS/framework, known issues. Resolve all four Pre-Dispatch dimensions (mode, site, audience, geo+language).
 
 2. **Determine mode.** Apply the Step 1 routing table from SKILL.md. If unclear, ask one targeted question; "comprehensive SEO" → Route E (Full).
 
@@ -43,7 +43,7 @@ Default execution path for `standard` and `deep` budget tiers.
 7. **Dispatch critic-agent** with the prioritized doc. 10-item quality gate (in `agents/critic-agent.md`).
 
 8. **Apply verdict:**
-   - PASS → deliver artifact at `.forsvn/artifacts/marketing/seo-[mode].md` (rename existing to `seo-[mode].v[N].md` first if present).
+   - PASS → deliver artifact at `docs/forsvn/artifacts/marketing/seo-[mode].md` (rename existing to `seo-[mode].v[N].md` first if present).
    - FAIL → re-dispatch named agent(s) per the critic's Rewrite Routing block with the critic's per-agent feedback as the `feedback` field. Max 2 cycles. After 2 FAIL → deliver with unresolved-items note + warn operator.
 
 ---

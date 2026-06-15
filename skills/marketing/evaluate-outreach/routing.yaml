@@ -70,7 +70,7 @@ capability:
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"
-        - ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
+        - "docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
 
   orchestration:
     default: auto

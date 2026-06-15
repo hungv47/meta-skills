@@ -92,7 +92,7 @@ decision_state: pending
 ## Next Step
 Run `plan-campaign` to turn these insights into a communication plan.
 
-> On re-run: overwrite `.forsvn/canonical/research/ICP.md` in place and increment the integer `version:`. Prior versions live in git history — no `.v[N].md` siblings under `canonical/`.
+> On re-run: overwrite `docs/forsvn/canonical/research/ICP.md` in place and increment the integer `version:`. Prior versions live in git history — no `.v[N].md` siblings under `canonical/`.
 ```
 
 Additionally, append:

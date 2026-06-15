@@ -8,6 +8,8 @@ load_class: PLAYBOOK
 
 # Fresh-Eyes Playbook
 
+**Worked example:** [`examples/review-cycle-walkthrough.md`](examples/review-cycle-walkthrough.md) — a `standard`-mode review of a real diff: reviewer findings → noise-filter triage → the severity rubric + quantitative verdict gate (`noise-filter.md`) → resolver fix-then-rerun → the report.
+
 ## Why this skill exists
 
 The agent that just wrote the code is the worst possible reviewer of it. Sunk-cost bias, mental model contamination, and "I just convinced myself this works" combine to produce a self-review that finds nothing — even when there are real bugs. Fresh-eyes solves this by spawning a reviewer that has NO access to the implementation reasoning. The reviewer sees only the output + the requirements + the surrounding context, then plays "find the bug" against fresh assumptions. Whatever the original author rationalized into existence, the reviewer interrogates from scratch.

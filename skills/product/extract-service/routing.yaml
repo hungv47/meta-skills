@@ -83,6 +83,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/product/extract-service/[date]-[slug].md"
+      - path: "docs/forsvn/artifacts/product/extract-service/[date]-[slug].md"
         lifecycle: snapshot
         produced_when: "End of migration (DONE / DONE_WITH_CONCERNS); re-run same slug same day appends `-v[N]`."

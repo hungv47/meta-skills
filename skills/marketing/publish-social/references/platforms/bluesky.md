@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # Bluesky — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for Bluesky drafts. **Not backed by platform-intelligence catalog (D13)** — v1 template only; expand when Bluesky is added to the catalog.

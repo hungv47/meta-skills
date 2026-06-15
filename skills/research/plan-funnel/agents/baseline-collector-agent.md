@@ -78,7 +78,7 @@ Return a single markdown document with exactly these sections:
 ### Baseline Collection Priority
 
 1. **User-provided data** — Best source. Ask for analytics screenshots, dashboard exports, or specific numbers.
-2. **Existing artifacts** — Resolve `id:diagnose` and read prioritize's sketch (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) for numbers already established.
+2. **Existing artifacts** — Resolve `id:diagnose` and read prioritize's sketch (`docs/forsvn/artifacts/meta/sketches/prioritize-*.md`) for numbers already established.
 3. **Industry benchmarks** — When user lacks data. See `references/benchmarks.md` for ranges by industry and stage.
 
 ### WebSearch for Missing Baselines

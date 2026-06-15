@@ -2,7 +2,7 @@
 // test-render-fidelity — unit coverage for the markdown→HTML renderer's frozen
 // construct set (U1). Asserts the constructs the real artifact corpus uses
 // render correctly, that the XSS hardening holds for both links and images, and
-// that every `.forsvn/artifacts/**` file renders with heading-count parity.
+// that every `docs/forsvn/artifacts/**` file renders with heading-count parity.
 //
 // Frozen construct set (anything outside is intentionally out of scope — see
 // lib/render.ts): headings, paragraphs, nested lists, task lists, fenced/inline
@@ -19,7 +19,14 @@ import { markdownToHtml, parseFrontmatter } from "../lib/render";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..", "..");
-const ARTIFACTS = join(REPO_ROOT, ".forsvn", "artifacts");
+// The artifacts home moved out of .forsvn/ into docs/forsvn/ (artifact-home
+// relocation). Prefer the new home so the real-corpus heading-parity check keeps
+// its coverage; fall back to the legacy home for a not-yet-migrated tree. (Both
+// stay absent in the public mirror, where the check self-skips.)
+const ARTIFACTS = (() => {
+  const moved = join(REPO_ROOT, "docs", "forsvn", "artifacts");
+  return existsSync(moved) ? moved : join(REPO_ROOT, ".forsvn", "artifacts");
+})();
 
 const results: { name: string; ok: boolean; message?: string }[] = [];
 
@@ -171,7 +178,7 @@ function countSourceHeadings(body: string): number {
 if (!existsSync(ARTIFACTS)) {
   console.log(`  - corpus check skipped — no artifact corpus at ${ARTIFACTS} (public mirror)`);
 } else {
-  check("corpus: every .forsvn/artifacts/**.md renders with heading parity + no live tags", () => {
+  check("corpus: every docs/forsvn/artifacts/**.md renders with heading parity + no live tags", () => {
     const files = walkMd(ARTIFACTS);
     assert(files.length > 0, `expected artifact corpus under ${ARTIFACTS}`);
     for (const f of files) {

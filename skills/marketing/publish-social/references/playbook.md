@@ -2,6 +2,8 @@
 
 > Methodology, when to use, when NOT to use, integration-aware mode narrative.
 
+**Worked example:** [`examples/publish-bundle-walkthrough.md`](examples/publish-bundle-walkthrough.md) — write-social copy → per-platform bundle + scheduler-import files + the `exported` ledger row.
+
 ## Why this skill exists
 
 write-social produces platform-formatted copy; nothing carries the copy + media into the operator's scheduling workflow. Operators copy-paste into Buffer / Hootsuite / Typefully / IG / X by hand — error-prone (char caps, hashtag rules, missing CTA) + tedious (9 platforms × manual paste = 30 min of busywork per campaign).

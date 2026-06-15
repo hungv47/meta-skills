@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # Instagram — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for formatting Instagram drafts. Cross-references `references/_shared/platform-intelligence/reels.md` (D13 canonical, covers IG Reels lens).

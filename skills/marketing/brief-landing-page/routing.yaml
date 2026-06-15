@@ -63,7 +63,7 @@ capability:
       recommended:
         - "id:icp-research"
         - "id:product-context"
-        - ".forsvn/artifacts/marketing/campaign-plan.md"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
       hard:
         - "id:brand"
         - "id:design"
@@ -114,18 +114,18 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md"
+      - path: "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md"
         lifecycle: pipeline
         produced_when: "Approval Gate 3 PASS; versioned re-runs to v[N]/brief.md."
-      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-implementation.md"
+      - path: "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-implementation.md"
         lifecycle: pipeline
         produced_when: "Always-emitted companion (universal coding-agent prompt, stack auto-detected)."
-      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-claude-design.md"
+      - path: "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-claude-design.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists claude-design."
-      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-figma.md"
+      - path: "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-figma.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists figma."
-      - path: ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-designer.md"
+      - path: "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-designer.md"
         lifecycle: pipeline
         produced_when: "target_handoff lists designer."

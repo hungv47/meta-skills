@@ -33,9 +33,9 @@ load_class: PROCEDURE
 2. **Pipeline artifacts:**
    - `research/product-context.md` → voice adjectives + accuracy constraints + proof points
    - `research/icp-research.md` → primary persona + VoC pain language
-   - `.forsvn/artifacts/marketing/campaign-plan.md` → channel mix + paid budget split + sequencing (Route B context)
+   - `docs/forsvn/artifacts/marketing/campaign-plan.md` → channel mix + paid budget split + sequencing (Route B context)
    - `brand/BRAND.md` → voice anchors + banned-language list
-3. **Experience:** `.forsvn/experience/{audience,product,business,brand}.md`
+3. **Experience:** `docs/forsvn/experience/{audience,product,business,brand}.md`
 4. **Conversation context:** brief from upstream skill (e.g., campaign-plan handed strategy with audience-temp + offer + production-model resolved)
 
 If `research/icp-research.md` / `research/product-context.md` `date:` is >30 days, warn and recommend re-running `research-icp` (soft gate — proceed with "stale ICP" header note in rationale).
@@ -112,8 +112,8 @@ After cold-start answers, append to experience/:
 
 | Q | File | Key |
 |---|---|---|
-| 2. Offer | `.forsvn/experience/product.md` | `Product — current offer` (durable across ad-copy + lp-brief + cold-outreach runs) |
-| 6. Proof points | `.forsvn/experience/product.md` | `Product — proof points` (durable across ad-copy + lp-brief + cold-outreach + copywriting) |
+| 2. Offer | `docs/forsvn/experience/product.md` | `Product — current offer` (durable across ad-copy + lp-brief + cold-outreach runs) |
+| 6. Proof points | `docs/forsvn/experience/product.md` | `Product — proof points` (durable across ad-copy + lp-brief + cold-outreach + copywriting) |
 | 1, 3, 4, 5, 7, 8, 9, 10 | (run-specific) | — (audience-temp + creative-format + conversion-event + production-model + transmutation goal + competitor-pattern + belief sequence + LP-description live in rationale.md only) |
 
 If `research/icp-research.md` exists, pull VoC pain language into pre-writing. If `research/product-context.md` exists, pull voice adjectives + accuracy constraints. If `brand/BRAND.md` exists, pull voice anchors and banned-language list.
@@ -141,3 +141,13 @@ After Pre-Dispatch resolves, compile and pass to every agent in the `pre-writing
 `--fast` does NOT skip Cold Start — when audience-temp / offer / creative-format / proof are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` skips post-humanmaxxing Specificity regression check per variant (saves 1 critic-Specificity-dim invocation per variant = 3 invocations saved for hero + A + B). Critical Gates + Missing-Input Hard Blocks + Format-Checker Hard Gate STILL enforced per `_shared/mode-resolver.md`.
 
 Hard-block conditions above STILL fire under `--fast` — safety gates supersede `--fast`.
+
+## Performance Grounding (pre-generation, paid lane)
+
+Before Layer 1 strategist dispatch, ground on the operator's own **paid** history for the target platform:
+
+```bash
+bun scripts/query-performance.ts <platform> --placement paid --json
+```
+
+Obey the emitted `empty | sparse | sufficient` state + `guidance`. The paid filter never returns organic rows; a below-floor filtered subset is anecdote-weight even inside a sufficient channel. Full read contract (precedence, the U12 direction-not-element-list rule, brand + policy/claims-floor supremacy): [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).

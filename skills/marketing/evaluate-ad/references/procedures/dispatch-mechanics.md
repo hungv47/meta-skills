@@ -70,7 +70,7 @@ bun scripts/log-critic-override.ts \
   --follow-up "<none|watch metric|revise rubric|extract shared rubric>"
 ```
 
-The script appends a dated block to `.forsvn/artifacts/meta/records/critic-overrides.md`. After three valid overrides on the same `evaluate-ad:<dimension>` pair, the rubric should be revised (escalation handled by the dashboard's `rubrics[skill:dimension].action` field — see `_shared/quality-dashboard-spec.md`).
+The script appends a dated block to `docs/forsvn/artifacts/meta/records/critic-overrides.md`. After three valid overrides on the same `evaluate-ad:<dimension>` pair, the rubric should be revised (escalation handled by the dashboard's `rubrics[skill:dimension].action` field — see `_shared/quality-dashboard-spec.md`).
 
 Only after the override is logged may side effect #2 (ledger append) proceed. The ledger row status MUST reflect actual cycle evidence — operator override does NOT promote a contested cycle to `keep`; pick `watch` or `discard` if the underlying evidence does not support `keep`.
 

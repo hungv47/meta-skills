@@ -16,7 +16,7 @@ You do NOT:
 | Field | Type | Description |
 |-------|------|-------------|
 | **brief** | object | `{ platforms: string[], market: string }` |
-| **context** | object | `{ research_artifact_excerpt: string }` — orchestrator-curated per-platform sections from the matching `.forsvn/artifacts/research/research-shortform/[slug].md` artifact |
+| **context** | object | `{ research_artifact_excerpt: string }` — orchestrator-curated per-platform sections from the matching `docs/forsvn/artifacts/research/research-shortform/[slug].md` artifact |
 | **upstream** | null | Layer 1 parallel — no upstream |
 | **references** | file paths[] | None — research artifact is the source |
 | **feedback** | string \| null | Critic rewrite |

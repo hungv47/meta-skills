@@ -1,13 +1,13 @@
 # Format Conventions — SEO Artifacts
 
-> Load this when writing or reading `.forsvn/artifacts/marketing/seo-[mode].md`. Conventions are contract-level — schema changes break downstream `write-copy` consumption and operator action plans.
+> Load this when writing or reading `docs/forsvn/artifacts/marketing/seo-[mode].md`. Conventions are contract-level — schema changes break downstream `write-copy` consumption and operator action plans.
 
 ---
 
 ## Artifact path
 
 ```
-.forsvn/artifacts/marketing/seo-[mode].md
+docs/forsvn/artifacts/marketing/seo-[mode].md
 ```
 
 Where `[mode]` = `audit` | `ai` | `programmatic` | `competitor` | `aso`.

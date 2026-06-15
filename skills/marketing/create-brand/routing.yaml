@@ -106,23 +106,23 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/canonical/marketing/BRAND.md"
+      - path: "docs/forsvn/canonical/marketing/BRAND.md"
         id: brand
         lifecycle: canonical
         produced_when: "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
-      - path: ".forsvn/canonical/marketing/DESIGN.md"
+      - path: "docs/forsvn/canonical/marketing/DESIGN.md"
         id: design
         lifecycle: canonical
         produced_when: "Route B completes Layer 2 critic PASS."
-      - path: ".forsvn/canonical/marketing/CREATIVE-DIRECTION.md"
+      - path: "docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md"
         id: creative-direction
         lifecycle: canonical
         produced_when: "Route B Step 8.6 (orchestrator-written art-direction layer), or the standalone refresh-only path on a locked brand."
-      - path: ".forsvn/canonical/marketing/FRAME.md"
+      - path: "docs/forsvn/canonical/marketing/FRAME.md"
         id: frame
         lifecycle: canonical
         produced_when: "Route B Step 8.7 (orchestrator-written frame-direction layer), or the standalone refresh-only path on a locked brand."
-      - path: ".forsvn/canonical/marketing/ASSETS.md"
+      - path: "docs/forsvn/canonical/marketing/ASSETS.md"
         id: assets
         lifecycle: canonical
         produced_when: "Route B completes Step 8.5 ASSETS projection."

@@ -6,7 +6,7 @@
 
 ## Path
 
-`.forsvn/artifacts/meta-plan-funnel-<YYYY-MM-DD>-targets-<slug>.md` (flat v2 grammar; one per initiative-set; re-run renames prior with `.v[N]` suffix).
+`docs/forsvn/artifacts/meta-plan-funnel-<YYYY-MM-DD>-targets-<slug>.md` (flat v2 grammar; one per initiative-set; re-run renames prior with `.v[N]` suffix).
 
 ## Lifecycle
 

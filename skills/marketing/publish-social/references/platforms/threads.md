@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # Threads — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for Meta Threads drafts. **Not backed by platform-intelligence catalog (D13)** — v1 template only.

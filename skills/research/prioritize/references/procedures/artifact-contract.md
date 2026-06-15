@@ -4,7 +4,7 @@ Full contract for the `prioritize` artifact. Loaded at write time by the orchest
 
 ## Path + Lifecycle
 
-- **Path:** `.forsvn/artifacts/meta-prioritize-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one file per root cause; re-run renames prior file with `.v[N]` suffix)
+- **Path:** `docs/forsvn/artifacts/meta-prioritize-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one file per root cause; re-run renames prior file with `.v[N]` suffix)
 - **Lifecycle:** `sketch` (per `agent-skills/CLAUDE.md` taxonomy)
 - **Review surface:** `none` — `sketch` lifecycle defaults to `decision_state: not_required`
 
@@ -31,7 +31,7 @@ Full schemas for each section live in [`references/format-conventions.md`](../fo
 
 Per `procedures/dispatch-mechanics.md`:
 
-- **Out-of-Scope persistence:** Write one file per Kill to `.forsvn/artifacts/meta/out-of-scope/[kebab-name].md`. Format preserved verbatim from original SKILL.md: `Decided / Context / Decision / Revisit if`.
+- **Out-of-Scope persistence:** Write one file per Kill to `docs/forsvn/artifacts/meta/out-of-scope/[kebab-name].md`. Format preserved verbatim from original SKILL.md: `Decided / Context / Decision / Revisit if`.
 - **Versioning:** Rename any prior `prioritize-*.md` for the same root cause to `prioritize.v[N].md`.
 - **Experience write-back: NONE.** Original SKILL.md explicitly states: "prioritize doesn't seed dimensions to experience/ — initiatives are project-specific tactics, not stable user-profile state." Preserved verbatim.
 

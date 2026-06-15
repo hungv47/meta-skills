@@ -56,7 +56,7 @@ capability:
       - "Tool ownership unclear AND owning tool can't be identified -> NEEDS_CONTEXT first."
     prerequisites:
       recommended:
-        - ".forsvn/experience/technical.md"
+        - "docs/forsvn/experience/technical.md"
       hard: []
 
   orchestration:
@@ -98,6 +98,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md"
         lifecycle: snapshot
         produced_when: "End of cleanup session (DONE or DONE_WITH_CONCERNS); dated immutable record."

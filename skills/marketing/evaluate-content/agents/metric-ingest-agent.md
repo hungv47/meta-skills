@@ -10,7 +10,7 @@ Normalize published organic-content evidence into a metric packet the orchestrat
 - Loop `context.md`, especially baseline and measurement assumptions
 - Prior `results.tsv`
 - Primary-platform tag for the current cycle — operator-supplied; gates Critical Gate 5 in SKILL.md
-- Source write-social artifact (`.forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) — the brief being scored
+- Source write-social artifact (`docs/forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md`) — the brief being scored
 - Current evidence: native platform analytics (LinkedIn / Instagram / X / Facebook / Threads insights), screenshot summary, operator-supplied numbers, qualitative comments
 - Optional: secondary-platform headline metrics (for Cross-Platform Context — they do NOT enter the verdict)
 
@@ -64,6 +64,16 @@ Return:
 - **Cross-platform metrics are context, never verdict input.** Record secondary-platform headline numbers in the Cross-Platform Context block; do NOT blend them into `current_value`.
 - Sample-size floor: if reach/impressions is below a platform-reasonable threshold for the loop (operator-defined in `program.md`, or flag as low if reach is implausibly small for the account), mark `attribution_confidence: low` regardless of metric strength.
 - Baseline comparability requires the **same platform AND same content type** — a carousel baseline does not compare to a text-post cycle.
+
+## Channel Store Append (performance layer)
+
+When the Metric Packet is **fully keyed** — `primary_platform` + a post id or URL + a `measurement_window` — append the snapshot to the cross-initiative channel store and advance the publish ledger. This is the store's **single append path** (keyed loop evals route through here too); never write it from a second place. Rules live in [`../references/_shared/performance-data.md`](../references/_shared/performance-data.md) — do not re-implement them:
+
+1. **Join.** Find the post's `exported` ledger row in `.forsvn/performance/ledger.tsv` by the operator-supplied `ledger_id` (or `artifact_id` + platform). Ambiguous (more than one `exported` row for that artifact on that platform) → **refuse**: list the candidate rows by platform + export date and ask the operator to name the `ledger_id`. No match → ledger-less append at `attribution_confidence: none` (historical backfill).
+2. **Advance ledger.** On the first import append a `live` row carrying the now-known `post_url`, then a `measured` row. A join with no verifiable `post_url` caps `attribution_confidence` at `low` regardless of metric quality.
+3. **Append snapshot.** Append one row to `.forsvn/performance/<platform>.tsv` keyed (platform, post_id, measurement_window) with `imported_at`, the mandatory 4-way engagement split, `attribution_confidence`, `comparability`, `source`. Create the file with `# schema_version: 1` + the column header if absent. **Append-only**: a corrected re-import is a new row (latest `imported_at` wins on the full key), never an edit.
+
+Keyless packets (missing platform, post id, or window) stay in the loop's `results.tsv` only — valid cycle evidence, but they never enter the channel store or its sufficiency counts. Never fabricate a key to force an append.
 
 ## Self-Check
 

@@ -54,7 +54,7 @@ After Cold Start resolves, persist only durable context:
 
 | Q | File | Key | Rule |
 |---|---|---|---|
-| 4. Conventions | `.forsvn/experience/technical.md` | `Technical — codebase conventions` | Only if user gave durable rules (e.g., "we never use default exports"), NOT one-run instructions ("leave file X alone for this run") |
+| 4. Conventions | `docs/forsvn/experience/technical.md` | `Technical — codebase conventions` | Only if user gave durable rules (e.g., "we never use default exports"), NOT one-run instructions ("leave file X alone for this run") |
 
 Q1 (path), Q2 (intent), Q3 (test suite presence) are run-specific. Don't persist.
 

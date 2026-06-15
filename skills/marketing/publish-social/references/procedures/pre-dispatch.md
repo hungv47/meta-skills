@@ -82,7 +82,7 @@ Failed validation → return NEEDS_CONTEXT with "write-social artifact schema mi
 
 ## Output Contract Verification
 
-Confirm orchestrator can write to `.forsvn/artifacts/marketing/published-social/[slug]/`:
+Confirm orchestrator can write to `docs/forsvn/artifacts/marketing/published-social/[slug]/`:
 
 - Directory writable.
 - No existing bundle at the same slug, OR operator confirmed re-emit.

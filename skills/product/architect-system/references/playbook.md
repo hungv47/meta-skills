@@ -44,10 +44,10 @@ The output is `architecture/system-architecture.md` — a canonical artifact (li
 | Artifact | Source | Benefit |
 |----------|--------|---------|
 | `research/product-context.md` | icp-research (from `hungv47/research-skills`) | Industry context, user personas, and constraints |
-| `.forsvn/artifacts/meta/specs/*.md` | discover (meta-skills) | Scoped spec — the WHAT being architected |
-| `.forsvn/artifacts/meta/tasks.md` | task-breakdown (meta-skills) | Feature list already decomposed into buildable units — informs feature-scoping in §9 |
-| `.forsvn/artifacts/product/flow/*.md` | user-flow | Per-flow user flow diagrams + platform-surface matrix; read every file. Feeds API endpoint design and feature scoping. |
-| `.forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize (from `hungv47/research-skills`) | Business initiatives — informs build-vs-skip on optional capabilities |
+| `docs/forsvn/artifacts/meta/specs/*.md` | discover (meta-skills) | Scoped spec — the WHAT being architected |
+| `docs/forsvn/artifacts/meta/tasks.md` | task-breakdown (meta-skills) | Feature list already decomposed into buildable units — informs feature-scoping in §9 |
+| `docs/forsvn/artifacts/product/flow/*.md` | user-flow | Per-flow user flow diagrams + platform-surface matrix; read every file. Feeds API endpoint design and feature scoping. |
+| `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize (from `hungv47/research-skills`) | Business initiatives — informs build-vs-skip on optional capabilities |
 | Existing `architecture/system-architecture.md` | self (prior run) | Re-run mode: rename existing to `system-architecture.v[N].md` and write new version |
 
 None are hard-required — this skill can run standalone via the Architecture Interview (see [`pre-dispatch-prompts.md`](pre-dispatch-prompts.md) [PROCEDURE]) — but every present artifact sharpens the output.

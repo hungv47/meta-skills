@@ -14,19 +14,19 @@ load_class: PROCEDURE
 
 ## Output location
 
-- `.forsvn/canonical/marketing/BRAND.md` — canonical, always
-- `.forsvn/canonical/marketing/DESIGN.md` — canonical, Route B only (Quick Brand produces BRAND.md only)
-- `.forsvn/canonical/marketing/ASSETS.md` — living inventory, Route B only
+- `docs/forsvn/canonical/marketing/BRAND.md` — canonical, always
+- `docs/forsvn/canonical/marketing/DESIGN.md` — canonical, Route B only (Quick Brand produces BRAND.md only)
+- `docs/forsvn/canonical/marketing/ASSETS.md` — living inventory, Route B only
 
-Create `brand/` if missing (the asset-binary working tree for produced files), plus `brand/logo/`, `brand/font/`, `brand/inspiration/`, `brand/social/`, `brand/favicon/`, `brand/tokens/`, `brand/imagery/`, `brand/platforms/` subdirs with `.gitkeep` files. The canonical Markdown spec lives under `.forsvn/canonical/marketing/`; the `brand/` subdirs hold the rendered/binary assets that ASSETS.md auto-scans and references by `target:` path.
+Create `brand/` if missing (the asset-binary working tree for produced files), plus `brand/logo/`, `brand/font/`, `brand/inspiration/`, `brand/social/`, `brand/favicon/`, `brand/tokens/`, `brand/imagery/`, `brand/platforms/` subdirs with `.gitkeep` files. The canonical Markdown spec lives under `docs/forsvn/canonical/marketing/`; the `brand/` subdirs hold the rendered/binary assets that ASSETS.md auto-scans and references by `target:` path.
 
 ## File naming + versioning
 
 | File | Re-run behavior |
 |---|---|
-| BRAND.md | Overwrite `.forsvn/canonical/marketing/BRAND.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
-| DESIGN.md | Overwrite `.forsvn/canonical/marketing/DESIGN.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` |
-| ASSETS.md | **Always updated in place** — living inventory. Overwrite `.forsvn/canonical/marketing/ASSETS.md` and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (preserved, not deleted). NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
+| BRAND.md | Overwrite `docs/forsvn/canonical/marketing/BRAND.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
+| DESIGN.md | Overwrite `docs/forsvn/canonical/marketing/DESIGN.md` in place and increment the integer `version:`; prior versions live in git history. NEVER create a `.v[N].md` sibling under `canonical/` |
+| ASSETS.md | **Always updated in place** — living inventory. Overwrite `docs/forsvn/canonical/marketing/ASSETS.md` and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (preserved, not deleted). NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots/lowercase |
 
 Date format throughout: ISO `YYYY-MM-DD` in frontmatter; prose may use absolute-date phrasing (e.g., "as of May 2026").
 
@@ -56,7 +56,7 @@ last_scan: [ISO timestamp — ASSETS.md only; when auto-scan last ran]
 ---
 ```
 
-Canonical output paths: `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md`. The stable `id` is immutable — `manifest-sync.ts` maps `id → current path`, so a downstream caller references `assets`/`brand`/`design`, never a path. Full per-file ASSETS.md template: [`artifact-templates.md`](artifact-templates.md) "ASSETS.md Template".
+Canonical output paths: `docs/forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md`. The stable `id` is immutable — `manifest-sync.ts` maps `id → current path`, so a downstream caller references `assets`/`brand`/`design`, never a path. Full per-file ASSETS.md template: [`artifact-templates.md`](artifact-templates.md) "ASSETS.md Template".
 
 ### Review fields (human-review layer)
 
@@ -71,7 +71,7 @@ Per-file defaults:
 | CREATIVE-DIRECTION.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical art-direction-of-record; taste-bearing, needs a human gate; same WATER HTML preview |
 | ASSETS.md | `not_required` | `none` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored |
 
-`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md / CREATIVE-DIRECTION.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
+`reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md / CREATIVE-DIRECTION.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `docs/forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
 
 **Cross-stack note — review fields are exempt from the downstream-caller update rule.** The "Cross-stack contract" section below requires atomic downstream-caller updates on schema change. The four review fields are the deliberate exception: they are additive and orthogonal, and every downstream caller consumes brand content by heading match without parsing frontmatter review fields. Adding them updates only this file — no downstream caller is touched.
 
@@ -285,7 +285,7 @@ Quality-bar reference:
 
 ## Cross-stack contract
 
-This skill is the canonical producer of `.forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md` (ids `brand`, `design`, `assets`, `creative-direction`). These artifacts are consumed by:
+This skill is the canonical producer of `docs/forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CREATIVE-DIRECTION}.md` (ids `brand`, `design`, `assets`, `creative-direction`). These artifacts are consumed by:
 
 - `write-copy` — voice DNA + lexicon block
 - `write-ad` — voice DNA + brand mark for visual creative briefs

@@ -50,8 +50,8 @@ Apply `references/_shared/before-starting-check.md`.
 |---|---|---|
 | `brand/BRAND.md` | create-brand | Recommended — voice + lexicon |
 | `research/product-context.md` | research-icp | Recommended — voice adjectives + register |
-| `.forsvn/artifacts/marketing/content/[slug].md` | upstream | Optional — source skill from frontmatter |
-| `.forsvn/experience/brand.md` | any | Optional — persisted `Voice — adjectives` |
+| `docs/forsvn/artifacts/marketing/content/[slug].md` | upstream | Optional — source skill from frontmatter |
+| `docs/forsvn/experience/brand.md` | any | Optional — persisted `Voice — adjectives` |
 
 ## Pre-Dispatch + Mode + Routing
 
@@ -64,7 +64,7 @@ Routes — **A** (<200 words, pattern-only) · **B** (≥200 words, full pipelin
 
 ## Artifact Contract
 
-- **Path (A/B):** `.forsvn/artifacts/marketing/content/[slug].humanmaxxed.md`. **Route C:** embedded in caller's artifact.
+- **Path (A/B):** `docs/forsvn/artifacts/marketing/content/[slug].humanmaxxed.md`. **Route C:** embedded in caller's artifact.
 - **Lifecycle:** `pipeline` — re-run renames prior to `[slug].humanmaxxed.v[N].md`.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `compression` (%), `detector_status`, `protected_tokens_preserved`.
 - **Body (in order):** Humanization Summary (10-row metric table) · Change Log (Location/Original/Change/Rule) · Humanmaxxed content (H2s preserved).

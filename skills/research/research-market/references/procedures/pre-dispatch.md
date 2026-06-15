@@ -7,8 +7,8 @@
 ## Read order (in order)
 
 1. **Pipeline (preferred):** `id:product-context` for product signal (category, differentiator, pricing model, target segment) — informs competitor selection, positioning axes, gap identification. `id:diagnose` for known root-cause focus — narrows market scan to relevant dimensions.
-2. **Experience (read, don't ask):** `.forsvn/experience/product.md` (category if persisted), `.forsvn/experience/business.md` (geo + horizon + known competitors if persisted), `.forsvn/experience/audience.md` (B2B/B2C if persisted).
-3. **Pipeline (optional, re-run case):** prior `id:market-research` at `.forsvn/canonical/research/MARKET.md` — carries prior landscape + opportunities as context for the new run; the new run still re-scans (don't recycle stale market data per Critical Gate 1).
+2. **Experience (read, don't ask):** `docs/forsvn/experience/product.md` (category if persisted), `docs/forsvn/experience/business.md` (geo + horizon + known competitors if persisted), `docs/forsvn/experience/audience.md` (B2B/B2C if persisted).
+3. **Pipeline (optional, re-run case):** prior `id:market-research` at `docs/forsvn/canonical/research/MARKET.md` — carries prior landscape + opportunities as context for the new run; the new run still re-scans (don't recycle stale market data per Critical Gate 1).
 
 After read + scan, present findings and ask only about the gaps.
 
@@ -106,7 +106,7 @@ After Pre-Dispatch answers come in AND artifact ships PASS (or done_with_concern
 
 This write-back IS in the original SKILL.md (lines 131-139) and IS preserved here verbatim.
 
-**No experience-mirror of the canonical record.** Unlike icp-research (which mirrors Q1 to `research/product-context.md` because icp-research IS the canonical producer of product-context), market-research's writes go to per-domain `experience/*.md` only. The cross-stack artifact is `.forsvn/canonical/research/MARKET.md` itself, produced by the dispatch arc — not by Pre-Dispatch write-back.
+**No experience-mirror of the canonical record.** Unlike icp-research (which mirrors Q1 to `research/product-context.md` because icp-research IS the canonical producer of product-context), market-research's writes go to per-domain `experience/*.md` only. The cross-stack artifact is `docs/forsvn/canonical/research/MARKET.md` itself, produced by the dispatch arc — not by Pre-Dispatch write-back.
 
 ---
 
@@ -149,7 +149,7 @@ Echo the chosen route at the end of the Cold Start / Warm Start confirmation. Op
 ## Anti-patterns in Pre-Dispatch
 
 - **Dispatching with category undefined.** "Tech" or "SaaS" is too broad to size. Return `BLOCKED` per Completion Status; ask user for category narrowing.
-- **Recycling prior `.forsvn/canonical/research/MARKET.md` without re-scan.** Prior data is context, not output. The new run re-fetches via WebSearch (Critical Gate 4 — never rely on training data).
+- **Recycling prior `docs/forsvn/canonical/research/MARKET.md` without re-scan.** Prior data is context, not output. The new run re-fetches via WebSearch (Critical Gate 4 — never rely on training data).
 - **Writing to product.md / business.md / goals.md / audience.md BEFORE the artifact ships.** Write-back happens after Layer 1 + Layer 2 dispatch completes AND critic PASSes (or done_with_concerns ships). Partial runs that BLOCK should not persist scope state.
 - **Persisting Q3 (Why-now / trigger) as if it were stable user state.** Q3 is a per-invocation rationale, not a stable goal. Original SKILL.md writes it to goals.md as `Goals — market-research trigger` (a one-off trigger, not a recurring goal) — preserved verbatim. Don't elevate it to a recurring goal entry.
 - **Auto-emitting staleness warnings on re-run.** Only Critical Gate 1 (>18-month sources) auto-flags. General re-run staleness is operator judgment.

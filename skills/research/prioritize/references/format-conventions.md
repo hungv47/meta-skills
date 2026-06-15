@@ -6,7 +6,7 @@
 
 ## Artifact path
 
-`.forsvn/artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md`
+`docs/forsvn/artifacts/meta/sketches/prioritize-[YYYY-MM-DD].md`
 
 On re-run: rename existing artifact to `prioritize.v[N].md` (increment N from the highest existing version) and create new at incremented version. Never overwrite.
 
@@ -182,7 +182,7 @@ This block is **verbatim** — downstream `forsvn` and `plan-funnel` grep these 
 
 ## Out-of-Scope file format (per Kill, separate file)
 
-Each Kill decision in the Decisions table produces one file at `.forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
+Each Kill decision in the Decisions table produces one file at `docs/forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
 
 ```markdown
 # [Initiative Name]

@@ -39,13 +39,13 @@ purpose: "Post-change visibility-delta snapshot for an SEO/AEO eval loop, scoped
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current SEO/AEO cycle"
 do_not_use_when: "Applying on-page fixes or authoring content without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md or monitor-aeo/[date]-[slug].md, ranking-data source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md or monitor-aeo/[date]-[slug].md, ranking-data source"
 downstream: "results.tsv, learnings.md, optimize-seo / monitor-aeo next-cycle target"
 provenance:
   skill: evaluate-seo
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md
+    - docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md
     - research/icp-research.md
   output_eval: null
 ---
@@ -79,13 +79,13 @@ purpose: "Post-change visibility-delta snapshot for an SEO/AEO eval loop, scoped
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current SEO/AEO cycle"
 do_not_use_when: "Applying on-page fixes or authoring content without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md or monitor-aeo/[date]-[slug].md, ranking-data source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md or monitor-aeo/[date]-[slug].md, ranking-data source"
 downstream: "results.tsv, learnings.md, optimize-seo / monitor-aeo next-cycle target"
 provenance:
   skill: evaluate-seo
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md
+    - docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md
     - research/icp-research.md
   output_eval: null
 ---
@@ -114,7 +114,7 @@ provenance:
 
 ## What Changed This Cycle
 
-- Source artifact: `.forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md` (or `monitor-aeo/[date]-[slug].md`)
+- Source artifact: `docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md` (or `monitor-aeo/[date]-[slug].md`)
 - On-page / technical / AEO change since prior cycle:
 
 ## Diagnosis

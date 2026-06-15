@@ -57,7 +57,7 @@ Per `references/_shared/before-starting-check.md` [PROCEDURE] — load ICP + BRA
 | `brand/DESIGN.md` | create-brand | Soft-required — same cold-start handling as BRAND.md; tokens (color hex, radius, type scale) lifted into motion-spec output when present |
 | `brand/CREATIVE-DIRECTION.md` | create-brand | Optional — house motion/pacing direction; informs beat rhythm + pointer feel when present |
 | `research/icp-research.md` | research-icp | Optional — informs caption register and feature framing |
-| Prior `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` | this skill | Optional — re-run with `--rev=N` to preserve prior brief |
+| Prior `docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/` | this skill | Optional — re-run with `--rev=N` to preserve prior brief |
 
 ---
 
@@ -77,7 +77,7 @@ At brief-binding, bind the `video` target tool — inherit `tool_targets` or ask
 
 ## Artifact Contract
 
-- **Output root:** `.forsvn/artifacts/marketing/app-preview-brief/[slug]/`
+- **Output root:** `docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/`
 - **Files (4):** `brief.md` · `assets.md` · `crop-map.md` · `handoff-produce-video.md`
 - **Lifecycle:** `pipeline` — one artifact set per (feature, surface, market); re-run on feature pivot or surface change
 - **Frontmatter fields (brief.md):** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `feature`, `surface`, `brand_mode`, `market`, `screenshot_count`, `beat_count`, `total_length_seconds`, `aspect`, `brand_source`, `critic_passes[]`, `critic_loop_count`

@@ -2,7 +2,7 @@
 
 Reference brief for a US B2B SaaS founder running a talking-head slow-burn on YouTube Shorts. Founder-mode, market=EN, hero=Shorts, no variant. Structurally different from examples 1–2: Shorts as hero (not variant), a contrarian-claim slow-burn hook (not credential flash or pre-reveal tease), and a justified pacing departure.
 
-This is a **worked example**. Actual hero brief artifact: `.forsvn/artifacts/marketing/brief-shortform/churn-ledger/brief.md`.
+This is a **worked example**. Actual hero brief artifact: `docs/forsvn/artifacts/marketing/brief-shortform/churn-ledger/brief.md`.
 
 ---
 

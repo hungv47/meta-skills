@@ -1,6 +1,6 @@
 # Assets Inventory Reference
 
-Single source of truth for the **production-ready asset manifest** emitted as `.forsvn/canonical/marketing/ASSETS.md` (stamps `id: assets`). Projects declared platforms + universal brand surfaces into a checkable inventory. **Derived, not researched** — every row here maps to an upstream spec in `platform-surfaces.md`, DESIGN.md Platform Icon Specifications, or Visual Agent's logo/imagery output.
+Single source of truth for the **production-ready asset manifest** emitted as `docs/forsvn/canonical/marketing/ASSETS.md` (stamps `id: assets`). Projects declared platforms + universal brand surfaces into a checkable inventory. **Derived, not researched** — every row here maps to an upstream spec in `platform-surfaces.md`, DESIGN.md Platform Icon Specifications, or Visual Agent's logo/imagery output.
 
 **Read by:** orchestrator only. Used in SKILL.md Step 8.5 (Assets Inventory projection).
 
@@ -21,12 +21,12 @@ Single source of truth for the **production-ready asset manifest** emitted as `.
 
 On every brand-system run (fresh or re-run):
 
-1. Read existing `.forsvn/canonical/marketing/ASSETS.md` if present. Extract rows with status `[~]` or `[!]` — preserve them verbatim.
+1. Read existing `docs/forsvn/canonical/marketing/ASSETS.md` if present. Extract rows with status `[~]` or `[!]` — preserve them verbatim.
 2. Regenerate the full inventory from current BRAND.md + DESIGN.md + declared platforms.
 2a. **Expand all placeholders before scanning.** Any row emitted from a template containing `{host}`, `{count}`, or any other `{token}` must have those tokens resolved from the declared data *before* substep 3 runs. Specifically: for every declared embedded host, emit one fully-expanded row set with `{host}` substituted (e.g., `brand/platforms/embedded/slack/icon-512.png`, `brand/platforms/embedded/notion/icon-512.png`, …). For Imagery rows, substitute `{count}` from DESIGN.md §8. **No row reaches substep 3 with an unfilled placeholder in its target path** — such rows would fail `test -e` every time and sit at `[ ]` forever.
 3. For each row, check if `target path` exists on disk. For file-typed paths: `Bash: test -e <path>` → `[x]` if yes, `[ ]` if no. **For directory-typed paths (ending in `/`):** `[x]` only if the directory exists AND contains at least one non-`.gitkeep` file — an empty or `.gitkeep`-only directory remains `[ ]`. Formula: ``test -d <path> && [ -n "$(ls -A <path> 2>/dev/null | grep -v '^\.gitkeep$')" ]``. This prevents the scaffolded-directory false-completion where `.gitkeep` seeding would auto-tick every imagery/platform row on first run.
 4. Merge in preserved `[~]` / `[!]` rows by row name match (overriding the auto-computed status).
-5. Write `.forsvn/canonical/marketing/ASSETS.md` (overwrite in place + bump integer `version:`). If a row present in the old file is absent from the new inventory (e.g., platform was dropped from declaration), keep it under a trailing `## Orphaned (platform no longer declared)` block — never silently delete human tracking state. **Orphaned rows retain their prior status verbatim** (including `[~]`, `[!]`, and `[x]`) — do not re-scan or reset them to `[ ]` when moving to the Orphaned block. The block is an archive, not a fresh scan.
+5. Write `docs/forsvn/canonical/marketing/ASSETS.md` (overwrite in place + bump integer `version:`). If a row present in the old file is absent from the new inventory (e.g., platform was dropped from declaration), keep it under a trailing `## Orphaned (platform no longer declared)` block — never silently delete human tracking state. **Orphaned rows retain their prior status verbatim** (including `[~]`, `[!]`, and `[x]`) — do not re-scan or reset them to `[ ]` when moving to the Orphaned block. The block is an archive, not a fresh scan.
 
 ## Inventory sections
 

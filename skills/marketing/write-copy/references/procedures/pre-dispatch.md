@@ -28,8 +28,8 @@ load_class: PROCEDURE
 2. **Pipeline artifacts:**
    - `research/icp-research.md` → VoC + pain language
    - `research/product-context.md` → product details + voice adjectives + Unique Mechanism (if persisted)
-   - `.forsvn/artifacts/marketing/campaign-plan.md` → angle + awareness stage
-3. **Experience:** `.forsvn/experience/{audience,product,goals}.md` → prior copy shift + belief sequence + proof points
+   - `docs/forsvn/artifacts/marketing/campaign-plan.md` → angle + awareness stage
+3. **Experience:** `docs/forsvn/experience/{audience,product,goals}.md` → prior copy shift + belief sequence + proof points
 4. **Conversation context:** brief from upstream skill (e.g., lp-brief handed a per-section spec with audience + traffic + Unique Mechanism resolved)
 
 If `research/icp-research.md` / `research/product-context.md` `date:` is >30 days, warn and recommend re-running `research-icp` (soft gate — proceed with "stale ICP" header note).
@@ -86,11 +86,11 @@ After cold-start answers, append to experience/:
 
 | Q | File | Key |
 |---|---|---|
-| 2. Audience | `.forsvn/experience/audience.md` | `Audience — primary persona` (only if novel; pre-existing icp-research takes precedence) |
-| 3. The one shift | `.forsvn/experience/goals.md` | `Goals — copy shift: [surface]` |
-| 4. Unique proof | `.forsvn/experience/product.md` | `Product — proof points` |
-| 5. Unique Mechanism | `.forsvn/experience/product.md` | `Product — unique mechanism` |
-| 6. Belief sequence | `.forsvn/experience/goals.md` | `Goals — copy belief sequence: [surface]` |
+| 2. Audience | `docs/forsvn/experience/audience.md` | `Audience — primary persona` (only if novel; pre-existing icp-research takes precedence) |
+| 3. The one shift | `docs/forsvn/experience/goals.md` | `Goals — copy shift: [surface]` |
+| 4. Unique proof | `docs/forsvn/experience/product.md` | `Product — proof points` |
+| 5. Unique Mechanism | `docs/forsvn/experience/product.md` | `Product — unique mechanism` |
+| 6. Belief sequence | `docs/forsvn/experience/goals.md` | `Goals — copy belief sequence: [surface]` |
 | 1, 7. Surface + traffic source | (routing only) | — |
 
 ## Pre-Writing Assembly

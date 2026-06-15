@@ -6,12 +6,12 @@
 
 ## Hard gate (enforced before any agent dispatches)
 
-`.forsvn/artifacts/meta/sketches/prioritize-*.md` must exist.
+`docs/forsvn/artifacts/meta/sketches/prioritize-*.md` must exist.
 
 **Missing → return NEEDS_CONTEXT.** Recommend:
 
 ```
-NEEDS_CONTEXT — funnel-planner requires .forsvn/artifacts/meta/sketches/prioritize-*.md.
+NEEDS_CONTEXT — funnel-planner requires docs/forsvn/artifacts/meta/sketches/prioritize-*.md.
 
 Targets without a ranked initiative list are arbitrary. Run `prioritize` first
 to produce the ICE-scored cut-line; funnel-planner then sets numeric targets
@@ -27,10 +27,10 @@ The hard gate fires under `--fast` too. Safety gates supersede the mode-resolver
 
 ## Read order (post-gate, in order)
 
-1. **Pipeline (required):** `.forsvn/artifacts/meta/sketches/prioritize-*.md` — the ranked initiative list. Pull every initiative marked "Proceed" (above the cut-line).
+1. **Pipeline (required):** `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` — the ranked initiative list. Pull every initiative marked "Proceed" (above the cut-line).
 2. **Pipeline (optional):** `research/product-context.md` — business profile (type, stage, sales cycle, revenue model). Improves benchmark selection in `references/benchmarks.md`. Missing → recommend `research-icp` but proceed without if user declines.
-3. **Experience (read, don't ask):** `.forsvn/experience/business.md` — growth motion (PLG/SLG/Hybrid), funnel state, prior baselines. `.forsvn/experience/goals.md` — revenue target, time horizon.
-4. **Prior targets (warm-start signal):** `.forsvn/artifacts/meta/records/targets-*.md` (newest). If present and same initiatives → consider Route C (Fast Bump).
+3. **Experience (read, don't ask):** `docs/forsvn/experience/business.md` — growth motion (PLG/SLG/Hybrid), funnel state, prior baselines. `docs/forsvn/experience/goals.md` — revenue target, time horizon.
+4. **Prior targets (warm-start signal):** `docs/forsvn/artifacts/meta/records/targets-*.md` (newest). If present and same initiatives → consider Route C (Fast Bump).
 
 ---
 
@@ -81,7 +81,7 @@ response — I'll confirm and dispatch.
 5. Optional: any baselines you already know (conversion rate, signups/week, LTV, CAC)
 ```
 
-Write answers to `.forsvn/experience/business.md` immediately (see Write-back map below).
+Write answers to `docs/forsvn/experience/business.md` immediately (see Write-back map below).
 
 ---
 

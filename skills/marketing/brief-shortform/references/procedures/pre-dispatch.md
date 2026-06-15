@@ -23,14 +23,14 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. **Latest matching `.forsvn/artifacts/research/research-shortform/[slug].md`** from `.forsvn/index/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
+1. **Latest matching `docs/forsvn/artifacts/research/research-shortform/[slug].md`** from `.forsvn/index/manifest.json` (or `Glob` fallback) — **primary dependency** (Critical Gate 1).
    - Missing → emit: "No short-form-research artifact for this market. Run `research-shortform` first, or proceed with platform references only (briefs will lack current trend signals). [Run upstream / Proceed without]"
    - Trend signals stale (>30d) → emit: "Trend signals are X days old. Re-run research, or proceed with stale trends? Briefs may bet on decayed patterns. [Re-run / Proceed]"
    - Mechanics stale (>180d) → strongly recommend re-run; user can override with concerns flag.
-2. `brand/BRAND.md` + `.forsvn/experience/business.md` → infer `brand_mode`. Solo founder / personal brand → `founder`. Faceless product / company → `company`. Ambiguous → ask in Cold Start Q3.
-3. `research/icp-research.md` + `.forsvn/experience/audience.md` → audience VoC, register, market.
-4. `.forsvn/experience/content.md` → recent content decisions, market lock-in, prior brand_mode / production_mode selections.
-5. `.forsvn/artifacts/marketing/campaign-plan.md` → if `[slug]` matches a campaign asset, inherit theme/dates/CTAs.
+2. `brand/BRAND.md` + `docs/forsvn/experience/business.md` → infer `brand_mode`. Solo founder / personal brand → `founder`. Faceless product / company → `company`. Ambiguous → ask in Cold Start Q3.
+3. `research/icp-research.md` + `docs/forsvn/experience/audience.md` → audience VoC, register, market.
+4. `docs/forsvn/experience/content.md` → recent content decisions, market lock-in, prior brand_mode / production_mode selections.
+5. `docs/forsvn/artifacts/marketing/campaign-plan.md` → if `[slug]` matches a campaign asset, inherit theme/dates/CTAs.
 
 ---
 
@@ -38,7 +38,7 @@ load_class: PROCEDURE
 
 ```
 Found context for short-form-brief:
-- research artifact: .forsvn/artifacts/research/research-shortform/[slug].md
+- research artifact: docs/forsvn/artifacts/research/research-shortform/[slug].md
   (trends 8d ago, mechanics 22d ago — fresh)
 - brand_mode: founder (from BRAND.md archetype)
 - market: VN (from research artifact)
@@ -90,7 +90,7 @@ Answer 1-5 (skip resolved) in one response. I'll confirm what I heard, then disp
 
 Wait for answers. Do not dispatch without them.
 
-## Write-back to `.forsvn/experience/content.md`
+## Write-back to `docs/forsvn/experience/content.md`
 
 After Cold Start answers received, append to `content.md`:
 
@@ -123,3 +123,13 @@ If `market = VN` is resolved (from research artifact, BRAND.md, or experience), 
 `--fast` does NOT skip Cold Start — when angle / platforms / brand_mode / market are missing AND not resolvable from warm-start, the bundled question still fires. `--fast` only skips the multi-agent orchestration after context is resolved (single-pass craft, critic gate skipped, polish chain skipped, but Critical Gates 1-6 still enforced per `_shared/mode-resolver.md`).
 
 Hard-block conditions above STILL fire under `--fast` — safety gates supersede `--fast`.
+
+## Performance Grounding (pre-generation)
+
+Before Layer 1 dispatch, ground on the operator's own channel history for the target platform:
+
+```bash
+bun scripts/query-performance.ts <platform> --json
+```
+
+Obey the emitted `empty | sparse | sufficient` state + `guidance`. Platform mechanics stay with `research-shortform` + platform-intelligence; own data informs the hook/format/length direction for *this* account, never a prescriptive shot/element list (U12), and a brand floor always outranks it. Full read contract: [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).

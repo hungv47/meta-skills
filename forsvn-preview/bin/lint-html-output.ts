@@ -4,7 +4,7 @@
 //
 // Targets:
 //   references/_html/exemplars/*.html
-//   .forsvn/artifacts/*.html   (preview twins, not archived)
+//   docs/forsvn/artifacts/*.html   (preview twins, not archived; legacy .forsvn/ too)
 //
 // Hard fails (exit 1) on checks 1, 2, 3, 4, 6, 7, 9.
 // Soft fails (warn, exit 0 for those alone) on checks 5, 8, 10.
@@ -43,6 +43,9 @@ const targets: string[] = [];
 collectHtml(join(ROOT, "references/_html/exemplars"), targets);          // legacy exemplar home
 collectHtml(join(ROOT, "assets/_html/exemplars"), targets);              // run from forsvn-preview/
 collectHtml(join(ROOT, "forsvn-preview/assets/_html/exemplars"), targets); // run from skills/
+// The artifacts home moved to docs/forsvn/ (artifact-home relocation); scan both
+// so a migrated tree's live twins AND a not-yet-migrated project's are linted.
+collectHtml(join(ROOT, "docs/forsvn/artifacts"), targets, /\.archive\//);
 collectHtml(join(ROOT, ".forsvn/artifacts"), targets, /\.archive\//);
 // Canonical top-level roots — skills emit `review_surface: html` here too
 // (brand identity of record, system architecture of record, ICP/market dossiers).

@@ -14,7 +14,7 @@ The orchestrator follows this procedure directly — `clean-artifacts` is a sing
 
 You do NOT:
 - Delete files (any deletion is out of scope; v1 only moves).
-- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.forsvn/index/manifest.json`, `.forsvn/experience/`, `tasks.md`, `roadmap.md`).
+- Touch HARD-NEVER paths (`brand/`, `research/`, `architecture/`, `.git/`, submodules, `.forsvn/index/manifest.json`, `docs/forsvn/experience/`, `tasks.md`, `roadmap.md`).
 - Skip the critic gate, even if the scope is small or the operator says "just do it."
 - Operate on a stale or missing manifest — escalate to `NEEDS_CONTEXT` instead.
 - Recurse into `.git/`, submodule dirs, or `node_modules/`.
@@ -27,14 +27,14 @@ Resolved by the orchestrator before this procedure runs:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **scope** | path | `.forsvn/artifacts/` or a subpath under it |
+| **scope** | path | `docs/forsvn/artifacts/` or a subpath under it |
 | **mode** | `dry-run` \| `apply` | Default `dry-run` |
 | **threshold_days** | integer | Default 90 |
-| **excluded_paths** | path[] | From operator + `.forsvn/experience/technical.md` |
+| **excluded_paths** | path[] | From operator + `docs/forsvn/experience/technical.md` |
 
 ## Output Contract
 
-Single markdown report at `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md`, following the template in [`../report-template.md`](../report-template.md).
+Single markdown report at `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md`, following the template in [`../report-template.md`](../report-template.md).
 
 **Rules:**
 - Always emit a report, even on `NEEDS_CONTEXT`, `BLOCKED`, or zero candidates.
@@ -68,29 +68,29 @@ Also confirm the audit scope exists:
 test -d "<scope>" || exit_with_status BLOCKED "Scope <scope> does not exist."
 ```
 
-Canonicalize and validate the audit scope before walking it. Refuse `..` path segments, a symlinked `.forsvn/artifacts/` root, symlinked scopes, and any scope whose lexical path or real path is outside `.forsvn/artifacts/`:
+Canonicalize and validate the audit scope before walking it. Refuse `..` path segments, a symlinked `docs/forsvn/artifacts/` root, symlinked scopes, and any scope whose lexical path or real path is outside `docs/forsvn/artifacts/`:
 
 ```bash
 case "<scope>" in *..*) exit_with_status BLOCKED "Scope <scope> contains '..' and cannot be cleaned." ;; esac
-test ! -L .forsvn/artifacts || exit_with_status BLOCKED ".forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
+test ! -L .forsvn/artifacts || exit_with_status BLOCKED "docs/forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
 case "<scope>" in
-  .forsvn/artifacts|.forsvn/artifacts/*) ;;
-  *) exit_with_status BLOCKED "Scope <scope> must be .forsvn/artifacts/ or a subpath under it." ;;
+  .forsvn/artifacts|docs/forsvn/artifacts/*) ;;
+  *) exit_with_status BLOCKED "Scope <scope> must be docs/forsvn/artifacts/ or a subpath under it." ;;
 esac
 SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
 SCOPE_REAL="$(realpath "<scope>")" || exit_with_status BLOCKED "Scope <scope> cannot be resolved."
 case "$SCOPE_REAL" in
   "$SKILLS_RESOURCES_REAL"|"$SKILLS_RESOURCES_REAL"/*) ;;
-  *) exit_with_status BLOCKED "Scope <scope> resolves outside .forsvn/artifacts/ and cannot be cleaned by this skill." ;;
+  *) exit_with_status BLOCKED "Scope <scope> resolves outside docs/forsvn/artifacts/ and cannot be cleaned by this skill." ;;
 esac
 test ! -L "<scope>" || exit_with_status BLOCKED "Scope <scope> is a symlink; refusing to clean through symlinks."
 ```
 
-Refuse HARD-NEVER scopes (operator passed `--scope .forsvn/experience/`, etc.) at this step:
+Refuse HARD-NEVER scopes (operator passed `--scope docs/forsvn/experience/`, etc.) at this step:
 
 ```bash
 case "<scope>" in
-  .forsvn/index/manifest.json|.forsvn/index/artifact-index.md|.forsvn/experience|.forsvn/experience/*|.forsvn/artifacts/meta/tasks.md|.forsvn/artifacts/meta/roadmap.md) \
+  .forsvn/index/manifest.json|.forsvn/index/artifact-index.md|.forsvn/experience|docs/forsvn/experience/*|docs/forsvn/artifacts/meta/tasks.md|docs/forsvn/artifacts/meta/roadmap.md) \
     exit_with_status BLOCKED "Scope <scope> is HARD-NEVER and cannot be cleaned by this skill." ;;
 esac
 ```
@@ -100,7 +100,7 @@ esac
 Walk every file under the scope, depth-first. Skip:
 - `.git/` and any `.gitmodules`-listed submodule directory
 - `node_modules/`
-- `.forsvn/artifacts/.archive/` (already archived; do not re-process)
+- `docs/forsvn/artifacts/.archive/` (already archived; do not re-process)
 - Any path on the operator-supplied `excluded_paths` list
 
 Use `find` (not `find -L`; never follow symlinks):
@@ -149,7 +149,7 @@ Before any operator prompt or move, run the critic gate. **This is the single no
    - full path string
    - basename without extension
    - slug-only (post-date for dated files)
-5. Exclude self-matches and matches inside `.forsvn/artifacts/.archive/`.
+5. Exclude self-matches and matches inside `docs/forsvn/artifacts/.archive/`.
 6. If ANY sampled candidate has ≥1 live reference: critic = `FAIL`. Record the candidate path and the referencing file:line. Skip Steps 5-7. Emit BLOCKED.
 7. If all sampled candidates have 0 references: critic = `PASS`. Continue.
 
@@ -233,7 +233,7 @@ Confirm per category — answer y/n for each:
   Archive LEGACY (Z)?
   Archive EPHEMERAL (W)?
 
-(Files MOVE to .forsvn/artifacts/.archive/<YYYY-MM-DD>/, never deleted.
+(Files MOVE to docs/forsvn/artifacts/.archive/<YYYY-MM-DD>/, never deleted.
 A separate --purge-archive flag, out of scope for v1, is the only path to actual deletion.)
 ```
 
@@ -244,12 +244,12 @@ Wait for explicit `y` per category. Any other answer → decline that category; 
 For each confirmed candidate, MOVE to the dated archive. Mirror source path inside the archive:
 
 ```bash
-ARCHIVE_ROOT=".forsvn/artifacts/.archive/$(date +%Y-%m-%d)"
+ARCHIVE_ROOT="docs/forsvn/artifacts/.archive/$(date +%Y-%m-%d)"
 SRC="<candidate-path>"
 DST="$ARCHIVE_ROOT/${SRC#./}"   # mirror full source path under archive root
 test ! -L .forsvn/artifacts || { echo "refusing symlinked .forsvn/artifacts root"; exit 1; }
 mkdir -p "$ARCHIVE_ROOT"
-test ! -L .forsvn/artifacts/.archive || { echo "refusing symlinked archive root"; exit 1; }
+test ! -L docs/forsvn/artifacts/.archive || { echo "refusing symlinked archive root"; exit 1; }
 SRC_REAL="$(realpath "$SRC")"
 SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
 case "$SRC_REAL" in "$SKILLS_RESOURCES_REAL"/*) ;; *) echo "refusing outside-scope source $SRC"; exit 1 ;; esac
@@ -301,7 +301,7 @@ Before returning your output, verify every item:
 - [ ] On `--apply`, every move was preceded by an explicit `y` per category
 - [ ] TIER-3 (tracked-dirty) files were surfaced separately and NOT moved
 - [ ] manifest-sync ran after any actual move
-- [ ] Report written under `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, not overwritten)
+- [ ] Report written under `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, not overwritten)
 - [ ] Status declared explicitly (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT)
 
 If any check fails, revise the output before returning.

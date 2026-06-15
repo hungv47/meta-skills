@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** Step 6 (Assembly). Save the cleanup report to `.forsvn/artifacts/meta/records/machine-cleanup-[YYYY-MM-DD]-<slug>.md`. On re-run with the same slug on the same day: rename existing to `machine-cleanup-[date]-<slug>.v[N].md` and create new with incremented version. Different days produce new dated files automatically.
+**Load when:** Step 6 (Assembly). Save the cleanup report to `docs/forsvn/artifacts/meta/records/machine-cleanup-[YYYY-MM-DD]-<slug>.md`. On re-run with the same slug on the same day: rename existing to `machine-cleanup-[date]-<slug>.v[N].md` and create new with incremented version. Different days produce new dated files automatically.
 
 ---
 

@@ -50,7 +50,7 @@ capability:
       - "Campaign/channel plan from known audience -> plan-campaign."
     prerequisites:
       recommended:
-        - ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+        - "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
       hard: []
 
   orchestration:
@@ -63,7 +63,7 @@ capability:
       - "Need VoC, habitat, pain, and decision psychology evidence."
       - "Output will feed brand, campaign, copy, landing page, or product strategy."
     critic_required_when:
-      - "Writing or updating .forsvn/canonical/research/ICP.md."
+      - "Writing or updating docs/forsvn/canonical/research/ICP.md."
       - "Any shipped persona claim has fewer than five independent evidence sources."
       - "User asks to use the result as canonical downstream context."
 
@@ -89,11 +89,11 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/canonical/research/ICP.md"
+      - path: "docs/forsvn/canonical/research/ICP.md"
         id: icp-research
         lifecycle: canonical
         produced_when: "Audience research reaches DONE or DONE_WITH_CONCERNS."
-      - path: ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+      - path: "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
         id: product-context
         lifecycle: canonical
         produced_when: "Audience research resolves product context."

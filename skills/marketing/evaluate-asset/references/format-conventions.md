@@ -39,14 +39,14 @@ purpose: "Post-render brief-fidelity + brand-fit snapshot for an asset eval loop
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current rendered asset"
 do_not_use_when: "Re-rendering or changing the brief without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/design-briefs/[slug].md, .forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/design-briefs/[slug].md, docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
 downstream: "results.tsv, learnings.md, produce-asset / brief-graphic next-render cycle"
 provenance:
   skill: evaluate-asset
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/design-briefs/[slug].md
-    - .forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md
+    - docs/forsvn/artifacts/marketing/design-briefs/[slug].md
+    - docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md
     - brand/BRAND.md
   output_eval: null
 ---
@@ -80,14 +80,14 @@ purpose: "Post-render brief-fidelity + brand-fit snapshot for an asset eval loop
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current rendered asset"
 do_not_use_when: "Re-rendering or changing the brief without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/design-briefs/[slug].md, .forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/design-briefs/[slug].md, docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
 downstream: "results.tsv, learnings.md, produce-asset / brief-graphic next-render cycle"
 provenance:
   skill: evaluate-asset
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/design-briefs/[slug].md
-    - .forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md
+    - docs/forsvn/artifacts/marketing/design-briefs/[slug].md
+    - docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md
     - brand/BRAND.md
   output_eval: null
 ---
@@ -116,8 +116,8 @@ provenance:
 
 ## What Changed This Cycle
 
-- Source brief: `.forsvn/artifacts/marketing/design-briefs/[slug].md`
-- Re-ingested asset: `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` (asset_picked: [variant])
+- Source brief: `docs/forsvn/artifacts/marketing/design-briefs/[slug].md`
+- Re-ingested asset: `docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` (asset_picked: [variant])
 - Render/prompt/variant delta from prior cycle:
 
 ## Diagnosis

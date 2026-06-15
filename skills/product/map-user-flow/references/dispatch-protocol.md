@@ -10,7 +10,7 @@ wireframe) → Layer 2b (validation → critic).
 1. **Read** the agent instruction file — include FULL content in the Agent prompt.
 2. **Append** context (product, user, goal, platform, constraints) per [`references/pre-dispatch-prompts.md`](pre-dispatch-prompts.md) [PROCEDURE] "Context to pass to all agents."
 3. **Resolve paths to absolute** (rooted at this skill's directory).
-4. **Pass upstream artifacts by content**: orchestrator reads `.forsvn/artifacts/` files and includes excerpts; sub-agents don't read artifact files directly.
+4. **Pass upstream artifacts by content**: orchestrator reads `docs/forsvn/artifacts/` files and includes excerpts; sub-agents don't read artifact files directly.
 5. On critic FAIL, append feedback under `## Critic Feedback — Address Every Point`.
 
 ## Conventions

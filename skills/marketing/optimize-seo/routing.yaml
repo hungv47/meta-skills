@@ -102,6 +102,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
+      - path: "docs/forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
         lifecycle: pipeline
         produced_when: "End of SEO/AEO/ASO run; per-run report with recommendations."

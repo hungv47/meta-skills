@@ -12,7 +12,7 @@ status: seedbank # pre-staged for ad-copy skill build (skill scaffold pending)
 
 # Meta Cold Traffic — Subscription Apps Playbook
 
-Per-surface reference for **Meta cold-traffic acquisition**, specifically subscription apps. Will be consumed by the future `write-ad` skill (not yet scaffolded — see `.forsvn/artifacts/meta/roadmap.md` REB-3). Until then: practitioner-grade source-of-truth for campaign structure, conversion-event choice, and attribution against subscription-app unit economics.
+Per-surface reference for **Meta cold-traffic acquisition**, specifically subscription apps. Will be consumed by the future `write-ad` skill (not yet scaffolded — see `docs/forsvn/artifacts/meta/roadmap.md` REB-3). Until then: practitioner-grade source-of-truth for campaign structure, conversion-event choice, and attribution against subscription-app unit economics.
 
 > Scope: subscription apps (free trial → paid annual). Not B2C ecom (different attribution surface, different LTV math). Not B2B SaaS (different conversion event, different sales cycle). Cross-vertical applicability of structural choices (2-campaign structure, broad targeting) noted in §6 with explicit caveats.
 

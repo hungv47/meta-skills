@@ -13,7 +13,7 @@ The mandatory platforms+surfaces gate (Gate 1) must fire before any Pre-Dispatch
 3. **No diagrams before structure.** Diagram-agent needs structure + edge-case outputs first.
 4. **No skipping edge cases.** Error / empty / loading / permission / offline + per-surface edge states for every screen and surface.
 5. **Challenge >7 happy-path steps.** Miller's threshold. Every step must justify itself.
-6. **One flow = one file.** No pooling. Each run writes `.forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<slug>.md`.
+6. **One flow = one file.** No pooling. Each run writes `docs/forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<slug>.md`.
 7. **Stale product context (>30 days) misaligns flows.** Recommend re-running `research-icp` before proceeding.
 
 ## Quality Gate — Critic Rubric (PASS checks)

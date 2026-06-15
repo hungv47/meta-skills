@@ -1,23 +1,45 @@
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
-// path-parser — single parser for artifact paths under `.forsvn/`.
+// path-parser — single parser for artifact paths in the knowledge home.
+//
+// The three knowledge layers (canonical / artifacts / experience) live under
+// ARTIFACT_HOME (`docs/forsvn/`); machine-state and the project-discovery marker
+// stay under STATE_HOME (`.forsvn/`). The relocation
+// (docs/plans/2026-06-13-001-…) moved the knowledge layers out of `.forsvn/`.
+// The builders EMIT the new home; the parser still RECOGNIZES the legacy
+// `.forsvn/` knowledge home so the state-root migration tool and back-compat
+// indexing keep working (every grammar matches either home — see HOME_RE).
 //
 // v3 grammar (by-stack layered home — the data model):
-//   canonical:   .forsvn/canonical/<stack>/<UPPER-NAME>.md
-//   artifacts:   .forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.<ext>
-//   experience:  .forsvn/experience/<stack>/<name>.md   (dated or plain topic)
-//   records:     .forsvn/artifacts/<stack>/records/<YYYY-MM-DD>-<slug>.md
+//   canonical:   <home>/canonical/<stack>/<UPPER-NAME>.md
+//   artifacts:   <home>/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.<ext>
+//   experience:  <home>/experience/<stack>/<name>.md   (dated or plain topic)
+//   records:     <home>/artifacts/<stack>/records/<YYYY-MM-DD>-<slug>.md
 //                (immutable per-run review/cleanup records; review-work + clean-code
 //                 emit here, plus the loose `records/learned-rules.md`)
 //     stacks: meta · research · marketing · product   (folder name == frontmatter `stack`)
+//     <home> = docs/forsvn (emitted) | .forsvn (legacy, recognized for migration)
 //
 // Legacy grammars (recognized only so the un-flatten migration + back-compat
 // indexing keep working — never emitted for new artifacts):
-//   v2 flat:     .forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>   (stack incl. `mkt`)
-//   v1 nested:   .forsvn/artifacts/{meta,mkt,product,research}/<kind>/<slug>.md
+//   v2 flat:     <home>/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>   (stack incl. `mkt`)
+//   v1 nested:   <home>/artifacts/{meta,mkt,product,research}/<kind>/<slug>.md
 //
 // Consumed by manifest-sync.ts, lint-artifact-paths.ts, validate-artifacts.ts,
 // find-artifacts.ts, and migrate-artifacts-flat.ts. Keep deterministic — one
-// source of truth for "what does this path mean."
+// source of truth for "what does this path mean." Mirrored byte-for-byte by the
+// Rust twin crates/forsvn-core/src/sync.rs (pinned by tests/manifest_parity.rs).
+
+// The knowledge-layer home (emitted) and the machine-state / discovery-marker
+// home (legacy knowledge paths still recognized). KTD1: this is the ONLY place
+// the home string is written — every grammar and builder derives from it.
+export const ARTIFACT_HOME = "docs/forsvn";
+export const STATE_HOME = ".forsvn";
+
+// Regex alternation matching either home as a path prefix, with dots escaped.
+// Non-capturing so positional/named capture groups are unaffected; new home
+// first. Mirrored as `home_re()` in sync.rs. Exported so the bin tools build
+// their own dual-home matchers from the single source (KTD1).
+export const HOME_RE = `(?:${ARTIFACT_HOME}|${STATE_HOME})`.replace(/\./g, "\\.");
 
 export const STACKS = ["meta", "research", "marketing", "product"] as const;
 export const LAYERS = ["canonical", "artifacts", "experience"] as const;
@@ -47,24 +69,33 @@ export type ParsedArtifactPath = {
 };
 
 // --- v3 layered grammar (the home) ------------------------------------------
-export const CANONICAL_RE =
-  /^\.forsvn\/canonical\/(?<stack>meta|research|marketing|product)\/(?<name>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\.md$/;
-export const LAYERED_ARTIFACT_RE =
-  /^\.forsvn\/(?<layer>artifacts|experience)\/(?<stack>meta|research|marketing|product)\/(?<skill>[a-z][a-z0-9-]*?)-(?<date>\d{4}-\d{2}-\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\.(?<ext>md|html)$/;
+// Each grammar matches either home via HOME_RE (new emitted home + legacy
+// `.forsvn/`); the constants below are the single source of the home string.
+export const CANONICAL_RE = new RegExp(
+  `^${HOME_RE}/canonical/(?<stack>meta|research|marketing|product)/(?<name>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*)\\.md$`,
+);
+export const LAYERED_ARTIFACT_RE = new RegExp(
+  `^${HOME_RE}/(?<layer>artifacts|experience)/(?<stack>meta|research|marketing|product)/(?<skill>[a-z][a-z0-9-]*?)-(?<date>\\d{4}-\\d{2}-\\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\\.(?<ext>md|html)$`,
+);
 // Experience files may also be plain topic names (no skill/date), e.g. audience.md.
-export const EXPERIENCE_LOOSE_RE =
-  /^\.forsvn\/experience\/(?<stack>meta|research|marketing|product)\/(?<name>[a-z][a-z0-9-]*)\.md$/;
+export const EXPERIENCE_LOOSE_RE = new RegExp(
+  `^${HOME_RE}/experience/(?<stack>meta|research|marketing|product)/(?<name>[a-z][a-z0-9-]*)\\.md$`,
+);
 // Per-run records (review-work fresh-eyes, clean-code cleanup): an immutable,
 // usually-dated record under a `records/` subfolder. First-class v3 — NOT
 // legacy-nested. The date prefix is optional (e.g. `records/learned-rules.md`).
-export const RECORDS_RE =
-  /^\.forsvn\/artifacts\/(?<stack>meta|research|marketing|product)\/records\/(?:(?<date>\d{4}-\d{2}-\d{2})-)?(?<slug>[a-z0-9][a-z0-9-]*)\.md$/;
+export const RECORDS_RE = new RegExp(
+  `^${HOME_RE}/artifacts/(?<stack>meta|research|marketing|product)/records/(?:(?<date>\\d{4}-\\d{2}-\\d{2})-)?(?<slug>[a-z0-9][a-z0-9-]*)\\.md$`,
+);
 
 // --- legacy grammars (migration source + back-compat indexing) --------------
-export const FLAT_FILENAME_RE =
-  /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)-(?<skill>[a-z][a-z0-9-]*?)-(?<date>\d{4}-\d{2}-\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\.(?<ext>md|html)$/;
-export const LEGACY_NESTED_RE =
-  /^\.forsvn\/artifacts\/(?<stack>meta|mkt|product|research)\/(?<kind>[^/]+)\/(?<rest>.+)\.md$/;
+export const FLAT_FILENAME_RE = new RegExp(
+  `^${HOME_RE}/artifacts/(?<stack>meta|mkt|product|research)-(?<skill>[a-z][a-z0-9-]*?)-(?<date>\\d{4}-\\d{2}-\\d{2})-(?<slug>[a-z0-9][a-z0-9-]*)\\.(?<ext>md|html)$`,
+);
+export const LEGACY_NESTED_RE = new RegExp(
+  `^${HOME_RE}/artifacts/(?<stack>meta|mkt|product|research)/(?<kind>[^/]+)/(?<rest>.+)\\.md$`,
+);
+// Loops stay under STATE_HOME (machine-state); they do not relocate.
 export const LOOP_RE = /^\.forsvn\/loops\/(?<slug>[^/]+)\/(?<rest>.+\.md)$/;
 
 /**
@@ -182,7 +213,7 @@ export function buildLayeredPath(args: {
   if (cleanSlug.length > 60) {
     throw new Error(`buildLayeredPath: slug exceeds 60 chars after normalization (${cleanSlug})`);
   }
-  return `.forsvn/${layer}/${stack}/${skill}-${date}-${cleanSlug}.${ext}`;
+  return `${ARTIFACT_HOME}/${layer}/${stack}/${skill}-${date}-${cleanSlug}.${ext}`;
 }
 
 /**
@@ -212,7 +243,9 @@ export function buildFlatPath(args: {
   if (cleanSlug.length > 50) {
     throw new Error(`buildFlatPath: slug exceeds 50 chars after normalization (${cleanSlug})`);
   }
-  return `.forsvn/artifacts/${stack}-${skill}-${date}-${cleanSlug}.${ext}`;
+  // Legacy v2 flat home stayed under STATE_HOME; the un-flatten migration
+  // operates there. Builders emit the legacy home; new artifacts use buildLayeredPath.
+  return `${STATE_HOME}/artifacts/${stack}-${skill}-${date}-${cleanSlug}.${ext}`;
 }
 
 /** True if `rel` matches the v3 layered artifact/experience/records grammar (md or html). */

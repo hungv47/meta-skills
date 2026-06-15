@@ -40,13 +40,13 @@ purpose: "Post-launch evidence snapshot for a multi-channel campaign eval loop, 
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current campaign cycle"
 do_not_use_when: "Re-planning next-cycle campaign strategy without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/marketing/campaign-plan.md, metric source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, docs/forsvn/artifacts/marketing/campaign-plan.md, metric source"
 downstream: "results.tsv, learnings.md, plan-campaign next-cycle plan"
 provenance:
   skill: evaluate-campaign
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/campaign-plan.md
+    - docs/forsvn/artifacts/marketing/campaign-plan.md
     - brand/BRAND.md
     - research/icp-research.md
   output_eval: null
@@ -81,13 +81,13 @@ purpose: "Post-launch evidence snapshot for a multi-channel campaign eval loop, 
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current campaign cycle"
 do_not_use_when: "Re-planning next-cycle campaign strategy without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, .forsvn/artifacts/marketing/campaign-plan.md, metric source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, strategy/, execution/, docs/forsvn/artifacts/marketing/campaign-plan.md, metric source"
 downstream: "results.tsv, learnings.md, plan-campaign next-cycle plan"
 provenance:
   skill: evaluate-campaign
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/campaign-plan.md
+    - docs/forsvn/artifacts/marketing/campaign-plan.md
     - brand/BRAND.md
     - research/icp-research.md
   output_eval: null
@@ -118,7 +118,7 @@ provenance:
 
 ## What Changed This Cycle
 
-- Source plan-campaign artifact: `.forsvn/artifacts/marketing/campaign-plan.md`
+- Source plan-campaign artifact: `docs/forsvn/artifacts/marketing/campaign-plan.md`
 - Objective/channel-mix/budget-split/sequencing delta from prior cycle:
 
 ## Diagnosis
@@ -272,6 +272,6 @@ This skill produces:
 - `results.tsv` row — appended to the loop's ledger; consumed by any skill reading the loop's status (dashboard skills, ledger-summary skills)
 - `learnings.md` update — high-confidence campaign-type/channel-mix-scoped lessons reusable beyond this campaign state; consumed by future plan-campaign cycles + by humans
 
-This skill does NOT directly consume plan-campaign output via cross-skill import. plan-campaign MIGHT be the strategy artifact for the eval-loop cycle (its `.forsvn/artifacts/marketing/campaign-plan.md` copied or linked into the loop's `strategy/` directory); evaluate-campaign reads loop-local strategy/execution artifacts AND the source plan-campaign artifact path stored in provenance. The coordination contract between plan-campaign and evaluate-campaign is at the eval-loop boundary + the provenance.input_artifacts pointer, not at a shared-schema boundary.
+This skill does NOT directly consume plan-campaign output via cross-skill import. plan-campaign MIGHT be the strategy artifact for the eval-loop cycle (its `docs/forsvn/artifacts/marketing/campaign-plan.md` copied or linked into the loop's `strategy/` directory); evaluate-campaign reads loop-local strategy/execution artifacts AND the source plan-campaign artifact path stored in provenance. The coordination contract between plan-campaign and evaluate-campaign is at the eval-loop boundary + the provenance.input_artifacts pointer, not at a shared-schema boundary.
 
 Schema changes (frontmatter fields, body section structure, Evidence table columns, Channel Breakdown table columns, Results Row columns, learnings.md format) require atomic update of `format-conventions.md` + `_shared/eval-loop-spec.md` + downstream callers — never silently drift.

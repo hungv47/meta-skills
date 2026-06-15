@@ -34,7 +34,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 0. **Mode resolution** per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]. Skill is `budget: deep`; `--fast` forces Route B (skip unconventional-agent) with critic gate collapsed to single pass. **Hard gate (Critical Gates above) STILL enforced under `--fast`** — safety gates supersede mode-resolver downgrade.
    Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
-1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) and Out-of-Scope path (`.forsvn/artifacts/meta/out-of-scope/`).
+1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory (`docs/forsvn/artifacts/meta/sketches/prioritize-*.md`) and Out-of-Scope path (`docs/forsvn/artifacts/meta/out-of-scope/`).
 2. Read `.forsvn/index/manifest.json` — find the matching `diagnose-*.md` (required) and prior `prioritize-*.md` (if any). Check freshness (>30 days surfaces a warning).
 3. Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) [PROCEDURE] — hard-gate enforcement, read order, Cold/Warm Start prompts, staleness check, constraint interview, Out-of-Scope persistence on write all there.
 
@@ -42,11 +42,11 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-prioritize-<YYYY-MM-DD>-<slug>.md` (flat v2; one per root cause; re-run renames prior with `.v[N]`)
+- **Path:** `docs/forsvn/artifacts/meta-prioritize-<YYYY-MM-DD>-<slug>.md` (flat v2; one per root cause; re-run renames prior with `.v[N]`)
 - **Lifecycle:** `sketch` · **Review surface:** `none` (decision_state: not_required)
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack`=meta, `review_surface`=none
 - **Body sections (cross-stack contract):** Phase 1 Initiatives (5-10 + 2-4 unconventional) · Phase 2 (Forced Ranking, ICE Scoring, Decisions) · Cut line · Next Step
-- **Side effects on PASS:** one file per Kill written to `.forsvn/artifacts/meta/out-of-scope/[name].md`; experience write-back is **NONE** (initiatives are project-specific, not stable profile state)
+- **Side effects on PASS:** one file per Kill written to `docs/forsvn/artifacts/meta/out-of-scope/[name].md`; experience write-back is **NONE** (initiatives are project-specific, not stable profile state)
 
 Full schemas, consumer map, and cross-stack load-bearing field list: [`references/procedures/artifact-contract.md`](references/procedures/artifact-contract.md) [PROCEDURE].
 

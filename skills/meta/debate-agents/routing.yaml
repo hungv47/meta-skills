@@ -75,6 +75,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/debates/[date]-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/debates/[date]-<slug>.md"
         lifecycle: snapshot
         produced_when: "End of debate; dated immutable record with full transcript + synthesis."

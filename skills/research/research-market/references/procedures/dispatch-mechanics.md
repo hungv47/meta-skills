@@ -142,18 +142,18 @@ The critic's Failure block names the agent to re-dispatch per the canonical tabl
 
 After critic PASSes (or artifact ships with done_with_concerns annotations):
 
-1. **Write `.forsvn/canonical/research/MARKET.md`** with frontmatter (skill, version, date, status, stack, review_surface, id, type, keywords) + body per `format-conventions.md` Artifact Template.
+1. **Write `docs/forsvn/canonical/research/MARKET.md`** with frontmatter (skill, version, date, status, stack, review_surface, id, type, keywords) + body per `format-conventions.md` Artifact Template.
 2. **Experience write-back** per `pre-dispatch.md` Write-back map:
    - Q1 (Category) → `experience/product.md` as `Product — category`
    - Q2 (Geo + horizon) → `experience/business.md` as `Business — geo + planning horizon`
    - Q3 (Why-now) → `experience/goals.md` as `Goals — market-research trigger`
    - Q4 (Competitors) → `experience/business.md` as `Business — known competitors`
    - Q5 (B2B/B2C) → `experience/audience.md` as `Audience — B2B or B2C`
-3. **Versioning:** On re-run, overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
+3. **Versioning:** On re-run, overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
 
-**No experience-mirror of the canonical record.** market-research's Pre-Dispatch write-back goes to per-domain experience files only — `.forsvn/canonical/research/MARKET.md` is the canonical record itself, produced by the dispatch arc (unlike icp-research, which mirrors Q1 to `research/product-context.md` as a separate cross-stack record).
+**No experience-mirror of the canonical record.** market-research's Pre-Dispatch write-back goes to per-domain experience files only — `docs/forsvn/canonical/research/MARKET.md` is the canonical record itself, produced by the dispatch arc (unlike icp-research, which mirrors Q1 to `research/product-context.md` as a separate cross-stack record).
 
-**BLOCK does NOT trigger write-back.** Partial runs that fail at the cross-analysis or opportunity layer (e.g., critic FAIL after 2 cycles + operator deems `[REVIEWER NOTE]` annotations too severe to ship) do not persist scope state. The previous `.forsvn/canonical/research/MARKET.md` (if any) remains the source of truth.
+**BLOCK does NOT trigger write-back.** Partial runs that fail at the cross-analysis or opportunity layer (e.g., critic FAIL after 2 cycles + operator deems `[REVIEWER NOTE]` annotations too severe to ship) do not persist scope state. The previous `docs/forsvn/canonical/research/MARKET.md` (if any) remains the source of truth.
 
 ---
 

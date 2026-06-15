@@ -19,18 +19,23 @@
 
 import { readdirSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
-import { isLayeredPath } from "./lib/path-parser";
+import { isLayeredPath, ARTIFACT_HOME, STATE_HOME } from "./lib/path-parser";
 
 const ROOT = (() => {
   const idx = process.argv.indexOf("--root");
   if (idx > -1 && process.argv[idx + 1]) return process.argv[idx + 1];
   return process.cwd();
 })();
-const LAYER_DIRS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience"];
+// Both homes: new ARTIFACT_HOME (docs/forsvn) + legacy STATE_HOME (.forsvn), so
+// the grammar lint spans the state-root migration (an absent home is skipped).
+const LAYER_DIRS = [
+  `${STATE_HOME}/canonical`, `${STATE_HOME}/artifacts`, `${STATE_HOME}/experience`,
+  `${ARTIFACT_HOME}/canonical`, `${ARTIFACT_HOME}/artifacts`, `${ARTIFACT_HOME}/experience`,
+];
 
 const existing = LAYER_DIRS.map((d) => join(ROOT, d)).filter((d) => existsSync(d));
 if (existing.length === 0) {
-  console.log("lint-artifact-paths: no .forsvn/{canonical,artifacts,experience}/ layers; nothing to lint.");
+  console.log("lint-artifact-paths: no {docs/forsvn,.forsvn}/{canonical,artifacts,experience}/ layers; nothing to lint.");
   process.exit(0);
 }
 

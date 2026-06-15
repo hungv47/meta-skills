@@ -74,7 +74,7 @@ Broad cleanup ("everything") — dispatch all four scanners.
 
 ## Artifact
 
-Saved to `.forsvn/artifacts/meta/records/2026-05-08-cleanup-express-api.md`. Frontmatter `status: done`, all 5 sections populated, no Manual Verification Needed (full coverage), no Rollback list (no critic FAILs).
+Saved to `docs/forsvn/artifacts/meta/records/2026-05-08-cleanup-express-api.md`. Frontmatter `status: done`, all 5 sections populated, no Manual Verification Needed (full coverage), no Rollback list (no critic FAILs).
 
 ## Lessons embedded in this run
 

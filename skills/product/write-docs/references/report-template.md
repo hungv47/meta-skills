@@ -94,4 +94,4 @@ Downstream consumers:
 - `clean-code` (when refactoring) — reads docs to verify nothing in the codebase contradicts documented behavior.
 - `review-work` (post-implementation) — reads docs to verify implementation matches documented contract.
 - `architect-system` — reads README + architecture docs to detect drift from `architecture/system-architecture.md`.
-- `clean-artifacts` (meta-skill) — scans `.forsvn/artifacts/meta/records/` for staleness; docs-writing's snapshot artifacts (Release Notes) are part of that scan.
+- `clean-artifacts` (meta-skill) — scans `docs/forsvn/artifacts/meta/records/` for staleness; docs-writing's snapshot artifacts (Release Notes) are part of that scan.

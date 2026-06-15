@@ -106,6 +106,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
+      - path: "docs/forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
         lifecycle: snapshot
         produced_when: "End of monitoring run; dated, immutable snapshot."

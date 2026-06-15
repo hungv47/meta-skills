@@ -4,8 +4,8 @@
 
 Before dispatching:
 
-1. **Product context.** If `.forsvn/canonical/product/PRODUCT-CONTEXT.md` is missing AND the routed skill needs it (marketing, product, research) → autodraft it there from `README.md`, `brand/BRAND.md`, `research/*.md`, `package.json`. Mark `status: needs_context` (an unratified draft). Tell the user: "Autodrafted product context. Review and promote to `status: done` before treating as canonical." Drafts are usable; do not block dispatch.
-2. **Experience.** Grep `.forsvn/experience/*.md` for keywords matching the intent. Surface anything relevant: "You previously said X — still applies?"
+1. **Product context.** If `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` is missing AND the routed skill needs it (marketing, product, research) → autodraft it there from `README.md`, `brand/BRAND.md`, `research/*.md`, `package.json`. Mark `status: needs_context` (an unratified draft). Tell the user: "Autodrafted product context. Review and promote to `status: done` before treating as canonical." Drafts are usable; do not block dispatch.
+2. **Experience.** Grep `docs/forsvn/experience/*.md` for keywords matching the intent. Surface anything relevant: "You previously said X — still applies?"
 3. **Initiative slug.** New → propose a kebab-case slug, user confirms. Resuming → use existing slug.
 4. **Session execution profile.** The dispatcher owns the ask: if no fresh `.forsvn/routing/execution-profile.json` exists, fire the one bundled single-vs-multi (+ model, when undetected) ask per [`execution-policy.md`](../_shared/execution-policy.md) and write the profile. Every leaf dispatched this session inherits it silently — leaves never re-ask.
 

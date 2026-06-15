@@ -54,11 +54,11 @@ load_class: ANTI-PATTERN
 |---|---|
 | **"Just do it"** | List assumptions inline and start building. Skip questions; mention critical assumptions briefly. |
 | **"Skip questions"** | Context scan only, summarize what you know, proceed. |
-| **"Save this"** | Write `.forsvn/artifacts/meta/specs/*.md` or emit contract format inline per [`procedures/output-formats.md`](procedures/output-formats.md). |
+| **"Save this"** | Write `docs/forsvn/artifacts/meta/specs/*.md` or emit contract format inline per [`procedures/output-formats.md`](procedures/output-formats.md). |
 | **All questions answered by context** | Skip to clarity check. Note context was sufficient. |
 | **Contradictory answers** | Flag it. One follow-up to resolve. |
 | **Task changes mid-conversation** | Re-assess whether prior answers still apply. 1-2 new questions if scope shifted. Don't restart. |
-| **Experience doc has answers** | Read `.forsvn/experience/{domain}.md` first. Only ask what's not answered. |
+| **Experience doc has answers** | Read `docs/forsvn/experience/{domain}.md` first. Only ask what's not answered. |
 | **Task is trivial** | Say so. Suggest skipping discovery. |
 | **"That's enough"** | Respect it. Note current clarity level and unexplored zones. |
 | **Operator-playbook frame is stale** (>90 days `last_verified`) | Flag inline ("frame may be stale; verify before relying on numeric thresholds") but still apply the stance. |

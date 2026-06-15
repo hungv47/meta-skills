@@ -202,3 +202,7 @@ Orchestrator verifies before Layer 4:
 - [ ] No credential value greppable in any emitted file
 - [ ] All emitted files UTF-8 without BOM
 - [ ] (publish runs) dim-8 Self-Check applied — see § Publish Layer; `publish_result_per_platform` + `post_url`s written; per-platform delete instructions present for every `published` row
+
+## Performance Ledger (export-time write)
+
+At export (every mode — `export` / `draft` / `publish`), append one `status: exported` row **per target platform** to `.forsvn/performance/ledger.tsv` before the bundle ships. This anchors post↔artifact attribution so `evaluate-content`'s metric-ingest can later join measured metrics back to the producing write-social artifact. Append-only; credential-safety (Critical Gate 3) is unaffected. Procedure + column schema: [`performance-ledger.md`](performance-ledger.md).

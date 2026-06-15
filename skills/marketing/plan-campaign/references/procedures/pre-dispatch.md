@@ -14,12 +14,12 @@ Six dimensions drive plan production. Pre-Dispatch resolves each from pipeline a
 
 | # | Dimension | What it drives | Resolves from |
 |---|---|---|---|
-| 1 | **Product** (what it does, who pays) | Pillar pain-grounding, angle relevance, channel offer fit | `research/product-context.md`, `.forsvn/experience/product.md` |
-| 2 | **Audience primary persona** (role + company size + 1-2 pains) | Pillar derivation, angle 3D framework, channel habitat selection | `research/icp-research.md`, `.forsvn/experience/audience.md` |
-| 3 | **Campaign goal** (what 90 days needs to achieve) | Angle bank prioritization, channel weighting, timeline phase emphasis | `.forsvn/experience/goals.md` (Goals — current campaign focus) — usually Cold Start (campaign goals shift fast) |
-| 4 | **Growth motion** (PLG / SLG / Hybrid) | Channel priority weighting (see table below) — **load-bearing for channel-agent** | `.forsvn/experience/business.md` (Business — growth motion) |
-| 5 | **Duration + cadence** (e.g., 60 days, 3 posts/week) | Timeline shape, capacity-vs-cadence sanity check | `.forsvn/experience/goals.md` (Goals — campaign cadence) — usually Cold Start |
-| 6 | **Constraints** (team size, budget tier, channels off-limits) | Cadence calibration, channel skip decisions, budget-type column in execution briefs | `.forsvn/experience/business.md` (Business — team + budget) |
+| 1 | **Product** (what it does, who pays) | Pillar pain-grounding, angle relevance, channel offer fit | `research/product-context.md`, `docs/forsvn/experience/product.md` |
+| 2 | **Audience primary persona** (role + company size + 1-2 pains) | Pillar derivation, angle 3D framework, channel habitat selection | `research/icp-research.md`, `docs/forsvn/experience/audience.md` |
+| 3 | **Campaign goal** (what 90 days needs to achieve) | Angle bank prioritization, channel weighting, timeline phase emphasis | `docs/forsvn/experience/goals.md` (Goals — current campaign focus) — usually Cold Start (campaign goals shift fast) |
+| 4 | **Growth motion** (PLG / SLG / Hybrid) | Channel priority weighting (see table below) — **load-bearing for channel-agent** | `docs/forsvn/experience/business.md` (Business — growth motion) |
+| 5 | **Duration + cadence** (e.g., 60 days, 3 posts/week) | Timeline shape, capacity-vs-cadence sanity check | `docs/forsvn/experience/goals.md` (Goals — campaign cadence) — usually Cold Start |
+| 6 | **Constraints** (team size, budget tier, channels off-limits) | Cadence calibration, channel skip decisions, budget-type column in execution briefs | `docs/forsvn/experience/business.md` (Business — team + budget) |
 
 ---
 
@@ -28,10 +28,10 @@ Six dimensions drive plan production. Pre-Dispatch resolves each from pipeline a
 1. **Pipeline artifacts** (highest priority):
    - `research/product-context.md` → product (1)
    - `research/icp-research.md` → audience (2), habitats, VoC quotes, awareness levels
-   - `.forsvn/artifacts/meta/sketches/prioritize-*.md` → strategic initiatives (optional, alignment only — campaign-plan does not gate on prioritize output)
+   - `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` → strategic initiatives (optional, alignment only — campaign-plan does not gate on prioritize output)
 
 2. **Experience substrate** (fills gaps pipeline doesn't cover):
-   - `.forsvn/experience/{product,audience,business,goals}.md` for any dimension not covered by pipeline artifacts
+   - `docs/forsvn/experience/{product,audience,business,goals}.md` for any dimension not covered by pipeline artifacts
 
 3. **Freshness check:** If `date` field on pipeline artifacts is **>30 days**, warn and recommend re-running upstream — audience and pains evolve. The plan can ship anyway as `DONE_WITH_CONCERNS` with a stale-ICP flag (the user explicitly overrides).
 
@@ -168,3 +168,13 @@ Dispatching pillar-agent (Layer 1). Will sequence angle → channel → timeline
 ```
 
 If the user stays silent past one beat, dispatch. If the user corrects, update experience/ before dispatching.
+
+## Performance Grounding (pre-generation)
+
+When weighting channels and drafting per-channel execution briefs, ground each selected channel on the operator's own history:
+
+```bash
+bun scripts/query-performance.ts <channel> --json   # per selected channel
+```
+
+Obey the emitted `empty | sparse | sufficient` state + `guidance` — sparse data never shifts budget weighting (two posts are not a trend). Own data informs which channels/angles work for *this* account; it never becomes a prescriptive angle list (U12), and a brand floor always outranks it. Full read contract: [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).

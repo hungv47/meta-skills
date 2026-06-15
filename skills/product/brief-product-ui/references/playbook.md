@@ -20,7 +20,7 @@ Nothing takes _(validated flow + DESIGN/BRAND tokens)_ → _(screen inventory, c
 
 ## The SPEC-not-renderer principle
 
-This skill is a **specifier, not a renderer**. It emits a portable, reviewable, brand-tokened spec filed under `.forsvn/artifacts/product/` — a FORSVN artifact that dogfoods the product's own artifact graph — then hands off to an external build surface (Figma, Stitch, Open Design, or a coding agent like `/ce-frontend-design`).
+This skill is a **specifier, not a renderer**. It emits a portable, reviewable, brand-tokened spec filed under `docs/forsvn/artifacts/product/` — a FORSVN artifact that dogfoods the product's own artifact graph — then hands off to an external build surface (Figma, Stitch, Open Design, or a coding agent like `/ce-frontend-design`).
 
 The no-render gate is not a limitation. It is the identity.
 

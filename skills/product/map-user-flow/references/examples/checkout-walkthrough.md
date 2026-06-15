@@ -108,7 +108,7 @@ Proceed to Layer 2a.
 
 ## Deliver
 
-`.forsvn/artifacts/product/flow/checkout.md` written. Slug confirmed `checkout`. Frontmatter includes baseline fields + Step 7.5 additions (lifecycle, produced_by, provenance).
+`docs/forsvn/artifacts/product/flow/checkout.md` written. Slug confirmed `checkout`. Frontmatter includes baseline fields + Step 7.5 additions (lifecycle, produced_by, provenance).
 
 No `index.md` created yet (only one flow file at this slug). Index will auto-generate on the second distinct slug (e.g., when operator runs `/map-user-flow` next for `onboarding`).
 

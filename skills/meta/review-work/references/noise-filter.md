@@ -157,6 +157,35 @@ The fix-then-rerun loop is NOT optional for Accepted findings. The whole point o
 
 ---
 
+## Severity rubric + quantitative verdict gate
+
+Every finding that reaches the report carries a **severity** — the `[Severity]` token in the report template. Severity is assigned from observable impact, not reviewer mood, so two independent reviewers converge on the same verdict.
+
+| Severity | Criteria (any one) | Verdict weight |
+|---|---|---|
+| **Blocker** | Exploitable security hole, data loss/corruption, money/PII exposure, broken public contract, or a failing acceptance criterion. | auto-fail |
+| **Major** | Wrong behavior on a supported path, missing error handling on an I/O / auth boundary, or a regression no test catches. | counts toward the unresolved-Major gate |
+| **Minor** | Correct but fragile: narrow edge case, weak assertion, missing non-critical guard. | advisory |
+| **Nit** | Style / preference with no falsifiable cost. | suppress to Rejected unless trivially free |
+
+**Quantitative verdict gate** — compute the verdict from severity counts *after* the fix-then-rerun loop, not from prose impression:
+
+- **PASS** requires **0** unresolved Blockers AND **0** unresolved Majors AND reviewer confidence **≥ 5/10** on every Accepted finding.
+- **FIXED** = started with **≥ 1** Accepted Blocker/Major, all now cleared their rerun (`accepted_fixed`, verified).
+- **CRITICAL** (auto-fail the PASS gate) = **≥ 1** unresolved Blocker, OR a Blocker fix failed its rerun, OR the self-regulation gate fired. CRITICAL never downgrades to PASS without a logged critic override, and an override never converts a Blocker to resolved.
+
+**Noise gate** (auto-fail the *report*, not the code): if a pass surfaces **≥ 5** findings and **0** are Blocker/Major, the report is nit-padded — collapse the Nits to one Rejected line and re-state the verdict. A wall of nits with no substantive finding is itself a review failure (anti-pattern 2).
+
+**Pre-verdict checklist** — run before writing the verdict block:
+
+- [ ] Every Accepted / Deferred finding carries an explicit severity from the table above.
+- [ ] Blocker count and unresolved-Major count computed; the verdict matches the gate above.
+- [ ] Every Accepted Blocker/Major shows a passed rerun (`Fixed + Verified`), or is re-stated as Deferred.
+- [ ] Findings below the 5/10 confidence floor moved to Rejected, not Accepted.
+- [ ] If ≥ 5 findings and 0 Blocker/Major, the noise gate was applied.
+
+---
+
 ## Report convention
 
 The final report (`references/report-template.md` body template) carries 3 subsections under "Issues Found":

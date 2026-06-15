@@ -132,7 +132,7 @@ Validates owners + target metrics + kill criteria for each Proceed.
 
 ## Final Artifact
 
-`.forsvn/artifacts/meta/sketches/prioritize-2026-05-18.md`:
+`docs/forsvn/artifacts/meta/sketches/prioritize-2026-05-18.md`:
 
 ```markdown
 ---
@@ -210,7 +210,7 @@ If any "Proceed" initiative requires a technical build, also run `architect-syst
 
 ## Out-of-Scope files written (3, one per Kill)
 
-`.forsvn/artifacts/meta/out-of-scope/intent-qualifying-ad-creative.md`:
+`docs/forsvn/artifacts/meta/out-of-scope/intent-qualifying-ad-creative.md`:
 
 ```markdown
 # Intent-Qualifying Ad Creative
@@ -220,7 +220,7 @@ If any "Proceed" initiative requires a technical build, also run `architect-syst
 **Revisit if:** Paid targeting fix lands at <2.5% conversion AND root cause persists.
 ```
 
-`.forsvn/artifacts/meta/out-of-scope/pixel-sharing.md`:
+`docs/forsvn/artifacts/meta/out-of-scope/pixel-sharing.md`:
 
 ```markdown
 # Pixel Sharing
@@ -230,7 +230,7 @@ If any "Proceed" initiative requires a technical build, also run `architect-syst
 **Revisit if:** Standard initiatives ship but conversion stays below 2.5% AND a complementary SaaS partner becomes available.
 ```
 
-`.forsvn/artifacts/meta/out-of-scope/dedicated-onboarding-for-paid-visitors.md`:
+`docs/forsvn/artifacts/meta/out-of-scope/dedicated-onboarding-for-paid-visitors.md`:
 
 ```markdown
 # Dedicated Onboarding for Paid Visitors

@@ -23,7 +23,7 @@ Template: `agents/_template.md` for creating new agent files.
 |---|---|---|
 | **B — Full ICP** (default) | Comprehensive audience research; messaging + channel + positioning decisions | L1 parallel (persona + VoC + habitat) → L2 sequential (pain → psychology → synthesis → critic) |
 | **A — Quick ICP** | Single persona, known audience, time-constrained; OR `--fast` with sufficient Warm Start context | L1 parallel (persona + VoC, skip habitat) → L2 sequential (pain → synthesis → critic, skip decision-psychology) |
-| **C — Called by another skill** | Invoked by plan-campaign, create-brand, write-copy, etc. | Read context from caller's artifacts; check `.forsvn/canonical/research/ICP.md` freshness — Fresh (<30 days) return existing; Stale (>30 days) warn caller + recommend re-run; Missing → run Route B |
+| **C — Called by another skill** | Invoked by plan-campaign, create-brand, write-copy, etc. | Read context from caller's artifacts; check `docs/forsvn/canonical/research/ICP.md` freshness — Fresh (<30 days) return existing; Stale (>30 days) warn caller + recommend re-run; Missing → run Route B |
 
 ## Pattern Catalogs (consumed by named agents)
 

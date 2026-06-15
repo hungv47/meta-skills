@@ -76,7 +76,7 @@ Triggered when loop exists but cycle context is missing. Ask one bundled questio
 
 ## Write-back
 
-**None.** lp-eval does NOT write to `.forsvn/experience/`. Persistent loop state lives in:
+**None.** lp-eval does NOT write to `docs/forsvn/experience/`. Persistent loop state lives in:
 
 - `program.md` (loop definition — owned by eval-loop skill)
 - `context.md` (loop history + baselines — owned by eval-loop skill)

@@ -84,7 +84,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/product/flow/[slug].md"
+      - path: "docs/forsvn/artifacts/product/flow/[slug].md"
         id: user-flow
         lifecycle: pipeline
         produced_when: "Critic PASS; flow map artifact."

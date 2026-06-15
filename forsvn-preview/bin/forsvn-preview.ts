@@ -48,7 +48,27 @@ const DECISION_ENUM = new Set<string>(DECISION_STATES);
 
 const HOST = "127.0.0.1";
 const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
-const ARCHIVE_REL = ".forsvn/artifacts/.archive";
+// The artifacts home moved out of .forsvn/ into docs/forsvn/ (artifact-home
+// relocation). Single write-target home (prefer the new one, fall back to the
+// legacy one) — used when we need ONE directory to write under, e.g. the archive
+// root. The project-discovery marker stays `.forsvn/`.
+function resolveArtifactsDir(projectRoot: string): string {
+  const moved = join(projectRoot, "docs", "forsvn", "artifacts");
+  return existsSync(moved) ? moved : join(projectRoot, ".forsvn", "artifacts");
+}
+
+// Both artifact homes that may hold this project's review queue. The manifest
+// walkers (manifest-sync.ts / sync.rs ARTIFACT_ROOTS) union both so indexing
+// spans the migration; the review CLI must scan both too — otherwise a
+// not-yet-migrated project's queue under .forsvn/artifacts goes invisible the
+// moment docs/forsvn/artifacts exists (the desktop creates it on open). Returns
+// only the homes present on disk.
+function resolveArtifactsDirs(projectRoot: string): string[] {
+  return [
+    join(projectRoot, "docs", "forsvn", "artifacts"),
+    join(projectRoot, ".forsvn", "artifacts"),
+  ].filter((dir) => existsSync(dir));
+}
 const TOKEN_BYTES = 16;                      // = 32 hex chars in the wire format
 const MAX_ROOT_WALK_DEPTH = 12;              // upper bound when probing for .git/.forsvn
 
@@ -430,10 +450,11 @@ const SEEDED_SAMPLE_ID = "forsvn-sample";
 // `excludePath` (project-relative posix) lets the /done responder name the
 // next artifact BEFORE the just-decided one is rewritten on disk.
 function scanNextPending(projectRoot: string, excludePath?: string): ArtifactEntry | null | undefined {
-  const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
+  const dirs = resolveArtifactsDirs(projectRoot);
+  if (dirs.length === 0) return undefined;
   try {
-    if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) return undefined;
-    const pending = scanArtifacts(artifactsDir, projectRoot)
+    const pending = dirs
+      .flatMap((dir) => scanArtifacts(dir, projectRoot))
       .filter((e) => e.decision_state === "pending")
       .filter((e) => !excludePath || e.path !== excludePath);
     return pending.length > 0 ? pending[0] : null;
@@ -447,10 +468,12 @@ function scanNextPending(projectRoot: string, excludePath?: string): ArtifactEnt
 // `undefined` when the project has no queue concept; the chrome shows
 // nothing rather than lying about a queue.
 function scanPendingCount(projectRoot: string): number | undefined {
-  const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
+  const dirs = resolveArtifactsDirs(projectRoot);
+  if (dirs.length === 0) return undefined;
   try {
-    if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) return undefined;
-    return scanArtifacts(artifactsDir, projectRoot).filter((e) => e.decision_state === "pending").length;
+    return dirs
+      .flatMap((dir) => scanArtifacts(dir, projectRoot))
+      .filter((e) => e.decision_state === "pending").length;
   } catch {
     return undefined;
   }
@@ -508,13 +531,13 @@ async function listMode(args: string[]): Promise<number> {
 
   const startDir = rootArg ? resolve(rootArg) : process.cwd();
   const projectRoot = findProjectRootFromDir(startDir);
-  const artifactsDir = join(projectRoot, ".forsvn", "artifacts");
-  if (!existsSync(artifactsDir) || !statSync(artifactsDir).isDirectory()) {
-    refuse("precondition", `no .forsvn/artifacts under ${projectRoot}`, "run inside a FORSVN project or pass --root <dir>");
+  const dirs = resolveArtifactsDirs(projectRoot);
+  if (dirs.length === 0) {
+    refuse("precondition", `no docs/forsvn/artifacts (or legacy .forsvn/artifacts) under ${projectRoot}`, "run inside a FORSVN project or pass --root <dir>");
     return REFUSAL_EXIT.precondition;
   }
 
-  const entries = scanArtifacts(artifactsDir, projectRoot);
+  const entries = dirs.flatMap((dir) => scanArtifacts(dir, projectRoot));
   const pending = entries.filter((e) => e.decision_state === "pending");
   const decided = entries.filter((e) => DECIDED_STATES.has(e.decision_state));
 
@@ -783,7 +806,8 @@ async function notifyMode(args: string[]): Promise<number> {
 // project-relative otherwise. Posix separators always.
 function inboxPathOf(projectRoot: string, mdPath: string): string {
   const rel = relative(projectRoot, mdPath).split(sep).join("/");
-  return rel.startsWith(".forsvn/artifacts/") ? rel.slice(".forsvn/artifacts/".length) : rel;
+  for (const p of ["docs/forsvn/artifacts/", ".forsvn/artifacts/"]) if (rel.startsWith(p)) return rel.slice(p.length);
+  return rel;
 }
 
 function scanArtifacts(dir: string, projectRoot: string): ArtifactEntry[] {
@@ -1270,7 +1294,18 @@ function appendCommentBlock(body: string, block: string): string {
 }
 
 function archiveHtml(projectRoot: string, htmlPath: string): string {
-  const archiveDir = join(projectRoot, ARCHIVE_REL);
+  // Co-home the archived twin with the artifact it belongs to: an artifact still
+  // under the legacy .forsvn/ home archives under .forsvn/, not the new home, so a
+  // mid-migration project's audit trail doesn't split across homes. resolveArtifactsDir's
+  // global preference is only the fallback when htmlPath isn't under a recognized home.
+  const legacyArtifacts = join(projectRoot, ".forsvn", "artifacts");
+  const movedArtifacts = join(projectRoot, "docs", "forsvn", "artifacts");
+  const home = htmlPath.startsWith(legacyArtifacts + sep)
+    ? legacyArtifacts
+    : htmlPath.startsWith(movedArtifacts + sep)
+      ? movedArtifacts
+      : resolveArtifactsDir(projectRoot);
+  const archiveDir = join(home, ".archive");
   if (!existsSync(archiveDir)) mkdirSync(archiveDir, { recursive: true });
 
   // If a prior archive exists for this slug, append the current ISO timestamp

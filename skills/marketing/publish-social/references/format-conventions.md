@@ -5,7 +5,7 @@
 ## Bundle Root
 
 ```
-.forsvn/artifacts/marketing/published-social/[slug]/
+docs/forsvn/artifacts/marketing/published-social/[slug]/
 ├── manifest.md
 ├── platforms/
 │   └── [platform].md             # one per target platform; 1-9 files

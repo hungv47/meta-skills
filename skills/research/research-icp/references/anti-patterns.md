@@ -99,9 +99,9 @@
 **What it is:** Reusing personas and VoC without re-validation.
 
 **Detection:**
-- `.forsvn/canonical/research/ICP.md` date is >90 days old AND product has shipped meaningful changes since.
+- `docs/forsvn/canonical/research/ICP.md` date is >90 days old AND product has shipped meaningful changes since.
 - Re-run requested but skill returns prior artifact unchanged (Route C cache-hit) without prompting user.
-- `.forsvn/canonical/product/PRODUCT-CONTEXT.md` date is >30 days old AND skill proceeds without warning (Critical Gate 4 violation).
+- `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` date is >30 days old AND skill proceeds without warning (Critical Gate 4 violation).
 
 **Why it fails:** Markets shift, competitors launch, pain points evolve. Stale research produces messaging that misses where the audience is NOW. The product-context.md staleness gate exists because the product-context schema (price, model, differentiator) changes faster than the audience profile — running icp-research against stale product-context.md ships a persona for a product that no longer exists.
 
@@ -145,13 +145,13 @@
 
 ## 9. Skipping the Canonical Product-Context Mirror
 
-**What it is:** Writing Q1 (Product) to `experience/product.md` but NOT updating `.forsvn/canonical/product/PRODUCT-CONTEXT.md`.
+**What it is:** Writing Q1 (Product) to `experience/product.md` but NOT updating `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`.
 
 **Detection:**
-- Post-write side effects fire but `.forsvn/canonical/product/PRODUCT-CONTEXT.md` Product section is empty or stale.
+- Post-write side effects fire but `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` Product section is empty or stale.
 - Downstream skills (campaign-plan, brand-system, copywriting) report `NEEDS_CONTEXT` because they read product-context.md and find nothing.
 
-**Why it fails:** icp-research is THE canonical producer of `.forsvn/canonical/product/PRODUCT-CONTEXT.md`. The Write-back map (in `procedures/pre-dispatch.md`) explicitly mirrors Q1 to both `experience/product.md` (skill-internal) AND `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (cross-stack). Skipping the canonical mirror defeats the foundational role — 13+ downstream skills read PRODUCT-CONTEXT.md as their single source of truth on product.
+**Why it fails:** icp-research is THE canonical producer of `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`. The Write-back map (in `procedures/pre-dispatch.md`) explicitly mirrors Q1 to both `experience/product.md` (skill-internal) AND `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` (cross-stack). Skipping the canonical mirror defeats the foundational role — 13+ downstream skills read PRODUCT-CONTEXT.md as their single source of truth on product.
 
 **Fix:** Post-write side effects mandatory on PASS — both writes happen as a transaction. If the canonical write fails (file permissions, path resolution), the experience write should also abort.
 
@@ -180,7 +180,7 @@
 **What it is:** Renaming a section in the Artifact Template, reordering Persona / Top 3 Emotional Drivers / Red Flags / Next Step, changing the Habitat Map 5-column schema, or substituting field names without atomic update of downstream consumers.
 
 **Detection:**
-- `.forsvn/canonical/research/ICP.md` body has sections in unexpected order or with renamed headers.
+- `docs/forsvn/canonical/research/ICP.md` body has sections in unexpected order or with renamed headers.
 - Downstream skill output references a section name that doesn't exist in the artifact (e.g., campaign-plan asks "where is the Decision Psychology section?" — section was renamed to "Buyer Psychology").
 - Habitat Map columns differ from `format-conventions.md` schema.
 
@@ -210,6 +210,6 @@
 
 **Why it fails:** Without persistence, 13+ downstream skills (campaign-plan, brand-system, ...) re-ask the user for the same audience context icp-research already gathered. Wrong persistence (Q5) pollutes experience with stale routing state.
 
-**Fix:** Post-write side effects mandatory on PASS — append Q1 (Product) to `experience/product.md` AND mirror to `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (canonical); append Q2 (Buyer) + Q3 (Pains) + Q4 (Geo) to `experience/audience.md`. Q5 (Route) is NOT persisted — lives only in this run's routing decision.
+**Fix:** Post-write side effects mandatory on PASS — append Q1 (Product) to `experience/product.md` AND mirror to `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` (canonical); append Q2 (Buyer) + Q3 (Pains) + Q4 (Geo) to `experience/audience.md`. Q5 (Route) is NOT persisted — lives only in this run's routing decision.
 
 **Owned by:** orchestrator post-write step in `procedures/dispatch-mechanics.md`. Note: critic-agent does NOT catch this — gates inspect the artifact body, not on-disk side-effect files. Operator-level integration check.

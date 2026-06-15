@@ -56,7 +56,7 @@ capability:
       - "User wants competitive landscape or market sizing -> research-market."
     prerequisites:
       recommended:
-        - ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+        - "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
       hard: []
 
   orchestration:
@@ -104,6 +104,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/specs/<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/specs/<slug>.md"
         lifecycle: spec
         produced_when: "User explicitly asks to save, OR session is ending and decisions would be lost, OR output is needed by someone outside this conversation."

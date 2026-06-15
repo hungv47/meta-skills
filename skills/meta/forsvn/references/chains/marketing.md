@@ -49,7 +49,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 5. **Brand done + LP intent** → `/brief-landing-page`.
 6. **LP-eval intent** → if matching `.forsvn/loops/[slug]/` exists, propose `/evaluate-landing-page`; otherwise propose `/run-pipeline` first.
 7. **SEO intent** → `/optimize-seo`. Ask which mode (audit / ai / programmatic / competitor / aso).
-8. **Short-form-video intent** → `/brief-shortform`. Requires matching `.forsvn/artifacts/research/research-shortform/*.md`; if missing, flag cross-chain handoff.
+8. **Short-form-video intent** → `/brief-shortform`. Requires matching `docs/forsvn/artifacts/research/research-shortform/*.md`; if missing, flag cross-chain handoff.
 9. **Paid-ads intent** → `/write-ad`. Hard requires `research/icp-research.md`. Ask audience-temperature (retargeting / cold) — single-temp per invocation.
 10. **Outbound intent** → `/write-outreach`. Hard requires `research/icp-research.md`.
 11. **Social-post intent** → `/write-social`. Single-platform per invocation; ask which platform.

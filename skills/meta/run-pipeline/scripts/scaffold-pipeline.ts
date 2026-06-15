@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // scaffold-pipeline — materialize a staged closed-loop pipeline in the shared
-// loop tree (CLOSED-LOOP.md §7). run-pipeline is the SUPERSET of run-pipeline:
+// loop tree (CLOSED-LOOP.md §7). scaffold-pipeline is the SUPERSET of run-pipeline:
 // it threads research → brief → FORK → execute → ingest → evaluate → learn, where
 // each stage is a leaf skill and transitions pause for the execution fork (§4) and
 // the human review gate (never auto-approved). It SHARES run-pipeline's loop-tree

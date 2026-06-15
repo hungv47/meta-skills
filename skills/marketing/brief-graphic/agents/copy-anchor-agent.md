@@ -16,7 +16,7 @@ You do NOT:
 | Field | Type | Description |
 |-------|------|-------------|
 | **brief** | string | Asset request |
-| **content_artifact** | markdown \| null | `.forsvn/artifacts/marketing/content/[slug].md` if a relevant copy artifact exists |
+| **content_artifact** | markdown \| null | `docs/forsvn/artifacts/marketing/content/[slug].md` if a relevant copy artifact exists |
 | **user_copy** | string \| null | Copy the user provided directly in the request |
 | **brand_voice_rules** | object | From brand-anchor-agent — forbidden vocab, preferred phrases, casing, emoji policy |
 | **asset_type** | string | OG image / banner / carousel / etc. — determines copy slots |
@@ -66,7 +66,7 @@ You do NOT:
 
 ### Techniques
 
-- **Pull from content artifact first** — if `.forsvn/artifacts/marketing/content/[slug].copy.md` exists with a hook/CTA already, use those. Don't second-guess copywriting's craft.
+- **Pull from content artifact first** — if `docs/forsvn/artifacts/marketing/content/[slug].copy.md` exists with a hook/CTA already, use those. Don't second-guess copywriting's craft.
 - **Voice replacement table** — when you replace forbidden vocab, show the swap in Voice Compliance Notes (e.g., "leverage" → "use"; "unlock" → "open"; "powerful" → "[deleted, use specifics]").
 - **Candidate proposals** — when copy is missing, give 2-3 options at the right length, each different in angle (data / story / question / direct).
 

@@ -29,8 +29,8 @@
         "prerequisites": {
           "recommended": [
             "id:product-context",
-            ".forsvn/artifacts/meta/specs/[slug].md",
-            ".forsvn/artifacts/product/flow/[slug].md"
+            "docs/forsvn/artifacts/meta/specs/[slug].md",
+            "docs/forsvn/artifacts/product/flow/[slug].md"
           ],
           "hard": []
         }
@@ -139,7 +139,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/artifacts/meta/specs/<slug>.md",
+            "docs/forsvn/artifacts/meta/specs/<slug>.md",
             "id:architecture"
           ],
           "hard": []
@@ -200,7 +200,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/tasks.md",
+            "path": "docs/forsvn/artifacts/meta/tasks.md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; canonical task list for the initiative."
           }
@@ -276,22 +276,22 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md",
+            "path": "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; main artifact."
           },
           {
-            "path": ".forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md",
+            "path": "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/handoff-produce-video.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — per-shot spec for produce-video."
           },
           {
-            "path": ".forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md",
+            "path": "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/assets.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — source-ID-to-path map."
           },
           {
-            "path": ".forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md",
+            "path": "docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/crop-map.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — crop justifications."
           }
@@ -326,8 +326,8 @@
         "prerequisites": {
           "recommended": [
             "id:assets",
-            ".forsvn/artifacts/marketing/content/[slug].copy.md",
-            ".forsvn/artifacts/marketing/campaign-plan.md",
+            "docs/forsvn/artifacts/marketing/content/[slug].copy.md",
+            "docs/forsvn/artifacts/marketing/campaign-plan.md",
             "id:icp-research"
           ],
           "hard": [
@@ -400,17 +400,17 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/design-briefs/[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/design-briefs/[slug].md",
             "lifecycle": "pipeline",
             "produced_when": "Approval Gate 2 PASS; default overwrite on re-run."
           },
           {
-            "path": ".forsvn/artifacts/marketing/design-briefs/[slug]-rejected.md",
+            "path": "docs/forsvn/artifacts/marketing/design-briefs/[slug]-rejected.md",
             "lifecycle": "pipeline",
             "produced_when": "Approval Gate 2 reject."
           },
           {
-            "path": ".forsvn/artifacts/marketing/design-briefs/[slug]-candidates.md",
+            "path": "docs/forsvn/artifacts/marketing/design-briefs/[slug]-candidates.md",
             "lifecycle": "pipeline",
             "produced_when": "Approval Gate 1 stop (paused-candidate exit)."
           }
@@ -448,7 +448,7 @@
           "recommended": [
             "id:icp-research",
             "id:product-context",
-            ".forsvn/artifacts/marketing/campaign-plan.md"
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": [
             "id:brand",
@@ -528,27 +528,27 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/brief.md",
             "lifecycle": "pipeline",
             "produced_when": "Approval Gate 3 PASS; versioned re-runs to v[N]/brief.md."
           },
           {
-            "path": ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-implementation.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-implementation.md",
             "lifecycle": "pipeline",
             "produced_when": "Always-emitted companion (universal coding-agent prompt, stack auto-detected)."
           },
           {
-            "path": ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-claude-design.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-claude-design.md",
             "lifecycle": "pipeline",
             "produced_when": "target_handoff lists claude-design."
           },
           {
-            "path": ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-figma.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-figma.md",
             "lifecycle": "pipeline",
             "produced_when": "target_handoff lists figma."
           },
           {
-            "path": ".forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-designer.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/handoff-designer.md",
             "lifecycle": "pipeline",
             "produced_when": "target_handoff lists designer."
           }
@@ -661,7 +661,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/product/brief-product-ui-[YYYY-MM-DD]-[slug].md",
+            "path": "docs/forsvn/artifacts/product/brief-product-ui-[YYYY-MM-DD]-[slug].md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS (all 8 CPs); UI spec artifact."
           }
@@ -697,10 +697,10 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/artifacts/research/research-shortform/[slug].md",
+            "docs/forsvn/artifacts/research/research-shortform/[slug].md",
             "id:icp-research",
             "id:brand",
-            ".forsvn/artifacts/marketing/campaign-plan.md"
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
         }
@@ -786,12 +786,12 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md",
+            "path": "docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md",
             "lifecycle": "pipeline",
             "produced_when": "Hero brief — Layer 2 critic PASS / DONE_WITH_CONCERNS."
           },
           {
-            "path": ".forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md",
+            "path": "docs/forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md",
             "lifecycle": "pipeline",
             "produced_when": "Per-platform variant (TRUE RECUT) emitted by platform-tailor-agent."
           }
@@ -883,7 +883,7 @@
       "domain": "meta",
       "public": true,
       "command": "/clean-artifacts",
-      "summary": "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes).",
+      "summary": "Audit + groom `docs/forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes).",
       "aliases": [
         "groom-artifacts",
         "prune-artifacts",
@@ -891,7 +891,7 @@
       ],
       "route": {
         "use_when": [
-          "User asks to groom or clean `.forsvn/artifacts/`.",
+          "User asks to groom or clean `docs/forsvn/artifacts/`.",
           "Pre-release sweep across pipeline + snapshot artifacts.",
           "Artifact tree feels stale; classification needed before action."
         ],
@@ -902,7 +902,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/experience/technical.md"
+            "docs/forsvn/experience/technical.md"
           ],
           "hard": [
             ".forsvn/index/manifest.json"
@@ -966,12 +966,12 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "End of run (dry-run or apply); dated, immutable per-run audit record."
           },
           {
-            "path": ".forsvn/artifacts/.archive/[YYYY-MM-DD]/",
+            "path": "docs/forsvn/artifacts/.archive/[YYYY-MM-DD]/",
             "lifecycle": "ephemeral",
             "produced_when": "`--apply` confirms per-category move; mirrors source path inside dated archive folder."
           }
@@ -1044,7 +1044,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "End of cleanup run; dated immutable record."
           }
@@ -1078,7 +1078,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/experience/technical.md"
+            "docs/forsvn/experience/technical.md"
           ],
           "hard": []
         }
@@ -1143,7 +1143,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "End of cleanup session (DONE or DONE_WITH_CONCERNS); dated immutable record."
           }
@@ -1260,31 +1260,31 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/canonical/marketing/BRAND.md",
+            "path": "docs/forsvn/canonical/marketing/BRAND.md",
             "id": "brand",
             "lifecycle": "canonical",
             "produced_when": "Route A delivers Quick Brand or Route B completes Layer 2 critic PASS."
           },
           {
-            "path": ".forsvn/canonical/marketing/DESIGN.md",
+            "path": "docs/forsvn/canonical/marketing/DESIGN.md",
             "id": "design",
             "lifecycle": "canonical",
             "produced_when": "Route B completes Layer 2 critic PASS."
           },
           {
-            "path": ".forsvn/canonical/marketing/CREATIVE-DIRECTION.md",
+            "path": "docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md",
             "id": "creative-direction",
             "lifecycle": "canonical",
             "produced_when": "Route B Step 8.6 (orchestrator-written art-direction layer), or the standalone refresh-only path on a locked brand."
           },
           {
-            "path": ".forsvn/canonical/marketing/FRAME.md",
+            "path": "docs/forsvn/canonical/marketing/FRAME.md",
             "id": "frame",
             "lifecycle": "canonical",
             "produced_when": "Route B Step 8.7 (orchestrator-written frame-direction layer), or the standalone refresh-only path on a locked brand."
           },
           {
-            "path": ".forsvn/canonical/marketing/ASSETS.md",
+            "path": "docs/forsvn/canonical/marketing/ASSETS.md",
             "id": "assets",
             "lifecycle": "canonical",
             "produced_when": "Route B completes Step 8.5 ASSETS projection."
@@ -1364,7 +1364,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/debates/[date]-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/debates/[date]-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "End of debate; dated immutable record with full transcript + synthesis."
           }
@@ -1451,10 +1451,10 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/canonical/research/DIAGNOSE.md",
+            "path": "docs/forsvn/canonical/research/DIAGNOSE.md",
             "id": "diagnose",
             "lifecycle": "canonical",
-            "produced_when": "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `.forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
+            "produced_when": "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `docs/forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
           }
         ]
       },
@@ -1487,7 +1487,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+            "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
           ],
           "hard": []
         }
@@ -1567,7 +1567,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/specs/<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/specs/<slug>.md",
             "lifecycle": "spec",
             "produced_when": "User explicitly asks to save, OR session is ending and decisions would be lost, OR output is needed by someone outside this conversation."
           }
@@ -1610,7 +1610,7 @@
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md"
+            "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md"
           ]
         }
       },
@@ -1730,12 +1730,12 @@
             "id:brand",
             "id:design",
             "id:icp-research",
-            ".forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
+            "docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/design-briefs/[slug].md"
+            "docs/forsvn/artifacts/marketing/design-briefs/[slug].md"
           ]
         }
       },
@@ -1865,7 +1865,7 @@
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/campaign-plan.md"
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
           ]
         }
       },
@@ -1983,12 +1983,12 @@
             "id:brand",
             "id:icp-research",
             "id:product-context",
-            ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
+            "docs/forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md"
+            "docs/forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md"
           ]
         }
       },
@@ -2200,7 +2200,7 @@
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
+            "docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md"
           ]
         }
       },
@@ -2318,12 +2318,12 @@
           "recommended": [
             "id:icp-research",
             "id:product-context",
-            ".forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
+            "docs/forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md"
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
             ".forsvn/loops/[slug]/context.md",
-            ".forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
+            "docs/forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md"
           ]
         }
       },
@@ -2443,7 +2443,7 @@
           ],
           "hard": [
             ".forsvn/loops/[slug]/program.md",
-            ".forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
+            "docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
           ]
         }
       },
@@ -2575,7 +2575,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/product/extract-service/[date]-[slug].md",
+            "path": "docs/forsvn/artifacts/product/extract-service/[date]-[slug].md",
             "lifecycle": "snapshot",
             "produced_when": "End of migration (DONE / DONE_WITH_CONCERNS); re-run same slug same day appends `-v[N]`."
           }
@@ -2609,7 +2609,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+            "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
           ],
           "hard": []
         }
@@ -2769,7 +2769,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/content/[slug].humanmaxxed.md",
+            "path": "docs/forsvn/artifacts/marketing/content/[slug].humanmaxxed.md",
             "lifecycle": "pipeline",
             "produced_when": "Route A or B; re-run renames prior to `[slug].humanmaxxed.v[N].md`."
           }
@@ -2864,7 +2864,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/product/flow/[slug].md",
+            "path": "docs/forsvn/artifacts/product/flow/[slug].md",
             "id": "user-flow",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; flow map artifact."
@@ -2948,7 +2948,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/monitor-aeo/[YYYY-MM-DD]-[slug].md",
             "lifecycle": "snapshot",
             "produced_when": "End of monitoring run; dated, immutable snapshot."
           }
@@ -3076,7 +3076,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md",
+            "path": "docs/forsvn/artifacts/marketing/optimize-seo/[YYYY-MM-DD]-<slug>.md",
             "lifecycle": "pipeline",
             "produced_when": "End of SEO/AEO/ASO run; per-run report with recommendations."
           }
@@ -3162,7 +3162,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/campaign-plan.md",
+            "path": "docs/forsvn/artifacts/marketing/campaign-plan.md",
             "lifecycle": "canonical",
             "produced_when": "Critic PASS; single artifact per run (overwrite on re-run unless version preservation requested via `campaign-plan.v[N].md`)."
           }
@@ -3252,7 +3252,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/records/targets-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/records/targets-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "Critic PASS; numeric funnel + sensitivity bands."
           }
@@ -3337,7 +3337,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/content/[slug].vn-polished.md",
+            "path": "docs/forsvn/artifacts/marketing/content/[slug].vn-polished.md",
             "lifecycle": "pipeline",
             "produced_when": "Route A or B; re-run renames prior to `[slug].vn-polished.v[N].md`."
           }
@@ -3415,7 +3415,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/preview-og-[date]-[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/preview-og-[date]-[slug].md",
             "lifecycle": "snapshot",
             "produced_when": "A preview / fix pass completes (DONE or DONE_WITH_CONCERNS)."
           }
@@ -3501,7 +3501,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/sketches/prioritize-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/sketches/prioritize-<slug>.md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; ranked-initiative sketch + cut line + kill criteria."
           }
@@ -3539,7 +3539,7 @@
             "id:brand"
           ],
           "hard": [
-            ".forsvn/artifacts/marketing/design-briefs/[slug].md"
+            "docs/forsvn/artifacts/marketing/design-briefs/[slug].md"
           ]
         }
       },
@@ -3579,12 +3579,12 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md",
+            "path": "docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; canonical asset manifest."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[platform].md",
+            "path": "docs/forsvn/artifacts/marketing/produced-assets/[slug]/prompts/[platform].md",
             "lifecycle": "pipeline",
             "produced_when": "Per-platform prompt file (one per target engine)."
           }
@@ -3676,32 +3676,32 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/manifest.md",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/manifest.md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS; always emitted as canonical runtime-agnostic contract."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/scenes/[shot-id].md",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/scenes/[shot-id].md",
             "lifecycle": "pipeline",
             "produced_when": "One file per shot — visual + OST + voice spec."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/hyperframes/scaffold.html",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/hyperframes/scaffold.html",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — HyperFrames composition scaffold + inlined scenes JSON."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/remotion/scaffold.tsx",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/remotion/scaffold.tsx",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — Remotion composition scaffold."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/vercel-ai-cli.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted (shortform); collapsed in app-preview mode."
           },
           {
-            "path": ".forsvn/artifacts/marketing/produced-videos/[slug]/post.md",
+            "path": "docs/forsvn/artifacts/marketing/produced-videos/[slug]/post.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — assemble/grade/subtitle stage (post lane; video-use / ffmpeg). Collapses to assembly + caption burn-in in app-preview mode."
           }
@@ -3735,11 +3735,11 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/artifacts/marketing/produce-asset/[slug]/manifest.md",
-            ".forsvn/artifacts/marketing/produce-video/[slug]/manifest.md"
+            "docs/forsvn/artifacts/marketing/produce-asset/[slug]/manifest.md",
+            "docs/forsvn/artifacts/marketing/produce-video/[slug]/manifest.md"
           ],
           "hard": [
-            ".forsvn/artifacts/marketing/write-social/[slug]/*.md",
+            "docs/forsvn/artifacts/marketing/write-social/[slug]/*.md",
             "id:brand"
           ]
         }
@@ -3756,7 +3756,7 @@
         ],
         "critic_required_when": [
           "Always — 8-dim rubric runs before delivery (export/draft) or before the publish gate fires (publish).",
-          "Any bundle emission writes a canonical artifact under .forsvn/artifacts/marketing/published-social/."
+          "Any bundle emission writes a canonical artifact under docs/forsvn/artifacts/marketing/published-social/."
         ]
       },
       "load": {
@@ -3805,37 +3805,37 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/manifest.md",
             "lifecycle": "pipeline",
             "produced_when": "Bundle ships (DONE or DONE_WITH_CONCERNS)."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/platforms/[platform].md",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/platforms/[platform].md",
             "lifecycle": "pipeline",
             "produced_when": "One file per target platform — body, hashtags, CTA, media ref, formatting."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/typefully.json",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/typefully.json",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted in export/draft bundle."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/buffer.csv",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/buffer.csv",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted in export/draft bundle."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/hootsuite.csv",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/hootsuite.csv",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted in export/draft bundle."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/generic.csv",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/scheduler-imports/generic.csv",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted in export/draft bundle."
           },
           {
-            "path": ".forsvn/artifacts/marketing/published-social/[slug]/README.md",
+            "path": "docs/forsvn/artifacts/marketing/published-social/[slug]/README.md",
             "lifecycle": "pipeline",
             "produced_when": "Always emitted — operator step-by-step per route."
           }
@@ -3869,7 +3869,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+            "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
           ],
           "hard": []
         }
@@ -3886,7 +3886,7 @@
           "Output will feed brand, campaign, copy, landing page, or product strategy."
         ],
         "critic_required_when": [
-          "Writing or updating .forsvn/canonical/research/ICP.md.",
+          "Writing or updating docs/forsvn/canonical/research/ICP.md.",
           "Any shipped persona claim has fewer than five independent evidence sources.",
           "User asks to use the result as canonical downstream context."
         ]
@@ -3928,13 +3928,13 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/canonical/research/ICP.md",
+            "path": "docs/forsvn/canonical/research/ICP.md",
             "id": "icp-research",
             "lifecycle": "canonical",
             "produced_when": "Audience research reaches DONE or DONE_WITH_CONCERNS."
           },
           {
-            "path": ".forsvn/canonical/product/PRODUCT-CONTEXT.md",
+            "path": "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md",
             "id": "product-context",
             "lifecycle": "canonical",
             "produced_when": "Audience research resolves product context."
@@ -4053,10 +4053,10 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/canonical/research/MARKET.md",
+            "path": "docs/forsvn/canonical/research/MARKET.md",
             "id": "market-research",
             "lifecycle": "canonical",
-            "produced_when": "Critic PASS; on re-run overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
+            "produced_when": "Critic PASS; on re-run overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
           }
         ]
       },
@@ -4140,7 +4140,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md",
+            "path": "docs/forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "End of platform-analytics pull; dated, immutable snapshot."
           }
@@ -4221,7 +4221,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/research/research-shortform/[slug].md",
+            "path": "docs/forsvn/artifacts/research/research-shortform/[slug].md",
             "lifecycle": "snapshot",
             "produced_when": "Critic PASS; dated per-platform catalog."
           }
@@ -4293,7 +4293,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md",
+            "path": "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md",
             "lifecycle": "snapshot",
             "produced_when": "Review writes a dated, immutable per-run report artifact."
           }
@@ -4333,7 +4333,7 @@
         "prerequisites": {
           "recommended": [
             "id:icp-research",
-            ".forsvn/canonical/meta/tool-registry.md"
+            "docs/forsvn/canonical/meta/tool-registry.md"
           ],
           "hard": []
         }
@@ -4442,7 +4442,7 @@
             "id:product-context",
             "id:icp-research",
             "id:brand",
-            ".forsvn/artifacts/marketing/campaign-plan.md"
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
         }
@@ -4513,17 +4513,17 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md",
             "lifecycle": "pipeline",
             "produced_when": "Hero + Variant A + Variant B drafted, critic + format-checker + humanmaxxing-regression PASS."
           },
           {
-            "path": ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].rationale.md",
+            "path": "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].rationale.md",
             "lifecycle": "pipeline",
             "produced_when": "Angle + framing + per-variant rationale companion (always emitted)."
           },
           {
-            "path": ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].critic-score.md",
+            "path": "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].critic-score.md",
             "lifecycle": "pipeline",
             "produced_when": "7-dim scorecard per variant + total + regression (always emitted)."
           }
@@ -4626,7 +4626,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/content/[slug].copy.md",
+            "path": "docs/forsvn/artifacts/marketing/content/[slug].copy.md",
             "lifecycle": "pipeline",
             "produced_when": "Route A or Route B writes standalone copy."
           }
@@ -4664,7 +4664,7 @@
         ],
         "prerequisites": {
           "recommended": [
-            ".forsvn/experience/technical.md",
+            "docs/forsvn/experience/technical.md",
             "id:product-context"
           ],
           "hard": []
@@ -4805,7 +4805,7 @@
           "recommended": [
             "id:product-context",
             "id:icp-research",
-            ".forsvn/artifacts/marketing/campaign-plan.md"
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
           ],
           "hard": []
         }
@@ -4884,12 +4884,12 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md",
             "lifecycle": "pipeline",
             "produced_when": "Critic + terminal humanmaxxing PASS."
           },
           {
-            "path": ".forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].critic-score.md",
+            "path": "docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].critic-score.md",
             "lifecycle": "pipeline",
             "produced_when": "5-dim scorecard + post-humanmaxxing regression (always emitted)."
           }
@@ -4926,7 +4926,7 @@
           "recommended": [
             "id:icp-research",
             "id:product-context",
-            ".forsvn/artifacts/marketing/short-form-brief/[slug]/brief.md"
+            "docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
           ],
           "hard": [
             "id:brand"
@@ -4998,7 +4998,7 @@
       "outputs": {
         "artifacts": [
           {
-            "path": ".forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md",
+            "path": "docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md",
             "lifecycle": "pipeline",
             "produced_when": "Critic PASS / DONE_WITH_CONCERNS / FAIL (FAIL artifacts ship with annotations per locked decision; NOT written on FORMAT_FAIL or NEEDS_CONTEXT)."
           }

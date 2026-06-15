@@ -6,7 +6,7 @@
 
 ## Inputs
 
-**Prior artifact:** `.forsvn/artifacts/meta/sketches/prioritize-q1.md`
+**Prior artifact:** `docs/forsvn/artifacts/meta/sketches/prioritize-q1.md`
 
 Initiatives above the cut line:
 - Restore Paid Targeting (Proceed)
@@ -121,7 +121,7 @@ Per `references/stress-tests.md`, 4 tests per target:
 
 ## Final Artifact
 
-`.forsvn/artifacts/meta/records/targets-2026-05-17.md`:
+`docs/forsvn/artifacts/meta/records/targets-2026-05-17.md`:
 
 ```markdown
 ---

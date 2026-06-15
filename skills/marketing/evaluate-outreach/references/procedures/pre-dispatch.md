@@ -32,7 +32,7 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 2. `.forsvn/loops/[slug]/context.md` — baseline assumptions + list history + prior-cycle channels
 3. `.forsvn/loops/[slug]/results.tsv` — prior cycles' rows + resolve cycle number (`last cycle + 1`); read at least the last 2 rows of the same channel + segment for trend
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what changed this cycle + prior verdicts
-5. **Source write-outreach artifact** at `.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md` — the sequence's hypothesis is the benchmark for Diagnosis
+5. **Source write-outreach artifact** at `docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md` — the sequence's hypothesis is the benchmark for Diagnosis
 6. Reply + deliverability + compliance evidence (outreach tool export, CRM, opt-out log)
 7. Relevant canonical artifacts: `research/icp-research.md` (segment fit), `brand/BRAND.md` (voice)
 
@@ -52,7 +52,7 @@ Found:
 - channel / segment: [channel] · [segment]
 - primary metric: [from program.md]
 - baseline/prior result: [from results.tsv last row of same channel + segment]
-- source write-outreach artifact: [.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md]
+- source write-outreach artifact: [docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md]
 - current evidence window: [window + source]
 - sends: [N] · deliverability: [bounce / spam supplied]
 
@@ -66,7 +66,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 ```
 1. Which loop slug/path should this evaluation write into?
 2. What channel + segment is this cycle? (one cycle = one channel + segment; secondary channels are context only)
-3. What is the source write-outreach artifact path? (typically .forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md)
+3. What is the source write-outreach artifact path? (typically docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md)
 4. What measurement window (start → end, days) and source (outreach tool / CRM / operator-supplied)?
 5. What is the primary metric value for this window, and what baseline (same channel + segment prior cycle)?
 6. Sends? Reply breakdown (positive / meeting / qualified / neutral / negative / auto / opt-out)? Deliverability (bounce rate, spam-complaint rate) + compliance (opt-out honored, regime)?
@@ -87,7 +87,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 
 ## Write-back
 
-**None.** evaluate-outreach does NOT write to `.forsvn/experience/`. Persistent loop state lives in:
+**None.** evaluate-outreach does NOT write to `docs/forsvn/experience/`. Persistent loop state lives in:
 
 - `program.md` (loop definition — owned by eval-loop skill)
 - `context.md` (loop history + baselines — owned by eval-loop skill)

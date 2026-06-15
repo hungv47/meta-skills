@@ -42,19 +42,19 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | **Hard gate** — missing → NEEDS_CONTEXT |
+| `docs/forsvn/artifacts/meta/sketches/prioritize-*.md` | prioritize | **Hard gate** — missing → NEEDS_CONTEXT |
 | Prior `targets-*.md` (same initiative) | self | Optional — enables Route C delta |
 | `.forsvn/index/manifest.json` | manifest-sync | Recommended — >30d warns |
 | Industry baselines | `references/benchmarks.md` | Fallback when user lacks rates |
 
-**Mode** (`standard`): `--fast` forces Route C if conditions hold, else Route B (no critic). Hard gates above still enforced. `references/_shared/mode-resolver.md` [PROCEDURE]. **Pre-Dispatch** (hard-gate, read order, Cold/Warm Start, staleness, growth-motion ID, write-back): `references/procedures/pre-dispatch.md` [PROCEDURE].
+**Mode** (`standard`): `--fast` forces Route C if conditions hold, else Route B (no critic). Hard gates still enforced. `references/_shared/mode-resolver.md` [PROCEDURE]. **Pre-Dispatch** (hard-gate, read order, Cold/Warm Start, staleness, growth-motion ID, write-back): `references/procedures/pre-dispatch.md` [PROCEDURE].
 Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ---
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-plan-funnel-<YYYY-MM-DD>-targets-<slug>.md` (flat v2; re-run renames prior `.v[N]`)
+- **Path:** `docs/forsvn/artifacts/meta-plan-funnel-<YYYY-MM-DD>-targets-<slug>.md` (flat v2; re-run renames prior `.v[N]`)
 - **Lifecycle:** `snapshot` · **review_surface:** `none`
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=none)
 - **Required sections (cross-stack contract):** Funnel Stages · Target Table · Channel → Funnel Stage Map · Three-Outcome Validation · Validation · Baselines

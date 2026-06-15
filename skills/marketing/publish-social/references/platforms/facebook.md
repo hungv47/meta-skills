@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # Facebook — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for Facebook (Pages) drafts. **Not backed by platform-intelligence catalog (D13)** — algorithm signals here are minimal v1 template; expand when FB is added to the catalog in a future slice.

@@ -145,7 +145,7 @@ If the full orchestration is unnecessary (simple problem, ≤3 initiatives alrea
 
 ## Post-write side effects
 
-After the artifact is written to `.forsvn/artifacts/meta/sketches/prioritize-[date].md`:
+After the artifact is written to `docs/forsvn/artifacts/meta/sketches/prioritize-[date].md`:
 
 1. **Re-name** any prior `prioritize-*.md` for the same root cause to `prioritize.v[N].md` (increment N). Never overwrite silently.
 2. **Out-of-Scope Persistence** (see next section) — one file per Kill decision.
@@ -158,7 +158,7 @@ Both are mandatory on PASS or `done_with_concerns`. Skip on `BLOCKED` / `NEEDS_C
 
 ## Out-of-Scope Persistence (load-bearing contract — preserved verbatim from original SKILL.md)
 
-After delivering the artifact, write killed initiatives to `.forsvn/artifacts/meta/out-of-scope/` so future sessions don't re-analyze them.
+After delivering the artifact, write killed initiatives to `docs/forsvn/artifacts/meta/out-of-scope/` so future sessions don't re-analyze them.
 
 For each initiative marked **Kill** in the Decisions table:
 
@@ -170,7 +170,7 @@ For each initiative marked **Kill** in the Decisions table:
 **Revisit if:** [condition that would change the decision — e.g., "team grows to 5+", "root cause shifts to retention"]
 ```
 
-Save as `.forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`. Create the directory if it doesn't exist.
+Save as `docs/forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`. Create the directory if it doesn't exist.
 
 **Why:** Prevents re-debating settled decisions in future sessions. `discover` and `orchestrate-*` skills read this directory before recommending workflows or asking about features already rejected. The contract is load-bearing — never skip the write.
 

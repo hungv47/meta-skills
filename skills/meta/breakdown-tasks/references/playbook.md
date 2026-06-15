@@ -12,7 +12,7 @@ load_class: PLAYBOOK
 
 A spec or architecture is not a build plan. Without decomposition, an engineer (human or AI) opens the spec and stares — the work feels both infinite and shapeless. Even when the spec is clear, the gap between "here's what we're building" and "here's what I do next" is where projects stall.
 
-task-breakdown closes that gap. It takes a spec / architecture / feature description and produces `.forsvn/artifacts/meta/tasks.md` — a flat list of independently-shippable tasks, each with stable ID, explicit dependencies, acceptance criteria, autonomy classification (AFK vs HITL), and risk-first ordering. The artifact is read by a fresh engineering session (human or coding agent) and answers: **"What do I do next, and how will I know when it's done?"**
+task-breakdown closes that gap. It takes a spec / architecture / feature description and produces `docs/forsvn/artifacts/meta/tasks.md` — a flat list of independently-shippable tasks, each with stable ID, explicit dependencies, acceptance criteria, autonomy classification (AFK vs HITL), and risk-first ordering. The artifact is read by a fresh engineering session (human or coding agent) and answers: **"What do I do next, and how will I know when it's done?"**
 
 The cost of skipping it is silent: ambiguous tasks → hidden dependencies → integration discovered late → rework. The cost of running it is small ($0.15-0.50 sonnet, ~3-5 min for a feature-sized spec). The asymmetry makes it the default before any non-trivial build.
 

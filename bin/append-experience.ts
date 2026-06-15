@@ -3,7 +3,7 @@
 //
 // Phase 1 (knowledge graph): the `experience/` layer goes live. A run appends
 // what it learned (a decision, a dead-end, a Q&A) to
-// `.forsvn/experience/<stack>/<name>.md`; the NEXT run reads it (via
+// `docs/forsvn/experience/<stack>/<name>.md`; the NEXT run reads it (via
 // `find-artifacts --context`) instead of re-asking or repeating a mistake.
 //
 // The file is created with contract-conforming frontmatter on first write and
@@ -53,11 +53,11 @@ if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) fail(`--date must be YYYY-MM-DD (got ${JS
 if (body === "-") body = readFileSync(0, "utf8").trimEnd(); // stdin
 if (!body || !body.trim()) fail("--body is required (text, or `-` to read stdin)");
 
-const dir = join(ROOT, ".forsvn", "experience", stack);
+const dir = join(ROOT, "docs", "forsvn", "experience", stack);
 const file = join(dir, `${name}.md`);
-// path-safety: the resolved file must stay inside .forsvn/experience/<stack>/
-const expRoot = join(ROOT, ".forsvn", "experience");
-if (!resolve(file).startsWith(resolve(expRoot) + "/")) fail("refusing to write outside .forsvn/experience/");
+// path-safety: the resolved file must stay inside docs/forsvn/experience/<stack>/
+const expRoot = join(ROOT, "docs", "forsvn", "experience");
+if (!resolve(file).startsWith(resolve(expRoot) + "/")) fail("refusing to write outside docs/forsvn/experience/");
 // Symlink guard. `existsSync` follows the link, so it returns false for a
 // symlink whose target is missing — a broken (or attacker-planted, not-yet-
 // created) symlink would slip past an `existsSync && isSymbolicLink` check.

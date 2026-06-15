@@ -33,8 +33,8 @@ Apply `references/_shared/before-starting-check.md`. Then:
 | `brand/BRAND.md` | create-brand | **Hard** — `brand_mode` |
 | `research/icp-research.md` | research-icp | Rec — audience |
 | `research/product-context.md` | research-icp | Rec — voice + proof |
-| `.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md` | brief-shortform | Opt — Warm Start |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Opt — cadence |
+| `docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md` | brief-shortform | Opt — Warm Start |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Opt — cadence |
 
 Mode per `references/_shared/mode-resolver.md`. `budget: standard`. `--fast` → format-check loop = 0; `--deep` → MAX 2. **`--fast` does NOT skip Cold Start or Critical Gates.** Check `.forsvn/index/manifest.json` for prior `marketing/copy/[platform]-*-[slug].md` or upstream `brief-shortform` / `plan-campaign`. Run Pre-Dispatch per `references/procedures/pre-dispatch.md`: auto-scan, then 5-Q Cold Start.
 Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
@@ -53,7 +53,7 @@ Pass total ≥35/50 AND no dim 0. **Discrimination test every cycle.**
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `pipeline`.
+- **Path:** `docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `pipeline`.
 - **Frontmatter (13):** `type`, `platform`, `date`, `slug`, `brand_mode`, `goal`, `variant_count`, `brief_source`, `platform_intel_version`, `critic_score`, `critic_verdict`, `status`, `polish_chain_applied`.
 - **Body (in order):** Hook variants (`### Variant [A|B|C]`) · Body · CTA · Format spec · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
 

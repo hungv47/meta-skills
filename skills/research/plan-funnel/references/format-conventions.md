@@ -6,7 +6,7 @@
 
 ## Artifact path
 
-`.forsvn/artifacts/meta/records/targets-[YYYY-MM-DD].md`
+`docs/forsvn/artifacts/meta/records/targets-[YYYY-MM-DD].md`
 
 On re-run: rename existing artifact to `targets.v[N].md` (increment N from the highest existing version) and create new at incremented version. Never overwrite.
 

@@ -38,7 +38,7 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 1. **Single-domain (research/marketing/product)** → route via `chains/<domain>.md` directly to a leaf skill. Don't dispatch through a "meta" wrapper — `/forsvn` *is* the front door.
 2. **Process intent** → propose the specific meta-skill with one-line rationale.
 3. **Cross-stack** → propose a 2-3 step chain (max 3 hops; ≥5 means project too vague → recommend `/discover` first).
-4. **`/breakdown-tasks` is hard-gated** — only recommend if `.forsvn/artifacts/meta/specs/*.md` OR `architecture/system-architecture.md` exists.
+4. **`/breakdown-tasks` is hard-gated** — only recommend if `docs/forsvn/artifacts/meta/specs/*.md` OR `architecture/system-architecture.md` exists.
 5. **Wrap-around:** if the recommendation touches security/auth/data-mutation/critical artifacts → append `(optional /review-work after)`.
 6. **Don't `/discover` defensively** — patronizing when intent is clear; only recommend for genuinely unclear scope.
 7. **`/run-pipeline`** is the prerequisite for `/evaluate-landing-page` and similar in-loop evaluations.

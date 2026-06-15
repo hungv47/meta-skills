@@ -33,8 +33,8 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 2. `.forsvn/loops/[slug]/context.md` — baseline render + acceptance assumptions + loop history
 3. `.forsvn/loops/[slug]/results.tsv` — prior cycles' rows + resolve cycle number (`last cycle + 1`); read at least the last 2 rows for fidelity trend
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what changed this cycle + prior verdicts
-5. **Source brief** at `.forsvn/artifacts/marketing/design-briefs/[slug].md` — the acceptance criteria are the benchmark for the Brief-Fidelity Check
-6. **The re-ingested asset** at `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — confirm `asset_picked` / `assets`; **open the image with Read** to confirm it is viewable
+5. **Source brief** at `docs/forsvn/artifacts/marketing/design-briefs/[slug].md` — the acceptance criteria are the benchmark for the Brief-Fidelity Check
+6. **The re-ingested asset** at `docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — confirm `asset_picked` / `assets`; **open the image with Read** to confirm it is viewable
 7. Brand tokens: `brand/BRAND.md`, `brand/DESIGN.md` — palette, type, logo safe-zone, Leaf <10%
 8. Relevant canonical artifacts: `research/icp-research.md` if audience-fit matters
 
@@ -53,7 +53,7 @@ Found:
 - loop: .forsvn/loops/[slug]/
 - asset: [asset id / picked variant] (re-ingested, viewable)
 - render engine: [engine] (execution_mode: [mode])
-- source brief: [.forsvn/artifacts/marketing/design-briefs/[slug].md]
+- source brief: [docs/forsvn/artifacts/marketing/design-briefs/[slug].md]
 - primary metric: [from program.md]
 - baseline/prior render: [from results.tsv last row]
 
@@ -67,7 +67,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 ```
 1. Which loop slug/path should this evaluation write into?
 2. What is the re-ingested asset path/id? (the rendered file attached via the return-leg; if a variant set, which is the picked variant?)
-3. What is the source brief path? (typically .forsvn/artifacts/marketing/design-briefs/[slug].md)
+3. What is the source brief path? (typically docs/forsvn/artifacts/marketing/design-briefs/[slug].md)
 4. Which render engine produced it, and what execution_mode (brief-only / assisted / direct)?
 5. What is the primary metric value for this cycle, and what baseline (prior render, or the loop's first-cycle bar)?
 6. What are the brief's hard acceptance criteria (aspect ratio, required copy slots, dimensions, palette)? Are brand tokens available?
@@ -88,7 +88,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 
 ## Write-back
 
-**None.** evaluate-asset does NOT write to `.forsvn/experience/`. Persistent loop state lives in:
+**None.** evaluate-asset does NOT write to `docs/forsvn/experience/`. Persistent loop state lives in:
 
 - `program.md` (loop definition — owned by eval-loop skill)
 - `context.md` (loop history + baselines — owned by eval-loop skill)

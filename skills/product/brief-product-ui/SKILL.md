@@ -23,7 +23,7 @@ Design the in-product screens/components/layout for a feature whose **flow is al
 
 **Not for:** flow logic (`/map-user-flow`, the prerequisite) · brand identity (`/create-brand`) · conversion landing pages (`/brief-landing-page`) · API/schema/tech (`/architect-system`) · decomposition (`/breakdown-tasks`).
 
-**Why this exists (not a renderer).** External taste skills (impeccable / hallmark / stitch / frontend-design) *render*. This skill emits a **portable, brand-tokened, flow-grounded, reviewable spec** under `.forsvn/artifacts/product/`, then hands off to any of them. The `--render`/`--api` → BLOCKED gate is the identity guarantee. If you want pixels, take the handoff fork.
+**Why this exists (not a renderer).** External taste skills (impeccable / hallmark / stitch / frontend-design) *render*. This skill emits a **portable, brand-tokened, flow-grounded, reviewable spec** under `docs/forsvn/artifacts/product/`, then hands off to any of them. The `--render`/`--api` → BLOCKED gate is the identity guarantee. If you want pixels, take the handoff fork.
 
 ## Critical Gates — Read First
 
@@ -50,7 +50,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/artifacts/product/flow/<slug>.md` | map-user-flow | **Hard** — the flow is the contract (resolved via `manifest.json`); absent → `NEEDS_CONTEXT` |
+| `docs/forsvn/artifacts/product/flow/<slug>.md` | map-user-flow | **Hard** — the flow is the contract (resolved via `manifest.json`); absent → `NEEDS_CONTEXT` |
 | `brand/{DESIGN,BRAND}.md` | create-brand | Soft — absent → `brand_source: cold-start-hint` |
 | `research/product-context.md` | research-icp | Optional — usability priorities |
 
@@ -60,7 +60,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/product/brief-product-ui-<YYYY-MM-DD>-<slug>.md` (by-stack v3; `stack: product`; one file per feature). **Lifecycle:** `pipeline`.
+- **Path:** `docs/forsvn/artifacts/product/brief-product-ui-<YYYY-MM-DD>-<slug>.md` (by-stack v3; `stack: product`; one file per feature). **Lifecycle:** `pipeline`.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack: product`, `type`, `id`, `keywords`, `review_surface: html` (FIRE preview while `decision_state: pending`), `decision_state`, `source_flow`, `brand_source`, plus manifest-sync `lifecycle`, `produced_by`, `provenance`. Schema: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Sections (9, in order) + per-section template:** TL;DR · Screen Inventory · Component System · Token Application Map · Per-Screen Layout Spec · Interaction & State Spec · Accessibility Notes · Handoff · What NOT To Render. Full template: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE].
 - **Consumed by:** `architect-system` (tech follows UI), `breakdown-tasks`, a coding agent / design tool.

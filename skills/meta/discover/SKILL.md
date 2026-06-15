@@ -29,7 +29,7 @@ You describe what you want → agent scans context + assesses complexity silentl
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). Then:
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: fast`; Adaptive Depth auto-calibrates Light / Medium / Deep. Overrides: "quick scope" / "deep interview" / "just ask 3 questions". `--fast` collapses to Light depth — skips operator-craft stance load, skips idea-critic gate, skips 5 mandatory spec sections on save (`light_spec: true`).
-- Run **Step 1 Context Gathering** per [`references/procedures/context-gathering.md`](references/procedures/context-gathering.md) — scan codebase + `.forsvn/artifacts/` + experience docs + learned rules + out-of-scope + project CLAUDE.md. **Anything found = question you don't ask.**
+- Run **Step 1 Context Gathering** per [`references/procedures/context-gathering.md`](references/procedures/context-gathering.md) — scan codebase + `docs/forsvn/artifacts/` + experience docs + learned rules + out-of-scope + project CLAUDE.md. **Anything found = question you don't ask.**
 - Load **operator-craft stance** (3 playbooks: ceo-cognitive-patterns + yc-six-forcing-questions + minimalist-entrepreneur) for non-trivial work; match founder-domain frames per the matrix in `context-gathering.md`.
 
 ## Adaptive Depth
@@ -59,7 +59,7 @@ Per [`references/procedures/orchestration-steps.md`](references/procedures/orche
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-discover-<YYYY-MM-DD>-<slug>.md` (flat v2; working draft, only on user save).
+- **Path:** `docs/forsvn/artifacts/meta-discover-<YYYY-MM-DD>-<slug>.md` (flat v2; working draft, only on user save).
 - **Lifecycle:** `spec` — iterated until promoted to task-breakdown or system-architecture.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=md), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode`, `plan-review-mode`, `light_spec`. Full template: [`procedures/output-formats.md`](references/procedures/output-formats.md).
 - **Required sections (Medium/Deep):** Premise Challenge · Dream State Mapping · Decided Approach · Implementation Alternatives (min 2-3) · Temporal Interrogation · Key Decisions · Edge Cases · Failure Conditions · Out of Scope · Open Questions · Concreteness Checklist (both formats — Step 6 gate state) · Open Branches (only if `done_with_concerns`) · Implementation Notes · Verdict. **Light-depth saves skip 5 sections** (Premise Challenge, Dream State Mapping, Implementation Alternatives, Temporal Interrogation, Verdict) — compact format `light_spec: true`.

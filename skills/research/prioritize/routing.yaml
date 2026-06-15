@@ -98,6 +98,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/sketches/prioritize-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/sketches/prioritize-<slug>.md"
         lifecycle: pipeline
         produced_when: "Critic PASS; ranked-initiative sketch + cut line + kill criteria."

@@ -174,4 +174,4 @@ If any check fails, revise your output before returning. The rubric only does it
 
 ## Source Basis
 
-Internal research synthesis. The threshold (≥2 red OR <2 green → push back) is preserved as a stack-owned critic rule; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `.forsvn/artifacts/meta/roadmap.md` for adoption rationale.
+Internal research synthesis. The threshold (≥2 red OR <2 green → push back) is preserved as a stack-owned critic rule; the named flag IDs (R1-R5, G1-G5) are local additions for traceable citation. See REB-5 entry in `docs/forsvn/artifacts/meta/roadmap.md` for adoption rationale.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
-// log-critic-override — append a dated entry to .forsvn/artifacts/meta/records/critic-overrides.md
+// log-critic-override — append a dated entry to docs/forsvn/artifacts/meta/records/critic-overrides.md
 // when the operator overrides a critic FAIL. Format per references/quality-feedback-protocol.md § Critic Override Log.
 //
 // Usage:
@@ -28,7 +28,7 @@ const CRITIC_VERDICTS = new Set<CriticVerdict>(["fail", "pass-with-concerns"]);
 const OPERATOR_DECISIONS = new Set<OperatorDecision>(["ship", "revise", "ignore"]);
 const FOLLOW_UPS = new Set<FollowUp>(["none", "watch metric", "revise rubric", "extract shared rubric"]);
 
-const OVERRIDES_RELPATH = ".forsvn/artifacts/meta/records/critic-overrides.md";
+const OVERRIDES_RELPATH = "docs/forsvn/artifacts/meta/records/critic-overrides.md";
 const FILE_HEADER = `# Critic Override Log
 
 Append-only record of operator decisions to ship despite a critic FAIL or pass-with-concerns verdict. Format owned by \`references/quality-feedback-protocol.md § Critic Override Log\`. Three valid overrides on the same skill:dimension pair signal the rubric needs revision — see \`references/quality-dashboard-spec.md\` for the rubric-action ladder.

@@ -89,7 +89,7 @@ Modes can run sequentially. **Start with Technical Audit if never audited** — 
 
 seo is one of three search-visibility orchestrators in the marketing-skills stack (alongside `plan-campaign` for channel mix and `brief-landing-page` for conversion-focused page work). It's `horizontal` — invokable independently or post-campaign-plan when SEO is the active channel.
 
-seo creates `.forsvn/artifacts/marketing/seo-[mode].md` — the **per-mode SEO action record** that operators ship against, `write-copy` reads for page-level keyword targets, and downstream re-audits compare against (rename existing artifact to `seo-[mode].v[N].md` and create new with incremented version). Re-run triggers: quarterly for Technical Audit, monthly for AI SEO, after Google core updates, when entering new keyword territories.
+seo creates `docs/forsvn/artifacts/marketing/seo-[mode].md` — the **per-mode SEO action record** that operators ship against, `write-copy` reads for page-level keyword targets, and downstream re-audits compare against (rename existing artifact to `seo-[mode].v[N].md` and create new with incremented version). Re-run triggers: quarterly for Technical Audit, monthly for AI SEO, after Google core updates, when entering new keyword territories.
 
 ---
 

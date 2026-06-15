@@ -1,6 +1,6 @@
 ---
 name: clean-machine
-description: "Audit + clean a developer's machine — dotfolders, caches, language toolchains, package globals — with per-target classification, risk surfacing (auth, processes, side effects), and explicit confirmation. Produces `.forsvn/artifacts/meta/records/machine-cleanup-*.md`. Not for cleaning code (use clean-code) or for triaging user files (those need human review)."
+description: "Audit + clean a developer's machine — dotfolders, caches, language toolchains, package globals — with per-target classification, risk surfacing (auth, processes, side effects), and explicit confirmation. Produces `docs/forsvn/artifacts/meta/records/machine-cleanup-*.md`. Not for cleaning code (use clean-code) or for triaging user files (those need human review)."
 argument-hint: "[target: home | caches | runtimes | packages | all]"
 allowed-tools: Read Grep Glob Bash
 metadata:
@@ -51,7 +51,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. Auto-downgrades to `fast` for single-folder targets → Single-Agent Fallback. `--fast` forces single-agent regardless of scope. **All 6 Critical Gates fire in every mode.**
 - `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
 - Read `.forsvn/index/manifest.json` for prior machine-cleanup runs; surface staleness if a recent run covered this scope.
-- Read `.forsvn/experience/technical.md` for prior protected-paths list (machine-cleanup excluded paths).
+- Read `docs/forsvn/experience/technical.md` for prior protected-paths list (machine-cleanup excluded paths).
 
 ## Pre-Dispatch
 
@@ -60,13 +60,13 @@ Run Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_sh
 Read order:
 
 1. Machine scan: `du -sh ~/.*`, `df -h`, package globals (npm/brew/bun/cargo/go/pipx) — see `scripts/inventory.sh`.
-2. Experience: `.forsvn/experience/technical.md` for prior protected-paths list.
+2. Experience: `docs/forsvn/experience/technical.md` for prior protected-paths list.
 
 Warm Start + Cold Start prompts: [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md).
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-clean-machine-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; stack is `meta` — machine-cleanup records are meta-stack snapshots).
+- **Path:** `docs/forsvn/artifacts/meta-clean-machine-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; stack is `meta` — machine-cleanup records are meta-stack snapshots).
 - **Lifecycle:** `snapshot` — dated, immutable record of one cleanup run.
 - **Frontmatter:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=meta), `review_surface` (=none — snapshot defaults to `decision_state: not_required`), `total_reclaimed`, `lifecycle`, `produced_by`, `provenance`. v2 schema in [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** Scope, Summary. Targets Nuked + Targets Kept + Side Effects Fixed + Re-Auth Commands + Manual Follow-ups when applicable. Critic Verdict optional.

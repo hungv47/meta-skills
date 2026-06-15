@@ -26,7 +26,7 @@ For 5 additional verticals (DTC, agency, B2B service, consumer marketplace, info
 
 ## Step 0 — Pre-Dispatch (orchestrator)
 
-Reads `research/product-context.md` + `research/icp-research.md` + `.forsvn/experience/business.md`. Resolves 5 of 6 dimensions from artifacts; probes for campaign goal + cadence + constraints (the constraint detail above came from Cold Start question 5).
+Reads `research/product-context.md` + `research/icp-research.md` + `docs/forsvn/experience/business.md`. Resolves 5 of 6 dimensions from artifacts; probes for campaign goal + cadence + constraints (the constraint detail above came from Cold Start question 5).
 
 **Confirm beat:**
 ```
@@ -233,8 +233,8 @@ Orchestrator re-dispatches angle-agent with the Critic Feedback appended; angle-
 When `brief-landing-page` calls campaign-plan via Route C (read-then-fall-through-to-Route-B):
 
 1. lp-brief invokes orchestrator with: "Need campaign context for landing page on async-first messaging."
-2. Orchestrator reads `.forsvn/artifacts/marketing/campaign-plan.md` — present + date 2026-05-18 (today) → return.
+2. Orchestrator reads `docs/forsvn/artifacts/marketing/campaign-plan.md` — present + date 2026-05-18 (today) → return.
 3. lp-brief extracts: Pillar 2 ("Async-first shipping") + Angle #4 ("How to ship 2x without hiring") + Channel "Search engines" → uses these to anchor hypothesis + section spec.
-4. lp-brief writes its brief at `.forsvn/artifacts/marketing/brief-landing-page/async-shipping-lp/brief.md` with `consumed: [.forsvn/artifacts/marketing/campaign-plan.md]` in frontmatter.
+4. lp-brief writes its brief at `docs/forsvn/artifacts/marketing/brief-landing-page/async-shipping-lp/brief.md` with `consumed: [docs/forsvn/artifacts/marketing/campaign-plan.md]` in frontmatter.
 
 If campaign-plan.md were missing or stale (>30 days), Route C falls through to Route B (run full campaign-plan first) — lp-brief waits.

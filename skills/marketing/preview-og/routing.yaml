@@ -95,6 +95,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/preview-og-[date]-[slug].md"
+      - path: "docs/forsvn/artifacts/marketing/preview-og-[date]-[slug].md"
         lifecycle: snapshot
         produced_when: "A preview / fix pass completes (DONE or DONE_WITH_CONCERNS)."

@@ -75,7 +75,7 @@ The caption band geometry is locked here and passed to `motion-spec-agent`'s app
 ```yaml
 ---
 type: produce-video-input
-source_brief: .forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md
+source_brief: docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/brief.md
 surface: [app-store | onboarding | website | social]
 aspect: [aspect]
 total_length_seconds: [N.N]

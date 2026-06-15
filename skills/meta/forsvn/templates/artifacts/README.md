@@ -5,7 +5,7 @@ read-by: skills resuming prior work
 written-by: every generative skill
 ---
 
-# `.forsvn/artifacts/` — Work Product
+# `docs/forsvn/artifacts/` — Work Product
 
 One-shot skill outputs. Organized by **initiative**, then by **skill** — never by date alone.
 
@@ -42,7 +42,7 @@ Kebab-case, short, descriptive. Examples: `q2-launch`, `pricing-redesign`, `cold
 
 ## Frontmatter Contract
 
-Every artifact under `.forsvn/artifacts/` carries:
+Every artifact under `docs/forsvn/artifacts/` carries:
 
 ```yaml
 ---

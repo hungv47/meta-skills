@@ -4,7 +4,7 @@ Operator ask: *"Produce the assets for the launch OG brief."* (`/produce-asset l
 
 ## Pre-Dispatch
 
-Brief resolved at `.forsvn/artifacts/marketing/design-briefs/launch-og.md` (2 slots: `og-main` 1.91:1, `ig-teaser` 4:5). `brand/BRAND.md` + `brand/DESIGN.md` present. Target platforms inherited from the brief (`og`, `instagram`); render-mode default `export-mode`; session `tool_targets.image` unset → one tool-target ask → operator picks **tool-agnostic**.
+Brief resolved at `docs/forsvn/artifacts/marketing/design-briefs/launch-og.md` (2 slots: `og-main` 1.91:1, `ig-teaser` 4:5). `brand/BRAND.md` + `brand/DESIGN.md` present. Target platforms inherited from the brief (`og`, `instagram`); render-mode default `export-mode`; session `tool_targets.image` unset → one tool-target ask → operator picks **tool-agnostic**.
 
 ## Dispatch
 
@@ -28,7 +28,7 @@ PASS first cycle → no re-dispatch.
 
 ## Output
 
-`.forsvn/artifacts/marketing/produced-assets/launch-og/manifest.md` (frontmatter: `skill: produce-asset`, `slug: launch-og`, `source_brief`, `target_platforms: [og, instagram]`, `slot_count: 2`, provenance `input_artifacts` = brief + BRAND.md + DESIGN.md, `output_eval: null`) + the two per-slot prompts.
+`docs/forsvn/artifacts/marketing/produced-assets/launch-og/manifest.md` (frontmatter: `skill: produce-asset`, `slug: launch-og`, `source_brief`, `target_platforms: [og, instagram]`, `slot_count: 2`, provenance `input_artifacts` = brief + BRAND.md + DESIGN.md, `output_eval: null`) + the two per-slot prompts.
 
 **Execution fork** (category `image`, registry: 0 verified engines) → **Brief-only**: manifest checklist handed to the operator; rendered output re-ingests via the return-leg for `evaluate-asset`.
 

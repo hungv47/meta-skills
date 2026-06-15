@@ -28,7 +28,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 - **Mode resolution** ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md)). `budget: deep`. `--fast` forces Route A (Quick Validation) — skip sizing + opportunity agents; consumer-landscape optional; critic gate collapses to single pass. `--deep` forces Route C. **Cold Start STILL fires under `--fast`** when context is missing — `--fast` does NOT authorize scoping a market with no specified category (Critical Gates 1-4 floor).
 - `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
-- Read `.forsvn/index/manifest.json` — find any prior `id:market-research` at `.forsvn/canonical/research/MARKET.md` (re-run signal); check `id:product-context` resolves (recommend `research-icp` first if missing).
+- Read `.forsvn/index/manifest.json` — find any prior `id:market-research` at `docs/forsvn/canonical/research/MARKET.md` (re-run signal); check `id:product-context` resolves (recommend `research-icp` first if missing).
 - Run Pre-Dispatch per [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md) — Warm Start with product+B2B/B2C pre-fill OR Cold Start 5-question prompt, Write-back map (Q1 → product.md; Q2+Q4 → business.md; Q3 → goals.md; Q5 → audience.md — all 5 Q's persist), route selection (A/B/C).
 
 ## Quality Gate — 10 operator bullets (11 in critic-agent)
@@ -48,15 +48,15 @@ Critic agent verifies before delivery. 11th item (Feature matrix Stakes/Diff cla
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/canonical/research/MARKET.md` (canonical singleton; `id: market-research`).
-- **Lifecycle:** `canonical` — edited in place by humans; on re-run **overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer `version:`** (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
+- **Path:** `docs/forsvn/canonical/research/MARKET.md` (canonical singleton; `id: market-research`).
+- **Lifecycle:** `canonical` — edited in place by humans; on re-run **overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer `version:`** (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
 - **Frontmatter:** `skill`, `version` (integer artifact version), `date` (ISO-8601), `status`, `stack` (=research), `review_surface` (=html — the forsvn-preview review module renders the themed preview while `decision_state: pending`), `id` (=`market-research`), `type` (=`canonical`), `keywords`, `decision_state`. See [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) for the v3 schema.
 - **Required body sections (in order — cross-stack contract):** Scope · Market Trends · Market Sizing (if applicable per route) · User & Consumer Landscape · Competitive Landscape (6 sub-sections: Overview / Adjacent / Feature Comparison / Pricing / Positioning Map / Community & Mindshare) · Gaps & Opportunities (Gap Analysis 4-dimension + Top 3 Opportunities) · Limitations & Confidence · Next Step. Full template (~90 lines) + Scope Calibration tables: [`references/format-conventions.md`](references/format-conventions.md).
 - **Optional sections:** Known Issues (when critic FAILed twice and artifact ships with `[REVIEWER NOTE]` annotations).
 - **Side effects (mandatory on PASS / done_with_concerns):**
-  - Write `.forsvn/canonical/research/MARKET.md`.
+  - Write `docs/forsvn/canonical/research/MARKET.md`.
   - Experience write-back per Write-back map: Q1 → `experience/product.md`; Q2+Q4 → `experience/business.md`; Q3 → `experience/goals.md`; Q5 → `experience/audience.md`. **All 5 Q's persist** (unlike research-icp's Q5 routing-only).
-  - On re-run, overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (no `.v[N].md` sibling).
+  - On re-run, overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (no `.v[N].md` sibling).
 - **Consumed by:** prioritize (Top 3 Opportunities feed Initiative evidence + Difficulty informs Effort scoring) · research-icp (Underserved Segments inform persona scoping) · architect-system (Competitive Landscape informs build-vs-buy) · plan-campaign (Positioning Map + Top 3 anchor messaging; Community & Mindshare informs channel mix) · fundraising deck preparation (Market Sizing + Competitive Landscape Overview + Top 3 — the "market" slide source).
 - **Cross-stack OUTPUT contract:** Artifact Template structure + 8 required sections + 6 Competitive Landscape sub-sections + Top 3 Opportunities 6-column schema + Adjacent Competitors 5-column schema + Gap Analysis 4-dimension format + Next Step block are load-bearing — schema changes require atomic update of 5+ consumers.
 

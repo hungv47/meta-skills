@@ -6,8 +6,8 @@
 // declared in the agent config files + env-var PRESENCE — classifies each against the
 // seed catalog (lib/tool-catalog.ts), and emits two surfaces from one source:
 //
-//   .forsvn/canonical/meta/TOOL-REGISTRY.md   ① humans + greppable agent surface
-//   .forsvn/index/tools.json                  ② machine index (sibling to manifest.json)
+//   docs/forsvn/canonical/meta/TOOL-REGISTRY.md   ① humans + greppable agent surface
+//   .forsvn/index/tools.json                      ② machine index (sibling to manifest.json)
 //
 // Nothing is marked `verified` here. Verification is a separate, operator-initiated,
 // cheapest-possible liveness probe (§3.2) — present ≠ live. So the execution fork (§4)
@@ -36,7 +36,7 @@ const ROOT_ARG = process.argv.find((a, i) => i > 1 && !a.startsWith("--")) ?? pr
 const ROOT = realpathSync(ROOT_ARG);
 const HOME = homedir();
 const TOOLS_JSON = join(ROOT, ".forsvn", "index", "tools.json");
-const REGISTRY_MD = join(ROOT, ".forsvn", "canonical", "meta", "TOOL-REGISTRY.md");
+const REGISTRY_MD = join(ROOT, "docs", "forsvn", "canonical", "meta", "TOOL-REGISTRY.md");
 const PLUGINS_DIR = join(HOME, ".claude", "plugins");
 const INSTALLED_PLUGINS = join(PLUGINS_DIR, "installed_plugins.json");
 const TOOLS_SCHEMA_VERSION = 1;
@@ -391,7 +391,7 @@ if (CHECK) {
 }
 
 mkdirSync(join(ROOT, ".forsvn", "index"), { recursive: true });
-mkdirSync(join(ROOT, ".forsvn", "canonical", "meta"), { recursive: true });
+mkdirSync(join(ROOT, "docs", "forsvn", "canonical", "meta"), { recursive: true });
 writeFileSync(TOOLS_JSON, toolsText);
 writeFileSync(REGISTRY_MD, mdText);
 

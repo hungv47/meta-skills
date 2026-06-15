@@ -95,6 +95,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/product/brief-product-ui-[YYYY-MM-DD]-[slug].md"
+      - path: "docs/forsvn/artifacts/product/brief-product-ui-[YYYY-MM-DD]-[slug].md"
         lifecycle: pipeline
         produced_when: "Critic PASS (all 8 CPs); UI spec artifact."

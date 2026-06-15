@@ -5,7 +5,7 @@ argument-hint: "[code or artifact to verify]"
 allowed-tools: Read Grep Glob Bash
 user-invocable: true
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.15-0.50"
 ---
@@ -31,14 +31,14 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 - **Mode** (`references/_shared/mode-resolver.md`): default `standard`; auto-escalate to `deep` for auth/sessions/access-control/payments/financial-data/migrations/bulk-mutations/PII OR diff >500 lines; auto-downgrade to `fast` for typos/log lines/config tweaks.
 - `references/_shared/execution-policy.md` — session execution profile (single-vs-multi)
-- Read `.forsvn/artifacts/meta/specs/*.md` + `tasks.md` if present — enables scope-drift detection per [`procedures/scope-drift.md`](references/procedures/scope-drift.md).
-- Read `.forsvn/artifacts/meta/records/learned-rules.md` — append to reviewer CONTEXT.
+- Read `docs/forsvn/artifacts/meta/specs/*.md` + `tasks.md` if present — enables scope-drift detection per [`procedures/scope-drift.md`](references/procedures/scope-drift.md).
+- Read `docs/forsvn/artifacts/meta/records/learned-rules.md` — append to reviewer CONTEXT.
 
 Mode map: `fast` = generalist, skip resolver if PASS; `standard` = generalist + resolver loop; `deep` = 3 specialists parallel OR critic-consensus (non-code).
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, immutable per-run)
+- **Path:** `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, immutable per-run)
 - **Lifecycle:** `snapshot` — accumulates, never overwritten
 - **Frontmatter:** `skill`, `produced_by`, `version`, `date`, `status`, `mode`, `rounds`, `verdict` (PASS/FIXED/CRITICAL), `provenance`. Template: [`references/report-template.md`](references/report-template.md)
 - **Sections:** Verdict · Issues Found · Input Quality · Scope Drift · Simplifications · Changes Made · Self-Regulation Gate · Reviewer Summary · Resolver Notes · Specialist Verdicts (deep) · Critic Disagreements (critic-consensus)

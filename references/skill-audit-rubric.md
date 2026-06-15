@@ -195,6 +195,11 @@ Pure adjudication input for the wave-2 report (R7) — records state, **never fl
 
 Whether each lever *should* be applied is per-skill operator judgment in the disposition report — applied where it fits, declined with a reason where it doesn't. Never blanket-applied.
 
+**Standing lever decisions (do not re-litigate without new evidence):**
+
+- `${CLAUDE_SKILL_DIR}` — **NOT adopted (wave-3, 2026-06-13).** The bundled `scripts/*.ts` cites already resolve cross-harness because the scripts are mirrored into each skill's own `scripts/` via the `SUPPORT_SCRIPTS` map (relative path works on Claude Code / Codex / Cursor); `${CLAUDE_SKILL_DIR}` is Claude-Code-specific and would *narrow* portability. The advisory line above stays informational; treat it as "noted, declined." Reopen only on a concrete cross-harness breakage.
+- `context: fork` — **parked (wave-3, 2026-06-13).** Useful for the large-context runners (`debate-agents`, `run-pipeline`, `review-work`), but blocked on (a) a written distinction from the stack's load-bearing `execution-fork` vocabulary and (b) a confirmed cross-harness support check. Adjudicate per runner only after both clear.
+
 ### What v2 deliberately does NOT score
 
 No advisory dimension rewards specification density, prescription count, or rubric strictness. The U12 creativity loosening (approved 2026-06-12) is settled: a v2 finding that would re-tighten an outcome-quality rubric is auto-rejected unless it cites a brand/safety/claims floor. Leaner and more permissive skills must never score worse on A1–A6 than denser ones.

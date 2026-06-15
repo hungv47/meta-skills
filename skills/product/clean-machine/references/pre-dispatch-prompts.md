@@ -56,7 +56,7 @@ After Cold Start resolves, persist only durable context:
 
 | Q | File | Key | Rule |
 |---|---|---|---|
-| 3. Excluded paths | `.forsvn/experience/technical.md` | `Technical — machine-cleanup excluded paths` | Durable across runs (these paths stay protected) |
+| 3. Excluded paths | `docs/forsvn/experience/technical.md` | `Technical — machine-cleanup excluded paths` | Durable across runs (these paths stay protected) |
 
 Q1 (scope) + Q2 (aggressiveness) are run-specific. Don't persist.
 

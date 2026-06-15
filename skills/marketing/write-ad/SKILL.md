@@ -40,8 +40,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `research/icp-research.md` | research-icp | Recommended — primary persona + VoC pain language |
 | `brand/BRAND.md` | create-brand | Recommended — voice anchors + banned-language list |
 | `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended (visual creative) — house art direction for the ad's visual concept; design against it + a realized exemplar, not tokens alone (`references/_shared/realized-surface-grounding.md`) |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route B from broader campaign + `## Creative Direction` (per-campaign art direction) |
-| `.forsvn/experience/{audience,product,business,brand}.md` | (any skill) | Optional — persisted `Product — current offer` / `Product — proof points` keys |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route B from broader campaign + `## Creative Direction` (per-campaign art direction) |
+| `docs/forsvn/experience/{audience,product,business,brand}.md` | (any skill) | Optional — persisted `Product — current offer` / `Product — proof points` keys |
 
 ## Pre-Dispatch + Mode
 
@@ -58,7 +58,7 @@ Two routes — A (compose: single audience-temperature), B (called by another sk
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (final draft) · `[audience-temp]-[date]-[slug].rationale.md` (angle + framing + per-variant rationale) · `[audience-temp]-[date]-[slug].critic-score.md` (7-dim scorecard per variant + total + regression).
+- **Paths:** `docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (final draft) · `[audience-temp]-[date]-[slug].rationale.md` (angle + framing + per-variant rationale) · `[audience-temp]-[date]-[slug].critic-score.md` (7-dim scorecard per variant + total + regression).
 - **Lifecycle:** `pipeline` — overwrite on re-run for same `(audience-temp, date, slug-tail)`; explicit `-v2` suffix when version-history preservation needed; new audience-temp on same day = different prefix = different file.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `network`, `surface`, `audience_temp`, `creative_format`, `production_model`, `conversion_event`, `critic_total` + nested `critic_per_variant: {hero, variant_a, variant_b}`.
 - **Slug pattern:** `retargeting-2026-05-11-trial-app-followers` or `cold-2026-05-11-app-install-dedicated`. Audience-temp prefix makes campaign-spanning runs land in distinct files even on the same day.

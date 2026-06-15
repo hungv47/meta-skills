@@ -10,7 +10,7 @@ Normalize launched multi-channel campaign evidence into a metric packet the orch
 - Loop `context.md`, especially baseline and measurement assumptions
 - Prior `results.tsv`
 - Campaign name/tag for the current cycle — operator-supplied
-- Source plan-campaign artifact (`.forsvn/artifacts/marketing/campaign-plan.md`) — the campaign hypothesis being scored
+- Source plan-campaign artifact (`docs/forsvn/artifacts/marketing/campaign-plan.md`) — the campaign hypothesis being scored
 - Current evidence: CRM exports, ad-platform dashboards, web analytics, the per-channel rollup, operator-supplied numbers
 - Total fully-loaded spend (media + production + tooling allocated to the campaign)
 - Optional: existing per-asset eval artifacts in the loop (context only — never re-scored, never blended into the verdict)

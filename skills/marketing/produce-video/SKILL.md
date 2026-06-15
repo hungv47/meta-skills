@@ -35,7 +35,7 @@ Input tables, `NEEDS_CONTEXT` triggers, bundle tree, chain + re-run triggers: `r
 
 - **Shortform inputs:** `brief-shortform` artifact (or schema-compliant video-brief) + `brand/BRAND.md` + `brand/DESIGN.md` + **soft-required** `brand/FRAME.md` (frame direction; path + heading match). Absent → flag `frame_direction: absent`, fall back to DESIGN/CREATIVE-DIRECTION tokens (never silent). Slot table + degradation: [`video-brief-schema.md`](references/video-brief-schema.md) § Brand frame inputs.
 - **App-preview inputs:** `handoff-produce-video.md` + companion `brief.md` + `assets.md` + source screenshots on disk. Brand files soft-required (skip when `brand_source: cold-start-hint`).
-- **Bundle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` + `post.md` (post stage).
+- **Bundle:** `docs/forsvn/artifacts/marketing/produced-videos/[slug]/` — always emits `manifest.md` + `scenes/[shot-id].md` + `hyperframes/scaffold.html` + `remotion/scaffold.tsx` + `vercel-ai-cli.md` + `post.md` (post stage).
 
 ## Quality Gate & Routing
 
@@ -43,7 +43,7 @@ Two routes by brief `type` at pre-dispatch (graphs + dispatch in [`agent-manifes
 
 ## Artifact Contract
 
-- **Root + lifecycle:** `.forsvn/artifacts/marketing/produced-videos/[slug]/`, `pipeline` (regenerated on re-run).
+- **Root + lifecycle:** `docs/forsvn/artifacts/marketing/produced-videos/[slug]/`, `pipeline`.
 - **Manifest frontmatter (12):** `skill` · `version` · `date` · `status` · `slug` · `source_brief` · `target_platforms` · `aspect` · `length_seconds` · `shot_count` · `cta` · `provenance`.
 - **Per-shot frontmatter (7):** `skill` · `version` · `date` · `shot_id` · `shot_index` · `duration_seconds` · `platform`.
 - **Provenance:** `input_artifacts` = brief path + `BRAND.md` + `DESIGN.md` (+ `FRAME.md` when present) + `frame_direction` flag; `output_eval: null` until downstream `evaluate-shortform`/`evaluate-content`.

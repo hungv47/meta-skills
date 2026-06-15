@@ -46,7 +46,7 @@ Max 2 loops. Round 2 review runs only when an Accepted fix changed code in a way
 
 ## 7. Write the report
 
-Per [`../report-template.md`](../report-template.md). Path: `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — dated, immutable, never overwritten.
+Per [`../report-template.md`](../report-template.md). Path: `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` — dated, immutable, never overwritten.
 
 ## 8. Deliver
 

@@ -58,11 +58,11 @@ Per [`references/_shared/before-starting-check.md`](references/_shared/before-st
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/research-research-platform-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one artifact per account scope + platform set)
+- **Path:** `docs/forsvn/artifacts/research-research-platform-<YYYY-MM-DD>-<slug>.md` (flat v2 grammar; one artifact per account scope + platform set)
 - **Lifecycle:** `pipeline` (regenerable, point-in-time; refresh governed by the two freshness windows). Evidence is re-measured on re-run, never amended in place.
 - **Frontmatter fields:** `skill`, `type`, `status`, `date`, `stack` (=research), `review_surface` (=md), `account_scope`, `platforms_analyzed`, `metrics_window_date`, `algorithm_context_date`, `evidence_sources_logged`, `coverage_per_platform`. Full schema: [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. v2 baseline: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required body sections (cross-stack contract, in order):** TL;DR · Evidence Base · Per-Platform Evidence · Cross-Platform Comparison · Recommendations · Missing Evidence & How to Close It · Open Risks & Caveats · What This Evidence Doesn't Cover
-- **Side effects (on PASS or done_with_concerns):** write artifact → run `bun scripts/manifest-sync.ts` → experience write-back (account scope + platforms → `.forsvn/experience/content.md`).
+- **Side effects (on PASS or done_with_concerns):** write artifact → run `bun scripts/manifest-sync.ts` → experience write-back (account scope + platforms → `docs/forsvn/experience/content.md`).
 - **Consumed by:** `write-social`, `optimize-seo`, `research-shortform`, `evaluate-content`, `evaluate-shortform`, `publish-social` — each reads Per-Platform Evidence + Recommendations to ground decisions in measured performance.
 - **Cross-stack OUTPUT contract:** frontmatter schema + 8 body sections + per-datum source-type tags + MEASURED / PARTIAL / NO_EVIDENCE flag + recommendation 4-part attribution (platform / source / window / confidence) are load-bearing — schema changes require atomic update of consumers.
 

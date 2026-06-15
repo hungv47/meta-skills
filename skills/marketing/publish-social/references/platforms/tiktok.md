@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # TikTok — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for TikTok caption. Cross-references `references/_shared/platform-intelligence/tiktok.md` (D13 canonical).

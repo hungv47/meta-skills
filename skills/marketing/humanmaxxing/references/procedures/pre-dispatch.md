@@ -26,8 +26,8 @@ load_class: PROCEDURE
 1. **Pipeline artifacts:**
    - `brand/BRAND.md` → voice rules + lexicon + voice adjectives
    - `research/product-context.md` → voice adjectives (Voice — adjectives field if present)
-   - `.forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
-2. **Experience:** `.forsvn/experience/brand.md` → voice notes from prior runs (`Voice — adjectives` key)
+   - `docs/forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract source skill from frontmatter)
+2. **Experience:** `docs/forsvn/experience/brand.md` → voice notes from prior runs (`Voice — adjectives` key)
 3. **Conversation context:** brief from upstream skill (e.g., copywriting handed text directly with voice context)
 
 If `research/product-context.md` `date:` is >30 days, warn and recommend re-running `research-icp` for fresh voice adjectives — brand voice evolves.
@@ -70,7 +70,7 @@ After cold-start answers, append to experience/:
 
 | Question | File | Key | When to write |
 |---|---|---|---|
-| 1. Target voice | `.forsvn/experience/brand.md` | `Voice — adjectives` | ONLY if 3-adjective form (not when pointing at BRAND.md — that's already canonical, no point duplicating) |
+| 1. Target voice | `docs/forsvn/experience/brand.md` | `Voice — adjectives` | ONLY if 3-adjective form (not when pointing at BRAND.md — that's already canonical, no point duplicating) |
 | 2. Register preserve | (routing only — content-specific) | — | Do NOT write-back. Register varies by source. |
 | 3. Compression target | (routing only — content-specific) | — | Do NOT write-back. Compression varies by content type per Content Type Calibration. |
 

@@ -60,7 +60,7 @@ capability:
         - "id:product-context"
         - "id:icp-research"
         - "id:brand"
-        - ".forsvn/artifacts/marketing/campaign-plan.md"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
       hard: []
 
   orchestration:
@@ -105,12 +105,12 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md"
+      - path: "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md"
         lifecycle: pipeline
         produced_when: "Hero + Variant A + Variant B drafted, critic + format-checker + humanmaxxing-regression PASS."
-      - path: ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].rationale.md"
+      - path: "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].rationale.md"
         lifecycle: pipeline
         produced_when: "Angle + framing + per-variant rationale companion (always emitted)."
-      - path: ".forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].critic-score.md"
+      - path: "docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].critic-score.md"
         lifecycle: pipeline
         produced_when: "7-dim scorecard per variant + total + regression (always emitted)."

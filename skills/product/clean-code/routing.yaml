@@ -69,6 +69,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md"
         lifecycle: snapshot
         produced_when: "End of cleanup run; dated immutable record."

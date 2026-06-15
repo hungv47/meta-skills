@@ -19,7 +19,7 @@ Use the **Agent tool** (general-purpose or Explore) with a prompt built as:
 1. **Read** the agent instruction file (e.g., `agents/strategist.md`) — include FULL content in the Agent prompt
 2. **Append** pre-writing context + any prior layer's output
 3. **Resolve paths to absolute** — rooted at this skill's directory. Example: `references/channels/email.md` → `<skill-root>/references/channels/email.md` (`<skill-root>` = install path, typically `<skill-root>/`). Tell the agent which references to read.
-4. **Pass upstream artifacts by content, not path** — orchestrator reads `research/*.md` and `.forsvn/artifacts/marketing/*.md` FIRST, includes excerpts (VoC quotes, voice adjectives, pain language) in pre-writing. Sub-agents do NOT read artifact files directly.
+4. **Pass upstream artifacts by content, not path** — orchestrator reads `research/*.md` and `docs/forsvn/artifacts/marketing/*.md` FIRST, includes excerpts (VoC quotes, voice adjectives, pain language) in pre-writing. Sub-agents do NOT read artifact files directly.
 5. If **feedback** exists (critic FAIL), append at end with header "## Critic Feedback — Address Every Point"
 
 ## Single-agent fallback
@@ -60,7 +60,7 @@ Quality is equivalent — multi-agent optimizes parallelism and focus, not capab
    - Same BLOCKED reason repeats on second pass → escalate as `NEEDS_CONTEXT` (name what's missing — usually a concrete client + number).
 7. TERMINAL: invoke `humanmaxxing` with `content-type: "short-outbound"` + channel
 8. POST-HUMANMAXXING REGRESSION: re-run critic's Specificity dim only. Drops ≥2 OR any named entity/number absent post-humanmaxxing → revert to critic-approved draft.
-9. Write artifacts to `.forsvn/artifacts/marketing/write-outreach/[slug].md` (+ .rationale.md + .critic-score.md)
+9. Write artifacts to `docs/forsvn/artifacts/marketing/write-outreach/[slug].md` (+ .rationale.md + .critic-score.md)
 10. Deliver message + rationale inline; show scorecard only if user asks or any dim scored 6-7
 ```
 

@@ -22,6 +22,13 @@
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import { ARTIFACT_HOME, STATE_HOME } from "./lib/path-parser";
+
+// Knowledge layers may live under either home (ARTIFACT_HOME=docs/forsvn after
+// the state-root migration, STATE_HOME=.forsvn before); the manifest stays
+// under STATE_HOME/index/.
+const KNOWLEDGE_HOMES = [ARTIFACT_HOME, STATE_HOME];
+const MANIFEST_REL = `${STATE_HOME}/index/manifest.json`;
 
 function arg(name: string): string | undefined {
   const i = process.argv.indexOf(name);
@@ -42,7 +49,7 @@ const asJson = process.argv.includes("--json");
 
 // --- Phase 1 graph modes (manifest-backed) ----------------------------------
 function loadManifest(): { artifacts: Record<string, any>; by_id: Record<string, string>; graph: Record<string, any> } | null {
-  const mp = join(ROOT, ".forsvn/index/manifest.json");
+  const mp = join(ROOT, MANIFEST_REL);
   if (!existsSync(mp)) return null;
   try {
     const m = JSON.parse(readFileSync(mp, "utf8"));
@@ -113,11 +120,14 @@ if (wantContext) {
   // stack — TRUTH (canonical) + OUTPUT (artifacts) + MEMORY (experience) — in a
   // single call, no globbing. Optionally scoped to one stack.
   const scoped = rows.filter((r) => !wantStack || r.stack === wantStack);
-  const layerOf = (p: string): "canonical" | "artifacts" | "experience" | "other" =>
-    p.startsWith(".forsvn/canonical/") ? "canonical"
-    : p.startsWith(".forsvn/artifacts/") ? "artifacts"
-    : p.startsWith(".forsvn/experience/") ? "experience"
-    : "other";
+  const layerOf = (p: string): "canonical" | "artifacts" | "experience" | "other" => {
+    for (const home of KNOWLEDGE_HOMES) {
+      if (p.startsWith(`${home}/canonical/`)) return "canonical";
+      if (p.startsWith(`${home}/artifacts/`)) return "artifacts";
+      if (p.startsWith(`${home}/experience/`)) return "experience";
+    }
+    return "other";
+  };
   const pick = (layer: string) => scoped.filter((r) => layerOf(r.path) === layer)
     .map((r) => ({ id: r.id, path: r.path, type: r.type, stack: r.stack, summary: r.summary, use_when: r.use_when, decision_state: r.decision_state }));
   const ctx = { stack: wantStack ?? "(all)", truth: pick("canonical"), output: pick("artifacts"), memory: pick("experience") };
@@ -140,7 +150,7 @@ if (wantContext) {
 
 const filtered = rows.filter((r) => {
   if (wantStack && r.stack !== wantStack) return false;
-  if (wantLayer && !r.path.startsWith(`.forsvn/${wantLayer}/`)) return false;
+  if (wantLayer && !KNOWLEDGE_HOMES.some((h) => r.path.startsWith(`${h}/${wantLayer}/`))) return false;
   if (wantType && r.type !== wantType) return false;
   if (wantId && r.id !== wantId) return false;
   if (wantDecision && r.decision_state !== wantDecision) return false;
@@ -167,7 +177,7 @@ console.log(`\n${filtered.length} match(es).`);
 // --- sources ----------------------------------------------------------------
 
 function fromManifest(): Row[] | null {
-  const mp = join(ROOT, ".forsvn/index/manifest.json");
+  const mp = join(ROOT, MANIFEST_REL);
   if (!existsSync(mp)) return null;
   try {
     const m = JSON.parse(readFileSync(mp, "utf8"));
@@ -192,9 +202,11 @@ function fromManifest(): Row[] | null {
 
 function fromScan(): Row[] {
   const out: Row[] = [];
-  for (const layer of ["canonical", "artifacts", "experience"]) {
-    const dir = join(ROOT, ".forsvn", layer);
-    if (existsSync(dir)) walk(dir);
+  for (const home of KNOWLEDGE_HOMES) {
+    for (const layer of ["canonical", "artifacts", "experience"]) {
+      const dir = join(ROOT, home, layer);
+      if (existsSync(dir)) walk(dir);
+    }
   }
   return out;
 

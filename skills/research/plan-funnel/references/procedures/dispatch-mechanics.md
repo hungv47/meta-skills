@@ -99,7 +99,7 @@ target-setter-agent → sanity-check-agent → critic-agent
 Conditions (ALL must hold):
 - Input is ≤3 sentences
 - Single initiative
-- Prior `.forsvn/artifacts/meta/records/targets-*.md` exists for the same initiative
+- Prior `docs/forsvn/artifacts/meta/records/targets-*.md` exists for the same initiative
 
 ```
 target-setter-agent (read prior targets-*.md, apply delta, write — no critic gate)
@@ -151,7 +151,7 @@ If the full orchestration is unnecessary (single metric, user already has baseli
 
 ## Post-write side effects
 
-After the artifact is written to `.forsvn/artifacts/meta/records/targets-[date].md`:
+After the artifact is written to `docs/forsvn/artifacts/meta/records/targets-[date].md`:
 
 1. **Re-name** any prior `targets-*.md` for the same initiative-set to `targets.v[N].md` (increment N from the highest existing version). Never overwrite a prior run silently.
 2. **Append to `experience/business.md`** per the Write-back map in `pre-dispatch.md`. Baselines, growth motion (if confirmed/changed), unit economics snapshot, channel mapping. Stable user-profile state worth carrying forward.

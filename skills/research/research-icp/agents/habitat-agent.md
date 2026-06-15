@@ -18,7 +18,7 @@ You do NOT:
 | Field | Type | Description |
 |-------|------|-------------|
 | **brief** | string | The user's research request — who to research, product category, B2B/B2C, geography |
-| **context** | object | Product context from `.forsvn/canonical/product/PRODUCT-CONTEXT.md` — product, buyer, problem, differentiator |
+| **context** | object | Product context from `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` — product, buyer, problem, differentiator |
 | **upstream** | null | You run in Layer 1 (parallel) — no upstream dependency |
 | **references** | file paths[] | Absolute path to `references/habitat-mapping.md` |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |

@@ -52,8 +52,8 @@ capability:
     prerequisites:
       recommended:
         - "id:product-context"
-        - ".forsvn/artifacts/meta/specs/[slug].md"
-        - ".forsvn/artifacts/product/flow/[slug].md"
+        - "docs/forsvn/artifacts/meta/specs/[slug].md"
+        - "docs/forsvn/artifacts/product/flow/[slug].md"
       hard: []
 
   orchestration:

@@ -77,9 +77,9 @@ Multi-agent value here: **brand specialist + concept variety (3 distinct options
 - `brand/BRAND.md` — voice, archetype, sacred elements (from `create-brand`)
 - `brand/DESIGN.md` — palette, typography, surface language, motion (from `create-brand`)
 - `brand/ASSETS.md` — per-platform production inventory; pre-fills format/dimensions if asset matches a row, auto-ticks checkbox on completion (from `create-brand`)
-- `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` — slot spec when brief is for an LP asset (from `brief-landing-page`)
-- `.forsvn/artifacts/marketing/content/[slug].copy.md` — copy used IN the asset (from `write-copy`)
-- `.forsvn/artifacts/marketing/campaign-plan.md` — campaign context, channel placement, awareness stage (from `plan-campaign`)
+- `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` — slot spec when brief is for an LP asset (from `brief-landing-page`)
+- `docs/forsvn/artifacts/marketing/content/[slug].copy.md` — copy used IN the asset (from `write-copy`)
+- `docs/forsvn/artifacts/marketing/campaign-plan.md` — campaign context, channel placement, awareness stage (from `plan-campaign`)
 - `research/icp-research.md` — audience visual preferences (from `research-icp` in research-skills)
 - `references/asset-types.md` — per-asset format specs
 - `references/platform-modules.md` — per-platform brief checklists. Fully populated — all 18 modules (tranche 1 core-digital + tranche 2 paid-ad-chrome + physical) carry practitioner-grade specs; volatile platform fields + per-vendor physical specs carry `[verify]` / confirm-media-kit flags. Skill is `status: done`
@@ -90,7 +90,7 @@ Multi-agent value here: **brand specialist + concept variety (3 distinct options
 
 ## Downstream consumers
 
-The brief at `.forsvn/artifacts/marketing/design-briefs/[slug].md` is consumed by:
+The brief at `docs/forsvn/artifacts/marketing/design-briefs/[slug].md` is consumed by:
 
 - **Image-gen tools** (Claude Design / Midjourney / Imagen / DALL·E / Ideogram / Veo / Suno) — read the Image-Gen Prompt block when `downstream_route: image-gen`
 - **Vector tools** (Pencil / Figma) — read the Layout Grid + Component References block when `downstream_route: vector-tool`

@@ -4,7 +4,7 @@ description: "Scores a launched landing page from real performance evidence insi
 argument-hint: "[loop slug or path] [page URL/route] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -79,6 +79,10 @@ When operator ships a cycle despite critic FAIL — **log the override BEFORE wr
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 10 lp-eval patterns + 4 cross-cutting marketing-stack rows. Most common: scope drift to redesign (Gate 6 + Critic "Boundary Control"), confidence inflation (Gate 5 + Critic "Attribution Honesty"), low-confidence learning promotion (Critic Hard Fail #7), missing primary metric source-window (Critic Hard Fail #2).
+
+## Worked Example
+
+Landing-page CRO cycle (section-level bottleneck diagnosis from conversion evidence, critic PASS): [`references/examples/landing-page-eval-cycle-walkthrough.md`](references/examples/landing-page-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

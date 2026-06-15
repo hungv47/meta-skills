@@ -52,7 +52,7 @@ load_class: ANTI-PATTERN
 **Fix:** Metric Ingest always reports the 4-way breakdown (likes / saves / shares / comments). Metric Integrity rubric dim drops to 0-2 on a blended-only number.
 
 ### 9. Source write-social artifact unverified
-**Pattern:** The cycle artifact's provenance lists `input_artifacts: .forsvn/artifacts/marketing/copy/linkedin-2026-05-01-launch.md` — but the file doesn't exist.
+**Pattern:** The cycle artifact's provenance lists `input_artifacts: docs/forsvn/artifacts/marketing/copy/linkedin-2026-05-01-launch.md` — but the file doesn't exist.
 **Why it fails:** Without the source artifact, the eval scores against an imagined hypothesis. Future `write-social --rev=N+1` runs read provenance and can't follow the chain.
 **Fix:** Metric Ingest's Blockers section catches unreadable source paths. Critic Hard Fail #10 enforces.
 

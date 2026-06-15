@@ -5,11 +5,11 @@ read-by: every skill on cold-start
 written-by: every skill after answering a cold-start dimension
 ---
 
-# `.forsvn/experience/` — Cross-Skill Q&A Substrate
+# `docs/forsvn/experience/` — Cross-Skill Q&A Substrate
 
 Append-only knowledge layer. When a skill asks a cold-start question and the user answers, the skill appends the dimension key + answer here. Future skills read before asking.
 
-Replaces the previously planned `.forsvn/experience/`. Same contract, new home.
+Replaces the previously planned `docs/forsvn/experience/`. Same contract, new home.
 
 ## Files
 

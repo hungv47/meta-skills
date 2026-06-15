@@ -22,9 +22,9 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. `.forsvn/artifacts/research/platform-evidence/[slug].md` if it exists — check the account-scope match and both freshness windows
+1. `docs/forsvn/artifacts/research/platform-evidence/[slug].md` if it exists — check the account-scope match and both freshness windows
 2. `.forsvn/index/manifest.json` — find any `.forsvn/loops/*/evals/*.md` artifacts (a `prior_eval` source the operator may not mention)
-3. `.forsvn/experience/content.md` — most recent entries for account scope, platforms already analyzed, niche
+3. `docs/forsvn/experience/content.md` — most recent entries for account scope, platforms already analyzed, niche
 4. `research/icp-research.md`, `research/product-context.md` — audience + niche context for the benchmark cohort, if present
 
 ---
@@ -87,7 +87,7 @@ Note: I never need your platform logins. Paste exports/screenshots as text — t
 
 Wait for answers. Do not dispatch without them. If the operator supplies evidence for zero platforms and step 2 of the warm-start scan found no `prior_eval` artifacts, return `NEEDS_CONTEXT` — name what to export per platform.
 
-## Write-back to `.forsvn/experience/content.md`
+## Write-back to `docs/forsvn/experience/content.md`
 
 After Cold Start answers are received, append to `content.md`:
 

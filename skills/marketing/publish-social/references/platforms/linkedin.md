@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # LinkedIn — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for formatting LinkedIn drafts. Cross-references `references/_shared/platform-intelligence/linkedin.md` (D13 canonical).

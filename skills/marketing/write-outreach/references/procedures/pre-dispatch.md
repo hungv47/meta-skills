@@ -28,8 +28,8 @@ load_class: PROCEDURE
 1. **Pipeline artifacts:**
    - `research/product-context.md` → voice adjectives, accuracy constraints, proof points
    - `research/icp-research.md` → primary persona + VoC pain language
-   - `.forsvn/artifacts/marketing/campaign-plan.md` → channel mix + sequencing if outbound is part of a broader campaign
-2. **Experience:** `.forsvn/experience/{audience,product,business}.md` → Voice notes, proof points, target-fit observations from prior runs
+   - `docs/forsvn/artifacts/marketing/campaign-plan.md` → channel mix + sequencing if outbound is part of a broader campaign
+2. **Experience:** `docs/forsvn/experience/{audience,product,business}.md` → Voice notes, proof points, target-fit observations from prior runs
 3. **Conversation context:** brief from upstream skill (e.g., campaign-plan handed strategy directly)
 
 If `research/icp-research.md` / `research/product-context.md` `date:` is >30 days, warn and recommend re-running `research-icp` (soft gate — proceed with "stale ICP" header note).
@@ -85,7 +85,7 @@ After cold-start answers, append to experience/:
 
 | Q | File | Key | When to write |
 |---|---|---|---|
-| 7. Proof points | `.forsvn/experience/product.md` | `Product — proof points` | Durable across cold-outreach + copywriting + lp-brief runs |
+| 7. Proof points | `docs/forsvn/experience/product.md` | `Product — proof points` | Durable across cold-outreach + copywriting + lp-brief runs |
 | 1, 2, 3, 4, 5, 6 | (run-specific) | — | Lives in the rationale.md artifact only — per-target dimensions don't generalize across runs |
 
 If `research/icp-research.md` exists, pull VoC pain language into pre-writing. If `research/product-context.md` exists, pull voice adjectives + accuracy constraints. If prior touches exist, include verbatim so strategist avoids repetition and composer maintains tone.

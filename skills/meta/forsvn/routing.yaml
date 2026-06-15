@@ -71,7 +71,7 @@ capability:
       - "User wants a full scoping interview -> discover."
     prerequisites:
       recommended:
-        - ".forsvn/canonical/product/PRODUCT-CONTEXT.md"
+        - "docs/forsvn/canonical/product/PRODUCT-CONTEXT.md"
       hard: []
 
   orchestration:

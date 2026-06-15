@@ -29,8 +29,8 @@ If hard gates pass, proceed to Pre-Dispatch flows.
 
 ## Read order
 
-1. **Pipeline:** `brand/BRAND.md`, `brand/DESIGN.md` (both confirmed by hard gate). `research/icp-research.md`, `research/product-context.md`, `.forsvn/artifacts/marketing/campaign-plan.md`, `.forsvn/artifacts/meta/records/targets-*.md` (all optional, read when present).
-2. **Experience:** `.forsvn/experience/goals.md` for prior hypothesis/goal context. `.forsvn/experience/audience.md` for ICP fallback if no `icp-research.md`.
+1. **Pipeline:** `brand/BRAND.md`, `brand/DESIGN.md` (both confirmed by hard gate). `research/icp-research.md`, `research/product-context.md`, `docs/forsvn/artifacts/marketing/campaign-plan.md`, `docs/forsvn/artifacts/meta/records/targets-*.md` (all optional, read when present).
+2. **Experience:** `docs/forsvn/experience/goals.md` for prior hypothesis/goal context. `docs/forsvn/experience/audience.md` for ICP fallback if no `icp-research.md`.
 
 ## Warm Start prompt
 
@@ -69,7 +69,7 @@ Answer 1-4 in one response. I'll confirm and dispatch Layer 1.
 
 ## Write-back
 
-After cold-start answers, append to `.forsvn/experience/`:
+After cold-start answers, append to `docs/forsvn/experience/`:
 
 | Question | File | Key |
 |---|---|---|

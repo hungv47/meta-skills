@@ -161,13 +161,13 @@ Critic notes: "Adjacent competitor section is strong. Sizing was correctly skipp
 
 Per `procedures/dispatch-mechanics.md`:
 
-1. Wrote `.forsvn/canonical/research/MARKET.md` with frontmatter + 8 required sections.
+1. Wrote `docs/forsvn/canonical/research/MARKET.md` with frontmatter + 8 required sections.
 2. Experience write-back:
    - `experience/product.md` ← `Product — category: "AI-powered code review tools"`
    - `experience/business.md` ← `Business — geo + planning horizon: "Global English-speaking, current + 2-year"`, `Business — known competitors: "CodeRabbit, Sourcery, Codacy, Qodo, Ellipsis"`
    - `experience/goals.md` ← `Goals — market-research trigger: "Building new product; need to know where gaps are"`
    - `experience/audience.md` ← `Audience — B2B or B2C: "B2B (engineering teams)"`
-3. No prior `.forsvn/canonical/research/MARKET.md` to overwrite (first run; `version: 1`).
+3. No prior `docs/forsvn/canonical/research/MARKET.md` to overwrite (first run; `version: 1`).
 
 ---
 
@@ -190,7 +190,7 @@ Per `procedures/dispatch-mechanics.md`:
 - **Route C (Fundraising / Market Entry).** Would require sizing (no opt-in), enhance L1 depth, and Top 3 Opportunities use quantitative 1-5 scoring.
 - **Single-Agent Fallback.** A one-line "who are the players in X?" query would dispatch only competitor-agent and return its output directly without cross-analysis / opportunity / critic.
 - **`--fast` mode.** Would force Route A regardless of intent; would still emit Cold Start when category is missing (Critical Gates 1-4 floor).
-- **Stale prior `.forsvn/canonical/research/MARKET.md`.** A re-run scenario would read prior artifact for context but re-fetch via WebSearch (Critical Gate 4) and overwrite it in place with an incremented `version:` on output (prior version in git history).
+- **Stale prior `docs/forsvn/canonical/research/MARKET.md`.** A re-run scenario would read prior artifact for context but re-fetch via WebSearch (Critical Gate 4) and overwrite it in place with an incremented `version:` on output (prior version in git history).
 
 ---
 

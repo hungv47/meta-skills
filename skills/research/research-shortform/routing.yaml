@@ -76,6 +76,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/research/research-shortform/[slug].md"
+      - path: "docs/forsvn/artifacts/research/research-shortform/[slug].md"
         lifecycle: snapshot
         produced_when: "Critic PASS; dated per-platform catalog."

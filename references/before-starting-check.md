@@ -59,7 +59,7 @@ resolve `id:architecture` when the work requires it.
 An id that does not resolve = the prerequisite has not been produced → route to its
 producer skill (NEEDS_CONTEXT). The id is stable; only its path in `by_id` moves.
 
-### Step 3 — Read .forsvn/experience/{relevant-dim}.md
+### Step 3 — Read docs/forsvn/experience/{relevant-dim}.md
 
 Per the skill's domain, read the matching experience dimension file. Skill-to-dimension mapping:
 

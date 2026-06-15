@@ -70,7 +70,7 @@ artifacts with no review layer index unchanged.
 
 The HTML preview is **rendering scaffolding** for the MD. It carries no
 content the MD doesn't have. After the gate resolves it moves to
-`.forsvn/artifacts/.archive/`. Decision capture stays in MD + Roughdraft.
+`docs/forsvn/artifacts/.archive/`. Decision capture stays in MD + Roughdraft.
 
 ### `review_tool` values
 
@@ -108,8 +108,8 @@ skill writes only the `.md`; the HTML preview is rendered on demand by the
 `/forsvn:review`):
 
 ```
-.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md     ← durable (the skill writes this)
-.forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview, rendered by the review module (while pending)
+docs/forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.md     ← durable (the skill writes this)
+docs/forsvn/artifacts/<stack>-<skill>-<YYYY-MM-DD>-<slug>.html   ← preview, rendered by the review module (while pending)
 ```
 
 The HTML is a **rendering** of the MD frontmatter + body, themed by stack
@@ -121,12 +121,12 @@ the Markdown directly (e.g. in Roughdraft) without invoking the renderer.
 **Lifecycle:**
 
 1. Skill writes MD with `decision_state: pending`, `review_surface: html`. That is the skill's entire job — plain Markdown, no HTML.
-2. Operator runs the review module (`/forsvn:review`, or directly `bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<slug>.md`). It renders the HTML twin from the MD (themed by stack), then starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port), injects the token into the page's `#preview-config` block, opens the browser, and blocks. (Roughdraft is the escape hatch — see below.)
+2. Operator runs the review module (`/forsvn:review`, or directly `bun forsvn-preview/bin/forsvn-preview.ts docs/forsvn/artifacts/<slug>.md`). It renders the HTML twin from the MD (themed by stack), then starts a CSRF-protected `Bun.serve()` on `127.0.0.1` (OS-assigned port), injects the token into the page's `#preview-config` block, opens the browser, and blocks. (Roughdraft is the escape hatch — see below.)
 3. Operator clicks one of approve / deny / suggest changes in the in-page `<form id="decision-capture">`, optionally writes comments, clicks Done. The page POSTs `{token, decision_state, comments?, variant?}` to `/done`.
 4. The review module validates the CSRF token, rewrites the MD frontmatter
    (`decision_state`, `reviewed_at`, `reviewer`), appends a `## Reviewer notes`
    block if comments were submitted, moves the `.html` to
-   `.forsvn/artifacts/.archive/<original-filename>.html`, runs `manifest-sync`,
+   `docs/forsvn/artifacts/.archive/<original-filename>.html`, runs `manifest-sync`,
    and exits 0.
 5. The MD stays at the canonical path; the manifest is re-indexed.
 
@@ -243,7 +243,7 @@ Do not restate the field semantics in the SKILL.md — cite this file.
    land in MD frontmatter; the CLI is just the transport. (Roughdraft + the
    Review Gate body block is the equivalent flow for MD-first reviewers.)
 7. **Leaving the HTML twin in place after the gate resolves.** Move it to
-   `.forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`. The MD is
+   `docs/forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`. The MD is
    the durable record. The `forsvn preview` CLI does this automatically; if
    you've captured a decision via Roughdraft, run `manifest-sync` so the
    archival pass picks up the resolved state.

@@ -44,7 +44,7 @@ Load at critique time (Layer 2) and before any stage transition.
 
 ## 5. Skill-centered loop folders
 
-**Pattern:** organizing loop state by producing skill (`.forsvn/artifacts/<skill>/…`) instead of by measurable initiative.
+**Pattern:** organizing loop state by producing skill (`docs/forsvn/artifacts/<skill>/…`) instead of by measurable initiative.
 
 **Why it fails:** the next cycle's agent has to reconstruct the initiative from scattered skill outputs — the exact failure the loop tree exists to prevent.
 

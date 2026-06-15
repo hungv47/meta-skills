@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # Reddit — publish-social platform ref
 
 > Hard rules + subreddit-specific rules + anti-patterns for Reddit posts. **Not backed by platform-intelligence catalog (D13)** — v1 template only. Reddit is special: it's a federation of communities, not a homogeneous platform.

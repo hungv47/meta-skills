@@ -17,7 +17,7 @@ You do NOT:
 | Field | Type | Description |
 |-------|------|-------------|
 | **brief** | string | The user's research request — who to research, what decisions it informs, B2B/B2C, geography |
-| **context** | object | Product context from `.forsvn/canonical/product/PRODUCT-CONTEXT.md` — product, buyer, problem, differentiator, model |
+| **context** | object | Product context from `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` — product, buyer, problem, differentiator, model |
 | **upstream** | null | You run in Layer 1 (parallel) — no upstream dependency |
 | **references** | file paths[] | None — persona construction is context-driven |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |

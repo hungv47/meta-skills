@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** standalone invocation (the operator typed `/debate-agents` directly, not invoked as a sub-routine). The orchestrator writes the rendered report to `.forsvn/artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` — dated, skill-prefixed, slug-suffixed, immutable per-run (lifecycle: decision). Decisions accumulate as audit trail; do NOT overwrite.
+**Load when:** standalone invocation (the operator typed `/debate-agents` directly, not invoked as a sub-routine). The orchestrator writes the rendered report to `docs/forsvn/artifacts/meta/decisions/[YYYY-MM-DD]-agents-panel-<slug>.md` — dated, skill-prefixed, slug-suffixed, immutable per-run (lifecycle: decision). Decisions accumulate as audit trail; do NOT overwrite.
 
 When invoked as a sub-routine by another skill: return the synthesis inline (Consensus / Disagreements / Recommendation). Skip the disk write. The value is the insight, not the artifact.
 

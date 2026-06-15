@@ -23,7 +23,7 @@ You do NOT:
 
 ## Output Contract
 
-Return a complete variant brief in markdown ready to write to `.forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`:
+Return a complete variant brief in markdown ready to write to `docs/forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`:
 
 ```markdown
 ---

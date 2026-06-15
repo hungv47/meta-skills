@@ -50,7 +50,7 @@ capability:
       - "Writing docs -> write-docs."
     prerequisites:
       recommended:
-        - ".forsvn/artifacts/meta/specs/<slug>.md"
+        - "docs/forsvn/artifacts/meta/specs/<slug>.md"
         - "id:architecture"
       hard: []
 
@@ -88,6 +88,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/tasks.md"
+      - path: "docs/forsvn/artifacts/meta/tasks.md"
         lifecycle: pipeline
         produced_when: "Critic PASS; canonical task list for the initiative."

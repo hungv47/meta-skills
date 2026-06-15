@@ -10,7 +10,7 @@ load_class: PROCEDURE
 
 ## Entry Point 1 — Standalone (user invokes directly)
 
-`/debate-agents "Should we use a monorepo or polyrepo?"` — runs full debate or poll session, writes report to `.forsvn/artifacts/meta-debate-agents-[YYYY-MM-DD]-<slug>.md`.
+`/debate-agents "Should we use a monorepo or polyrepo?"` — runs full debate or poll session, writes report to `docs/forsvn/artifacts/meta-debate-agents-[YYYY-MM-DD]-<slug>.md`.
 
 ## Entry Point 2 — Sub-routine (another skill invokes mid-flow)
 
@@ -56,7 +56,7 @@ Answer 1-4 in one response. I'll spawn.
 
 ## Write-back
 
-None. debate-agents doesn't persist to `.forsvn/experience/` — decisions are dated immutable records, not running context.
+None. debate-agents doesn't persist to `docs/forsvn/experience/` — decisions are dated immutable records, not running context.
 
 ## Sub-routine Pre-Dispatch shortcut
 

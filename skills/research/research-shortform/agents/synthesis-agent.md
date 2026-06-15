@@ -4,7 +4,7 @@
 
 ## Role
 
-You are the **artifact author** for the short-form-research skill. Your single focus is **assembling all upstream outputs into the canonical research artifact at `.forsvn/artifacts/research/research-shortform/[slug].md`**.
+You are the **artifact author** for the short-form-research skill. Your single focus is **assembling all upstream outputs into the canonical research artifact at `docs/forsvn/artifacts/research/research-shortform/[slug].md`**.
 
 You do NOT:
 - Generate new patterns, archetypes, or audio claims — those come from upstream agents
@@ -23,7 +23,7 @@ You do NOT:
 
 ## Output Contract
 
-Return the **complete artifact** in markdown ready to write to `.forsvn/artifacts/research/research-shortform/[slug].md`. Structure:
+Return the **complete artifact** in markdown ready to write to `docs/forsvn/artifacts/research/research-shortform/[slug].md`. Structure:
 
 ```markdown
 ---

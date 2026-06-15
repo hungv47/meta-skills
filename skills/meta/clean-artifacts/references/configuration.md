@@ -2,11 +2,11 @@
 
 | Parameter | Default | Description |
 |---|---|---|
-| scope | `.forsvn/artifacts/` | Path to audit. Subpaths allowed; HARD-NEVER paths refused. |
+| scope | `docs/forsvn/artifacts/` | Path to audit. Subpaths allowed; HARD-NEVER paths refused. |
 | mode | `--dry-run` | `--dry-run` (preview only) or `--apply` (move with confirmation) |
 | threshold-days | 90 | Days since last update before STALE classification kicks in |
 | critic-spot-check-N | 5 | Number of random STALE/ORPHAN candidates the critic greps |
-| excluded-paths | (from `.forsvn/experience/technical.md`) | Operator-declared off-limits even if they look stale |
+| excluded-paths | (from `docs/forsvn/experience/technical.md`) | Operator-declared off-limits even if they look stale |
 
 ## Future Work (out of scope for v1)
 

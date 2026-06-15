@@ -4,7 +4,7 @@ Source of truth for the brief-product-ui artifact schema. Cited by `SKILL.md` "A
 
 ## Filename + path
 
-`.forsvn/artifacts/product/brief-product-ui-<YYYY-MM-DD>-<slug>.md` — by-stack v3 layered grammar
+`docs/forsvn/artifacts/product/brief-product-ui-<YYYY-MM-DD>-<slug>.md` — by-stack v3 layered grammar
 (`<stack>/<skill>-<date>-<slug>`), `stack: product`. One file per feature. The slug is the feature
 name in kebab-case (matches the source flow's slug where possible). Re-runs increment `version`.
 

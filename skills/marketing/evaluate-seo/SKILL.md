@@ -4,7 +4,7 @@ description: "Score an SEO / AEO cycle from real ranking + visibility data insid
 argument-hint: "[loop slug or path] [keyword cluster + surface] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -23,7 +23,7 @@ metadata:
 
 1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
 2. **Measurement evidence required.** Ranking / clicks / citation data with a named source (Google Search Console · Ahrefs · Semrush · AEO monitor / `monitor-aeo` output). Absent → `BLOCKED`. This skill does not run as a heuristic audit (that is `optimize-seo`).
-3. **Source SEO/AEO artifact required.** The `optimize-seo` or `monitor-aeo` artifact whose change is being scored (`.forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md` or `.forsvn/artifacts/marketing/monitor-aeo/[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
+3. **Source SEO/AEO artifact required.** The `optimize-seo` or `monitor-aeo` artifact whose change is being scored (`docs/forsvn/artifacts/marketing/optimize-seo/[date]-<slug>.md` or `docs/forsvn/artifacts/marketing/monitor-aeo/[date]-[slug].md`). Absent or unreadable → `BLOCKED`.
 4. **One keyword cluster + surface per cycle.** One target keyword/cluster + one surface (`organic-serp` or `ai-answers`). Cross-cluster or cross-surface blending is contamination → secondary clusters/surfaces are context only.
 5. **No fabricated ranking / citation data.** Unknown values stay unknown. Positions, clicks, and citations trace to a named tool + a dated pull.
 6. **Minimum measurement window respected (the lag gate).** SEO/AEO signals lag and churn. A window below the loop's declared minimum (default ≥28 days for a ranking trend) cannot earn `keep` — it ships as `watch` or `blocked` (Critic Hard Fail #12).
@@ -81,6 +81,10 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — SEO-eval rows + 4 cross-cutting marketing-stack rows. Most common: impression/keyword-count vanity read as success (Gate 5 + Critic "Visibility-Signal Discrimination"), a short-window ranking bump scored as keep (Gate 6 + Critic "Lag & Volatility Discipline"), a core-update confounder unflagged while claiming the change worked (Critic "Attribution Honesty"), scope drift to optimize-seo fixes (Gate 8 + Critic "Decision Discipline").
+
+## Worked Example
+
+SEO cycle (apparent ranking bump → watch under the lag-and-volatility gate): [`references/examples/seo-eval-cycle-walkthrough.md`](references/examples/seo-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

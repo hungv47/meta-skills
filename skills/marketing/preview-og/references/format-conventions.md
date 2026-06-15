@@ -2,9 +2,9 @@
 
 ## Output path
 
-`.forsvn/artifacts/marketing/preview-og-<YYYY-MM-DD>-<slug>.md` (KNOWLEDGE layer, by-stack grammar). `<slug>` = the host or page checked, kebab-cased (e.g. `forsvn-com-launch`). One file per pass; on re-run the same day, append `-v2`, `-v3`.
+`docs/forsvn/artifacts/marketing/preview-og-<YYYY-MM-DD>-<slug>.md` (KNOWLEDGE layer, by-stack grammar). `<slug>` = the host or page checked, kebab-cased (e.g. `forsvn-com-launch`). One file per pass; on re-run the same day, append `-v2`, `-v3`.
 
-The metaprev `.html` preview (written with `-o`) is a **transient review surface**, not the artifact. Write it under `.forsvn/artifacts/marketing/` only if the operator wants to eyeball the cards; never treat it as the deliverable. Skills emit Markdown only.
+The metaprev `.html` preview (written with `-o`) is a **transient review surface**, not the artifact. Write it under `docs/forsvn/artifacts/marketing/` only if the operator wants to eyeball the cards; never treat it as the deliverable. Skills emit Markdown only.
 
 ## Frontmatter
 

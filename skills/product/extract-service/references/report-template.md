@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** the planner-agent finishes (write the Migration Plan half — before the approval gate), and again at Step 7 Assembly (append the Applied Migration half). Save to `.forsvn/artifacts/product/extract-service/[date]-[slug].md`. On re-run with the same slug on the same day, append `-v[N]` — e.g., `2026-05-20-extract-service-sandbox-v2.md`.
+**Load when:** the planner-agent finishes (write the Migration Plan half — before the approval gate), and again at Step 7 Assembly (append the Applied Migration half). Save to `docs/forsvn/artifacts/product/extract-service/[date]-[slug].md`. On re-run with the same slug on the same day, append `-v[N]` — e.g., `2026-05-20-extract-service-sandbox-v2.md`.
 
 The artifact is **one file with two halves**. The Migration Plan is written first and is the whole artifact for a plan-only outcome (operator declined the approval gate). The Applied Migration half is appended after the migration runs.
 

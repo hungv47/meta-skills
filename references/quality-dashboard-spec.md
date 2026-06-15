@@ -16,7 +16,7 @@ It is intentionally small. It is not analytics infrastructure, and it does not r
 ## Location
 
 ```text
-.forsvn/artifacts/meta/records/quality-dashboard.json
+docs/forsvn/artifacts/meta/records/quality-dashboard.json
 ```
 
 Create the dashboard only when the Quality Feedback Protocol threshold is met:
@@ -141,4 +141,4 @@ bun meta-skills/scripts/update-quality-dashboard.ts \
 - Do not store raw evaluator notes here.
 - Do not duplicate `results.tsv`.
 - Do not turn the dashboard into a project database.
-- Do not promote dashboard observations directly into `.forsvn/experience/`; use the Quality Feedback Protocol promotion criteria first.
+- Do not promote dashboard observations directly into `docs/forsvn/experience/`; use the Quality Feedback Protocol promotion criteria first.

@@ -51,14 +51,14 @@ const root = realpathSync(resolve(args.root ?? process.cwd()));
 const today = args.date ?? new Date().toISOString().slice(0, 10);
 if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) fail(`Invalid --date ${JSON.stringify(today)}. Expected YYYY-MM-DD.`);
 
-const forsvnDir = join(root, ".forsvn");
-const artifactsDir = join(forsvnDir, "artifacts");
+const knowledgeDir = join(root, "docs", "forsvn");
+const artifactsDir = join(knowledgeDir, "artifacts");
 const metaDir = join(artifactsDir, "meta");
 const recordsDir = join(metaDir, "records");
-ensureSafeDirectory(forsvnDir, ".forsvn");
-ensureSafeDirectory(artifactsDir, ".forsvn/artifacts");
-ensureSafeDirectory(metaDir, ".forsvn/artifacts/meta");
-ensureSafeDirectory(recordsDir, ".forsvn/artifacts/meta/records");
+ensureSafeDirectory(knowledgeDir, "docs/forsvn");
+ensureSafeDirectory(artifactsDir, "docs/forsvn/artifacts");
+ensureSafeDirectory(metaDir, "docs/forsvn/artifacts/meta");
+ensureSafeDirectory(recordsDir, "docs/forsvn/artifacts/meta/records");
 const dashboardPath = join(recordsDir, "quality-dashboard.json");
 const dashboard = readDashboard(dashboardPath, today);
 
@@ -81,7 +81,7 @@ if (!changed) {
 
 dashboard.updated = today;
 writeFileSync(dashboardPath, `${JSON.stringify(dashboard, null, 2)}\n`);
-console.log(`update-quality-dashboard: .forsvn/artifacts/meta/records/quality-dashboard.json`);
+console.log(`update-quality-dashboard: docs/forsvn/artifacts/meta/records/quality-dashboard.json`);
 
 function updateSkill(dashboard: Dashboard, skill: string, values: Record<string, string>, date: string): void {
   const deltaInvocations = intOpt(values.invocations, 0, "--invocations");

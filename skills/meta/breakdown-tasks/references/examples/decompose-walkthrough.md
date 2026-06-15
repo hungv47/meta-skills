@@ -42,7 +42,7 @@ load_class: EXAMPLE
   > "Submit signup form → user appears in Supabase Auth → confirmation email sent"
 - **critic-agent** → reviews against Critical Gates checklist → **PASS** (all 7 gates met first round)
 
-## First-run artifact (all pending, saved to `.forsvn/artifacts/meta/tasks.md`)
+## First-run artifact (all pending, saved to `docs/forsvn/artifacts/meta/tasks.md`)
 
 ```markdown
 ## Status Index

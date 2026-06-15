@@ -44,7 +44,7 @@ Needed dimensions — resolve from the repo / running dev server first, ask once
 
 1. **Resolve target** — localhost dev server or deployed URL.
 2. **Ensure CLI** — Gate 1.
-3. **Diagnose** — `bunx @hungv47/metaprev issues <url> --json` for structured issues (exit 1 = at least one error). For a visual pass, `bunx @hungv47/metaprev <url> -o .forsvn/artifacts/marketing/preview-og-<date>.html --no-open`.
+3. **Diagnose** — `bunx @hungv47/metaprev issues <url> --json` for structured issues (exit 1 = at least one error). For a visual pass, `bunx @hungv47/metaprev <url> -o docs/forsvn/artifacts/marketing/preview-og-<date>.html --no-open`.
 4. **Triage** — separate errors (real breaks) from advisory warns (Gate 4).
 5. **Fix** — apply framework-aware fixes in the codebase: [`references/fixes.md`](references/fixes.md) [PROCEDURE] (Next / Astro / SvelteKit / Vite / plain HTML — absolute URL, dimensions, missing tags, content-type).
 6. **Re-verify** — Gate 2. Loop until `issues` returns clean or only advisory warns remain (max 3 fix cycles, then `DONE_WITH_CONCERNS`).
@@ -52,7 +52,7 @@ Needed dimensions — resolve from the repo / running dev server first, ask once
 
 ## Artifact Contract
 
-Output: `.forsvn/artifacts/marketing/preview-og-<YYYY-MM-DD>-<slug>.md`. Frontmatter + sections (Target / Issues found / Fixes applied / Verification / Remaining advisory): [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. Skills emit Markdown only; the `.html` metaprev preview is a transient review surface, not the artifact.
+Output: `docs/forsvn/artifacts/marketing/preview-og-<YYYY-MM-DD>-<slug>.md`. Frontmatter + sections (Target / Issues found / Fixes applied / Verification / Remaining advisory): [`references/format-conventions.md`](references/format-conventions.md) [PROCEDURE]. Skills emit Markdown only; the `.html` metaprev preview is a transient review surface, not the artifact.
 
 ## Anti-Patterns
 

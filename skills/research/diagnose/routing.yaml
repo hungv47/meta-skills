@@ -88,7 +88,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/canonical/research/DIAGNOSE.md"
+      - path: "docs/forsvn/canonical/research/DIAGNOSE.md"
         id: diagnose
         lifecycle: canonical
-        produced_when: "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `.forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
+        produced_when: "Critic PASS; canonical diagnosis record (the current diagnosis of record). On re-run overwrite `docs/forsvn/canonical/research/DIAGNOSE.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."

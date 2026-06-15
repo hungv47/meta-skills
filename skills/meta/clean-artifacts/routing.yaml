@@ -37,7 +37,7 @@ capability:
   domain: meta
   public: true
   command: /clean-artifacts
-  summary: "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes)."
+  summary: "Audit + groom `docs/forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes)."
   aliases:
     - groom-artifacts
     - prune-artifacts
@@ -45,7 +45,7 @@ capability:
 
   route:
     use_when:
-      - "User asks to groom or clean `.forsvn/artifacts/`."
+      - "User asks to groom or clean `docs/forsvn/artifacts/`."
       - "Pre-release sweep across pipeline + snapshot artifacts."
       - "Artifact tree feels stale; classification needed before action."
     not_when:
@@ -54,7 +54,7 @@ capability:
       - "Free up disk space -> clean-machine."
     prerequisites:
       recommended:
-        - ".forsvn/experience/technical.md"
+        - "docs/forsvn/experience/technical.md"
       hard:
         - ".forsvn/index/manifest.json"
 
@@ -94,9 +94,9 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md"
         lifecycle: snapshot
         produced_when: "End of run (dry-run or apply); dated, immutable per-run audit record."
-      - path: ".forsvn/artifacts/.archive/[YYYY-MM-DD]/"
+      - path: "docs/forsvn/artifacts/.archive/[YYYY-MM-DD]/"
         lifecycle: ephemeral
         produced_when: "`--apply` confirms per-category move; mirrors source path inside dated archive folder."

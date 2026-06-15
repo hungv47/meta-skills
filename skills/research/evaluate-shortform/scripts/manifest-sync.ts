@@ -10,21 +10,35 @@
 
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync, mkdirSync, lstatSync, realpathSync } from "node:fs";
 import { join, relative, basename } from "node:path";
-import { parseArtifactPath, normalizeStack } from "./lib/path-parser";
+import { parseArtifactPath, normalizeStack, ARTIFACT_HOME, STATE_HOME, HOME_RE } from "./lib/path-parser";
 
 const INCLUDE_ARCHIVE = process.argv.includes("--include-archive");
 const CHECK = process.argv.includes("--check");
 const ROOT_ARG = process.argv.find((arg, idx) => idx > 1 && !arg.startsWith("--")) ?? process.cwd();
 const ROOT = realpathSync(ROOT_ARG);
-// The three layers of the `.forsvn/` home (each split by stack), plus the
-// post-v0 loop workspace. canonical/ artifacts/ experience/ ARE the data model.
-// `.forsvn/performance/` is deliberately NOT walked — operator-fed channel
-// metrics (TSV), data not artifacts; see references/performance-data.md.
-const ARTIFACT_ROOTS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience", ".forsvn/loops"];
-// Old flat experience files lived at `.forsvn/experience/<name>.md` (no stack
+// The three knowledge layers (each split by stack), under both homes: the new
+// ARTIFACT_HOME (docs/forsvn) and the legacy STATE_HOME (.forsvn), so indexing
+// keeps working before and after the state-root migration (an absent home dir
+// is a walk no-op). Loops stay under STATE_HOME (machine-state). canonical/
+// artifacts/ experience/ ARE the data model. `.forsvn/performance/` is
+// deliberately NOT walked — operator-fed channel metrics (TSV), data not
+// artifacts; see references/performance-data.md.
+const ARTIFACT_ROOTS = [
+  `${STATE_HOME}/canonical`, `${STATE_HOME}/artifacts`, `${STATE_HOME}/experience`,
+  `${ARTIFACT_HOME}/canonical`, `${ARTIFACT_HOME}/artifacts`, `${ARTIFACT_HOME}/experience`,
+  `${STATE_HOME}/loops`,
+];
+// Old flat experience files lived at `<home>/experience/<name>.md` (no stack
 // subdir) and were indexed as Q&A substrate. Layered experience
-// (`.forsvn/experience/<stack>/...`) is indexed as a normal artifact.
-const LEGACY_FLAT_EXPERIENCE_RE = /^\.forsvn\/experience\/[^/]+\.md$/;
+// (`<home>/experience/<stack>/...`) is indexed as a normal artifact.
+const LEGACY_FLAT_EXPERIENCE_RE = new RegExp(`^${HOME_RE}/experience/[^/]+\\.md$`);
+// Normalize a knowledge-layer path to the legacy home so the single-home
+// inferProducer/inferLifecycle patterns match either home without duplicating
+// the ~50-entry table. Loops (always under STATE_HOME) are untouched. KTD1.
+const KNOWLEDGE_HOME_PREFIX_RE = new RegExp(`^${ARTIFACT_HOME}/`);
+function normalizeHome(rel: string): string {
+  return rel.replace(KNOWLEDGE_HOME_PREFIX_RE, `${STATE_HOME}/`);
+}
 const MANIFEST_PATH = join(ROOT, ".forsvn", "index", "manifest.json");
 const ARTIFACT_INDEX_PATH = join(ROOT, ".forsvn", "index", "artifact-index.md");
 const DEFAULT_STALE_DAYS = 90;
@@ -149,6 +163,7 @@ function walkMd(dir: string, files: string[] = []): string[] {
 // Best-effort producer inference for legacy artifacts that lack frontmatter.
 // Falls back to "unknown" for paths the spec doesn't recognize.
 function inferProducer(rel: string): string {
+  rel = normalizeHome(rel); // recognize artifacts under either home (KTD1)
   const map: Array<[RegExp, string]> = [
     // v3 canonical home (frontmatter `skill:` wins; these are the fallback)
     [/^\.forsvn\/canonical\/product\/ARCHITECTURE/, "architect-system"],
@@ -268,6 +283,7 @@ function inferLifecycle(rel: string, fm: Frontmatter | null): string {
   if (explicit) return explicit;
   const fromType = typeToLifecycle(textField(fm, "type"));
   if (fromType) return fromType;
+  rel = normalizeHome(rel); // recognize artifacts under either home (KTD1)
   // v3 layered home
   if (/^\.forsvn\/canonical\//.test(rel)) return "canonical";
   if (/^\.forsvn\/experience\//.test(rel)) return "learning";
@@ -347,7 +363,7 @@ Generated from artifact frontmatter by \`skills/bin/manifest-sync.ts\`.
 
 ## How to use this index
 
-Read this before browsing \`.forsvn/artifacts/\`, \`.forsvn/loops/\`, or canonical folders. The goal is not to list every file equally; it is to answer which artifacts are active, why they exist, when to use them, and what has been superseded.
+Read this before browsing \`docs/forsvn/artifacts/\`, \`.forsvn/loops/\`, or canonical folders. The goal is not to list every file equally; it is to answer which artifacts are active, why they exist, when to use them, and what has been superseded.
 
 For grounded work, prefer active canonical records, anchors, registries, decisions, and specs. Use snapshots and archived artifacts as audit trail unless their row explicitly says they are load-bearing.
 
@@ -381,6 +397,14 @@ for (const base of ARTIFACT_ROOTS) {
     // is a normal, frontmatter-bearing artifact and falls through to indexing.
     if (LEGACY_FLAT_EXPERIENCE_RE.test(rel)) {
       const name = basename(rel);
+      // The experience map keys by basename, so the same flat file present in both
+      // homes mid-migration collides. ARTIFACT_ROOTS lists the legacy home first, so
+      // the new-home copy is walked second and wins — the desired winner, but warn so
+      // the drop is intentional, not silent (the layered path surfaces dups explicitly).
+      const prior = experience[name] as { path?: string } | undefined;
+      if (prior && prior.path !== rel) {
+        warnings.push(`flat experience "${name}" exists in two homes (${prior.path} + ${rel}); indexing the latter`);
+      }
       const entries = (content.match(/^## /gm) || []).length;
       const askedBy = [...content.matchAll(/\*\*Asked by:\*\*\s*([^\s·\n]+)/g)].map((m) => m[1]);
       experience[name] = {

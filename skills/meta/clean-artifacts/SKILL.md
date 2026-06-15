@@ -1,6 +1,6 @@
 ---
 name: clean-artifacts
-description: "Audit + groom `.forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface references + risk. On `--apply` archives candidates behind per-category confirmation (moves to dated archive, never deletes). Not for cleaning code (use clean-code) or machine state (use clean-machine)."
+description: "Audit + groom `docs/forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface references + risk. On `--apply` archives candidates behind per-category confirmation (moves to dated archive, never deletes). Not for cleaning code (use clean-code) or machine state (use clean-machine)."
 argument-hint: "[scope path | --dry-run | --apply | --threshold-days N]"
 allowed-tools: Read Grep Glob Bash Edit
 user-invocable: true
@@ -13,21 +13,21 @@ metadata:
 
 # Cleanup Artifacts — Orchestrator
 
-Single-agent — orchestrator IS the runner; critic in-procedure. Audit + groom `.forsvn/artifacts/`: classify every file, surface refs + risk, archive non-KEEP (MOVE to dated archive on `--apply`). **Never deletes.** Metadata: [`routing.yaml`](routing.yaml). Methodology / when-not-to-use: [`references/playbook.md`](references/playbook.md).
+Single-agent — orchestrator IS the runner; critic in-procedure. Audit + groom `docs/forsvn/artifacts/`: classify every file, surface refs + risk, archive non-KEEP on `--apply`. **Never deletes.** Metadata: [`routing.yaml`](routing.yaml). Methodology / when-not-to-use: [`references/playbook.md`](references/playbook.md).
 
 **Core question:** load-bearing, or cruft from weeks ago?
 
 ## Critical Gates — load first
 
-1. **MOVE, never delete.** `mv` into `.forsvn/artifacts/.archive/[YYYY-MM-DD]/`. `--purge-archive` (v1 out of scope) is the only deletion path.
-2. **HARD-NEVER refused.** Canonical (`brand/`, `research/`, `architecture/`); VCS (`.git/`, `.gitmodules`, submodules); infra (`.forsvn/index/manifest.json`); append-only (`.forsvn/experience/`); anchors (`.forsvn/artifacts/meta/{roadmap,tasks}.md`).
+1. **MOVE, never delete.** `mv` into `docs/forsvn/artifacts/.archive/[YYYY-MM-DD]/`. `--purge-archive` (v1 out of scope) is the only deletion path.
+2. **HARD-NEVER refused.** Canonical (`brand/`, `research/`, `architecture/`); VCS (`.git/`, `.gitmodules`, submodules); infra (`.forsvn/index/manifest.json`); append-only (`docs/forsvn/experience/`); anchors (`docs/forsvn/artifacts/meta/{roadmap,tasks}.md`).
 3. **`--dry-run` default.** No move without `--apply` + per-category confirm.
-4. **Critic gate non-negotiable.** Grep 5 random STALE/ORPHAN refs across `.forsvn/artifacts/`, `brand/`, `research/`, `architecture/`. Live ref → escalate (no prompt), refs surfaced.
+4. **Critic gate non-negotiable.** Grep 5 random STALE/ORPHAN refs across `docs/forsvn/artifacts/`, `brand/`, `research/`, `architecture/`. Live ref → escalate (no prompt), refs surfaced.
 5. **Manifest-sync after.** Re-run `bun scripts/manifest-sync.ts` after any move.
 
 ## Before Starting + Pre-Dispatch
 
-Apply `references/_shared/{before-starting-check, pre-dispatch-protocol, mode-resolver}.md`. `budget: standard`; `--fast` bypasses prompts — **Critical Gates supersede `--fast`**. Read `.forsvn/index/{manifest.json,artifact-index.md}` + `.forsvn/experience/technical.md` (prior excludes). Manifest missing/stale (>1d) → `NEEDS_CONTEXT`. Dimensions: scope, mode, threshold (90d), excludes.
+Apply `references/_shared/{before-starting-check, pre-dispatch-protocol, mode-resolver}.md`. `budget: standard`; `--fast` bypasses prompts — **Critical Gates supersede `--fast`**. Read `.forsvn/index/{manifest.json,artifact-index.md}` + `docs/forsvn/experience/technical.md` (prior excludes). Manifest missing/stale (>1d) → `NEEDS_CONTEXT`. Dimensions: scope, mode, threshold (90d), excludes.
 Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
 ### Warm Start ([`procedure`](references/procedures/warm-start.md))
@@ -36,7 +36,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 
 ```
 Found:
-- scope → "[full .forsvn/artifacts/ | <subpath>]"
+- scope → "[full docs/forsvn/artifacts/ | <subpath>]"
 - disk → ! `find .forsvn/artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files;
   ! `find .forsvn/artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d
 - manifest last touched → ! `git log -1 --format='%cr' .forsvn/index/manifest.json 2>/dev/null | grep . || echo 'untracked or no git history'`
@@ -47,7 +47,7 @@ Default --dry-run, threshold 90d. Override (e.g., --apply, --threshold-days 30) 
 
 ### Cold Start (no scope hint)
 
-[`procedure`](references/procedures/cold-start.md) — 4-question prompt, persist excludes to `.forsvn/experience/technical.md`.
+[`procedure`](references/procedures/cold-start.md) — 4-question prompt, persist excludes to `docs/forsvn/experience/technical.md`.
 
 ## Decision Tree
 
@@ -69,10 +69,10 @@ Full taxonomy: [`references/cleanup-rules.md`](references/cleanup-rules.md).
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, immutable). **Lifecycle:** `snapshot`. **Consumer:** operator audit trail.
+- **Path:** `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` (dated, immutable). **Lifecycle:** `snapshot`. **Consumer:** operator audit trail.
 - **Frontmatter:** `skill` · `produced_by` · `version` · `date` · `status` · `mode` · `scope` · `threshold_days` · `total_candidates` · `total_archived` · `critic_gate` · `provenance`.
 - **Template:** [`references/report-template.md`](references/report-template.md).
-- **Side effect:** `.forsvn/artifacts/.archive/[YYYY-MM-DD]/...` on `--apply`; manifest re-sync after any move.
+- **Side effect:** `docs/forsvn/artifacts/.archive/[YYYY-MM-DD]/...` on `--apply`; manifest re-sync after any move.
 
 ## Configuration + Anti-Patterns
 

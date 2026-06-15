@@ -314,7 +314,7 @@ async function listNoArtifacts(): Promise<void> {
     // walk can't drift into a real project above tmpdir.
     const r = await runList(root, ["--root", root, "--json"]);
     assertEq(r.code, 1, `expected exit 1 when no artifacts dir; got ${r.code}`);
-    assertMatches(r.stderr, /no \.forsvn\/artifacts/, "stderr explains missing artifacts dir");
+    assertMatches(r.stderr, /no docs\/forsvn\/artifacts/, "stderr explains missing artifacts dir");
   } finally {
     try { rmSync(root, { recursive: true, force: true }); } catch {}
   }
@@ -507,7 +507,7 @@ async function pipedStreamsNoAnsi(): Promise<void> {
     const r = await runList(empty, ["--root", empty]);
     assertEq(r.code, 1, `refusal should exit 1; got ${r.code}`);
     if (/\x1b/.test(r.stderr)) throw new Error(`piped stderr contains ANSI escapes: ${JSON.stringify(r.stderr.slice(0, 120))}`);
-    assertMatches(r.stderr, /no \.forsvn\/artifacts/, "refusal reason present");
+    assertMatches(r.stderr, /no docs\/forsvn\/artifacts/, "refusal reason present");
     assertMatches(r.stderr, /exit 1/, "refusal carries its exit code");
     assertMatches(r.stderr, /--root/, "refusal carries a recovery hint");
   } finally {

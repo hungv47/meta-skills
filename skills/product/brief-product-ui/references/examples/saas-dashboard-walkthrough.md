@@ -24,7 +24,7 @@ Triangulate from this, don't copy — these specific choices are for the billing
 ## Step 0 — Intake
 
 Skill finds `map-user-flow` artifact at
-`.forsvn/artifacts/product/flow/team-billing-dashboard-2026-06-01.md`.
+`docs/forsvn/artifacts/product/flow/team-billing-dashboard-2026-06-01.md`.
 Parseable: 4 screens declared (Billing Overview, Manage Plan, Payment Methods, Invoices).
 Brand source: FORSVN house tokens (dark default; Leaf `#74B36B` state-cue only; matte).
 Target engine: coding-agent (no design-tool connected). **GO.**
@@ -132,7 +132,7 @@ No design-tool session — spec is portable as-is.
 Build prompt delivered:
 
 > Using the brief-product-ui artifact at
-> `.forsvn/artifacts/product/brief-product-ui-2026-06-07-team-billing-dashboard.md`,
+> `docs/forsvn/artifacts/product/brief-product-ui-2026-06-07-team-billing-dashboard.md`,
 > implement the Team Billing Dashboard. Reference §Screen Inventory for the 4 screens,
 > §Component System for the 13 components (8 primitives + 5 composites), §Token Application Map
 > for all color/space/type assignments, §Per-Screen Layout Spec for grid + density, and

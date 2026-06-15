@@ -39,12 +39,12 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 | Artifact | Source | Required? |
 |---|---|---|
-| `.forsvn/artifacts/research/research-shortform/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
+| `docs/forsvn/artifacts/research/research-shortform/[slug].md` | research-shortform | Soft-required (Critical Gate 1) — proceeds without it but flags `trend_signals_stale` |
 | `research/icp-research.md` | research-icp | Soft-required (Critical Gate 4) — proceeds with cold-start hint but flags `voc_source: cold-start-hint` |
 | `brand/BRAND.md` | create-brand | Recommended — brand_mode inference + voice archetype |
 | `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction (movement, light, pacing); anchor visuals to it + a realized exemplar, not tokens alone |
 | `brand/FRAME.md` | create-brand | Soft-required — frame direction (safe areas, type-at-distance, on-screen pacing, bumper grammar); matched by canonical path + headings. Present → spec shots/text to its safe areas + type floors + hold times. Absent → flag `frame_direction: absent` and fall back to `CREATIVE-DIRECTION.md` + `DESIGN.md` tokens, never silently (`references/_shared/realized-surface-grounding.md`) |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs + `## Creative Direction` (per-campaign art direction) if `[slug]` matches |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — inherits theme/dates/CTAs + `## Creative Direction` (per-campaign art direction) if `[slug]` matches |
 
 ## Pre-Dispatch + Mode
 
@@ -59,8 +59,8 @@ Single route — always runs Layer 1 + Layer 1.5 + Layer 2. Multi-platform invoc
 
 ## Artifact Contract
 
-- **Hero path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md`.
-- **Variant path:** `.forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`.
+- **Hero path:** `docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md`.
+- **Variant path:** `docs/forsvn/artifacts/marketing/brief-shortform/[slug]/variants/[platform].md`.
 - **Lifecycle:** `pipeline` — one artifact per (angle, platform-set, market); re-run on angle/platform/market pivot.
 - **Frontmatter:** `type`, `role`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `date`, `slug`, `angle`, `brand_mode`, `production_mode`, `market`, `hero_platform`, `variants[]`, `research_artifact`, `research_trend_signals_date`, `research_mechanics_date`, `campaign_tie_in`, `frame_direction`, `critic_passes[]`, `critic_loop_count`, `polish_chain_applied`.
 - **Hero body sections (15, in order):** TL;DR for the Producer · What This Brief Bets On · Audience & Voice · Format Specification · Hook · Storyboard · On-Screen Text Choreography · Audio Plan · Caption · CTA · Production Notes · What NOT To Do · Success Criteria · Variant Roadmap · Review Gate.

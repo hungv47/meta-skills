@@ -55,7 +55,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 | Artifact | Source | Required? |
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended (>30d → re-run) |
-| `.forsvn/experience/{audience,technical,goals}.md` | any | Recommended |
+| `docs/forsvn/experience/{audience,technical,goals}.md` | any | Recommended |
 | `implementation-roadmap/canonical-paths.md` | architect-system | Optional |
 | `brand/{DESIGN,BRAND}.md` | create-brand | Optional |
 
@@ -65,7 +65,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<flow-name>.md` (flat v2; one file per flow; index auto-generated at ≥2 slugs). **Lifecycle:** `pipeline`.
+- **Path:** `docs/forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<flow-name>.md` (flat v2; one file per flow; index auto-generated at ≥2 slugs). **Lifecycle:** `pipeline`.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack: product`, `review_surface: html` (FIRE preview while `decision_state: pending`), `decision_state`, `flow_name`, `platforms`, plus manifest-sync `lifecycle`, `produced_by`, `provenance`. v2 schema: `references/_shared/artifact-contract-template.md`.
 - **Required sections + per-flow template + index.md + filename + version-increment:** [`references/report-template.md`](references/report-template.md) [PROCEDURE].
 - **Consumed by:** `architect-system`, `breakdown-tasks`, `forsvn`, `review-work`.

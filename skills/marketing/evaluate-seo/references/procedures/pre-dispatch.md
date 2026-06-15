@@ -88,7 +88,7 @@ Triggered when the loop exists but cycle context is missing. Ask one bundled que
 
 ## Write-back
 
-**None.** evaluate-seo does NOT write to `.forsvn/experience/`. Persistent loop state lives in:
+**None.** evaluate-seo does NOT write to `docs/forsvn/experience/`. Persistent loop state lives in:
 
 - `program.md` (loop definition — owned by eval-loop skill)
 - `context.md` (loop history + baselines — owned by eval-loop skill)

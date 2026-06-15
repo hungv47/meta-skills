@@ -56,7 +56,7 @@ After Cold Start resolves, persist only durable context:
 
 | Q | File | Key | Rule |
 |---|---|---|---|
-| 4. Conventions emerging from doc style preferences | `.forsvn/experience/technical.md` | `Technical — doc conventions` | Only if user expresses durable preference (e.g., "always use this voice", "we use semantic line breaks") |
+| 4. Conventions emerging from doc style preferences | `docs/forsvn/experience/technical.md` | `Technical — doc conventions` | Only if user expresses durable preference (e.g., "always use this voice", "we use semantic line breaks") |
 
 Q1 (audience), Q2 (doc type), Q3 (path), and the fresh-vs-update toggle are run-specific. Don't persist.
 

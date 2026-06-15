@@ -100,7 +100,7 @@ Per-platform subsections under §3 and §5 use H3 with the platform name (e.g., 
 
 ## Slug convention
 
-Artifact filename: `.forsvn/artifacts/research/platform-evidence/[slug].md`. The slug is a kebab-case rendering of the account scope (e.g., `forsvn-company`, `founder-personal`). One artifact per account scope + platform set.
+Artifact filename: `docs/forsvn/artifacts/research/platform-evidence/[slug].md`. The slug is a kebab-case rendering of the account scope (e.g., `forsvn-company`, `founder-personal`). One artifact per account scope + platform set.
 
 ## When critic catches a format violation
 

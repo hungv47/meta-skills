@@ -35,9 +35,9 @@ Transforms product specifications into a technical blueprint covering stack, sch
 | Artifact | Source | Required? |
 |---|---|---|
 | `research/product-context.md` | research-icp | Recommended — product dims, voice, constraints |
-| `.forsvn/artifacts/meta/specs/*.md` | spec/PRD | Recommended — feature scope |
-| `.forsvn/artifacts/product/flow/*.md` | map-user-flow | Recommended — user types + flows |
-| `.forsvn/experience/technical.md` | (any skill) | Optional — stack history + constraints |
+| `docs/forsvn/artifacts/meta/specs/*.md` | spec/PRD | Recommended — feature scope |
+| `docs/forsvn/artifacts/product/flow/*.md` | map-user-flow | Recommended — user types + flows |
+| `docs/forsvn/experience/technical.md` | (any skill) | Optional — stack history + constraints |
 | `.forsvn/index/manifest.json` | system | Optional — prior runs + downstream task state |
 
 Apply [`references/_shared/before-starting-check.md`](references/_shared/before-starting-check.md). `--fast` forces single-agent regardless of scope; All 8 Critical Gates fire in every mode.
@@ -74,7 +74,7 @@ Full template + section content + version-increment rule: [`references/report-te
 
 ## Chain Position
 
-Previous: `/discover` or `/map-user-flow` (optional, both sharpen output) | Next: `/breakdown-tasks` (decomposes into tasks). Cross-stack: reads `.forsvn/artifacts/meta/sketches/prioritize-*.md`.
+Previous: `/discover` or `/map-user-flow` (optional, both sharpen output) | Next: `/breakdown-tasks` (decomposes into tasks). Cross-stack: reads `docs/forsvn/artifacts/meta/sketches/prioritize-*.md`.
 
 Re-run triggers: product spec changes significantly, scale requirements change (10x growth), migrating core infrastructure, adding major new integrations.
 

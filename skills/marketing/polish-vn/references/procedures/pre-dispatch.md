@@ -26,8 +26,8 @@ Note: `original_text` (the Vietnamese input) is a per-run input, not a Pre-Dispa
 
 1. **Pipeline artifacts:**
    - `research/product-context.md` → brand voice (adjective → register map; see Register Resolution below) + dialect/glossary preferences
-   - `.forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract register from frontmatter if present)
-2. **Experience:** `.forsvn/experience/brand.md` → register-mapping notes (only if user previously persisted `Brand — VN target register`)
+   - `docs/forsvn/artifacts/marketing/content/[slug].md` if polishing a prior artifact (extract register from frontmatter if present)
+2. **Experience:** `docs/forsvn/experience/brand.md` → register-mapping notes (only if user previously persisted `Brand — VN target register`)
 3. **Conversation:** explicit `--register` argument from user always wins (highest priority)
 
 ## Register Resolution (used in both warm and cold flows)
@@ -83,7 +83,7 @@ Wait for answers. Do not dispatch without them.
 
 | Q | File | Key | When to write |
 |---|---|---|---|
-| 1. Register | `.forsvn/experience/brand.md` | `Brand — VN target register` | ONLY if user explicitly wants this stable cross-run (e.g., "save this as my default"); routing-only otherwise (the register might be content-specific for that one polish, not the brand default) |
+| 1. Register | `docs/forsvn/experience/brand.md` | `Brand — VN target register` | ONLY if user explicitly wants this stable cross-run (e.g., "save this as my default"); routing-only otherwise (the register might be content-specific for that one polish, not the brand default) |
 | 2. Dialect | (routing only — content-specific) | — | Do NOT write-back. Dialect varies by content audience. |
 | 3. Subvariant | (routing only — content-specific) | — | Do NOT write-back. Subvariant is content-specific. |
 

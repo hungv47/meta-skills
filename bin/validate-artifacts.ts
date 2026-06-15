@@ -23,6 +23,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import { resolveTier, hintLine } from "../forsvn-preview/lib/mono";
+import { ARTIFACT_HOME, STATE_HOME, HOME_RE } from "./lib/path-parser";
 
 const STRICT = process.argv.includes("--strict");
 const ROOT = (() => {
@@ -30,10 +31,17 @@ const ROOT = (() => {
   if (i > -1 && process.argv[i + 1]) return process.argv[i + 1];
   return process.cwd();
 })();
-// Cohort: the three artifact-contract layers only. `.forsvn/performance/` is
-// deliberately exempt — operator-fed channel-performance data (TSV snapshots +
-// publish ledger), not artifacts; see references/performance-data.md.
-const LAYER_DIRS = [".forsvn/canonical", ".forsvn/artifacts", ".forsvn/experience"];
+// Cohort: the three artifact-contract layers only, under both homes (new
+// ARTIFACT_HOME + legacy STATE_HOME) so validation spans the state-root
+// migration. `.forsvn/performance/` is deliberately exempt — operator-fed
+// channel-performance data (TSV snapshots + publish ledger), not artifacts;
+// see references/performance-data.md.
+const LAYER_DIRS = [
+  `${STATE_HOME}/canonical`, `${STATE_HOME}/artifacts`, `${STATE_HOME}/experience`,
+  `${ARTIFACT_HOME}/canonical`, `${ARTIFACT_HOME}/artifacts`, `${ARTIFACT_HOME}/experience`,
+];
+const INTERNAL_ARTIFACT_PATH_RE = new RegExp(`^${HOME_RE}/(canonical|artifacts|experience)/`);
+const ARTIFACTS_LAYER_PREFIXES = [`${STATE_HOME}/artifacts/`, `${ARTIFACT_HOME}/artifacts/`];
 
 const STATUS = new Set(["done", "done_with_concerns", "blocked", "needs_context"]);
 const STACK = new Set(["meta", "research", "marketing", "product"]);
@@ -54,7 +62,7 @@ const ID_RE = /^[a-z0-9][a-z0-9-]*$/;
 
 const existingLayers = LAYER_DIRS.map((d) => join(ROOT, d)).filter((d) => existsSync(d));
 if (existingLayers.length === 0) {
-  console.log("validate-artifacts: no .forsvn/{canonical,artifacts,experience}/ layers; nothing to validate.");
+  console.log("validate-artifacts: no {docs/forsvn,.forsvn}/{canonical,artifacts,experience}/ layers; nothing to validate.");
   process.exit(0);
 }
 
@@ -135,7 +143,7 @@ function edgeTokens(fm: string, key: string): string[] {
 }
 
 function looksLikeInternalArtifactPath(tok: string): boolean {
-  return /^\.forsvn\/(canonical|artifacts|experience)\//.test(tok) && !tok.includes("/.archive/");
+  return INTERNAL_ARTIFACT_PATH_RE.test(tok) && !tok.includes("/.archive/");
 }
 
 function field(fm: string, key: string): string | null {
@@ -215,7 +223,7 @@ function validate(abs: string, rel: string): void {
   // legitimately carry no decision_state, and several live artifacts-layer
   // records predate the field, so this must never count toward --strict's
   // exit-1 set. Scoped to .forsvn/artifacts/ only.
-  if ((decision === null || decision === "") && rel.startsWith(".forsvn/artifacts/"))
+  if ((decision === null || decision === "") && ARTIFACTS_LAYER_PREFIXES.some((p) => rel.startsWith(p)))
     warnings.push("missing `decision_state` — the review scanner will silently skip this artifact; emit `decision_state: pending` to make it reviewable");
 
   // review_tool enum (optional field)

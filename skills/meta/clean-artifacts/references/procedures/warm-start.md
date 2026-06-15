@@ -4,7 +4,7 @@ Emitted when scope is clear from invocation. The two `` ! `<cmd>` `` lines below
 
 ```
 Found:
-- scope → "[full .forsvn/artifacts/ | <subpath>]"
+- scope → "[full docs/forsvn/artifacts/ | <subpath>]"
 - artifact disk snapshot →
   ! `find .forsvn/artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files on disk;
   ! `find .forsvn/artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d

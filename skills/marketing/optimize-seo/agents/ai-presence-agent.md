@@ -21,7 +21,7 @@ You will receive from the orchestrator:
 | **brief** | string | The site URL and AI SEO goals |
 | **pre-writing** | object | Site type, current robots.txt, ICP data, brand name, top competitors |
 | **upstream** | markdown \| null | Null — you are a Layer 1 parallel agent |
-| **references** | file paths[] | `references/ai-seo.md`, `references/retrieval-layer-seo.md`, `references/_shared/evidence-classes.md`, `references/live-serp-remediation.md` (when a benchmark report is supplied), `references/technical-crawler-checklist.md` § 8 (robots/noindex/X-Robots-Tag), `.forsvn/artifacts/marketing/aeo-monitor/[slug]/handoff-optimize-seo.md` (when `monitor-aeo` has run) |
+| **references** | file paths[] | `references/ai-seo.md`, `references/retrieval-layer-seo.md`, `references/_shared/evidence-classes.md`, `references/live-serp-remediation.md` (when a benchmark report is supplied), `references/technical-crawler-checklist.md` § 8 (robots/noindex/X-Robots-Tag), `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/handoff-optimize-seo.md` (when `monitor-aeo` has run) |
 | **feedback** | string \| null | Rewrite instructions from the critic agent. Null on first run. If present, address every point. |
 
 ## Output Contract

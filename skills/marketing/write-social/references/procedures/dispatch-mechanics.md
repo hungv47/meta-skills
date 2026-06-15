@@ -96,7 +96,7 @@ Critic returns one of three verdicts based on `references/rubric.md`:
 
 After critic returns ANY verdict (pass / done_with_concerns / fail — but NOT after FORMAT_FAIL or NEEDS_CONTEXT):
 
-1. **Write `.forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`** with 13-field frontmatter + 6-section body per `format-conventions.md`.
+1. **Write `docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`** with 13-field frontmatter + 6-section body per `format-conventions.md`.
 2. **Experience write-back** per `pre-dispatch.md` Write-back map:
    - Q1 (Platform) → NOT persisted (routing-only).
    - Q2 (Topic) → append to `experience/content.md` as `Content — recent topic`.

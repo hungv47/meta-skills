@@ -14,12 +14,12 @@ load_class: PROCEDURE
 
 ## Warm Start
 
-Fires when product-context + prior flow files exist AND target platforms are inferable from project history (`.forsvn/experience/technical.md`).
+Fires when product-context + prior flow files exist AND target platforms are inferable from project history (`docs/forsvn/experience/technical.md`).
 
 ```
 Found:
 - product/audience → "[from product-context.md]"
-- prior flows → "[list of .forsvn/artifacts/product/flow/*.md]"
+- prior flows → "[list of docs/forsvn/artifacts/product/flow/*.md]"
 - typical platform set → "[from experience/technical.md]"
 
 Need before dispatching: feature name + goal + platform set + primary surface per platform.
@@ -60,9 +60,9 @@ After Cold Start resolves, persist only durable context:
 
 | Q | File | Key | Rule |
 |---|---|---|---|
-| 2. Role | `.forsvn/experience/audience.md` | `Audience — [feature] persona` | Only if novel (not already in audience.md) |
-| 3. Platforms | `.forsvn/experience/technical.md` | `Technical — supported platforms` | Durable across flows; update on new platforms |
-| 5. Min OS versions | `.forsvn/experience/technical.md` | `Technical — min OS versions` | Durable across flows |
+| 2. Role | `docs/forsvn/experience/audience.md` | `Audience — [feature] persona` | Only if novel (not already in audience.md) |
+| 3. Platforms | `docs/forsvn/experience/technical.md` | `Technical — supported platforms` | Durable across flows; update on new platforms |
+| 5. Min OS versions | `docs/forsvn/experience/technical.md` | `Technical — min OS versions` | Durable across flows |
 
 Feature name (Q1), goal (Q2), surfaces per flow (Q4), and per-flow constraints (Q5 except OS minimums) are project-specific — live in the flow file itself, not persisted to experience.
 

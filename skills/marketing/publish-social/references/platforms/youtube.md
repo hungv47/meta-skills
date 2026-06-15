@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # YouTube — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for YouTube description + Shorts. Cross-references `references/_shared/platform-intelligence/shorts.md` (D13 canonical, covers Shorts lens).

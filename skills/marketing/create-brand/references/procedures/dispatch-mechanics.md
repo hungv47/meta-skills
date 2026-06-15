@@ -15,7 +15,7 @@ load_class: PROCEDURE
 1. **Read** the agent instruction file — include FULL content in the Agent prompt
 2. **Append** context (product, audience, competitive landscape, existing assets, declared platforms) after instructions
 3. **Resolve file paths to absolute** — rooted at this skill's directory
-4. **Pass upstream artifacts by content** — orchestrator reads `.forsvn/artifacts/` files FIRST, includes excerpts in context. Sub-agents do NOT read artifact files directly.
+4. **Pass upstream artifacts by content** — orchestrator reads `docs/forsvn/artifacts/` files FIRST, includes excerpts in context. Sub-agents do NOT read artifact files directly.
 5. If **feedback** exists (from critic FAIL), append with header `## Critic Feedback — Address Every Point`
 
 ### Conventions
@@ -119,7 +119,7 @@ After critic passes, before Step 9. Read `references/assets-inventory.md` for fu
 
 ### Substep 1 — Load prior state
 
-Read existing `.forsvn/canonical/marketing/ASSETS.md`. Preserve `[~]` (in progress) and `[!]` (blocked) rows verbatim. Note platforms present in old file but no longer declared — those rows go to `## Orphaned` on emit.
+Read existing `docs/forsvn/canonical/marketing/ASSETS.md`. Preserve `[~]` (in progress) and `[!]` (blocked) rows verbatim. Note platforms present in old file but no longer declared — those rows go to `## Orphaned` on emit.
 
 ### Substep 2 — Project fresh inventory
 
@@ -151,13 +151,13 @@ Overlay preserved `[~]`/`[!]` rows (matched by name) onto fresh inventory. **Hum
 
 Total / Done / In progress / Blocked / Not started counts.
 
-### Substep 6 — Write `.forsvn/canonical/marketing/ASSETS.md`
+### Substep 6 — Write `docs/forsvn/canonical/marketing/ASSETS.md`
 
 Frontmatter MUST stamp the required instruction core — `skill: create-brand`, `version` (integer), `date`, `status`, `stack: marketing`, `review_surface: none`, `id: assets`, `type: canonical`, `keywords: [assets, checklist, deliverables, brand-assets, production]` — plus the review bookkeeping every artifact carries (`decision_state: not_required`, `review_tool: none`, `reviewed_at:` empty, `reviewer:` empty) and the ASSETS-only bookkeeping (`declared_platforms`, `last_scan` ISO timestamp, `brand_md_version`/`design_md_version`). Full template: `references/artifact-templates.md` "ASSETS.md Template". Then legend, sections, summary, and `## Orphaned` block if any.
 
 ### Substep 7 — Re-run versioning
 
-ASSETS.md is a **living file** — overwrite `.forsvn/canonical/marketing/ASSETS.md` in place and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (NOT removed), preserving tracking state. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots. The Orphaned block, not a versioned sibling, is the primary handler for "platform dropped between runs."
+ASSETS.md is a **living file** — overwrite `docs/forsvn/canonical/marketing/ASSETS.md` in place and increment the integer `version:`; prior versions live in git history. Dropped-platform rows move to `## Orphaned` (NOT removed), preserving tracking state. NEVER create a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots. The Orphaned block, not a versioned sibling, is the primary handler for "platform dropped between runs."
 
 ### Quality gate (orchestrator self-check before write)
 
@@ -172,7 +172,7 @@ Route B only. Route A captures platform list but emits no inventory until the fu
 
 ## Step 8.6: CREATIVE-DIRECTION.md (Route B; also the standalone refresh-only path)
 
-Orchestrator-written — **no sub-agent** (keeps the dispatch at 8 agents). After the critic gate passes and ASSETS is projected, the orchestrator synthesizes the art-direction layer from: strategy-agent output (archetype, positioning, origin), visual-agent output (palette, type, atmosphere), and the operator's mood/origin inputs (+ any `inspiration/` reference frames). It writes `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` per the section order + frontmatter in `references/format-conventions.md` "CREATIVE-DIRECTION.md structure" and the template in `references/artifact-templates.md`.
+Orchestrator-written — **no sub-agent** (keeps the dispatch at 8 agents). After the critic gate passes and ASSETS is projected, the orchestrator synthesizes the art-direction layer from: strategy-agent output (archetype, positioning, origin), visual-agent output (palette, type, atmosphere), and the operator's mood/origin inputs (+ any `inspiration/` reference frames). It writes `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md` per the section order + frontmatter in `references/format-conventions.md` "CREATIVE-DIRECTION.md structure" and the template in `references/artifact-templates.md`.
 
 Hard rule: **it names what DESIGN.md tokens mean; it redefines nothing.** Every hex/font/duration it mentions is quoted from DESIGN.md. The critic's "Creative-direction ↔ token coherence" check (Cross-File checklist) gates it — a contradicting or duplicating value is a FAIL, re-dispatch to the orchestrator step (max 2 cycles).
 

@@ -32,11 +32,11 @@ Scope-blind evaluation is an anti-pattern (per `agents/critic-agent.md` Anti-Pat
 
 ---
 
-## Artifact Template — `.forsvn/canonical/research/MARKET.md`
+## Artifact Template — `docs/forsvn/canonical/research/MARKET.md`
 
 This is the cross-stack contract consumed by prioritize (Top 3 Opportunities feed Initiative hypothesis evidence), system-architecture (competitive context informs product decisions), campaign-plan (positioning anchors), and fundraising decks (sizing + competitive landscape). Renaming a section or changing structure requires atomic update of consumers.
 
-On re-run: overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
+On re-run: overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer `version:` (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`).
 
 ```markdown
 ---
@@ -191,7 +191,7 @@ In order. Renaming or reordering breaks 4+ downstream consumers.
 
 ## Version field semantics
 
-The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `.forsvn/canonical/research/MARKET.md` in place (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`). The Note at the top of the Artifact Template documents this.
+The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `docs/forsvn/canonical/research/MARKET.md` in place (prior versions live in git history; never create a `.v[N].md` sibling under `canonical/`). The Note at the top of the Artifact Template documents this.
 
 The `skill: research-market` frontmatter field is fixed (matches the skill slug per `references/_shared/manifest-spec.md`).
 

@@ -30,7 +30,7 @@ Orchestrator reads in order:
 1. `references/research-workflow.md` → 4-phase argument research SOP (Research Doc → Avatar & Offer Brief → Belief Engineering → Unique Mechanism)
 2. `research/icp-research.md` → CFO + engineering-manager personas; VoC pain phrase "status theater" used 9x in interviews
 3. `research/product-context.md` → voice adjectives "direct, technical, dry"; Unique Mechanism "async status broadcast" persisted
-4. No `.forsvn/artifacts/marketing/campaign-plan.md` (standalone landing page, not part of broader campaign)
+4. No `docs/forsvn/artifacts/marketing/campaign-plan.md` (standalone landing page, not part of broader campaign)
 
 **Resolved Cold Start answers (operator confirmed warm-start summary):**
 
@@ -170,7 +170,7 @@ PASS verdict + annotated artifact returned.
 
 ## Step 5 — Write artifact
 
-Orchestrator writes single artifact to `.forsvn/artifacts/marketing/content/statuszero-landing.copy.md`:
+Orchestrator writes single artifact to `docs/forsvn/artifacts/marketing/content/statuszero-landing.copy.md`:
 
 - Frontmatter: `skill: write-copy`, `version: 1`, `date: 2026-05-18`, `status: done`
 - Descriptive metadata block (Date / Skill / Audience / Awareness Stage / Traffic Source)
@@ -217,8 +217,8 @@ If cycle 2 had also FAILed on a different dimension (e.g., trigger density dropp
 
 **Scenario:** lp-brief invokes copywriting Route C for the StatusZero landing's hero section (lp-brief has already locked the page architecture + hypothesis + per-section spec).
 
-- **Step 1:** Pre-Dispatch reads lp-brief's artifact at `.forsvn/artifacts/marketing/brief-landing-page/statuszero/brief.md` — extracts audience + voice + Unique Mechanism + the one shift + traffic source per-section. No AskUserQuestion mid-flow.
+- **Step 1:** Pre-Dispatch reads lp-brief's artifact at `docs/forsvn/artifacts/marketing/brief-landing-page/statuszero/brief.md` — extracts audience + voice + Unique Mechanism + the one shift + traffic source per-section. No AskUserQuestion mid-flow.
 - **Step 2:** Dispatch hook-agent + cta-agent in parallel (Route C picks the agents lp-brief's per-section spec named — for hero section: headline + sub-head + hero CTA).
 - **Step 3:** Dispatch critic-agent. PASS.
-- **Step 4:** Return annotated hero copy directly to lp-brief (NO standalone artifact file written by copywriting in Route C; lp-brief embeds copy + annotations in its own artifact at `.forsvn/artifacts/marketing/brief-landing-page/statuszero/v1/brief.md`).
+- **Step 4:** Return annotated hero copy directly to lp-brief (NO standalone artifact file written by copywriting in Route C; lp-brief embeds copy + annotations in its own artifact at `docs/forsvn/artifacts/marketing/brief-landing-page/statuszero/v1/brief.md`).
 - **Completion Status: DONE.**

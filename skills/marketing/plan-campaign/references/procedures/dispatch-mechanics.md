@@ -13,7 +13,7 @@ The orchestrator spawns each sub-agent by:
 1. **Read** the agent instruction file — include its FULL content in the Agent prompt (no excerpts; agents need their complete role + input contract + output contract + domain instructions + self-check).
 2. **Append** the context block (5 fields from Pre-Dispatch: growth motion, campaign goal, ICP summary, VoC quotes, constraints) AND the upstream agent's output (when not Layer 1).
 3. **Resolve file paths to absolute:** replace any relative path in the agent's reference list with the absolute path the agent will actually read. Agents don't navigate; they read the path you give them.
-4. **Pass upstream artifacts by content:** orchestrator reads `.forsvn/artifacts/` files itself, includes relevant excerpts inline. Do not pass file paths and hope the agent reads them — the agent has limited tool access by design.
+4. **Pass upstream artifacts by content:** orchestrator reads `docs/forsvn/artifacts/` files itself, includes relevant excerpts inline. Do not pass file paths and hope the agent reads them — the agent has limited tool access by design.
 5. **Append critic feedback** if it exists, under a `## Critic Feedback — Address Every Point` heading. Agents will not address feedback they didn't receive.
 
 ---
@@ -107,7 +107,7 @@ After Layer 2 step 5, the critic-agent returns one of two verdicts (per `agents/
 - `brief-shortform` (social-media-channel hero video brief)
 - `plan-funnel` (sets per-channel numeric targets — CAC / LTV / per-channel CPL)
 
-Campaign-plan is the **integration layer** between strategy (icp-research, prioritize) and execution (lp-brief, seo, cold-outreach, ad-copy, short-form-brief, funnel-planner). Downstream skills read `.forsvn/artifacts/marketing/campaign-plan.md` for context.
+Campaign-plan is the **integration layer** between strategy (icp-research, prioritize) and execution (lp-brief, seo, cold-outreach, ad-copy, short-form-brief, funnel-planner). Downstream skills read `docs/forsvn/artifacts/marketing/campaign-plan.md` for context.
 
 ---
 

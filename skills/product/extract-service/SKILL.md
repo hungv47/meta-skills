@@ -41,7 +41,7 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK]:
 | Artifact | Source | Use |
 |---|---|---|
 | `.forsvn/index/manifest.json` | (any) | Check prior run, staleness |
-| `.forsvn/experience/technical.md` | (any) | Prior conventions |
+| `docs/forsvn/experience/technical.md` | (any) | Prior conventions |
 | `architecture/system-architecture.md` | architect-system | Service-layer placement |
 
 ## Mode + Pre-Dispatch + Dispatch
@@ -49,13 +49,13 @@ Per `references/_shared/before-starting-check.md` [PLAYBOOK]:
 `budget: standard` — auto-downgrades to Single-Agent Fallback for ≤3-caller scopes; `--fast` forces single-agent (safety gates still fire). Per `references/_shared/mode-resolver.md`.
 Session execution profile (single-vs-multi): inherit per `references/_shared/execution-policy.md`.
 
-**Pre-Dispatch** (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]) — needed dimensions: target, caller count, mechanics that repeat, tech stack + test runner, conventions. Confirm ≥2 callers via grep (G6) before scan. Cold Start: ask which mechanics repeat + roughly how many callers. Write back to `.forsvn/experience/technical.md`.
+**Pre-Dispatch** (`references/_shared/pre-dispatch-protocol.md` [PROCEDURE]) — needed dimensions: target, caller count, mechanics that repeat, tech stack + test runner, conventions. Confirm ≥2 callers via grep (G6) before scan. Cold Start: ask which mechanics repeat + roughly how many callers. Write back to `docs/forsvn/experience/technical.md`.
 
 **Dispatch** — 4 sub-agents (scanner → planner → migration → critic) across 3 layers + operator-approval gate. Roster + layers + protocol + routing + Single-Agent Fallback: [`references/procedures/dispatch-mechanics.md`](references/procedures/dispatch-mechanics.md) [PROCEDURE]. TS walkthrough: [`references/examples/extraction-walkthrough.md`](references/examples/extraction-walkthrough.md) [EXAMPLE].
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/product-extract-service-<YYYY-MM-DD>-<slug>.md` (flat v2; re-run same slug same day → `.v[N]`).
+- **Path:** `docs/forsvn/artifacts/product-extract-service-<YYYY-MM-DD>-<slug>.md` (flat v2; re-run same slug same day → `.v[N]`).
 - **Lifecycle:** `snapshot`.
 - **Frontmatter:** `skill`, `version`, `date`, `status` (DONE/DONE_WITH_CONCERNS/BLOCKED/NEEDS_CONTEXT), `stack` (=product), `review_surface` (=none — `decision_state: not_required`), `lifecycle`, `produced_by`, `provenance`. Schema: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Two halves:** Migration Plan (interface + caller order, pre-approval) + Applied Migration (per-caller results + critic verdict, post-apply). Plan-only ships just the first.

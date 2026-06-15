@@ -66,7 +66,7 @@ version: 1
 date: [today]
 status: done | done_with_concerns | blocked | needs_context
 slug: [matches upstream brief slug]
-source_brief: [.forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md OR variant path]
+source_brief: [docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md OR variant path]
 target_platforms: [list — e.g., tiktok, reels, shorts]
 aspect: [9:16 | 1:1 | 16:9 | 4:5 | custom-WxH]
 length_seconds: [N]
@@ -154,7 +154,7 @@ A human editor / motion designer can take the bundle directory as the spec for a
 
 ## Re-run
 
-If the brief changes or the lane changes: re-run `produce-video` with `--rev=N` to write to `.forsvn/artifacts/marketing/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
+If the brief changes or the lane changes: re-run `produce-video` with `--rev=N` to write to `docs/forsvn/artifacts/marketing/produced-videos/[slug]/v[N]/...` and preserve the prior bundle.
 
 ## Operator Next Steps
 

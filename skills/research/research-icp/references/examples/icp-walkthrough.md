@@ -23,7 +23,7 @@ Warm Start prompt emitted; user confirmed and added:
 - Geo focus: US + EU
 - Route: B (Full ICP — comprehensive research needed for launch)
 
-Generated `.forsvn/canonical/product/PRODUCT-CONTEXT.md` with 8 sections (Product, Buyer, Problem, Differentiator, Social Proof, Model, Voice, Primary CTA) + Canonical Terminology table (terms: `project`, `update`, `team`, `seat`). Saved.
+Generated `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` with 8 sections (Product, Buyer, Problem, Differentiator, Social Proof, Model, Voice, Primary CTA) + Canonical Terminology table (terms: `project`, `update`, `team`, `seat`). Saved.
 
 ---
 
@@ -124,7 +124,7 @@ All 10 gates pass:
 - **Gate 9 (Sample Bias Acknowledged):** PASS — Sample Bias section present and specific to this 5-platform dataset (not a generic disclaimer).
 - **Gate 10 (≥5 Sources per Persona):** PASS — persona drawn from 5 named communities across 5 platforms, clearing the 5-source floor.
 
-Artifact delivered to `.forsvn/canonical/research/ICP.md`.
+Artifact delivered to `docs/forsvn/canonical/research/ICP.md`.
 
 ---
 
@@ -132,8 +132,8 @@ Artifact delivered to `.forsvn/canonical/research/ICP.md`.
 
 Per `procedures/dispatch-mechanics.md`:
 
-1. Wrote `.forsvn/canonical/research/ICP.md` with frontmatter + Persona 1 + Top 3 Emotional Drivers + Red Flags + Next Step.
-2. Updated `.forsvn/canonical/product/PRODUCT-CONTEXT.md` Product / Buyer / Problem / Differentiator / Voice sections (canonical mirror per Write-back map Q1).
+1. Wrote `docs/forsvn/canonical/research/ICP.md` with frontmatter + Persona 1 + Top 3 Emotional Drivers + Red Flags + Next Step.
+2. Updated `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` Product / Buyer / Problem / Differentiator / Voice sections (canonical mirror per Write-back map Q1).
 3. Experience write-back:
    - `experience/product.md` ← `Product — one-line: "ProjectSync — async project visibility for engineering teams"`
    - `experience/audience.md` ← `Audience — primary persona: "Engineering Manager, 30-38, B2B SaaS, 50-200 engineers"`, `Audience — pain points (primary): "Status Update Theater, Standup Fatigue, Visibility Without Micromanagement"`, `Audience — geo focus: "US + EU"`
@@ -148,7 +148,7 @@ Per `procedures/dispatch-mechanics.md`:
 - Layer 1 parallel → Layer 2 sequential dispatch arc.
 - Pre-Dispatch Warm Start path (auto-scan + 2 Cold Start questions only).
 - Cross-stack contract preserved (Habitat Map 5-column schema, Top 3 Emotional Drivers section, Next Step block).
-- Canonical mirror to `.forsvn/canonical/product/PRODUCT-CONTEXT.md` per the foundational role.
+- Canonical mirror to `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` per the foundational role.
 
 ---
 
@@ -156,7 +156,7 @@ Per `procedures/dispatch-mechanics.md`:
 
 - **Critic FAIL → rewrite cycle.** All 10 gates passed on first dispatch. For a FAIL walkthrough, see `agents/critic-agent.md` § "FAIL example."
 - **Route A (Quick ICP).** This walkthrough used Route B. Route A would skip habitat-agent + decision-psychology-agent and annotate the artifact with the omissions per `format-conventions.md` § "Route A (Quick ICP) artifact differences."
-- **Route C (called by another skill).** A campaign-plan invocation would read `.forsvn/canonical/research/ICP.md` and check freshness; if <30 days, return existing; if >30 days, warn and recommend re-run.
+- **Route C (called by another skill).** A campaign-plan invocation would read `docs/forsvn/canonical/research/ICP.md` and check freshness; if <30 days, return existing; if >30 days, warn and recommend re-run.
 - **`--fast` mode.** Would auto-route to Route A if context is sufficient for Warm Start; would still emit Cold Start questions if context is thin (Critical Gate 1 floor).
 - **Multi-persona artifact.** This example shipped 1 persona. A multi-persona artifact has the same structure repeated as `## Persona 2:` with optional `## Segment Rationale` documenting who was cut.
 

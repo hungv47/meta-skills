@@ -32,7 +32,7 @@ Layer 2 (sequential):
 3. **Layer 1 dispatch** — brief + scope mode + Shared Context → `decomposer-agent` and `dependency-mapper-agent` in parallel.
 4. **Layer 2 sequential chain** — both outputs → `ordering-agent` → `acceptance-agent` → `critic-agent`.
 5. **Revision loop** — if critic FAILs, re-dispatch ONLY the cited agents with feedback. Max 2 rounds. If still FAILs at round 2 → status DONE_WITH_CONCERNS or escalate (decomposition itself is wrong; more rounds won't fix it).
-6. **Assembly** — merge into the artifact format per [`../task-format.md`](../task-format.md) [PROCEDURE]. Seed each task block with `**History:**` entry (`{{today}} · task-breakdown · created`). Save to `.forsvn/artifacts/meta/tasks.md`.
+6. **Assembly** — merge into the artifact format per [`../task-format.md`](../task-format.md) [PROCEDURE]. Seed each task block with `**History:**` entry (`{{today}} · task-breakdown · created`). Save to `docs/forsvn/artifacts/meta/tasks.md`.
 
 ## Routing Rules
 
@@ -55,4 +55,4 @@ When context is constrained or decomposition is simple:
 4. Map dependencies inline; order risk-first
 5. Write acceptance criteria per task (templates: [`../acceptance-criteria.md`](../acceptance-criteria.md))
 6. Run Critical Gates checklist as self-review (see SKILL.md)
-7. Save to `.forsvn/artifacts/meta/tasks.md`
+7. Save to `docs/forsvn/artifacts/meta/tasks.md`

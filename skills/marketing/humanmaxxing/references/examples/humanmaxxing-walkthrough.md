@@ -34,8 +34,8 @@ Orchestrator reads in order:
 
 1. `brand/BRAND.md` → voice rules, but voice adjectives also live in product-context.md
 2. `research/product-context.md` → voice adjectives "direct, warm, technical" + audience register
-3. `.forsvn/experience/brand.md` → no `Voice — adjectives` entry (not persisted yet)
-4. No upstream artifact at `.forsvn/artifacts/marketing/content/[slug].md`
+3. `docs/forsvn/experience/brand.md` → no `Voice — adjectives` entry (not persisted yet)
+4. No upstream artifact at `docs/forsvn/artifacts/marketing/content/[slug].md`
 
 Emit warm-start summary:
 
@@ -179,7 +179,7 @@ Less coverage, more precision. Guide users to one aha-moment fast, then expand.
 
 Returns inline to operator:
 ```
-✓ Humanmaxxed artifact at .forsvn/artifacts/marketing/content/saas-onboarding.humanmaxxed.md
+✓ Humanmaxxed artifact at docs/forsvn/artifacts/marketing/content/saas-onboarding.humanmaxxed.md
 178 → 91 words (49% compression). Quality 40/50 PASS cycle 1. Zero Hard Tells.
 DONE.
 ```

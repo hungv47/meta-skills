@@ -9,8 +9,8 @@ Normalize the re-ingested rendered asset + its brief into an evidence packet the
 - Loop `program.md`, especially primary metric, guardrails, and the asset/variant scope for this cycle
 - Loop `context.md`, especially baseline render and acceptance assumptions
 - Prior `results.tsv`
-- The re-ingested asset path/id — the `asset_picked` / `assets` attachment on `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`. Open it with Read to confirm it is a viewable image, not a placeholder.
-- Source brief artifact (`.forsvn/artifacts/marketing/design-briefs/[slug].md`) — the acceptance criteria being scored
+- The re-ingested asset path/id — the `asset_picked` / `assets` attachment on `docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md`. Open it with Read to confirm it is a viewable image, not a placeholder.
+- Source brief artifact (`docs/forsvn/artifacts/marketing/design-briefs/[slug].md`) — the acceptance criteria being scored
 - Render provenance: engine + `execution_mode` (brief-only / assisted / direct), render settings, seed/params if recorded
 - Optional: brand tokens (`brand/BRAND.md`, `brand/DESIGN.md`); variant set with the picked variant flagged
 

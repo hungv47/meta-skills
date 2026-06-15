@@ -151,7 +151,7 @@
 **What it is:** Renaming a section in the Artifact Template, reordering Market Trends / Sizing / Consumer / Competitive / Gaps / Top 3 / Limitations / Next Step, changing the 6 Competitive Landscape sub-sections, or substituting column names without atomic update of downstream consumers.
 
 **Detection:**
-- `.forsvn/canonical/research/MARKET.md` body has sections in unexpected order or with renamed headers.
+- `docs/forsvn/canonical/research/MARKET.md` body has sections in unexpected order or with renamed headers.
 - Downstream skill output references a section name that doesn't exist in the artifact (e.g., prioritize asks "where is the Top 3 Opportunities section?" — section was renamed to "Recommended Opportunities").
 - Top 3 Opportunities columns differ from `format-conventions.md` schema (Evidence Source | Window | Risk | Why Now).
 

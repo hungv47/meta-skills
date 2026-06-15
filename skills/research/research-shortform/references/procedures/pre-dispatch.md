@@ -22,9 +22,9 @@ load_class: PROCEDURE
 
 ## Read order (warm-start scan)
 
-1. `.forsvn/artifacts/research/research-shortform/[slug].md` if exists — check (topic, market) match and freshness windows
-2. `.forsvn/experience/content.md` — most recent entries for market, audience register, topics already researched
-3. `.forsvn/experience/audience.md` — primary persona, language, habitats
+1. `docs/forsvn/artifacts/research/research-shortform/[slug].md` if exists — check (topic, market) match and freshness windows
+2. `docs/forsvn/experience/content.md` — most recent entries for market, audience register, topics already researched
+3. `docs/forsvn/experience/audience.md` — primary persona, language, habitats
 4. `research/icp-research.md`, `research/product-context.md` — full audience + business context if present
 5. `brand/BRAND.md` — voice and archetype hints
 
@@ -84,7 +84,7 @@ Answer 1-5 in one response. I'll confirm what I heard, then dispatch.
 
 Wait for answers. Do not dispatch without them. If operator skips Q4 (no audience hint AND no ICP), proceed but the audience-fit-agent flags `NEEDS_CONTEXT` and the final artifact carries the flag.
 
-## Write-back to `.forsvn/experience/content.md`
+## Write-back to `docs/forsvn/experience/content.md`
 
 After Cold Start answers received, append to `content.md`:
 

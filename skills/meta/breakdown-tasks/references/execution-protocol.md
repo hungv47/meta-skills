@@ -1,6 +1,6 @@
 # Execution Protocol — Reader's Manual for `tasks.md`
 
-This file is the **operating manual for any agent (or human) picking up an existing `.forsvn/artifacts/meta/tasks.md`** to implement work. The `breakdown-tasks` skill produces the artifact; this protocol governs how downstream consumers run it.
+This file is the **operating manual for any agent (or human) picking up an existing `docs/forsvn/artifacts/meta/tasks.md`** to implement work. The `breakdown-tasks` skill produces the artifact; this protocol governs how downstream consumers run it.
 
 If you're decomposing fresh work, you don't need this file — go to `breakdown-tasks`'s `SKILL.md`. If you're holding a tasks.md and ready to build, read top to bottom.
 

@@ -1,3 +1,9 @@
+---
+last_verified: 2026-06-13
+verifier: audit-wave3
+churn: high
+---
+
 # X (Twitter) — publish-social platform ref
 
 > Hard rules + algorithm signals + anti-patterns for formatting X drafts. Cross-references `references/_shared/platform-intelligence/x.md` (D13 canonical) for richer hook taxonomy + algorithm signals.

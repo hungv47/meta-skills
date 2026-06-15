@@ -49,8 +49,8 @@ Run `references/_shared/before-starting-check.md`. Required context:
 | `research/icp-research.md` | research-icp | Recommended — VoC + pain language |
 | `research/product-context.md` | research-icp | Recommended — voice adjectives + Unique Mechanism |
 | `brand/BRAND.md` | create-brand | Recommended — voice rules + lexicon |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route C |
-| `.forsvn/experience/{audience,product,goals}.md` | (any skill) | Optional — persisted keys |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — Route C |
+| `docs/forsvn/experience/{audience,product,goals}.md` | (any skill) | Optional — persisted keys |
 
 ## Pre-Dispatch + Mode
 
@@ -69,7 +69,7 @@ Three routes — A (single key line), B (full page), C (called by another skill)
 
 ## Artifact Contract
 
-- **Path (Route A/B):** `.forsvn/artifacts/marketing/content/[slug].copy.md`
+- **Path (Route A/B):** `docs/forsvn/artifacts/marketing/content/[slug].copy.md`
 - **Path (Route C):** no standalone artifact — annotated copy embedded in caller's artifact
 - **Lifecycle:** pipeline — on re-run for same slug, rename existing to `[slug].copy.v[N].md` and create new with incremented version
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`

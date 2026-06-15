@@ -6,7 +6,7 @@
 
 ## Artifact path
 
-`.forsvn/canonical/research/DIAGNOSE.md`
+`docs/forsvn/canonical/research/DIAGNOSE.md`
 
 Canonical singleton — the current diagnosis of record. On re-run: overwrite `DIAGNOSE.md` in place and increment `version`. Never create a `.v[N].md` sibling — prior runs live in git history.
 

@@ -25,7 +25,7 @@ Found:
 Need before dispatching: scale targets and any new constraints (compliance, latency, budget tier)?
 ```
 
-If operator confirms or types nothing → dispatch with detected values + missing fields defaulted from `.forsvn/experience/technical.md`. Override resets to Cold Start.
+If operator confirms or types nothing → dispatch with detected values + missing fields defaulted from `docs/forsvn/experience/technical.md`. Override resets to Cold Start.
 
 ## Cold Start
 
@@ -73,11 +73,11 @@ After Cold Start or Interview resolves, persist only durable context:
 
 | Q | File | Key | Rule |
 |---|---|---|---|
-| 2. Scale targets | `.forsvn/experience/technical.md` | `Technical — scale targets` | Durable; spans projects within a stack |
-| 3. Constraints | `.forsvn/experience/technical.md` | `Technical — constraints` | Durable: compliance, latency tier, team skills |
-| 4. Deployment context | `.forsvn/experience/technical.md` | `Technical — deployment context` | Durable: greenfield vs brownfield vs migration default |
+| 2. Scale targets | `docs/forsvn/experience/technical.md` | `Technical — scale targets` | Durable; spans projects within a stack |
+| 3. Constraints | `docs/forsvn/experience/technical.md` | `Technical — constraints` | Durable: compliance, latency tier, team skills |
+| 4. Deployment context | `docs/forsvn/experience/technical.md` | `Technical — deployment context` | Durable: greenfield vs brownfield vs migration default |
 
-Q1 (spec) is project-specific — lives in `.forsvn/artifacts/meta/specs/<slug>.md` or `architecture/system-architecture.md`, not persisted to experience.
+Q1 (spec) is project-specific — lives in `docs/forsvn/artifacts/meta/specs/<slug>.md` or `architecture/system-architecture.md`, not persisted to experience.
 Interview Q1-Q8: same write-back where dimensions overlap. Q1 (product), Q3 (flows), Q6 (integrations) are project-specific — don't persist.
 
 ## Safety gate (under `--fast`)

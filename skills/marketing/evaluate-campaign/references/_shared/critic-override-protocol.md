@@ -35,7 +35,7 @@ bun scripts/log-critic-override.ts \
 
 <!-- lint:reference-ok skill-local packaged copy; resolves in consuming skills, not at canonical -->
 The invoking skill passes its own name as `--skill` and runs its packaged copy at `scripts/log-critic-override.ts` (synced from the maintainer original via `sync-skill-support`). The script appends a dated
-block to `.forsvn/artifacts/meta/records/critic-overrides.md`.
+block to `docs/forsvn/artifacts/meta/records/critic-overrides.md`.
 
 ## Escalation
 

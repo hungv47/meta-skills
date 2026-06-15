@@ -39,7 +39,7 @@ clean-machine     (standalone, never bundled)
 3. **Soft-gate:** architecture intent with zero flows mapped → recommend `/architect-system` BUT note "sharper with flows; consider `/map-user-flow` first if your feature spans multiple flows."
 4. **Hard-gate:** task-decomposition intent without spec or architecture → recommend the upstream skill instead.
 5. **Standalone branches:** `/clean-code` and `/clean-machine` are never bundled with pipeline skills.
-6. **Cross-chain pull-in:** architecture intent + `.forsvn/artifacts/research/prioritize-*.md` exists → mention it'll be consumed.
+6. **Cross-chain pull-in:** architecture intent + `docs/forsvn/artifacts/research/prioritize-*.md` exists → mention it'll be consumed.
 7. **Wrap-around:** recommendations touching security / auth / data-mutation / critical artifacts → append `(optional /review-work after)`.
 8. **Don't cross-route** outside `/discover` and `/breakdown-tasks` — research/marketing domains route via their own chain files.
 

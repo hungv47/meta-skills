@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Scope Drift Detection
 
-**Load when:** `.forsvn/artifacts/meta/tasks.md` OR `.forsvn/artifacts/meta/specs/*.md` exists in the project (orchestrator detects this in Step 1 of Execution). When present, the reviewer adds a scope check on top of the standard correctness/edge-cases/simplification/security/consistency review.
+**Load when:** `docs/forsvn/artifacts/meta/tasks.md` OR `docs/forsvn/artifacts/meta/specs/*.md` exists in the project (orchestrator detects this in Step 1 of Execution). When present, the reviewer adds a scope check on top of the standard correctness/edge-cases/simplification/security/consistency review.
 
 ---
 
@@ -16,10 +16,10 @@ load_class: PROCEDURE
 
 After reviewing code quality, compare the implementation against the stated requirements:
 
-1. **Read `.forsvn/artifacts/meta/tasks.md`** if it exists.
+1. **Read `docs/forsvn/artifacts/meta/tasks.md`** if it exists.
    - Are all tasks addressed by the diff?
    - Are there changes in the diff that don't map to any task?
-2. **Read `.forsvn/artifacts/meta/specs/*.md`** if any exist.
+2. **Read `docs/forsvn/artifacts/meta/specs/*.md`** if any exist.
    - Does the implementation match the spec?
    - Are there requirements that were missed?
    - Are there scope additions in the diff that weren't planned?

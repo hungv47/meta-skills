@@ -4,7 +4,7 @@ description: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, freque
 argument-hint: "[loop slug or path] [audience-temp: cold-traffic|retargeting] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -34,7 +34,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
+**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
 
 **Recommended:** baseline/prior cycle row · frequency at window close (Creative-Fatigue scoring) · conversion count + CPA · audience size + reach · guardrails from `program.md` · qualitative evidence (comments, sentiment, click-quality).
 
@@ -79,6 +79,10 @@ Operator ships despite critic FAIL — **log BEFORE writing artifact or ledger r
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — 7 ad-eval rows + 4 cross-cutting marketing-stack. Most common: mixed-audience contamination (Gate 3 + Critic "Audience-Temp Fidelity"), confidence inflation on low-spend (Gate 5 + Critic "Attribution Honesty"), scope drift to write-ad (Gate 6 + Critic "Decision Discipline"), missing source ad-copy artifact (Critic Hard Fail).
+
+## Worked Example
+
+Ad-eval cold-traffic cycle (creative-fatigue keep→watch, critic PASS): [`references/examples/ad-eval-cycle-walkthrough.md`](references/examples/ad-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

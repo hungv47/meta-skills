@@ -102,7 +102,7 @@ Use `--fast` when you want a first pass and accept reduced rigor (no critic, no 
 
 `--fast` skips orchestration weight, not correctness floor. Two contracts are inviolable:
 
-**1. Cold Start.** When no context is resolvable from artifacts or `.forsvn/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing audience / business / brand decisions.
+**1. Cold Start.** When no context is resolvable from artifacts or `docs/forsvn/experience/`, the skill still asks its bundled cold-start questions. `--fast` only bypasses multi-agent orchestration *after* context is resolved — it does not authorize hallucinating against missing audience / business / brand decisions.
 
 **2. Safety gates.** Hard-gated skills enforce gates regardless of `--fast`. Examples of hard gates that supersede the flag:
 - `brief-graphic` / `brief-landing-page` → brief-without-brand-system block
@@ -163,7 +163,7 @@ skip Layer-2 dispatch but still run Cold Start questions if context isn't resolv
 
 1. **Silent mode flip.** Skill resolves to `fast` and dispatches differently but never tells the operator. Always echo the resolved mode in the first response line when it differs from the skill's default budget.
 2. **Safety-gate erosion.** `--fast` branch quietly skips a hard gate "because it's faster." Hard gates are non-negotiable — `--fast` doesn't authorize bypass.
-3. **Cold Start skipped in warm-start illusion.** Skill assumes context is present because the operator's prompt is long. Length ≠ resolved context. Run the cold-start check against `.forsvn/experience/` and artifacts, not against prompt verbosity.
+3. **Cold Start skipped in warm-start illusion.** Skill assumes context is present because the operator's prompt is long. Length ≠ resolved context. Run the cold-start check against `docs/forsvn/experience/` and artifacts, not against prompt verbosity.
 4. **Auto-downgrade applied after dispatch.** Heuristics are pre-dispatch only. Once agents are spawned, the resolved mode is locked.
 5. **Re-litigating tier on every invocation.** The skill's `budget:` frontmatter is the default. Heuristics + flags shift it per-invocation. Don't change the frontmatter to "fix" misroutes — fix the heuristic application instead.
 

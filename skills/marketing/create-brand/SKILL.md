@@ -29,11 +29,11 @@ Coordinates 8 specialized agents to transform product context into a brand narra
 
 | File | Audience | Register | Route |
 |---|---|---|---|
-| `.forsvn/canonical/marketing/BRAND.md` | Founders, marketers, copywriters, designers | Prose — brand book | A + B |
-| `.forsvn/canonical/marketing/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
-| `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | Art directors, photographers, campaign + render briefs | Art direction — mood, light, framing, motion (references tokens, never redefines) | B (+ refresh-only) |
-| `.forsvn/canonical/marketing/FRAME.md` | Video/motion producers, short-form + full-frame social briefs | Frame direction — safe-area, type-at-distance, on-screen pacing, bumper grammar (references tokens, never redefines) | B (+ refresh-only) |
-| `.forsvn/canonical/marketing/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
+| `docs/forsvn/canonical/marketing/BRAND.md` | Founders, marketers, copywriters, designers | Prose — brand book | A + B |
+| `docs/forsvn/canonical/marketing/DESIGN.md` | AI coding agents, frontend engineers, design-system consumers | Specification — tables, formulas, exact values | B only |
+| `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md` | Art directors, photographers, campaign + render briefs | Art direction — mood, light, framing, motion (references tokens, never redefines) | B (+ refresh-only) |
+| `docs/forsvn/canonical/marketing/FRAME.md` | Video/motion producers, short-form + full-frame social briefs | Frame direction — safe-area, type-at-distance, on-screen pacing, bumper grammar (references tokens, never redefines) | B (+ refresh-only) |
+| `docs/forsvn/canonical/marketing/ASSETS.md` | Designers, art directors, asset producers, PMs | Checklist — GFM checkboxes with spec ref + target path | B only |
 
 ASSETS.md is deterministically projected from BRAND.md + DESIGN.md + declared platforms (Step 8.5) — auto-scans `brand/` each run; human-owned `[~]` (in-progress) and `[!]` (blocked) markers preserved across runs. CREATIVE-DIRECTION.md and FRAME.md are both **orchestrator-written** (no new agent) — CREATIVE-DIRECTION names what DESIGN.md tokens *mean*; FRAME names how those tokens *behave in a moving frame* (safe-area, type-at-distance, pacing). Both are additive, refreshable standalone. Per-section format + frontmatter schema: [`references/format-conventions.md`](references/format-conventions.md); FRAME.md depth: [`references/frame-direction.md`](references/frame-direction.md). Optional visual renderings via Paper MCP, Claude Design handoff, or a brand-kit board (Step 9).
 
@@ -56,9 +56,9 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 |---|---|---|
 | `research/product-context.md` | research-icp | Strongly recommended — drives strategy + audience grounding |
 | `research/icp-research.md` | research-icp | Strongly recommended — audience archetype + voice register |
-| `.forsvn/canonical/marketing/BRAND.md` (existing) | prior run | Optional — re-run overwrites in place + bumps `version:` |
-| `.forsvn/canonical/marketing/ASSETS.md` (existing) | prior run | Optional — Step 8.5 preserves `[~]`/`[!]` markers across re-runs |
-| `.forsvn/experience/{product,audience,brand,business,technical}.md` | any skill | Optional — persisted answers for the 7 Pre-Dispatch dimensions |
+| `docs/forsvn/canonical/marketing/BRAND.md` (existing) | prior run | Optional — re-run overwrites in place + bumps `version:` |
+| `docs/forsvn/canonical/marketing/ASSETS.md` (existing) | prior run | Optional — Step 8.5 preserves `[~]`/`[!]` markers across re-runs |
+| `docs/forsvn/experience/{product,audience,brand,business,technical}.md` | any skill | Optional — persisted answers for the 7 Pre-Dispatch dimensions |
 
 ## Pre-Dispatch + Mode
 
@@ -82,7 +82,7 @@ Key invariants (always-on): every ASSETS row has spec ref + target path · ASSET
 
 ## Artifact Contract
 
-- **Paths (Route B):** `.forsvn/canonical/marketing/{BRAND,DESIGN,CREATIVE-DIRECTION,FRAME,ASSETS}.md` (ids `brand`, `design`, `creative-direction`, `frame`, `assets`) · **Route A:** `.forsvn/canonical/marketing/BRAND.md` only.
+- **Paths (Route B):** `docs/forsvn/canonical/marketing/{BRAND,DESIGN,CREATIVE-DIRECTION,FRAME,ASSETS}.md` (ids `brand`, `design`, `creative-direction`, `frame`, `assets`) · **Route A:** `docs/forsvn/canonical/marketing/BRAND.md` only.
 - **Lifecycle:** `canonical` — brand-of-record artifacts consumed by 10+ downstream marketing + product skills.
 - **Versioning:** all overwrite in place + increment the integer `version:` on re-run (prior versions live in git history). ASSETS.md additionally moves dropped-platform rows to `## Orphaned` (preserved). Never a `.v[N].md` sibling under `canonical/` — the UPPERCASE canonical name grammar forbids dots.
 - **Frontmatter + section schema:** [`references/format-conventions.md`](references/format-conventions.md).

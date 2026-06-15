@@ -1,6 +1,6 @@
 ---
 name: breakdown-tasks
-description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order, for AI agents or human engineers. Produces `.forsvn/artifacts/meta/tasks.md`. Use once requirements are clear and you need an execution plan. Not for clarifying unclear requirements (use discover) or designing architecture (use architect-system). For code review after building, see review-work."
+description: "Decomposes a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order, for AI agents or human engineers. Produces `docs/forsvn/artifacts/meta/tasks.md`. Use once requirements are clear and you need an execution plan. Not for clarifying unclear requirements (use discover) or designing architecture (use architect-system). For code review after building, see review-work."
 argument-hint: "[spec or architecture to decompose]"
 allowed-tools: Read Grep Glob Bash
 metadata:
@@ -41,8 +41,8 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 |---|---|
 | 0 | Mode resolve per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). Default `standard`. Downgrade to `fast` (<10 tasks, single feature, no upstream) → Single-Agent Fallback. Escalate to `deep` for multi-feature roadmaps with cross-feature deps. |
 | 1 | Read `implementation-roadmap/canonical-paths.md` if present. |
-| 2 | Read `architecture/system-architecture.md` + `.forsvn/artifacts/meta/specs/*.md` + `.forsvn/artifacts/product/flow/*.md`. None + no source in chat → recommend `/discover` or `/architect-system`. |
-| 3 | Read existing `.forsvn/artifacts/meta/tasks.md` — re-run behavior in [`references/task-format.md`](references/task-format.md) §"Re-run behavior". |
+| 2 | Read `architecture/system-architecture.md` + `docs/forsvn/artifacts/meta/specs/*.md` + `docs/forsvn/artifacts/product/flow/*.md`. None + no source in chat → recommend `/discover` or `/architect-system`. |
+| 3 | Read existing `docs/forsvn/artifacts/meta/tasks.md` — re-run behavior in [`references/task-format.md`](references/task-format.md) §"Re-run behavior". |
 | 4 | No `experience/` read — project-specific. |
 
 ## Pre-Dispatch
@@ -56,7 +56,7 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta/tasks.md` (single file; edited in place; full re-decomposition snapshots prior to `tasks.v[N].md`)
+- **Path:** `docs/forsvn/artifacts/meta/tasks.md` (single file; edited in place; full re-decomposition snapshots prior to `tasks.v[N].md`)
 - **Lifecycle:** `pipeline`
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (=md), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`. Schema + Status Index + Shared Context + task-block format: [`references/task-format.md`](references/task-format.md) [PROCEDURE].
 - **Required sections:** Status Index (source-of-truth for resume), Shared Context (decisions every task references), Tasks (sibling `###` blocks, stable IDs).

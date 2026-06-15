@@ -6,11 +6,11 @@
 
 Three failure modes this spec prevents:
 
-1. **Skills re-derive state every invocation** — every consumer re-globs `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
+1. **Skills re-derive state every invocation** — every consumer re-globs `docs/forsvn/artifacts/`, `research/`, `brand/`, `architecture/`, re-reads frontmatter, re-computes staleness. Wasteful and inconsistent across skills.
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `.forsvn/artifacts/` (flat path grammar: `<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`; legacy nested paths `{meta,mkt,product,research}/{kind}/` are tolerated by the back-compat parser), measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
+Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `docs/forsvn/artifacts/` (flat path grammar: `<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`; legacy nested paths `{meta,mkt,product,research}/{kind}/` are tolerated by the back-compat parser), measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
@@ -85,7 +85,7 @@ Schema:
       "size_bytes": 7342,
       "frontmatter_present": true
     },
-    ".forsvn/artifacts/meta-diagnose-2026-05-01-trial-conversion-drop.md": {
+    "docs/forsvn/artifacts/meta-diagnose-2026-05-01-trial-conversion-drop.md": {
       "produced_by": "diagnose",
       "produced_at": "2026-05-01",
       "status": "done_with_concerns",
@@ -103,7 +103,7 @@ Schema:
   },
   "experience": {
     "audience.md": {
-      "path": ".forsvn/experience/audience.md",
+      "path": "docs/forsvn/experience/audience.md",
       "last_written_by": "icp-research",
       "last_written_at": "2026-05-06T09:11:00.000Z",
       "entries": 7,
@@ -119,7 +119,7 @@ Schema:
 - `version` — manifest schema version. Currently `2` (Phase 1 added `by_id` + `graph`; see § v2 below). Bump only on breaking shape changes.
 - `by_id`, `graph` — the Phase 1 knowledge-graph maps. Documented in § "v2 — the Knowledge Graph".
 - `updated_at` — ISO timestamp of last sync run. Consumers can use this to detect drift.
-- `artifacts` — map of path → artifact entry. Paths may come from `.forsvn/artifacts/`, `research/`, `brand/`, or `architecture/`.
+- `artifacts` — map of path → artifact entry. Paths may come from `docs/forsvn/artifacts/`, `research/`, `brand/`, or `architecture/`.
 - `experience` — map of `<domain>.md` filename → experience entry. Separate because experience files are append-only multi-skill, not single-producer.
 
 **Artifact entry:**
@@ -169,7 +169,7 @@ Phase 1 makes the stable-`id` + edge fields **live** and bumps the manifest to `
 ### `by_id` — stable identity → current path
 
 ```json
-"by_id": { "architecture": ".forsvn/canonical/product/ARCHITECTURE.md", "master-plan": "..." }
+"by_id": { "architecture": "docs/forsvn/canonical/product/ARCHITECTURE.md", "master-plan": "..." }
 ```
 
 Resolves an immutable `id` to its **current** path. Moving / renaming / re-categorizing an artifact updates only this map — references authored by `id` never break (the keystone). Ids must be unique; `validate-artifacts --strict` fails on a duplicate. Resolve with `find-artifacts --resolve <id>`.
@@ -179,7 +179,7 @@ Resolves an immutable `id` to its **current** path. Moving / renaming / re-categ
 ```json
 "graph": {
   "architecture": {
-    "path": ".forsvn/canonical/product/ARCHITECTURE.md",
+    "path": "docs/forsvn/canonical/product/ARCHITECTURE.md",
     "upstream": ["master-plan"], "downstream": [],
     "supersedes": [], "superseded_by": [], "references": [],
     "referenced_by": ["master-plan", "user-flow", "skill-stack-grand-plan"]
@@ -199,7 +199,7 @@ Resolves an immutable `id` to its **current** path. Moving / renaming / re-categ
 
 ### Experience writeback (the live MEMORY layer)
 
-`append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>` appends a learning to `.forsvn/experience/<stack>/<topic>.md` (created with contract-conforming frontmatter on first write). A run records what it learned; the next run reads it via `--context`. This is the layered experience layer (indexed as normal artifacts) — distinct from the legacy flat `experience` map (Q&A substrate) documented above.
+`append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>` appends a learning to `docs/forsvn/experience/<stack>/<topic>.md` (created with contract-conforming frontmatter on first write). A run records what it learned; the next run reads it via `--context`. This is the layered experience layer (indexed as normal artifacts) — distinct from the legacy flat `experience` map (Q&A substrate) documented above.
 
 ---
 
@@ -251,10 +251,10 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 `skills/bin/manifest-sync.ts` (in this repo; `bin/manifest-sync.ts` in the published `meta-skills` mirror) — Bun TypeScript, no dependencies.
 
 What it does:
-1. Walk `.forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files. Parse the flat-path filename grammar (`<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`) when present; fall back to legacy nested-path parsing (`{meta,mkt,product,research}/{kind}/<slug>.md`) for back-compat.
+1. Walk `docs/forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files. Parse the flat-path filename grammar (`<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`) when present; fall back to legacy nested-path parsing (`{meta,mkt,product,research}/{kind}/<slug>.md`) for back-compat.
 2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`). Legacy `review_state` is read with a one-line warning and surfaced under `decision_state`.
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields. When a `.html` twin exists co-located with an `.md`, set `review_surface: html` in the entry; do **not** index HTML as a separate artifact.
-4. For experience files (`.forsvn/experience/*.md`): count entries, find last writer.
+4. For experience files (`docs/forsvn/experience/*.md`): count entries, find last writer.
 5. Compute `stale` per artifact.
 6. Write `.forsvn/index/manifest.json` (pretty-printed JSON, trailing newline).
 7. Write `.forsvn/index/artifact-index.md` (human-readable selection index derived from the manifest). Columns: **Stack**, **Skill**, **Date**, **Title**, **Summary**, **Lifecycle**, **Status**, **Decision** (the `decision_state` value), **Surface** (the `review_surface` value).
@@ -272,7 +272,7 @@ The index groups active artifacts separately from archived/historical artifacts.
 Measurable initiatives use `.forsvn/loops/[slug]/`:
 
 ```text
-.forsvn/artifacts/
+docs/forsvn/artifacts/
 └── loops/
     └── pricing-page/
         ├── program.md      # lifecycle: loop
@@ -377,17 +377,17 @@ The trade-off is one extra ~100ms script call per skill run. Acceptable.
 | Brand identity (`id:brand`, `id:design`) | 365 |
 | Architecture (`id:architecture`) | 180 |
 | Diagnosis (`id:diagnose`) | 30 — diagnoses age fast |
-| Prioritization (`.forsvn/artifacts/meta/sketches/prioritize-*.md`) | 60 |
-| Funnel targets (`.forsvn/artifacts/meta/records/targets-*.md`) | 60 |
-| Tasks (`.forsvn/artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
-| Cleanup reports (`.forsvn/artifacts/meta/records/cleanup-*.md`) | 30 |
-| Spec from `discover` (`.forsvn/artifacts/meta/specs/*.md`) | 60 |
-| Marketing artifacts (`.forsvn/artifacts/marketing/**`) | 30 |
+| Prioritization (`docs/forsvn/artifacts/meta/sketches/prioritize-*.md`) | 60 |
+| Funnel targets (`docs/forsvn/artifacts/meta/records/targets-*.md`) | 60 |
+| Tasks (`docs/forsvn/artifacts/meta/tasks.md`) | 14 — tasks should be acted on quickly |
+| Cleanup reports (`docs/forsvn/artifacts/meta/records/cleanup-*.md`) | 30 |
+| Spec from `discover` (`docs/forsvn/artifacts/meta/specs/*.md`) | 60 |
+| Marketing artifacts (`docs/forsvn/artifacts/marketing/**`) | 30 |
 | Loop programs (`.forsvn/loops/*/program.md`) | 90 |
 | Loop context (`.forsvn/loops/*/context.md`) | 60 |
 | Loop evals (`.forsvn/loops/*/evals/*.md`) | 90 |
 | Loop learnings (`.forsvn/loops/*/learnings.md`) | 180 |
-| Meta reports (`.forsvn/artifacts/meta/decisions/[date]-*.md`, `.forsvn/artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
+| Meta reports (`docs/forsvn/artifacts/meta/decisions/[date]-*.md`, `docs/forsvn/artifacts/meta/records/fresh-eyes-*.md`) | 14 — these are point-in-time |
 
 These are defaults. A producer can override per-artifact if context warrants (e.g., a campaign-plan locked to a 90-day campaign sets `stale_after_days: 90`).
 
@@ -397,7 +397,7 @@ Consumers should respect `stale: true` as a warning signal, not a hard block. Th
 
 ## Experience Domain Handling
 
-`.forsvn/experience/{domain}.md` files are different from regular artifacts:
+`docs/forsvn/experience/{domain}.md` files are different from regular artifacts:
 - **Multi-producer** — many skills append to the same file.
 - **Append-only** — never overwritten, only added to.
 - **No single status** — each Q+A block is independently valid.
@@ -411,7 +411,7 @@ Consumers (typically `start-*` orchestrators) use the `entries` count as a heuri
 ## Anti-Patterns
 
 1. **Writing to `.forsvn/index/manifest.json` directly from a skill.** It's derived. Update the artifact, run sync.
-2. **Reading the filesystem when the manifest would do.** Per-skill `glob('.forsvn/artifacts/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
+2. **Reading the filesystem when the manifest would do.** Per-skill `glob('docs/forsvn/artifacts/**')` defeats the point. Read manifest first; fall back only on drift suspicion.
 3. **Skipping sync after producing an artifact.** Manifest goes stale; downstream consumers see ghost state. Always sync.
 4. **Treating `stale: true` as a hard block.** It's a warning. Surface it to the user; let them decide.
 5. **Using the manifest as a database** — querying complex relationships, joining across artifacts, etc. The manifest is an index, not a database. Loop-local history belongs in `.forsvn/loops/[slug]/results.tsv` and markdown artifacts; if you need richer queries, add SQLite later — but only when first real need surfaces.

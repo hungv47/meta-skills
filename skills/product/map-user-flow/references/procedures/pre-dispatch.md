@@ -15,7 +15,7 @@ Cited by `SKILL.md` "Pre-Dispatch" section. Apply the canonical Pre-Dispatch pro
 ## Read order
 
 1. **Pipeline:** `research/product-context.md` for product/audience grounding. `brand/DESIGN.md` (optional — components, tokens). `brand/BRAND.md` (optional — voice, terminology).
-2. **Experience:** `.forsvn/experience/{audience,technical,goals}.md` for product, audience, and platform history.
+2. **Experience:** `docs/forsvn/experience/{audience,technical,goals}.md` for product, audience, and platform history.
 3. **Catalog:** `../platform-touchpoints.md` for the canonical platform/surface list.
 
 If `research/product-context.md` `date` is >30 days old, recommend re-running `research-icp` to refresh.
@@ -27,7 +27,7 @@ Per `../_shared/before-starting-check.md`:
 0. **Mode resolution** — `budget: standard`. Mode-resolver (`../_shared/mode-resolver.md`) applies canonical heuristics (≤3 sentences / single-topic clear-scope / multi-artifact). `--fast` flag forces Single-Agent Fallback. Safety gates supersede `--fast`.
 1. Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory.
 2. Read `.forsvn/index/manifest.json` for prior flow files at this slug + cross-flow staleness.
-3. Read `.forsvn/experience/{audience,technical,goals}.md`.
+3. Read `docs/forsvn/experience/{audience,technical,goals}.md`.
 
 ## Prompts
 

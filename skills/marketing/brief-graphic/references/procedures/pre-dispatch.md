@@ -31,7 +31,7 @@ Five dimensions drive brief production. Pre-Dispatch resolves each from pipeline
 | 1 | **Asset type** (OG image / IG carousel / banner / hero / OOH / etc.) | concept-agent reference catalog selection + auto-detection of downstream route + platform-module lookup | Cold Start Q1 (always asked unless invoked from brief-landing-page with explicit slot) |
 | 2 | **Downstream route** (image-gen / vector-tool / designer-handoff / template-pack) | Layer 2 agent selection (prompt-craft / figma-spec / none / per-format prompt-craft) | Auto-detected from asset type (Step 0.5 below); Cold Start Q2 confirms / overrides |
 | 3 | **Brand reference** | brand-anchor-agent token pull + sacred element list + lexicon | Hard gate resolves to `brand/BRAND.md` + `brand/DESIGN.md` — NEVER asked |
-| 4 | **Copy/headline if any** | copy-anchor-agent placement + critic Typography dimension | `.forsvn/artifacts/marketing/content/[slug].copy.md` if supplied; else Cold Start Q3 |
+| 4 | **Copy/headline if any** | copy-anchor-agent placement + critic Typography dimension | `docs/forsvn/artifacts/marketing/content/[slug].copy.md` if supplied; else Cold Start Q3 |
 | 5 | **Constraints** (dimensions if non-standard / deadline / must-include elements) | brief-synth-agent platform spec + sacred elements + What NOT to Do section | Cold Start Q4 |
 
 ---
@@ -41,12 +41,12 @@ Five dimensions drive brief production. Pre-Dispatch resolves each from pipeline
 1. **Pipeline artifacts (hard-gate resolved):**
    - `brand/BRAND.md` + `brand/DESIGN.md` (confirmed by hard gate before this step)
    - `brand/ASSETS.md` for dimension pre-fill (if exists)
-   - `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` if invoked from brief-landing-page (carries slot spec)
-   - `.forsvn/artifacts/marketing/content/[slug].copy.md` if copy supplied separately (from write-copy)
-   - `.forsvn/artifacts/marketing/campaign-plan.md` for campaign context, awareness stage, channel placement
+   - `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` if invoked from brief-landing-page (carries slot spec)
+   - `docs/forsvn/artifacts/marketing/content/[slug].copy.md` if copy supplied separately (from write-copy)
+   - `docs/forsvn/artifacts/marketing/campaign-plan.md` for campaign context, awareness stage, channel placement
    - `research/icp-research.md` for audience visual preferences (optional but useful)
 
-2. **Experience substrate:** `.forsvn/experience/{brand,goals}.md` for any durable constraint not covered by pipeline (e.g., legal disclaimer policies the user mentioned in a prior session).
+2. **Experience substrate:** `docs/forsvn/experience/{brand,goals}.md` for any durable constraint not covered by pipeline (e.g., legal disclaimer policies the user mentioned in a prior session).
 
 3. **Detect intent mismatch BEFORE Cold Start:** if user input contains "make / create / render / generate" verb + asset noun (e.g., "make me an IG post"), surface deference recommendation: "design-brief produces the BRIEF for the asset; the BRIEF feeds Claude Design / Midjourney / Imagen / DALL·E / Pencil / Figma / a human designer who actually renders it. Proceed with brief, or are you looking for direct rendering?" Same for "redesign this page" → defer to `brief-landing-page`; "design our brand identity" → defer to `create-brand`. (Anti-pattern #11.)
 
@@ -59,9 +59,9 @@ Read if present; affect Warm Start summary fields:
 | Artifact | Source | Benefit |
 |----------|--------|---------|
 | `brand/ASSETS.md` | brand-system Route B | Auto-fill dimensions, tick checkbox on completion |
-| `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | lp-brief | Slot spec when brief is for an LP asset |
-| `.forsvn/artifacts/marketing/content/[slug].copy.md` | copywriting | Copy to use in the asset |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | campaign-plan | Campaign context, awareness stage |
+| `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | lp-brief | Slot spec when brief is for an LP asset |
+| `docs/forsvn/artifacts/marketing/content/[slug].copy.md` | copywriting | Copy to use in the asset |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | campaign-plan | Campaign context, awareness stage |
 | `research/icp-research.md` | icp-research | Audience visual preferences |
 
 ---
@@ -101,7 +101,7 @@ Design / Pencil MCP / Figma / human designer) execute. Before I dispatch:
    (multi-format social packs from one brief). Auto-detected from asset
    type by default — override here.
 3. **Copy/headline** — what text appears IN the asset? Headline, body,
-   CTA, brand mark text. Reference `.forsvn/artifacts/marketing/content/[slug].copy.md`
+   CTA, brand mark text. Reference `docs/forsvn/artifacts/marketing/content/[slug].copy.md`
    if supplied separately.
 4. **Constraints** — dimensions (if non-standard), deadline, must-include
    elements (logo placement, brand mark, legal disclaimer, etc.).

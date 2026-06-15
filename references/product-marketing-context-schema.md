@@ -275,7 +275,7 @@ It writes a scaffold to `research/product-context.md` with `status: needs_contex
 | `README.md` | 1 (title, one-liner), 12 (Goals/Roadmap heading) | ✅ extracted |
 | `brand/BRAND.md` | 10 (Brand Voice) | ✅ cited when present |
 | `research/market-research.md` | 4, 5 (Problems, Competitive Landscape) | ⚠️ pointer only — `research-icp` extracts |
-| `.forsvn/experience/{audience,business}.md` | 3, 9 / 1, 12 | ⚠️ noted as available — `research-icp` mines |
+| `docs/forsvn/experience/{audience,business}.md` | 3, 9 / 1, 12 | ⚠️ noted as available — `research-icp` mines |
 | Landing page URL | 2, 6, 11 (Target Audience, Differentiation, Proof Points) | ❌ not fetched (script is local-files-only) — `research-icp` / operator fills |
 
 The script is mechanical: it extracts and scaffolds, it does not reason. Sections 2–9 and 11 need synthesis or interviews — the script stubs them with a `[TBD]` source hint; `research-icp` fills them.

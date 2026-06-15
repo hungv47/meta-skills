@@ -7,7 +7,7 @@ Explain how well the rendered asset realized the brief, using the source brief's
 ## Inputs
 
 - Loop `program.md` and `context.md`
-- **Source brief artifact** (`.forsvn/artifacts/marketing/design-briefs/[slug].md`) — read the composition spec, required copy slots, aspect ratio, art direction, and acceptance criteria
+- **Source brief artifact** (`docs/forsvn/artifacts/marketing/design-briefs/[slug].md`) — read the composition spec, required copy slots, aspect ratio, art direction, and acceptance criteria
 - The re-ingested asset — open it with Read and judge what is actually present
 - Metric Ingest output (from Layer 1 sibling) — DO NOT re-fetch; consume the normalized packet (acceptance criteria hard/soft split, dimensions, engine)
 - Brand tokens (`brand/BRAND.md`, `brand/DESIGN.md`) — palette, type, logo safe-zone, Leaf <10% rule

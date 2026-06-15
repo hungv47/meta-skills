@@ -238,7 +238,7 @@ Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 
 ## ASSETS.md Template
 
-ASSETS.md is written to `.forsvn/canonical/marketing/ASSETS.md` and is a **living checklist** — updated in place every run (auto-scan flips `[ ]` ↔ `[x]`; human `[~]`/`[!]` markers preserved verbatim). It carries the full required instruction core and stamps the stable `id: assets`. Re-run = overwrite in place + increment the integer `version:`; never create a `.v[N].md` sibling under `canonical/`. Frontmatter (fill the `[...]` bracketed values; full schema in [`format-conventions.md`](format-conventions.md)):
+ASSETS.md is written to `docs/forsvn/canonical/marketing/ASSETS.md` and is a **living checklist** — updated in place every run (auto-scan flips `[ ]` ↔ `[x]`; human `[~]`/`[!]` markers preserved verbatim). It carries the full required instruction core and stamps the stable `id: assets`. Re-run = overwrite in place + increment the integer `version:`; never create a `.v[N].md` sibling under `canonical/`. Frontmatter (fill the `[...]` bracketed values; full schema in [`format-conventions.md`](format-conventions.md)):
 
 ```yaml
 ---
@@ -273,7 +273,7 @@ The body is the legend + 5 fixed sections + per-platform blocks + summary (+ opt
 
 ## CREATIVE-DIRECTION.md Template
 
-Written to `.forsvn/canonical/marketing/CREATIVE-DIRECTION.md`. The art-direction layer — *how the world looks and feels* — authored from BRAND.md + DESIGN.md + the origin/mood (+ any `inspiration/` frames). **Additive: it names what tokens mean, never redefines them.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "CREATIVE-DIRECTION.md structure". Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
+Written to `docs/forsvn/canonical/marketing/CREATIVE-DIRECTION.md`. The art-direction layer — *how the world looks and feels* — authored from BRAND.md + DESIGN.md + the origin/mood (+ any `inspiration/` frames). **Additive: it names what tokens mean, never redefines them.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "CREATIVE-DIRECTION.md structure". Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
 
 ```yaml
 ---
@@ -339,7 +339,7 @@ Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 
 ## FRAME.md Template
 
-Written to `.forsvn/canonical/marketing/FRAME.md`. The frame-direction layer — *how the brand's atoms behave inside a moving frame* — authored from DESIGN.md + CREATIVE-DIRECTION.md. **Additive and token-referencing: it specifies frame behavior (safe area, type-at-distance, on-screen pacing, bumper layout) for DESIGN.md atoms; it never redefines a hex, font, or motion value.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "FRAME.md structure"; full section depth: [`frame-direction.md`](frame-direction.md). Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
+Written to `docs/forsvn/canonical/marketing/FRAME.md`. The frame-direction layer — *how the brand's atoms behave inside a moving frame* — authored from DESIGN.md + CREATIVE-DIRECTION.md. **Additive and token-referencing: it specifies frame behavior (safe area, type-at-distance, on-screen pacing, bumper layout) for DESIGN.md atoms; it never redefines a hex, font, or motion value.** Section order + the refresh-only path: [`format-conventions.md`](format-conventions.md) "FRAME.md structure"; full section depth: [`frame-direction.md`](frame-direction.md). Re-run / refresh = overwrite in place + increment integer `version:`; never a `.v[N].md` sibling. Frontmatter (fill the `[...]` values):
 
 ```yaml
 ---

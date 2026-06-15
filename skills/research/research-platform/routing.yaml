@@ -79,6 +79,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md"
+      - path: "docs/forsvn/artifacts/research/research-platform/[YYYY-MM-DD]-<slug>.md"
         lifecycle: snapshot
         produced_when: "End of platform-analytics pull; dated, immutable snapshot."

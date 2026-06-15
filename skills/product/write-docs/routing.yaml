@@ -60,7 +60,7 @@ capability:
       - "Single-page conversion surface -> brief-landing-page."
     prerequisites:
       recommended:
-        - ".forsvn/experience/technical.md"
+        - "docs/forsvn/experience/technical.md"
         - "id:product-context"
       hard: []
 

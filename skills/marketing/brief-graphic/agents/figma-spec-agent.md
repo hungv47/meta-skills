@@ -17,7 +17,7 @@ You do NOT:
 |-------|------|-------------|
 | **brief** | markdown | Approved brief |
 | **brand_digest** | markdown | From brand-anchor-agent |
-| **target_path** | string | `.forsvn/artifacts/marketing/design/[slug]/figma-spec.md` |
+| **target_path** | string | `docs/forsvn/artifacts/marketing/design/[slug]/figma-spec.md` |
 | **feedback** | string \| null |
 
 ## Output Contract

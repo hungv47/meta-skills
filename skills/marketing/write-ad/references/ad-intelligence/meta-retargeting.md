@@ -10,7 +10,7 @@ status: seedbank # pre-staged for ad-copy skill build (skill scaffold pending)
 
 # Meta Retargeting — Warm Audience System
 
-Per-surface reference for the **Meta retargeting** ad layer. Will be consumed by the future `write-ad` skill (not yet scaffolded — see `.forsvn/artifacts/meta/roadmap.md` REB-3). Until then: practitioner-grade source-of-truth for retargeting setup, warm-creative differentiation, and budget pacing.
+Per-surface reference for the **Meta retargeting** ad layer. Will be consumed by the future `write-ad` skill (not yet scaffolded — see `docs/forsvn/artifacts/meta/roadmap.md` REB-3). Until then: practitioner-grade source-of-truth for retargeting setup, warm-creative differentiation, and budget pacing.
 
 > Scope: organic-content-driven warm audiences (IG engagers, IG followers, FB page engagers from cold-traffic ads). Not purchase-pixel retargeting (that's a different surface — abandoned cart / view-product / add-to-cart sequences). Not lookalike audiences (those are cold-traffic structure, see `meta-cold-traffic.md`).
 

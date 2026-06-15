@@ -9,7 +9,7 @@ Two failure modes this protocol prevents:
 1. **Skill fabricates from thin context** — user gives a one-liner, skill doesn't ask, output reflects assumptions instead of intent. Quality fails silently.
 2. **Skill grills the user** — every invocation feels like a tax form; user disengages or works around the skill. Friction fails loudly.
 
-Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `.forsvn/experience/` so the next skill never re-asks).
+Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3-5 questions max), **decision-relevant** (every Q changes the output), **bundled** (one round-trip, not socratic), and **amortized** (answers persist in `docs/forsvn/experience/` so the next skill never re-asks).
 
 ---
 
@@ -18,7 +18,7 @@ Solution: each skill calibrates a **Pre-Dispatch** moment that is **bounded** (3
 Every skill invocation routes to exactly one of these:
 
 ### Cold Start
-*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `.forsvn/artifacts/`) OR `.forsvn/experience/`.
+*Triggered when:* none of the needed dimensions are resolvable from pipeline artifacts (`research/`, `brand/`, `architecture/`, `docs/forsvn/artifacts/`) OR `docs/forsvn/experience/`.
 
 The skill emits a **single bundled prompt** with:
 
@@ -50,7 +50,7 @@ question slot: it is session plumbing, not a context dimension, so the 3-5 cap a
 question registry below are unaffected. On a cold start, append it after the numbered
 list the same way. Skip it entirely on `fast`-tier skills where the choice cannot
 change output (they run single-agent regardless); the answer goes to the profile file,
-never to `.forsvn/experience/`. Once the profile exists, no skill mentions it again.
+never to `docs/forsvn/experience/`. Once the profile exists, no skill mentions it again.
 
 ---
 
@@ -58,7 +58,7 @@ never to `.forsvn/experience/`. Once the profile exists, no skill mentions it ag
 
 When `.forsvn/routing/last-session.md` shows `dispatched-by: forsvn` with `status:
 dispatched` for the **current session**, the leaf was invoked directly by the `/forsvn`
-dispatcher — which already grepped `.forsvn/experience/`, loaded product context,
+dispatcher — which already grepped `docs/forsvn/experience/`, loaded product context,
 confirmed the initiative slug, and resolved the session execution profile. Mirroring the
 `debate-agents` sub-routine convention (caller owns framing; skip steps 1+2):
 
@@ -72,7 +72,7 @@ confirmed the initiative slug, and resolved the session execution profile. Mirro
   (absent from the record, experience/, and pipeline artifacts) may be probed —
   warm-start style, 1–2 inline max.
 - **Write-back is unchanged**: any newly answered question still persists to
-  `.forsvn/experience/`.
+  `docs/forsvn/experience/`.
 
 A stale record (previous session) or `dispatched-by` absent → normal pre-dispatch; the
 warm handoff is an optimization for the dispatched path, never a loophole around the
@@ -80,7 +80,7 @@ cold-start contract.
 
 ---
 
-## The Substrate: `.forsvn/experience/`
+## The Substrate: `docs/forsvn/experience/`
 
 The growing source of truth. Skills **read before asking**, **write after the user answers**.
 
@@ -90,7 +90,7 @@ If the folder is missing in a project, bootstrap it before cold-start write-back
 bun meta-skills/scripts/bootstrap-experience.ts
 ```
 
-The helper creates `.forsvn/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
+The helper creates `docs/forsvn/experience/README.md` plus starter domain files (`audience.md`, `brand.md`, `business.md`, `content.md`, `goals.md`, `patterns.md`, `product.md`, `technical.md`). Skills may still create additional domain files when a question does not fit an existing one.
 
 ### Format
 
@@ -183,7 +183,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
 ```
 1. Skill resolves needed dimensions:
    a) Pipeline artifacts (research/, brand/, etc.) — existing behavior
-   b) .forsvn/experience/*.md — read most-recent entries
+   b) docs/forsvn/experience/*.md — read most-recent entries
 2. Compute (needed) - (found) = missing dimensions
 3. Choose flow:
    - missing == 0          → Warm start (summary, optional probe)
@@ -194,7 +194,7 @@ If you'd ask 2+ probes, the run is closer to a cold start. Bias toward cold-star
    - Then dispatch agents
 ```
 
-The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `.forsvn/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
+The mapping from question → domain is declared per-question in the **per-skill registry** below. If the registry says `domain: audience`, the answer goes to `docs/forsvn/experience/audience.md`. If a skill needs a domain not yet in the user's experience folder, the file gets created on first write.
 
 ---
 
@@ -236,7 +236,7 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 **prioritize** — *no cold start. `id:diagnose` is recommended, not hard (diagnose's output; resolve via `find-artifacts --resolve diagnose`); if absent, recommend `diagnose` first or proceed from a clearly-stated problem.*
 
-**plan-funnel** — *no cold start. Hard-gated on `.forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
+**plan-funnel** — *no cold start. Hard-gated on `docs/forsvn/artifacts/meta/sketches/prioritize-*.md`. Cold path: recommend `prioritize` first.*
 
 ### marketing-skills
 
@@ -379,4 +379,4 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 
 ## Telemetry / Self-Correction
 
-Per the existing learned-rules system (`.forsvn/artifacts/meta/records/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.
+Per the existing learned-rules system (`docs/forsvn/artifacts/meta/records/learned-rules.md`), if a user repeatedly corrects a Pre-Dispatch question ("you should ask X instead of Y"), append a learned rule. Future invocations of that skill prefer the corrected question. The protocol is the spec; learned-rules is the per-user override.

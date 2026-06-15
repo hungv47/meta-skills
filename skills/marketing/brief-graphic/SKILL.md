@@ -50,9 +50,9 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | `brand/CREATIVE-DIRECTION.md` | create-brand | Recommended — house art direction (mood, light, framing, motion); design against it, not just tokens |
 | `brand/ASSETS.md` | create-brand B | Optional — auto-fill dimensions + checkbox tick |
 | realized surface (live URL · shipped HTML · `explorations/*` · exemplar asset) | the live brand | Recommended — the executed taste to design against; see realized-surface-grounding |
-| `.forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — LP slot spec |
-| `.forsvn/artifacts/marketing/content/[slug].copy.md` | write-copy | Optional — copy that renders IN the asset |
-| `.forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — campaign context + `## Creative Direction` (per-campaign art direction) |
+| `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/asset-slots/[slot-id].md` | brief-landing-page | Optional — LP slot spec |
+| `docs/forsvn/artifacts/marketing/content/[slug].copy.md` | write-copy | Optional — copy that renders IN the asset |
+| `docs/forsvn/artifacts/marketing/campaign-plan.md` | plan-campaign | Optional — campaign context + `## Creative Direction` (per-campaign art direction) |
 | `research/icp-research.md` | research-icp | Optional — audience visual preferences |
 
 ## Pre-Dispatch + Mode
@@ -68,7 +68,7 @@ Every brief carries a `downstream_route` tag — `image-gen` / `vector-tool` / `
 
 ## Artifact Contract
 
-- **Paths:** `.forsvn/artifacts/marketing/design-briefs/[slug].md` (default; preserve-history → `[slug].v[N].md`; Gate-2 reject → `[slug]-rejected.md`; Gate-1 stop → `[slug]-candidates.md`).
+- **Paths:** `docs/forsvn/artifacts/marketing/design-briefs/[slug].md` (default; preserve-history → `[slug].v[N].md`; Gate-2 reject → `[slug]-rejected.md`; Gate-1 stop → `[slug]-candidates.md`).
 - **Lifecycle:** `pipeline` — re-run on BRAND.md / DESIGN.md update, new ASSETS.md row, brief-landing-page slot request, campaign launch, render dissatisfaction.
 - **Frontmatter:** `skill`, `version`, `date`, `status`, `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `downstream_route`, `target_tool` (when image-gen), `asset_type`, `platform`, `dimensions`, `brand_anchors`, `sacred_respected`.
 - **Consumed by:** image-gen tools (Claude Design / Midjourney / Imagen / DALL·E / Ideogram / Veo / Suno) · vector tools (Pencil / Figma) · human designers · `brief-landing-page` (LP slot) · `brand/ASSETS.md` auto-tick (literal path match).

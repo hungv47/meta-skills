@@ -168,7 +168,7 @@ The Phase 1 initiative format (`Hypothesis / Mechanic / Target Metric / Anti-gen
 
 ## Out-of-Scope persistence skipped
 
-**What it is:** Kill decisions don't get written to `.forsvn/artifacts/meta/out-of-scope/[name].md`.
+**What it is:** Kill decisions don't get written to `docs/forsvn/artifacts/meta/out-of-scope/[name].md`.
 
 **Detection:**
 - Decisions table has Kill rows but the out-of-scope directory has no corresponding files.

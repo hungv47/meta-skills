@@ -1,6 +1,6 @@
 ---
 name: clean-code
-description: "Audits and refactors existing code for readability, maintainability, and dead code removal without changing behavior. Produces `.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md` and applies fixes in-place. Not for diagnosing business problems (use diagnose) or writing documentation (use write-docs). For writing missing docs after cleanup, see write-docs."
+description: "Audits and refactors existing code for readability, maintainability, and dead code removal without changing behavior. Produces `docs/forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md` and applies fixes in-place. Not for diagnosing business problems (use diagnose) or writing documentation (use write-docs). For writing missing docs after cleanup, see write-docs."
 argument-hint: "[file or directory to clean]"
 allowed-tools: Read Grep Glob Bash
 metadata:
@@ -58,7 +58,7 @@ Apply the [before-starting-check](references/_shared/before-starting-check.md) [
 | 0 | **Mode resolution** — `budget: deep`. Mode-resolver ([`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md) [PROCEDURE]) auto-downgrades to `fast` for ≤5-file scopes (→ Single-Agent Fallback in dispatch-mechanics); `--fast` flag forces single-agent. Safety gates supersede `--fast`. |
 | 1 | Read `implementation-roadmap/canonical-paths.md` if present — verify output path matches canonical inventory. |
 | 2 | Read `.forsvn/index/manifest.json` for prior cleanup runs against the same scope; surface staleness if recent cleanup already covered this path. |
-| 3 | Read `.forsvn/experience/technical.md` for prior conventions notes. |
+| 3 | Read `docs/forsvn/experience/technical.md` for prior conventions notes. |
 
 ## Pre-Dispatch
 
@@ -66,7 +66,7 @@ Run the Pre-Dispatch protocol (`references/_shared/pre-dispatch-protocol.md`).
 
 **Needed dimensions:** codebase path, cleanup intent (dead code / unused deps / asset / refactor / mixed), test suite available, conventions to preserve.
 
-**Read order:** (1) codebase scan — package manifest, test config, lint config, framework hints (CLAUDE.md, `.editorconfig`); (2) `.forsvn/experience/technical.md` for prior conventions notes.
+**Read order:** (1) codebase scan — package manifest, test config, lint config, framework hints (CLAUDE.md, `.editorconfig`); (2) `docs/forsvn/experience/technical.md` for prior conventions notes.
 
 Warm Start (obvious intent), Cold Start (vague invocation), and write-back rules: [`references/pre-dispatch-prompts.md`](references/pre-dispatch-prompts.md) [PROCEDURE].
 
@@ -78,7 +78,7 @@ For an annotated full-codebase walkthrough (Express API, all 4 scanners + Layer 
 
 ## Artifact Contract
 
-- **Path:** `.forsvn/artifacts/meta-clean-code-<YYYY-MM-DD>-cleanup-<slug>.md` (flat v2 grammar; re-run same slug same day → append `.v[N]`). Stack is `meta` (cleanup records are meta-stack snapshots, like diagnose); skill is in product/ because consumers are product-side.
+- **Path:** `docs/forsvn/artifacts/meta-clean-code-<YYYY-MM-DD>-cleanup-<slug>.md` (flat v2 grammar; re-run same slug same day → append `.v[N]`). Stack is `meta` (cleanup records are meta-stack snapshots, like diagnose); skill is in product/ because consumers are product-side.
 - **Lifecycle:** `snapshot` (dated, immutable record of one cleanup run).
 - **Frontmatter fields:** `skill`, `version`, `date`, `status` (DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT), `stack` (=meta), `review_surface` (=none — snapshot defaults to `decision_state: not_required`), `lifecycle`, `produced_by`, `provenance`. v2 schema: [`references/_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md).
 - **Required sections:** Scope, Changes Made (≥1 subsection populated), Validation, Critic Verdict. Manual Verification Needed + Rollback when applicable.

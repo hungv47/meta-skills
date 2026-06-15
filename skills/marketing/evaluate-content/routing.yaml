@@ -64,11 +64,11 @@ capability:
         - "id:brand"
         - "id:icp-research"
         - "id:product-context"
-        - ".forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
+        - "docs/forsvn/artifacts/marketing/published-social/[slug]/manifest.md"
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"
-        - ".forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md"
+        - "docs/forsvn/artifacts/marketing/copy/[platform]-[date]-[slug].md"
 
   orchestration:
     default: auto

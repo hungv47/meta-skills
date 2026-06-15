@@ -48,7 +48,7 @@ dispatch. Created at runtime — never shipped in a repo, never committed as a t
 | `tool_targets` | Per-category tool-target choices (`design`, `video`, `image`, …). **Reserved here** — populated by the companion [`tool-target.md`](tool-target.md) fork, not by this policy. Treat unknown keys as opaque; never delete them when rewriting the file. |
 | `resolved_at` | When the profile was resolved. Compared against session start for staleness. |
 
-Why here and not elsewhere: `.forsvn/experience/` is durable (wrong for per-session
+Why here and not elsewhere: `docs/forsvn/experience/` is durable (wrong for per-session
 state); artifact frontmatter is per-artifact; env vars cannot be written back
 mid-session. `.forsvn/routing/` already holds per-session routing state.
 

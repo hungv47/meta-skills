@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** Step 7 of Execution — writing the dated report to disk. Path: `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable per-run; lifecycle: snapshot). Reports accumulate as audit trail — never overwrite a prior report. Operator prunes via `clean-artifacts` when needed.
+**Load when:** Step 7 of Execution — writing the dated report to disk. Path: `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-fresh-eyes-<slug>.md` (dated, slug-suffixed, immutable per-run; lifecycle: snapshot). Reports accumulate as audit trail — never overwrite a prior report. Operator prunes via `clean-artifacts` when needed.
 
 ---
 
@@ -32,7 +32,7 @@ provenance:
     - {path to spec.md if scope-drift ran}
     - {path to tasks.md if scope-drift ran}
   config_sources:
-    - .forsvn/artifacts/meta/records/learned-rules.md  # if any rules applied
+    - docs/forsvn/artifacts/meta/records/learned-rules.md  # if any rules applied
   output_eval: null            # fresh-eyes is the eval; no downstream eval skill
 ---
 ```

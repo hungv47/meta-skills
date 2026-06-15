@@ -25,7 +25,7 @@ inventing product, not specifying it.
    emit `NEEDS_CONTEXT` and stop — do not interview for screen content.
 2. **Pipeline:** `../procedures/gates-and-rubric.md` for the 8-CP critic rubric and all 5
    critical gates — read before any Layer 1 dispatch.
-3. **Experience:** `.forsvn/experience/{product,design,goals}.md` for project-level design
+3. **Experience:** `docs/forsvn/experience/{product,design,goals}.md` for project-level design
    history and prior decisions.
 4. **Brand + tokens:** `brand/DESIGN.md` (tokens, spacing, elevation scale) and
    `brand/BRAND.md` (voice, component naming conventions).
@@ -41,7 +41,7 @@ Per `../_shared/before-starting-check.md`:
    canonical inventory.
 2. Read `.forsvn/index/manifest.json` for the flow artifact path + any prior spec files at
    this slug + cross-artifact staleness.
-3. Read `.forsvn/experience/{product,design,goals}.md`.
+3. Read `docs/forsvn/experience/{product,design,goals}.md`.
 
 ## Warm Start
 
@@ -70,7 +70,7 @@ the flow.
 
 ## Write-back
 
-After resolving all dimensions, append a context entry to `.forsvn/experience/` per
+After resolving all dimensions, append a context entry to `docs/forsvn/experience/` per
 `../_shared/pre-dispatch-protocol.md` § write-back rules. Record: flow artifact path,
 resolved surfaces, brand source, build engine, constraints, and any design decisions locked
 in this session. This prevents the same questions from firing on the next `/brief-product-ui`

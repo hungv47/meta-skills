@@ -123,7 +123,7 @@ Return a markdown summary of what you wrote:
 
 Before returning your output, verify every item:
 
-- [ ] `report.md` written to `.forsvn/artifacts/marketing/aeo-monitor/[slug]/`
+- [ ] `report.md` written to `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/`
 - [ ] All 10 required body sections present in `report.md`
 - [ ] Frontmatter contains every required field including `evidence-classes` count
 - [ ] `handoff-optimize-seo.md` written with 5-15 clustered gap entries

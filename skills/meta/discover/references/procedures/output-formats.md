@@ -332,7 +332,7 @@ If the session exited with operator-overridden branches or signed-off-open dimen
 
 ## Out-of-scope persistence (institutional memory)
 
-When features are explicitly scoped out, write to `.forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
+When features are explicitly scoped out, write to `docs/forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`:
 
 ```markdown
 # [Feature/Approach Name]
@@ -346,7 +346,7 @@ Create the directory if missing. Prevents future sessions from re-asking decided
 
 ## Experience doc append (learning flywheel)
 
-Append Q&A to `.forsvn/experience/{domain}.md` after each session:
+Append Q&A to `docs/forsvn/experience/{domain}.md` after each session:
 
 ```markdown
 ## {Task Name} — Decisions ({date})

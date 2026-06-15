@@ -80,7 +80,7 @@ capability:
     prerequisites:
       recommended:
         - "id:icp-research"
-        - ".forsvn/canonical/meta/tool-registry.md"
+        - "docs/forsvn/canonical/meta/tool-registry.md"
       hard: []
 
   orchestration:

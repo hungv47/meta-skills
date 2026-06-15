@@ -10,7 +10,7 @@ Normalize sent-outreach evidence into a metric packet the orchestrator can trust
 - Loop `context.md`, especially baseline and list assumptions
 - Prior `results.tsv`
 - Channel + segment tag for the current cycle — operator-supplied; gates Critical Gate 4
-- Source write-outreach artifact (`.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) — the sequence being scored
+- Source write-outreach artifact (`docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`) — the sequence being scored
 - Current evidence: outreach tool data (Instantly / Smartlead / Apollo / lemlist / CRM export), reply categories, bounce + spam-complaint data, opt-out log
 - Optional: secondary-channel headline metrics (for Cross-Channel Context — they do NOT enter the verdict)
 

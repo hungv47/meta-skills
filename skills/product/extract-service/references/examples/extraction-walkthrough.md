@@ -184,4 +184,4 @@ Explicit params PASS · Structured returns PASS · Composability PASS · No sile
 - The drift was preserved as data (a param), not silently normalized — caller 3 still polls longer, on purpose, visibly.
 - A future bug fix in the poll loop is now a one-file change.
 
-Artifact: `.forsvn/artifacts/product/extract-service/2026-05-20-extract-service-sandbox.md`, status `DONE`.
+Artifact: `docs/forsvn/artifacts/product/extract-service/2026-05-20-extract-service-sandbox.md`, status `DONE`.

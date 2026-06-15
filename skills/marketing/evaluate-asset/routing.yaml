@@ -68,11 +68,11 @@ capability:
         - "id:brand"
         - "id:design"
         - "id:icp-research"
-        - ".forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
+        - "docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md"
       hard:
         - ".forsvn/loops/[slug]/program.md"
         - ".forsvn/loops/[slug]/context.md"
-        - ".forsvn/artifacts/marketing/design-briefs/[slug].md"
+        - "docs/forsvn/artifacts/marketing/design-briefs/[slug].md"
 
   orchestration:
     default: auto

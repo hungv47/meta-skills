@@ -8,7 +8,7 @@ load_class: PROCEDURE
 
 # Report Template
 
-**Load when:** the runner reaches Step 6 (dry-run report) or Step 8 (final report). The orchestrator writes the rendered report to `.forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` — dated, slug-suffixed, immutable per-run (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Reports accumulate as audit trail; do NOT overwrite prior reports.
+**Load when:** the runner reaches Step 6 (dry-run report) or Step 8 (final report). The orchestrator writes the rendered report to `docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-cleanup-artifacts-<slug>.md` — dated, slug-suffixed, immutable per-run (lifecycle: snapshot; see `agent-skills/CLAUDE.md` §"Artifact Placement"). Reports accumulate as audit trail; do NOT overwrite prior reports.
 
 ---
 
@@ -31,7 +31,7 @@ provenance:
   input_artifacts:                              # upstream artifacts whose state shapes the output
     - .forsvn/index/manifest.json
   config_sources:                               # runtime configuration sources (not traceable inputs)
-    - .forsvn/experience/technical.md   # if exists — supplies excluded_paths
+    - docs/forsvn/experience/technical.md   # if exists — supplies excluded_paths
   output_eval: null                              # cleanup-artifacts has no downstream eval skill
 ---
 
@@ -56,8 +56,8 @@ provenance:
 ## Per-Candidate Detail
 | # | Path | Class | Bytes | Last-mod | Refs | Action | Confirmed? |
 |---|------|-------|-------|----------|------|--------|------------|
-| 1 | .forsvn/artifacts/meta/records/foo.md | STALE | 12KB | 2026-01-15 | 0 | archived | y |
-| 2 | .forsvn/artifacts/meta/sketches/bar.md | ORPHAN | 4KB | 2025-11-30 | 0 | declined | n |
+| 1 | docs/forsvn/artifacts/meta/records/foo.md | STALE | 12KB | 2026-01-15 | 0 | archived | y |
+| 2 | docs/forsvn/artifacts/meta/sketches/bar.md | ORPHAN | 4KB | 2025-11-30 | 0 | declined | n |
 ...
 
 ## HARD-NEVER Overrides Applied

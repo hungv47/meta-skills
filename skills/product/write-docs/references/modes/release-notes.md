@@ -14,7 +14,7 @@ load_class: PROCEDURE
 
 ## Why CHANGELOG, not a free-form doc
 
-Release notes are what users see on `/plugin update`. They are NOT the canonical record of everything that happened — canonical lives in commit history + `.forsvn/artifacts/meta/records/` + roadmap.md. This route writes the user-facing summary; depth links to records.
+Release notes are what users see on `/plugin update`. They are NOT the canonical record of everything that happened — canonical lives in commit history + `docs/forsvn/artifacts/meta/records/` + roadmap.md. This route writes the user-facing summary; depth links to records.
 
 ## Inputs
 
@@ -39,7 +39,7 @@ writer-agent ────────────────── writes entry
 
 - `audience-profiler-agent` is locked to `{ type: "stack user", goal: "decide whether/why to update" }`. No inference.
 - `scanner-agent` reads `git log <range>` + existing `CHANGELOG.md` (to learn voice + avoid duplicating prior entries) + `plugin.json` (to confirm version) — NOT the full codebase.
-- `concept-extractor-agent` reads `.forsvn/artifacts/meta/records/{date}-fresh-eyes-*.md` for any fresh-eyes report in the release window + `.forsvn/artifacts/meta/roadmap.md` for strategic-context tags. Does NOT scan source files.
+- `concept-extractor-agent` reads `docs/forsvn/artifacts/meta/records/{date}-fresh-eyes-*.md` for any fresh-eyes report in the release window + `docs/forsvn/artifacts/meta/roadmap.md` for strategic-context tags. Does NOT scan source files.
 - `writer-agent` receives the CHANGELOG convention inline (from `agent-skills/RELEASING.md` § "CHANGELOG entries") as its primary template. Output is a single ≤20-line entry, NOT a multi-section document.
 - `critic-agent` applies **release-notes-specific gates** (see below), replacing the standard checklist.
 
@@ -52,7 +52,7 @@ writer-agent ────────────────── writes entry
 - [ ] No `### Anti-goals respected` heading (FAIL — lives in roadmap.md)
 - [ ] No `### Fresh-eyes pattern` recap (FAIL — lives in records dir)
 - [ ] No "What did NOT change" inventory (FAIL — assume nothing changed unless stated)
-- [ ] If a fresh-eyes report exists in `.forsvn/artifacts/meta/records/` for the release window, the entry links to it (one-line link, not embedded recap)
+- [ ] If a fresh-eyes report exists in `docs/forsvn/artifacts/meta/records/` for the release window, the entry links to it (one-line link, not embedded recap)
 - [ ] Frame is user-seat, not implementor-seat (no "we caught a regression," yes "behavior corrected so X works")
 
 ## Staleness gates
@@ -64,7 +64,7 @@ Every bullet must trace to at least one commit in the release range. Bullets des
 1. Confirm `version` parameter is set and matches `plugin.json` (or the user's intent for the imminent bump).
 2. Resolve the git range: if `--range` not provided, use `$(git describe --tags --abbrev=0)..HEAD`; if no prior tag exists, use all commits since branch divergence.
 3. Read existing `CHANGELOG.md` to confirm the new version doesn't already have an entry (prevent duplicate).
-4. Scan `.forsvn/artifacts/meta/records/` for fresh-eyes reports within the release window (filter by date in filename + window dates).
+4. Scan `docs/forsvn/artifacts/meta/records/` for fresh-eyes reports within the release window (filter by date in filename + window dates).
 
 ## Post-write step
 
@@ -82,7 +82,7 @@ Stack-wide coordinated cut. Tier discipline now load-bearing: 5 skills changed b
 - `plan-funnel` defaults to Route B (Standard Path); Route A reserved for `--deep` or 3+ initiatives across 2+ funnel models. New Route C handles bump-update asks under 3 sentences.
 - All 4 `orchestrate-*` skills now declare `budget: fast` and explicitly state they are pure routers (no agent dispatch, no critic gate).
 
-Full review: `.forsvn/artifacts/meta/records/2026-05-12-fresh-eyes-tier-discipline-phase-ab.md`
+Full review: `docs/forsvn/artifacts/meta/records/2026-05-12-fresh-eyes-tier-discipline-phase-ab.md`
 ```
 
 ## When NOT to use Route E

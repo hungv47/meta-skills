@@ -8,7 +8,7 @@ Explain why the campaign cycle likely moved, using the source plan-campaign arti
 
 - Loop `program.md` and `context.md`
 - Latest strategy/execution artifacts
-- **Source plan-campaign artifact** (`.forsvn/artifacts/marketing/campaign-plan.md`) — read the objective, channel mix, budget split, sequencing, hypothesis
+- **Source plan-campaign artifact** (`docs/forsvn/artifacts/marketing/campaign-plan.md`) — read the objective, channel mix, budget split, sequencing, hypothesis
 - Metric Ingest output (from Layer 1 sibling) — DO NOT re-fetch metrics; consume the normalized packet + the channel rollup
 - Current cycle evidence (raw CRM / ad-platform / analytics data) — read independently for behavioral signals (which channel's curve moved when, organic baseline behavior)
 - Per-asset eval artifacts in the loop, if any — context only; you may cite their conclusions but never re-score them or fold them into the verdict

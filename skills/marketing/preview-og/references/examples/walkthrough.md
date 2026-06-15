@@ -61,7 +61,7 @@ Exit 0. The error cleared; only the advisory warn remains. Fix accepted.
 
 ## 6. Report
 
-Write `.forsvn/artifacts/marketing/preview-og-2026-05-29-forsvn-com.md`:
+Write `docs/forsvn/artifacts/marketing/preview-og-2026-05-29-forsvn-com.md`:
 
 - **Target:** `http://localhost:3000` · HTTP 200
 - **Issues found:** 1 error (relative og:image), 1 advisory warn (short title)

@@ -31,8 +31,8 @@ This skill has **hard gates** that fire BEFORE any cold-start questioning — ev
 2. `.forsvn/loops/[slug]/context.md` — baseline assumptions + loop history + audience-temp prior cycles
 3. `.forsvn/loops/[slug]/results.tsv` — prior cycles' rows + resolve cycle number (`last cycle + 1`); read at least last 2 rows for trend context (CTR slope, frequency trajectory)
 4. Latest files in `.forsvn/loops/[slug]/strategy/`, `execution/`, and `evals/` — what was changed this cycle + prior eval verdicts
-5. **Source ad-copy artifact** at `.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (and `.rationale.md` if present) — the brief's hypothesis is the benchmark for Diagnosis
-6. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, `.forsvn/artifacts/marketing/campaign-plan.md` if present
+5. **Source ad-copy artifact** at `docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md` (and `.rationale.md` if present) — the brief's hypothesis is the benchmark for Diagnosis
+6. Relevant canonical artifacts: `brand/BRAND.md`, `research/product-context.md`, `research/icp-research.md`, `docs/forsvn/artifacts/marketing/campaign-plan.md` if present
 
 If `.forsvn/index/manifest.json` is stale or missing, run:
 
@@ -50,7 +50,7 @@ Found:
 - audience-temp: [cold-traffic | retargeting]
 - primary metric: [from program.md]
 - baseline/prior result: [from results.tsv last row of same audience-temp]
-- source ad-copy artifact: [.forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md]
+- source ad-copy artifact: [docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md]
 - current evidence window: [window + source]
 - spend: [amount + breakdown if available]
 - frequency_at_close: [N.N]
@@ -65,7 +65,7 @@ Triggered when loop exists but cycle context is missing. Ask one bundled questio
 ```
 1. Which loop slug/path should this evaluation write into?
 2. What audience-temperature is this cycle scoped to — cold-traffic OR retargeting? (one cycle = one temp; mixed-audience is a hard block)
-3. What is the source ad-copy artifact path? (typically .forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md)
+3. What is the source ad-copy artifact path? (typically docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md)
 4. What measurement window (start date → end date, days) and source (Meta Ads Manager / Supermetrics / Triple Whale / Northbeam / operator-supplied)?
 5. What is the primary metric value for this window, and what baseline (same audience-temp prior cycle, comparable spend window)?
 6. Total spend during the measurement window? Frequency at window close? Conversion count (if defined in program.md)?
@@ -86,7 +86,7 @@ Triggered when loop exists but cycle context is missing. Ask one bundled questio
 
 ## Write-back
 
-**None.** evaluate-ad does NOT write to `.forsvn/experience/`. Persistent loop state lives in:
+**None.** evaluate-ad does NOT write to `docs/forsvn/experience/`. Persistent loop state lives in:
 
 - `program.md` (loop definition — owned by eval-loop skill)
 - `context.md` (loop history + baselines — owned by eval-loop skill)

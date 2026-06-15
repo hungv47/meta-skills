@@ -4,7 +4,7 @@ description: "Score a produced visual asset (image / graphic / carousel frame) a
 argument-hint: "[loop slug or path] [asset path/id] [primary metric]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
   budget: standard
   estimated-cost: "$0.75-1.50"
 ---
@@ -38,7 +38,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · re-ingested asset path/id (the `asset_picked` / `assets` attachment on `.forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — image / graphic / carousel frame) · source brief artifact (`.forsvn/artifacts/marketing/design-briefs/[slug].md`) · render engine + `execution_mode` (brief-only / assisted / direct) · primary metric (brief-fidelity score · acceptance-criteria pass rate · or a downstream metric if the asset is live).
+**Required:** loop slug/path · re-ingested asset path/id (the `asset_picked` / `assets` attachment on `docs/forsvn/artifacts/marketing/produced-assets/[slug]/manifest.md` — image / graphic / carousel frame) · source brief artifact (`docs/forsvn/artifacts/marketing/design-briefs/[slug].md`) · render engine + `execution_mode` (brief-only / assisted / direct) · primary metric (brief-fidelity score · acceptance-criteria pass rate · or a downstream metric if the asset is live).
 
 **Recommended:** brand tokens (`brand/BRAND.md` + `brand/DESIGN.md` — palette, type, logo safe-zone, Leaf <10%) · the brief's explicit acceptance criteria (composition, required copy slots, aspect ratio/dimensions, art direction) · variant set with the picked variant flagged · baseline/prior-cycle render · downstream usage context (where the asset will ship).
 
@@ -83,6 +83,10 @@ Operator ships despite critic FAIL (or accepts `pass-with-concerns`) — **log B
 ## Anti-Patterns
 
 [`references/anti-patterns.md`](references/anti-patterns.md) [ANTI-PATTERN] — asset-eval rows + 4 cross-cutting marketing-stack rows. Most common: scoring the prompt instead of the re-ingested render (Gate 2 + Critic Hard Fail), a pretty render that misses a hard brief constraint read as keep (Gate 5 + Critic "Brief-Fidelity Discrimination"), off-brand palette / Leaf overrun ignored (Critic "Render-Quality & Brand-Fit"), scope drift to produce-asset re-rendering (Gate 8 + Critic "Decision Discipline").
+
+## Worked Example
+
+End-to-end cycle (return-leg scored, hard-miss → discard, Critic PASS): [`references/examples/asset-eval-cycle-walkthrough.md`](references/examples/asset-eval-cycle-walkthrough.md).
 
 ## Durable Rules (protected)
 

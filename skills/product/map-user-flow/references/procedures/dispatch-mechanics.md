@@ -22,7 +22,7 @@ Cited by `SKILL.md` "Dispatch Protocol", "Agent Manifest", and "Single-Agent Fal
 
 Single route — all flows use the full stack. Flows >15 screens auto-split via structure-agent's sub-flow decomposition.
 
-**Pipeline:** Step 0 (interview + gated enumeration) → **Layer 1 parallel** (structure + edge-case) → Merge → **Layer 2a parallel** (diagram + wireframe) → **Layer 2b sequential** (validation → critic). Critic FAIL re-dispatches named agents (max 2 cycles). Deliver to `.forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<slug>.md`; update index artifact when ≥2 distinct slugs exist.
+**Pipeline:** Step 0 (interview + gated enumeration) → **Layer 1 parallel** (structure + edge-case) → Merge → **Layer 2a parallel** (diagram + wireframe) → **Layer 2b sequential** (validation → critic). Critic FAIL re-dispatches named agents (max 2 cycles). Deliver to `docs/forsvn/artifacts/product-map-user-flow-<YYYY-MM-DD>-<slug>.md`; update index artifact when ≥2 distinct slugs exist.
 
 ## How to spawn agents
 

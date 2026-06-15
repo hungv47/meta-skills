@@ -77,7 +77,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/..."
+      - path: "docs/forsvn/artifacts/..."
         lifecycle: pipeline
         produced_when: "..."
 ```
@@ -201,7 +201,7 @@ Rules:
 ```yaml
 outputs:
   artifacts:
-    - path: ".forsvn/artifacts/marketing/content/[slug].copy.md"
+    - path: "docs/forsvn/artifacts/marketing/content/[slug].copy.md"
       lifecycle: pipeline
       produced_when: "Route A or Route B."
 ```
@@ -260,7 +260,7 @@ bun _dev/eval/golden-regression.ts
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
 `bun _dev/migrate-artifacts-flat.ts --apply` on a clean tree if it
 flags legacy paths); `validate-artifacts --strict` enforces v2 frontmatter
-on every `.forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
+on every `docs/forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
 index drifted from disk (both added by skills-refactor Phase 2.5).
 HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) live in
 the **forsvn-preview** review module (within the single `forsvn` plugin) — skills

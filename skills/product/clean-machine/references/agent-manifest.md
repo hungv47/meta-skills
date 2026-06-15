@@ -44,7 +44,7 @@ Layer 3 (interactive — execution):
    - Execute with side-effect fixes.
    - Track reclaim.
 5. **Critic review** — checks golden rules. FAIL → restore from backup and report per [`anti-patterns.md`](anti-patterns.md) "When the critic FAILs."
-6. **Assembly** — compile report per [`report-template.md`](report-template.md). Save to `.forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md`.
+6. **Assembly** — compile report per [`report-template.md`](report-template.md). Save to `docs/forsvn/artifacts/meta/records/machine-cleanup-[date]-<slug>.md`.
 
 ## Routing Rules
 

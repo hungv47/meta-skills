@@ -100,7 +100,7 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/canonical/research/MARKET.md"
+      - path: "docs/forsvn/canonical/research/MARKET.md"
         id: market-research
         lifecycle: canonical
-        produced_when: "Critic PASS; on re-run overwrite `.forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."
+        produced_when: "Critic PASS; on re-run overwrite `docs/forsvn/canonical/research/MARKET.md` in place and increment the integer version (no `.v[N].md` sibling under canonical/)."

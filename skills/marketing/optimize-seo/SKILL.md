@@ -95,7 +95,7 @@ Per-route Layer 1 + Layer 2 composition: `references/agent-manifest.md` § "Per-
 
 ## Artifact Contract
 
-Output path: `.forsvn/artifacts/marketing/seo-[mode].md` (mode ∈ {audit, ai, programmatic, competitor, aso}). On re-run, rename existing to `seo-[mode].v[N].md` and create new with incremented version.
+Output path: `docs/forsvn/artifacts/marketing/seo-[mode].md` (mode ∈ {audit, ai, programmatic, competitor, aso}). On re-run, rename existing to `seo-[mode].v[N].md` and create new with incremented version.
 
 Frontmatter (REQUIRED): `skill: optimize-seo`, `mode`, `version` (int), `date`, `status`.
 

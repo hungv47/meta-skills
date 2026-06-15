@@ -85,6 +85,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/meta/records/targets-<slug>.md"
+      - path: "docs/forsvn/artifacts/meta/records/targets-<slug>.md"
         lifecycle: snapshot
         produced_when: "Critic PASS; numeric funnel + sensitivity bands."

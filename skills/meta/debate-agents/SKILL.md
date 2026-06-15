@@ -44,7 +44,7 @@ Mode routing keywords, debate path (A1–A4), poll path (B1–B5), config table,
 
 ## Artifact Contract
 
-- **Path (standalone):** `.forsvn/artifacts/meta-debate-agents-[YYYY-MM-DD]-<slug>.md` (flat v2; dated; immutable per-run)
+- **Path (standalone):** `docs/forsvn/artifacts/meta-debate-agents-[YYYY-MM-DD]-<slug>.md` (flat v2; dated; immutable per-run)
 - **Path (sub-routine):** none — inline synthesis to caller
 - **Lifecycle:** `decision` (audit trail; never overwritten)
 - **Frontmatter:** `skill`, `produced_by`, `version`, `date`, `status`, `stack` (=meta), `review_surface` (html standalone / none sub-routine), `decision_state`, `review_tool`, `reviewed_at`, `reviewer`, `mode`, `agents`, `rounds` (debate only), `provenance`

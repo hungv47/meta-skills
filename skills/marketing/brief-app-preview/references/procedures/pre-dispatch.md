@@ -29,12 +29,12 @@ Before asking, read in this sequence and announce what's resolved:
    - `brand/BRAND.md` → voice, archetype, brand_mode (resolves Q5)
    - `brand/DESIGN.md` → color tokens, type scale, radius, spacing (resolves token inventory for motion-spec)
    - `research/icp-research.md` → audience + market (informs Q6 + caption register)
-   - `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` → prior brief for this feature (enables `--rev=N` re-run)
+   - `docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/` → prior brief for this feature (enables `--rev=N` re-run)
 
 2. **Experience substrate:**
-   - `.forsvn/experience/product.md` → feature inventory (resolves Q1 if feature name ambiguous)
-   - `.forsvn/experience/audience.md` → market + register (informs Q6)
-   - `.forsvn/experience/business.md` → business model + brand mode (resolves Q5)
+   - `docs/forsvn/experience/product.md` → feature inventory (resolves Q1 if feature name ambiguous)
+   - `docs/forsvn/experience/audience.md` → market + register (informs Q6)
+   - `docs/forsvn/experience/business.md` → business model + brand mode (resolves Q5)
 
 3. **Filesystem probe (light):**
    - List operator-supplied screenshot directory; count files, infer state labels if filenames hint (`01-home.png` → resting; `02-tap.png` → interaction-start; etc.)
@@ -131,9 +131,9 @@ When the brief is delivered, write back to:
 
 | Path | Why |
 |---|---|
-| `.forsvn/artifacts/marketing/app-preview-brief/[slug]/` | The 4-file artifact (canonical) |
+| `docs/forsvn/artifacts/marketing/app-preview-brief/[slug]/` | The 4-file artifact (canonical) |
 | `.forsvn/index/manifest.json` | Add the artifact entry with date, status, surface, feature, beat_count |
-| `.forsvn/experience/product.md` (optional, append-only) | Flag that this feature now has an app-preview brief; downstream produce-video runs can find it |
+| `docs/forsvn/experience/product.md` (optional, append-only) | Flag that this feature now has an app-preview brief; downstream produce-video runs can find it |
 
 Never write back to `brand/BRAND.md`, `brand/DESIGN.md`, `research/icp-research.md`, or the screenshot directory — those are upstream sources, not artifacts this skill maintains.
 

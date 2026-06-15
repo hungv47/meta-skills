@@ -26,14 +26,14 @@ Before asking, read in this sequence and announce what's resolved:
 
 1. **Pipeline artifacts:**
    - `research/icp-research.md` → audience search behavior + competitor candidates (resolves Q3 + Q4)
-   - `.forsvn/artifacts/marketing/seo-ai.md` → which queries optimize-seo's strategy expects to win (informs Q3 query set)
-   - `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` → prior locked query set (enables delta-based Q3)
-   - `.forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/` → prior snapshots (enables trend mode in any route)
+   - `docs/forsvn/artifacts/marketing/seo-ai.md` → which queries optimize-seo's strategy expects to win (informs Q3 query set)
+   - `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` → prior locked query set (enables delta-based Q3)
+   - `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/` → prior snapshots (enables trend mode in any route)
 
 2. **Experience substrate:**
-   - `.forsvn/experience/audience.md` → search behavior + geo (informs Q3)
-   - `.forsvn/experience/product.md` → product context (informs Q2 if domain not supplied)
-   - `.forsvn/experience/business.md` → market scope + competitor set (informs Q4)
+   - `docs/forsvn/experience/audience.md` → search behavior + geo (informs Q3)
+   - `docs/forsvn/experience/product.md` → product context (informs Q2 if domain not supplied)
+   - `docs/forsvn/experience/business.md` → market scope + competitor set (informs Q4)
 
 3. **Manifest check:**
    - `.forsvn/index/manifest.json` → check for stale `icp-research.md` (>30 days → recommend re-running upstream)
@@ -89,7 +89,7 @@ Need before dispatching: which provider exports are available this run?
 (For full-report default, list what you have: OpenAI / Perplexity / Anthropic / Google AI Overview / analytics / Bing Webmaster / live site for llms.txt. I'll label missing ones `unavailable` in the report.)
 ```
 
-If available-inputs ALSO resolves from a prior `.forsvn/experience/aeo-inputs.md` → skip probe and dispatch with one-line confirm.
+If available-inputs ALSO resolves from a prior `docs/forsvn/experience/aeo-inputs.md` → skip probe and dispatch with one-line confirm.
 
 ---
 
@@ -113,7 +113,7 @@ monitor-aeo runs 6 modes (ai-citations / geo-overview / ai-referrals / bing-read
 3. **Query set source** — one of:
    a) point me at `research/icp-research.md`,
    b) supply 10-30 literal queries the audience would type,
-   c) reuse prior `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md`.
+   c) reuse prior `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md`.
 
 4. **Competitor set** — 3-7 domains; or "extract from ICP" if (3a).
 
@@ -135,11 +135,11 @@ After dispatch + critic PASS, the orchestrator writes back:
 
 | Artifact | Path | What's written |
 |---|---|---|
-| Report | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/report.md` | Full dated report |
-| Query set | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` | Locked query × provider matrix |
-| Handoff | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/handoff-optimize-seo.md` | Evidence-tagged gap list |
-| Snapshots | `.forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/[date]-*.json` | Append-only |
-| Experience update (optional) | `.forsvn/experience/aeo-inputs.md` | Which provider inputs the operator typically supplies (warm-start enable) |
+| Report | `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/report.md` | Full dated report |
+| Query set | `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/query-set.md` | Locked query × provider matrix |
+| Handoff | `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/handoff-optimize-seo.md` | Evidence-tagged gap list |
+| Snapshots | `docs/forsvn/artifacts/marketing/aeo-monitor/[slug]/snapshots/[date]-*.json` | Append-only |
+| Experience update (optional) | `docs/forsvn/experience/aeo-inputs.md` | Which provider inputs the operator typically supplies (warm-start enable) |
 
 ---
 

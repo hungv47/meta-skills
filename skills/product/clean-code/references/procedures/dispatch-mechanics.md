@@ -43,7 +43,7 @@ Layer 2 (sequential):
 4. **Refactoring** — pass code scanner results + removal results to `refactoring-agent`. It fixes code-level issues.
 5. **Validation** — `validation-agent` runs all available checks (tests, types, lint, build).
 6. **Critic review** — `critic-agent` checks golden rules compliance. If FAIL, identify the specific change to revert per [`../anti-patterns.md`](../anti-patterns.md) [ANTI-PATTERN] "When the critic FAILs."
-7. **Assembly** — compile cleanup report per [`../report-template.md`](../report-template.md) [PROCEDURE]. Save to `.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md`.
+7. **Assembly** — compile cleanup report per [`../report-template.md`](../report-template.md) [PROCEDURE]. Save to `docs/forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md`.
 
 ## Routing Rules
 
@@ -69,6 +69,6 @@ Used when mode-resolver downgrades to `fast` (≤5-file scope, context-constrain
 4. Apply fixes one at a time, testing after each.
 5. Run all available checks.
 6. Verify golden rules compliance as self-review.
-7. Save to `.forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md`.
+7. Save to `docs/forsvn/artifacts/meta/records/[date]-cleanup-<slug>.md`.
 
 The 5 golden rules + Pre-Dispatch test-suite gate fire in fallback mode regardless — safety contract is mode-independent.

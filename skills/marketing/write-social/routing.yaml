@@ -65,7 +65,7 @@ capability:
       recommended:
         - "id:icp-research"
         - "id:product-context"
-        - ".forsvn/artifacts/marketing/short-form-brief/[slug]/brief.md"
+        - "docs/forsvn/artifacts/marketing/brief-shortform/[slug]/brief.md"
       hard:
         - "id:brand"
 
@@ -110,6 +110,6 @@ capability:
 
   outputs:
     artifacts:
-      - path: ".forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md"
+      - path: "docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md"
         lifecycle: pipeline
         produced_when: "Critic PASS / DONE_WITH_CONCERNS / FAIL (FAIL artifacts ship with annotations per locked decision; NOT written on FORMAT_FAIL or NEEDS_CONTEXT)."

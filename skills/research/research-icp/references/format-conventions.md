@@ -1,14 +1,14 @@
 # Format Conventions — icp-research
 
-> Load when synthesis-agent assembles the ICP artifact OR when populating `.forsvn/canonical/product/PRODUCT-CONTEXT.md`. Encodes the Step 0 product-context schema, the Artifact Template (the 60+ line persona-and-narrative format consumed by 13+ downstream skills), the Canonical Terminology pattern, and date/number/citation conventions.
+> Load when synthesis-agent assembles the ICP artifact OR when populating `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`. Encodes the Step 0 product-context schema, the Artifact Template (the 60+ line persona-and-narrative format consumed by 13+ downstream skills), the Canonical Terminology pattern, and date/number/citation conventions.
 
 The schemas in this file are **cross-stack contracts**. Renaming a section, reordering fields, or changing a frontmatter key requires atomic update of downstream consumers per the `anti-patterns.md` row "Cross-stack contract drift."
 
 ---
 
-## Step 0 — Product Context Artifact (`.forsvn/canonical/product/PRODUCT-CONTEXT.md`)
+## Step 0 — Product Context Artifact (`docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`)
 
-After Pre-Dispatch, generate or update `.forsvn/canonical/product/PRODUCT-CONTEXT.md` (`id: product-context`) — the canonical product-context record other skills read:
+After Pre-Dispatch, generate or update `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` (`id: product-context`) — the canonical product-context record other skills read:
 
 ```markdown
 # Product Context
@@ -57,7 +57,7 @@ After Pre-Dispatch, generate or update `.forsvn/canonical/product/PRODUCT-CONTEX
 
 | Artifact | Source | If Missing |
 |----------|--------|------------|
-| `PRODUCT-CONTEXT.md` | icp-research | **INTERVIEW** for 8 product dimensions, save to `.forsvn/canonical/product/PRODUCT-CONTEXT.md`. |
+| `PRODUCT-CONTEXT.md` | icp-research | **INTERVIEW** for 8 product dimensions, save to `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`. |
 
 | Artifact | Source | Benefit |
 |----------|--------|---------|
@@ -77,7 +77,7 @@ Answers determine route (A, B, or C) and populate the brief passed to agents. Th
 
 ---
 
-## Artifact Template — `.forsvn/canonical/research/ICP.md`
+## Artifact Template — `docs/forsvn/canonical/research/ICP.md`
 
 This is the cross-stack contract consumed by campaign-plan, brand-system, copywriting, lp-brief, design-brief, ad-copy, cold-outreach. Renaming a section or changing structure requires atomic update of all 7 consumers.
 
@@ -166,7 +166,7 @@ decision_state: pending
 ## Next Step
 Run `plan-campaign` to turn these insights into a communication plan.
 
-> On re-run: overwrite `.forsvn/canonical/research/ICP.md` in place and increment the integer `version:`. Prior versions live in git history — no `.v[N].md` siblings under `canonical/`.
+> On re-run: overwrite `docs/forsvn/canonical/research/ICP.md` in place and increment the integer `version:`. Prior versions live in git history — no `.v[N].md` siblings under `canonical/`.
 ```
 
 ---
@@ -211,7 +211,7 @@ This makes the limitation visible to downstream skills (campaign-plan in particu
 
 ## Version field semantics
 
-The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `.forsvn/canonical/research/ICP.md` in place with the incremented version (prior versions live in git history — no `.v[N].md` siblings under `canonical/`). The Note at the bottom of the Artifact Template documents this.
+The `version: 1` field in the frontmatter is the **artifact version**, not the skill version. Increment on re-run; overwrite `docs/forsvn/canonical/research/ICP.md` in place with the incremented version (prior versions live in git history — no `.v[N].md` siblings under `canonical/`). The Note at the bottom of the Artifact Template documents this.
 
 The `skill: research-icp` frontmatter field is fixed (matches the skill slug per `references/_shared/manifest-spec.md`).
 

@@ -77,7 +77,7 @@ A store file missing the `schema_version` line is malformed; the query helper re
 | Column | Meaning |
 |---|---|
 | `ledger_id` | unique slug, recommended `<platform>-<YYYY-MM-DD>-<slug>` |
-| `artifact_id` | the producing artifact's stable `id` (the `.forsvn/artifacts/` frontmatter `id`) |
+| `artifact_id` | the producing artifact's stable `id` (the `docs/forsvn/artifacts/` frontmatter `id`) |
 | `platform` | target channel |
 | `status` | `exported \| live \| measured` |
 | `event_date` | `YYYY-MM-DD` of this lifecycle event |
@@ -154,7 +154,7 @@ Priors carry their own staleness valve (`last_verified` > 90 days → flag), ind
 
 ## Brand-Floor Supremacy
 
-**Brand, safety, and claims floors outrank performance data — always.** Data reshapes anything *above* the floor; it never reshapes the floor. A top-performing post that violates a brand/safety/claims floor is not adopted as a pattern: distill it as **"performs but violates floor — not adopted"** (in `.forsvn/experience/marketing/`, with the evidence cited), so the finding is preserved without the floor eroding. This is the same rule that governs rubric evolution: performance evidence never re-tightens or relaxes a floor.
+**Brand, safety, and claims floors outrank performance data — always.** Data reshapes anything *above* the floor; it never reshapes the floor. A top-performing post that violates a brand/safety/claims floor is not adopted as a pattern: distill it as **"performs but violates floor — not adopted"** (in `docs/forsvn/experience/marketing/`, with the evidence cited), so the finding is preserved without the floor eroding. This is the same rule that governs rubric evolution: performance evidence never re-tightens or relaxes a floor.
 
 ## Query Helper
 

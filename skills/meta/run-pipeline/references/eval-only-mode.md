@@ -18,7 +18,7 @@ load_class: PROCEDURE
 
 1. **Measurable surface required.** No nameable page / campaign / post series / ad set / email sequence / outreach motion → `NEEDS_CONTEXT`, recommend `discover` (or `diagnose` if the ask is about an existing metric decline).
 2. **Metric path required.** ≥1 primary metric + source (baseline may be unknown). No metric path → no loop.
-3. **No skill-centered folders.** Never create `.forsvn/artifacts/{skill-name}/...`. Loops are organized by measurable initiative.
+3. **No skill-centered folders.** Never create `docs/forsvn/artifacts/{skill-name}/...`. Loops are organized by measurable initiative.
 4. **Execution boundary.** May execute marketing/content assets. Does NOT deploy code, publish to platforms, build app UI, or mutate external systems.
 5. **Human approval gates** publishing and live-surface changes — keep/discard discipline, never a "run forever" posture.
 

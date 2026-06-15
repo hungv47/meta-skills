@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
-// bootstrap-experience — create the local .forsvn/experience substrate.
+// bootstrap-experience — create the local docs/forsvn/experience substrate.
 // See references/_shared/pre-dispatch-protocol.md.
 
 import { existsSync, lstatSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
@@ -8,11 +8,17 @@ import { join, relative, resolve } from "node:path";
 
 const args = process.argv.slice(2);
 const root = realpathSync(resolve(args[0] ?? process.cwd()));
-const resourcesDir = join(root, ".forsvn");
-const experienceDir = join(resourcesDir, "experience");
+// The experience layer relocated out of .forsvn/ into docs/forsvn/ (artifact-home
+// relocation, Phase A) — the same knowledge home append-experience.ts writes to.
+// Stage docs/ → docs/forsvn so each level gets the symlink guard below
+// (ensureSafeDirectory's mkdirSync is non-recursive on purpose).
+const docsDir = join(root, "docs");
+const knowledgeHome = join(docsDir, "forsvn");
+const experienceDir = join(knowledgeHome, "experience");
 const starterDomains = ["audience", "brand", "business", "content", "goals", "patterns", "product", "technical"];
 
-ensureSafeDirectory(resourcesDir);
+ensureSafeDirectory(docsDir);
+ensureSafeDirectory(knowledgeHome);
 ensureSafeDirectory(experienceDir);
 
 writeIfMissing(
@@ -21,7 +27,7 @@ writeIfMissing(
 
 This folder is the local, append-only memory substrate for skills.
 
-Skills read \`.forsvn/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
+Skills read \`docs/forsvn/experience/{domain}.md\` before asking cold-start questions, then append the answers they receive so future runs do not re-ask the same durable context.
 
 Suggested domains:
 

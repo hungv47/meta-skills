@@ -39,13 +39,13 @@ purpose: "Post-send reply-quality + deliverability snapshot for an outreach eval
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current outreach cycle"
 do_not_use_when: "Authoring next-cycle sequence copy without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md, reply-data source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md, reply-data source"
 downstream: "results.tsv, learnings.md, write-outreach next-cycle sequence"
 provenance:
   skill: evaluate-outreach
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md
+    - docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md
     - research/icp-research.md
     - brand/BRAND.md
   output_eval: null
@@ -80,13 +80,13 @@ purpose: "Post-send reply-quality + deliverability snapshot for an outreach eval
 lifecycle: evaluation
 use_when: "Deciding whether to keep, discard, watch, or block the current outreach cycle"
 do_not_use_when: "Authoring next-cycle sequence copy without reading the latest loop context and results"
-upstream: ".forsvn/loops/[slug]/program.md, context.md, .forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md, reply-data source"
+upstream: ".forsvn/loops/[slug]/program.md, context.md, docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md, reply-data source"
 downstream: "results.tsv, learnings.md, write-outreach next-cycle sequence"
 provenance:
   skill: evaluate-outreach
   run_date: YYYY-MM-DD
   input_artifacts:
-    - .forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md
+    - docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md
     - research/icp-research.md
     - brand/BRAND.md
   output_eval: null
@@ -117,7 +117,7 @@ provenance:
 
 ## What Changed This Cycle
 
-- Source write-outreach artifact: `.forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`
+- Source write-outreach artifact: `docs/forsvn/artifacts/marketing/write-outreach/[channel]-[date]-[slug].md`
 - Subject/opener/value-prop/CTA/step delta from prior cycle:
 
 ## Diagnosis
