@@ -12,6 +12,8 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join, basename, dirname } from "node:path";
+import { observedRunIds } from "./runs";
+import { findProjectRoot } from "./collab";
 
 const STACK_TO_ELEMENT: Record<string, "air" | "water" | "fire" | "earth"> = {
   meta: "air",
@@ -253,6 +255,28 @@ export function renderArtifactToHtml(mdPath: string, assetsDir: string, repoRelM
   const decisionState = fm.decision_state || "not_required";
   void repoRelMdPath; // identity is title + skill + stack + date — the path never renders
 
+  // Provenance (U10): which skill produced this + whether an OBSERVED run exists
+  // for it (.forsvn/runs/, read directly — not via MCP). Honest copy: "observed
+  // run", never a bare "Verified" (KTD3) — a run records a CLAIMED run, not proof
+  // the critic gates fired. The badge is a cue, never a gate: the operator still
+  // decides either way (an unverified artifact stays fully reviewable).
+  let verified = false;
+  try {
+    verified = observedRunIds(findProjectRoot(dirname(mdPath))).has(fm.id || "");
+  } catch {
+    // not inside a discoverable project — no run context; render as unverified
+  }
+  const provLabel = verified ? "observed run" : "unverified";
+  const provTitle = verified
+    ? "An observed run was recorded for this artifact — not cryptographic proof the skill's gates fired."
+    : "No observed run was recorded — this may be a hand- or freelance-written file. Still reviewable.";
+  const provenancePill = fm.skill
+    ? `<span class="prov-pill" data-verified="${verified}" title="${esc(provTitle)}">` +
+      `Produced by <code>${esc(fm.skill)}</code> · ${provLabel}` +
+      (fm.status ? ` · ${esc(fm.status)}` : "") +
+      `</span>`
+    : "";
+
   // Fold the leading H1 into the masthead: when the body opens with a `# …`
   // heading it IS the title — rendering it again under the masthead would
   // duplicate the headline.
@@ -287,6 +311,7 @@ export function renderArtifactToHtml(mdPath: string, assetsDir: string, repoRelM
     date: esc(fm.date || ""),
     deck: esc(fm.summary || ""),
     decision_state: esc(decisionState),
+    provenance_pill: provenancePill, // already HTML — inserted raw into the masthead
     tokens_css_href: "./tokens.css",
     chrome_css_href: "./chrome.css",
     chrome_js_src: "./chrome.js",

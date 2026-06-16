@@ -4,6 +4,7 @@
 
 Before dispatching:
 
+0. **Workspace entry (MCP-preferred).** If Step 1 did not already enter via MCP, call `enter_workspace` (forsvn MCP) now — it loads active artifacts, decisions, and the graph-derived `next` in one call and marks the session oriented. Unavailable → the Step 1 disk snapshot already covers it (graceful degradation, KTD6). Either way, record the method as `context-loaded-via: mcp | filesystem` in the routing record so a resume knows how state was sourced.
 1. **Product context.** If `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` is missing AND the routed skill needs it (marketing, product, research) → autodraft it there from `README.md`, `brand/BRAND.md`, `research/*.md`, `package.json`. Mark `status: needs_context` (an unratified draft). Tell the user: "Autodrafted product context. Review and promote to `status: done` before treating as canonical." Drafts are usable; do not block dispatch.
 2. **Experience.** Grep `docs/forsvn/experience/*.md` for keywords matching the intent. Surface anything relevant: "You previously said X — still applies?"
 3. **Initiative slug.** New → propose a kebab-case slug, user confirms. Resuming → use existing slug.
@@ -41,6 +42,7 @@ intent: <classified intent>
 initiative: <slug or empty>
 routed-to: /<skill-name or empty if summary>
 dispatched-by: forsvn
+context-loaded-via: mcp | filesystem
 status: dispatched | awaiting-user | completed | abandoned
 next-action: <one line>
 ---

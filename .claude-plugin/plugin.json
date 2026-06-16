@@ -61,5 +61,11 @@
     "./forsvn-preview/commands/review.md",
     "./forsvn-preview/commands/collab.md",
     "./forsvn-preview/commands/doctor.md"
-  ]
+  ],
+  "mcpServers": {
+    "forsvn": {
+      "command": "bun",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-mcp-launch.ts", "serve"]
+    }
+  }
 }

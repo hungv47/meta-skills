@@ -29,6 +29,16 @@ export interface ArtifactSummary {
   summary: string;
   produced_at: string;
   stale: boolean;
+  /** The producing skill (manifest `produced_by`, already indexed) — the
+   *  provenance for the verified/unverified badge: "Produced by <produced_by>". */
+  produced_by: string;
+  /** From the manifest (already indexed): false = the file lacks conforming
+   *  frontmatter — surfaced as "needs attention", never dropped (U8/R6). */
+  frontmatter_present: boolean;
+  /** Set by the web server from `.forsvn/runs/events.jsonl` (NOT the manifest):
+   *  true = an OBSERVED run-record exists for this id (U8/AE1). "Observed run",
+   *  not proof the critic gates fired (KTD3) — never render a bare "Verified". */
+  verified?: boolean;
 }
 
 export interface ConnectionRef {
@@ -76,6 +86,8 @@ interface Entry {
   stale?: boolean;
   keywords?: string[];
   proof_slug?: string;
+  frontmatter_present?: boolean;
+  produced_by?: string;
 }
 
 interface GraphNode {
@@ -151,6 +163,10 @@ function summarize(path: string, e: Entry): ArtifactSummary {
     summary: e.summary ?? "",
     produced_at: e.produced_at ?? "",
     stale: e.stale ?? false,
+    produced_by: e.produced_by ?? "",
+    // Default true: a legacy manifest without the flag is treated as conforming
+    // (only an explicit `false` marks a non-conforming file as needs-attention).
+    frontmatter_present: e.frontmatter_present ?? true,
   };
 }
 

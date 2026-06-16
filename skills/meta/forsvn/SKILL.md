@@ -2,10 +2,10 @@
 name: forsvn
 description: "Front door for the FORSVN agent stack — classifies the request, loads shared product context and prior session state, then routes to the right skill or resumes a prior initiative. Use when the right skill is unclear, to continue an in-flight initiative, or when a vague ask needs to land somewhere concrete (\"where to start\", \"resume\", \"ship this\")."
 argument-hint: "[free-form ask, or 'resume', or empty for state summary]"
-allowed-tools: Read Grep Glob Bash Write Edit
+allowed-tools: Read Grep Glob Bash Write Edit mcp__forsvn__enter_workspace mcp__forsvn__get_context
 user-invocable: true
 metadata:
-  version: "1.1.1"
+  version: "1.1.2"
   budget: fast
   estimated-cost: "$0.02-0.08"
 ---
@@ -33,7 +33,7 @@ Classifies the ask, loads the context, routes or resumes. Always lands on a conc
 
 Every invocation does exactly these five steps. No skipping, no looping.
 
-**Step 1 — State snapshot.** Render the disk snapshot inline. Shell-bang block in [`references/procedures/state-snapshot.md`](references/procedures/state-snapshot.md).
+**Step 1 — State snapshot.** Prefer the `forsvn` MCP server: call `enter_workspace` to load TRUTH / OUTPUT / MEMORY + the graph-derived `next` (one act, same data the disk walk produces). When the server is unavailable (no `mcp__forsvn__*` tools), fall back to the inline disk snapshot — graceful degradation, never a hard dependency. Full procedure + shell-bang fallback in [`references/procedures/state-snapshot.md`](references/procedures/state-snapshot.md).
 
 **Step 2 — Resume check.** If `.forsvn/routing/last-session.md` exists AND `status: awaiting-user` AND timestamp < 7 days:
 

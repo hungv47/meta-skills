@@ -154,6 +154,25 @@ a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
 .decision-pill[data-state="suggested"]    { background: var(--pill-suggested-bg); color: var(--pill-suggested-fg); text-decoration: underline wavy; }
 .decision-pill[data-state="not_required"] { background: var(--pill-pending-bg);   color: var(--pill-pending-fg);   opacity: 0.7; }
 
+/* Provenance pill (U10): the producing skill + whether an OBSERVED run exists.
+   Leaf #74B36B ONLY on the verified state (DESIGN.md — Leaf is the "ready" cue,
+   never a large fill; this is a thin outline pill, <10% of pixels). Unverified is
+   quiet — a cue, not an alarm: the operator still decides either way. The honest
+   "observed run" / "unverified" copy is authored in render.ts, not here. */
+.prov-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font: 500 11.5px/1 var(--chrome-mono);
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+}
+.prov-pill code { font: inherit; }
+.prov-pill[data-verified="true"]  { color: #74B36B; }
+.prov-pill[data-verified="false"] { opacity: 0.55; }
+
 /* ============ Stage — the reading field ============ */
 .stage {
   background: var(--stage-bg, var(--chrome-bg));

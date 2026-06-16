@@ -1,23 +1,42 @@
 #!/usr/bin/env node
 /**
- * SessionStart hook: export the running model to the session env so skills can
- * resolve the session execution profile without asking which model is running
- * (references/execution-policy.md § "Model detection").
+ * SessionStart hook. Two jobs, neither allowed to break session start:
  *
- * Input:  JSON on stdin — SessionStart payloads carry a `model` field
- *         (string id, or an object with id/display_name in some SDK versions).
- * Effect: appends `FORSVN_SESSION_MODEL=<model>` to the file at $CLAUDE_ENV_FILE.
+ * 1. Export the running model to the session env so skills can resolve the
+ *    execution profile without asking (references/execution-policy.md § "Model
+ *    detection"). Appends `FORSVN_SESSION_MODEL=<model>` to `$CLAUDE_ENV_FILE`,
+ *    and a `session_start` event to the T0 local ledger (no network).
  *
- * Also appends a `session_start` event to the T0 local ledger (no network) so
- * cadence/activation is measurable — see ../references/event-schema.md.
+ * 2. Emit the FORSVN "enter the workspace" nudge as SessionStart
+ *    `additionalContext` (KTD1.2). This is the ONE mechanism that guarantees the
+ *    enter_workspace imperative is in front of the model every Claude Code session
+ *    — the MCP-server `instructions` floor (U1) is best-effort and host-dependent.
+ *    Text-only and static: a hook cannot call MCP or (per U3) read disk for this;
+ *    it just restates the imperative. The string self-gates ("if a forsvn MCP
+ *    server is connected …") so it is harmless in a non-forsvn session.
  *
- * Contract: NEVER breaks session start. Exit 0 always — malformed input,
- * missing env file, or unwritable path all exit silently.
+ *    Bug #12151 (Claude Code) drops some plugin-hook output. If the nudge does not
+ *    appear, install this hook at settings scope as a fallback: copy the
+ *    SessionStart entry from hooks.json into `~/.claude/settings.json` (or the
+ *    project `.claude/hooks.json`), pointing at this file's absolute path.
+ *
+ * Contract: ALWAYS exit 0 — malformed input, missing env file, unwritable ledger,
+ * or a stdout failure are all swallowed.
  */
 
 import { readFileSync, appendFileSync } from "node:fs";
 import { appendEvent } from "../bin/lib/ledger.mjs";
 
+// Static enter-workspace nudge (KTD1.2). Names `enter_workspace`; self-gating so a
+// non-forsvn session can ignore it.
+const ENTER_NUDGE =
+  "FORSVN workspace — if a forsvn MCP server is connected, call `enter_workspace` " +
+  "before your first substantive action this session: it loads the project's active " +
+  "artifacts, prior decisions, and the graph-derived next step, so you continue from " +
+  "approved state instead of starting cold. If no forsvn MCP tools are present, ignore " +
+  "this line.";
+
+// Job 1: model env + ledger. Isolated so a failure here never suppresses the nudge.
 try {
   const input = JSON.parse(readFileSync(0, "utf-8"));
   const m = input?.model;
@@ -36,4 +55,21 @@ try {
 } catch {
   // Never block session start.
 }
+
+// Job 2: emit the nudge. Static string, so it runs even if Job 1 threw. Wrapped so
+// a stdout failure still exits 0. hookEventName MUST be "SessionStart" (the
+// skill-router emitter hardcodes "UserPromptSubmit" — do not copy that here).
+try {
+  process.stdout.write(
+    JSON.stringify({
+      hookSpecificOutput: {
+        hookEventName: "SessionStart",
+        additionalContext: ENTER_NUDGE,
+      },
+    })
+  );
+} catch {
+  // Never block session start.
+}
+
 process.exit(0);

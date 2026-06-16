@@ -21,6 +21,7 @@ import { join, extname, normalize, sep, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 import type { ServerWebSocket } from "bun";
 import { findProjectRoot, openArtifact, exportArtifact, readArtifact, readField } from "../lib/collab";
+import { observedRunIds, workspaceIsCold } from "../lib/runs";
 import { startProofServer, type ProofServerHandle } from "../lib/proof-server";
 import { ProofClient } from "../lib/proof-client";
 import {
@@ -213,6 +214,15 @@ function checkToken(req: Request): boolean {
   return t.length > 0 && constantTimeEqual(t, TOKEN);
 }
 
+/** Token check for the /ws upgrade. A browser cannot set request headers on the
+ *  `new WebSocket()` constructor, so the SPA passes the session token as a
+ *  `?token=` query param; it is constant-time compared against the same secret as
+ *  the header path. Loopback-only is enforced separately at the upgrade. */
+function checkWsToken(url: URL): boolean {
+  const t = url.searchParams.get("token") ?? "";
+  return t.length > 0 && constantTimeEqual(t, TOKEN);
+}
+
 /** Serve a built-SPA file (prod path). Returns null when there's no SPA dir or
  *  the target escapes it / doesn't exist (caller falls through to index.html). */
 function serveSpaFile(pathname: string): Response | null {
@@ -232,8 +242,14 @@ const server = Bun.serve({
     const url = new URL(req.url);
     const { pathname } = url;
 
-    // WebSocket upgrade — live disk-change stream.
+    // WebSocket upgrade — live disk-change stream. Token-gated (U9/O4): gate the
+    // upgrade behind the session token + loopback origin BEFORE srv.upgrade, so a
+    // local page that doesn't hold the same-origin token can't read the change
+    // stream (which would leak artifact paths). The browser can't set headers on
+    // `new WebSocket()`, so the token rides a ?token= query param. Loopback-only kept.
     if (pathname === "/ws") {
+      if (!isLoopbackOrigin(req)) return new Response("cross-origin request refused", { status: 403 });
+      if (!checkWsToken(url)) return new Response("bad or missing session token", { status: 403 });
       if (srv.upgrade(req)) return undefined as unknown as Response;
       return new Response("expected websocket", { status: 426 });
     }
@@ -279,6 +295,10 @@ const server = Bun.serve({
           root: args.root,
           gitEmail: gitUserEmail(args.root),
           hasManifest,
+          // Cold-state signal (U10/AE4): no on-disk evidence an agent has oriented
+          // here. A disk proxy — NOT the MCP in-memory flag (unreadable from here).
+          // Surfaces the never-entered case; stale-session detection is deferred.
+          cold: workspaceIsCold(args.root),
           token: TOKEN,
         });
       }
@@ -293,8 +313,15 @@ const server = Bun.serve({
       }
 
       // GET /api/artifacts — the full stream (the shell filters client-side).
+      // Each row carries `verified` (an OBSERVED run exists in .forsvn/runs/, read
+      // directly here — not via MCP) and `frontmatter_present` (false = needs
+      // attention, never dropped). U8.
       if (req.method === "GET" && pathname === "/api/artifacts") {
-        return json(200, listAll(loadManifest(args.root)));
+        const runs = observedRunIds(args.root);
+        return json(
+          200,
+          listAll(loadManifest(args.root)).map((a) => ({ ...a, verified: runs.has(a.id) })),
+        );
       }
 
       // /api/artifacts/:id  (+ /links · /decision · /collab/open|events|export)
@@ -307,7 +334,8 @@ const server = Bun.serve({
 
         if (req.method === "GET" && !sub) {
           try {
-            return json(200, getArtifact(args.root, loadManifest(args.root), id));
+            const view = getArtifact(args.root, loadManifest(args.root), id);
+            return json(200, { ...view, verified: observedRunIds(args.root).has(view.id) });
           } catch (e) {
             return e instanceof NotFoundError ? json(404, { error: e.message }) : json(500, { error: String(e) });
           }

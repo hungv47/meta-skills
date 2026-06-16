@@ -21,6 +21,9 @@
     {ph: date}              — YYYY-MM-DD
     {ph: deck}              — one-line summary (masthead deck; may be empty)
     {ph: decision_state}    — pending | approved | denied | suggested | not_required
+    {ph: provenance_pill}   — masthead HTML span: "Produced by <skill> · observed
+                             run|unverified · <status>" (U10); empty when no skill.
+                             "observed run" is honest copy — never a bare "Verified".
     {ph: tokens_css_href}   — path to tokens.css (typically "./tokens.css")
     {ph: chrome_css_href}   — path to chrome.css
     {ph: chrome_js_src}     — path to chrome.js
@@ -84,6 +87,7 @@
       <button type="button" data-set="dark" aria-pressed="false">dark</button>
       <button type="button" data-set="light" aria-pressed="false">light</button>
     </div>
+    {{provenance_pill}}
     <span class="decision-pill" data-state="{{decision_state}}">{{decision_state}}</span>
   </header>
 
