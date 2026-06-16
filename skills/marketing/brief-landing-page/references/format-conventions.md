@@ -66,7 +66,7 @@ status: [done | done_with_concerns | blocked | needs_context]
 stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 page_route: [/pricing | /services | etc.]
@@ -132,7 +132,7 @@ status: [done | done_with_concerns | blocked | needs_context]
 stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 page_route: [/pricing | /services | etc.]
@@ -354,7 +354,7 @@ Page-scoped only. No project-level default is created.
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 > Re-run with `--rev=N`: write to `docs/forsvn/artifacts/marketing/brief-landing-page/[slug]/v[N]/brief.md`, preserve prior versions.

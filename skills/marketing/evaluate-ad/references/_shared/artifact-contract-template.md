@@ -178,8 +178,9 @@ while `decision_state: pending`; `md` = Markdown only; `none` =
 
 ## v3 — the by-stack layered home + instruction core (2026-05-28)
 
-Artifacts no longer live in one flat dump. The `.forsvn/` home is the project's
-**data model**, organized as three layers × by stack:
+Artifacts no longer live in one flat dump. The `docs/forsvn/` home is the
+project's human-readable knowledge layer, organized as three layers × by stack;
+`.forsvn/` stays the machine-state/discovery marker:
 
 ```
 docs/forsvn/canonical/<stack>/<UPPER-NAME>.md          ① TRUTH (curated, edited in place)
@@ -240,7 +241,7 @@ Full semantics: [[reviewable-artifact-contract]].
 | Field | Type | Example |
 |---|---|---|
 | `decision_state` | enum | `pending` \| `approved` \| `denied` \| `suggested` \| `not_required` |
-| `review_tool` | enum | `roughdraft` \| `inline` \| `none` \| `proof` |
+| `review_tool` | enum | `proof` \| `inline` \| `roughdraft` \| `none` |
 | `reviewed_at` | ISO `YYYY-MM-DD` or empty | `2026-05-22` |
 | `reviewer` | string or empty | `operator` |
 
@@ -287,7 +288,7 @@ Reviewable artifacts also carry a `## Review Gate` body block:
 - [ ] Deny
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ````
 
 The human checks exactly one box; the agent reads it to set `decision_state`:
@@ -367,7 +368,7 @@ lifecycle: decision
 use_when: "Reading the rationale behind the $59 single-tier choice"
 upstream: "discover spec, market-research"
 decision_state: approved
-review_tool: roughdraft
+review_tool: inline
 reviewed_at: 2026-05-16
 reviewer: operator
 ---
@@ -429,7 +430,7 @@ upstream: "research/icp-research.md, operator interview"
 downstream: "write-copy, write-ad, write-social, brief-landing-page"
 decision_state: pending
 review_surface: html
-review_tool: roughdraft
+review_tool: inline
 reviewed_at:
 reviewer:
 ---

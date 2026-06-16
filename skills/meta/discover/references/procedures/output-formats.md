@@ -40,7 +40,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: meta
 review_surface: md         # html | md | none
 decision_state: pending    # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 mode: idea-stage | plan-review
@@ -174,7 +174,7 @@ The Verdict line maps to the Completion Status Protocol — `VALIDATED` / `BUILD
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 **Single verdict, two surfaces:** the verdict stated in conversation at Step 6 persists verbatim to the `## Verdict` section of the saved artifact — same enum, stated once in conversation, recorded once in artifact. There are not two verdicts.
@@ -194,7 +194,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: meta
 review_surface: md         # html | md | none
 decision_state: pending    # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 mode: idea-stage | plan-review
@@ -234,7 +234,7 @@ light_spec: true
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 Don't apply Premise Challenge or Dream State Mapping to a "add a dark mode toggle" scope — the rigor structure is for Medium/Deep work where the user is making strategic calls. The Concreteness Checklist stays even here: it is the Step 6 gate state, and Light depth runs the gate too — any `open — signed off` line forces `status: done_with_concerns`.

@@ -59,7 +59,7 @@ The path encodes `<layer>/<stack>/` and the filename encodes `<skill>-<date>-<sl
 ## Producer obligations (so consumers can find you)
 
 1. Write frontmatter per [[artifact-contract-template]] — at minimum `skill`, `version`, `date`, `status`, `stack`, `review_surface`, plus the v3 instruction core `id`, `type`, `keywords`.
-2. Write to the layered path `.forsvn/<layer>/<stack>/...`; declare it in `routing.yaml` `outputs.artifacts[]`.
+2. Write to the layered path `docs/forsvn/<layer>/<stack>/...`; declare it in `routing.yaml` `outputs.artifacts[]`.
 3. Call `manifest-sync` as the last step so the index reflects the new artifact immediately.
 4. Never hand-edit `manifest.json` / `artifact-index.md` — they are derived.
 

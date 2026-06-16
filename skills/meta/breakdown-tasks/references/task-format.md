@@ -37,7 +37,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: meta
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 ---
@@ -88,7 +88,7 @@ reviewer:                  # who recorded the review — empty until reviewed
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 Each task is a `###` block under `## Tasks` — siblings, not nested. Agents anchor on `### Task T[N]:` to jump from index row to block.

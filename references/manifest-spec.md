@@ -10,7 +10,7 @@ Three failure modes this spec prevents:
 2. **Skills consume artifacts blindly** — a downstream skill reads `research/icp-research.md` without knowing it was 6 months old or finished `done_with_concerns`. Quality fails silently.
 3. **Orchestrators have no machine-readable map** — `start-*` skills hand-maintain a state-detection table per stack, drifting from reality whenever a skill ships or renames an output.
 
-Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes one-shot artifacts under `docs/forsvn/artifacts/` (flat path grammar: `<stack>-<skill>-<YYYY-MM-DD>-<slug>.<ext>`; legacy nested paths `{meta,mkt,product,research}/{kind}/` are tolerated by the back-compat parser), measurable loop workspaces under `.forsvn/loops/[slug]/`, and canonical top-level `brand/`, `research/`, and `architecture/`.
+Solution: a single `.forsvn/index/manifest.json`, **derived from artifact frontmatter**, **rebuilt by a sync script**, **read by every consumer first**. The same sync pass also writes `.forsvn/index/artifact-index.md`, a human-readable selection index that explains why artifacts exist and when to use them. The manifest indexes the relocated knowledge layers under `docs/forsvn/` (`canonical/`, `artifacts/`, and `experience/`, each by stack), legacy `.forsvn/` knowledge paths for back-compat/migration, and measurable loop workspaces under `.forsvn/loops/[slug]/`.
 
 The manifest is **derived state** — markdown artifacts remain source of truth. The manifest is rebuildable from scratch at any time. If it disappears, run sync; nothing is lost.
 
@@ -51,7 +51,7 @@ Schema:
       "decision_status": "",
       "decision_state": "approved",
       "review_surface": "md",
-      "review_tool": "roughdraft",
+      "review_tool": "inline",
       "reviewed_at": "2026-04-12",
       "reviewer": "operator",
       "size_bytes": 18432,
@@ -119,7 +119,7 @@ Schema:
 - `version` — manifest schema version. Currently `2` (Phase 1 added `by_id` + `graph`; see § v2 below). Bump only on breaking shape changes.
 - `by_id`, `graph` — the Phase 1 knowledge-graph maps. Documented in § "v2 — the Knowledge Graph".
 - `updated_at` — ISO timestamp of last sync run. Consumers can use this to detect drift.
-- `artifacts` — map of path → artifact entry. Paths may come from `docs/forsvn/artifacts/`, `research/`, `brand/`, or `architecture/`.
+- `artifacts` — map of path → artifact entry. Paths come from `docs/forsvn/{canonical,artifacts,experience}/...`, legacy `.forsvn/{canonical,artifacts,experience}/...`, or `.forsvn/loops/...`.
 - `experience` — map of `<domain>.md` filename → experience entry. Separate because experience files are append-only multi-skill, not single-producer.
 
 **Artifact entry:**
@@ -147,7 +147,7 @@ Schema:
 - `skills_involved` — list of kebab-case skill slugs that contributed to producing this artifact. From frontmatter; defaults to `[]`.
 - `decision_state` — human-review state: `pending | approved | denied | suggested | not_required`. From frontmatter; defaults to `not_required` when absent or unrecognized. Legacy `review_state` field is read with a one-line warning and surfaced under `decision_state`. Full semantics in the reviewable-artifact contract.
 - `review_surface` — `html | md | none`. Which surface this artifact uses for review. From frontmatter; defaults to `md` for legacy artifacts when `decision_state` is set, `none` otherwise.
-- `review_tool` — review tool: `roughdraft | inline | none`. From frontmatter; empty string when absent.
+- `review_tool` — review tool: `proof | inline | roughdraft | none`. From frontmatter; empty string when absent. `proof` is the collaborative-doc working surface; `roughdraft` is an optional Markdown fallback.
 - `reviewed_at` — date the review was recorded (`YYYY-MM-DD`). Empty until reviewed.
 - `reviewer` — who recorded the review. Empty until reviewed.
 - `size_bytes` — file size, useful for sanity checks.
@@ -195,11 +195,11 @@ Resolves an immutable `id` to its **current** path. Moving / renaming / re-categ
 
 ### One-query context retrieval
 
-`find-artifacts --context [--stack <s>]` returns an agent's full starting context — **TRUTH** (`canonical/`) + **OUTPUT** (`artifacts/`) + **MEMORY** (`experience/`) — in a single manifest read, no globbing.
+`find-artifacts --context [--stack <s>]` returns an agent's starting-context index — **TRUTH** (`canonical/`) + **OUTPUT** (`artifacts/`) + **MEMORY** (`experience/`) — in a single manifest read, no globbing. By default it returns metadata and paths only; add `--content` when the caller needs Markdown bodies in the response.
 
 ### Experience writeback (the live MEMORY layer)
 
-`append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>` appends a learning to `docs/forsvn/experience/<stack>/<topic>.md` (created with contract-conforming frontmatter on first write). A run records what it learned; the next run reads it via `--context`. This is the layered experience layer (indexed as normal artifacts) — distinct from the legacy flat `experience` map (Q&A substrate) documented above.
+`append-experience.ts <stack> --name <topic> --heading <h> --by <skill> --body <text>` appends a learning to `docs/forsvn/experience/<stack>/<topic>.md` (created with contract-conforming frontmatter on first write). A run records what it learned; the next run discovers it via `--context` and reads the body via `--context --content` when needed. This is the layered experience layer (indexed as normal artifacts) — distinct from the legacy flat `experience` map (Q&A substrate) documented above.
 
 ---
 
@@ -251,7 +251,7 @@ Legacy artifacts without frontmatter are tolerated — sync infers `produced_by`
 `skills/bin/manifest-sync.ts` (in this repo; `bin/manifest-sync.ts` in the published `meta-skills` mirror) — Bun TypeScript, no dependencies.
 
 What it does:
-1. Walk `docs/forsvn/artifacts/`, `research/`, `brand/`, `architecture/` recursively, collecting `*.md` files. Parse the flat-path filename grammar (`<stack>-<skill>-<YYYY-MM-DD>-<slug>.md`) when present; fall back to legacy nested-path parsing (`{meta,mkt,product,research}/{kind}/<slug>.md`) for back-compat.
+1. Walk `docs/forsvn/{canonical,artifacts,experience}/`, legacy `.forsvn/{canonical,artifacts,experience}/`, and `.forsvn/loops/` recursively, collecting `*.md` files. Parse the by-stack layered grammar first; tolerate the old flat artifact grammar only for back-compat.
 2. For each file, parse frontmatter (minimal inline YAML parser — flat `key: value`). Legacy `review_state` is read with a one-line warning and surfaced under `decision_state`.
 3. For artifacts: build entry from frontmatter + file stat + path-based fallback for missing fields. When a `.html` twin exists co-located with an `.md`, set `review_surface: html` in the entry; do **not** index HTML as a separate artifact.
 4. For experience files (`docs/forsvn/experience/*.md`): count entries, find last writer.

@@ -71,7 +71,7 @@ capability:
       - "Output is external-facing and likely to be reused."
     critic_required_when:
       - "External-facing copy."
-      - "Any artifact written under .forsvn/artifacts."
+      - "Any artifact written under docs/forsvn/artifacts."
       - "User asks for critique, review, scoring, or alternatives."
 
   load:

@@ -1,5 +1,5 @@
 ---
-title: Roughdraft Review Protocol — how a skill opens and processes a human review
+title: Roughdraft Review Protocol — optional Markdown fallback for human review
 lifecycle: canonical
 status: stable
 produced_by: meta-skills (v3 WS-REVIEW, 2026-05-22)
@@ -9,33 +9,34 @@ load_class: PLAYBOOK
 
 # Roughdraft Review Protocol
 
-**The procedure for taking a reviewable artifact through a human review in
-Roughdraft.** The state contract — what the fields mean — is
-[[reviewable-artifact-contract]]. This file is the *how*.
+**The optional fallback procedure for taking a reviewable Markdown artifact
+through human review in Roughdraft.** The state contract — what the fields mean
+— is [[reviewable-artifact-contract]]. This file is the *how* only when
+`review_tool: roughdraft`.
 
 Roughdraft is a single-file Markdown review UI. It is not the artifact database,
 loop engine, manifest, or approval ledger. One `roughdraft open` opens exactly
 one `.md` file; its durable state is that file.
 
 **v2 routing note.** When `review_surface: html`, the default capture path is the
-in-page form on the HTML twin — rendered + served by the **forsvn-preview** review
-module of the single `forsvn` plugin (`/forsvn:review`, or directly
-`bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`; the skill emits
-no HTML; see [[reviewable-artifact-contract]] § "Review surface"). Roughdraft
-remains the escape hatch for reviewers who
-prefer inline CriticMarkup — opening the MD directly in Roughdraft and
-ticking the Review Gate body block writes `decision_state` the same way
-this protocol describes. When `review_surface: md`, Roughdraft is the only
-path (no HTML preview is emitted).
+in-page form on the HTML twin — rendered + served by the **forsvn-preview**
+review module of the single `forsvn` plugin (`/forsvn:review`, or directly
+`bun forsvn-preview/bin/forsvn-preview.ts <artifact.md>`; the skill emits no
+HTML; see [[reviewable-artifact-contract]] § "Review surface"). For
+collaborative documents, Proof is the preferred working surface; see
+`docs/runbooks/collaborative-docs.md`. Roughdraft remains an escape hatch for
+reviewers who prefer inline CriticMarkup. When `review_surface: md`, the
+checkbox gate can be handled directly in Markdown; Roughdraft is only needed for
+the CriticMarkup UI.
 
 ---
 
 ## When to open Roughdraft — opt-in per invocation
 
 `decision_state: pending` does **not** by itself open the UI. The agent opens
-Roughdraft only when it judges a review is warranted *now* — e.g. the artifact is
-a canonical/decision/spec output the operator is waiting on, or the operator
-asked for review.
+Roughdraft only when `review_tool: roughdraft` and it judges a review is
+warranted *now* — e.g. the artifact is a canonical/decision/spec output the
+operator is waiting on, or the operator asked for review.
 
 Writing `decision_state: pending` and moving on is valid: it marks the artifact
 as needing review without forcing an interruption. This keeps batch and loop

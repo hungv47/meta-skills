@@ -27,7 +27,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: product
 review_surface: html       # canonical architecture gets the FIRE-themed HTML preview
 decision_state: pending    # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 # Step 7.5 fields (artifact-graph hardening; backfilled going forward):
@@ -115,7 +115,7 @@ Run `breakdown-tasks` to decompose this architecture into implementable tasks.
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ## Required vs. optional sections

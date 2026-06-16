@@ -35,7 +35,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: marketing
 review_surface: md         # html | md | none
 decision_state: not_required # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 downstream_route: image-gen | vector-tool | designer-handoff | template-pack
@@ -58,7 +58,7 @@ sacred_respected: [list of sacred elements honored]
 | `date` | ISO `YYYY-MM-DD`; the date the brief was approved at Gate 2, not the date rendering completes |
 | `status` | One of the four values; **never** omit, never invent new values |
 | `decision_state` | Human-review state per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md). `pipeline` artifact → defaults to `not_required`; the operator or a loop opts a run into review by setting `pending`. One of: `pending` / `approved` / `rejected` / `suggested` / `not_required` |
-| `review_tool` | Review surface — `roughdraft` (default) / `inline` / `none`. Pairs with `decision_state` |
+| `review_tool` | Review surface — `inline` (default) / `proof` / `roughdraft` / `none`. Pairs with `decision_state` |
 | `reviewed_at` | ISO `YYYY-MM-DD` — empty until a review is recorded |
 | `reviewer` | Who recorded the review — empty until reviewed |
 | `downstream_route` | One of the four route values — drives the Layer 2 agent + the Downstream Handoff Block schema below |
@@ -156,10 +156,10 @@ Every brief ends with a `## Review Gate` block — the final body section, after
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
-This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); the procedure for running a review is [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md). brief-graphic produces a `pipeline` artifact, so the frontmatter `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the template so the operator (or a loop) can opt a run into review by setting `decision_state: pending`. The operator checks exactly one box; the agent reads it to set `decision_state`. The block and fields are additive and orthogonal — downstream consumers jump to sections by heading match, so a new trailing heading does not affect them.
+This is the human-review layer per [`reviewable-artifact-contract`](_shared/reviewable-artifact-contract.md); [`roughdraft-review-protocol`](_shared/roughdraft-review-protocol.md) is only the optional Markdown UI fallback. brief-graphic produces a `pipeline` artifact, so the frontmatter `decision_state` defaults to `not_required` — most briefs are regenerable drafts. The block and the four review frontmatter fields ship in the template so the operator (or a loop) can opt a run into review by setting `decision_state: pending`. The operator checks exactly one box; the agent reads it to set `decision_state`. The block and fields are additive and orthogonal — downstream consumers jump to sections by heading match, so a new trailing heading does not affect them.
 
 ## Re-run convention
 

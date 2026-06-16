@@ -1,9 +1,9 @@
 #!/usr/bin/env bun
-// find-artifacts — convenience query over the `.forsvn/` home.
+// find-artifacts — convenience query over the docs/forsvn knowledge home.
 //
 // Sugar over the same fields raw ripgrep already exposes. The plaintext grep is
 // the contract; this is the ergonomic path:
-//   rg -l "^type: canonical" .forsvn/marketing/        (baseline)
+//   rg -l "^type: canonical" docs/forsvn/canonical/   (baseline)
 //   bun skills/bin/find-artifacts.ts --stack marketing --type canonical --keyword brand
 //
 // Reads .forsvn/index/manifest.json (the API) when present and fresh; falls back
@@ -19,10 +19,13 @@
 //   --graph <id>              show an artifact's edges in BOTH directions
 //   --context [--stack <s>]   ONE-QUERY retrieval: truth (canonical) + output
 //                             (artifacts) + memory (experience) in a single call
+//   --content                 with --context, include live Markdown content
 
-import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, lstatSync, readdirSync, readFileSync, realpathSync } from "node:fs";
+import { join, relative, resolve, sep } from "node:path";
 import { ARTIFACT_HOME, STATE_HOME } from "./lib/path-parser";
+
+class UnsafeProjectPathError extends Error {}
 
 // Knowledge layers may live under either home (ARTIFACT_HOME=docs/forsvn after
 // the state-root migration, STATE_HOME=.forsvn before); the manifest stays
@@ -45,6 +48,7 @@ const wantDecision = arg("--decision");
 const wantResolve = arg("--resolve");
 const wantGraph = arg("--graph");
 const wantContext = process.argv.includes("--context");
+const wantContent = process.argv.includes("--content");
 const asJson = process.argv.includes("--json");
 
 // --- Phase 1 graph modes (manifest-backed) ----------------------------------
@@ -116,36 +120,60 @@ type Row = {
 const rows: Row[] = fromManifest() ?? fromScan();
 
 if (wantContext) {
-  // One-query context retrieval: everything an agent needs to start work on a
-  // stack — TRUTH (canonical) + OUTPUT (artifacts) + MEMORY (experience) — in a
-  // single call, no globbing. Optionally scoped to one stack.
-  const scoped = rows.filter((r) => !wantStack || r.stack === wantStack);
-  const layerOf = (p: string): "canonical" | "artifacts" | "experience" | "other" => {
-    for (const home of KNOWLEDGE_HOMES) {
-      if (p.startsWith(`${home}/canonical/`)) return "canonical";
-      if (p.startsWith(`${home}/artifacts/`)) return "artifacts";
-      if (p.startsWith(`${home}/experience/`)) return "experience";
+  try {
+    // One-query context retrieval: everything an agent needs to start work on a
+    // stack — TRUTH (canonical) + OUTPUT (artifacts) + MEMORY (experience) — in a
+    // single call, no globbing. Optionally scoped to one stack.
+    const scoped = rows.filter((r) => !wantStack || r.stack === wantStack);
+    const layerOf = (p: string): "canonical" | "artifacts" | "experience" | "other" => {
+      for (const home of KNOWLEDGE_HOMES) {
+        if (p.startsWith(`${home}/canonical/`)) return "canonical";
+        if (p.startsWith(`${home}/artifacts/`)) return "artifacts";
+        if (p.startsWith(`${home}/experience/`)) return "experience";
+      }
+      return "other";
+    };
+    const pick = (layer: string) => scoped.filter((r) => layerOf(r.path) === layer)
+      .map((r) => {
+        const item = {
+          id: r.id,
+          path: r.path,
+          type: r.type,
+          stack: r.stack,
+          summary: r.summary,
+          use_when: r.use_when,
+          decision_state: r.decision_state,
+          ...(wantContent ? readProjectFileForContext(r.path) : {}),
+        };
+        return item;
+      });
+    const ctx = { stack: wantStack ?? "(all)", truth: pick("canonical"), output: pick("artifacts"), memory: pick("experience") };
+    if (asJson) {
+      console.log(JSON.stringify(ctx, null, 2));
+      process.exit(0);
     }
-    return "other";
-  };
-  const pick = (layer: string) => scoped.filter((r) => layerOf(r.path) === layer)
-    .map((r) => ({ id: r.id, path: r.path, type: r.type, stack: r.stack, summary: r.summary, use_when: r.use_when, decision_state: r.decision_state }));
-  const ctx = { stack: wantStack ?? "(all)", truth: pick("canonical"), output: pick("artifacts"), memory: pick("experience") };
-  if (asJson) {
-    console.log(JSON.stringify(ctx, null, 2));
+    const section = (label: string, items: typeof ctx.truth) => {
+      console.log(`\n## ${label} (${items.length})`);
+      if (items.length === 0) { console.log("  —"); return; }
+      for (const it of items) {
+        console.log(`  ${it.id} · ${it.path}\n    ${it.summary || it.use_when || ""}`.trimEnd());
+        if ("content" in it) console.log(`\n${it.content}\n`);
+        if ("content_error" in it) console.log(`\n[content unavailable: ${it.content_error}]\n`);
+      }
+    };
+    console.log(`# Context for stack: ${ctx.stack}`);
+    section("TRUTH — canonical", ctx.truth);
+    section("OUTPUT — artifacts", ctx.output);
+    section("MEMORY — experience", ctx.memory);
+    console.log(`\n${ctx.truth.length + ctx.output.length + ctx.memory.length} artifact(s) in context.`);
     process.exit(0);
+  } catch (err) {
+    if (err instanceof UnsafeProjectPathError) {
+      console.error(`find-artifacts --context: ${err.message}`);
+      process.exit(1);
+    }
+    throw err;
   }
-  const section = (label: string, items: typeof ctx.truth) => {
-    console.log(`\n## ${label} (${items.length})`);
-    if (items.length === 0) { console.log("  —"); return; }
-    for (const it of items) console.log(`  ${it.id} · ${it.path}\n    ${it.summary || it.use_when || ""}`.trimEnd());
-  };
-  console.log(`# Context for stack: ${ctx.stack}`);
-  section("TRUTH — canonical", ctx.truth);
-  section("OUTPUT — artifacts", ctx.output);
-  section("MEMORY — experience", ctx.memory);
-  console.log(`\n${ctx.truth.length + ctx.output.length + ctx.memory.length} artifact(s) in context.`);
-  process.exit(0);
 }
 
 const filtered = rows.filter((r) => {
@@ -198,6 +226,42 @@ function fromManifest(): Row[] | null {
   } catch {
     return null;
   }
+}
+
+function readProjectFileForContext(relPath: string): { content?: string; content_error?: string } {
+  try {
+    return { content: readProjectFile(relPath) };
+  } catch (err) {
+    if (err instanceof UnsafeProjectPathError) throw err;
+    return { content_error: contextReadError(relPath, err) };
+  }
+}
+
+function contextReadError(relPath: string, err: unknown): string {
+  const code =
+    typeof err === "object" && err !== null && "code" in err
+      ? String((err as { code?: unknown }).code)
+      : err instanceof Error && err.name
+        ? err.name
+        : "read failed";
+  return `${code}: ${relPath}`;
+}
+
+function readProjectFile(relPath: string): string {
+  if (relPath.includes("\0")) throw new UnsafeProjectPathError(`refusing NUL path: ${relPath}`);
+  if (relPath.startsWith("/") || relPath.split(/[\\/]+/).includes("..")) {
+    throw new UnsafeProjectPathError(`refusing out-of-root artifact path: ${relPath}`);
+  }
+  const rootReal = realpathSync(ROOT);
+  const abs = resolve(ROOT, relPath);
+  if (lstatSync(abs).isSymbolicLink()) {
+    throw new UnsafeProjectPathError(`refusing symlinked artifact path: ${relPath}`);
+  }
+  const real = realpathSync(abs);
+  if (real !== rootReal && !real.startsWith(rootReal + sep)) {
+    throw new UnsafeProjectPathError(`refusing out-of-root artifact path: ${relPath}`);
+  }
+  return readFileSync(real, "utf8");
 }
 
 function fromScan(): Row[] {

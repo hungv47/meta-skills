@@ -72,15 +72,15 @@ Canonicalize and validate the audit scope before walking it. Refuse `..` path se
 
 ```bash
 case "<scope>" in *..*) exit_with_status BLOCKED "Scope <scope> contains '..' and cannot be cleaned." ;; esac
-test ! -L .forsvn/artifacts || exit_with_status BLOCKED "docs/forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
+test ! -L docs/forsvn/artifacts || exit_with_status BLOCKED "docs/forsvn/artifacts/ is a symlink; refusing to clean through symlinked artifact roots."
 case "<scope>" in
-  .forsvn/artifacts|docs/forsvn/artifacts/*) ;;
+  docs/forsvn/artifacts|docs/forsvn/artifacts/*) ;;
   *) exit_with_status BLOCKED "Scope <scope> must be docs/forsvn/artifacts/ or a subpath under it." ;;
 esac
-SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
+ARTIFACTS_REAL="$(realpath docs/forsvn/artifacts)"
 SCOPE_REAL="$(realpath "<scope>")" || exit_with_status BLOCKED "Scope <scope> cannot be resolved."
 case "$SCOPE_REAL" in
-  "$SKILLS_RESOURCES_REAL"|"$SKILLS_RESOURCES_REAL"/*) ;;
+  "$ARTIFACTS_REAL"|"$ARTIFACTS_REAL"/*) ;;
   *) exit_with_status BLOCKED "Scope <scope> resolves outside docs/forsvn/artifacts/ and cannot be cleaned by this skill." ;;
 esac
 test ! -L "<scope>" || exit_with_status BLOCKED "Scope <scope> is a symlink; refusing to clean through symlinks."
@@ -90,7 +90,7 @@ Refuse HARD-NEVER scopes (operator passed `--scope docs/forsvn/experience/`, etc
 
 ```bash
 case "<scope>" in
-  .forsvn/index/manifest.json|.forsvn/index/artifact-index.md|.forsvn/experience|docs/forsvn/experience/*|docs/forsvn/artifacts/meta/tasks.md|docs/forsvn/artifacts/meta/roadmap.md) \
+  .forsvn/index/manifest.json|.forsvn/index/artifact-index.md|docs/forsvn/experience|docs/forsvn/experience/*|docs/forsvn/artifacts/meta/tasks.md|docs/forsvn/artifacts/meta/roadmap.md) \
     exit_with_status BLOCKED "Scope <scope> is HARD-NEVER and cannot be cleaned by this skill." ;;
 esac
 ```
@@ -247,12 +247,12 @@ For each confirmed candidate, MOVE to the dated archive. Mirror source path insi
 ARCHIVE_ROOT="docs/forsvn/artifacts/.archive/$(date +%Y-%m-%d)"
 SRC="<candidate-path>"
 DST="$ARCHIVE_ROOT/${SRC#./}"   # mirror full source path under archive root
-test ! -L .forsvn/artifacts || { echo "refusing symlinked .forsvn/artifacts root"; exit 1; }
+test ! -L docs/forsvn/artifacts || { echo "refusing symlinked docs/forsvn/artifacts root"; exit 1; }
 mkdir -p "$ARCHIVE_ROOT"
 test ! -L docs/forsvn/artifacts/.archive || { echo "refusing symlinked archive root"; exit 1; }
 SRC_REAL="$(realpath "$SRC")"
-SKILLS_RESOURCES_REAL="$(realpath .forsvn/artifacts)"
-case "$SRC_REAL" in "$SKILLS_RESOURCES_REAL"/*) ;; *) echo "refusing outside-scope source $SRC"; exit 1 ;; esac
+ARTIFACTS_REAL="$(realpath docs/forsvn/artifacts)"
+case "$SRC_REAL" in "$ARTIFACTS_REAL"/*) ;; *) echo "refusing outside-scope source $SRC"; exit 1 ;; esac
 test ! -L "$SRC" || { echo "refusing symlink source $SRC"; exit 1; }
 mkdir -p "$(dirname "$DST")"
 mv -- "$SRC" "$DST" && echo "moved $SRC -> $DST"

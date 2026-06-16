@@ -26,7 +26,7 @@ status: done | done_with_concerns | blocked | needs_context
 stack: meta
 review_surface: html       # html | md | none — html for standalone, none for sub-routine
 decision_state: pending    # pending | approved | denied | suggested | not_required
-review_tool: roughdraft    # roughdraft | inline | none
+review_tool: inline        # proof | inline | roughdraft | none
 reviewed_at:               # YYYY-MM-DD — empty until reviewed
 reviewer:                  # who recorded the review — empty until reviewed
 mode: debate | poll
@@ -75,7 +75,7 @@ provenance:
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ## Poll report body
@@ -109,7 +109,7 @@ Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ## Slug convention

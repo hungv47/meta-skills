@@ -37,8 +37,8 @@ Session execution profile (single-vs-multi): inherit per `references/_shared/exe
 ```
 Found:
 - scope → "[full docs/forsvn/artifacts/ | <subpath>]"
-- disk → ! `find .forsvn/artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files;
-  ! `find .forsvn/artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d
+- disk → ! `find docs/forsvn/artifacts -name "*.md" -type f 2>/dev/null | wc -l | tr -d ' '` files;
+  ! `find docs/forsvn/artifacts -name "*.md" -type f -mtime +90 2>/dev/null | wc -l | tr -d ' '` older than 90d
 - manifest last touched → ! `git log -1 --format='%cr' .forsvn/index/manifest.json 2>/dev/null | grep . || echo 'untracked or no git history'`
 - excluded paths → "[list or none]"
 

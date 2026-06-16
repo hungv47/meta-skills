@@ -6,16 +6,20 @@
 promptSignals:
   phrases:
     - "clean up .forsvn/artifacts"
+    - "clean up docs/forsvn/artifacts"
     - "clean up the artifacts"
     - "groom the artifact tree"
     - "archive stale artifacts"
     - "prune .forsvn/artifacts"
+    - "prune docs/forsvn/artifacts"
     - "tidy skill outputs"
     - ".forsvn/artifacts is a junk drawer"
+    - "docs/forsvn/artifacts is a junk drawer"
     - "artifacts piling up"
   allOf:
     - [clean, artifacts]
     - [prune, .forsvn/artifacts]
+    - [prune, docs/forsvn/artifacts]
     - [archive, stale]
   anyOf:
     - "clean-artifacts"
@@ -23,6 +27,7 @@ promptSignals:
     - "stale artifacts"
     - "archive artifacts"
     - ".forsvn/artifacts cleanup"
+    - "docs/forsvn/artifacts cleanup"
   noneOf:
     - "code review"
     - "refactor"

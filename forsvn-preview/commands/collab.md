@@ -27,7 +27,7 @@ owns the server and the decision.
 ## Steps
 
 1. **Find a doc.** If `$ARGUMENTS` is empty, list collab-eligible artifacts —
-   long-form `.forsvn/artifacts/**/*.md` whose frontmatter is still `pending`
+   long-form `docs/forsvn/artifacts/**/*.md` whose frontmatter is still `pending`
    (reuse the review queue):
    ```bash
    bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" list --json

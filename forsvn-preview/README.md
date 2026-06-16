@@ -45,7 +45,7 @@ confirm a fresh install is usable, not just installed.
 
 ```bash
 # Serve one artifact for review (blocks until the operator decides):
-bun forsvn-preview/bin/forsvn-preview.ts .forsvn/artifacts/<stack>/<skill>-<date>-<slug>.md
+bun forsvn-preview/bin/forsvn-preview.ts docs/forsvn/artifacts/<stack>/<skill>-<date>-<slug>.md
 
 # Headless review (SSH/container, no GUI) — requires a real interactive TTY:
 bun forsvn-preview/bin/forsvn-preview.ts <artifact.md> --headless
@@ -58,7 +58,7 @@ What the serve path does:
 
 1. **Renders** the Markdown artifact → an HTML twin (`<same-name>.html`) via `assets/_html/base.html`, themed by the artifact's `stack` frontmatter (`meta`→air, `marketing`→water, `product`→fire, `research`→earth). See `lib/render.ts`.
 2. **Serves** the preview on a CSRF-protected `127.0.0.1` Bun server and opens the browser.
-3. On **Done**, writes `decision_state` (approved | denied | suggested — `/done` accepts exactly that set; `not_required`/`pending` are 400) + comments back into the `.md` frontmatter and archives the HTML to `.forsvn/artifacts/.archive/`. A POST after the artifact changed on disk is refused (409 re-hash conflict guard, nothing written).
+3. On **Done**, writes `decision_state` (approved | denied | suggested — `/done` accepts exactly that set; `not_required`/`pending` are 400) + comments back into the `.md` frontmatter and archives the HTML to `docs/forsvn/artifacts/.archive/`. A POST after the artifact changed on disk is refused (409 re-hash conflict guard, nothing written).
 
 The artifact's `decision_state` must be `pending` to start. The MD is the source of truth; the HTML twin is regenerated each run.
 
@@ -73,7 +73,7 @@ destination stream is a TTY (and `!NO_COLOR`, `TERM !== "dumb"`), resolved per
 stream; plain ASCII-safe glyphs otherwise; never a painted background; standard
 green `SGR 32`, never bright `SGR 92`.
 
-`list` is read-only: it scans `.forsvn/artifacts/` (excluding `.archive/`), reports
+`list` is read-only: it scans `docs/forsvn/artifacts/` (excluding `.archive/`), reports
 every artifact carrying a `decision_state`, and buckets them into `pending` vs
 `decided`. `--json` emits `{ ok, project_root, counts, pending[], decided[] }` for
 an agent; the bare form prints the spec row grammar — `pending (N)` glyph rows

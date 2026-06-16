@@ -44,7 +44,7 @@ id: brand | design | assets | creative-direction   # stable logical id per file 
 type: canonical               # all four are canonical
 keywords: [...]               # ASSETS.md → [assets, checklist, deliverables, brand-assets, production] · CREATIVE-DIRECTION.md → [creative-direction, art-direction, mood, photography, motion]
 decision_state: pending       # BRAND.md / DESIGN.md → pending · ASSETS.md → not_required
-review_tool: roughdraft       # BRAND.md / DESIGN.md → roughdraft · ASSETS.md → none
+review_tool: inline           # BRAND.md / DESIGN.md → inline/proof · ASSETS.md → none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
 reviewer:                     # who recorded the review — empty until reviewed
 declared_platforms: [list of platforms declared at Pre-Dispatch Q6]
@@ -58,15 +58,15 @@ Canonical output paths: `docs/forsvn/canonical/marketing/{BRAND,DESIGN,ASSETS,CR
 
 ### Review fields (human-review layer)
 
-The review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; review procedure: `references/_shared/roughdraft-review-protocol.md`. The WATER-themed HTML preview is rendered by the forsvn-preview review module (`/forsvn:review`) from the Markdown — skills emit no HTML and ship no surface spec. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
+The review fields carry the human-review contract. Field semantics: `references/_shared/reviewable-artifact-contract.md`; the default decision path is the forsvn-preview review module (`/forsvn:review`). Use Proof only when a brand artifact is opened as a collaborative long-form review, and use `references/_shared/roughdraft-review-protocol.md` only as the optional Markdown UI fallback. The WATER-themed HTML preview is rendered by the review module from the Markdown — skills emit no HTML and ship no surface spec. `status` (skill quality gate) and `decision_state` (human acceptance) are independent.
 
 Per-file defaults:
 
 | File | `decision_state` | `review_surface` | `review_tool` | `## Review Gate` body block | Why |
 |---|---|---|---|---|---|
-| BRAND.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical brand-of-record; needs a human gate; WATER HTML preview for visual comparison |
-| DESIGN.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical design-of-record; same |
-| CREATIVE-DIRECTION.md | `pending` | `html` | `roughdraft` | Yes — final section | Authored canonical art-direction-of-record; taste-bearing, needs a human gate; same WATER HTML preview |
+| BRAND.md | `pending` | `html` | `inline` | Yes — final section | Authored canonical brand-of-record; needs a human gate; WATER HTML preview for visual comparison |
+| DESIGN.md | `pending` | `html` | `inline` | Yes — final section | Authored canonical design-of-record; same |
+| CREATIVE-DIRECTION.md | `pending` | `html` | `inline` | Yes — final section | Authored canonical art-direction-of-record; taste-bearing, needs a human gate; same WATER HTML preview |
 | ASSETS.md | `not_required` | `none` | `none` | **No** | Deterministic projection — auto-scanned/regenerated each run, not human-authored |
 
 `reviewed_at` and `reviewer` stay empty until a human review is recorded. On BRAND.md / DESIGN.md / CREATIVE-DIRECTION.md, when a review completes the agent reads the checked `## Review Gate` box and sets `decision_state` (Approve → `approved`, Deny → `denied`, Suggest changes → `suggested`), then fills `reviewed_at` + `reviewer`. The WATER HTML preview is archived to `docs/forsvn/artifacts/.archive/` once `decision_state` ≠ `pending`.
@@ -167,10 +167,10 @@ BRAND.md, DESIGN.md, and CREATIVE-DIRECTION.md each end with a `## Review Gate` 
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
-This block ships in the BRAND.md and DESIGN.md templates (`artifact-templates.md`). It is review machinery, not brand/design content — the "11 sections" counts above are unchanged. The reviewer checks exactly one box; the agent reads it and sets `decision_state` per the per-file table in "Review fields" above, then fills `reviewed_at` + `reviewer`. Review procedure: `references/_shared/roughdraft-review-protocol.md`.
+This block ships in the BRAND.md and DESIGN.md templates (`artifact-templates.md`). It is review machinery, not brand/design content — the "11 sections" counts above are unchanged. The reviewer checks exactly one box; the agent reads it and sets `decision_state` per the per-file table in "Review fields" above, then fills `reviewed_at` + `reviewer`. Review path: `/forsvn:review` for the default HTML decision capture; Proof for collaborative long-form review; `references/_shared/roughdraft-review-protocol.md` only as the optional Markdown UI fallback.
 
 **ASSETS.md does NOT carry a `## Review Gate` block.** ASSETS.md is a deterministic projection — auto-scanned and regenerated each run, not human-authored — so it is not a review candidate. It carries the review fields with `decision_state: not_required` + `review_surface: none` + `review_tool: none` (see "Review fields" above) but no body block.
 

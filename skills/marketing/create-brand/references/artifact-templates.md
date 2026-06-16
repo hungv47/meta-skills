@@ -229,7 +229,7 @@ V:[1-3] F:[1-3] U:[1-3] = [total]/9. [Scoring rationale: Visual, Falsifiable, Un
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ---
@@ -290,7 +290,7 @@ use_when: "Art-directing a shoot, render, landing page, or campaign for [Brand]"
 upstream: "brand, design"
 downstream: "plan-campaign, brief-graphic, brief-shortform, brief-landing-page, brief-app-preview, write-ad"
 decision_state: pending
-review_tool: roughdraft
+review_tool: inline
 reviewed_at:
 reviewer:
 ---
@@ -330,7 +330,7 @@ Body skeleton (each `## [Section]` filled per the structure reference; every nam
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ---
@@ -356,7 +356,7 @@ use_when: "Briefing or producing a video, motion piece, or full-frame social ass
 upstream: "design, creative-direction"
 downstream: "produce-video, brief-shortform"
 decision_state: pending
-review_tool: roughdraft
+review_tool: inline
 reviewed_at:
 reviewer:
 ---
@@ -386,7 +386,7 @@ Body skeleton (each `## [Section]` filled per the structure reference; every nam
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
 
 ---
@@ -720,5 +720,5 @@ The mood is: **[3-4 adjectives].**
 - [ ] Reject
 - [ ] Suggest changes
 
-Comments and suggested edits use Roughdraft CriticMarkup, inline in this file.
+Comments and suggested edits use Proof or inline CriticMarkup, depending on `review_tool`.
 ```
