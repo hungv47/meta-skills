@@ -375,10 +375,10 @@ const server = Bun.serve({
           } catch {
             return json(400, { error: "invalid JSON body" });
           }
-          const decision =
-            typeof body.decision === "string" && (VALID_DECISIONS as readonly string[]).includes(body.decision)
-              ? body.decision
-              : "approved";
+          if (typeof body.decision !== "string" || !(VALID_DECISIONS as readonly string[]).includes(body.decision)) {
+            return json(400, { error: `decision must be ${VALID_DECISIONS.join(" | ")}` });
+          }
+          const decision = body.decision as (typeof VALID_DECISIONS)[number];
           const reviewer = typeof body.reviewer === "string" && body.reviewer.trim() ? body.reviewer.trim() : undefined;
           try {
             const handle = await ensureProof();
