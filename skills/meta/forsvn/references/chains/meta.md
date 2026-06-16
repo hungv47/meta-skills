@@ -14,7 +14,7 @@ Meta is not a linear pipeline — it's a set of process tools wrapped around dom
 
 ```
 discover           — scope unclear, conversation needed
-breakdown-tasks    — spec/architecture done, need a buildable task list
+breakdown-tasks    — spec/architecture done, need a buildable task list (forsvn-dev package)
 debate-agents       — complex decision, multiple perspectives wanted
 run-pipeline       — measurable initiative needs a staged loop workspace (eval-only or full produce-and-measure)
 review-work        — post-implementation independent review
@@ -26,7 +26,7 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 | User says | Route |
 |---|---|
 | "scope this", "clarify", "what should we build", "requirements unclear" | `/discover` |
-| "decompose", "task list", "break down", "implementation order" | `/breakdown-tasks` |
+| "decompose", "task list", "break down", "implementation order" | `/breakdown-tasks` (forsvn-dev package) |
 | "debate this", "multiple perspectives", "poll", "consensus" | `/debate-agents` |
 | "generate ideas and rank them", "rank these ideas", "score the ideas" | `/prioritize` (ideation mode — ranking anchor replaces the diagnose gate) |
 | "review my work", "second opinion", "did I miss anything" | `/review-work` |

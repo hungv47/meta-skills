@@ -1,12 +1,12 @@
 # FORSVN
 
-![FORSVN — turn your coding agent into a full product team](./assets/banners/forsvn-hero-anim.svg)
+![FORSVN — a marketing/growth co-working stack for your coding agent](./assets/banners/forsvn-hero-anim.svg)
 
-**Turn your coding agent into a full product team — composable skills across research, marketing, product, and process, from one install.**
+**A marketing/growth co-working stack for your coding agent — composable skills across research, strategy, content & ads, and measurement, from one install.** (Engineering/build skills are the separate `forsvn-dev` package — see below.)
 
-Call any skill by verb (`/research-icp`, `/write-copy`, `/architect-system`, `/review-work`) or let the front door route for you (`/forsvn`). Skills chain — each one reads what earlier skills left behind, so output compounds the more you use the stack.
+Call any skill by verb (`/research-icp`, `/write-copy`, `/plan-campaign`, `/review-work`) or let the front door route for you (`/forsvn`). Skills chain — each one reads what earlier skills left behind, so output compounds the more you use the stack.
 
-![The FORSVN stack — four skill domains feed a central .forsvn artifact store, which feeds manifest, loops, and review](./assets/banners/forsvn-skills-systemmap.svg)
+![The FORSVN stack — growth skill domains feed a central .forsvn artifact store, which feeds manifest, loops, and review](./assets/banners/forsvn-skills-systemmap.svg)
 
 ## Install
 
@@ -18,7 +18,8 @@ One install. **`forsvn`** carries the skills (the `/forsvn` front door) *and* th
 
 ```
 /plugin marketplace add hungv47/meta-skills
-/plugin install forsvn            # skills + /forsvn front door + /forsvn:review|collab|doctor
+/plugin install forsvn            # the growth stack + /forsvn front door + /forsvn:review|collab|doctor
+/plugin install forsvn-dev        # OPTIONAL: engineering/build skills (architecture, refactoring, docs, task breakdown, iOS) — not the growth product
 ```
 
 **The review surface needs [Bun](https://bun.sh)** (`curl -fsSL https://bun.sh/install | bash`) — it's a small localhost CLI driven by `/forsvn:review`. The skills themselves need nothing beyond your agent.
@@ -74,17 +75,19 @@ A few of the things `/forsvn` routes to — type any of these in plain English:
 </tr>
 </table>
 
+> The two product/engineering examples above (the product brief + task list, and the dead-code audit) now live in the **`forsvn-dev`** companion package — install it to route to those.
+
 ## What to expect
 
-- **Four domains.** Research · Marketing · Product · Meta.
+- **The growth loop, end to end.** Research · Strategy · Content & Ads · Measurement, routed by Meta (process) skills. (Engineering/build skills are the separate `forsvn-dev` package.)
 - **One install, every editor.** Claude Code plugin or `npx skills add` for Cursor, Codex, Windsurf, Gemini CLI, VS Code.
 - **A single front door.** `/forsvn` reads your project state, asks ≤2 questions if needed, and routes you to the right skill (or resumes a prior initiative).
 - **Context compounds.** Skills write artifacts into the `.forsvn/` data model (canonical truth · working output · experience, each by stack). Every downstream skill reads them automatically — no copy-paste, no re-asking.
 - **Quality gates built in.** Most skills run multi-agent orchestration behind a critic gate. `/review-work` adds a fresh-eyes pass before you ship.
 
-## The four domains
+## The skill domains
 
-Each domain folder has a README with the full per-skill spec. Or run `/forsvn` to be routed automatically.
+Each domain folder has a README with the full per-skill spec. Or run `/forsvn` to be routed automatically. (Product/engineering skills moved to the [`forsvn-dev`](#forsvn-dev--the-engineering-companion) companion package — listed below.)
 
 ### Research — understand the market and decide what to do
 
@@ -102,21 +105,25 @@ Each domain folder has a README with the full per-skill spec. Or run `/forsvn` t
 
 `create-brand` · `plan-campaign` · `brief-landing-page` · `brief-graphic` · `brief-shortform` · `brief-app-preview` · `write-copy` · `write-ad` · `write-outreach` · `write-social` · `optimize-seo` · `monitor-aeo` · `preview-og` · `humanmaxxing` · `polish-vn` · `produce-asset` · `produce-video` · `publish-social` · `evaluate-ad` · `evaluate-asset` · `evaluate-campaign` · `evaluate-content` · `evaluate-landing-page` · `evaluate-outreach` · `evaluate-seo`
 
-### Product — design and build software
-
-![Product](./assets/banners/domain-product.png)
-
-> [`skills/product/`](./skills/product/)
-
-`map-user-flow` · `architect-system` · `clean-code` · `clean-machine` · `write-docs` · `build-ios-apps` · `extract-service`
-
-### Meta — discover, debate, decompose, verify
+### Meta — discover, debate, route, verify
 
 ![Meta](./assets/banners/domain-meta.png)
 
 > [`skills/meta/`](./skills/meta/)
 
-`forsvn` (front door) · `discover` · `debate-agents` · `run-pipeline` · `breakdown-tasks` · `review-work` · `clean-artifacts`
+`forsvn` (front door) · `discover` · `debate-agents` · `run-pipeline` · `review-work` · `clean-artifacts`
+
+## forsvn-dev — the engineering companion
+
+A **separate package, not the growth product.** The software-engineering skills that used to ride along in `forsvn` install on their own now — add them only if you also want the build side. Same `hungv47/meta-skills` marketplace:
+
+```
+/plugin install forsvn-dev
+```
+
+> [`forsvn-dev/skills/`](./forsvn-dev/skills/)
+
+`map-user-flow` · `architect-system` · `brief-product-ui` · `breakdown-tasks` · `clean-code` · `extract-service` · `write-docs` · `clean-machine` · `build-ios-apps`
 
 ## Where outputs land
 
@@ -180,7 +187,7 @@ FORSVN ships a `.codex-plugin/` manifest, so inside Codex it renders a full card
 
 ## About
 
-FORSVN turns your coding agent into a full product team. Composable skills span research, marketing, product, and process — each reads what earlier skills left behind, so output compounds the more you use the stack. One install works across Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and VS Code.
+FORSVN is a marketing/growth co-working stack for your coding agent. Composable skills span research, strategy, content & ads, and measurement — each reads what earlier skills left behind, so output compounds the more you use the stack. One install works across Claude Code, Cursor, Codex, Windsurf, Gemini CLI, and VS Code. (Engineering/build skills are the separate `forsvn-dev` package.)
 
 This repo is the public mirror; the source of truth lives in [`forsvn-com/forsvn`](https://github.com/forsvn-com/forsvn).
 

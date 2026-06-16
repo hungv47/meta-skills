@@ -40,6 +40,17 @@ import {
 const HOST = "127.0.0.1";
 const DEFAULT_PORT = 4317;
 
+// Free-tier license status — mirrors `forsvn_core::FREE` + the desktop
+// `free_status()` (monetization-build-spec §4/§6). The web server is fail-safe to
+// free: it holds no second Ed25519 verifier and no provisioned public key, so the
+// honest current status is free. See GET /api/license.
+const FREE_LICENSE_STATUS = {
+  state: "none",
+  plan: "free",
+  revalidate_due: false,
+  entitlements: { watermark_free: false, hosted_backend: false, unlimited_workspaces: false, seats: 1 },
+} as const;
+
 interface Args {
   root: string;
   port: number;
@@ -229,8 +240,33 @@ const server = Bun.serve({
 
     // ---- API ----
     if (pathname.startsWith("/api/")) {
-      if (!manifestExists(args.root) && pathname !== "/api/workspace") {
+      // License status is workspace-independent (it's about the operator's license,
+      // not the project), so it answers even before a manifest exists.
+      if (!manifestExists(args.root) && pathname !== "/api/workspace" && !pathname.startsWith("/api/license")) {
         return json(503, { error: "no .forsvn/index/manifest.json in this workspace yet" });
+      }
+
+      // GET /api/license — server-authoritative license status (build-spec §4/§6).
+      // The offline verifier is forsvn-core (Rust, in the desktop binary); the web
+      // server keeps no second verifier and no embedded key, so it reports the
+      // honest current state: free. This is the seam — once the backend + a
+      // forsvn-core-backed read exist (§9 steps 5–7), the real tier resolves here.
+      if (req.method === "GET" && pathname === "/api/license") {
+        return json(200, FREE_LICENSE_STATUS);
+      }
+
+      // POST /api/license/activate — the ONE network egress besides revalidation
+      // (§6). Proxies a pasted key to the license backend's /activate (Ed25519
+      // signer), then caches the signed file. The backend is operator-gated and
+      // not deployed (§9 step 6), so this returns "not configured" — never a fake
+      // success. The proxy call slots in where this 501 is.
+      if (req.method === "POST" && pathname === "/api/license/activate") {
+        if (!isLoopbackOrigin(req)) return json(403, { error: "cross-origin request refused" });
+        if (!checkToken(req)) return json(403, { error: "bad or missing session token" });
+        return json(501, {
+          error:
+            "Activation backend not configured yet — stand up the license backend (build-spec §9 step 6) and wire its URL here.",
+        });
       }
 
       // GET /api/workspace — the transport probe + session bootstrap. Same-origin

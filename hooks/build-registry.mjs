@@ -22,7 +22,11 @@ const SKILL_DIRS = [
   "skills/meta",
   "skills/research",
   "skills/marketing",
-  "skills/product",
+  // forsvn-dev package: the 9 engineering skills were carved out of forsvn's
+  // Codex glob (skills/skills/) but still ship in this repo and must register
+  // in the router. skills/product is now empty — its skills moved to forsvn-dev.
+  "forsvn-dev/skills/meta",
+  "forsvn-dev/skills/product",
 ];
 
 // Split on commas at depth-0, respecting single/double quotes and nested

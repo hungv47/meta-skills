@@ -145,7 +145,7 @@ One line per initiative, ranked 1-through-N. The #1 entry must include a reason;
 ## Next Step
 
 Run `plan-funnel` to set numeric targets for the proceeding initiatives.
-If any "Proceed" initiative requires a technical build, also run `architect-system` (from `hungv47/product-skills`) with these initiatives as context.
+If any "Proceed" initiative requires a technical build, also run `architect-system` (from the `forsvn-dev` package) with these initiatives as context.
 ```
 
 This block is **verbatim** — downstream `forsvn` and `plan-funnel` grep these phrases to detect chain handoff.

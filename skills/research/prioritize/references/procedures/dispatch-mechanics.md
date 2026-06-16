@@ -182,7 +182,7 @@ Save as `docs/forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`. Create t
 
 | Previous | This skill | Next |
 |---|---|---|
-| `diagnose` (hard-gated upstream — produces the validated root cause) | **prioritize** | `plan-funnel` (sets numeric targets on Proceed initiatives); `architect-system` (product-skills — conditional on technical-build Proceed initiatives) |
+| `diagnose` (hard-gated upstream — produces the validated root cause) | **prioritize** | `plan-funnel` (sets numeric targets on Proceed initiatives); `architect-system` (forsvn-dev package — conditional on technical-build Proceed initiatives) |
 
 **Re-run triggers:**
 - Root cause changes (re-diagnosis) → re-run; new root cause = new initiatives.
@@ -198,9 +198,9 @@ Save as `docs/forsvn/artifacts/meta/out-of-scope/[kebab-case-name].md`. Create t
 |---|---|
 | "What's the root cause?" | `diagnose` (hard gate upstream) |
 | "HOW do I build initiative X?" | `discover` |
-| "Build the architecture for initiative X" | `architect-system` (product-skills) |
+| "Build the architecture for initiative X" | `architect-system` (forsvn-dev package) |
 | "Set numeric targets on Proceed initiatives" | `plan-funnel` (Next Step in artifact) |
-| "Break Proceed initiatives into tasks" | `breakdown-tasks` |
+| "Break Proceed initiatives into tasks" | `breakdown-tasks` (forsvn-dev package) |
 | "Plan a campaign for a Proceed initiative" | `plan-campaign` (marketing-skills) |
 
 ---

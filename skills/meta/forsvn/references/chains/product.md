@@ -8,6 +8,8 @@ consumed-by: /forsvn
 
 How `/forsvn` routes product intent. New verb-first names throughout.
 
+> **Package note (2026-06-16):** every leaf in this chain ships in the separate **`forsvn-dev`** package, not the default `forsvn` growth install. `/forsvn` routes here only when `forsvn-dev` is installed; otherwise point the user to install `forsvn-dev` rather than dispatching into a missing skill.
+
 ## Pipeline
 
 ```

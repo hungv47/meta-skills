@@ -203,7 +203,7 @@ status: done
 ## Next Step
 
 Run `plan-funnel` to set numeric targets for the proceeding initiatives.
-If any "Proceed" initiative requires a technical build, also run `architect-system` (from `hungv47/product-skills`) with these initiatives as context.
+If any "Proceed" initiative requires a technical build, also run `architect-system` (from the `forsvn-dev` package) with these initiatives as context.
 ```
 
 ---

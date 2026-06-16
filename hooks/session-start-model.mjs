@@ -8,11 +8,15 @@
  *         (string id, or an object with id/display_name in some SDK versions).
  * Effect: appends `FORSVN_SESSION_MODEL=<model>` to the file at $CLAUDE_ENV_FILE.
  *
+ * Also appends a `session_start` event to the T0 local ledger (no network) so
+ * cadence/activation is measurable — see ../references/event-schema.md.
+ *
  * Contract: NEVER breaks session start. Exit 0 always — malformed input,
  * missing env file, or unwritable path all exit silently.
  */
 
 import { readFileSync, appendFileSync } from "node:fs";
+import { appendEvent } from "../bin/lib/ledger.mjs";
 
 try {
   const input = JSON.parse(readFileSync(0, "utf-8"));
@@ -27,6 +31,8 @@ try {
   if (model && envFile) {
     appendFileSync(envFile, `FORSVN_SESSION_MODEL=${model.replace(/[\r\n]/g, "")}\n`);
   }
+  // T0 ledger: session liveness. appendEvent never throws.
+  appendEvent({ event: "session_start", ...(model ? { model } : {}) });
 } catch {
   // Never block session start.
 }

@@ -1,7 +1,7 @@
 {
   "name": "forsvn",
-  "version": "1.3.0",
-  "description": "FORSVN turns your coding agent into a full product team — composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds.",
+  "version": "1.4.0",
+  "description": "FORSVN is a marketing/growth co-working stack for your coding agent — research, strategy, content & ads, and measurement skills that run the full growth loop. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Engineering/build skills are the separate forsvn-dev package.",
   "author": {
     "name": "hungv47",
     "url": "https://github.com/hungv47"
@@ -19,25 +19,23 @@
     "marketing",
     "product",
     "discover",
-    "write-copy",
-    "architect-system",
-    "clean-code"
+    "write-copy"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "FORSVN",
-    "shortDescription": "A full product team of composable skills for your coding agent",
-    "longDescription": "FORSVN gives your coding agent a product team: research skills to understand the market and decide what to build, product skills to design and ship it, marketing skills to launch it, and meta skills that route, decompose, and review the work. Start with /forsvn and describe what you want — it reads your project state and dispatches the right skill. Every skill writes artifacts the next one reads, so context compounds instead of resetting.",
+    "shortDescription": "A marketing/growth co-working stack for your coding agent",
+    "longDescription": "FORSVN gives your coding agent a marketing/growth team: research skills to understand the market and decide what to ship, strategy skills to plan brand and campaigns, content & ad skills to write and produce it, and measurement skills that close the loop on your own data — plus meta skills that route, decompose, and review the work. Start with /forsvn and describe what you want — it reads your project state and dispatches the right skill. Every skill writes artifacts the next one reads, so context compounds instead of resetting. (Engineering/build skills are the separate forsvn-dev package.)",
     "developerName": "hungv47",
     "category": "Developer Tools",
     "capabilities": ["Interactive", "Read", "Write"],
     "websiteURL": "https://github.com/hungv47/meta-skills",
     "defaultPrompt": [
-      "Help me figure out who we're building for and what to ship first.",
-      "Turn this rough idea into a clear product brief and a task list.",
+      "Help me figure out who we're building for and our positioning.",
       "Write launch copy and a landing page that sound like our brand.",
-      "Audit this codebase for dead code and refactor the messy parts.",
-      "Plan a go-to-market campaign for our next release."
+      "Plan a go-to-market campaign for our next release.",
+      "Draft an ad set and the short-form scripts to promote it.",
+      "Audit our funnel and tell me where we're losing conversions."
     ],
     "brandColor": "#004700",
     "composerIcon": "./assets/icons/forsvn-composer.svg",

@@ -110,8 +110,8 @@
           }
         ]
       },
-      "source": "skills/product/architect-system/routing.yaml",
-      "skill_path": "skills/product/architect-system"
+      "source": "forsvn-dev/skills/product/architect-system/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/architect-system"
     },
     "breakdown-tasks": {
       "id": "breakdown-tasks",
@@ -206,8 +206,8 @@
           }
         ]
       },
-      "source": "skills/meta/breakdown-tasks/routing.yaml",
-      "skill_path": "skills/meta/breakdown-tasks"
+      "source": "forsvn-dev/skills/meta/breakdown-tasks/routing.yaml",
+      "skill_path": "forsvn-dev/skills/meta/breakdown-tasks"
     },
     "brief-app-preview": {
       "id": "brief-app-preview",
@@ -667,8 +667,8 @@
           }
         ]
       },
-      "source": "skills/product/brief-product-ui/routing.yaml",
-      "skill_path": "skills/product/brief-product-ui"
+      "source": "forsvn-dev/skills/product/brief-product-ui/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/brief-product-ui"
     },
     "brief-shortform": {
       "id": "brief-shortform",
@@ -875,8 +875,8 @@
       "outputs": {
         "artifacts": []
       },
-      "source": "skills/product/build-ios-apps/routing.yaml",
-      "skill_path": "skills/product/build-ios-apps"
+      "source": "forsvn-dev/skills/product/build-ios-apps/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/build-ios-apps"
     },
     "clean-artifacts": {
       "id": "clean-artifacts",
@@ -1050,8 +1050,8 @@
           }
         ]
       },
-      "source": "skills/product/clean-code/routing.yaml",
-      "skill_path": "skills/product/clean-code"
+      "source": "forsvn-dev/skills/product/clean-code/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/clean-code"
     },
     "clean-machine": {
       "id": "clean-machine",
@@ -1149,8 +1149,8 @@
           }
         ]
       },
-      "source": "skills/product/clean-machine/routing.yaml",
-      "skill_path": "skills/product/clean-machine"
+      "source": "forsvn-dev/skills/product/clean-machine/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/clean-machine"
     },
     "create-brand": {
       "id": "create-brand",
@@ -2581,8 +2581,8 @@
           }
         ]
       },
-      "source": "skills/product/extract-service/routing.yaml",
-      "skill_path": "skills/product/extract-service"
+      "source": "forsvn-dev/skills/product/extract-service/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/extract-service"
     },
     "forsvn": {
       "id": "forsvn",
@@ -2871,8 +2871,8 @@
           }
         ]
       },
-      "source": "skills/product/map-user-flow/routing.yaml",
-      "skill_path": "skills/product/map-user-flow"
+      "source": "forsvn-dev/skills/product/map-user-flow/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/map-user-flow"
     },
     "monitor-aeo": {
       "id": "monitor-aeo",
@@ -4773,8 +4773,8 @@
           }
         ]
       },
-      "source": "skills/product/write-docs/routing.yaml",
-      "skill_path": "skills/product/write-docs"
+      "source": "forsvn-dev/skills/product/write-docs/routing.yaml",
+      "skill_path": "forsvn-dev/skills/product/write-docs"
     },
     "write-outreach": {
       "id": "write-outreach",

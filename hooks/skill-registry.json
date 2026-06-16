@@ -1,44 +1,6 @@
 {
   "version": 1,
   "skills": {
-    "breakdown-tasks": {
-      "phrases": [
-        "break this down",
-        "task list",
-        "acceptance criteria",
-        "sprint planning",
-        "work breakdown",
-        "decompose this"
-      ],
-      "allOf": [
-        [
-          "break",
-          "down",
-          "tasks"
-        ],
-        [
-          "task",
-          "list"
-        ]
-      ],
-      "anyOf": [
-        "acceptance criteria",
-        "sprint planning",
-        "implementation order",
-        "task dependencies",
-        "decompose"
-      ],
-      "noneOf": [
-        "code review",
-        "documentation",
-        "system architecture",
-        "user flow",
-        "scope this",
-        "what should we build",
-        "fresh eyes"
-      ],
-      "minScore": 6
-    },
     "clean-artifacts": {
       "phrases": [
         "clean up .forsvn/artifacts",
@@ -1872,6 +1834,44 @@
         "blog post"
       ],
       "minScore": 5
+    },
+    "breakdown-tasks": {
+      "phrases": [
+        "break this down",
+        "task list",
+        "acceptance criteria",
+        "sprint planning",
+        "work breakdown",
+        "decompose this"
+      ],
+      "allOf": [
+        [
+          "break",
+          "down",
+          "tasks"
+        ],
+        [
+          "task",
+          "list"
+        ]
+      ],
+      "anyOf": [
+        "acceptance criteria",
+        "sprint planning",
+        "implementation order",
+        "task dependencies",
+        "decompose"
+      ],
+      "noneOf": [
+        "code review",
+        "documentation",
+        "system architecture",
+        "user flow",
+        "scope this",
+        "what should we build",
+        "fresh eyes"
+      ],
+      "minScore": 6
     },
     "architect-system": {
       "phrases": [

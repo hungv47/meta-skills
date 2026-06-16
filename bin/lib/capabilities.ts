@@ -5,6 +5,16 @@ import { parseSimpleYaml, type YamlValue } from "./simple-yaml";
 export const DOMAINS = ["meta", "research", "marketing", "product"] as const;
 export type Domain = (typeof DOMAINS)[number];
 
+// Base dirs (relative to the skills/ root) that hold <domain>/<skill>/ trees.
+// forsvn's growth skills live under skills/; the 9 engineering skills were
+// carved into the forsvn-dev package at forsvn-dev/skills/ — out of forsvn's
+// Codex discovery glob (skills/skills/) — but they are still part of this repo,
+// still ship to the mirror, and must be discovered by every gate/quality check.
+// Plugin INSTALL membership is governed by each manifest's skills[]; gate
+// DISCOVERY (here) intentionally spans both roots. Keep in sync with the inlined
+// SKILL_ROOTS copies in _dev/ and hooks/ scripts that can't import this module.
+export const SKILL_ROOTS = ["skills", "forsvn-dev/skills"] as const;
+
 export type Capability = {
   id: string;
   domain: Domain;
@@ -103,12 +113,15 @@ function asLoadWhen(value: YamlValue | undefined): NonNullable<Capability["load"
 
 export function scanSkillDirs(root: string): Array<{ domain: Domain; id: string; skillDir: string; relSkillDir: string }> {
   const out: Array<{ domain: Domain; id: string; skillDir: string; relSkillDir: string }> = [];
-  for (const domain of DOMAINS) {
-    const domainDir = join(root, "skills", domain);
-    for (const entry of readdirSync(domainDir)) {
-      const skillDir = join(domainDir, entry);
-      if (!existsSync(join(skillDir, "SKILL.md"))) continue;
-      out.push({ domain, id: entry, skillDir, relSkillDir: `skills/${domain}/${entry}` });
+  for (const base of SKILL_ROOTS) {
+    for (const domain of DOMAINS) {
+      const domainDir = join(root, base, domain);
+      if (!existsSync(domainDir)) continue;
+      for (const entry of readdirSync(domainDir)) {
+        const skillDir = join(domainDir, entry);
+        if (!existsSync(join(skillDir, "SKILL.md"))) continue;
+        out.push({ domain, id: entry, skillDir, relSkillDir: `${base}/${domain}/${entry}` });
+      }
     }
   }
   return out.sort((a, b) => a.relSkillDir.localeCompare(b.relSkillDir));

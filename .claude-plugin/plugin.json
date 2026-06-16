@@ -1,26 +1,24 @@
 {
   "name": "forsvn",
   "displayName": "FORSVN",
-  "description": "FORSVN turns your coding agent into a full product team — composable skills across research, marketing, product, and process. One front door (/forsvn) routes any request to the right workflow; every skill writes artifacts the next one reads, so your context compounds the more you work. Critic-gated pipelines with quantitative rubrics and anti-sycophancy checks. Distributed from github.com/hungv47/meta-skills (formerly the forsvn-skills plugin).",
-  "version": "1.3.0",
+  "description": "FORSVN is a marketing/growth co-working stack for your coding agent — composable skills across research, strategy, content & ads, and measurement that run the full loop: understand the market → decide what to ship → write the copy and campaigns → publish → measure, then compound. One front door (/forsvn) routes any request to the right workflow; every skill writes artifacts the next one reads, so your context compounds the more you work. Critic-gated pipelines with quantitative rubrics and anti-sycophancy checks. (Engineering/build skills live in the separate forsvn-dev package.) Distributed from github.com/hungv47/meta-skills (formerly the forsvn-skills plugin).",
+  "version": "1.4.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",
   "license": "MIT",
   "keywords": [
     "skills", "forsvn-skills", "multi-agent", "orchestration",
-    "forsvn", "discover", "debate-agents", "run-pipeline", "breakdown-tasks", "review-work", "clean-artifacts",
+    "forsvn", "discover", "debate-agents", "run-pipeline", "review-work", "clean-artifacts",
     "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
     "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-asset", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "evaluate-outreach", "optimize-seo", "evaluate-seo", "monitor-aeo", "preview-og", "humanmaxxing", "polish-vn",
-    "map-user-flow", "architect-system", "clean-code", "extract-service", "clean-machine", "write-docs", "build-ios-apps"
+    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-asset", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "evaluate-outreach", "optimize-seo", "evaluate-seo", "monitor-aeo", "preview-og", "humanmaxxing", "polish-vn"
   ],
   "skills": [
     "./skills/meta/forsvn/",
     "./skills/meta/discover/",
     "./skills/meta/debate-agents/",
     "./skills/meta/run-pipeline/",
-    "./skills/meta/breakdown-tasks/",
     "./skills/meta/review-work/",
     "./skills/meta/clean-artifacts/",
 
@@ -57,16 +55,7 @@
     "./skills/marketing/monitor-aeo/",
     "./skills/marketing/preview-og/",
     "./skills/marketing/humanmaxxing/",
-    "./skills/marketing/polish-vn/",
-
-    "./skills/product/map-user-flow/",
-    "./skills/product/architect-system/",
-    "./skills/product/clean-code/",
-    "./skills/product/extract-service/",
-    "./skills/product/clean-machine/",
-    "./skills/product/write-docs/",
-    "./skills/product/build-ios-apps/",
-    "./skills/product/brief-product-ui/"
+    "./skills/marketing/polish-vn/"
   ],
   "commands": [
     "./forsvn-preview/commands/review.md",

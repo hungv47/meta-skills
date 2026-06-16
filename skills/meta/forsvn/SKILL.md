@@ -54,10 +54,10 @@ Default to resume if the current ask is empty or "continue" / "resume". Otherwis
 |---|---|---|
 | "audience", "ICP", "competitors", "market", "diagnose", "prioritize", "funnel", "targets" | research | leaf via `references/chains/research.md` |
 | "brand", "campaign", "copy", "headline", "landing page", "LP", "ad", "SEO", "video", "TikTok", "reel", "short", "cold email", "outreach", "humanize", "humanmax", "VN tone" | marketing | leaf via `references/chains/marketing.md` |
-| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | leaf via `references/chains/product.md` |
+| "user flow", "tech stack", "architecture", "schema", "API", "code", "refactor", "machine cleanup", "docs", "README" | product | leaf via `references/chains/product.md` — **forsvn-dev pkg** |
 | "scope this", "clarify", "what should we build", "requirements unclear" | scope | `/discover` |
 | "debate this", "multiple perspectives", "poll", "consensus" | debate | `/debate-agents` |
-| "decompose", "task list", "break down", "implementation order" | decompose | `/breakdown-tasks` |
+| "decompose", "task list", "break down", "implementation order" | decompose | `/breakdown-tasks` (**forsvn-dev pkg**) |
 | "review my work", "second opinion", "did I miss anything" | review | `/review-work` |
 | "improvement loop", "track metric", "experiment ledger" | loop | `/run-pipeline` |
 | Empty + no resume offer | summary | print state summary, exit |
@@ -69,6 +69,7 @@ Rules:
 - Multi-domain → propose the chain; user confirms before the first dispatch.
 - Unclear → at most 2 clarifying questions. Hard cap. Then hand off to `/discover`.
 - Brand-gate: marketing/launch intent with `brand/BRAND.md` missing → route through `/create-brand` first.
+- forsvn-dev gate: `product` intent and the `decompose` route resolve to the separate **forsvn-dev** package (engineering skills carved out 2026-06-16). If it isn't installed, tell the user to add `forsvn-dev` rather than dispatching into a missing skill.
 
 **Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
 
