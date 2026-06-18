@@ -6,7 +6,7 @@
    choice rides :root[data-theme="dark|light"]. Matte only — the glass/blur/
    gradient helpers of v3 are retired.
    v3 (2026-06-04) was the sunset / forest-only rebrand (Signal Lime retired).
-   Source of truth: _biz-ops/forsvn-ops/brand/DESIGN.md § 3 + the approved
+   Source of truth: _ops/forsvn/brand/DESIGN.md § 3 + the approved
    U9 design pass (OD project "FORSVN Review UI", revision 2). */
 
 :root {

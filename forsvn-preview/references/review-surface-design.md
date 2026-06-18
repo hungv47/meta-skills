@@ -17,7 +17,7 @@ load_class: PLAYBOOK
 > ledger. Forest-only since the "sunset" rebrand (2026-06-07): Signal Lime
 > `#B7FF6E` is **retired** — zero occurrences anywhere. **Source of truth for
 > live values stays** `forsvn-preview/assets/_html/tokens.css` and
-> `_biz-ops/forsvn-ops/brand/DESIGN.md`; on any disagreement, tokens.css wins.
+> `_ops/forsvn/brand/DESIGN.md`; on any disagreement, tokens.css wins.
 
 **The visual contract for every `review_surface: html` artifact. Skills emit
 plain Markdown; the plugin renderer (`lib/render.ts` + `assets/_html/base.html`)

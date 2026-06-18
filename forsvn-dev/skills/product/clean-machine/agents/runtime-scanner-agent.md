@@ -94,7 +94,7 @@ You will receive from the orchestrator:
 - `~/.cargo` 355M, `~/.rustup` 1.2G
 - `cargo install --list` empty
 - Grep shell history for `rustc`/`cargo build` → 0 matches in last 30 days
-- No `.rs` files in user's `Desktop/biz/`, `Desktop/life/`, etc.
+- No `.rs` files in user's `hv/biz/`, `hv/ipse/`, etc.
 - **Verdict: idle.** Reinstall via `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`. Total reclaim: ~1.5G.
 
 **Example 2 — Go check**
