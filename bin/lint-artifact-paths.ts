@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
-// lint-artifact-paths — verify every file under the `.forsvn/` home matches the
-// v3 by-stack layered grammar.
+// lint-artifact-paths — verify every file under the artifact home (docs/forsvn/,
+// legacy .forsvn/) matches the v3 by-stack layered grammar.
 //
-// Allowed shapes:
-//   .forsvn/canonical/<stack>/<UPPER-NAME>.md             (curated truth)
-//   .forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.md|html
-//   .forsvn/artifacts/<stack>/records/[<YYYY-MM-DD>-]<slug>.md  (per-run review/cleanup records; date prefix optional, e.g. records/learned-rules.md)
-//   .forsvn/experience/<stack>/<name>.md                  (dated or plain topic)
+// Allowed shapes (shown for docs/forsvn/; the legacy .forsvn/ home is linted the same):
+//   docs/forsvn/canonical/<stack>/<UPPER-NAME>.md             (curated truth)
+//   docs/forsvn/artifacts/<stack>/<skill>-<YYYY-MM-DD>-<slug>.md|html
+//   docs/forsvn/artifacts/<stack>/records/[<YYYY-MM-DD>-]<slug>.md  (per-run review/cleanup records; date prefix optional, e.g. records/learned-rules.md)
+//   docs/forsvn/experience/<stack>/<name>.md                  (dated or plain topic)
 //     stacks: meta · research · marketing · product
 //   <layer>/<stack>/.archive/<anything>                   (archived; not validated)
 //

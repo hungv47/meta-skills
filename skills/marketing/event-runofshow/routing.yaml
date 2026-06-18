@@ -1,0 +1,85 @@
+# Routing + capability metadata for event-runofshow.
+# Compiled into hooks/skill-registry.json + references/capability-index.json.
+promptSignals:
+  phrases:
+    - "run of show"
+    - "run-of-show"
+    - "cue sheet"
+    - "event agenda"
+    - "webinar agenda"
+    - "minute by minute"
+    - "event timeline"
+    - "launch event plan"
+    - "demo day schedule"
+    - "AMA schedule"
+    - "show flow"
+    - "event run sheet"
+  allOf:
+    - [run, show]
+    - [event, agenda]
+    - [webinar, timeline]
+    - [cue, sheet]
+  anyOf:
+    - "host script"
+    - "segment timing"
+    - "who owns each segment"
+    - "tech cues"
+    - "contingency if the demo breaks"
+    - "live event flow"
+  noneOf:
+    - "campaign plan"
+    - "social post sequence"
+    - "recorded video brief"
+    - "landing page"
+  minScore: 6
+
+capability:
+  id: event-runofshow
+  domain: marketing
+  public: true
+  command: /event-runofshow
+  summary: "Build a minute-by-minute run-of-show (cue sheet) for a live event — webinar, launch, AMA, demo day — with every segment timed, owned, cued, and de-risked."
+  aliases:
+    - cue-sheet
+    - show-flow
+    - event-agenda
+
+  route:
+    use_when:
+      - "A live event (webinar / launch event / AMA / demo day / talk) needs a timed segment-by-segment run sheet."
+    not_when:
+      - "The campaign around the event -> plan-campaign."
+      - "The social promo sequence -> launch chain / publish-social."
+      - "A recorded video -> brief-shortform / produce-video."
+    prerequisites:
+      recommended:
+        - "id:brand"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard:
+        - "event type + total duration"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Segments + timing only (no deep contingency layer); still names owners + runs critic."
+    multi_when:
+      - "Default — 3 agents (Segment Planner + Logistics Director + Critic)."
+    critic_required_when:
+      - "Always — a run-of-show with a timing or ownership gap fails live."
+
+  load:
+    always:
+      - "references/agent-manifest.md"
+    when:
+      - if: "Artifact write / run-of-show table format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/event-runofshow/[event]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: execution
+        produced_when: "Critic PASS; one event = one run-of-show."

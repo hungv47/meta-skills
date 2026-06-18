@@ -129,7 +129,7 @@ provenance:
 
 ## Per-Platform Draft Schema (`platforms/[platform].md`)
 
-### Frontmatter (10 fields — D18 adds 1)
+### Frontmatter (12 fields — D18 added post_url; legibility added pack_verified + applied_tactics)
 
 ```yaml
 ---
@@ -141,6 +141,8 @@ char_count: <integer — total chars of body; for X thread, sum across posts>
 media_refs:
   - <path to produce-asset slot OR produce-video shot OR "MEDIA REQUIRED" placeholder>
 mode: typefully-draft | typefully-publish | browser-automation-draft | browser-automation-publish | export | published | blocked   # D17 adds -draft routes; D18 adds -publish routes + published
+pack_verified: <YYYY-MM-DD or none>   # legibility: the loaded platform pack's last_verified; `none` when no pack covers this platform
+applied_tactics: [<tactic>, ...]      # legibility: specific tactics narrated (empty when pack_verified: none)
 draft_url: <URL or null>   # D17 — populated when automation draft succeeded; null for export-mode and fallback-export
 post_url: <URL or null>    # D18 new — populated when --mode=publish posted live; null otherwise
 automation_result: success | failed:<reason-class> | fallback-export | fallback-draft | n/a   # D17; D18 adds fallback-draft. n/a when D16 X-Typefully route used; cross-reference manifest.automation_result_per_platform / publish_result_per_platform
@@ -156,6 +158,17 @@ Every per-platform draft includes these sections:
 3. **`## CTA`** — quoted CTA copy + position note (e.g., "at char 95 — before LinkedIn's ~210 truncation point").
 4. **`## Media`** — list of media references with path + cross-check against platform spec (aspect, size); OR "MEDIA REQUIRED — operator must attach" placeholder.
 5. **`## Notes`** — platform-specific notes (e.g., "X thread; post separately or via Typefully thread-up", "LinkedIn double-newline = paragraph break").
+6. **`## Legibility`** — the applied-expertise narration: which platform pack was loaded, its `last_verified` date, and the **specific** tactics applied — or the transparent-degrade statement when no pack covers this platform. Mirrors the `pack_verified`/`applied_tactics` frontmatter. Format + the three states (packed / stale / absent): [`references/_shared/legibility-convention.md`](_shared/legibility-convention.md).
+
+### Launch cross-posts (Product Hunt)
+
+When the bundle is the **cross-post leg of a Product Hunt launch** (step 6 of the PH launch chain),
+each per-platform draft (X/LinkedIn announcement) is grounded in the
+[`producthunt`](_shared/platform-intelligence/producthunt.md) launch-channel pack and **must obey its
+§4/§7 guard**: frame the post as **news** ("we're live on Product Hunt — [link]"), never as a vote
+drive. **Hard rule:** no draft may contain a vote-ask string (`upvote`, `vote for us`, "go upvote") —
+a vote-ask is both a PH guideline violation and a downrank trigger. The draft's `## Legibility` names
+the PH pack + the no-vote-ask guard it applied; `pack_verified` = the pack's `last_verified`.
 
 For X specifically, if body is a thread:
 
@@ -214,7 +227,7 @@ Schemas live in [`scheduler-formats.md`](scheduler-formats.md). Each scheduler-i
 
 ## Frontmatter Validation Rules
 
-- All required fields present (16 on manifest, 10 on per-platform draft).
+- All required fields present (16 on manifest, 12 on per-platform draft).
 - `date` matches `YYYY-MM-DD` format.
 - `slug` is kebab-case, lowercase, ≤50 chars.
 - `target_platforms` is a non-empty subset of the 9 supported platforms.

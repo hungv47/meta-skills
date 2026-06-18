@@ -1,0 +1,109 @@
+# Routing + capability metadata for measure-results.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun bin/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "measure the launch"
+    - "launch results"
+    - "how did the launch do"
+    - "campaign results"
+    - "product hunt results"
+    - "post-launch read"
+    - "what worked in the launch"
+    - "feed results back into the pack"
+    - "close the loop"
+    - "launch retro"
+    - "did the launch land"
+    - "measure results"
+  allOf:
+    - [launch, results]
+    - [campaign, results]
+    - [measure, launch]
+    - [launch, retro]
+  anyOf:
+    - "rank on product hunt"
+    - "upvotes"
+    - "signups from the launch"
+    - "referral traffic"
+    - "what to do differently next launch"
+    - "feed the pack"
+    - "compound the next launch"
+  noneOf:
+    - "score this post"
+    - "ad performance"
+    - "short-form video"
+    - "landing page conversion"
+    - "write the launch copy"
+  minScore: 6
+
+capability:
+  id: measure-results
+  domain: marketing
+  public: true
+  command: /measure-results
+  summary: "Ingest a launch/campaign's real results for ONE channel, read what worked vs the channel's playbook pack, and write a dated entry back into the pack so the next launch compounds (the metrics loop)."
+  aliases:
+    - launch-retro
+    - post-launch-read
+    - close-the-loop
+
+  route:
+    use_when:
+      - "A launch or campaign has run and the operator has real per-channel results to read."
+      - "The result should feed back into the channel's playbook pack so the next launch compounds."
+    not_when:
+      - "Scoring a single organic post inside an eval loop -> evaluate-content."
+      - "Paid-ad results -> evaluate-ad."
+      - "Short-form video performance -> evaluate-shortform."
+      - "Landing-page conversion -> evaluate-landing-page."
+    prerequisites:
+      recommended:
+        - "id:brand"
+        - "references/_shared/platform-intelligence/[channel].md"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard:
+        - "real per-channel results (paste or path)"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Metric ingest + read only (no trend layer); still writes back + runs critic."
+    multi_when:
+      - "Default — 4 agents (Metric Ingest + Diagnosis + Pack Feedback + Critic)."
+    critic_required_when:
+      - "Always — the pack write-back is canonical channel knowledge the next launch reads."
+      - "Override protocol: critic FAIL twice -> BLOCKED, no write-back."
+
+  load:
+    always:
+      - "references/agent-manifest.md"
+    when:
+      - if: "Pre-Dispatch (Warm / Cold Start, hard-block checks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic revision cycle"
+        read:
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Rubric scoring"
+        read:
+          - "references/rubric.md"
+      - if: "Artifact write / pack write-back format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/measure-results/[channel]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: evaluation
+        produced_when: "Critic PASS; one channel = one read artifact."
+      - path: ".forsvn/performance/[channel].tsv"
+        lifecycle: evaluation
+        produced_when: "One row appended on critic PASS (the local performance store)."
+      - path: "references/platform-intelligence/[channel].md (changelog + playbook notes)"
+        lifecycle: evaluation
+        produced_when: "Critic PASS — a dated what-worked/what-failed entry APPENDED (never overwrites tactics)."

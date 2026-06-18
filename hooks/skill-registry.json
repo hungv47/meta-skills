@@ -839,6 +839,55 @@
       ],
       "minScore": 6
     },
+    "design-minigame": {
+      "phrases": [
+        "mini game",
+        "minigame",
+        "spin the wheel",
+        "scratch card",
+        "marketing game",
+        "playable ad",
+        "interactive quiz",
+        "gamified campaign",
+        "advent calendar campaign",
+        "lead-gen game",
+        "engagement game",
+        "gamification"
+      ],
+      "allOf": [
+        [
+          "marketing",
+          "game"
+        ],
+        [
+          "spin",
+          "wheel"
+        ],
+        [
+          "playable",
+          "ad"
+        ],
+        [
+          "gamified",
+          "campaign"
+        ]
+      ],
+      "anyOf": [
+        "lead capture game",
+        "prize wheel",
+        "quiz funnel",
+        "interactive campaign",
+        "win a prize",
+        "engagement loop"
+      ],
+      "noneOf": [
+        "build the game code",
+        "static ad",
+        "landing page",
+        "video game"
+      ],
+      "minScore": 6
+    },
     "evaluate-ad": {
       "phrases": [
         "ad eval",
@@ -1234,6 +1283,55 @@
       ],
       "minScore": 6
     },
+    "event-runofshow": {
+      "phrases": [
+        "run of show",
+        "run-of-show",
+        "cue sheet",
+        "event agenda",
+        "webinar agenda",
+        "minute by minute",
+        "event timeline",
+        "launch event plan",
+        "demo day schedule",
+        "AMA schedule",
+        "show flow",
+        "event run sheet"
+      ],
+      "allOf": [
+        [
+          "run",
+          "show"
+        ],
+        [
+          "event",
+          "agenda"
+        ],
+        [
+          "webinar",
+          "timeline"
+        ],
+        [
+          "cue",
+          "sheet"
+        ]
+      ],
+      "anyOf": [
+        "host script",
+        "segment timing",
+        "who owns each segment",
+        "tech cues",
+        "contingency if the demo breaks",
+        "live event flow"
+      ],
+      "noneOf": [
+        "campaign plan",
+        "social post sequence",
+        "recorded video brief",
+        "landing page"
+      ],
+      "minScore": 6
+    },
     "humanmaxxing": {
       "phrases": [
         "sounds like ai",
@@ -1264,6 +1362,57 @@
       "noneOf": [
         "brand identity",
         "design system"
+      ],
+      "minScore": 6
+    },
+    "measure-results": {
+      "phrases": [
+        "measure the launch",
+        "launch results",
+        "how did the launch do",
+        "campaign results",
+        "product hunt results",
+        "post-launch read",
+        "what worked in the launch",
+        "feed results back into the pack",
+        "close the loop",
+        "launch retro",
+        "did the launch land",
+        "measure results"
+      ],
+      "allOf": [
+        [
+          "launch",
+          "results"
+        ],
+        [
+          "campaign",
+          "results"
+        ],
+        [
+          "measure",
+          "launch"
+        ],
+        [
+          "launch",
+          "retro"
+        ]
+      ],
+      "anyOf": [
+        "rank on product hunt",
+        "upvotes",
+        "signups from the launch",
+        "referral traffic",
+        "what to do differently next launch",
+        "feed the pack",
+        "compound the next launch"
+      ],
+      "noneOf": [
+        "score this post",
+        "ad performance",
+        "short-form video",
+        "landing page conversion",
+        "write the launch copy"
       ],
       "minScore": 6
     },
@@ -1548,6 +1697,56 @@
         "publish to social",
         "publish to the",
         "publish this asset"
+      ],
+      "minScore": 6
+    },
+    "produce-ooh": {
+      "phrases": [
+        "billboard",
+        "out of home",
+        "out-of-home",
+        "OOH ad",
+        "transit ad",
+        "bus wrap",
+        "building wrap",
+        "poster ad",
+        "highway board",
+        "subway poster",
+        "OOH spec",
+        "billboard design"
+      ],
+      "allOf": [
+        [
+          "out",
+          "home"
+        ],
+        [
+          "billboard",
+          "design"
+        ],
+        [
+          "transit",
+          "ad"
+        ],
+        [
+          "poster",
+          "spec"
+        ]
+      ],
+      "anyOf": [
+        "3 second read",
+        "legible at distance",
+        "viewing distance",
+        "big type",
+        "one message",
+        "14x48"
+      ],
+      "noneOf": [
+        "social ad",
+        "meta ad",
+        "landing page",
+        "media buy",
+        "short-form video"
       ],
       "minScore": 6
     },

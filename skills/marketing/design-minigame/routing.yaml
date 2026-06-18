@@ -1,0 +1,85 @@
+# Routing + capability metadata for design-minigame.
+# Compiled into hooks/skill-registry.json + references/capability-index.json.
+promptSignals:
+  phrases:
+    - "mini game"
+    - "minigame"
+    - "spin the wheel"
+    - "scratch card"
+    - "marketing game"
+    - "playable ad"
+    - "interactive quiz"
+    - "gamified campaign"
+    - "advent calendar campaign"
+    - "lead-gen game"
+    - "engagement game"
+    - "gamification"
+  allOf:
+    - [marketing, game]
+    - [spin, wheel]
+    - [playable, ad]
+    - [gamified, campaign]
+  anyOf:
+    - "lead capture game"
+    - "prize wheel"
+    - "quiz funnel"
+    - "interactive campaign"
+    - "win a prize"
+    - "engagement loop"
+  noneOf:
+    - "build the game code"
+    - "static ad"
+    - "landing page"
+    - "video game"
+  minScore: 6
+
+capability:
+  id: design-minigame
+  domain: marketing
+  public: true
+  command: /design-minigame
+  summary: "Design a marketing mini-game (spin-the-wheel / quiz / scratch-card / playable ad) for engagement or lead capture — mechanic + win condition + honest reward economics + the conversion funnel. Honest by construction, no dark patterns."
+  aliases:
+    - minigame
+    - gamification
+    - playable-ad
+
+  route:
+    use_when:
+      - "A campaign wants a mini-game / interactive (wheel / quiz / scratch / playable ad) for engagement or lead capture."
+    not_when:
+      - "Building the game's code -> engineering (out of this stack)."
+      - "A static ad/asset -> write-ad / brief-graphic / produce-asset."
+      - "The campaign itself -> plan-campaign."
+    prerequisites:
+      recommended:
+        - "id:brand"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard:
+        - "game type + the marketing goal"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Mechanic + funnel sketch only; still runs the honesty check + critic."
+    multi_when:
+      - "Default — 3 agents (Mechanic Designer + Reward-and-Funnel + Critic)."
+    critic_required_when:
+      - "Always — a dark pattern or broken prize economics is a brand + legal risk."
+
+  load:
+    always:
+      - "references/agent-manifest.md"
+    when:
+      - if: "Artifact write / mini-game spec format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review (dark patterns, prize economics, compliance)"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/design-minigame/[game-type]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: execution
+        produced_when: "Critic PASS; one game = one spec."

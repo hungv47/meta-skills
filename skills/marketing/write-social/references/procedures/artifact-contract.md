@@ -9,9 +9,9 @@
 - **Path:** `docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`
 - **Lifecycle:** `pipeline` — regenerated on re-run for the same (platform, topic) tuple. Variant exploration uses suffixed slugs (e.g., `-variant-b`).
 
-## Frontmatter (13 fields, verbatim, in order)
+## Frontmatter (15 fields, verbatim, in order)
 
-`type` · `platform` · `date` · `slug` · `brand_mode` · `goal` · `variant_count` · `brief_source` · `platform_intel_version` · `critic_score` · `critic_verdict` · `status` · `polish_chain_applied`.
+`type` · `platform` · `date` · `slug` · `brand_mode` · `goal` · `variant_count` · `brief_source` · `platform_intel_version` · `pack_verified` · `applied_tactics` · `critic_score` · `critic_verdict` · `status` · `polish_chain_applied`.
 
 Per-field semantics + enum values: [`../format-conventions.md`](../format-conventions.md).
 
@@ -21,8 +21,9 @@ Per-field semantics + enum values: [`../format-conventions.md`](../format-conven
 2. **Body** — main post copy. Single block; no sub-headings for X / TikTok / Reels / Shorts. LinkedIn allows internal line breaks but no markdown headings.
 3. **CTA** — single line. Type (interest-question / direct-ask / save-prompt / share-prompt / link) determined by `goal`.
 4. **Format spec** — surface-specific render notes (vertical-video caption length, X thread split, LinkedIn first-3-lines visible-window).
-5. **Critic verdict** — 6-row table: 5 dim rows + total. Each dim row: dimension name, score (0-10), one-line justification.
-6. **Anti-patterns triggered** — explicit `- None` if empty. Each entry references the pattern ID from [`../anti-patterns.md`](../anti-patterns.md).
+5. **Legibility block** — which platform pack was loaded, its `last_verified` date, and the **specific** tactics applied; or the transparent-degrade statement when no pack covers the platform (`pack_verified: none`, empty `applied_tactics`, no tailored claim). Format + the three states: [`../_shared/legibility-convention.md`](../_shared/legibility-convention.md).
+6. **Critic verdict** — 6-row table: 5 dim rows + total. Each dim row: dimension name, score (0-10), one-line justification.
+7. **Anti-patterns triggered** — explicit `- None` if empty. Each entry references the pattern ID from [`../anti-patterns.md`](../anti-patterns.md).
 
 ## Side effects (mandatory on PASS / DONE_WITH_CONCERNS / FAIL)
 

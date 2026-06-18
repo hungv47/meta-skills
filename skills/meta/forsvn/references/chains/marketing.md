@@ -34,6 +34,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 | "TikTok video brief", "Reels brief", "Shorts brief", "video storyboard" | `/brief-shortform` |
 | "Meta ads", "retargeting ads", "primary text", "paid social", "ad creative" | `/write-ad` (hard-gated on ICP) |
 | "cold email", "LinkedIn DM", "outbound", "proposal" | `/write-outreach` (hard-gated on ICP) |
+| "launch on Product Hunt", "PH launch", "Product Hunt", "launch day" | **Product Hunt launch chain** (see § Launch chains) — starts at `/plan-campaign` |
 | "tweet", "linkedin post", "tiktok caption", "social post" | `/write-social` (single-platform per invocation) |
 | "carousel", "thumbnail", "OG card", "banner", "asset brief" | `/brief-graphic` |
 | "humanize this", "humanmax this", "sounds AI-generated", "strip the slop" | `/humanmaxxing` |
@@ -62,6 +63,56 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 18. **Wrap-around:** `/brief-landing-page` feeding a launch, `/write-ad` feeding a paid campaign → append `(optional /review-work after)`.
 19. **Polish chain mention:** if producing copy AND `brand_mode=founder` or market includes Vietnamese → mention `/humanmaxxing` or `/polish-vn` as terminal step.
 20. **Ambiguity:** intent matches 2+ buckets → propose 2 options with rationale, let operator pick.
+21. **Launch intent (per-channel):** "launch on <channel>" (Product Hunt, Reddit, …) → enter the **generic per-channel launch chain** (§ Launch chains) at `/plan-campaign` with that channel's pack loaded (Product Hunt is the worked instance). Multi-channel launch → `/plan-campaign` selects channels, then run the chain once per channel, each closing its own loop via `/measure-results`. Same ICP/brand gates; each channel's pack §4 hard guards apply at every step.
+
+## Launch chains (per-channel)
+
+A **launch chain** sequences existing skills around a single channel's playbook pack
+(`skills/references/platform-intelligence/<channel>.md`), loading the pack at **every** step and
+**narrating** the applied tactics (legibility convention). Each step emits the Legibility block, so
+the applied expertise is visible end-to-end. The loop closes at the last step (`/measure-results`),
+which writes the result back into the channel pack so the **next** launch on that channel compounds.
+
+### Generic per-channel launch chain (U11)
+
+Works for **any channel that has a `launch-channel` (or applicable) pack**. The 7-step skeleton is
+channel-agnostic; each step binds to the channel's own pack sections:
+
+| Step | Skill | Binds to (pack) | Narrates |
+|---|---|---|---|
+| 1. Audience | `/research-icp` (if `research/product-context.md` absent) | — | who the launch reaches |
+| 2. Plan | `/plan-campaign` (launch path) | §5 Playbook + §6 timing | the channel's run-of-show + best window |
+| 3. Asset brief | `/brief-graphic` (or `/brief-shortform` for video channels) | §1 angles + §2 format constraints | the asset spec it applied |
+| 4. Launch copy | `/write-social` | §1 angles + §4 anti-patterns + the channel's hook/first-step | the specific tactics applied |
+| 5. Comms plan | `/plan-campaign` launch-day run-of-show artifact | §5 timings | the dated sequence + owners |
+| 6. Publish | `/publish-social` | §7 CTA/conversion norms + §4 hard guards | cross-post copy + the channel's guards |
+| 7. Measure | `/measure-results` | writes a dated entry back into §9/§5 | the result → feeds the next launch (loop closed) |
+
+**Channel selection:** the chain resolves the pack via the soft client (current pack if Pro, else
+the local mirror) and narrates `pack_verified`. **No pack for the channel?** the chain still runs on
+general principles and says so (transparent degrade) — it does not fake channel tailoring.
+
+**Multi-channel fan-out:** for a launch spanning N channels, `/plan-campaign` selects the channels
+(its 9-channel evaluation) and the marketing agent runs the per-channel chain **once per channel** —
+each grounded in its own pack, each closing its own loop. The plans share the campaign's pillars +
+positioning but diverge on channel tactics. Each channel's `/measure-results` feeds only its own pack.
+
+### Product Hunt launch chain (worked instance)
+
+Pack: [`producthunt.md`](../../../../../references/platform-intelligence/producthunt.md) (`launch-channel`). Each step loads it and narrates which §5 Playbook step / §3 ranking signal it is acting on.
+
+| Step | Skill | Loads from the PH pack | Narrates |
+|---|---|---|---|
+| 1. Audience | `/research-icp` (if `research/product-context.md` absent) | — | who the launch-day support list is |
+| 2. Plan | `/plan-campaign` (Product Hunt path) | §5 Playbook (the 10-step run-of-show) + §6 timing | "12:01 AM PT live, Top-5 decided by ~noon PT" |
+| 3. Gallery brief | `/brief-graphic` | §1 Angle 3 (demo-loop slot 1) + §2 (1270×760, thumbnail 240×240) | the gallery/thumbnail spec it applied |
+| 4. Launch copy | `/write-social` | §1 angles + §4 anti-patterns (no vote-ask) + §5 first comment | the tagline ≤60-char + founder-story first comment |
+| 5. Comms plan | `/plan-campaign` output (launch-day run-of-show artifact) | §5 timings (T−14d → T+24h) | the dated launch-day sequence + owners |
+| 6. Publish | `/publish-social` | §7 CTA norms (news-framed, never "upvote") | cross-post copy + the no-vote-ask guard |
+| 7. Measure | `/measure-results` (U10) | writes a dated entry back into §9 changelog / what-worked | the result → feeds the next launch (loop) |
+
+**Hard guard (from the pack §4):** no step may emit copy containing a vote-ask ("upvote", "vote for
+us"). The launch is engineered to *earn* velocity (notify → show → ask for feedback), never to solicit votes.
 
 ## Anti-patterns
 

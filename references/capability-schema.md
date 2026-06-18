@@ -246,6 +246,7 @@ bun _dev/eval-triggers.ts --require-all
 node hooks/test-router.mjs
 bun bin/lint-artifact-paths.ts
 bun bin/validate-artifacts.ts --strict
+bun bin/validate-packs.ts --strict
 bun bin/manifest-sync.ts --check
 bun _dev/verify-version-alignment.ts
 bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
@@ -262,6 +263,14 @@ bun _dev/eval/golden-regression.ts
 flags legacy paths); `validate-artifacts --strict` enforces v2 frontmatter
 on every `docs/forsvn/artifacts/` artifact; `manifest-sync --check` fails if the
 index drifted from disk (both added by skills-refactor Phase 2.5).
+`validate-packs --strict` (pack-contract v2, 2026-06-16) enforces
+`references/platform-intelligence/CONTRACT.md` on every source playbook pack —
+required frontmatter (`pack_type`, `last_verified`, `status`, `summary`), the
+required section set per `pack_type`, and a non-empty Playbook (§5). Staleness
+(>90d) is WARN-only — packs are expected to age (that aging is the freshness
+wedge); the six legacy `schema_version: 1` video packs validate under the v1
+section set. Scopes to the source dir only (skips `_template.md`/`CONTRACT.md`
+and the generated `_shared/` mirrors).
 HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) live in
 the **forsvn-preview** review module (within the single `forsvn` plugin) — skills
 emit Markdown only.

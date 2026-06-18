@@ -62,7 +62,7 @@ Critic enforces 8-dim rubric. Export/draft → before delivery; `--mode=publish`
 ## Artifact Contract
 
 - **Root:** `docs/forsvn/artifacts/marketing/published-social/[slug]/` · **Lifecycle:** `pipeline`.
-- **Frontmatter:** manifest (16 fields) + per-platform draft (10 fields) — `mode_per_platform`, `credentials_detected`, `confirmation_result` (D17), `dry_run`/`publish_result_per_platform` (D18), `draft_url`/`post_url`/`automation_result`.
+- **Frontmatter:** manifest (16 fields) + per-platform draft (12 fields) — incl. `pack_verified`/`applied_tactics` + a per-draft `## Legibility` section ([convention](references/_shared/legibility-convention.md)).
 - **Provenance:** `input_artifacts` = write-social + media manifests + `brand/BRAND.md`; `output_eval: null` until `evaluate-content`.
 - **Cross-stack:** schema changes need atomic update across write-social/produce-asset/produce-video. Full: [`references/format-conventions.md`](references/format-conventions.md) (v2 baseline: `_shared/artifact-contract-template.md`).
 

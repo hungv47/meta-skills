@@ -1373,6 +1373,79 @@
       "source": "skills/meta/debate-agents/routing.yaml",
       "skill_path": "skills/meta/debate-agents"
     },
+    "design-minigame": {
+      "id": "design-minigame",
+      "domain": "marketing",
+      "public": true,
+      "command": "/design-minigame",
+      "summary": "Design a marketing mini-game (spin-the-wheel / quiz / scratch-card / playable ad) for engagement or lead capture — mechanic + win condition + honest reward economics + the conversion funnel. Honest by construction, no dark patterns.",
+      "aliases": [
+        "minigame",
+        "gamification",
+        "playable-ad"
+      ],
+      "route": {
+        "use_when": [
+          "A campaign wants a mini-game / interactive (wheel / quiz / scratch / playable ad) for engagement or lead capture."
+        ],
+        "not_when": [
+          "Building the game's code -> engineering (out of this stack).",
+          "A static ad/asset -> write-ad / brief-graphic / produce-asset.",
+          "The campaign itself -> plan-campaign."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
+          ],
+          "hard": [
+            "game type + the marketing goal"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Mechanic + funnel sketch only; still runs the honesty check + critic."
+        ],
+        "multi_when": [
+          "Default — 3 agents (Mechanic Designer + Reward-and-Funnel + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — a dark pattern or broken prize economics is a brand + legal risk."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/agent-manifest.md"
+        ],
+        "when": [
+          {
+            "if": "Artifact write / mini-game spec format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review (dark patterns, prize economics, compliance)",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/design-minigame/[game-type]-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "execution",
+            "produced_when": "Critic PASS; one game = one spec."
+          }
+        ]
+      },
+      "source": "skills/marketing/design-minigame/routing.yaml",
+      "skill_path": "skills/marketing/design-minigame"
+    },
     "diagnose": {
       "id": "diagnose",
       "domain": "research",
@@ -2502,6 +2575,79 @@
       "source": "skills/research/evaluate-shortform/routing.yaml",
       "skill_path": "skills/research/evaluate-shortform"
     },
+    "event-runofshow": {
+      "id": "event-runofshow",
+      "domain": "marketing",
+      "public": true,
+      "command": "/event-runofshow",
+      "summary": "Build a minute-by-minute run-of-show (cue sheet) for a live event — webinar, launch, AMA, demo day — with every segment timed, owned, cued, and de-risked.",
+      "aliases": [
+        "cue-sheet",
+        "show-flow",
+        "event-agenda"
+      ],
+      "route": {
+        "use_when": [
+          "A live event (webinar / launch event / AMA / demo day / talk) needs a timed segment-by-segment run sheet."
+        ],
+        "not_when": [
+          "The campaign around the event -> plan-campaign.",
+          "The social promo sequence -> launch chain / publish-social.",
+          "A recorded video -> brief-shortform / produce-video."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
+          ],
+          "hard": [
+            "event type + total duration"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Segments + timing only (no deep contingency layer); still names owners + runs critic."
+        ],
+        "multi_when": [
+          "Default — 3 agents (Segment Planner + Logistics Director + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — a run-of-show with a timing or ownership gap fails live."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/agent-manifest.md"
+        ],
+        "when": [
+          {
+            "if": "Artifact write / run-of-show table format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/event-runofshow/[event]-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "execution",
+            "produced_when": "Critic PASS; one event = one run-of-show."
+          }
+        ]
+      },
+      "source": "skills/marketing/event-runofshow/routing.yaml",
+      "skill_path": "skills/marketing/event-runofshow"
+    },
     "extract-service": {
       "id": "extract-service",
       "domain": "product",
@@ -2873,6 +3019,111 @@
       },
       "source": "forsvn-dev/skills/product/map-user-flow/routing.yaml",
       "skill_path": "forsvn-dev/skills/product/map-user-flow"
+    },
+    "measure-results": {
+      "id": "measure-results",
+      "domain": "marketing",
+      "public": true,
+      "command": "/measure-results",
+      "summary": "Ingest a launch/campaign's real results for ONE channel, read what worked vs the channel's playbook pack, and write a dated entry back into the pack so the next launch compounds (the metrics loop).",
+      "aliases": [
+        "launch-retro",
+        "post-launch-read",
+        "close-the-loop"
+      ],
+      "route": {
+        "use_when": [
+          "A launch or campaign has run and the operator has real per-channel results to read.",
+          "The result should feed back into the channel's playbook pack so the next launch compounds."
+        ],
+        "not_when": [
+          "Scoring a single organic post inside an eval loop -> evaluate-content.",
+          "Paid-ad results -> evaluate-ad.",
+          "Short-form video performance -> evaluate-shortform.",
+          "Landing-page conversion -> evaluate-landing-page."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "references/_shared/platform-intelligence/[channel].md",
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
+          ],
+          "hard": [
+            "real per-channel results (paste or path)"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Metric ingest + read only (no trend layer); still writes back + runs critic."
+        ],
+        "multi_when": [
+          "Default — 4 agents (Metric Ingest + Diagnosis + Pack Feedback + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — the pack write-back is canonical channel knowledge the next launch reads.",
+          "Override protocol: critic FAIL twice -> BLOCKED, no write-back."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/agent-manifest.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Warm / Cold Start, hard-block checks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + critic revision cycle",
+            "read": [
+              "references/procedures/dispatch-mechanics.md"
+            ]
+          },
+          {
+            "if": "Rubric scoring",
+            "read": [
+              "references/rubric.md"
+            ]
+          },
+          {
+            "if": "Artifact write / pack write-back format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/measure-results/[channel]-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS; one channel = one read artifact."
+          },
+          {
+            "path": ".forsvn/performance/[channel].tsv",
+            "lifecycle": "evaluation",
+            "produced_when": "One row appended on critic PASS (the local performance store)."
+          },
+          {
+            "path": "references/platform-intelligence/[channel].md (changelog + playbook notes)",
+            "lifecycle": "evaluation",
+            "produced_when": "Critic PASS — a dated what-worked/what-failed entry APPENDED (never overwrites tactics)."
+          }
+        ]
+      },
+      "source": "skills/marketing/measure-results/routing.yaml",
+      "skill_path": "skills/marketing/measure-results"
     },
     "monitor-aeo": {
       "id": "monitor-aeo",
@@ -3592,6 +3843,85 @@
       },
       "source": "skills/marketing/produce-asset/routing.yaml",
       "skill_path": "skills/marketing/produce-asset"
+    },
+    "produce-ooh": {
+      "id": "produce-ooh",
+      "domain": "marketing",
+      "public": true,
+      "command": "/produce-ooh",
+      "summary": "Produce an out-of-home brief + render-ready spec (billboard / transit / poster / wrap) built around the 3-second read, legibility at distance, one message, and per-placement format specs. Emits a manifest — no pixels.",
+      "aliases": [
+        "billboard",
+        "ooh-spec",
+        "out-of-home"
+      ],
+      "route": {
+        "use_when": [
+          "An OOH placement (billboard / transit / poster / building wrap) needs a brief + render-ready spec."
+        ],
+        "not_when": [
+          "Digital/social ad creative -> write-ad / brief-graphic / produce-asset.",
+          "The media buy / campaign plan -> plan-campaign.",
+          "A motion/video placement -> brief-shortform / produce-video."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:brand",
+            "docs/forsvn/artifacts/marketing/campaign-plan.md"
+          ],
+          "hard": [
+            "OOH type + the one message"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "Concept + core spec only; still runs the legibility check + critic."
+        ],
+        "multi_when": [
+          "Default — 3 agents (Concept + Spec-and-Legibility + Critic)."
+        ],
+        "critic_required_when": [
+          "Always — an OOH that fails the 3-second read wastes a placement buy."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/agent-manifest.md"
+        ],
+        "when": [
+          {
+            "if": "Render manifest / execution fork (operator-connected engine)",
+            "read": [
+              "references/_shared/execution-fork.md"
+            ]
+          },
+          {
+            "if": "Artifact write / OOH spec format",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Anti-pattern review",
+            "read": [
+              "references/anti-patterns.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/produce-ooh/[ooh-type]-[YYYY-MM-DD]-[slug].md",
+            "lifecycle": "execution",
+            "produced_when": "Critic PASS; one placement = one OOH spec + manifest."
+          }
+        ]
+      },
+      "source": "skills/marketing/produce-ooh/routing.yaml",
+      "skill_path": "skills/marketing/produce-ooh"
     },
     "produce-video": {
       "id": "produce-video",

@@ -21,7 +21,7 @@ If the slug collides with an existing artifact for the same platform + date, suf
 
 ---
 
-## Frontmatter schema (13 fields, verbatim — match exactly)
+## Frontmatter schema (15 fields, verbatim — match exactly)
 
 ```yaml
 type: social-copy-artifact
@@ -33,6 +33,8 @@ goal: awareness | engagement | click | save | share
 variant_count: 1-3
 brief_source: <path or inline-topic>
 platform_intel_version: <last_verified date from platform-intelligence/[platform].md>
+pack_verified: <YYYY-MM-DD or none>   # legibility: loaded pack's last_verified; `none` when no pack covers this platform
+applied_tactics: [<tactic>, ...]      # legibility: specific tactics narrated (empty when pack_verified: none)
 critic_score: <numeric, 0-50 across 5 dimensions × 0-10>
 critic_verdict: pass | done_with_concerns | fail
 status: done | done_with_concerns | blocked | needs_context

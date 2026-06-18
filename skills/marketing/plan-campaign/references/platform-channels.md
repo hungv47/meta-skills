@@ -12,7 +12,7 @@ canonical-source: references/platform-intelligence/ (repo root)
 
 This catalog closes that gap. It maps `plan-campaign`'s `channel-agent` to the strategy-relevant sections of the top-level `references/_shared/platform-intelligence/` catalog so a Social-media channel brief is grounded in real signals — not "post on LinkedIn."
 
-**Scope — Social-media channel only.** The 6 platform files (linkedin, x, tiktok, reels, shorts, youtube) ground channel #6. The other 8 channels in `channel-strategy.md` (Search/AEO, Store/Listing, Bounty/Info, News, Forums/Communities, IRL, Mailbox, SMS) are out of platform-intelligence scope — `platform-channels.md` does not touch them.
+**Scope — Social-media channel (+ the News/launch channel via launch-channel packs).** The 6 social platform files (linkedin, x, tiktok, reels, shorts, youtube) ground channel #6. As of the pack-contract v2 (2026-06-16), the **News/launch channel** is additionally grounded by `launch-channel` packs — the first is **Product Hunt** (`producthunt.md`), mapped below. The remaining channels in `channel-strategy.md` (Search/AEO, Store/Listing, Bounty/Info, Forums/Communities, IRL, Mailbox, SMS) are out of platform-intelligence scope — `platform-channels.md` does not touch them.
 
 The canonical platform catalog is top-level `references/platform-intelligence/{linkedin,x,tiktok,reels,shorts,youtube}.md`. The mirror at `references/_shared/platform-intelligence/` is what the channel-agent reads at dispatch. Platform→file map: Instagram → `reels.md`, YouTube → `youtube.md` (long-form) + `shorts.md`.
 
@@ -53,11 +53,32 @@ Before the channel-agent commits a Social-media platform to a cadence in the **C
 
 **channel-agent output framing:** a Social-media channel assigned a Conversion role must name the §6-supported CTA path in its Channel Execution Brief.
 
+## News/launch channel → Product Hunt launch-channel pack
+
+When the 9-channel evaluation **selects the News/launch channel for a Product Hunt launch**, the
+channel-agent grounds it in [`_shared/platform-intelligence/producthunt.md`](_shared/platform-intelligence/producthunt.md)
+(`pack_type: launch-channel`). Unlike the social packs (where `plan-campaign` consumes only the
+planning-layer §2/§3/§6), a *launch* is a planning-layer event end-to-end, so the channel-agent
+consumes the **launch sequence directly**:
+
+- **§5 Playbook (the 10-step run-of-show)** → the Channel Execution Brief's launch-day sequence +
+  the `launch-sequencing-agent`'s ORB phases (T−14d list-build → 12:01 PT go-live → all-day presence
+  → T+24h measure). This is the one case where the campaign plan legitimately carries step-level tactics.
+- **§6 Timing** → the timeline-agent's launch slot: live at **00:01 AM PT**, Top-5 decided by ~noon PT.
+- **§3 Ranking Signals** → the channel `Role` (a launch is an Awareness+Conversion spike) + the
+  `Success Metric` (rank, upvote/comment velocity, referral signups).
+- **§4 Anti-Patterns (hard guard)** → **no vote-ask** in any plan output; the plan engineers earned
+  velocity (notify → show → feedback ask), never solicited votes.
+
+The plan output narrates the loaded pack + `last_verified` (legibility convention), and hands off to
+the **Product Hunt launch chain** (`skills/meta/forsvn/references/chains/marketing.md` § Launch chains)
+for execution. Staleness behaves as below (`DONE_WITH_CONCERNS`, never FAIL).
+
 ## What this catalog does NOT cover
 
 - The 9-channel framework, growth-motion priority, habitat translation, content classification, Angle-to-Channel Fit Matrix — `references/channel-strategy.md` stays canonical for all of it.
 - Hook archetypes and retention curves — `brief-shortform`'s production-layer concern (§1, §5 of the catalog).
-- The 8 non-social channels (Search/AEO, Store, Bounty, News, Forums, IRL, Mailbox, SMS) — out of platform-intelligence scope.
+- The non-social channels (Search/AEO, Store, Bounty, Forums, IRL, Mailbox, SMS) — out of platform-intelligence scope. **Exception:** the News/launch channel is now covered for **Product Hunt** via the `producthunt` launch-channel pack (mapped above); other launch venues remain out of scope until they get a pack.
 
 ## When to read this catalog
 

@@ -1,0 +1,89 @@
+# Routing + capability metadata for produce-ooh.
+# Compiled into hooks/skill-registry.json + references/capability-index.json.
+promptSignals:
+  phrases:
+    - "billboard"
+    - "out of home"
+    - "out-of-home"
+    - "OOH ad"
+    - "transit ad"
+    - "bus wrap"
+    - "building wrap"
+    - "poster ad"
+    - "highway board"
+    - "subway poster"
+    - "OOH spec"
+    - "billboard design"
+  allOf:
+    - [out, home]
+    - [billboard, design]
+    - [transit, ad]
+    - [poster, spec]
+  anyOf:
+    - "3 second read"
+    - "legible at distance"
+    - "viewing distance"
+    - "big type"
+    - "one message"
+    - "14x48"
+  noneOf:
+    - "social ad"
+    - "meta ad"
+    - "landing page"
+    - "media buy"
+    - "short-form video"
+  minScore: 6
+
+capability:
+  id: produce-ooh
+  domain: marketing
+  public: true
+  command: /produce-ooh
+  summary: "Produce an out-of-home brief + render-ready spec (billboard / transit / poster / wrap) built around the 3-second read, legibility at distance, one message, and per-placement format specs. Emits a manifest — no pixels."
+  aliases:
+    - billboard
+    - ooh-spec
+    - out-of-home
+
+  route:
+    use_when:
+      - "An OOH placement (billboard / transit / poster / building wrap) needs a brief + render-ready spec."
+    not_when:
+      - "Digital/social ad creative -> write-ad / brief-graphic / produce-asset."
+      - "The media buy / campaign plan -> plan-campaign."
+      - "A motion/video placement -> brief-shortform / produce-video."
+    prerequisites:
+      recommended:
+        - "id:brand"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard:
+        - "OOH type + the one message"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Concept + core spec only; still runs the legibility check + critic."
+    multi_when:
+      - "Default — 3 agents (Concept + Spec-and-Legibility + Critic)."
+    critic_required_when:
+      - "Always — an OOH that fails the 3-second read wastes a placement buy."
+
+  load:
+    always:
+      - "references/agent-manifest.md"
+    when:
+      - if: "Render manifest / execution fork (operator-connected engine)"
+        read:
+          - "references/_shared/execution-fork.md"
+      - if: "Artifact write / OOH spec format"
+        read:
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/produce-ooh/[ooh-type]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: execution
+        produced_when: "Critic PASS; one placement = one OOH spec + manifest."

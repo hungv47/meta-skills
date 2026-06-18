@@ -54,10 +54,10 @@ Pass total ≥35/50 AND no dim 0. **Discrimination test every cycle.**
 ## Artifact Contract
 
 - **Path:** `docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `pipeline`.
-- **Frontmatter (13):** `type`, `platform`, `date`, `slug`, `brand_mode`, `goal`, `variant_count`, `brief_source`, `platform_intel_version`, `critic_score`, `critic_verdict`, `status`, `polish_chain_applied`.
-- **Body (in order):** Hook variants (`### Variant [A|B|C]`) · Body · CTA · Format spec · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
+- **Frontmatter (15):** verbatim schema (adds legibility `pack_verified` + `applied_tactics` to the prior 13) → [`references/format-conventions.md`](references/format-conventions.md).
+- **Body (in order):** Hook variants (`### Variant [A|B|C]`) · Body · CTA · Format spec · **Legibility block** ([convention](references/_shared/legibility-convention.md)) · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
 
-Side effects + consumed-by + cross-stack contract: [`references/procedures/artifact-contract.md`](references/procedures/artifact-contract.md). Schema: [`references/format-conventions.md`](references/format-conventions.md).
+Side effects + consumed-by + cross-stack contract: [`references/procedures/artifact-contract.md`](references/procedures/artifact-contract.md).
 
 ## Routing + Dispatch
 
