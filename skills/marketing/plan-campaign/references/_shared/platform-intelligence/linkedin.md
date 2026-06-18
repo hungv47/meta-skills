@@ -24,14 +24,14 @@ Scope: native video uploaded directly to LinkedIn (personal profile or Company P
 
 LinkedIn video hooks operate under a constraint no other short-form platform shares: the **caption first line carries equal hook weight to the visual hook**, because the post body sits *above* the autoplay video in the feed and is the first thing the eye lands on. This produces archetypes that don't map cleanly onto TikTok/Reels.
 
-Six base archetypes are defined in `../hook-archetypes.md` (Credential flash, Pattern interrupt, Question, Pre-reveal tease, Contrarian claim, Data point). The three below are LinkedIn-native variants that meaningfully reframe those bases for the feed-with-truncated-caption surface.
+Six base archetypes are defined in `../hook-archetypes.md` (Credential flash, Pattern interrupt, Question, Pre-reveal tease, Contrarian claim, Data point). The four below are LinkedIn-native variants that meaningfully reframe those bases for the feed-with-truncated-caption surface.
 
 ### Archetype 1 — Caption-first credential drop (text-leads-video)
 
 - **Definition:** The caption first line states a credential or outcome so strong it earns the click on "...more"; the video then *delivers* the story behind it. Visual hook is secondary.
 - **Identifying signal:** First-line of post body is ≤210 characters, contains a specific number or named outcome, and the video opens with the speaker mid-context (no "Hi everyone" preamble — the caption did the framing).
 
-- **Pattern examples B:** "LinkedIn writing tip I use to create 'viral' content: (And it's not writing better hooks)" — practitioner source, 2024-01-23, [post]([internal research source]) — engagement: 1,595 likes / 694 comments.
+- **Pattern examples B:** "LinkedIn writing tip I use to create 'viral' content: (And it's not writing better hooks)" — practitioner source, 2024-01-23, post (internal research source) — engagement: 1,595 likes / 694 comments.
 - **Engagement-signal rationale:** Caption first lines that earn the "...more" click drive dwell time before the video starts playing — and dwell time is LinkedIn's stated primary engagement-quality signal. a third-party benchmark's 3M-post sample finds posts with ≥20-sentence captions hit 1.13× median reach vs. 0.73× for captions under 5 sentences.
 - **Best for:** founder personal brand, B2B thought leadership, recruiter content, niches where credibility is the buying lever.
 
@@ -93,7 +93,7 @@ Hard specs an agent or critic can enforce. Numeric over prose.
 | Cover/thumbnail | Custom thumbnail recommended; LinkedIn auto-pulls a frame if not set. No formal "cover ratio" — uses the video's first frame at chosen aspect | internal |
 | Audio handling | Auto-mute on autoplay; sound only on user-initiated play. Burned subtitles required to convey message in mute preview | internal |
 | Autoplay preview length | ~3 seconds before "Continue watching" prompt or scroll-past | internal |
-|.SRT caption upload | Supported; LinkedIn renders as native captions toggleable by viewer | internal |
+| .SRT caption upload | Supported; LinkedIn renders as native captions toggleable by viewer | internal |
 | External link in post body | Reduces median reach **18.8%** (a third-party benchmark 1.3M-post 2025 sample); a third-party benchmark/cohort range 25–40%; some 2026 cohort data found multi-link posts outperformed (attributed to confound: link-heavy posts often higher quality). Treat single external link as a 18–35% reach tax. | internal, internal |
 | Post-comment link | Standard workaround; no measured penalty when link is in first comment instead of post body | internal |
 | First-3-line preview | Mobile feed shows ~3 lines (~140–210 chars) before "...more" — same surface as truncation cap | internal |
@@ -134,9 +134,9 @@ Specific patterns the algorithm penalizes or audiences punish on LinkedIn video.
  **Detection rule:** Brief specifies "share YouTube link" or "embed video URL" without native upload step.
  **Pattern basis:** internal research synthesis.
 
-- **Pattern:** No burned-in subtitles / no.SRT.
+- **Pattern:** No burned-in subtitles / no .SRT.
  **Penalty observed:** ~80% of LinkedIn video is watched on mute due to autoplay-muted default; without subtitles, the message doesn't land in the 3s preview, killing dwell-time signal.
- **Detection rule:** Brief omits "burned subtitles" OR "uploaded.SRT" in production spec.
+ **Detection rule:** Brief omits "burned subtitles" OR "uploaded .SRT" in production spec.
  **Pattern basis:** internal research synthesis.
 
 - **Pattern:** "Hi everyone, today I want to talk about…" preamble in first 3 seconds.
@@ -215,7 +215,7 @@ The link-in-post vs. link-in-comment debate is the longest-running operator-leve
 - **360Brew LLM ranking weights:** LinkedIn announced LLM-based ranking via 360Brew through 2025–2026 , but no detailed signal weights or features are public. All §3 weights are pre-360Brew cohort observations and may decay faster than typical platform-doc claims.
 - **Video reach decline mechanism:** a third-party benchmark 2026 cohort: video reach −36% YoY, engagement −26%. LinkedIn-stated: video uploads +45%, video viewership +36% YoY — the same data viewed from supply vs. demand sides. Open question: is per-video reach down because supply outpaced demand, or because LinkedIn rebalanced format weighting toward documents (1.45×) and polls (1.64×) ? This determines whether videos should slow production or compete harder.
 - **Mobile vs. desktop watch-time split:** Just Connecting cited 72% mobile share but no per-format breakdown. Whether desktop viewers (sound-on, larger screen) clear the dwell threshold differently than mobile viewers (sound-off, autoplay) is not separately measured in any public cohort.
-- **Subtitle compliance auto-detection:** No public data on whether LinkedIn algorithmically detects burned-in subtitles vs. uploaded.SRT files and weights them differently. Practitioner consensus is to do both; the marginal value of one over the other is unmeasured.
+- **Subtitle compliance auto-detection:** No public data on whether LinkedIn algorithmically detects burned-in subtitles vs. uploaded .SRT files and weights them differently. Practitioner consensus is to do both; the marginal value of one over the other is unmeasured.
 - **Verbatim hook examples for video specifically:** Most cited "viral LinkedIn hook" archives are text-post hooks. Public archives of *video-post* opening lines with engagement metrics are thin — most §1 examples are caption-first lines from posts that included video, not transcribed first lines from the video itself. A future verifier should pull 10+ verbatim spoken-first-line examples with timestamps from public posts.
 
 ---

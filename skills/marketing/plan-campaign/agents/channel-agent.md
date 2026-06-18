@@ -93,6 +93,7 @@ When **Social media** (channel #6 of the 9-channel map) is a selected channel, r
 - **§2 → Cadence feasibility.** Before committing a platform to a `Cadence` in Content Mix, check §2 against team capacity (TikTok's 21–34s vs 60–180s tiers are different cost structures; LinkedIn's burned-in-caption requirement is a real production cost).
 - **§6 → Conversion eligibility.** A Social-media channel may own a Conversion `Role` only if §6 supports a CTA path (LinkedIn's post-body link costs an 18–40% reach tax → spec link-in-comment). If the §6 path is weak, assign Awareness/Trust and route conversion to an owned channel.
 - **Staleness is soft.** If a `platform-intelligence/[platform].md` file's `last_verified` exceeds 90 days, note it in the Change Log — the critic flags `DONE_WITH_CONCERNS`, it does not FAIL the plan.
+- **Legibility (mandatory output).** Under each channel's Execution Brief, emit the `**Legibility — applied expertise**` block per [`references/_shared/legibility-convention.md`](../references/_shared/legibility-convention.md): name the pack + `pack_verified` date, the **specific** §2/§3/§6 tactics applied (e.g., "LinkedIn link-in-comment per §6; contrarian-angle indirect-comment signal per §3"), and the one-line why. Stale pack → use the ⚠ Stale shape; a selected channel with **no** pack → the Absent shape (no tailored claim). Mirror the union into the artifact's `pack_verified` / `applied_tactics` frontmatter.
 
 If Social media is NOT a selected channel, skip this — `platform-channels.md` is not loaded. Platform→file map: Instagram → `reels.md`, YouTube → `youtube.md` + `shorts.md`.
 
@@ -115,3 +116,4 @@ Before returning:
 - [ ] Cadence specified per channel
 - [ ] Every assignment has a rationale connecting habitat data to the angle
 - [ ] If Social media is a selected channel: each Social-media row's Role + Rationale traces to a platform-intelligence §3 signal; cadence checked against §2; a Conversion role assigned only where §6 supports a CTA path. Stale (>90-day) catalog file noted in the Change Log.
+- [ ] Each channel's Execution Brief carries its `**Legibility — applied expertise**` block (pack + `pack_verified` + specific tactics + why; Stale/Absent shapes where they apply); `pack_verified` / `applied_tactics` frontmatter mirrors the union.

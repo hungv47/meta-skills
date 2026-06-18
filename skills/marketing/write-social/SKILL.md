@@ -55,7 +55,7 @@ Pass total ≥35/50 AND no dim 0. **Discrimination test every cycle.**
 
 - **Path:** `docs/forsvn/artifacts/marketing/copy/[platform]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `pipeline`.
 - **Frontmatter (15):** verbatim schema (adds legibility `pack_verified` + `applied_tactics` to the prior 13) → [`references/format-conventions.md`](references/format-conventions.md).
-- **Body (in order):** Hook variants (`### Variant [A|B|C]`) · Body · CTA · Format spec · **Legibility block** ([convention](references/_shared/legibility-convention.md)) · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
+- **Body (in order):** Hook variants (`### Variant [A|B|C]`) · Body · CTA · Format spec · **Legibility block** ([convention](references/_shared/legibility-convention.md)) · **Why this works** · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
 
 Side effects + consumed-by + cross-stack contract: [`references/procedures/artifact-contract.md`](references/procedures/artifact-contract.md).
 

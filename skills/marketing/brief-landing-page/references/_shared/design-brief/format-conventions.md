@@ -86,8 +86,9 @@ The Artifact Template prescribes a fixed section order. Do **not** reorder; down
 9. `## Failure Modes to Avoid`
 10. `## What NOT to Do`
 11. `## Downstream Handoff Block` — per-route schema (see below)
-12. `## Critic Report`
-13. `## Review Gate` — human-review block; final section of the artifact (see "Review Gate block" below)
+12. `## Why This Works` — why-this-works block per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md): the bet (falsifiable) + 2-4 load-bearing design choices (concept, hierarchy, brand-anchor pulls) traced to a product-fit source — the ICP/audience, `BRAND.md`/`CREATIVE-DIRECTION.md`, the source copy's mechanism — Competitor-Swap-clean, not generic design rationale. No brand/ICP foundation → the convention's Absent state. (After the artifact, before the scorecard.)
+13. `## Critic Report`
+14. `## Review Gate` — human-review block; final section of the artifact (see "Review Gate block" below)
 
 ## Platform Spec table schema
 

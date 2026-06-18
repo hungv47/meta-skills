@@ -145,6 +145,8 @@ frame_direction: present | absent   # whether brand/FRAME.md grounded the frame 
 critic_passes: [hook, production, algorithm-fit, brand-fit]
 critic_loop_count: 1 | 2
 polish_chain_applied: vn-tone | humanmaxxing | none
+pack_verified:               # YYYY-MM-DD | none — loaded platform pack's last_verified; `none` when no pack covers hero_platform (legibility)
+applied_tactics: []          # specific §1/§2 tactics narrated in Format Specification; empty when pack_verified: none (legibility)
 ```
 
 For variant artifacts, `role: variant` and additional field `variant_platform: <platform>`. The four review fields apply to the **hero `brief.md`** only — variant artifacts do not carry them.
@@ -172,6 +174,28 @@ The 15 hero body sections appear in this order with these exact headers (downstr
 15. `## Review Gate`
 
 Variant artifacts start with `## What Changed From Hero` (per Variant guard above) followed by an abbreviated section set: Hook (recut), Storyboard (delta from hero), Audio Plan, Caption, CTA. Producer reads hero + variant together; variant doesn't repeat unchanged sections. The `## Review Gate` section is on the **hero `brief.md`** only — variant artifacts do not carry it.
+
+## Legibility block (within Format Specification)
+
+`## Format Specification` ends with the `**Legibility — applied expertise**` block from [`_shared/legibility-convention.md`](_shared/legibility-convention.md) — it is **not** a new top-level H2 (the section count stays 15), it lives at the foot of the Format Specification body. It names the loaded platform pack + its `pack_verified` date and the **specific** tactics the brief applied (the §1 hook taxonomy + §2 format constraints the format-agent consumed — e.g., "Shorts 3-sec hook-window + burned-in caption per §2; curiosity-gap hook archetype per §1"), each traceable to a pack section, never the vibe ("optimized for Shorts"). Three states, by pack freshness:
+
+- **Packed** — current pack: name pack, `pack_verified`, tactics, one-line why.
+- **Stale** (⚠) — pack `last_verified` > 90d: same block flagged stale; treat tactics as a prior; the critic downgrades to `done_with_concerns`.
+- **Absent** — no pack covers `hero_platform`: the Absent shape (general short-form principles only); **never** a native-to-platform claim. Set `pack_verified: none` + `applied_tactics: []`.
+
+Mirror the narrated facts into the artifact's `pack_verified` / `applied_tactics` frontmatter. Each variant recut narrates its own platform's pack at the foot of its delta.
+
+## Why-this-works block (`## What This Brief Bets On`)
+
+Section 2, `## What This Brief Bets On`, **is** this brief's why-this-works block per
+[`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md) — the brief-style
+"the bet" opening the convention explicitly allows. It carries **product-fit** reasoning (distinct
+from the channel-fit Legibility block in Format Specification): the one core wager, then the 2-4
+load-bearing creative choices each traced to a real source — the ICP pain / VoC phrase
+(`research/icp-research.md`), the brand voice/positioning (`BRAND.md` / `CREATIVE-DIRECTION.md`), or
+the campaign tie-in. The bet must be **falsifiable** (what would make this video flop), so
+`evaluate-shortform` can test it next cycle. No foundation → the convention's Absent state (general
+principles only; never a fabricated pain or VoC quote). It stays short — it must not bury the brief.
 
 ## Review Gate block (hero only)
 

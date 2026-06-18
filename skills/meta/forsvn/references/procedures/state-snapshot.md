@@ -23,7 +23,10 @@ Context root:
 ! `[ -d .forsvn ] && echo "  .forsvn/ exists" || echo "  .forsvn/ not yet scaffolded — will bootstrap"`
 
 Product context:
-! `[ -f docs/forsvn/canonical/product/PRODUCT-CONTEXT.md ] && grep -E "^status:" docs/forsvn/canonical/product/PRODUCT-CONTEXT.md | head -1 | sed 's/^/  /' || echo "  (no PRODUCT-CONTEXT.md — will autodraft on dispatch)"`
+! `f=docs/forsvn/canonical/product/PRODUCT-CONTEXT.md; [ -f "$f" ] && grep -E "^(status|decision_state|date):" "$f" | sed 's/^/  /' || echo "  (no PRODUCT-CONTEXT.md — will autodraft on dispatch)"`
+
+Foundation evidence (ICP — for the Step 4.5 pre-flight):
+! `f=docs/forsvn/canonical/research/ICP.md; if [ -f "$f" ]; then echo "  ICP.md ✓ — $(grep -m1 'Confidence Summary' "$f" | sed 's/.*Confidence Summary:[* ]*//') · ≈$(grep -c 'Quote:' "$f") sourced quotes"; else echo "  ICP.md ✗ — no audience/VoC evidence (output leans generic; /research-icp builds it)"; fi`
 
 Last session:
 ! `[ -f .forsvn/routing/last-session.md ] && grep -E "^(timestamp|intent|status|next-action):" .forsvn/routing/last-session.md | sed 's/^/  /' || echo "  (no prior session)"`

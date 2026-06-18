@@ -311,6 +311,24 @@ Each entry: skill → cold-start question list with mapped domain. Skills with h
 4. Copy/headline if any. → input
 5. Constraints — dimensions, deadline, must-include elements. → routing
 
+**produce-ooh**
+1. OOH type — billboard / transit / poster / wrap. → routing
+2. The one message + the goal. → input
+3. Placement context — highway / station / street / building (viewing distance + dwell). → routing
+4. Brand assets — `brand/BRAND.md`, logo, fonts. → `brand` if novel
+
+**event-runofshow**
+1. Event type + total duration. → routing
+2. Audience + the one outcome. → `goals`
+3. Cast — host, guests, demo driver. → input
+4. Platform + tech — live stream / in-person / hybrid. → `technical`
+
+**design-minigame**
+1. Game type + the marketing goal. → `goals`
+2. The reward/incentive. → input
+3. Placement — landing / email / social / event kiosk. → routing
+4. Data capture — email? none? (value-exchange + compliance). → `audience`
+
 ### product-skills
 
 **clean-code**

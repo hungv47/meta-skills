@@ -49,6 +49,12 @@ For each platform in scope, output one block:
 **Algorithm signal target:**
 - [Primary signal weighted by this platform — e.g., "TikTok: completion ≥70% for distribution"]
 
+**Legibility — applied expertise:** (per `references/_shared/legibility-convention.md`; closes the Format Specification block)
+- Pack: `[platform]` · verified [YYYY-MM-DD | none] · status [reviewed | ⚠ stale >90d | absent]
+- Tactics applied: [the specific §1 hook / §2 format tactics this spec used — e.g., "3-sec hook-window · burned-in caption · 9:16 safe-area top 250px"]
+- Why these: [one line tracing to a named §1/§2 mechanic — e.g., "Shorts ranks on loop-rate; burned-in caption + cold-open protect the first loop (pack §2/§3)"]
+- No pack covers this platform → emit the **Absent** shape (general short-form principles only; no native-to-platform claim) and set the brief's `pack_verified: none` / `applied_tactics: []`.
+
 [repeat per platform]
 
 ## Hero Platform Recommendation
@@ -100,5 +106,6 @@ If multiple platforms requested, suggest which is the hero (most algorithmically
 - [ ] Sample observations marked with `(sample n=X)`
 - [ ] Hard rules listed for each platform
 - [ ] Algorithm signal target stated for each platform
+- [ ] Each platform's spec ends with the `**Legibility — applied expertise**` block (pack + `pack_verified` + specific §1/§2 tactics + why; Stale/Absent shapes where they apply); no pack → Absent shape + `pack_verified: none`
 - [ ] Hero platform recommended if multi-platform
 - [ ] No memory-based specs — everything traces to research or platform refs

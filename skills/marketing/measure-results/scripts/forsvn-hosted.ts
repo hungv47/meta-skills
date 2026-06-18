@@ -18,7 +18,10 @@ import { fetchCurrentPack, fetchContextBundle, meter, status } from "./lib/hoste
 
 function flag(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
-  return i > -1 ? process.argv[i + 1] : undefined;
+  if (i < 0) return undefined;
+  const next = process.argv[i + 1];
+  // a flag with no value (last arg, or immediately followed by another --flag) reads as absent
+  return next && !next.startsWith("--") ? next : undefined;
 }
 const JSON_OUT = process.argv.includes("--json");
 const [cmd, arg] = process.argv.slice(2).filter((a) => !a.startsWith("--"));

@@ -64,6 +64,7 @@ const V2_SECTIONS: SectionReq[] = [
   { label: "Algorithm / Ranking Signals", test: /signals/i, optionalFor: new Set(["asset-format"]) },
   { label: "Anti-Patterns", test: /anti-?pattern/i },
   { label: "Playbook", test: /playbook/i },
+  { label: "Timing & Cadence / Hook Window", test: /timing|cadence|hook window|retention curve/i, optionalFor: new Set(["asset-format"]) },
   { label: "CTA / Conversion Norms", test: /\bcta\b|conversion/i },
   { label: "Open Questions", test: /open questions/i },
   { label: "Changelog", test: /changelog/i },

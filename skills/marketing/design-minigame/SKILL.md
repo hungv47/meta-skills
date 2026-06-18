@@ -33,7 +33,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | Placement (landing / email / social / event kiosk) | constraints + the funnel target |
 | Data capture (email? none?) | the value-exchange + compliance |
 
-Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → mechanic + funnel sketch, skip the deep reward-economics model; **never** skips the honesty check or the critic.
+Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → mechanic + funnel sketch, skip the deep reward-economics model; **never** skips the honesty check (the safety floor). Per the mode-resolver, `--fast` does drop the critic gate.
 
 ## Quality Gate — 5 dimensions
 

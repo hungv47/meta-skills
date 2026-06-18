@@ -23,7 +23,7 @@ Single-agent — orchestrator IS the runner; critic in-procedure. Audit + groom 
 2. **HARD-NEVER refused.** Canonical (`brand/`, `research/`, `architecture/`); VCS (`.git/`, `.gitmodules`, submodules); infra (`.forsvn/index/manifest.json`); append-only (`docs/forsvn/experience/`); anchors (`docs/forsvn/artifacts/meta/{roadmap,tasks}.md`).
 3. **`--dry-run` default.** No move without `--apply` + per-category confirm.
 4. **Critic gate non-negotiable.** Grep 5 random STALE/ORPHAN refs across `docs/forsvn/artifacts/`, `brand/`, `research/`, `architecture/`. Live ref → escalate (no prompt), refs surfaced.
-5. **Manifest-sync after.** Re-run `bun scripts/manifest-sync.ts` after any move.
+5. **Manifest-sync.** Re-run `bun scripts/manifest-sync.ts` after any move.
 
 ## Before Starting + Pre-Dispatch
 

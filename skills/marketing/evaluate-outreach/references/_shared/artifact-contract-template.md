@@ -6,7 +6,7 @@ lifecycle: canonical
 status: stable
 produced_by: meta-skills (authored once; consumed by every skill that writes artifacts)
 provenance:
-  extracts_from: meta-skills/skills/eval-loop/SKILL.md § "Artifact Requirements", meta-skills/CLAUDE.md § "Manifest Spec", agent-skills/CLAUDE.md § "Lifecycle taxonomy"
+  extracted_from: meta-skills/skills/eval-loop/SKILL.md § "Artifact Requirements", meta-skills/CLAUDE.md § "Manifest Spec", agent-skills/CLAUDE.md § "Lifecycle taxonomy"
   extracted_at: 2026-05-16
 consumers: every skill that produces a tracked artifact (~25 skills); manifest-sync.ts reads the schema
 load_class: PLAYBOOK
@@ -312,6 +312,9 @@ date: 2026-05-16
 status: done
 stack: meta
 review_surface: none
+id: fresh-eyes-<slug>
+type: review
+keywords: [review, fresh-eyes]
 ---
 
 # Fresh-Eyes Review: <slug>
@@ -319,9 +322,10 @@ review_surface: none
 ...
 ```
 
-Four required fields plus the two v2 mandatories (`stack`, `review_surface`). No
-selection fields because the artifact is one-shot (read once, archive). No
-`decision_state` because terminal snapshots default to `not_required`.
+The four base required fields, the two v2 mandatories (`stack`, `review_surface`),
+and the v3 instruction core (`id`, `type`, `keywords`). No other selection fields
+because the artifact is one-shot (read once, archive). No `decision_state` because
+terminal snapshots default to `not_required`.
 
 ---
 
@@ -337,6 +341,9 @@ date: 2026-05-16
 status: done
 stack: meta
 review_surface: md
+id: tiktok-hold-rate-loop
+type: loop
+keywords: [loop, tiktok, hold-rate]
 summary: "[loop] tiktok hold-rate improvement loop"
 purpose: "Operating program for measurable hold-rate strategy -> execution -> evaluation"
 lifecycle: loop
@@ -362,6 +369,9 @@ date: 2026-05-16
 status: done
 stack: meta
 review_surface: md
+id: conquis-pricing-59-single-tier
+type: decision
+keywords: [decision, pricing, conquis]
 summary: "Decision: ship Conquis desktop $59 single-tier pricing"
 purpose: "Operator-committed pricing decision after 3-perspective debate"
 lifecycle: decision
@@ -384,6 +394,9 @@ date: 2026-05-16
 status: done_with_concerns
 stack: meta
 review_surface: none
+id: eval-loop-refactor-fresh-eyes
+type: review
+keywords: [review, eval-loop, refactor]
 summary: "Fresh-eyes on eval-loop refactor (FIXED 2 inline, 1 deferred)"
 purpose: "Independent QA review of eval-loop body-diet refactor"
 lifecycle: snapshot
@@ -402,6 +415,9 @@ date: 2026-05-16
 status: done
 stack: marketing
 review_surface: md
+id: conquis-desktop-hero-v3
+type: pipeline
+keywords: [copy, hero, conquis]
 summary: "Hero copy variants for conquis-desktop landing v3"
 purpose: "Three hero-section copy variants scored against rubric"
 lifecycle: pipeline
@@ -421,6 +437,9 @@ date: 2026-05-26
 status: done
 stack: marketing
 skills_involved: [research-icp, create-brand]
+id: forsvn-brand-identity
+type: canonical
+keywords: [brand, identity, forsvn]
 summary: "FORSVN brand identity — Pure Void palette, Bricolage + Be Vietnam Pro typography"
 purpose: "Canonical brand identity record for downstream marketing + design work"
 lifecycle: canonical

@@ -19,9 +19,9 @@ behind landing pages, app shells, and social cover frames. Consumed by `brief-gr
 `produce-asset`, `produce-video`, and the launch chains. The job of a motion background is to add
 *life* without stealing attention from the content or the CTA — it is a supporting actor, never the lead.
 
-The FORSVN brand constraint is load-bearing here: **matte, no glass/frosted panels, no purple/blue AI
-gradients, Forest-Shadow canvas, Leaf accent <10% of pixels.** A motion background that violates the
-brand is off-brand motion, however technically nice.
+The brand's own visual constraints are load-bearing here: **honor the brand's surface treatment
+(matte vs glossy), gradient/color rules, canvas, and accent discipline as set in `brand/BRAND.md`.**
+A motion background that violates the brand is off-brand motion, however technically nice.
 
 When `last_verified` exceeds 90 days, re-verify the perf budgets + accessibility expectations.
 
@@ -47,8 +47,8 @@ How a motion background earns *just enough* attention. Min 3.
 
 ### Angle 3 — Data/texture motion (brand-material in motion)
 
-- **Definition:** The brand's own texture or motif (e.g., topographic contour, grain, leaf/forest
-  motif for FORSVN) animated subtly — motion that *is* the brand, not generic.
+- **Definition:** The brand's own texture or motif (e.g., a topographic contour, grain, or a
+  brand-specific motif from `brand/BRAND.md`) animated subtly — motion that *is* the brand, not generic.
 - **Identifying signal:** Recognizably on-brand material; no stock-looking generic gradient blob.
 - **Best for:** brand-forward heroes where the background carries identity.
 
@@ -78,7 +78,7 @@ How a motion background earns *just enough* attention. Min 3.
 | Visible loop seam | reads cheap; breaks the "alive" effect | a jump/cut at the loop point | motion practice |
 | No `prefers-reduced-motion` fallback | accessibility failure; nausea/vestibular harm | animation plays regardless of the OS setting | a11y (hard) |
 | Heavy file / jank | slow LCP, dropped frames on mobile | >3 MB hero video or per-frame JS thrash | web-perf |
-| Off-brand AI gradient | off-brand (FORSVN: no purple/blue gradients, no glass) | generic purple/blue blur, frosted panel | brand |
+| Off-brand AI gradient | off-brand per the brand's gradient/surface rules (e.g. no purple/blue gradients, no glass — if the brand forbids them) | generic purple/blue blur, frosted panel | brand |
 | Autoplay with sound | instant bounce; browser-blocked | audio track on a background | UX practice |
 
 ---

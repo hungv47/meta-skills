@@ -3116,7 +3116,7 @@
             "produced_when": "One row appended on critic PASS (the local performance store)."
           },
           {
-            "path": "references/platform-intelligence/[channel].md (changelog + playbook notes)",
+            "path": "references/platform-intelligence/[channel].md",
             "lifecycle": "evaluation",
             "produced_when": "Critic PASS — a dated what-worked/what-failed entry APPENDED (never overwrites tactics)."
           }

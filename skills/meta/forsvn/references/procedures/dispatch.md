@@ -10,6 +10,35 @@ Before dispatching:
 3. **Initiative slug.** New → propose a kebab-case slug, user confirms. Resuming → use existing slug.
 4. **Session execution profile.** The dispatcher owns the ask: if no fresh `.forsvn/routing/execution-profile.json` exists, fire the one bundled single-vs-multi (+ model, when undetected) ask per [`execution-policy.md`](../_shared/execution-policy.md) and write the profile. Every leaf dispatched this session inherits it silently — leaves never re-ask.
 
+## Step 4.5 — Foundation pre-flight (warn before a generic run)
+
+A sub-step of Step 4 (still the 5-step contract — this is part of "load context"). After context is loaded and before the Step 5 dispatch, run this **only when the routed intent ∈ {research, marketing, product}** — the consumers of audience/product context. Skip it for `resume`, `summary`, `debate`, `decompose`, `scope`. It is the literal guard against the "output feels generic" failure: a thin foundation produces generic output, so surface it *before* work starts, not after.
+
+Read two real signals (the Step 1 snapshot already prints them; re-read the files if you entered via MCP):
+
+1. **Audience evidence — `docs/forsvn/canonical/research/ICP.md`.** Absent → no voice-of-customer grounding for the 13+ skills that consume it. Present → read its `**Confidence Summary:**` line (H/M/L finding counts) and quote density.
+2. **Product-context ratification — `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`.** `decision_state: accepted` = ratified; `decision_state: pending` / `status: needs_context` = an unratified autodraft. `date` older than 30 days = stale (matches research-icp Gate 4).
+
+> Read `decision_state`, **not** just `status`: research-icp sets `status: done` on its *own* completion, but only a human approval (via the review module) sets `decision_state: accepted`. A `status: done` + `decision_state: pending` artifact is an unratified draft, not a canonical source.
+
+Tier the foundation:
+
+- **solid** — ICP present with no unresolved `L`-confidence findings, product-context ratified, both fresh → no warning; continue to Step 5.
+- **partial** — ICP present but has `L`-confidence findings, OR product-context is an unratified autodraft, OR either is stale (>30d).
+- **thin** — no `ICP.md`.
+
+For **thin** or **partial**, print ONE line before the Step 5 announcement, then let the operator steer (non-blocking — drafts are usable; do not block dispatch; D-8 warn-don't-gate):
+
+```
+⚠ Foundation <thin|partial>: <no ICP.md | ICP has N low-confidence findings | product-context is an unratified autodraft | stale >30d>.
+  Output will lean generic. Run /research-icp first (builds the audience + VoC evidence), or proceed with what's on disk?  (research-icp / proceed)
+```
+
+- **proceed** (or any forward intent — non-blocking) → continue to Step 5; record `foundation: <tier>` so the run is honestly labelled and the leaf can echo the caveat. Report `DONE_WITH_CONCERNS` as the run's **completion status** (the Completion Status Protocol value in `skills/CLAUDE.md` — distinct from the routing-record `status:` field below, which stays within its own `dispatched | awaiting-user | completed | abandoned` enum).
+- **research-icp** → dispatch `/research-icp` instead (record the redirect via the normal Step 5 flow); the original ask resumes after.
+
+Warn at most once per session — a `resume` of the same initiative reads the prior `foundation:` already recorded on `.forsvn/routing/last-session.md` and does not re-warn. A **solid** foundation prints nothing.
+
 ## Step 5 — Dispatch: record → announce → invoke
 
 Strict order. The routing record lands **before** the Skill call so a leaf crash still leaves accurate state on disk.
@@ -43,6 +72,7 @@ initiative: <slug or empty>
 routed-to: /<skill-name or empty if summary>
 dispatched-by: forsvn
 context-loaded-via: mcp | filesystem
+foundation: solid | partial | thin   # Step 4.5 tier; omit when intent doesn't consume product context
 status: dispatched | awaiting-user | completed | abandoned
 next-action: <one line>
 ---

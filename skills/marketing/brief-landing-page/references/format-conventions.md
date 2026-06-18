@@ -346,7 +346,7 @@ Page-scoped only. No project-level default is created.
 
 ## Why This Works (sanity check)
 
-[2–4 lines: the brief's load-bearing arguments — why this hero/this architecture/this CTA hierarchy lands the hypothesis.]
+This is the why-this-works block per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md) — placed correctly (after the artifact spec, before the Review Gate). **Product-fit, not generic** (2–4 lines): the bet (the hypothesis, stated so it can fail), then the load-bearing arguments — why *this* hero / architecture / CTA hierarchy lands the hypothesis for *this* product — each traced to a source (`ICP.md` pain/VoC, `BRAND.md`/`CREATIVE-DIRECTION.md`, the campaign plan). Each line must fail the Competitor Swap Test (wouldn't read true for a competitor). No ICP/brand foundation → the convention's Absent state (general principles only; never a fabricated pain or positioning claim).
 
 ## Review Gate
 

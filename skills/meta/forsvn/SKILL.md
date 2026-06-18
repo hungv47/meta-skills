@@ -71,7 +71,7 @@ Rules:
 - Brand-gate: marketing/launch intent with `brand/BRAND.md` missing → route through `/create-brand` first.
 - forsvn-dev gate: `product` intent and the `decompose` route resolve to the separate **forsvn-dev** package (engineering skills carved out 2026-06-16). If it isn't installed, tell the user to add `forsvn-dev` rather than dispatching into a missing skill.
 
-**Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
+**Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Loading context includes the **foundation pre-flight** (Step 4.5): for research/marketing/product intent, warn before a generic run when `ICP.md` is absent or `PRODUCT-CONTEXT.md` is an unratified/stale draft — offer `/research-icp` first, non-blocking. Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
 
 ## Pre-Dispatch — the classify flow IS the cold start
 
@@ -105,7 +105,7 @@ Auto-fail: silent dispatch (no announcement) or record-after-invoke — redo the
 ## Completion Status
 
 - **DONE** — classified intent, wrote routing record, announced + invoked the leaf (or presented candidates / state summary).
-- **DONE_WITH_CONCERNS** — dispatched but product context was missing or stale; flagged to user.
+- **DONE_WITH_CONCERNS** — dispatched on a thin/partial foundation (no `ICP.md` / unratified / stale product context); the Step 4.5 pre-flight warned the user and recorded `foundation:`.
 - **BLOCKED** — could not read project state AND could not bootstrap `.forsvn/`.
 - **NEEDS_CONTEXT** — ask was empty, no prior session, no canonical sources. Printed state summary and exited.
 

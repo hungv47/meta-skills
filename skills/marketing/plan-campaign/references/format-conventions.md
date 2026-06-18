@@ -30,6 +30,8 @@ decision_state: not_required    # pending | approved | denied | suggested | not_
 review_tool: inline           # proof | inline | roughdraft | none
 reviewed_at:                  # YYYY-MM-DD — empty until reviewed
 reviewer:                     # who recorded the review — empty until reviewed
+pack_verified:                # YYYY-MM-DD | none — freshness of the loaded channel packs; `none` when no selected channel had a pack (legibility)
+applied_tactics: []           # union of the specific tactics narrated across the Channel Execution Briefs; empty when no pack loaded (legibility)
 ---
 ```
 
@@ -43,6 +45,8 @@ reviewer:                     # who recorded the review — empty until reviewed
 | `review_tool` | `inline` (default) / `proof` / `roughdraft` / `none`. Where the review happens. |
 | `reviewed_at` | ISO `YYYY-MM-DD`; empty until a human review is recorded. |
 | `reviewer` | Who recorded the review; empty until reviewed. |
+| `pack_verified` | Legibility (`references/_shared/legibility-convention.md`): freshness of the loaded channel packs; `none` when no selected channel had a pack. Per-channel truth lives in each Channel Execution Brief's Legibility block. |
+| `applied_tactics` | Legibility: union of the specific tactics narrated across the Channel Execution Briefs; `[]` when no pack loaded. Tactics, not vibes — each traces to a pack section. |
 
 Optional fields permitted (orchestrator may add when relevant): `campaign_name`, `goal`, `audience`, `growth_motion`, `team_size`, `budget_tier`, `duration_days`.
 
@@ -65,7 +69,8 @@ The Artifact Template prescribes a fixed section order. Do **not** reorder; down
    - Followed by execution notes for offline channels when selected (IRL, SMS, OOH)
 10. `## Timeline` — table with columns: `Week`, `Phase`, `Channel`, `Angle`, `Format`, `Status`
 11. `## Launch Sequence` — table with columns: `Phase`, `Timing`, `Channels`, `Action`
-12. `## Review Gate` — final section; the human-review decision block (see "Review Gate block" below)
+12. `## Why This Works` — the why-this-works block (after the plan, before the Review Gate; see "Why This Works section" below)
+13. `## Review Gate` — final section; the human-review decision block (see "Review Gate block" below)
 
 ## Creative Direction section
 
@@ -116,6 +121,7 @@ Required for **every selected channel**. Skipped channels do not appear here.
 - **Success Metric:** name the metric AND the threshold (e.g., "CTR ≥ 1.5%", not "good CTR"). If funnel-planner has set targets, mirror them here.
 - **Owner:** named person or role (e.g., "Marketing lead" / "Founder"). "TBD" is acceptable only on Sustain-phase channels.
 - **First Milestone:** the first verifiable shipped output (e.g., "First campaign live by W2", not "Set up Meta ads"). Drives accountability.
+- **Legibility block (per channel):** immediately under each channel's brief, emit the `**Legibility — applied expertise**` block from [`_shared/legibility-convention.md`](_shared/legibility-convention.md) — name the loaded pack + `pack_verified` date, the **specific** tactics applied (from the pack's §3 signals / §5 Playbook, not the channel name), and the one-line why. Use the **Stale** shape (⚠) when the pack is >90d old, and the **Absent** shape (no tailored claim) for a channel with no pack. The critic FAILs a channel whose brief claims tailoring without a pack-grounded Legibility block.
 
 ### Offline channel execution notes (when selected)
 
@@ -141,6 +147,17 @@ These notes are non-optional when the channel is selected — the orchestrator w
 - **Timing format:** `T-Nw` (weeks before launch) / `Day 0` (launch day) / `T+Nw` (weeks after).
 - **Channels column:** the channel(s) activated in that phase, drawn from Channel Assignments.
 - **Action column:** specific verifiable action ("Invite 50 alpha users to private Slack" not "Activate email list").
+
+## Why This Works section
+
+The `## Why This Works` block (section 12, after Launch Sequence, before Review Gate) follows
+[`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md) — **product-fit**
+rationale for the plan as a whole (distinct from the per-channel channel-fit Legibility blocks in
+Channel Execution Briefs): the bet (the one wager this campaign makes, falsifiable so `measure-results`
+can test it), then 2-4 load-bearing choices — pillar emphasis, channel mix, the lead angle — each
+traced to a source (`ICP.md` pain/VoC, `PRODUCT-CONTEXT.md` positioning, the growth motion). Each
+line must fail the Competitor Swap Test. No ICP/brand foundation → the convention's Absent state
+(general principles only; never a fabricated pain or positioning claim).
 
 ## Review Gate block
 

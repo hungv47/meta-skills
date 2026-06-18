@@ -33,7 +33,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | Placement context (highway / station / street / building) | viewing distance + dwell time |
 | Brand assets (`brand/BRAND.md`, logo, fonts) | on-brand legibility |
 
-Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → concept + core spec, skip the production-note depth; **never** skips the legibility check or the critic.
+Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → concept + core spec, skip the production-note depth; **never** skips the legibility check (the safety floor). Per the mode-resolver, `--fast` does drop the critic gate.
 
 ## Quality Gate — 5 dimensions
 

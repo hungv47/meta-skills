@@ -15,7 +15,7 @@
 ## Verdict
 - **PASS** — ≥35/50 AND no dim 0. **Dim 3 scoring 0 (a dark pattern) is an automatic BLOCK regardless of total.**
 - **DONE_WITH_CONCERNS** — 25–34, OR an unresolved prize-cost / compliance unknown (shipped, flagged).
-- **FAIL** — <25 or any dim 0 → one revision cycle (mechanic/honesty → Mechanic Designer; economics/funnel → Reward-and-Funnel). Second FAIL → BLOCKED.
+- **FAIL** — <25, or any of dims 1/2/4/5 at 0 → one revision cycle (mechanic/honesty → Mechanic Designer; economics/funnel → Reward-and-Funnel). Second FAIL → BLOCKED. Dim 3 at 0 is the hard BLOCK above (a dark pattern is rejected, not revised).
 
 ## Integrity test (every cycle)
 Would the player feel tricked if they saw the odds? If yes → dimension 3 fails. If 100k people played tomorrow, does the prize budget hold? If no → dimension 4 fails. Can you play and have fun without giving anything first? If no → dimension 2 fails.

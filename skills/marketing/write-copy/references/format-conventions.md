@@ -47,7 +47,9 @@ Single artifact file at `docs/forsvn/artifacts/marketing/content/`:
 
 | File | Content | Consumer |
 |------|---------|----------|
-| `[slug].copy.md` | H1 title + descriptive metadata block + Pre-Writing 5-item block + Key Lines (Route A) OR section-by-section copy (Route B) + A/B Variants (Route B only) | Human (writer/marketer), `brief-landing-page` (Route C — reads pre_writing.unique_mechanism + key_lines.*.score for next-section refinements), `plan-campaign` (Route C — reads surface + audience for campaign coherence) |
+| `[slug].copy.md` | H1 title + descriptive metadata block + Pre-Writing 5-item block + Key Lines (Route A) OR section-by-section copy (Route B) + A/B Variants (Route B only) + Why This Works block | Human (writer/marketer), `brief-landing-page` (Route C — reads pre_writing.unique_mechanism + key_lines.*.score for next-section refinements), `plan-campaign` (Route C — reads surface + audience for campaign coherence) |
+
+The `## Why This Works` block sits **after** the copy / variants and **before** the `## Verdict` (the critic header stays last), per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md): the bet (falsifiable) + 2-4 load-bearing choices — the lead mechanism, the angle, the proof — each traced to a product-fit source (`ICP.md` pain/VoC, `PRODUCT-CONTEXT.md` positioning), Competitor-Swap-clean. This is the deliverable-level product-fit rationale, distinct from the per-line V/F/U annotations. No ICP foundation → the convention's Absent state (general principles only; no fabricated pain/VoC).
 
 **Route C exception:** no standalone artifact file written by copywriting in Route C — calling skill embeds the copy + annotations directly in its own artifact.
 

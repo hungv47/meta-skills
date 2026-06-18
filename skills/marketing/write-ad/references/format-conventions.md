@@ -65,6 +65,8 @@ Every run produces THREE files in `docs/forsvn/artifacts/marketing/write-ad/`:
 | `[slug].rationale.md` | Angle, audience-temperature framing, creative format, production model, anchor proof, anti-patterns avoided. Per-variant rationale (3 sections — hero / A / B). Pre-Dispatch dimensions resolved. | Human (advertiser review), maintainer (audit), `plan-campaign` (Route B — reads angle for campaign coherence) |
 | `[slug].critic-score.md` | Rubric scorecard across 7 dimensions, per-variant scores (3 scorecards), terminal-humanmaxxing regression check per variant, cycle count. | Maintainer (audit), `plan-campaign` (Route B — picks PASS scores ≥56/70 for highest-priority budget allocation) |
 
+The three-file split already realizes artifact → rationale → scorecard ordering. `[slug].rationale.md` **is** the why-this-works surface per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md): each variant's rationale opens with **the bet** (the wager that variant makes) and ties its angle / framing / anchor-proof to a **product-fit** source — the ICP pain or VoC phrase (`ICP.md`), the positioning (`PRODUCT-CONTEXT.md` / `BRAND.md`), or the campaign plan — never generic ad best-practice (Competitor Swap Test). This is product-fit, distinct from any channel/placement reasoning. No foundation → the convention's Absent state (general principles only; no fabricated pain/proof).
+
 ## Field values — network
 
 | Value | Surface |

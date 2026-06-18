@@ -16,6 +16,6 @@
 | Start | Duration | Segment | Goal it serves |
 |---|---|---|---|
 | 0:00 | 3:00 | Welcome + why-stay | retention hook |
-| 0:03 | 5:00 | The problem | sets up the demo's value | … |
+| 0:03 | 5:00 | The problem | sets up the demo's value |
 
 Pass to the Logistics Director to add owners, cues, and contingencies.

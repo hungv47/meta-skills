@@ -110,8 +110,10 @@ In order. Renaming or reordering breaks polish-chain readers (humanmaxxing / vn-
 2. **Body** — single block with body text + `**Char count:**`.
 3. **CTA** — single block with CTA text + `**Placement:**`.
 4. **Format spec** — bullet list: surface type + aspect ratio (if media-coupled) + pattern-interrupt density.
-5. **Critic verdict** — 6-row markdown table (5 dimensions + Total). Total row formatted `**Total** | / 50 | pass ≥ 35; done_with_concerns 25-34; fail < 25`.
-6. **Anti-patterns triggered (if any)** — bullet list of detected anti-patterns from `anti-patterns.md` by name. If none triggered, section header still present with `- None` bullet (explicit empty is the contract).
+5. **Legibility** — the channel-fit block per [`_shared/legibility-convention.md`](_shared/legibility-convention.md): pack loaded + `pack_verified` + the specific tactics narrated (`applied_tactics`), or the transparent-degrade statement when no pack covers the platform. Placed just before Why this works (matches the SKILL.md body order).
+6. **Why this works** — the product-fit rationale block per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md): the bet (falsifiable) + 2-4 load-bearing choices traced to ICP pain/VoC/positioning, Competitor-Swap-clean. Distinct from the channel-fit Legibility block just above. No ICP/brand foundation → the convention's Absent state (general principles only).
+7. **Critic verdict** — 6-row markdown table (5 dimensions + Total). Total row formatted `**Total** | / 50 | pass ≥ 35; done_with_concerns 25-34; fail < 25`.
+8. **Anti-patterns triggered (if any)** — bullet list of detected anti-patterns from `anti-patterns.md` by name. If none triggered, section header still present with `- None` bullet (explicit empty is the contract).
 
 **Variant section count = `variant_count` frontmatter field.** If `variant_count: 3`, the artifact has `### Variant A`, `### Variant B`, `### Variant C` blocks. Missing variant blocks (e.g., variant_count: 3 but only 2 in body) breaks parse — flag as format-fail.
 

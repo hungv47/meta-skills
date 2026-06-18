@@ -4,7 +4,7 @@ platform: <linkedin | tiktok | reels | shorts | x | youtube | producthunt | redd
 schema_version: 2
 pack_type: <shortform-video | launch-channel | asset-format>
 last_verified: <YYYY-MM-DD>
-verifier: <hungv47 | agent-name>
+verifier: <hungv47 | agent-name | internal>
 status: <draft | reviewed | stale>
 source_basis: "Per-claim categorical citations inline (platform docs, third-party studies, [pattern-derived]). URL-level master ledger not maintained — promote to URL citations as claims are re-verified."
 summary: "<one line a consuming skill can quote verbatim — what this pack grounds and the single sharpest tactic. e.g. 'Product Hunt launch-day playbook: first-comment + 12:01 PT post + hunter relationships drive the leaderboard.'>"

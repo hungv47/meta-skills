@@ -88,8 +88,9 @@ export async function fetchCurrentPack(platform: string, localLastVerified: stri
       return { source: "local", reason: "unreachable" };
     }
     const body = (await res.json()) as { fresher?: boolean; content?: string; last_verified?: string };
-    if (!body.fresher || !body.content) return { source: "local", reason: "snapshot_current" };
-    return { source: "hosted", fresher: true, content: body.content, lastVerified: body.last_verified ?? "" };
+    // a hosted pack with no last_verified can't be claimed "current" — fall back to local
+    if (!body.fresher || !body.content || !body.last_verified) return { source: "local", reason: "snapshot_current" };
+    return { source: "hosted", fresher: true, content: body.content, lastVerified: body.last_verified };
   } catch {
     warn(`[forsvn] hosted backend unreachable; using local snapshot (no run impact).`);
     return { source: "local", reason: "unreachable" };
@@ -122,6 +123,9 @@ export async function fetchContextBundle(deps: HostedDeps = {}): Promise<Context
 export async function meter(action: string, units: number | undefined, deps: HostedDeps = {}): Promise<{ remaining: number; overage: number } | null> {
   const key = getApiKey(deps);
   if (!key) return null;
+  // never POST garbage to usage accounting: blank action, or non-finite / negative units
+  if (!action.trim()) return null;
+  if (units !== undefined && (!Number.isFinite(units) || units < 0)) return null;
   const f = deps.fetchImpl ?? fetch;
   try {
     const res = await f(`${apiBase(deps)}/v1/meter`, { method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify({ action, units }) });

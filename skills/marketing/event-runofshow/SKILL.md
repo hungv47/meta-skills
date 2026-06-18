@@ -33,7 +33,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 | Cast (host, guests, demo driver) | who can own segments |
 | Platform + tech (live stream / in-person / hybrid) | which cues + failure modes apply |
 
-Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → segments + timing only, skip the deep contingency layer; **never** skips owners or the critic.
+Mode per [`references/_shared/mode-resolver.md`](references/_shared/mode-resolver.md). `budget: standard`. `--fast` → segments + timing only, skip the deep contingency layer; **never** skips owner assignment (the safety floor). Per the mode-resolver, `--fast` does drop the critic gate.
 
 ## Quality Gate — 5 dimensions
 

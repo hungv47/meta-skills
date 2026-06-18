@@ -51,6 +51,7 @@ vary; the keyword must appear in an `## …` heading).
 | `Signals` (Algorithm / Ranking) | ✓ | ✓ | optional |
 | `Anti-Pattern` | ✓ | ✓ | ✓ |
 | `Playbook` | ✓ | ✓ | ✓ |
+| `Timing` (Cadence / Hook Window) | ✓ | ✓ | optional |
 | `CTA` (or Conversion) | ✓ | ✓ | ✓ |
 | `Open Questions` | ✓ | ✓ | ✓ |
 | `Changelog` | ✓ | ✓ | ✓ |

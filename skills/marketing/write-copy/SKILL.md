@@ -73,7 +73,7 @@ Three routes — A (single key line), B (full page), C (called by another skill)
 - **Path (Route C):** no standalone artifact — annotated copy embedded in caller's artifact
 - **Lifecycle:** pipeline — on re-run for same slug, rename existing to `[slug].copy.v[N].md` and create new with incremented version
 - **Frontmatter fields:** `skill`, `version`, `date`, `status`
-- **Body sections (in order):** descriptive metadata · Pre-Writing 5-item block · Key Lines (Route A) OR section-by-section copy (Route B) · A/B Variants (Route B only)
+- **Body sections (in order):** descriptive metadata · Pre-Writing 5-item block · Key Lines (Route A) OR section-by-section copy (Route B) · A/B Variants (Route B only) · Why This Works ([convention](references/_shared/why-this-works-convention.md))
 - **Schema drift rule:** changes require atomic update of `format-conventions.md` § "Frontmatter field order" / § "Pre-Writing block format" / § "Key Lines block format"
 
 Full template + per-section format rules in [`references/format-conventions.md`](references/format-conventions.md).

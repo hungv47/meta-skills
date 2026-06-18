@@ -399,12 +399,14 @@ Consumers should respect `stale: true` as a warning signal, not a hard block. Th
 
 ## Experience Domain Handling
 
-`docs/forsvn/experience/{domain}.md` files are different from regular artifacts:
+This section covers the **legacy flat** experience files only — `docs/forsvn/experience/<domain>.md` with **no stack subdirectory** (the Q&A substrate). The newer **stacked** experience layer (`docs/forsvn/experience/<stack>/<topic>.md`) is indexed as a **normal artifact** in the `artifacts` map, not here (see § "Experience writeback"). Sync distinguishes them by path: a file directly under `experience/` is flat; one under `experience/<stack>/` is layered.
+
+Legacy flat experience files are different from regular artifacts:
 - **Multi-producer** — many skills append to the same file.
 - **Append-only** — never overwritten, only added to.
 - **No single status** — each Q+A block is independently valid.
 
-The manifest tracks them in a separate `experience` map (see schema above). Sync infers `last_written_by` by scanning the file for the most recent `**Asked by:**` line (the Pre-Dispatch Protocol writes this for every Q+A block).
+The manifest tracks the flat files in a separate `experience` map (see schema above), keyed by basename. Sync infers `last_written_by` by scanning the file for the most recent `**Asked by:**` line (the Pre-Dispatch Protocol writes this for every Q+A block).
 
 Consumers (typically `start-*` orchestrators) use the `entries` count as a heuristic for "how much context has been gathered in this domain." A domain with 7 entries is well-covered; one with 1 entry barely is.
 
