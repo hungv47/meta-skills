@@ -77,6 +77,14 @@ provenance:
 **CTA:** "[verbatim CTA]"
 **Status:** [done | done_with_concerns | blocked | needs_context]
 
+**Why this works** (opening framing — the bet carried through from the brief's `## What This Brief Bets On`; product-fit per `_shared/why-this-works-convention.md`. Rides the header, NOT a new H2 — preserves the reorder-sensitive section spine.)
+- The bet: [the one core wager this video makes — the hook / arc / lane choice that must land; falsifiable, so `evaluate-shortform` can test it next cycle]
+- For this product: [a load-bearing shot or structure choice → the ICP pain / VoC phrase / positioning it serves — name the source: the brief's bet, `ICP.md`, `PRODUCT-CONTEXT.md`]
+- For this product: [a second load-bearing choice → its product-specific reason]
+- The differentiator: [why this script wouldn't work verbatim for a competitor — the Competitor-Swap angle]
+
+[No ICP/brand foundation, or a cold-start brief → the convention's Partial/Absent state; never fabricate a pain, VoC quote, or positioning claim. This is product-fit, not channel-fit (algorithm/format reasoning is the brief's legibility block, not here).]
+
 ## Concerns (only when status = done_with_concerns)
 
 [Pinned at top when status is done_with_concerns. List each concern with one line of reasoning. Common: Gate 4 narrative arc soft-fail; one shot slightly over caption-pace cap allowed by operator override; etc.]
@@ -532,7 +540,7 @@ In order. Renaming or reordering breaks downstream consumers + critic. Both mode
 
 ### Manifest
 
-1. **Header block** (Source brief / Mode / Target platforms or Surface / Aspect / Length / Shot count / CTA / Status / Brand source [app-preview])
+1. **Header block** (Source brief / Mode / Target platforms or Surface / Aspect / Length / Shot count / CTA / Status / Brand source [app-preview]) **+ a `**Why this works**` opening framing** per [`_shared/why-this-works-convention.md`](_shared/why-this-works-convention.md): the bet (falsifiable) + 2-4 load-bearing script choices traced to a product-fit source (the brief's `## What This Brief Bets On`, `ICP.md`, `PRODUCT-CONTEXT.md`) — Competitor-Swap-clean, carried through from brief-shortform, never fabricated. Placed in the opening (the convention's brief-style exception) so the rationale layer rides section 1 and the reorder-sensitive 9-section spine is unchanged — not a new H2.
 2. **Concerns** (always pinned at top when `brand_source: cold-start-hint`; otherwise only when status is done_with_concerns)
 3. **Shot List** — shortform: 6 columns (Shot / Duration / Visual / On-Screen Text / Voice / Asset Prompt File). App-preview: 10 columns (Shot / Duration / Visual / On-Screen Text / Voice / Asset Prompt File / Source Screenshot / Crop Rect / Mask Transform / Interaction Verb)
 4. **Audio Plan** — Music + TTS spec block (shortform); per-beat audio table (app-preview, TTS optional)

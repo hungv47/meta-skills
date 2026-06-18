@@ -45,7 +45,7 @@ The shared production-skill anti-pattern catalog — the orchestrator-level set 
 
 **Why it fails:** The brief encodes platform-specific aspect (9:16 for IG Story, 1.91:1 for OG card). A 1:1 render for an IG Story slot is unusable.
 
-**Fix:** Every prompt's "Platform Spec" section states the aspect verbatim AND the "Anti-Patterns" DO NOT list explicitly forbids aspect overrides. Renderer Hints section (when populated) includes tool-specific syntax (`--ar 9:16`, size param) to defend against the default.
+**Fix:** Every prompt's "Platform Spec" section states the aspect verbatim AND the "Anti-Patterns" DO NOT list explicitly forbids aspect overrides. The required **Engine Dialect** section includes the bound engine's aspect syntax (`--ar 9:16`, `size`/`aspectRatio` param) to defend against the default.
 
 ---
 

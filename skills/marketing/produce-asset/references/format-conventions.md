@@ -147,20 +147,18 @@ DO NOT:
 - Add watermarks unless the brief explicitly requested them
 - Output every variant — render the single composition described; the operator will request variants explicitly if needed
 
-## Reference Direction (optional)
+## Realized-Surface Anchor (required)
 
-[If the brief carried a reference_direction field with mood / inspiration / competitor anti-references, paste it here verbatim. Otherwise omit.]
+[The realized surface this asset is designed against, carried through from the brief's reference-direction: path/URL + what was taken (composition / light / type / density / grading), fed into the Engine Dialect (`--sref` / edit base). If the brief recorded none, copy its explicit fallback verbatim: `No realized surface available — designing from DESIGN.md + CREATIVE-DIRECTION.md tokens only`. Never omitted, never silent — see `references/_shared/realized-surface-grounding.md`.]
 
-## Renderer Hints (optional — tool-specific syntax)
+## Engine Dialect (required — per-engine controls + craft)
 
-[If the operator specified a target renderer in the produce-asset invocation, add tool-specific tokens here. Examples:]
+[The bound `tool_targets.image` engine's dialect, OR a multi-engine hints table when tool-agnostic (≥3 families). Speak real controls + the text-in-image routing caveat; route copy-critical slots to a strong-text engine. Spellings are a snapshot — verify current syntax. Full dialect: `references/_shared/image-engine-dialects.md`. Examples:]
 
-**Midjourney:** `--ar [aspect] --stylize [0-1000] --v 6`
-**DALL·E:** size: `[1024x1024 or 1792x1024 or 1024x1792]`; quality: `hd`; style: `natural`
-**Imagen / Vertex AI:** aspect_ratio: `[1:1 | 16:9 | 9:16 | 4:3 | 3:4]`
-**Claude Design / claude.ai/design:** [paste prompt body directly; supports natural language specs]
-
-[Omit this section entirely if the operator did not target a specific renderer.]
+**Midjourney (v7):** `--ar [aspect] --style raw --stylize [0-1000]`; style ref `--sref [url] --sw [0-1000]`; subject lock `--oref [url] --ow [0-1000]`; negative `--no [x]`. Weak in-image text → typeset copy separately or route elsewhere.
+**OpenAI `gpt-image-1`:** `size` `[1024x1024 | 1536x1024 | 1024x1536]`; `quality` `[low|medium|high]`; `background` `[transparent|opaque]`. Strong text → prefer for copy-heavy / alpha slots.
+**Imagen 4 (Vertex AI):** `aspectRatio` `[1:1 | 3:4 | 4:3 | 9:16 | 16:9]`; `negativePrompt`; disable default LLM prompt-enhancement for exact brand control.
+**Headless HTML + `@font-face`:** pixel-exact copy + exact hex; the floor for copy-critical OG/social cards (`references/_shared/render-engines.md`).
 ```
 
 ---
@@ -213,8 +211,8 @@ In order. Renaming or reordering breaks downstream consumers + critic.
 3. **Copy to Render (verbatim)**
 4. **Brand Tokens (verbatim)**
 5. **Anti-Patterns (DO NOT list)**
-6. **Reference Direction** (optional; omit if brief didn't carry it)
-7. **Renderer Hints** (optional; omit if no target renderer specified)
+6. **Realized-Surface Anchor** (required; cites the brief's pulled surface + what was taken, or copies the explicit fallback line — never omitted, never silent)
+7. **Engine Dialect** (required; the bound engine's dialect, or a multi-engine hints table when tool-agnostic — never a stub line)
 8. **Change Log** (cycle 2+ only; lists every edit traced to a critic gate)
 
 ---

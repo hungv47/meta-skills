@@ -50,6 +50,12 @@ You do NOT:
 ### Gate 7: Manifest Verification Checklist
 [Manifest's verification checklist matches the brief's spec gates (aspect / safe zones / legibility / brand-mark fidelity / color fidelity). PASS / FAIL.]
 
+### Gate 8: Realized-Surface Anchor
+[Each prompt carries a Realized-Surface Anchor that cites a surface (path/URL + what was taken) carried from the brief, OR copies the explicit "No realized surface available …" fallback verbatim. No silent token-only design. PASS / FAIL.]
+
+### Gate 9: Engine Dialect + Composition
+[Each prompt carries a non-stub Engine Dialect (bound engine's controls + text-reliability routing, or a multi-engine hints table when tool-agnostic) AND the prompt body names a composition strategy. Presence + specificity, not taste. PASS / FAIL.]
+
 ## [If FAIL] Fix Instructions
 
 ### Fix 1: [Specific problem]
@@ -148,6 +154,25 @@ You do NOT:
 
 **Auto-FAIL:** Missing section OR missing any of the 5 spec gates OR subjective phrasing ("looks good" instead of binary checkbox).
 
+#### Gate 8: Realized-Surface Anchor
+**Criterion:** Every prompt carries a non-empty "Realized-Surface Anchor" section that either (a) cites ≥1 realized surface (path or URL) + what was taken from it, carried through from the brief's reference-direction, or (b) copies the brief's explicit fallback line verbatim.
+
+**Check:**
+- The "Realized-Surface Anchor" section is present and non-empty in each prompt.
+- Either a concrete surface reference (path/URL) WITH a "what was taken" note (composition / light / type / density / grading), OR the exact string `No realized surface available — designing from DESIGN.md + CREATIVE-DIRECTION.md tokens only`.
+- The anchor is traceable to the brief's reference-direction — carried through, not invented.
+
+**Auto-FAIL:** Section missing OR empty OR a token-only design with neither a surface nor the explicit fallback line (a silent skip) OR a fabricated surface not traceable to the brief.
+
+#### Gate 9: Engine Dialect + Composition
+**Criterion:** Every prompt carries a non-stub Engine Dialect block AND names a composition strategy in the prompt body. **Presence + specificity — falsifiable, no taste calls** (consistent with Core Principle 4).
+
+**Check:**
+- **Engine Dialect:** when a target engine is bound, the section speaks that engine's controls (≥2 real parameters/behaviors) PLUS the text-in-image routing note; when tool-agnostic, a hints table covering ≥3 engine families (Midjourney / OpenAI / Imagen). A lone `--ar` line is a stub.
+- **Composition:** the Render-Ready Prompt body names ≥1 explicit composition strategy (focal hierarchy / rule-of-thirds / safe-zone negative space / leading lines) — not a bare "layout".
+
+**Auto-FAIL:** Engine Dialect missing OR a stub (single param, no behavior/routing) OR tool-agnostic with <3 engine families OR composition unnamed (generic "nice layout" with no strategy). Do NOT FAIL on aesthetic judgment — only on absent/stub structure.
+
 ### Rewrite Routing Table
 
 When a gate fails, route the fix to the responsible agent:
@@ -161,6 +186,8 @@ When a gate fails, route the fix to the responsible agent:
 | Brand Token Fidelity (fabricated / sacred violated) | **prompt-author-agent** | Re-read brand/DESIGN.md + brand/BRAND.md, cite directly |
 | Anti-Pattern Section (missing forbiddances) | **prompt-author-agent** | Add missing rows to DO NOT list |
 | Manifest Verification Checklist | **orchestrator** | Manifest-level fix; orchestrator regenerates the checklist section |
+| Realized-Surface Anchor (missing / silent skip) | **prompt-author-agent** | Carry the brief's surface (path/URL + what was taken) or record the explicit fallback line |
+| Engine Dialect / Composition (stub / unnamed) | **prompt-author-agent** | Add the bound-engine dialect (or multi-engine table) + name the composition strategy |
 
 **Multiple failures:** If 3+ gates fail across the same slot, re-dispatch the entire slot rather than patching individual gates.
 
@@ -168,15 +195,15 @@ When a gate fails, route the fix to the responsible agent:
 
 1. **Read the brief + brand files first.** You need the source of truth before judging the prompt.
 2. **Check Gate 1 (slot coverage) before anything else.** If coverage is wrong, downstream gates may not apply.
-3. **Go through gates 2-7 systematically.** Even if Gate 2 fails, evaluate the rest — operator may want to see the full failure profile.
+3. **Go through gates 2-9 systematically.** Even if Gate 2 fails, evaluate the rest — operator may want to see the full failure profile.
 4. **Quote exact lines on every FAIL.** No vague critiques.
-5. **PASS only if ALL 7 gates pass.** This is a binary gate, not a score.
+5. **PASS only if ALL 9 gates pass.** This is a binary gate, not a score.
 
 ## Self-Check
 
 Before returning:
 
-- [ ] All 7 gates evaluated
+- [ ] All 9 gates evaluated
 - [ ] Every FAIL quotes the exact failing line(s) from the prompt or manifest
 - [ ] Fix instructions are specific enough that prompt-author can act without follow-up
 - [ ] No subjective taste calls — only spec-compliance facts

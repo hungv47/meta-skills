@@ -75,9 +75,13 @@ DO NOT:
 - Add watermarks unless the brief explicitly requested them
 - Output every variant — render the single composition described; the operator will request variants explicitly if needed
 
-## Reference Direction (optional — if brief provided seed)
+## Realized-Surface Anchor (required)
 
-[If the brief-graphic artifact carried a `reference_direction` field with mood / inspiration / competitor anti-references, paste it here verbatim. Otherwise omit this section entirely.]
+[The realized surface this asset is designed against — carried through from the brief-graphic artifact's reference-direction. State the path/URL pulled + what was taken (composition / light / type treatment / density / grading), and feed it into the Engine Dialect (e.g. Midjourney `--sref`, a Gemini edit base). If the brief recorded no realized surface, copy its explicit fallback line verbatim: `No realized surface available — designing from DESIGN.md + CREATIVE-DIRECTION.md tokens only`. Never omit, never silent. See [`../references/_shared/realized-surface-grounding.md`](../references/_shared/realized-surface-grounding.md).]
+
+## Engine Dialect (required)
+
+[The bound `tool_targets.image` engine's dialect — speak its real controls + failure modes (text-in-image reliability above all). When tool-agnostic, give a per-engine hints table covering at least Midjourney / OpenAI (`gpt-image-1` / DALL·E) / Imagen — not a single stub line. Route copy-critical slots away from weak-text engines (Midjourney) toward `gpt-image-1` / Imagen / the headless floor. Param spellings are a snapshot — verify current syntax. Full dialect + per-slot engine choice: [`../references/_shared/image-engine-dialects.md`](../references/_shared/image-engine-dialects.md).]
 
 ## Change Log (only on cycle 2+)
 
@@ -99,13 +103,16 @@ DO NOT:
 2. **Renderer-agnostic prompt body.** Don't lock to one tool's syntax. "Subject + composition + style + lighting + camera" works across Midjourney / DALL·E / Imagen / human designers; tool-specific syntax (e.g., Midjourney `--ar 1:1 --stylize 250`) goes in a SEPARATE "Renderer hints" section if the brief specifies a target renderer.
 3. **Verbatim copy + brand tokens.** Renderer is a typesetter, not a copywriter. Spec is spec. Critic Gate 4 + Gate 3 enforce.
 4. **Placeholders > fabrications.** When a brand mark or asset is missing, the prompt instructs the renderer to use a placeholder, never to invent. Critical Gate 2.
+5. **Engine dialect, not just transcription.** Tune the prompt to the bound engine's real controls *and* failure modes — text-in-image reliability above all (route copy-critical slots away from Midjourney toward `gpt-image-1` / Imagen / the headless floor). Tool-agnostic → a multi-engine hints table, never a stub line. Critic Gate 9 enforces presence + specificity. Dialect: [`../references/_shared/image-engine-dialects.md`](../references/_shared/image-engine-dialects.md).
+6. **Compose, don't just place.** One focal subject ranked by size/contrast/placement; the brief's safe zones are *intentional negative space for copy*, not crop margins; reserve the brand accent for the focal point / CTA. Composition craft: same reference, § Composition craft.
+7. **Design against the realized surface.** Carry the brief's realized-surface anchor through into the prompt and feed it to the dialect (`--sref` / reference-image / edit base); if the brief recorded none, copy its explicit fallback line — never silent. Critic Gate 8 enforces. [`../references/_shared/realized-surface-grounding.md`](../references/_shared/realized-surface-grounding.md).
 
 ### Prompt body conventions
 
 Use this internal structure for the "Render-Ready Prompt" section:
 
 1. **Subject line** — what's the asset OF? (e.g., "A 1080×1080 Instagram square promoting a developer-tools product launch")
-2. **Composition** — layout, foreground/background, focal point
+2. **Composition** — name the craft, don't just say "layout": one focal subject (ranked by size/contrast/placement), focal point on a rule-of-thirds intersection (or deliberate center for an OG card), the safe-zone reservations composed as intentional negative space holding the copy, leading lines toward the CTA, brand accent reserved for the focal point. See `image-engine-dialects.md` § Composition craft.
 3. **Style** — illustration / photography / abstract / 3D / typography-led; match the brand's surface convention
 4. **Lighting / mood** — if photographic or 3D
 5. **Color palette** — invoke brand tokens by name AND hex
@@ -133,9 +140,9 @@ The brief-graphic artifact carries platform metadata. The prompt MUST surface:
 
 If the brief specifies a platform not in this table, copy the brief's platform spec verbatim and flag the unknown platform in the prompt's "Platform Spec" section so the operator/renderer can verify.
 
-### Reference-image strategy
+### Realized-surface + reference-image strategy
 
-When the brief-graphic artifact carries `reference_direction` (mood references, competitor anti-references, inspirational palette), surface it in the prompt. If the renderer supports image references (Midjourney `--cref`, DALL·E inpainting), suggest them as optional inputs at the bottom of the prompt — never required.
+The brief-graphic artifact's `reference_direction` is built from a **realized surface** (a shipped page, an approved exploration, a live exemplar — not generic adjectives). Carry it through verbatim into the required **Realized-Surface Anchor** section, and *feed it to the engine dialect*: pass the surface as Midjourney `--sref` (style) or `--oref` (subject lock), a `gpt-image-1` / Gemini edit base, or the headless-HTML reference. If the brief recorded the explicit no-surface fallback, copy that line — never silent. Style/subject-reference syntax drifts; the per-engine current spellings live in [`../references/_shared/image-engine-dialects.md`](../references/_shared/image-engine-dialects.md).
 
 ## Self-Check
 
@@ -146,13 +153,17 @@ Before returning:
 - [ ] Brand tokens cited by both hex AND token name (renderer needs both)
 - [ ] Copy strings are verbatim from the brief (no synonyms, no "improvements")
 - [ ] DO NOT list includes: hallucinated logos / aspect overrides / copy substitution / EXIF stripping / watermark addition / variant gratuity
-- [ ] If brief carried a `reference_direction`, surfaced in the prompt; if not, the section is omitted (not faked)
+- [ ] **Realized-Surface Anchor** present (required): cites the brief's pulled surface + what was taken, OR copies the explicit `No realized surface available …` fallback verbatim — never silent
+- [ ] **Engine Dialect** present (required): the bound engine's dialect, or a multi-engine hints table when tool-agnostic — not a stub line; copy-critical slots routed to a strong-text engine
+- [ ] Prompt body names a composition strategy (focal hierarchy / rule-of-thirds / safe-zone negative space), not just "layout"
 - [ ] Frontmatter has all 6 required fields
 - [ ] On cycle 2+: Change Log present, every edit traced to a critic gate
 
 ## Anti-Patterns
 
-- **Renderer-specific syntax in the main prompt body.** Tool-specific tokens (Midjourney `--ar`, `--stylize`, `--cref`) belong in a separate "Renderer hints" section, not the universal subject-style-spec body.
+- **Renderer-specific syntax in the main prompt body.** Tool-specific tokens (Midjourney `--ar`, `--stylize`, `--sref` / `--oref`) belong in the required **Engine Dialect** section, not the universal subject-style-spec body.
+- **A stub Engine Dialect.** A single `--ar 1:1` line is not a dialect. Bound engine → speak its controls + text-reliability caveat; tool-agnostic → the multi-engine hints table. Gate 9 fails a stub.
+- **A silent realized-surface skip.** Omitting the Realized-Surface Anchor — or quietly designing from tokens with no anchor line — is a Gate 8 FAIL. Cite the surface or record the explicit fallback.
 - **Synonymizing copy "for flow."** "Get started" → "Begin now" is a Gate 4 FAIL. The brief is the source of truth.
 - **Adding aspect / size defaults the brief didn't request.** If the brief says 4:5, the prompt says 4:5 — not "4:5 (or 1:1 if needed)."
 - **Generating multiple variants in one invocation.** One prompt-author = one slot = one composition. Operator requests variants explicitly via re-dispatch with a `--variant` brief, not by the prompt-author guessing.
