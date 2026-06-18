@@ -20,8 +20,8 @@ The canonical platform catalog is top-level `references/platform-intelligence/{l
 
 Three sections, and only three. Per D23 sub-decision 2, `plan-campaign` is a strategy skill — it consumes the **planning-layer** sections and leaves the production-layer detail to `brief-shortform`:
 
-- **Consumed:** §2 Format Constraints, §3 Algorithm Signals, §6 CTA Placement Norms.
-- **NOT consumed:** §1 Hook Taxonomy and §5 Hook Window + Retention Curve — production-layer craft that `brief-shortform` owns. A campaign plan that specifies hook archetypes has crossed into the production lane.
+- **Consumed:** §2 Format Constraints, §3 Algorithm Signals, §7 CTA Placement Norms.
+- **NOT consumed:** §1 Hook Taxonomy, §5 Playbook, and §6 Hook Window + Retention Curve — production-layer craft that `brief-shortform` owns. A campaign plan that specifies hook archetypes has crossed into the production lane.
 
 ## Section-to-output map
 
@@ -30,7 +30,7 @@ Three sections, and only three. Per D23 sub-decision 2, `plan-campaign` is a str
 Before the channel-agent commits a Social-media platform to a cadence in the **Content Mix by Channel** table, it checks §2 against team capacity:
 
 - **`_shared/platform-intelligence/tiktok.md` §2** — TikTok has two production tiers: a 21–34s entertainment sweet spot and a 60–180s educational tier. They are different cost structures. A Channel Execution Brief that commits a 2-person team to "daily TikTok" without naming the tier is a capacity risk (see `references/anti-patterns.md` — capacity-vs-cadence). The brief's Tactic field names the tier.
-- **`_shared/platform-intelligence/linkedin.md` §2** — LinkedIn video is effectively burned-in-caption-required (~80% watched on mute) and external links in the post body carry an 18–40% reach tax. Both are real production costs the cadence and Tactic fields must absorb before the channel is sold as "low-effort."
+- **`_shared/platform-intelligence/linkedin.md` §2** — LinkedIn video is effectively burned-in-caption-required (~80% watched on mute, practitioner consensus) and external links in the post body carry a documented reach tax (~26% average, rising toward ~42% — Ordinal 900K-post study). Both are real production costs the cadence and Tactic fields must absorb before the channel is sold as "low-effort."
 
 **channel-agent output framing:** the Content Mix `Cadence` column and the Channel Execution Brief `Tactic` column cite the §2 production tier — not a bare frequency number.
 
@@ -44,21 +44,21 @@ Before the channel-agent commits a Social-media platform to a cadence in the **C
 
 **channel-agent output framing:** every Social-media row in the Channel Hierarchy table traces its `Role` + `Rationale` to a named §3 signal.
 
-### §6 CTA Placement Norms → conversion mechanics + Success Metric
+### §7 CTA Placement Norms → conversion mechanics + Success Metric
 
-§6 governs whether a Social-media channel can realistically own a **Conversion** role and what the Channel Execution Brief's `Success Metric` should be:
+§7 governs whether a Social-media channel can realistically own a **Conversion** role and what the Channel Execution Brief's `Success Metric` should be:
 
-- **`_shared/platform-intelligence/linkedin.md` §6** — the only link in the post body costs 18–40% reach. A LinkedIn channel brief with a click-driven objective must spec link-in-first-comment, or accept the reach tax. A "DM me" CTA works only for high-trust/high-ticket B2B. The Success Metric and Budget Type fields reflect this.
-- **`_shared/platform-intelligence/{tiktok,reels,shorts,youtube,x}.md` §6** — each platform's CTA mechanics differ (bio link, end-card, comment-pinned, overlay timing). The channel-agent reads §6 before assigning a Conversion role; if the platform's CTA path is weak, the channel is assigned Awareness/Trust and conversion is routed to an owned channel (email, landing page).
+- **`_shared/platform-intelligence/linkedin.md` §7** — a link in the post body costs reach (~26% average, up to ~42% — Ordinal 900K-post study). A LinkedIn channel brief with a click-driven objective must spec link-in-first-comment, or accept the reach tax. A "DM me" CTA works only for high-trust/high-ticket B2B. The Success Metric and Budget Type fields reflect this.
+- **`_shared/platform-intelligence/{tiktok,reels,shorts,youtube,x}.md` §7** — each platform's CTA mechanics differ (bio link, end-card, comment-pinned, overlay timing). The channel-agent reads §7 before assigning a Conversion role; if the platform's CTA path is weak, the channel is assigned Awareness/Trust and conversion is routed to an owned channel (email, landing page).
 
-**channel-agent output framing:** a Social-media channel assigned a Conversion role must name the §6-supported CTA path in its Channel Execution Brief.
+**channel-agent output framing:** a Social-media channel assigned a Conversion role must name the §7-supported CTA path in its Channel Execution Brief.
 
 ## News/launch channel → Product Hunt launch-channel pack
 
 When the 9-channel evaluation **selects the News/launch channel for a Product Hunt launch**, the
 channel-agent grounds it in [`_shared/platform-intelligence/producthunt.md`](_shared/platform-intelligence/producthunt.md)
 (`pack_type: launch-channel`). Unlike the social packs (where `plan-campaign` consumes only the
-planning-layer §2/§3/§6), a *launch* is a planning-layer event end-to-end, so the channel-agent
+planning-layer §2/§3/§7), a *launch* is a planning-layer event end-to-end, so the channel-agent
 consumes the **launch sequence directly**:
 
 - **§5 Playbook (the 10-step run-of-show)** → the Channel Execution Brief's launch-day sequence +
@@ -77,7 +77,7 @@ for execution. Staleness behaves as below (`DONE_WITH_CONCERNS`, never FAIL).
 ## What this catalog does NOT cover
 
 - The 9-channel framework, growth-motion priority, habitat translation, content classification, Angle-to-Channel Fit Matrix — `references/channel-strategy.md` stays canonical for all of it.
-- Hook archetypes and retention curves — `brief-shortform`'s production-layer concern (§1, §5 of the catalog).
+- Hook archetypes and retention curves — `brief-shortform`'s production-layer concern (§1, §6 of the catalog).
 - The non-social channels (Search/AEO, Store, Bounty, Forums, IRL, Mailbox, SMS) — out of platform-intelligence scope. **Exception:** the News/launch channel is now covered for **Product Hunt** via the `producthunt` launch-channel pack (mapped above); other launch venues remain out of scope until they get a pack.
 
 ## When to read this catalog

@@ -99,9 +99,12 @@ function daysSince(dateStr: string): number | null {
 }
 
 function playbookIsPopulated(body: string): boolean {
-  // Grab the Playbook section body (from its H2 to the next H2) and require a
-  // table row or a numbered step — not just an empty heading.
-  const m = body.match(/^##\s+[^\n]*playbook[^\n]*\n([\s\S]*?)(?=^##\s|\Z)/im);
+  // Grab the Playbook section body (from its H2 to the next H2 or end of input)
+  // and require a table row or a numbered step — not just an empty heading.
+  // NB: JS has no \Z anchor — `\Z` is an identity escape matching a literal "Z"
+  // (and "z" under /i), which would truncate the lazy capture at the first
+  // z-word before the next H2. Use a real end-of-input assertion instead.
+  const m = body.match(/^##\s+[^\n]*playbook[^\n]*\n([\s\S]*?)(?=^##\s|(?![\s\S]))/im);
   if (!m) return false;
   const section = m[1];
   return /^\s*\|.*\|/m.test(section) || /^\s*\d+\.\s+\S/m.test(section);
