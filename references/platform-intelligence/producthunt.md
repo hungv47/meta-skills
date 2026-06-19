@@ -13,7 +13,7 @@ summary: "Product Hunt launch-day playbook: a pinned first maker-comment + a 12:
 # Platform Intelligence — Product Hunt (launch channel)
 
 Practitioner-grade reference for **launching a product on Product Hunt** — consumed by
-`plan-campaign`, `write-social`, `publish-social`, and the launch chains to ground the launch-day
+`plan-campaign`, `write-launch`, `publish-social`, and the launch chains to ground the launch-day
 sequence, the leaderboard ranking signals, format compliance (tagline / gallery / first comment),
 and the anti-patterns that get a launch throttled or removed. **Not generic "how to do a launch"
 advice.** Every claim is distilled into an operating lever.
@@ -36,6 +36,21 @@ Two things every consuming skill must respect:
 When this doc's `last_verified` exceeds 90 days, `validate-packs.ts` warns and the consuming critic
 flags `DONE_WITH_CONCERNS` — PH periodically retunes ranking + anti-gaming, so re-verify before a
 real launch. A Pro client is served the current pack from the freshness pipeline.
+
+---
+
+## 0. When NOT to Launch Here
+
+> **Channel-fit veto.** `plan-campaign` reads this section as a real *"don't launch here."* When the
+> campaign's product, ICP, goal, or growth motion matches a condition below, the channel is **vetoed**
+> (skipped, with the cited reason) unless the operator records an explicit override. This is the
+> marketer who says *no* — better an honest "wrong channel" than a doomed launch.
+
+- **No working product people can use today** — PH expects a launchable thing, not a waitlist or teaser. Ship first, launch second.
+- **Your ICP isn't on Product Hunt** — local/offline businesses, non-technical SMB buyers, or enterprise-procurement audiences don't browse PH; the upvotes won't convert.
+- **Zero seed network** — no list, no peers, no co-makers to notify → no first-4-hour velocity, and PH is one-shot. Build the support list (§5 step 1) first, or skip.
+- **Highly regulated / enterprise-only** product whose buyers aren't on PH and where a public launch adds compliance noise without pipeline.
+- **The product isn't ready for scrutiny** — a weak launch burns the ~6-month relaunch window; wait until it holds up.
 
 ---
 
@@ -174,7 +189,7 @@ first-4-hour upvote **and** comment velocity, which is what decides the daily To
 | 9 | Cross-post (no vote-ask) | T+0 → T+all-day | Share to X/LinkedIn/relevant communities as "we launched," linking the page — framed as news, not a vote drive. | Reach beyond the list without a single vote-ask |
 | 10 | Close + measure | T+24h | Capture rank, upvotes, comments, referral traffic, signups; write the result into `measure-results` → feeds the pack (U10). | Dated what-worked/what-failed entry; signup delta recorded |
 
-This sequence is what the PH launch **chain** (U4) executes step-by-step, and what `write-social` /
+This sequence is what the PH launch **chain** (U4) executes step-by-step, and what `write-launch` /
 `publish-social` narrate ("running the Product Hunt 12:01 PT + first-comment playbook").
 
 ---

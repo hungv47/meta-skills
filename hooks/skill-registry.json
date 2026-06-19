@@ -203,6 +203,63 @@
       ],
       "minScore": 6
     },
+    "run-launch": {
+      "phrases": [
+        "run launch",
+        "run-launch",
+        "launch on product hunt",
+        "ship the product hunt launch",
+        "run the ph launch",
+        "product hunt launch chain",
+        "launch chain",
+        "per-channel launch",
+        "run the reddit launch",
+        "launch bundle",
+        "full launch on this channel",
+        "orchestrate the launch",
+        "drive the launch end to end",
+        "do the whole launch"
+      ],
+      "allOf": [
+        [
+          "launch",
+          "channel"
+        ],
+        [
+          "launch",
+          "orchestrate"
+        ],
+        [
+          "launch",
+          "bundle"
+        ],
+        [
+          "run",
+          "launch"
+        ],
+        [
+          "product hunt",
+          "launch"
+        ]
+      ],
+      "anyOf": [
+        "launch chain",
+        "native bundle",
+        "one coherent deliverable",
+        "every artifact the channel needs",
+        "end to end",
+        "pack verified"
+      ],
+      "noneOf": [
+        "app launch screen",
+        "launch the app",
+        "launch configuration",
+        "launchd",
+        "rocket launch",
+        "product launch email only"
+      ],
+      "minScore": 6
+    },
     "run-pipeline": {
       "phrases": [
         "run pipeline",
@@ -1942,6 +1999,65 @@
         "carousel"
       ],
       "minScore": 6
+    },
+    "write-launch": {
+      "phrases": [
+        "write the launch copy",
+        "product hunt launch copy",
+        "ph launch copy",
+        "write the product hunt launch",
+        "launch tagline",
+        "maker first comment",
+        "pinned first comment",
+        "reddit launch post",
+        "show hn post",
+        "launch bundle",
+        "launch day copy",
+        "subreddit launch post"
+      ],
+      "allOf": [
+        [
+          "launch",
+          "copy"
+        ],
+        [
+          "launch",
+          "tagline"
+        ],
+        [
+          "product",
+          "hunt",
+          "copy"
+        ],
+        [
+          "reddit",
+          "launch"
+        ],
+        [
+          "first",
+          "comment"
+        ]
+      ],
+      "anyOf": [
+        "product hunt launch",
+        "ph tagline",
+        "founder story comment",
+        "value-first post",
+        "show hn",
+        "launch announcement copy",
+        "no vote-ask"
+      ],
+      "noneOf": [
+        "launch results",
+        "how did the launch do",
+        "launch retro",
+        "tweet",
+        "tiktok caption",
+        "social post",
+        "run of show",
+        "gallery image"
+      ],
+      "minScore": 5
     },
     "write-outreach": {
       "phrases": [

@@ -15,7 +15,7 @@ summary: "Reddit launch playbook: value-first in the RIGHT subreddit, obey its r
 # Platform Intelligence — Reddit (launch / distribution channel)
 
 Practitioner-grade reference for **launching or distributing on Reddit** — consumed by
-`plan-campaign`, `write-social`, `publish-social`, and the launch chains. Reddit is a launch-channel
+`plan-campaign`, `write-launch`, `publish-social`, and the launch chains. Reddit is a launch-channel
 pack: the unit is *a post in a specific subreddit*, and the dominant variable is **fit between the
 post and that subreddit's culture + rules** — get the sub wrong and even great content is removed.
 
@@ -29,6 +29,21 @@ Two non-negotiables every consuming skill must respect:
 
 When `last_verified` exceeds 90 days, the critic flags `DONE_WITH_CONCERNS` — subreddit rules + mod
 climates shift; re-verify the target sub before posting.
+
+---
+
+## 0. When NOT to Launch Here
+
+> **Channel-fit veto.** `plan-campaign` reads this section as a real *"don't launch here."* When the
+> campaign's product, ICP, goal, or growth motion matches a condition below, the channel is **vetoed**
+> (skipped, with the cited reason) unless the operator records an explicit override. This is the
+> marketer who says *no* — better an honest "wrong channel" than a removal + ban.
+
+- **No specific subreddit where your ICP gathers** — Reddit is sub-by-sub; no fitting sub = no channel.
+- **You can't commit to genuine ongoing participation** — Reddit is a relationship; a drive-by promo is removed + ban risk (the 9:1 rule is real).
+- **PR-only voice** — if you can't show up as a real, disclosed founder who absorbs criticism, skip it; Reddit rejects press-release tone.
+- **The goal is a fast conversion blast** — Reddit punishes link-drops; it's a slow-trust channel, not a launch-spike one.
+- **No account standing** and no time to build karma/age before the window — automod silently removes new/green accounts.
 
 ---
 

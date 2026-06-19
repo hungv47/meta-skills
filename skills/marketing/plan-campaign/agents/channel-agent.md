@@ -97,6 +97,27 @@ When **Social media** (channel #6 of the 9-channel map) is a selected channel, r
 
 If Social media is NOT a selected channel, skip this — `platform-channels.md` is not loaded. Platform→file map: Instagram → `reels.md`, YouTube → `youtube.md` + `shorts.md`.
 
+### Channel-Fit Veto (launch channels — the marketer who says no)
+
+When the 9-channel evaluation considers a **launch channel** that has a `launch-channel` pack — News
+(Product Hunt `producthunt.md`, Show HN `showhn.md`), Forums (Reddit `reddit.md`), or a Social/Groups
+launch (LinkedIn `linkedin-launch.md`, X `x-launch.md`, Facebook `facebook.md`) — read that pack's
+**§0 "When NOT to Launch Here" FIRST**, before grounding the channel (see `references/platform-channels.md`
+§ "Launch channels"):
+
+- **Match → veto.** Compare the campaign's **product / ICP / goal / growth-motion** to the pack's §0
+  bad-fit conditions. If one matches, **VETO the channel**: mark it skipped in the Channel Hierarchy
+  with the **pack-cited §0 reason**, write **no** Execution Brief for it, and log it in the
+  deprioritized-channels rationale. A real "don't launch here," not a silent omission.
+- **Override is explicit.** A launch channel selected *despite* a matching §0 veto must carry an
+  **explicit override justification** in its Rationale (why the bad-fit condition does not apply here).
+  No silent override.
+- **No match → ground normally** via §5 run-of-show / §6 timing / §3 signals / §4 hard guards (a
+  launch is planning-layer end-to-end), and emit the Legibility block citing the pack + `pack_verified`
+  + the §0-checked verdict.
+- Platform→launch-pack map: News → `producthunt.md` / `showhn.md`; Forums → `reddit.md`;
+  Social/Groups launch → `linkedin-launch.md` / `x-launch.md` / `facebook.md`.
+
 ### Anti-Patterns
 
 - **Channel-first planning** — Starting with "we need TikTok content" instead of "where does our ICP live?" INSTEAD: Start with habitat maps, then assign channels.
@@ -111,7 +132,7 @@ Before returning:
 - [ ] Every channel has ONE specific angle assigned (not a content category)
 - [ ] Channel selection based on ICP habitat data (density + engagement type)
 - [ ] Owned channels prioritized before rented/borrowed
-- [ ] Low-density channels deprioritized with rationale
+- [ ] Low-density channels deprioritized with rationale; any launch channel whose `launch-channel` pack §0 flags it a bad fit for this campaign is **vetoed (skipped, pack-cited)** or carries an explicit override justification
 - [ ] Content mix (Searchable vs. Shareable) specified per channel
 - [ ] Cadence specified per channel
 - [ ] Every assignment has a rationale connecting habitat data to the angle

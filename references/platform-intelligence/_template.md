@@ -26,6 +26,7 @@ When this doc's `last_verified` exceeds 90 days, `validate-packs.ts` warns and t
 
 | Section | shortform-video | launch-channel | asset-format |
 |---|:-:|:-:|:-:|
+| 0. When NOT to Launch Here (channel-fit veto) | — (inline `Bad fit:`) | ✓ | — (optional) |
 | 1. Hook Taxonomy / Angles | ✓ | ✓ | ✓ |
 | 2. Format Constraints | ✓ | ✓ | ✓ |
 | 3. Algorithm / Ranking Signals | ✓ | ✓ | — (optional) |
@@ -35,6 +36,17 @@ When this doc's `last_verified` exceeds 90 days, `validate-packs.ts` warns and t
 | 7. CTA / Conversion Norms | ✓ | ✓ | ✓ |
 | 8. Open Questions / Known Unknowns | ✓ | ✓ | ✓ |
 | 9. Changelog | ✓ | ✓ | ✓ |
+
+---
+
+## 0. When NOT to Launch Here  *(launch-channel — required; the channel-fit veto)*
+
+A scannable list of falsifiable bad-fit conditions — the situations where this channel is the *wrong*
+launch surface. `plan-campaign` reads this as a real **veto** ("the marketer who says no"): when the
+campaign's product / ICP / goal / growth-motion matches a condition, the channel is skipped with the
+cited reason unless the operator records an explicit override. Lead with the channel-fit-veto callout,
+then 4–5 conditions, each `**[Condition]** — [why it's a bad fit / what to do instead]`. (Omit for
+`shortform-video` packs — they carry the equivalent as inline **Bad fit:** lines inside §1 angles.)
 
 ---
 

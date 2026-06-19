@@ -1,0 +1,103 @@
+# Routing + capability metadata for run-launch.
+promptSignals:
+  phrases:
+    - "run launch"
+    - "run-launch"
+    - "launch on product hunt"
+    - "ship the product hunt launch"
+    - "run the ph launch"
+    - "product hunt launch chain"
+    - "launch chain"
+    - "per-channel launch"
+    - "run the reddit launch"
+    - "launch bundle"
+    - "full launch on this channel"
+    - "orchestrate the launch"
+    - "drive the launch end to end"
+    - "do the whole launch"
+  allOf:
+    - [launch, channel]
+    - [launch, orchestrate]
+    - [launch, bundle]
+    - [run, launch]
+    - [product hunt, launch]
+  anyOf:
+    - "launch chain"
+    - "native bundle"
+    - "one coherent deliverable"
+    - "every artifact the channel needs"
+    - "end to end"
+    - "pack verified"
+  noneOf:
+    - "app launch screen"
+    - "launch the app"
+    - "launch configuration"
+    - "launchd"
+    - "rocket launch"
+    - "product launch email only"
+  minScore: 6
+
+capability:
+  id: run-launch
+  domain: meta
+  public: true
+  command: /run-launch
+  summary: "Orchestrate one channel's launch as ONE legible bundle — resolve the pack, sequence the leaf skills, narrate each applied play, stop at the human gate, never auto-publish, close via measure-results."
+  aliases:
+    - launch-runner
+    - launch-chain
+    - per-channel-launch
+    - channel-kit
+
+  route:
+    use_when:
+      - "Run a single channel's launch (Product Hunt, Reddit, a launch-channel pack) end to end as one coherent bundle."
+      - "Sequence research-icp → plan-campaign → brief → write-launch/write-social → publish-social → measure-results around one channel's pack, narrating each applied play."
+      - "Resume an in-flight launch from its current step + gate."
+    not_when:
+      - "The launch copy bundle alone (no orchestration) -> write-launch."
+      - "A single social post -> write-social."
+      - "The run-of-show / channel pick alone -> plan-campaign."
+      - "A generic produce-and-measure loop that is not a channel launch -> run-pipeline."
+      - "The post-launch read alone -> measure-results."
+      - "Building a new launch-channel pack (S3.2) or the channel-fit veto (S3.3) -> out of scope."
+    prerequisites:
+      recommended:
+        - "id:icp-research"
+        - "id:brand"
+        - "references/_shared/platform-intelligence/[channel].md"
+      hard: []
+
+  orchestration:
+    default: single
+    single_when:
+      - "Launch setup/resume is single-agent (architect plans + narrates the chain; critic gates the bundle)."
+    multi_when:
+      - "Never — each step's work is delegated to its leaf skill, which runs its own agents."
+    critic_required_when:
+      - "Chain plan validation (every step maps to a real leaf skill or a named gate)."
+      - "Pack legibility (pack_verified narrated; bound steps cite §N; unwired steps degrade transparently)."
+      - "Gate discipline (no step auto-approves; the publish step never auto-publishes)."
+
+  load:
+    always:
+      - "references/launch-chain-spec.md"
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/legibility-convention.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start: channel, product/topic, brand_mode, launch goal)"
+        read:
+          - "references/_shared/pre-dispatch-protocol.md"
+      - if: "Resolving the channel pack / narrating pack_verified"
+        read:
+          - "references/_shared/platform-intelligence/CONTRACT.md"
+          - "references/_shared/hosted-pack-client.md"
+      - if: "Publish step — the registry-gated fork publish-social owns"
+        read:
+          - "references/_shared/execution-fork.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-run-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Launch run scaffolded — the 7-step run-of-show table + per-step legibility + the bet + current-step pointer."

@@ -12,7 +12,7 @@ canonical-source: references/platform-intelligence/ (repo root)
 
 This catalog closes that gap. It maps `plan-campaign`'s `channel-agent` to the strategy-relevant sections of the top-level `references/_shared/platform-intelligence/` catalog so a Social-media channel brief is grounded in real signals — not "post on LinkedIn."
 
-**Scope — Social-media channel (+ the News/launch channel via launch-channel packs).** The 6 social platform files (linkedin, x, tiktok, reels, shorts, youtube) ground channel #6. As of the pack-contract v2 (2026-06-16), the **News/launch channel** is additionally grounded by `launch-channel` packs — the first is **Product Hunt** (`producthunt.md`), mapped below. The remaining channels in `channel-strategy.md` (Search/AEO, Store/Listing, Bounty/Info, Forums/Communities, IRL, Mailbox, SMS) are out of platform-intelligence scope — `platform-channels.md` does not touch them.
+**Scope — Social-media channel + the launch channels (News / Forums / Social-launch) via `launch-channel` packs.** The 6 social platform files (linkedin, x, tiktok, reels, shorts, youtube) ground channel #6. As of the pack-contract v2 (2026-06-16) — extended in S3.3 (2026-06-19) — the **launch channels** are additionally grounded by `launch-channel` packs: **Product Hunt** (`producthunt.md`) + **Show HN** (`showhn.md`) ground News; **Reddit** (`reddit.md`) grounds Forums; **LinkedIn-launch** (`linkedin-launch.md`), **X-launch** (`x-launch.md`), and **Facebook** (`facebook.md`) ground a Social/Groups launch — all mapped below, all carrying a §0 channel-fit veto. The remaining channels in `channel-strategy.md` (Search/AEO, Store/Listing, Bounty/Info, IRL, Mailbox, SMS) are out of platform-intelligence scope — `platform-channels.md` does not touch them.
 
 The canonical platform catalog is top-level `references/platform-intelligence/{linkedin,x,tiktok,reels,shorts,youtube}.md`. The mirror at `references/_shared/platform-intelligence/` is what the channel-agent reads at dispatch. Platform→file map: Instagram → `reels.md`, YouTube → `youtube.md` (long-form) + `shorts.md`.
 
@@ -53,35 +53,48 @@ Before the channel-agent commits a Social-media platform to a cadence in the **C
 
 **channel-agent output framing:** a Social-media channel assigned a Conversion role must name the §7-supported CTA path in its Channel Execution Brief.
 
-## News/launch channel → Product Hunt launch-channel pack
+## Launch channels (News / Forums / Social) → launch-channel packs
 
-When the 9-channel evaluation **selects the News/launch channel for a Product Hunt launch**, the
-channel-agent grounds it in [`_shared/platform-intelligence/producthunt.md`](_shared/platform-intelligence/producthunt.md)
-(`pack_type: launch-channel`). Unlike the social packs (where `plan-campaign` consumes only the
+When the 9-channel evaluation **considers a launch channel** — News (Product Hunt `producthunt.md`,
+Show HN `showhn.md`), Forums (Reddit `reddit.md`), or a Social/Groups launch (LinkedIn
+`linkedin-launch.md`, X `x-launch.md`, Facebook `facebook.md`) — the channel-agent grounds it in that
+channel's `launch-channel` pack. Unlike the social packs (where `plan-campaign` consumes only the
 planning-layer §2/§3/§7), a *launch* is a planning-layer event end-to-end, so the channel-agent
-consumes the **launch sequence directly**:
+consumes:
 
-- **§5 Playbook (the 10-step run-of-show)** → the Channel Execution Brief's launch-day sequence +
-  the `launch-sequencing-agent`'s ORB phases (T−14d list-build → 12:01 PT go-live → all-day presence
-  → T+24h measure). This is the one case where the campaign plan legitimately carries step-level tactics.
-- **§6 Timing** → the timeline-agent's launch slot: live at **00:01 AM PT**, Top-5 decided by ~noon PT.
+- **§0 When NOT to Launch Here (the channel-fit veto — read FIRST).** Before grounding the channel,
+  match the campaign's **product / ICP / goal / growth-motion** against the pack's §0 bad-fit
+  conditions. **If one matches, VETO the channel** — mark it skipped in the Channel Hierarchy with the
+  pack-cited reason ("the marketer who says no"), and write **no** execution brief for it. A launch
+  channel selected *despite* a matching §0 veto must carry an **explicit override justification** in
+  its Rationale. This is a real "don't launch here," not a silent omission — narrate it in the
+  deprioritized-channels log + the Legibility block (`pack_verified` + the cited §0 condition).
+- **§5 Playbook (the run-of-show)** → the Channel Execution Brief's launch-day sequence + the
+  `launch-sequencing-agent`'s ORB phases. Each pack's §5 is its own sequence (PH's 12:01 PT
+  run-of-show; Reddit's right-sub value-first; Show HN's literal-title + author-note; the
+  LinkedIn/X golden-window threads). This is the one case where the plan legitimately carries
+  step-level tactics.
+- **§6 Timing** → the timeline-agent's launch slot (PH 00:01 PT; Show HN weekday US-morning; Reddit
+  the sub's active window; LinkedIn/X the audience's golden window).
 - **§3 Ranking Signals** → the channel `Role` (a launch is an Awareness+Conversion spike) + the
-  `Success Metric` (rank, upvote/comment velocity, referral signups).
-- **§4 Anti-Patterns (hard guard)** → **no vote-ask** in any plan output; the plan engineers earned
-  velocity (notify → show → feedback ask), never solicited votes.
+  `Success Metric` (rank + upvote/comment velocity for PH/HN; first-hour upvotes + comments for Reddit;
+  reply/repost velocity for X; dwell + early comments for LinkedIn).
+- **§4 Anti-Patterns (hard guards)** → re-asserted in any plan output: PH/HN **no vote-ask**; Reddit
+  founder-disclosure + 9:1; LinkedIn/X **link out of the body/post-1** + no engagement-bait. The plan
+  engineers earned velocity (notify → show → feedback ask), never solicited.
 
 The plan output narrates the loaded pack + `last_verified` (legibility convention), and hands off to
-the **Product Hunt launch chain** (`skills/meta/forsvn/references/chains/marketing.md` § Launch chains)
-for execution. Staleness behaves as below (`DONE_WITH_CONCERNS`, never FAIL).
+the **launch chain** (`/run-launch <channel>`; `skills/meta/forsvn/references/chains/marketing.md`
+§ Launch chains) for execution. Staleness behaves as below (`DONE_WITH_CONCERNS`, never FAIL).
 
 ## What this catalog does NOT cover
 
 - The 9-channel framework, growth-motion priority, habitat translation, content classification, Angle-to-Channel Fit Matrix — `references/channel-strategy.md` stays canonical for all of it.
 - Hook archetypes and retention curves — `brief-shortform`'s production-layer concern (§1, §6 of the catalog).
-- The non-social channels (Search/AEO, Store, Bounty, Forums, IRL, Mailbox, SMS) — out of platform-intelligence scope. **Exception:** the News/launch channel is now covered for **Product Hunt** via the `producthunt` launch-channel pack (mapped above); other launch venues remain out of scope until they get a pack.
+- The non-launch, non-social channels (Search/AEO, Store, Bounty, IRL, Mailbox, SMS) — out of platform-intelligence scope. **Exception:** the launch channels (News, Forums, Social/Groups) are covered by the six `launch-channel` packs mapped above (Product Hunt, Show HN, Reddit, Facebook, LinkedIn-launch, X-launch); a launch venue without a pack stays out of scope until it gets one.
 
 ## When to read this catalog
 
-The channel-agent loads `platform-channels.md` (and the relevant `_shared/platform-intelligence/[platform].md` sections) **only when the Social-media channel is a selected channel**. If the 9-channel evaluation skips Social media, this catalog is not loaded.
+The channel-agent loads `platform-channels.md` (and the relevant `_shared/platform-intelligence/[platform].md` sections) when **the Social-media channel is selected** OR when **a launch channel (News / Forums / Social-launch) that has a `launch-channel` pack is under evaluation** — the §0 channel-fit veto must be checked *before* a launch channel is included, so the catalog loads even to decide to *skip* one. If the 9-channel evaluation touches neither, this catalog is not loaded.
 
 **Staleness:** each `platform-intelligence/[platform].md` file carries a `last_verified` date and self-flags `DONE_WITH_CONCERNS` when it exceeds 90 days. If a Social-media channel brief is grounded in a stale file, the channel-agent surfaces it and the critic flags `DONE_WITH_CONCERNS` — it does not FAIL the plan (D23 sub-decision 3).

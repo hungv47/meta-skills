@@ -59,6 +59,9 @@ const STALE_DAYS = 90;
 // matched against the heading text. `optional` sections are advisory only.
 type SectionReq = { label: string; test: RegExp; optionalFor?: Set<string> };
 const V2_SECTIONS: SectionReq[] = [
+  // §0 channel-fit veto — the "when NOT to launch here" the marketer-who-says-no reads. Required
+  // for launch-channel packs; shortform-video carries the equivalent as inline "Bad fit:" lines.
+  { label: "When NOT to Launch (channel-fit veto)", test: /when not to (launch|use)/i, optionalFor: new Set(["shortform-video", "asset-format"]) },
   { label: "Hook Taxonomy / Angles", test: /hook/i },
   { label: "Format Constraints", test: /format constraints/i },
   { label: "Algorithm / Ranking Signals", test: /signals/i, optionalFor: new Set(["asset-format"]) },

@@ -44,6 +44,7 @@ vary; the keyword must appear in an `## …` heading).
 
 | Required heading keyword | shortform-video | launch-channel | asset-format |
 |---|:-:|:-:|:-:|
+| `When NOT to launch` (channel-fit veto) | optional | ✓ | optional |
 | `Hook` (Taxonomy / Angles) | ✓ | ✓ | ✓ |
 | `Format Constraints` | ✓ | ✓ | ✓ |
 | `Signals` (Algorithm / Ranking) | ✓ | ✓ | optional |
@@ -56,6 +57,14 @@ vary; the keyword must appear in an `## …` heading).
 
 `## 5. Playbook / Tactical Sequence` is the **spine of v2** — the ordered, timed, falsifiable play
 a launch chain executes and a skill narrates. A pack without a real Playbook is not a playbook pack.
+
+`## 0. When NOT to Launch Here` is the **channel-fit veto** (added 2026-06-19, S3.3) — **required for
+`launch-channel` packs**. It is the scannable list of falsifiable bad-fit conditions `plan-campaign`
+reads as a real *don't-launch-here* (the marketer who says no) during the 9-channel evaluation: a
+launch channel whose §0 matches the campaign's product / ICP / goal / growth-motion is skipped
+(pack-cited) or selected only with an explicit override justification. `shortform-video` packs carry
+the equivalent as inline **Bad fit:** lines inside §1 angles (optional, not an H2) — so §0 is
+`optional` for them and for `asset-format`.
 
 ## What the validator checks
 

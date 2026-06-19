@@ -32,6 +32,21 @@ ranking often; re-verify before a real launch.
 
 ---
 
+## 0. When NOT to Launch Here
+
+> **Channel-fit veto.** `plan-campaign` reads this section as a real *"don't launch here."* When the
+> campaign's product, ICP, goal, or growth motion matches a condition below, the channel is **vetoed**
+> (skipped, with the cited reason) unless the operator records an explicit override. This is the
+> marketer who says *no*.
+
+- **B2B / developer / early-adopter audience** that lives on LinkedIn / X / HN, not Facebook.
+- **No relevant Group** to post in and no standing to earn one — Page-feed organic reach is structurally near-dead.
+- **Pure brand-awareness goal with no community angle** / no shareable, comment-earning payoff.
+- **Gen-Z / younger audience** who have largely left Facebook.
+- **You expect Page-post organic reach with no paid budget** — FB organic underdelivers without spend; route brand-awareness to paid or another channel.
+
+---
+
 ## 1. Launch Angles (Hook Taxonomy)
 
 ### Angle 1 — Native video story (the demo/founder clip)

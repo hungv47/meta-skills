@@ -1,0 +1,120 @@
+# Routing + capability metadata for write-launch.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun bin/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "write the launch copy"
+    - "product hunt launch copy"
+    - "ph launch copy"
+    - "write the product hunt launch"
+    - "launch tagline"
+    - "maker first comment"
+    - "pinned first comment"
+    - "reddit launch post"
+    - "show hn post"
+    - "launch bundle"
+    - "launch day copy"
+    - "subreddit launch post"
+  allOf:
+    - [launch, copy]
+    - [launch, tagline]
+    - [product, hunt, copy]
+    - [reddit, launch]
+    - [first, comment]
+  anyOf:
+    - "product hunt launch"
+    - "ph tagline"
+    - "founder story comment"
+    - "value-first post"
+    - "show hn"
+    - "launch announcement copy"
+    - "no vote-ask"
+  noneOf:
+    - "launch results"
+    - "how did the launch do"
+    - "launch retro"
+    - "tweet"
+    - "tiktok caption"
+    - "social post"
+    - "run of show"
+    - "gallery image"
+  minScore: 5
+
+capability:
+  id: write-launch
+  domain: marketing
+  public: true
+  command: /write-launch
+  summary: "The complete native copy bundle for ONE launch channel, emitted from its launch-channel pack with the pack's §4 hard guards enforced. Single-channel per artifact; 5-dim critic."
+  aliases:
+    - launch-copy
+    - product-hunt-copy
+    - reddit-launch-copy
+
+  route:
+    use_when:
+      - "User asks to write the launch-day copy for ONE launch channel (Product Hunt, Reddit, Show HN)."
+      - "A launch-channel pack exists and the operator needs its native copy bundle, not a single feed post."
+    not_when:
+      - "A single organic social post / tweet / caption -> write-social."
+      - "The launch run-of-show, channel selection, or timing plan -> plan-campaign."
+      - "Gallery / thumbnail / OG / banner asset brief -> brief-graphic."
+      - "Distributing or scheduling the finished copy -> publish-social."
+      - "Reading post-launch results / launch retro -> measure-results."
+      - "Vietnamese-market polish -> polish-vn (terminal pass)."
+      - "AI-pattern stripping post-generation -> humanmaxxing (terminal pass)."
+    prerequisites:
+      recommended:
+        - "references/_shared/platform-intelligence/[channel].md"
+        - "id:icp-research"
+        - "id:product-context"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard:
+        - "id:brand"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "Single sequential graph (launch-copywriter → guard-checker → critic) is the design."
+      - "--fast collapses the guard-check revision loop to ZERO (single-pass; hard-guard breach → GUARD_FAIL immediately)."
+    multi_when:
+      - "Default — 3 agents (launch-copywriter + guard-checker + critic) per single-channel bundle."
+      - "--deep bumps the guard-check revision loop to MAX 2 cycles."
+    critic_required_when:
+      - "Always — critic gate is single-pass on the 5-dim rubric."
+      - "Discrimination test (weak brief MUST score <25; strong brief MUST score ≥35) runs every cycle."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/mode-resolver.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Write-back)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch (launch-copywriter → guard-checker → critic)"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Per-channel launch angles + format constraints + hard guards"
+        read:
+          - "references/_shared/platform-intelligence/"
+      - if: "Critic scoring / guard-check rules"
+        read:
+          - "references/rubric.md"
+          - "references/format-conventions.md"
+      - if: "Anti-pattern review"
+        read:
+          - "references/anti-patterns.md"
+      - if: "Worked example"
+        read:
+          - "references/examples/launch-walkthrough.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Critic PASS / DONE_WITH_CONCERNS / FAIL (FAIL ships with annotations; NOT written on GUARD_FAIL or NEEDS_CONTEXT)."

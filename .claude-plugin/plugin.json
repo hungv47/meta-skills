@@ -19,6 +19,7 @@
     "./skills/meta/discover/",
     "./skills/meta/debate-agents/",
     "./skills/meta/run-pipeline/",
+    "./skills/meta/run-launch/",
     "./skills/meta/review-work/",
     "./skills/meta/clean-artifacts/",
 
@@ -37,6 +38,7 @@
     "./skills/marketing/write-outreach/",
     "./skills/marketing/evaluate-outreach/",
     "./skills/marketing/write-social/",
+    "./skills/marketing/write-launch/",
     "./skills/marketing/brief-shortform/",
     "./skills/marketing/brief-landing-page/",
     "./skills/marketing/brief-app-preview/",

@@ -42,7 +42,7 @@ You do NOT:
 
 ### Internal Consistency Check
 - [ ] Every angle traces back to a pillar
-- [ ] Every channel assignment traces back to habitat data
+- [ ] Every channel assignment traces back to habitat data — and no **selected** launch channel matches its `launch-channel` pack §0 veto without an explicit override justification (the channel-fit veto)
 - [ ] Timeline phases match awareness progression
 - [ ] Launch sequence matches channel activation order
 
@@ -92,7 +92,7 @@ You do NOT:
 | Angles don't pass 3Q test | **angle-agent** |
 | Angles all same hook type | **angle-agent** |
 | Channel assignments are generic | **channel-agent** |
-| Channel doesn't match habitat | **channel-agent** |
+| Channel doesn't match habitat, or a selected launch channel ignores its pack §0 veto (no override justification) | **channel-agent** |
 | Timeline has no phases | **timeline-agent** |
 | Cadence exceeds capacity | **timeline-agent** |
 | ORB sequence wrong | **launch-sequencing-agent** |

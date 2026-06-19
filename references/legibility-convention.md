@@ -1,7 +1,7 @@
 # Legibility Convention
 
 **Status:** canonical cross-stack contract. **Consumed by:** every pack-aware skill
-(`write-social`, `publish-social`, `brief-shortform`, `plan-campaign`, `measure-results`, the launch chains).
+(`write-social`, `write-launch`, `publish-social`, `brief-shortform`, `plan-campaign`, `measure-results`, the launch chains).
 **Pairs with:** the playbook-pack contract ([`platform-intelligence/CONTRACT.md`](platform-intelligence/CONTRACT.md)).
 
 ## Why this exists
