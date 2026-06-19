@@ -7,13 +7,14 @@
 //   bun skills/bin/forsvn-hosted.ts status
 //   bun skills/bin/forsvn-hosted.ts pack producthunt --local-verified 2026-01-01 [--json]
 //   bun skills/bin/forsvn-hosted.ts context [key] [--json]
-//   bun skills/bin/forsvn-hosted.ts meter render_relay [1]
+//   bun skills/bin/forsvn-hosted.ts meter render_relay [--units 1]
+//   bun skills/bin/forsvn-hosted.ts metrics linkedin --worked "..." --failed "..." [--numbers '{"reach":1200}']
 //
 // `pack`: prints the CURRENT pack to stdout when entitled AND fresher than the
 // client snapshot; otherwise prints `LOCAL <reason>` to stderr and nothing to
 // stdout (the skill then reads its build-time mirror). Always exit 0.
 
-import { fetchCurrentPack, fetchContextBundle, meter, status } from "./lib/hosted-api.ts";
+import { fetchCurrentPack, fetchContextBundle, meter, postMetrics, status } from "./lib/hosted-api.ts";
 
 function flag(name: string): string | undefined {
   const i = process.argv.indexOf(`--${name}`);
@@ -56,13 +57,29 @@ async function main() {
     }
     case "meter": {
       if (!arg) return fail("meter requires an <action>");
-      const units = flag("units") ? Number(flag("units")) : undefined;
-      const r = await meter(arg, units);
+      const unitsRaw = flag("units");
+      const units = unitsRaw === undefined ? undefined : Number(unitsRaw);
+      const r = await meter(arg, Number.isFinite(units) ? units : undefined);
       console.log(JSON.stringify(r ?? { metered: false, reason: "no_key_or_unreachable" }));
       return;
     }
+    case "metrics": {
+      if (!arg) return fail("metrics requires a <platform>");
+      let numbers: Record<string, number | string> | undefined;
+      const numbersRaw = flag("numbers");
+      if (numbersRaw) {
+        try {
+          numbers = JSON.parse(numbersRaw) as Record<string, number | string>;
+        } catch {
+          // malformed --numbers → drop it; the feed is best-effort, never a hard error
+        }
+      }
+      const r = await postMetrics({ platform: arg, what_worked: flag("worked"), what_failed: flag("failed"), numbers });
+      console.log(JSON.stringify(r ?? { posted: false, reason: "no_key_or_unreachable" }));
+      return;
+    }
     default:
-      return fail(`unknown command "${cmd ?? ""}". Use: status | pack | context | meter`);
+      return fail(`unknown command "${cmd ?? ""}". Use: status | pack | context | meter | metrics`);
   }
 }
 

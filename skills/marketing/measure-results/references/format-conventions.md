@@ -46,4 +46,4 @@ Append one row to `.forsvn/performance/[channel].tsv` per the schema in
 
 ## Hosted metrics feed (best-effort)
 
-If `bun scripts/forsvn-hosted.ts status` shows an entitlement, POST the result to the hosted metrics feed (`/v1/metrics` with `{platform, what_worked, what_failed, numbers}`) so it compounds cross-session. No key / unreachable → skip silently. Never blocks (anti-pattern 7).
+Mirror the result to the cross-session metrics feed with `bun scripts/forsvn-hosted.ts metrics [channel] --worked "..." --failed "..." [--numbers '{"reach":1200}']` (POSTs `/v1/metrics` with `{platform, what_worked, what_failed, numbers}`) so it compounds cross-session. Inert without a key / unreachable → skips silently — the local write-back is the source of truth, the feed is the mirror. Never blocks (anti-pattern 7).

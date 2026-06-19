@@ -101,3 +101,13 @@ Catalog freshness signals (from manifest):
 - `fresh` — within 14d trend window + 90d mechanics window → declare `catalog_freshness: fresh` in eval frontmatter
 - `warn` — 14-30d trend OR 90-180d mechanics → declare `catalog_freshness: warn`, note in Open Risks section
 - `stale` — >30d trend OR >180d mechanics → declare `catalog_freshness: stale`, recommend catalog refresh in §7 Recommendations, BUT still run the eval (signal is partial, not zero)
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter evaluate_shortform
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

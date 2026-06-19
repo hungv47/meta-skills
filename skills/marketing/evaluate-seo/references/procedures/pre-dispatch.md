@@ -109,3 +109,13 @@ This skill is `budget: standard`. `--fast` collapses Layer 1 parallel + Layer 2 
 - Still respect Critic Hard Fails 1-12 — including the lag-and-volatility gate, which `--fast` never skips
 
 End artifact must include: `Ran in --fast mode (single-agent per layer, critic no-revise, no learning promotion); rerun without the flag for full critic gate with revision + learning promotion.`
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter evaluate_seo
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

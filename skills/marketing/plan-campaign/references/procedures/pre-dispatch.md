@@ -178,3 +178,5 @@ bun scripts/query-performance.ts <channel> --json   # per selected channel
 ```
 
 Obey the emitted `empty | sparse | sufficient` state + `guidance` — sparse data never shifts budget weighting (two posts are not a trend). Own data informs which channels/angles work for *this* account; it never becomes a prescriptive angle list (U12), and a brand floor always outranks it. Full read contract: [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).
+
+**Then emit the Recall line** in each selected channel's execution brief (required output): state that channel's own-data result with its real `n` + the `empty/sparse/sufficient` state, and read the channel pack's `## Open Questions` to name **one** unknown as the experiment that channel's run probes — see [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md) § *The recall line*. The recall is shown in the brief, not just obeyed; never fabricate `n` on an empty/sparse store, and drop the open-question part if the pack has none.

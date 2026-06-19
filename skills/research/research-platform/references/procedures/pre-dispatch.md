@@ -109,3 +109,13 @@ Q3 (supplied evidence) and Q5 (prior-eval pointer) are per-run inputs — do NOT
 ## `--fast` behavior in Pre-Dispatch
 
 `--fast` does NOT skip Cold Start — when account scope or platform set is unresolved, the bundled prompt still fires. `--fast` only skips the multi-agent orchestration after context is resolved (single-pass intake + synthesis, critic skipped, but all 5 Critical Gates still enforced per `_shared/mode-resolver.md`).
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter research_platform
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

@@ -52,7 +52,7 @@ Pass ≥35/50 AND no dim 0. FAIL twice → `BLOCKED`, no write-back.
 - **Path:** `docs/forsvn/artifacts/marketing/measure-results/[channel]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `evaluation`.
 - **Frontmatter (12):** `skill`, `version`, `date`, `stack`, `type`, `id`, `review_surface`, `status`, `channel`, `pack_verified`, `applied_tactics`, `keywords`.
 - **Body:** Results table (metric · value · vs-expected) · What worked (tactic + number) · What failed · Keep/Drop/Test · Pack write-back block · Critic verdict.
-- **Side effects (on critic PASS):** append a dated entry to the channel pack changelog (`references/format-conventions.md` § Pack write-back); append a row to `.forsvn/performance/[channel].tsv`; if a hosted key is present, POST the result to the metrics feed (`bun scripts/forsvn-hosted.ts meter` + the `/v1/metrics` post — best-effort, never blocks). Full contract: [`references/format-conventions.md`](references/format-conventions.md).
+- **Side effects (on critic PASS):** append a dated entry to the channel pack changelog (`references/format-conventions.md` § Pack write-back); append a row to `.forsvn/performance/[channel].tsv`; if a hosted key is present, mirror the result to the cross-session metrics feed (`bun scripts/forsvn-hosted.ts metrics [channel] --worked "..." --failed "..."` — POSTs `/v1/metrics`, best-effort, inert without a key, never blocks). Full contract: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Routing + Dispatch
 

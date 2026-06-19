@@ -154,3 +154,13 @@ Echo the chosen route at the end of the Cold Start / Warm Start confirmation. Op
 - **Persisting Q3 (Why-now / trigger) as if it were stable user state.** Q3 is a per-invocation rationale, not a stable goal. Original SKILL.md writes it to goals.md as `Goals — market-research trigger` (a one-off trigger, not a recurring goal) — preserved verbatim. Don't elevate it to a recurring goal entry.
 - **Auto-emitting staleness warnings on re-run.** Only Critical Gate 1 (>18-month sources) auto-flags. General re-run staleness is operator judgment.
 - **Skipping the Step 0 product-context recommendation.** Even if the user declines, the recommendation should be made — downstream icp-research is the canonical producer, and the operator may not know skipping it costs downstream quality.
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter research_market
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

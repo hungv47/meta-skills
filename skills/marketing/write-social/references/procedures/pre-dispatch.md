@@ -148,3 +148,5 @@ bun scripts/query-performance.ts <platform> --json
 ```
 
 Obey the emitted `empty | sparse | sufficient` state + `guidance` — empty store is the normal first-run state ("no own data yet — using priors"). Full read contract (precedence, the U12 direction-not-element-list rule, brand-floor supremacy): [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md). Own data informs direction; it never becomes a prescriptive element list, and a brand floor always outranks it.
+
+**Then emit the Recall line** (required output): state the own-data result with its real `n` + the `empty/sparse/sufficient` state, and read the loaded platform pack's `## Open Questions` to name **one** unknown as the experiment this run probes — see [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md) § *The recall line*. The recall is shown in the post-copy output, not just obeyed; never fabricate `n` on an empty/sparse store, and drop the open-question part if the pack has none.

@@ -133,3 +133,5 @@ bun scripts/query-performance.ts <platform> --json
 ```
 
 Obey the emitted `empty | sparse | sufficient` state + `guidance`. Platform mechanics stay with `research-shortform` + platform-intelligence; own data informs the hook/format/length direction for *this* account, never a prescriptive shot/element list (U12), and a brand floor always outranks it. Full read contract: [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).
+
+**Then emit the Recall line** (required output): state the own-data result with its real `n` + the `empty/sparse/sufficient` state, and read the loaded platform pack's `## Open Questions` to name **one** unknown as the experiment this brief probes — see [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md) § *The recall line*. The recall is shown in the brief, not just obeyed; never fabricate `n` on an empty/sparse store, and drop the open-question part if the pack has none.

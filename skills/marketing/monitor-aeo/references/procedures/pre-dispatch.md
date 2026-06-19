@@ -172,3 +172,13 @@ When the operator's request looks like AEO but is actually one of:
 | "Audit our Core Web Vitals" | `optimize-seo` Route A | Wrong technical surface — Core Web Vitals are classic-search, not AEO-specific. |
 | "Brainstorm AI search content angles" | `plan-campaign` + `research-icp` | Audience + content planning, not measurement. |
 | "Show me what Perplexity says about us right now" | (manual — run the query yourself) | One-off chat is not monitoring. Monitoring requires locked query set + snapshot history. |
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter monitor_aeo
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

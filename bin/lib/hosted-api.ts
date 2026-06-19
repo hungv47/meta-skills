@@ -136,6 +136,37 @@ export async function meter(action: string, units: number | undefined, deps: Hos
   }
 }
 
+/** The cross-session metrics feed packet (measure-results write-back). */
+export interface MetricsPayload {
+  platform: string;
+  what_worked?: string;
+  what_failed?: string;
+  numbers?: Record<string, number | string>;
+}
+
+/**
+ * Best-effort POST of a measured result to the cross-session metrics feed
+ * (`/v1/metrics`). The LOCAL write-back (`.forsvn/performance/<channel>.tsv`) is
+ * the source of truth; this is the hosted mirror so a result compounds across
+ * machines/sessions for an entitled account. Same open-core invariant as `meter`:
+ * no key → null (inert, no network, no nag); API error → null; NEVER throws and
+ * NEVER blocks the skill's local write-back.
+ */
+export async function postMetrics(payload: MetricsPayload, deps: HostedDeps = {}): Promise<{ ok: true } | null> {
+  const key = getApiKey(deps);
+  if (!key) return null;
+  // never POST garbage to the feed: a platform key is the one required field
+  if (!payload?.platform?.trim()) return null;
+  const f = deps.fetchImpl ?? fetch;
+  try {
+    const res = await f(`${apiBase(deps)}/v1/metrics`, { method: "POST", headers: { authorization: `Bearer ${key}`, "content-type": "application/json" }, body: JSON.stringify(payload) });
+    if (!res.ok) return null;
+    return { ok: true };
+  } catch {
+    return null;
+  }
+}
+
 export interface HostedStatus {
   entitled: boolean;
   plan?: string;

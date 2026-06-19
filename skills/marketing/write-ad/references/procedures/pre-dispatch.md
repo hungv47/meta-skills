@@ -151,3 +151,5 @@ bun scripts/query-performance.ts <platform> --placement paid --json
 ```
 
 Obey the emitted `empty | sparse | sufficient` state + `guidance`. The paid filter never returns organic rows; a below-floor filtered subset is anecdote-weight even inside a sufficient channel. Full read contract (precedence, the U12 direction-not-element-list rule, brand + policy/claims-floor supremacy): [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md).
+
+**Then emit the Recall line** (required output): state the own **paid**-data result with its real `n` + the `empty/sparse/sufficient` state, and read the loaded platform pack's `## Open Questions` to name **one** unknown as the experiment this run probes — see [`../_shared/performance-grounding.md`](../_shared/performance-grounding.md) § *The recall line*. The recall is shown in the ad output, not just obeyed; never fabricate `n` on an empty/sparse store, and drop the open-question part if the pack has none.

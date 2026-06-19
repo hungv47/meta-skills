@@ -144,3 +144,13 @@ Do NOT auto-emit a "WARNING: prior ICP.md is N days old" message on general re-r
 - **Persisting Q5 (Route).** Route is routing-only — it informs dispatch but never writes to experience/. Adding a `Route — last selected` key to audience.md would be net-new behavior.
 - **Auto-emitting staleness warnings on re-run.** Only Critical Gate 4 (>30-day PRODUCT-CONTEXT.md) auto-warns. General re-run staleness is operator judgment.
 - **Running Cold Start under `--fast` without honoring it.** Cold Start fires under `--fast` regardless when context is missing — `--fast` only collapses orchestration after context is resolved.
+
+## Usage metering (best-effort, inert)
+
+Once per run, at the **start of the expensive work** (after Cold Start resolves the inputs, before the parallel agents dispatch), the orchestrator fires a best-effort usage meter so demand for this hosted-grade op is measurable before any billing exists (D-11):
+
+```bash
+bun scripts/forsvn-hosted.ts meter research_icp
+```
+
+**Inert without a hosted key** (no key → no-op, no network, no nag), wrapped to never throw and **never block or gate the run** (open-core invariant, D-2). It writes nothing locally and changes no output — pure instrumentation. Fire it **exactly once** per invocation (the orchestrator, not each sub-agent). Optional `--units N` carries op intensity. Full contract + the per-skill action table: [`../_shared/meter-instrumentation.md`](../_shared/meter-instrumentation.md).

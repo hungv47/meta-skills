@@ -20,7 +20,7 @@ One TSV row per the `performance-data.md` schema: date, channel, slug, key metri
 
 ### 3. Hosted metrics feed (best-effort, NEVER blocks)
 If a hosted key is present, POST the result to the metrics feed so it compounds cross-session/cross-agent:
-`bun scripts/forsvn-hosted.ts status` to check entitlement, then the `/v1/metrics` POST with `{platform, what_worked, what_failed, numbers}`. No key / unreachable → skip silently (the local write-backs are the source of truth; the hosted feed is the mirror). Per the open-core invariant, this never gates the run.
+`bun scripts/forsvn-hosted.ts metrics [channel] --worked "..." --failed "..."` mirrors the result to the cross-session feed (POSTs `/v1/metrics` with `{platform, what_worked, what_failed, numbers}`). No key / unreachable → skips silently (the local write-backs are the source of truth; the hosted feed is the mirror). Per the open-core invariant, this never gates the run.
 
 ## Handoff
 Pass all three write-backs (as drafts) to the Critic. Nothing is written to disk until the Critic PASSes.
