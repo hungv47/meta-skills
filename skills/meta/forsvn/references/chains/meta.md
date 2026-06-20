@@ -32,6 +32,7 @@ clean-artifacts    — .forsvn/ artifact tree needs grooming
 | "review my work", "second opinion", "did I miss anything" | `/review-work` |
 | "improvement loop", "track metric", "experiment ledger" | `/run-pipeline` |
 | "groom artifacts", "clean up .forsvn", "audit the artifact tree" | `/clean-artifacts` |
+| "I shipped X", "just pushed", "what should I post", "growth standup", "morning digest" | event-triggers flow ([`../procedures/event-triggers.md`](../procedures/event-triggers.md)) — drafts 2-3 distribution moves via existing producers (`/write-social`, `/write-launch`), suggestion-only, publish-gated |
 
 ## Routing rules
 

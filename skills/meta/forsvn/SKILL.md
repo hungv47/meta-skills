@@ -61,21 +61,30 @@ Default to resume if the current ask is empty or "continue" / "resume". Otherwis
 | "review my work", "second opinion", "did I miss anything" | review | `/review-work` |
 | "improvement loop", "track metric", "experiment ledger" | loop | `/run-pipeline` |
 | Empty + no resume offer | summary | print state summary, exit |
-| Ambiguous, multi-domain, "launch this", "ship this" | multi | propose 2-3 step chain |
+| Ambiguous, multi-domain, "launch this", "ship this" | multi | scaffold a gated `plan.md`, stop for approval |
 
 Rules:
 
 - Single-domain → read the matching chain file and dispatch to its leaf.
-- Multi-domain → propose the chain; user confirms before the first dispatch.
-- Unclear → at most 2 clarifying questions. Hard cap. Then hand off to `/discover`.
+- Multi-domain → scaffold a gated `.forsvn/runs/<slug>/plan.md` (`status: proposed`) via `bin/plan.ts init`, render its steps table, and **stop for human approval before step 1** (the plan-preview trust contract). No step runs until a human approves (`status: approved`). Schema + helper: [`references/plan-spec.md`](references/plan-spec.md).
+- Unclear (in-scope) → at most 2 clarifying questions. Hard cap. Then hand off to `/discover`.
+- Unclear AND capability-shaped AND no index match → emit the gap line per [`references/procedures/nearest-match.md`](references/procedures/nearest-match.md) (terminal state **b**, not a clarify).
 - Brand-gate: marketing/launch intent with `brand/BRAND.md` missing → route through `/create-brand` first.
 - forsvn-dev gate: `product` intent and the `decompose` route resolve to the separate **forsvn-dev** package (engineering skills carved out 2026-06-16). If it isn't installed, tell the user to add `forsvn-dev` rather than dispatching into a missing skill.
 
-**Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Loading context includes the **foundation pre-flight** (Step 4.5): for research/marketing/product intent, warn before a generic run when `ICP.md` is absent or `PRODUCT-CONTEXT.md` is an unratified/stale draft — offer `/research-icp` first, non-blocking. Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
+**Terminal-state rule.** Every `/forsvn` turn ends in exactly one of three states — never a fourth "answered it myself" path:
+
+- **invoke** — recorded → announced → invoked ≥1 capability (Steps 4–5).
+- **gap** — the ask is *capability-shaped* (an imperative to produce / evaluate / plan a marketing, research, or product job) but matches no Step-3 row, no `chains/<domain>.md` rule, and no index entry → **do not answer from general knowledge**; emit the gap line per [`references/procedures/nearest-match.md`](references/procedures/nearest-match.md).
+- **clarify** — in-scope but ambiguous → ≤2 bundled questions, then `/discover`.
+
+A pure factual question ("what's a good CTR?") is answered normally — not a miss. A capability-shaped ask answered from general knowledge, or dropped, **is** the silent miss.
+
+**Steps 4 + 5 — Load context, then dispatch: record → announce → invoke.** Full procedure in [`references/procedures/dispatch.md`](references/procedures/dispatch.md). Loading context includes the **foundation pre-flight** (Step 4.5): for research/marketing/product intent, a **cold repo** (no `ICP.md`, no prior session, no named deliverable) triggers the **infer-and-draft First-Run flow** — read the repo and draft ONE tailored artifact with labeled assumptions, never an intake form; a *partial* (or thin-with-prior-session) foundation warns before a generic run and offers `/research-icp` first, non-blocking. Write the routing record BEFORE invoking (`status: dispatched`, `dispatched-by: forsvn`), announce in one line (`→ Dispatching /<skill> — <why>`), then invoke the leaf via the Skill tool with args. Confident classification auto-dispatches; two close candidates → present both (counts toward the 2-question cap), never auto-fire. An explicit `/forsvn` dispatch supersedes any router-hook hint. The dispatcher owns the session execution-profile ask (`references/_shared/execution-policy.md`); dispatched leaves inherit it.
 
 ## Pre-Dispatch — the classify flow IS the cold start
 
-Needed dimensions: **intent class** (Step 3 table), **initiative slug** (Step 2 resume check / `last-session.md`), **domain chain rule** (the matching `chains/<domain>.md` row). Unresolved after reading state → at most 2 bundled clarifying questions (the Step 3 hard cap; close-candidate presentations count toward it); still unclear → hand off to `/discover`. Dispatched leaves warm-start and skip their own pre-dispatch steps 1–2.
+Needed dimensions: **intent class** (Step 3 table), **initiative slug** (Step 2 resume check / `last-session.md`), **domain chain rule** (the matching `chains/<domain>.md` row). Unresolved after reading state → at most 2 bundled clarifying questions (the Step 3 hard cap; close-candidate presentations count toward it); still unclear → hand off to `/discover`. A capability-shaped ask that resolves to no intent class is terminal state **gap** (not a clarify) — name the nearest 1–2 caps via [`references/procedures/nearest-match.md`](references/procedures/nearest-match.md). Dispatched leaves warm-start and skip their own pre-dispatch steps 1–2.
 
 ## Quality Gate
 
@@ -84,8 +93,9 @@ Instantiates `references/_shared/thin-critic-rubric.md` as a per-dispatch self-c
 - [ ] **Classification** — intent matches a Step 3 row or a chain-file rule; two close candidates were presented, never coin-flipped.
 - [ ] **Sequencing** — routing record written (`status: dispatched`) BEFORE the Skill invocation.
 - [ ] **Announcement** — the one-line `→ Dispatching /<skill> — <why>` preceded the invocation.
+- [ ] **Coverage** — the turn ended in invoke / gap / clarify; no capability-shaped ask was answered from general knowledge or dropped.
 
-Auto-fail: silent dispatch (no announcement) or record-after-invoke — redo the step per `references/anti-patterns.md`.
+Auto-fail: silent dispatch (no announcement), record-after-invoke, or answering a capability-shaped ask without invoking, naming the gap, or clarifying — redo the step per `references/anti-patterns.md`.
 
 ## Worked Example
 
@@ -93,7 +103,7 @@ Auto-fail: silent dispatch (no announcement) or record-after-invoke — redo the
 
 ## Anti-Patterns
 
-[`references/anti-patterns.md`](references/anti-patterns.md) — 9 rules covering clarifying-question cap, silent dispatch, hand-off-and-stop, coin-flip auto-fire, routing-record sequencing, chain-file read, experience grep, brand-gate bypass. Re-read before dispatch.
+[`references/anti-patterns.md`](references/anti-patterns.md) — 11 rules covering clarifying-question cap, silent dispatch, hand-off-and-stop, coin-flip auto-fire, routing-record sequencing, chain-file read, experience grep, brand-gate bypass, the silent miss, the cold-repo intake form. Re-read before dispatch.
 
 ## Durable Rules (protected)
 
@@ -117,5 +127,5 @@ After dispatch, the routed leaf skill owns the work. Re-invoke `/forsvn` with `r
 
 - `.forsvn/README.md` — state root contract.
 - [`references/chains/{research,marketing,product,meta}.md`](references/chains/) — per-domain dispatch chains.
-- [`references/procedures/{state-snapshot,dispatch}.md`](references/procedures/) — Step 1, 4, 5, bootstrap.
+- [`references/procedures/{state-snapshot,dispatch,nearest-match}.md`](references/procedures/) — Step 1, 4, 5, bootstrap, gap line.
 - [`references/anti-patterns.md`](references/anti-patterns.md).

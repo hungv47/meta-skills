@@ -44,6 +44,7 @@ promptSignals:
 
 capability:
   id: evaluate-seo
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-seo

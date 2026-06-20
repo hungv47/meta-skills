@@ -35,6 +35,7 @@ promptSignals:
 
 capability:
   id: write-docs
+  gate_class: review
   domain: product
   public: true
   command: /write-docs

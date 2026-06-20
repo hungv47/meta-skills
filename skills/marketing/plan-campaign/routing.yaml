@@ -30,6 +30,7 @@ promptSignals:
 
 capability:
   id: plan-campaign
+  gate_class: review
   domain: marketing
   public: true
   command: /plan-campaign

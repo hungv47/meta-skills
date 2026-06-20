@@ -90,6 +90,7 @@ type ArtifactEntry = {
   execution_mode: string;
   decision_status: string;
   decision_state: string;
+  decision_reason: string;
   review_surface: string;
   review_tool: string;
   reviewed_at: string;
@@ -536,6 +537,9 @@ for (const base of ARTIFACT_ROOTS) {
       execution_mode: textField(fm, "execution_mode"),
       decision_status: textField(fm, "decision_status"),
       decision_state: decisionState,
+      // C1 reason chip — lenient index (an unknown value indexes as-is;
+      // validate-artifacts is the gate). Empty on approve/legacy.
+      decision_reason: textField(fm, "decision_reason"),
       review_surface: reviewSurface,
       review_tool: textField(fm, "review_tool"),
       reviewed_at: textField(fm, "reviewed_at"),

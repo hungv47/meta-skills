@@ -43,6 +43,7 @@ promptSignals:
 
 capability:
   id: evaluate-asset
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-asset

@@ -40,9 +40,9 @@ skill: write-ad
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
-network: meta   # v1 hard-locked to meta; widened in future versions
-surface: meta-primary-text | meta-headline | meta-description | meta-full-ad
-audience_temp: retargeting | cold
+network: meta | google-ads | tiktok-ads | linkedin-ads
+surface: <network>-<variant>            # meta-full-ad | google-ads-rsa | tiktok-ads-infeed | linkedin-ads-single-image
+audience_temp: retargeting | cold       # framing-axis slot — key varies by network: audience_temp (meta | tiktok-ads), intent_tier (google-ads), targeting_mode (linkedin-ads)
 creative_format: dedicated | repurposed-ugc
 production_model: in-house | affiliate-creator | external-freelance
 conversion_event: trial_start | purchase | lead | install | view-content
@@ -53,7 +53,7 @@ critic_per_variant:
   variant_b: N/70
 ```
 
-11 top-level fields plus nested `critic_per_variant` with 3 sub-fields. For Route B (called by `plan-campaign`), `version` may carry the calling skill's version semantics (e.g., `version: campaign-plan-v2`); orchestrator sets at compile time.
+11 top-level fields plus nested `critic_per_variant` with 3 sub-fields. The framing-axis slot is ONE field whose key is network-dependent — `audience_temp` (meta / tiktok-ads), `intent_tier` (google-ads), or `targeting_mode` (linkedin-ads) — so the count stays 11 regardless of network. For Route B (called by `plan-campaign`), `version` may carry the calling skill's version semantics (e.g., `version: campaign-plan-v2`); orchestrator sets at compile time. `plan-campaign` Route B reads `network` so budget allocation is network-aware.
 
 ## Output file structure (3 files per run)
 
@@ -69,18 +69,41 @@ The three-file split already realizes artifact → rationale → scorecard order
 
 ## Field values — network
 
-| Value | Surface |
-|---|---|
-| `meta` | Facebook + Instagram (FB feed, IG feed, IG Stories, IG Reels). v1 hard-locked to meta. Future versions widen to `google`, `linkedin`, `tiktok`, `reddit`, `youtube`. |
+| Value | Surface | Framing-axis field | Format-spec / policy section |
+|---|---|---|---|
+| `meta` | Facebook + Instagram (FB feed, IG feed, IG Stories, IG Reels) | `audience_temp` | `format-spec.md` § Meta |
+| `google-ads` | Google Search (Responsive Search Ads) | `intent_tier` | `format-spec.md` § Google Ads |
+| `tiktok-ads` | TikTok in-feed + Spark Ads | `audience_temp` (cold-dominant) + spark-mode | `format-spec.md` § TikTok Ads |
+| `linkedin-ads` | LinkedIn Single Image / Document / Sponsored | `targeting_mode` | `format-spec.md` § LinkedIn Ads |
+
+YouTube / search-partner networks are deferred (no surface yet). One network per artifact (Critical Gate 2).
 
 ## Field values — surface
 
 | Value | What it is |
 |---|---|
-| `meta-primary-text` | Primary text only (3,000 char hard cap; ~125 chars visible before truncation) |
-| `meta-headline` | Headline only (40 char hard cap) |
-| `meta-description` | Description only (30 char hard cap) |
-| `meta-full-ad` | Primary text + headline + description as one unit (default for Route A; the typical surface for hero + 2 variants) |
+| `meta-primary-text` / `meta-headline` / `meta-description` | A single Meta component (3,000 / 40 / 30 char hard caps) |
+| `meta-full-ad` | Meta primary text + headline + description as one unit (default Route A) |
+| `google-ads-rsa` | Google Responsive Search Ad (≤15 headlines ×30, ≤4 descriptions ×90, paths ×15) |
+| `tiktok-ads-infeed` / `tiktok-ads-spark` | TikTok in-feed ad text (≤100) / Spark (inherits organic caption) |
+| `linkedin-ads-single-image` / `linkedin-ads-document` | LinkedIn Sponsored Content (intro ~150 visible / headline ~70) |
+
+## Field values — intent_tier (network: google-ads)
+
+| Value | The query |
+|---|---|
+| `branded` | your brand name (± login/pricing/reviews) — defend the spot |
+| `non-branded` | the problem/category — the volume + testing tier |
+| `competitor` | a rival's brand — honest-comparison angle (no TM in copy) |
+| `generic` | broad/early-research — educate → soft CTA (often a veto candidate) |
+
+## Field values — targeting_mode (network: linkedin-ads)
+
+| Value | Who you reach |
+|---|---|
+| `job-title` | a role + seniority — speak to that role's KPI |
+| `company-list` | a named ABM account list — segment-specific relevance |
+| `matched-audience` | retargeting (site/contact/engaged) — the only tier a harder CTA fits |
 
 ## Field values — audience_temp
 

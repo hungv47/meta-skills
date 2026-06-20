@@ -34,6 +34,7 @@ promptSignals:
 
 capability:
   id: diagnose
+  gate_class: auto
   domain: research
   public: true
   command: /diagnose

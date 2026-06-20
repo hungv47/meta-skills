@@ -21,7 +21,11 @@ owns the server and the decision.
   `.mcp.json.example`, or run `/forsvn:doctor`).
 - **Proof installed** and `FORSVN_PROOF_DIR` set (one-time —
   `bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/proof-setup.ts"`, or the collaborative-docs
-  runbook). Without it the doc-server refuses to start.
+  runbook). Without it the doc-server can't start, and *this explicit* collab
+  command has nothing to fall back to. (The auto-routed review surface, C5, is
+  different: there a Proof-absent open degrades to the inline edit and kicks off
+  first-use provisioning in the background — never a dead end. This command is the
+  deliberate Proof path, so install Proof first.)
 - **Bun** on PATH (the `forsvn-collab` CLI runs under it).
 
 ## Steps

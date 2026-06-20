@@ -32,6 +32,7 @@ promptSignals:
 
 capability:
   id: write-copy
+  gate_class: review
   domain: marketing
   public: true
   command: /write-copy

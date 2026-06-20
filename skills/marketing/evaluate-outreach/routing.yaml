@@ -43,6 +43,7 @@ promptSignals:
 
 capability:
   id: evaluate-outreach
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-outreach

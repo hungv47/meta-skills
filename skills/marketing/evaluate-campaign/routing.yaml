@@ -41,6 +41,7 @@ promptSignals:
 
 capability:
   id: evaluate-campaign
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-campaign

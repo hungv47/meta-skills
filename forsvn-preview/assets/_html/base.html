@@ -173,6 +173,11 @@
           <span class="w"><span class="word">Suggest</span><span class="sub">approve with notes</span></span>
           <span class="key">⌥S</span>
         </label>
+        <!-- C1 reason chips — populated + revealed by chrome.js when a non-approve
+             decision is picked; the picked chip rides the decision POST as
+             decision_reason. Built from preview-config.decision_reasons so the
+             enum has a single source (lib/decision-reason.ts). -->
+        <div class="decision-reasons" role="radiogroup" aria-label="Reason for sending it back" hidden></div>
         <label class="comment">
           <span class="sr-only">Comment (optional)</span>
           <textarea name="comments" placeholder="Optional note — saved with the decision as your reviewer notes"></textarea>

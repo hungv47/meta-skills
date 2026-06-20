@@ -89,5 +89,48 @@ for (const [prompt, expected] of tests) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// A8 — /forsvn nudge: a cross-domain / multi-step ask nudges the brain (target
+// "forsvn"); a clean single-domain ask keeps its leaf suggestion.
+// ---------------------------------------------------------------------------
+
+function routeTelemetry(prompt) {
+  const input = JSON.stringify({ prompt, session_id: "test" });
+  const raw = execSync(`node "${HOOK}"`, { input, encoding: "utf-8", timeout: 5000 }).trim();
+  if (!raw || raw === "{}") return { data: null, ctx: "" };
+  const json = JSON.parse(raw);
+  const ctx = json.hookSpecificOutput?.additionalContext || "";
+  const m = ctx.match(/skillRouter: ({.*})/);
+  return { data: m ? JSON.parse(m[1]) : null, ctx };
+}
+
+const nudgeTests = [
+  // cross-domain (marketing write-ad + research-icp) → nudge
+  { prompt: "write meta ads and figure out our target audience and ICP", nudge: true },
+  // multi-step + high-confidence single domain → nudge (write-ad scores >=10 via
+  // two phrase hits; "ship this" makes it multi-step-shaped)
+  { prompt: "ship this campaign — write the primary text and the ad headline", nudge: true },
+  // clean single-domain ad ask → leaf, no nudge
+  { prompt: "Write Meta retargeting ad copy for this offer", nudge: false },
+];
+
+for (const { prompt, nudge } of nudgeTests) {
+  try {
+    const { data, ctx } = routeTelemetry(prompt);
+    const isNudge = data?.target === "forsvn" && /Skill\(forsvn\)/.test(ctx);
+    if (isNudge === nudge) {
+      console.log(`  ✓ A8 ${nudge ? "nudge" : "leaf"}: "${prompt.slice(0, 40)}…"`);
+      pass++;
+    } else {
+      console.log(`  ✗ A8 expected ${nudge ? "nudge" : "leaf"}, got ${isNudge ? "nudge" : "leaf"}`);
+      console.log(`    Prompt: "${prompt}"`);
+      fail++;
+    }
+  } catch (err) {
+    console.log(`  ✗ A8 ERROR: ${err.message}`);
+    fail++;
+  }
+}
+
 console.log(`\n${pass}/${pass + fail} passed`);
 if (fail > 0) process.exit(1);

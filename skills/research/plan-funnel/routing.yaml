@@ -28,6 +28,7 @@ promptSignals:
 
 capability:
   id: plan-funnel
+  gate_class: review
   domain: research
   public: true
   command: /plan-funnel

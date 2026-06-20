@@ -41,6 +41,7 @@ promptSignals:
 
 capability:
   id: write-social
+  gate_class: review
   domain: marketing
   public: true
   command: /write-social

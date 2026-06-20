@@ -31,6 +31,7 @@ promptSignals:
 
 capability:
   id: extract-service
+  gate_class: review
   domain: product
   public: true
   command: /extract-service

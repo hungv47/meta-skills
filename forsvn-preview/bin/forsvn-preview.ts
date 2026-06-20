@@ -22,7 +22,9 @@ import { fileURLToPath } from "node:url";
 import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { renderArtifactToHtml } from "../lib/render";
-import { atomicWrite } from "../lib/collab";
+import { atomicWrite, splitDoc, normalizeBody, unifiedDiff, renderSuggestedEditBlock } from "../lib/collab";
+import { pickReviewSurface, loadLongFormThreshold } from "../lib/route-surface";
+import { captureEditDelta, loadEditDeltaMinChars, joinEditClasses } from "../lib/edit-delta";
 import {
   resolveTier,
   dim,
@@ -43,6 +45,8 @@ import {
 } from "../lib/mono";
 import { renderMarkdownTerm } from "../lib/md-term";
 import { initialState, step, promptIntro } from "../lib/tty-prompt";
+import { DECISION_REASONS, isDecisionReason, type DecisionReason } from "../lib/decision-reason";
+import { appendVerdict, verdictTs } from "../lib/verdicts";
 
 const DECISION_ENUM = new Set<string>(DECISION_STATES);
 
@@ -107,6 +111,7 @@ const ANNOTATION_BODY_MAX = 5000;
 type Payload = {
   token: string;
   decision_state: Decision;
+  decision_reason?: DecisionReason;
   comments?: string;
   variant?: string;
   annotations?: Annotation[];
@@ -244,6 +249,24 @@ async function main(): Promise<number> {
     ));
   }
 
+  // C5 — auto-routed review surface: the operator never picks a review tool. This
+  // one-shot surface is inline; when the artifact is long-form (or explicitly
+  // review_tool: proof) the router prefers Proof, so point at the turn-by-turn
+  // path instead of silently serving inline. Advisory only — we still serve the
+  // inline review below (never a dead end), and /forsvn:collab is the explicit
+  // Proof escape hatch.
+  if (
+    pickReviewSurface(
+      { review_tool: fm.review_tool, review_surface: fm.review_surface },
+      { bodyLength: splitDoc(mdSource).body.length, longFormThreshold: loadLongFormThreshold(projectRoot) },
+    ) === "proof"
+  ) {
+    console.log(dim(
+      "long-form artifact — /forsvn:collab opens it in Proof for turn-by-turn editing; serving the inline review here.",
+      outTier,
+    ));
+  }
+
   const token = randomBytes(TOKEN_BYTES).toString("hex");
   // Session state is MUTABLE because POST /edit (the workbench's Edit mode)
   // legitimately rewrites the artifact body mid-serve: after a successful
@@ -292,6 +315,9 @@ async function main(): Promise<number> {
 
   if (!flagNoOpen && !flagHeadless) openBrowser(url);
 
+  // C2/L1 — review latency: the open→decide span, stamped onto the verdict row.
+  const serveStartedAt = Date.now();
+
   // The shutdown handler set in makeHandler() resolves this promise once a
   // decision lands — POST /done OR the TTY prompt; both race for the same
   // single-shot resolve (first wins, the loser is torn down before any
@@ -323,10 +349,15 @@ async function main(): Promise<number> {
           tier: outTier,
           meta: { name: basename(mdPath), skill: fm.skill ?? "?", state: "pending", excerpt: fm.summary },
           activity: () => { if (state.resolve) state.arm?.(); },
-          decide: (decision_state, comment) => {
+          decide: (decision_state, comment, reason) => {
             const r = claimSlot();
             if (!r) return;
-            r({ ok: true, payload: { token, decision_state, ...(comment ? { comments: comment } : {}) } });
+            r({ ok: true, payload: {
+              token,
+              decision_state,
+              ...(reason && decision_state !== "approved" ? { decision_reason: reason } : {}),
+              ...(comment ? { comments: comment } : {}),
+            } });
           },
           quit: () => {
             const r = claimSlot();
@@ -370,12 +401,70 @@ async function main(): Promise<number> {
   // never persisted ("accepted but ignored"). Record it as `asset_picked` so the
   // canonical choice survives in frontmatter and is indexed for downstream skills.
   if (result.payload.variant) decisionUpdates.asset_picked = result.payload.variant;
+  // C1: the reason chip rides into frontmatter (applyDecision upserts any key).
+  // Only ever set on a non-approve decision (the /done + TTY paths both gate it).
+  if (result.payload.decision_reason) decisionUpdates.decision_reason = result.payload.decision_reason;
   // Re-read from disk, not the serve-time snapshot: a workbench Edit save may
   // have legitimately rewritten the body mid-serve (the /done conflict guard
   // already proved the decision applies to these exact bytes).
   const finalSource = readFileSync(mdPath, "utf8");
-  const updated = applyDecision(finalSource, decisionUpdates, result.payload.comments, result.payload.annotations);
+  // On an approve over an artifact that carried a prior reason (a re-decision),
+  // clear it so the contract invariant holds (reason iff denied/suggested).
+  if (result.payload.decision_state === "approved" && /^decision_reason:\s*\S/m.test(finalSource)) {
+    decisionUpdates.decision_reason = "";
+  }
+
+  // L2 — edit-delta capture: snapshot the produced body's identity and classify
+  // whatever the operator changed before deciding. `mdSource` is the serve-time
+  // (pending, pre-edit) body the producer emitted; `finalSource` carries any
+  // in-place workbench edit. This runs on EVERY decision (incl. approve — an
+  // "approved with edits" is the second-richest signal after a deny). Advisory:
+  // a degraded classify yields [] and never blocks the write-back.
+  const producedBody = splitDoc(mdSource).body;
+  const editedBody = splitDoc(finalSource).body;
+  const delta = captureEditDelta(producedBody, editedBody, loadEditDeltaMinChars(projectRoot));
+  // Record the produced-body sha on the decided artifact (existing writer — no new
+  // .md writer). Lets a later read confirm the diff was against the real produced
+  // text and dedupe re-reviews. On a clean approve it matches the body; on an
+  // edited decision it records the pre-edit produced identity (intended).
+  decisionUpdates.body_sha = delta.body_sha;
+
+  let updated = applyDecision(finalSource, decisionUpdates, result.payload.comments, result.payload.annotations);
+
+  // C3 — inline-edit diff round-trip: if the operator edited the body in-place
+  // (the workbench Edit mode advanced finalSource past the served mdSource) on a
+  // non-approve decision, persist the exact correction as a unified diff beneath
+  // `## Reviewer notes` so the producing agent reads the literal fix, not just a
+  // prose comment. Reformat-only noise is normalized out (no spurious diff).
+  if (result.payload.decision_state !== "approved") {
+    if (normalizeBody(producedBody) !== normalizeBody(editedBody)) {
+      const block = renderSuggestedEditBlock(unifiedDiff(producedBody, editedBody));
+      updated = /^## Reviewer notes\b/m.test(updated)
+        ? updated.replace(/\s*$/, "") + "\n" + block
+        : updated.replace(/\s*$/, "") + `\n\n## Reviewer notes\n_operator · ${today}_\n${block}`;
+    }
+  }
   writeFileSync(mdPath, updated, "utf8");
+
+  // C2/L1 — the learning wire: append one verdict row AFTER the canonical write.
+  // Best-effort + keyless-safe inside appendVerdict (never fails the decision).
+  // L2 rides the SAME row: body_sha + edit_classes (a degraded classify appends an
+  // advisory diagnostic to the note, never overwriting the operator comment).
+  const operatorNote = (result.payload.comments ?? "").split(/\r?\n/)[0] ?? "";
+  appendVerdict(projectRoot, {
+    ts: verdictTs(),
+    artifact_id: fm.id ?? "",
+    skill: fm.skill ?? "",
+    stack: fm.stack ?? "",
+    decision_state: result.payload.decision_state,
+    decision_reason: result.payload.decision_reason ?? "",
+    dimensions_flagged: "",                       // reserved for L5
+    note: [operatorNote, delta.note].filter(Boolean).join(" · "),
+    review_latency_ms: String(Date.now() - serveStartedAt),
+    surface: flagHeadless ? "tty" : "cli",
+    body_sha: delta.body_sha,
+    edit_classes: joinEditClasses(delta.edit_classes),
+  });
 
   const archivedRel = archiveHtml(projectRoot, htmlPath);
 
@@ -798,7 +887,80 @@ async function notifyMode(args: string[]): Promise<number> {
   mkdirSync(dirname(inboxPath), { recursive: true });
   appendFileSync(inboxPath, `${line}\n`, "utf8");
   console.log(`${glyph} ${state} recorded in ${INBOX_REL} — the operator will see it on next tail/list`);
+
+  // C4 — ambient signal: on the pending 0→N crossing, fire ONE local OS
+  // notification (the void→has-work edge). Coalesced to the standing count, never
+  // one ping per artifact. Best-effort: a notify failure never fails the push.
+  maybeNotifyPending(projectRoot);
   return 0;
+}
+
+const INBOX_STATE_REL = ".forsvn/inbox.state";
+
+// The 0→N notification predicate (pure, exported for the edge tests): notify only
+// on the void→has-work crossing — a prior count of 0 and a current count > 0.
+// Re-runs that keep the count > 0, or leave it at 0, do not ping (avoids noise).
+export function pendingEdge(prev: number, after: number): boolean {
+  return prev === 0 && after > 0;
+}
+
+// The 0→N edge detector + local notifier. Reads the last-notified pending count
+// from .forsvn/inbox.state, recomputes the standing count, and fires a single
+// local OS notification only on the crossing. Re-runs that don't change the count
+// never reach here (the dedupe path returns before the append). Entirely
+// best-effort — wrapped so an ambient-signal failure can never disturb the push.
+function maybeNotifyPending(projectRoot: string): void {
+  try {
+    const after = scanPendingCount(projectRoot);
+    if (after === undefined) return; // no artifacts queue around here — say nothing
+    const statePath = join(projectRoot, INBOX_STATE_REL);
+    let prev = 0;
+    if (existsSync(statePath)) {
+      const n = parseInt(readFileSync(statePath, "utf8").trim(), 10);
+      if (Number.isFinite(n)) prev = n;
+    }
+    writeFileSync(statePath, String(after), "utf8");
+    if (pendingEdge(prev, after)) fireReviewNotification(after);
+  } catch {
+    // ambient signal is a courtesy; never let it disturb the push
+  }
+}
+
+// When a review decision empties the queue, clear the notification baseline so a
+// later genuine void→has-work push pings again. maybeNotifyPending (the only other
+// writer) runs at push time where pending is always ≥1, so it can only ever RAISE
+// the baseline; without this reset the prev===0 edge never recurs after the first
+// push. Best-effort — a courtesy signal must never disturb a decision.
+export function resetInboxBaselineIfEmpty(projectRoot: string): void {
+  try {
+    if (scanPendingCount(projectRoot) === 0) {
+      writeFileSync(join(projectRoot, INBOX_STATE_REL), "0", "utf8");
+    }
+  } catch {
+    // ambient signal is a courtesy; never let it disturb the decision
+  }
+}
+
+// Local-OS notification via the platform-native CLI (no new dependency). Spawned
+// detached and unref'd so it never blocks; errors (no notifier on PATH) are
+// swallowed — the inbox row is the durable signal, the ping is the courtesy.
+// Message reports the STANDING pending count, never one ping per artifact.
+// FORSVN_NO_NOTIFY=1 suppresses the actual spawn (tests + headless/CI contexts).
+function fireReviewNotification(count: number): void {
+  if (process.env.FORSVN_NO_NOTIFY) return;
+  const title = "FORSVN";
+  const body = `${count} artifact${count === 1 ? "" : "s"} awaiting review`;
+  try {
+    if (process.platform === "darwin") {
+      const script = `display notification ${JSON.stringify(body)} with title ${JSON.stringify(title)}`;
+      spawn("osascript", ["-e", script], { detached: true, stdio: "ignore" }).unref();
+    } else if (process.platform === "linux") {
+      spawn("notify-send", [title, body], { detached: true, stdio: "ignore" }).unref();
+    }
+    // Windows: deferred (Phase 2).
+  } catch {
+    // no notifier on PATH — swallow; the inbox row is the durable signal
+  }
 }
 
 // Inbox paths read like the flow's journal examples: relative to the artifact
@@ -938,6 +1100,9 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         // see references/review-surface-design.md § suggestions).
         ...(session.pendingCount !== undefined ? { pending_count: session.pendingCount } : {}),
         suggestions: [],
+        // C1: the reason-chip enum, sourced from lib/decision-reason.ts so the
+        // browser chrome builds chips without a second hardcoded copy of the list.
+        decision_reasons: DECISION_REASONS,
       });
       return new Response(injected, { headers: { ...noStore, "Content-Type": "text/html; charset=utf-8" } });
     }
@@ -1022,6 +1187,18 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         token,
         decision_state: raw.decision_state as Decision,
       };
+      // C1 reason chip: valid only on a non-approve decision and only when it
+      // matches the enum. A reason on an approve, or an unknown value, is a 400 —
+      // nothing written. Absent/empty on a non-approve is allowed (see guardrails).
+      if (raw.decision_reason !== undefined && raw.decision_reason !== "") {
+        if (typeof raw.decision_reason !== "string" || !isDecisionReason(raw.decision_reason)) {
+          return jsonResp(400, { error: `decision_reason must be one of ${DECISION_REASONS.join(" | ")}` }, noStore);
+        }
+        if (raw.decision_state === "approved") {
+          return jsonResp(400, { error: "decision_reason is not valid on an approved decision" }, noStore);
+        }
+        parsed.decision_reason = raw.decision_reason;
+      }
       if (typeof raw.comments === "string" && raw.comments.trim().length > 0) {
         parsed.comments = raw.comments.trim();
       }
@@ -1159,7 +1336,7 @@ type TtyPromptOpts = {
   tier: Tier;
   meta: { name: string; skill: string; state: string; excerpt?: string };
   activity: () => void;
-  decide: (decision_state: Decision, comment?: string) => void;
+  decide: (decision_state: Decision, comment?: string, reason?: DecisionReason) => void;
   quit: () => void;
 };
 
@@ -1181,7 +1358,7 @@ function startTtyPrompt(opts: TtyPromptOpts): () => void {
       if (r.outcome) {
         settled = true;
         if (r.outcome.kind === "quit") opts.quit();
-        else opts.decide(r.outcome.decision_state, r.outcome.comment);
+        else opts.decide(r.outcome.decision_state, r.outcome.comment, r.outcome.reason);
         return;
       }
     }
@@ -1203,7 +1380,7 @@ function startTtyPrompt(opts: TtyPromptOpts): () => void {
 
 // --- Helpers ------------------------------------------------------------
 
-function injectPreviewConfig(html: string, config: { token: string; port: string | number; endpoint: string; mdPath: string; gate_warning: string | null; pending_count?: number; suggestions?: unknown[] }): string {
+function injectPreviewConfig(html: string, config: { token: string; port: string | number; endpoint: string; mdPath: string; gate_warning: string | null; pending_count?: number; suggestions?: unknown[]; decision_reasons?: readonly string[] }): string {
   const json = JSON.stringify(config);
   const tagRe = /<script type="application\/json" id="preview-config">[\s\S]*?<\/script>/;
   if (!tagRe.test(html)) {

@@ -41,6 +41,7 @@ promptSignals:
 
 capability:
   id: evaluate-content
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-content

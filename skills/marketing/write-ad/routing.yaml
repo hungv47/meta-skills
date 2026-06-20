@@ -9,16 +9,27 @@ promptSignals:
     - "meta ads"
     - "facebook ads"
     - "instagram ads"
+    - "google ads"
+    - "tiktok ads"
+    - "linkedin ads"
+    - "search ads"
     - "paid social"
     - "retargeting ads"
     - "primary text"
     - "ad headline"
+    - "responsive search ad"
+    - "spark ad"
+    - "sponsored content"
     - "creative copy"
     - "ad creative"
   anyOf:
     - "meta ads"
     - "facebook ads"
     - "instagram ads"
+    - "google ads"
+    - "tiktok ads"
+    - "linkedin ads"
+    - "search ads"
     - "paid ads"
     - "retargeting"
     - "ad copy"
@@ -26,35 +37,35 @@ promptSignals:
   allOf:
     - [write, ad]
   noneOf:
-    - "google ads"
-    - "linkedin ads"
-    - "tiktok ads"
-    - "search ads"
     - "youtube ads"
   minScore: 6
 
 capability:
   id: write-ad
+  gate_class: review
   domain: marketing
   public: true
   command: /write-ad
-  summary: "Write and evaluate Meta paid-ad copy (retargeting + cold-traffic) — audience-temperature-aware framing, hard char-cap enforcement, policy compliance, 7-dim rubric."
+  summary: "Write and evaluate paid-ad copy across Meta, Google, TikTok, and LinkedIn — network-aware char-caps + policy floor, audience/intent framing, 7-dim rubric."
   aliases:
     - ad-copy
     - meta-ads
+    - google-ads
+    - tiktok-ads
+    - linkedin-ads
     - paid-social-copy
 
   route:
     use_when:
-      - "User asks to write Meta (Facebook / Instagram) paid-ad copy."
-      - "Hero + 2 variants needed for an audience-temp (retargeting OR cold)."
-      - "Audience-temp + offer + creative-format are known or can be elicited."
+      - "User asks to write paid-ad copy for a network (Meta / Google / TikTok / LinkedIn)."
+      - "Hero + 2 variants needed for one network + audience-temp / intent-tier."
+      - "Network + offer + creative-format are known or can be elicited."
     not_when:
       - "Landing-page headlines -> write-copy."
       - "Cold-outreach DMs -> write-outreach."
       - "Organic social posts -> write-social."
-      - "Channel-mix strategy -> plan-campaign."
-      - "Non-Meta channels (Google / LinkedIn / TikTok / Search / YouTube ads) -> out of scope at v1."
+      - "Channel-mix / budget strategy -> plan-campaign."
+      - "YouTube ads / search-partner networks -> deferred (capture in Open Questions; no surface yet)."
     prerequisites:
       recommended:
         - "id:product-context"
@@ -85,14 +96,25 @@ capability:
         read:
           - "references/agent-manifest.md"
           - "references/procedures/dispatch-mechanics.md"
-      - if: "Format-checker hard gate / Meta-specific spec"
+      - if: "Format-checker hard gate / network-specific char-cap + policy spec"
         read:
           - "references/format-spec.md"
           - "references/policy-floor.md"
-      - if: "Strategist angle / audience-temp framing"
+      - if: "Strategist angle — Meta (warm/cold audience-temp)"
         read:
           - "references/ad-intelligence/meta-retargeting.md"
           - "references/ad-intelligence/meta-cold-traffic.md"
+      - if: "Strategist angle — Google Ads (intent-tier)"
+        read:
+          - "references/ad-intelligence/google-ads.md"
+      - if: "Strategist angle — TikTok Ads (spark/native)"
+        read:
+          - "references/ad-intelligence/tiktok-ads.md"
+      - if: "Strategist angle — LinkedIn Ads (targeting-mode)"
+        read:
+          - "references/ad-intelligence/linkedin-ads.md"
+      - if: "Cadence + transmutation (network-agnostic)"
+        read:
           - "references/ad-intelligence/creative-cadence.md"
           - "references/message-transmutation.md"
       - if: "Critic / 7-dim rubric scoring"

@@ -5,6 +5,11 @@ The contract for `run-launch`: the 7-step chain, the per-step pack binding, the
 design: the generic per-channel launch chain (U11) in `/forsvn`'s `chains/marketing.md §
 Launch chains`; D-7 (the launch runner, not skill clones) and D-8 (legible, not autopilot).
 
+> **Model-invocation.** `run-launch` stays human-invoked (`disable-model-invocation: true`) — it
+> orchestrates a *channel launch*, not a generic plan. Generic model-driven execution of an approved
+> `plan.md` goes through the **`run-plan`** executor (A4), which auto-advances non-publish steps within
+> the A6 governor envelope and STOPS at every publish gate. Don't flip this flag for that.
+
 `run-launch` is the runnable form of that doc-only chain. It **orchestrates** the existing
 leaf skills around one channel's `launch-channel` pack and assembles ONE coherent bundle —
 it never re-implements a leaf's work (orchestrate, don't fuse), and it never auto-publishes.

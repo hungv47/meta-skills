@@ -36,6 +36,7 @@ promptSignals:
 
 capability:
   id: produce-ooh
+  gate_class: publish
   domain: marketing
   public: true
   command: /produce-ooh

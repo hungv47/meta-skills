@@ -41,6 +41,7 @@ promptSignals:
 
 capability:
   id: produce-asset
+  gate_class: publish
   domain: marketing
   public: true
   command: /produce-asset

@@ -20,6 +20,7 @@
     "./skills/meta/debate-agents/",
     "./skills/meta/run-pipeline/",
     "./skills/meta/run-launch/",
+    "./skills/meta/run-plan/",
     "./skills/meta/review-work/",
     "./skills/meta/clean-artifacts/",
 

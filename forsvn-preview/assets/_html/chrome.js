@@ -505,12 +505,73 @@
     }
 
     // ----- decision capture ---------------------------------------------------
-    // Done is discoverable-but-inert until a radio is picked: aria-disabled
+    // Done is discoverable-but-inert until the pick is complete: aria-disabled
     // (not `disabled` — that drops it from some AT traversal) + the
     // describedby "pick a decision first" hint carries the why.
+
+    // C1 reason chips — built from preview-config.decision_reasons (single source:
+    // lib/decision-reason.ts), single-select, revealed only on a non-approve
+    // decision. The picked chip rides the POST as decision_reason; a non-approve
+    // decision needs one before Done enables (the column stays countable). Approve
+    // hides the row entirely — a reason carries ~10× less signal on an approve.
+    var reasonsBox = form.querySelector(".decision-reasons");
+    var reasonList = config && Array.isArray(config.decision_reasons) ? config.decision_reasons : [];
+    var pickedReason = null;
+    var reasonChips = [];
+
+    function currentDecision() {
+      var picked = form.querySelector('input[name="decision"]:checked');
+      return picked ? picked.value : null;
+    }
+    function needsReason() {
+      var d = currentDecision();
+      return d === "denied" || d === "suggested";
+    }
+    function refreshDone() {
+      if (!doneBtn) return;
+      var d = currentDecision();
+      var ready = d === "approved" || (needsReason() && pickedReason !== null);
+      doneBtn.setAttribute("aria-disabled", ready ? "false" : "true");
+    }
+
+    if (reasonsBox && reasonList.length > 0) {
+      reasonList.forEach(function (value) {
+        var chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "reason-chip";
+        chip.setAttribute("role", "radio");
+        chip.setAttribute("aria-checked", "false");
+        chip.dataset.reason = value;
+        chip.textContent = value;
+        chip.addEventListener("click", function () {
+          pickedReason = value;
+          reasonChips.forEach(function (c) {
+            var on = c === chip;
+            c.classList.toggle("on", on);
+            c.setAttribute("aria-checked", on ? "true" : "false");
+          });
+          refreshDone();
+        });
+        reasonsBox.appendChild(chip);
+        reasonChips.push(chip);
+      });
+    }
+
     form.querySelectorAll('input[name="decision"]').forEach(function (radio) {
       radio.addEventListener("change", function () {
-        if (doneBtn) doneBtn.setAttribute("aria-disabled", "false");
+        if (reasonsBox) {
+          if (needsReason()) {
+            reasonsBox.hidden = false;
+          } else {
+            reasonsBox.hidden = true;
+            pickedReason = null;
+            reasonChips.forEach(function (c) {
+              c.classList.remove("on");
+              c.setAttribute("aria-checked", "false");
+            });
+          }
+        }
+        refreshDone();
       });
     });
 
@@ -564,6 +625,12 @@
       outcome.appendChild(hairline);
       outcome.appendChild(recorded);
 
+      if (payload.decision_reason) {
+        var recho = document.createElement("div");
+        recho.className = "note-echo";
+        recho.textContent = "Reason — " + payload.decision_reason;
+        outcome.appendChild(recho);
+      }
       if (payload.comments) {
         var echo = document.createElement("div");
         echo.className = "note-echo";
@@ -619,6 +686,10 @@
         token: config.token,
         decision_state: picked.value,
       };
+      // C1 — the reason chip rides the decision additively, only on a non-approve.
+      if ((picked.value === "denied" || picked.value === "suggested") && pickedReason) {
+        payload.decision_reason = pickedReason;
+      }
       var ta = form.querySelector('textarea[name="comments"]');
       if (ta && ta.value.trim().length > 0) payload.comments = ta.value.trim();
       // Annotations ride the decision additively — markers always; comments

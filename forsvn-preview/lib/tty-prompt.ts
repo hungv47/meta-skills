@@ -13,16 +13,19 @@
 // Vocabulary: T5 only — approved / denied / suggested. No synonyms, ever.
 
 import { dim, promptKey, hintLine, frameCap, type Tier } from "./mono";
+import { DECISION_REASONS, type DecisionReason } from "./decision-reason";
 
 export type TtyDecision = "approved" | "denied" | "suggested";
 
 export type TtyOutcome =
-  | { kind: "decision"; decision_state: TtyDecision; comment?: string }
+  | { kind: "decision"; decision_state: TtyDecision; reason?: DecisionReason; comment?: string }
   | { kind: "quit" };
 
 export type MachineState = {
-  phase: "prompt" | "comment";
+  // C1 adds a `reason` phase between `prompt` and `comment` for deny/suggest.
+  phase: "prompt" | "reason" | "comment";
   picked?: TtyDecision;
+  reason?: DecisionReason;  // captured in the reason phase (deny/suggest only)
   buffer: string;   // comment text being typed
   hinted: boolean;  // the unrecognized-key reprint fires at most once
 };
@@ -51,6 +54,17 @@ export function decisionLine(tier: Tier): string {
 
 export function commentPrompt(tier: Tier): string {
   return `${INDENT}comment (optional, ${dim("⏎ to skip", tier)}): `;
+}
+
+// C1 reason menu — a numbered chip list printed after a deny/suggest keypress.
+// `[1] off-brief  [2] wrong-claim  …  [8] other`. The digit maps to the enum.
+export function reasonMenu(tier: Tier): string {
+  const items = DECISION_REASONS.map((r, i) => `${promptKey(`[${i + 1}]`, tier)} ${r}`);
+  return `${INDENT}reason  ${items.join("  ")}`;
+}
+
+export function reasonPrompt(tier: Tier): string {
+  return `${INDENT}reason (${dim("1–8", tier)}): `;
 }
 
 // The frame + excerpt + gate heading printed once before the loop starts.
@@ -85,9 +99,18 @@ export function step(state: MachineState, key: string, tier: Tier): StepResult {
     }
     const picked = KEY_TO_DECISION[lower];
     if (picked) {
+      // Approve carries no reason (the chip is ~10× less signal on an approve) —
+      // straight to the comment phase, as before. Deny/suggest pass through the
+      // reason phase first so the structured "why" is always captured (C1).
+      if (picked === "approved") {
+        return {
+          state: { ...state, phase: "comment", picked, buffer: "" },
+          write: `${INDENT}> ${lower}\n${commentPrompt(tier)}`,
+        };
+      }
       return {
-        state: { ...state, phase: "comment", picked, buffer: "" },
-        write: `${INDENT}> ${lower}\n${commentPrompt(tier)}`,
+        state: { ...state, phase: "reason", picked, buffer: "", hinted: false },
+        write: `${INDENT}> ${lower}\n${reasonMenu(tier)}\n${reasonPrompt(tier)}`,
       };
     }
     // Unrecognized key: reprint the decision line once with a dim hint —
@@ -101,13 +124,41 @@ export function step(state: MachineState, key: string, tier: Tier): StepResult {
     return { state, write: "" };
   }
 
+  // reason phase (deny/suggest only) — a single digit 1–8 maps to the enum, then
+  // the comment phase follows. Ctrl-C still bails; a bad key reprints once.
+  if (state.phase === "reason") {
+    if (key === CTRL_C) {
+      return { state, write: "\n", outcome: { kind: "quit" } };
+    }
+    const idx = /^[1-9]$/.test(key) ? Number(key) - 1 : -1;
+    if (idx >= 0 && idx < DECISION_REASONS.length) {
+      const reason = DECISION_REASONS[idx];
+      return {
+        state: { ...state, phase: "comment", reason, hinted: false },
+        write: `${INDENT}> ${reason}\n${commentPrompt(tier)}`,
+      };
+    }
+    if (!state.hinted) {
+      return {
+        state: { ...state, hinted: true },
+        write: `${hintLine("press 1–8", tier)}\n${reasonMenu(tier)}\n${reasonPrompt(tier)}`,
+      };
+    }
+    return { state, write: "" };
+  }
+
   // comment phase — hand-rolled line capture (stdin stays in raw mode).
   if (key === "\r" || key === "\n") {
     const comment = state.buffer.trim();
     return {
       state,
       write: "\n",
-      outcome: { kind: "decision", decision_state: state.picked as TtyDecision, ...(comment ? { comment } : {}) },
+      outcome: {
+        kind: "decision",
+        decision_state: state.picked as TtyDecision,
+        ...(state.reason ? { reason: state.reason } : {}),
+        ...(comment ? { comment } : {}),
+      },
     };
   }
   if (key === CTRL_C) {

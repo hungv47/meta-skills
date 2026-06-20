@@ -26,6 +26,7 @@ promptSignals:
 
 capability:
   id: research-platform
+  gate_class: auto
   domain: research
   public: true
   command: /research-platform

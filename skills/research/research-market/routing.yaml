@@ -27,6 +27,7 @@ promptSignals:
 
 capability:
   id: research-market
+  gate_class: auto
   domain: research
   public: true
   command: /research-market

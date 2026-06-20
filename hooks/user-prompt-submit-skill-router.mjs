@@ -13,6 +13,13 @@
  * Max 2 skills injected per prompt.
  * Deduplicates via SKILL_ROUTER_SEEN env var.
  *
+ * A8: on a cross-domain (2+ domains) or multi-step-shaped high-confidence ask,
+ * nudges the `/forsvn` brain (which routes + plans) instead of a single leaf.
+ *
+ * Suggestion-only, always. This hook NEVER auto-invokes a skill, and it is a
+ * Claude-Code accelerator only — NOT load-bearing. The portable contract is the
+ * operator typing `/forsvn`; no other agent depends on this hook.
+ *
  * Input:  JSON on stdin { prompt, session_id, hook_event_name }
  * Output: JSON on stdout { hookSpecificOutput: { additionalContext } } or {}
  */
@@ -29,6 +36,15 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const MAX_SKILLS = 2;
 const MIN_PROMPT_LENGTH = 10;
+const SKILL_DIRS = ["skills/meta", "skills/research", "skills/marketing", "skills/product"];
+// A8: when an ask spans domains or is multi-step-shaped, nudge the /forsvn brain
+// (which routes + plans) instead of a single leaf. Suggestion-only, like everything
+// this hook emits — typing `/forsvn` is the portable contract; the hook is a
+// Claude-Code accelerator only, never load-bearing.
+const HIGH_CONFIDENCE_SCORE = 10; // a phrase hit + an allOf, or two phrase hits
+// Multi-step-shaped: launch/ship as a whole job (require an object so a bare noun
+// like "for the launch" doesn't over-trigger), end-to-end, or plan-and-build.
+const MULTI_STEP_RE = /\b(?:launch\s+(?:this|it|the|our|my)|ship\s+(?:this|it)|end[\s-]to[\s-]end|plan\s+and\s+build|build\s+and\s+(?:launch|ship))\b/i;
 
 // ---------------------------------------------------------------------------
 // Load registry
@@ -36,12 +52,7 @@ const MIN_PROMPT_LENGTH = 10;
 
 function checkRegistryStaleness(registryPath) {
   const root = join(__dirname, "..");
-  const skillDirs = [
-    "skills/meta",
-    "skills/research",
-    "skills/marketing",
-    "skills/product",
-  ];
+  const skillDirs = SKILL_DIRS;
   let registryMtime;
   try {
     registryMtime = statSync(registryPath).mtimeMs;
@@ -82,6 +93,26 @@ function loadRegistry() {
     compiled[name] = compilePromptSignals(signals);
   }
   return compiled;
+}
+
+// Map skill name -> domain (meta|research|marketing|product) from the on-disk
+// layout (skills/<domain>/<name>/routing.yaml) — the same dirs the staleness
+// check already walks. Used only to detect a cross-domain span for the nudge.
+function loadDomainMap() {
+  const root = join(__dirname, "..");
+  const map = {};
+  for (const dir of SKILL_DIRS) {
+    const domain = dir.split("/").pop();
+    let entries;
+    try { entries = readdirSync(join(root, dir)); } catch { continue; }
+    for (const entry of entries) {
+      try {
+        statSync(join(root, dir, entry, "routing.yaml"));
+        map[entry] = domain;
+      } catch { /* not a skill dir */ }
+    }
+  }
+  return map;
 }
 
 // ---------------------------------------------------------------------------
@@ -137,9 +168,30 @@ async function main() {
     (w) => `  - "${w.name}" matched: ${w.reason}`
   );
 
-  const suggestLines = winners.map(
-    (w) => `Consider running the Skill(${w.name}) tool if it fits the user's actual request.`
-  );
+  // A8 — nudge /forsvn when the ask spans 2+ domains above threshold, OR the top
+  // match is high-confidence AND the prompt is multi-step-shaped. /forsvn is the
+  // brain that routes + plans; a single leaf would under-serve a cross-domain ask.
+  const domainMap = loadDomainMap();
+  const matchedDomains = new Set(results.map((r) => domainMap[r.name]).filter(Boolean));
+  const topScore = winners[0] ? winners[0].score : 0;
+  const multiStep = MULTI_STEP_RE.test(prompt);
+  const nudgeForsvn =
+    !seen.has("forsvn") &&
+    (matchedDomains.size >= 2 || (topScore >= HIGH_CONFIDENCE_SCORE && multiStep));
+
+  let suggestLines;
+  let telemetry;
+  if (nudgeForsvn) {
+    suggestLines = [
+      "Consider running the Skill(forsvn) tool — this looks like a multi-step / cross-domain ask FORSVN can route and plan.",
+    ];
+    telemetry = { version: 2, mode: "suggest", target: "forsvn", matched: winners.map((w) => w.name), scores: winners.map((w) => w.score) };
+  } else {
+    suggestLines = winners.map(
+      (w) => `Consider running the Skill(${w.name}) tool if it fits the user's actual request.`
+    );
+    telemetry = { version: 2, mode: "suggest", matched: winners.map((w) => w.name), scores: winners.map((w) => w.score) };
+  }
 
   const additionalContext = [
     `[skill-router] Heuristic match (suggestion only — apply your own relevance gate, ignore if not a fit):`,
@@ -147,7 +199,7 @@ async function main() {
     "",
     "---",
     ...suggestLines,
-    `<!-- skillRouter: ${JSON.stringify({ version: 2, mode: "suggest", matched: winners.map((w) => w.name), scores: winners.map((w) => w.score) })} -->`,
+    `<!-- skillRouter: ${JSON.stringify(telemetry)} -->`,
   ].join("\n");
 
   const output = {

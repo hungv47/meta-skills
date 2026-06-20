@@ -54,6 +54,7 @@ promptSignals:
 
 capability:
   id: brief-graphic
+  gate_class: review
   domain: marketing
   public: true
   command: /brief-graphic

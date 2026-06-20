@@ -44,6 +44,7 @@ promptSignals:
 
 capability:
   id: write-launch
+  gate_class: review
   domain: marketing
   public: true
   command: /write-launch

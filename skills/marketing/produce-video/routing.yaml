@@ -47,6 +47,7 @@ promptSignals:
 
 capability:
   id: produce-video
+  gate_class: publish
   domain: marketing
   public: true
   command: /produce-video

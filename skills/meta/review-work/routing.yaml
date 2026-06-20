@@ -34,6 +34,7 @@ promptSignals:
 
 capability:
   id: review-work
+  gate_class: review
   domain: meta
   public: true
   command: /review-work

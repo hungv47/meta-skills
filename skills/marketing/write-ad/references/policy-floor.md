@@ -6,13 +6,17 @@ verifier: hungv47
 note: Meta's policy review evolves continuously. The rules below reflect operator-vault knowledge at v0.1 and should be re-verified against Meta's current Advertising Standards docs at next ad-copy invocation. Trigger for re-verification — when ad-copy skill is invoked on a real campaign OR Meta announces a policy change.
 ---
 
-# Meta Policy Floor — Banned Wording + Substantiation Hedging
+# Per-Network Policy Floor — Banned Wording + Substantiation Hedging
 
-Reference for `format-checker.md` (hard-gate) and `critic.md` (Policy dim auto-fail conditions). Read end-to-end before drafting.
+Reference for `format-checker.md` (hard-gate) and `critic.md` (Policy dim auto-fail conditions). The format-checker reads the **universal floors** PLUS the **section for the resolved `network`**.
 
-> Scope: Meta paid ads (Facebook + Instagram). Rules below cover the most common auto-rejection categories. Not exhaustive — when in doubt, defer to Meta's full Advertising Standards (https://transparency.meta.com/policies/ad-standards/).
+**Universal floors (every network enforces a version):** health claims (§1), finance/income claims (§2), protected-class/discriminatory targeting (§4), and the substantiation conventions (§8) below apply on Meta, Google, TikTok, and LinkedIn alike — a fabricated or unhedged measured claim FORMAT_FAILs on any network. The per-network sections add each platform's **distinctive** policy (trademark, restricted industries, disclosure, professional-content) on top of these.
 
 ---
+
+# Network: Meta (Facebook + Instagram)
+
+> Rules below cover the most common Meta auto-rejection categories. Not exhaustive — when in doubt, defer to Meta's full Advertising Standards (https://transparency.meta.com/policies/ad-standards/).
 
 ## 1. Health Claims
 
@@ -212,4 +216,50 @@ Every measured claim ("55% lift", "9 → 4 day close", "$50K saved") must:
 
 ---
 
-**Last verified:** 2026-05-11 (v0.1). Re-verify at: next ad-copy invocation on a real campaign OR Meta policy announcement (whichever first).
+# Network: Google Ads
+
+Beyond the universal floors, Google's editorial + trademark review is the load-bearing gate (RSA assets are typed at intent and reviewed per-asset).
+
+| Category | Rule | Format-checker action |
+|---|---|---|
+| **Editorial / punctuation** | No ALL-CAPS words, no repeated/gimmicky punctuation (`!!!`, `F.R.E.E`), no symbol/number substitution (`B3ST`), no phone numbers in headlines. | FORMAT_FAIL |
+| **Trademark** | Don't use a competitor's/other brand's trademark in ad text unless a reseller/informational exception applies; Google removes on complaint. | FORMAT_FAIL on known TM misuse |
+| **Superlatives** | "best", "#1", "world's leading" need objective on-page substantiation (a cited ranking/award); otherwise drop. | REVISION_REQUIRED |
+| **Restricted categories** | Gambling, healthcare/medicines, financial services, alcohol, political content carry country-specific certification/limits. | Escalate to operator |
+| **Misrepresentation** | No unrealistic guarantees ("guaranteed page-1"), no fake countdowns/urgency, no destination mismatch (final URL must match the ad's promise). | FORMAT_FAIL |
+
+Re-verify: Google Ads policies — https://support.google.com/adspolicy.
+
+---
+
+# Network: TikTok Ads
+
+Beyond the universal floors, TikTok's distinctive gates are disclosure + restricted-industry + the native mandate.
+
+| Category | Rule | Format-checker action |
+|---|---|---|
+| **Paid-partnership disclosure** | Creator/whitelisted content run as paid MUST carry the paid-partnership disclosure (platform + FTC). | FORMAT_FAIL if omitted |
+| **Restricted / prohibited industries** | Financial services, health/supplements, weight-loss before/after, alcohol, and others are restricted or prohibited; many regions bar before/after body imagery + "guaranteed results". | FORMAT_FAIL / escalate |
+| **Native mandate** | TV-voiceover phrasing ("Introducing the revolutionary…") underperforms + reads as non-native. | REVISION_REQUIRED |
+| **Misleading claims** | No fabricated metrics, no guaranteed-outcome framing, no emoji-only text. | FORMAT_FAIL |
+
+Re-verify: TikTok Advertising Policies — https://ads.tiktok.com/help (Advertising Policies).
+
+---
+
+# Network: LinkedIn Ads
+
+Beyond the universal floors, LinkedIn's distinctive gate is the professional-content + unbacked-ROI floor (a B2B audience + policy both punish hype).
+
+| Category | Rule | Format-checker action |
+|---|---|---|
+| **Unbacked ROI / income claims** | A quantified business outcome ("cut CAC 40%", "$30k MRR in 60 days") needs an on-page case study / source. | FORMAT_FAIL |
+| **Professional content** | No sensational/clickbait framing, no ALL-CAPS headlines, no personal-attribute call-outs ("As a 50-year-old…"). | REVISION_REQUIRED → FORMAT_FAIL on personal-attribute targeting |
+| **Restricted industries** | Crypto, gambling, political, and some financial/health categories are restricted or barred. | Escalate to operator |
+| **Targeting-language** | Don't imply targeting by protected attributes; use Campaign Manager targeting, keep copy universal (mirrors §4). | FORMAT_FAIL |
+
+Re-verify: LinkedIn Advertising Policies — https://www.linkedin.com/legal/ads-policy.
+
+---
+
+**Last verified:** 2026-06-20 (v0.2 — multi-network). Re-verify at: next ad-copy invocation on a given network OR that network's policy announcement (whichever first).

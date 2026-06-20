@@ -9,6 +9,9 @@ promptSignals:
     - "evaluate ad performance"
     - "evaluate meta ad"
     - "evaluate facebook ad"
+    - "evaluate google ad"
+    - "evaluate tiktok ad"
+    - "evaluate linkedin ad"
     - "ad results"
     - "post-launch ad"
     - "creative fatigue"
@@ -16,6 +19,10 @@ promptSignals:
     - "ROAS dropped"
     - "CPA going up"
     - "CTR is low"
+    - "quality score"
+    - "impression share"
+    - "thumbstop rate"
+    - "lead-gen-form CVR"
     - "should we kill this ad"
     - "should we keep this creative"
     - "cycle results for the ad"
@@ -34,6 +41,9 @@ promptSignals:
     - "conversions"
     - "ad fatigue"
     - "creative fatigue"
+    - "quality score"
+    - "impression share"
+    - "thumbstop"
   noneOf:
     - "new ad copy"
     - "ad brief"
@@ -43,19 +53,21 @@ promptSignals:
 
 capability:
   id: evaluate-ad
+  gate_class: review
   domain: marketing
   public: true
   command: /evaluate-ad
-  summary: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue) inside an eval loop. One cycle per audience-temp."
+  summary: "Score a launched paid ad (Meta, Google, TikTok, LinkedIn) from real metrics — network-specific primary metric + fatigue signals — inside an eval loop. One cycle per network."
   aliases:
     - ad-eval
     - meta-ad-eval
+    - google-ad-eval
     - creative-fatigue-check
 
   route:
     use_when:
-      - "User asks to evaluate a launched Meta ad cycle with real performance metrics."
-      - "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
+      - "User asks to evaluate a launched paid-ad cycle (Meta / Google / TikTok / LinkedIn) with real metrics."
+      - "Loop exists; cycle N needs scoring for one network (+ audience-temp on Meta/TikTok)."
     not_when:
       - "Loop does not exist yet -> run-pipeline."
       - "Writing new ad creative -> write-ad."
@@ -63,7 +75,7 @@ capability:
       - "Campaign-level multi-channel scoring -> evaluate-campaign."
       - "Organic post performance -> evaluate-content."
       - "Landing-page performance -> evaluate-landing-page."
-      - "Non-Meta ad platforms -> out of scope at v1."
+      - "YouTube ads / search-partner networks -> deferred (no metric surface yet)."
     prerequisites:
       recommended:
         - "id:brand"
@@ -100,6 +112,11 @@ capability:
       - if: "Rubric scoring"
         read:
           - "references/rubric.md"
+      - if: "Non-Meta network metric set (Google / TikTok / LinkedIn primary metric + fatigue signals)"
+        read:
+          - "references/ad-intelligence/google-ads-metrics.md"
+          - "references/ad-intelligence/tiktok-ads-metrics.md"
+          - "references/ad-intelligence/linkedin-ads-metrics.md"
       - if: "Artifact write / Evidence + Creative-Fatigue table format"
         read:
           - "references/format-conventions.md"

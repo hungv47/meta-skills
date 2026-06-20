@@ -335,6 +335,53 @@
       ],
       "minScore": 6
     },
+    "run-plan": {
+      "phrases": [
+        "run the plan",
+        "run-plan",
+        "run plan",
+        "execute the plan",
+        "execute the approved plan",
+        "run the approved plan",
+        "advance the plan",
+        "work the plan",
+        "auto-advance the plan",
+        "carry out the plan"
+      ],
+      "allOf": [
+        [
+          "run",
+          "approved",
+          "plan"
+        ],
+        [
+          "execute",
+          "plan"
+        ],
+        [
+          "advance",
+          "plan"
+        ]
+      ],
+      "anyOf": [
+        "run-plan",
+        "approved plan",
+        "plan.md",
+        "auto-advance"
+      ],
+      "noneOf": [
+        "run launch",
+        "run the launch",
+        "run pipeline",
+        "make a plan",
+        "plan this",
+        "create a plan",
+        "draft a plan",
+        "plan a campaign",
+        "plan the funnel"
+      ],
+      "minScore": 6
+    },
     "diagnose": {
       "phrases": [
         "root cause",
@@ -951,6 +998,9 @@
         "evaluate ad performance",
         "evaluate meta ad",
         "evaluate facebook ad",
+        "evaluate google ad",
+        "evaluate tiktok ad",
+        "evaluate linkedin ad",
         "ad results",
         "post-launch ad",
         "creative fatigue",
@@ -958,6 +1008,10 @@
         "ROAS dropped",
         "CPA going up",
         "CTR is low",
+        "quality score",
+        "impression share",
+        "thumbstop rate",
+        "lead-gen-form CVR",
         "should we kill this ad",
         "should we keep this creative",
         "cycle results for the ad",
@@ -990,7 +1044,10 @@
         "ad spend",
         "conversions",
         "ad fatigue",
-        "creative fatigue"
+        "creative fatigue",
+        "quality score",
+        "impression share",
+        "thumbstop"
       ],
       "noneOf": [
         "new ad copy",
@@ -1932,10 +1989,17 @@
         "meta ads",
         "facebook ads",
         "instagram ads",
+        "google ads",
+        "tiktok ads",
+        "linkedin ads",
+        "search ads",
         "paid social",
         "retargeting ads",
         "primary text",
         "ad headline",
+        "responsive search ad",
+        "spark ad",
+        "sponsored content",
         "creative copy",
         "ad creative"
       ],
@@ -1949,16 +2013,16 @@
         "meta ads",
         "facebook ads",
         "instagram ads",
+        "google ads",
+        "tiktok ads",
+        "linkedin ads",
+        "search ads",
         "paid ads",
         "retargeting",
         "ad copy",
         "primary text"
       ],
       "noneOf": [
-        "google ads",
-        "linkedin ads",
-        "tiktok ads",
-        "search ads",
         "youtube ads"
       ],
       "minScore": 6

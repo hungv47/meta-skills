@@ -3,6 +3,11 @@
 The contract for `run-pipeline`: the stage model, the gate rules, and the loop-tree
 layout shared with its **eval-only mode**. Canonical design: CLOSED-LOOP.md §7 (+ §1, §4, §6).
 
+> **Model-invocation.** `run-pipeline` stays human-invoked (`disable-model-invocation: true`) — it
+> threads a produce-and-measure loop, not a generic plan. Generic model-driven execution of an approved
+> `plan.md` goes through the **`run-plan`** executor (A4), which auto-advances non-publish steps within
+> the A6 governor envelope and STOPS at every publish gate. Don't flip this flag for that.
+
 `run-pipeline` owns both entries on one loop tree (the 2026-06 audit merged the former
 eval-only sibling skill into this one): **eval-only mode** scaffolds just the loop
 workspace (`program.md` + `context.md` + `results.tsv` + `learnings.md` — see

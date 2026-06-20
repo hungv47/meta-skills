@@ -28,6 +28,7 @@ promptSignals:
 
 capability:
   id: breakdown-tasks
+  gate_class: review
   domain: meta
   public: true
   command: /breakdown-tasks

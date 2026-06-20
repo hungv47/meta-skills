@@ -6,6 +6,7 @@
       "id": "architect-system",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/architect-system",
       "summary": "Design a technical blueprint covering stack, schema, APIs, infrastructure, scaling, and security.",
       "aliases": [
@@ -117,6 +118,7 @@
       "id": "breakdown-tasks",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/breakdown-tasks",
       "summary": "Decompose a spec or architecture into buildable tasks with acceptance criteria, dependencies, and risk-first implementation order. For AI agents or human engineers.",
       "aliases": [
@@ -213,6 +215,7 @@
       "id": "brief-app-preview",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/brief-app-preview",
       "summary": "Production-ready brief for app onboarding / App Store preview / feature-demo video — UI beats from screenshots, interaction choreography, motion rules, produce-video handoff.",
       "aliases": [
@@ -304,6 +307,7 @@
       "id": "brief-graphic",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/brief-graphic",
       "summary": "Produce a graphic-design brief for a single visual asset — social posts, thumbnails, banners, OOH, OG cards. Does NOT render — emits prompt or designer-handoff spec.",
       "aliases": [
@@ -423,6 +427,7 @@
       "id": "brief-landing-page",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/brief-landing-page",
       "summary": "Generate a campaign-grade brief for a conversion landing page — hypothesis, architecture, per-section spec, asset slots, hand-off prompts.",
       "aliases": [
@@ -561,6 +566,7 @@
       "id": "brief-product-ui",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/brief-product-ui",
       "summary": "Design the in-product interface from a mapped user flow — screen inventory, reusable component system, DESIGN-token application, per-state visual treatments, accessibility floor + buildable handoff. Emits a portable spec, never rendered UI.",
       "aliases": [
@@ -674,6 +680,7 @@
       "id": "brief-shortform",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/brief-shortform",
       "summary": "Production-ready short-form video brief — hook, shot list, on-screen text, audio plan, caption, CTA, aspect, length. 1 hero + 2 variants per run. Live-action + motion-graphic.",
       "aliases": [
@@ -804,6 +811,7 @@
       "id": "build-ios-apps",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/build-ios-apps",
       "summary": "Build, sign, install, and publish iOS apps via the Chorus Vibecode signing service. Vendored from Chorus; sole exception to the multi-agent quality bar.",
       "aliases": [
@@ -882,6 +890,7 @@
       "id": "clean-artifacts",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/clean-artifacts",
       "summary": "Audit + groom `docs/forsvn/artifacts/` — classify every file (KEEP/STALE/ORPHAN/LEGACY/EPHEMERAL), surface refs + risk. `--apply` archives candidates (moves, never deletes).",
       "aliases": [
@@ -984,6 +993,7 @@
       "id": "clean-code",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/clean-code",
       "summary": "Audit + refactor existing code for readability, maintainability, dead-code removal — without changing behavior. Produces meta/records cleanup record + applies fixes in-place.",
       "aliases": [
@@ -1057,6 +1067,7 @@
       "id": "clean-machine",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/clean-machine",
       "summary": "Audit + clean a developer's machine — dotfolders, caches, language toolchains, package globals — with per-target risk surfacing and explicit confirmation.",
       "aliases": [
@@ -1156,6 +1167,7 @@
       "id": "create-brand",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/create-brand",
       "summary": "Build a brand identity system as BRAND.md (story, voice, archetype), DESIGN.md (AI-readable design tokens), CREATIVE-DIRECTION.md (art-direction layer), and ASSETS.md (per-platform inventory).",
       "aliases": [
@@ -1298,6 +1310,7 @@
       "id": "debate-agents",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/debate-agents",
       "summary": "Multi-perspective debate panel — spawns 3-5 agents with distinct stances, surfaces tradeoffs, recommends with reasoning. Use for high-stakes decisions with no clear winner.",
       "aliases": [
@@ -1377,6 +1390,7 @@
       "id": "design-minigame",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/design-minigame",
       "summary": "Design a marketing mini-game (spin-the-wheel / quiz / scratch-card / playable ad) for engagement or lead capture — mechanic + win condition + honest reward economics + the conversion funnel. Honest by construction, no dark patterns.",
       "aliases": [
@@ -1450,6 +1464,7 @@
       "id": "diagnose",
       "domain": "research",
       "public": true,
+      "gate_class": "auto",
       "command": "/diagnose",
       "summary": "Diagnose a business problem or metric decline — hypothesis tree, root-cause analysis, if/then/because reasoning chain, ranked hypotheses with falsifiable tests.",
       "aliases": [
@@ -1538,6 +1553,7 @@
       "id": "discover",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/discover",
       "summary": "Conversational discovery — turn a vague idea, feature, or task into shared clarity through adaptive interviewing. Outputs inline or saved spec.",
       "aliases": [
@@ -1653,17 +1669,19 @@
       "id": "evaluate-ad",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-ad",
-      "summary": "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue) inside an eval loop. One cycle per audience-temp.",
+      "summary": "Score a launched paid ad (Meta, Google, TikTok, LinkedIn) from real metrics — network-specific primary metric + fatigue signals — inside an eval loop. One cycle per network.",
       "aliases": [
         "ad-eval",
         "meta-ad-eval",
+        "google-ad-eval",
         "creative-fatigue-check"
       ],
       "route": {
         "use_when": [
-          "User asks to evaluate a launched Meta ad cycle with real performance metrics.",
-          "Loop exists; cycle N needs scoring for one audience-temp (cold-traffic OR retargeting)."
+          "User asks to evaluate a launched paid-ad cycle (Meta / Google / TikTok / LinkedIn) with real metrics.",
+          "Loop exists; cycle N needs scoring for one network (+ audience-temp on Meta/TikTok)."
         ],
         "not_when": [
           "Loop does not exist yet -> run-pipeline.",
@@ -1672,7 +1690,7 @@
           "Campaign-level multi-channel scoring -> evaluate-campaign.",
           "Organic post performance -> evaluate-content.",
           "Landing-page performance -> evaluate-landing-page.",
-          "Non-Meta ad platforms -> out of scope at v1."
+          "YouTube ads / search-partner networks -> deferred (no metric surface yet)."
         ],
         "prerequisites": {
           "recommended": [
@@ -1727,6 +1745,14 @@
             ]
           },
           {
+            "if": "Non-Meta network metric set (Google / TikTok / LinkedIn primary metric + fatigue signals)",
+            "read": [
+              "references/ad-intelligence/google-ads-metrics.md",
+              "references/ad-intelligence/tiktok-ads-metrics.md",
+              "references/ad-intelligence/linkedin-ads-metrics.md"
+            ]
+          },
+          {
             "if": "Artifact write / Evidence + Creative-Fatigue table format",
             "read": [
               "references/format-conventions.md"
@@ -1778,6 +1804,7 @@
       "id": "evaluate-asset",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-asset",
       "summary": "Score a produced visual asset (image / graphic / carousel frame) against its brief — render fidelity + brand-fit — inside an existing eval loop, using the re-ingested asset (the return-leg). One asset (or picked variant) per cycle, verdict + brief-fidelity diagnosis.",
       "aliases": [
@@ -1909,6 +1936,7 @@
       "id": "evaluate-campaign",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-campaign",
       "summary": "Score a launched multi-channel campaign from real metrics inside an existing eval loop — verdict, per-channel breakdown, unit economics. Aggregate-only, one cycle = whole campaign.",
       "aliases": [
@@ -2033,6 +2061,7 @@
       "id": "evaluate-content",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-content",
       "summary": "Score a published organic post (text / image / carousel) from real metrics inside an existing eval loop — one primary platform per cycle, verdict + engagement-quality diagnosis.",
       "aliases": [
@@ -2156,6 +2185,7 @@
       "id": "evaluate-landing-page",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-landing-page",
       "summary": "Score a launched landing page from real performance evidence inside an eval loop. Writes cycle eval snapshot + appends results ledger. Post-launch CRO.",
       "aliases": [
@@ -2245,6 +2275,7 @@
       "id": "evaluate-outreach",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-outreach",
       "summary": "Score a sent outreach cycle (cold email / LinkedIn DM / sequence) from real reply data inside an existing eval loop — one channel + segment per cycle, verdict + reply-quality diagnosis with a deliverability + compliance gate.",
       "aliases": [
@@ -2368,6 +2399,7 @@
       "id": "evaluate-seo",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-seo",
       "summary": "Score an SEO / AEO cycle from real ranking + visibility data inside an existing eval loop — one keyword cluster + surface per cycle, verdict + visibility-delta diagnosis with a lag-and-volatility gate that refuses short-window noise.",
       "aliases": [
@@ -2491,6 +2523,7 @@
       "id": "evaluate-shortform",
       "domain": "research",
       "public": true,
+      "gate_class": "review",
       "command": "/evaluate-shortform",
       "summary": "Score a published short-form video against its brief-shortform hypothesis inside an eval loop — completion, hold, save, share, comment-quality + brief-fit. One platform per cycle.",
       "aliases": [
@@ -2579,6 +2612,7 @@
       "id": "event-runofshow",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/event-runofshow",
       "summary": "Build a minute-by-minute run-of-show (cue sheet) for a live event — webinar, launch, AMA, demo day — with every segment timed, owned, cued, and de-risked.",
       "aliases": [
@@ -2652,6 +2686,7 @@
       "id": "extract-service",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/extract-service",
       "summary": "Lift repeated operational mechanics (SDK / API / file-system / network logic copy-pasted across handlers) into a shared service layer — stepwise migration with verification.",
       "aliases": [
@@ -2734,6 +2769,7 @@
       "id": "forsvn",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/forsvn",
       "summary": "Front door that classifies vague work, reads project state, and routes to the right FORSVN capability.",
       "aliases": [
@@ -2811,6 +2847,7 @@
       "id": "humanmaxxing",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/humanmaxxing",
       "summary": "Strip AI tells, inject brand voice, and compress existing text so it reads human-written — 15%+ word reduction with zero idea loss + optional detector-resistance pass.",
       "aliases": [
@@ -2928,6 +2965,7 @@
       "id": "map-user-flow",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/map-user-flow",
       "summary": "Map user journeys, screen flows, and interaction transitions for a product or feature — ASCII/Mermaid diagrams + per-screen spec + state-transition table.",
       "aliases": [
@@ -3024,6 +3062,7 @@
       "id": "measure-results",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/measure-results",
       "summary": "Ingest a launch/campaign's real results for ONE channel, read what worked vs the channel's playbook pack, and write a dated entry back into the pack so the next launch compounds (the metrics loop).",
       "aliases": [
@@ -3129,6 +3168,7 @@
       "id": "monitor-aeo",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/monitor-aeo",
       "summary": "Monitor AI-search visibility — provider/query citation checks, AI Overview, Bing/IndexNow, AI referral traffic, llms.txt status, competitor cited-domain share. Dated snapshots.",
       "aliases": [
@@ -3212,6 +3252,7 @@
       "id": "optimize-seo",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/optimize-seo",
       "summary": "SEO + AEO + ASO strategy and page rewrites — keyword research, technical audit, content gaps, link strategy, AI-citation optimization.",
       "aliases": [
@@ -3340,6 +3381,7 @@
       "id": "plan-campaign",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/plan-campaign",
       "summary": "Build an integrated marketing plan — growth motion, messaging pillars, per-channel angles across 9 channels, content calendar, budget allocation, phased GTM timeline.",
       "aliases": [
@@ -3426,6 +3468,7 @@
       "id": "plan-funnel",
       "domain": "research",
       "public": true,
+      "gate_class": "review",
       "command": "/plan-funnel",
       "summary": "Numeric funnel + unit-economics model — conversion rates, traffic targets, LTV/CAC, revenue targets, sensitivity bands. Drives downstream channel-mix + budget decisions.",
       "aliases": [
@@ -3516,6 +3559,7 @@
       "id": "polish-vn",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/polish-vn",
       "summary": "Polish Vietnamese-market copy — register calibration (bro / báo chí / formal), idiom + cultural references, AI-translation tells removed. Terminal pass.",
       "aliases": [
@@ -3601,6 +3645,7 @@
       "id": "preview-og",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/preview-og",
       "summary": "Preview, validate, and fix Open Graph / Twitter share cards (how a link renders on Facebook, X, LinkedIn, Discord/Slack) via the metaprev CLI, then re-verify the fix.",
       "aliases": [
@@ -3679,6 +3724,7 @@
       "id": "prioritize",
       "domain": "research",
       "public": true,
+      "gate_class": "review",
       "command": "/prioritize",
       "summary": "Brainstorm strategic solutions when the problem is known — generate initiatives, force-rank with ICE, surface trade-offs with evidence, draw a cut line with kill criteria.",
       "aliases": [
@@ -3765,6 +3811,7 @@
       "id": "produce-asset",
       "domain": "marketing",
       "public": true,
+      "gate_class": "publish",
       "command": "/produce-asset",
       "summary": "Turn brief-graphic into render-ready prompts + asset manifest. Tool-agnostic — emits prompts tuned for chosen image engine (Midjourney / DALL·E / Imagen / Figma / designer).",
       "aliases": [
@@ -3848,6 +3895,7 @@
       "id": "produce-ooh",
       "domain": "marketing",
       "public": true,
+      "gate_class": "publish",
       "command": "/produce-ooh",
       "summary": "Produce an out-of-home brief + render-ready spec (billboard / transit / poster / wrap) built around the 3-second read, legibility at distance, one message, and per-placement format specs. Emits a manifest — no pixels.",
       "aliases": [
@@ -3927,6 +3975,7 @@
       "id": "produce-video",
       "domain": "marketing",
       "public": true,
+      "gate_class": "publish",
       "command": "/produce-video",
       "summary": "Turn a video brief into a multi-runtime export bundle — manifest, per-shot prompts, HyperFrames + Remotion scaffolds, Vercel AI CLI README. Two modes: shortform + app-preview.",
       "aliases": [
@@ -4044,6 +4093,7 @@
       "id": "publish-social",
       "domain": "marketing",
       "public": true,
+      "gate_class": "publish",
       "command": "/publish-social",
       "summary": "Turn write-social copy into a publishing bundle — per-platform drafts, scheduler imports (Typefully/Buffer/Hootsuite/CSV), or live posting behind a two-stage gate.",
       "aliases": [
@@ -4178,6 +4228,7 @@
       "id": "research-icp",
       "domain": "research",
       "public": true,
+      "gate_class": "auto",
       "command": "/research-icp",
       "summary": "Build canonical audience, ICP, persona, pain, VoC, and habitat context for downstream work.",
       "aliases": [
@@ -4278,6 +4329,7 @@
       "id": "research-market",
       "domain": "research",
       "public": true,
+      "gate_class": "auto",
       "command": "/research-market",
       "summary": "Map market landscape, competitors, TAM/SAM/SOM sizing, whitespace opportunities — every claim sourced, adjacent competitors checked, sizing shown with methodology.",
       "aliases": [
@@ -4397,6 +4449,7 @@
       "id": "research-platform",
       "domain": "research",
       "public": true,
+      "gate_class": "auto",
       "command": "/research-platform",
       "summary": "Owned-account analytics — engagement, follower growth, post performance, attribution from operator's accounts (not market trends).",
       "aliases": [
@@ -4483,6 +4536,7 @@
       "id": "research-shortform",
       "domain": "research",
       "public": true,
+      "gate_class": "auto",
       "command": "/research-shortform",
       "summary": "Discover what's working on short-form platforms — hook archetypes, trending audio, platform mechanics. Per-platform sourced catalog.",
       "aliases": [
@@ -4564,6 +4618,7 @@
       "id": "review-work",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/review-work",
       "summary": "Run an independent post-implementation review for code, artifacts, plans, or shipped work.",
       "aliases": [
@@ -4636,6 +4691,7 @@
       "id": "run-launch",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/run-launch",
       "summary": "Orchestrate one channel's launch as ONE legible bundle — resolve the pack, sequence the leaf skills, narrate each applied play, stop at the human gate, never auto-publish, close via measure-results.",
       "aliases": [
@@ -4725,6 +4781,7 @@
       "id": "run-pipeline",
       "domain": "meta",
       "public": true,
+      "gate_class": "review",
       "command": "/run-pipeline",
       "summary": "Orchestrate a closed-loop initiative across named stages, or scaffold the eval-only loop workspace (--eval-only). Sequences leaf skills, stops at every gate; never auto-approves.",
       "aliases": [
@@ -4832,29 +4889,101 @@
       "source": "skills/meta/run-pipeline/routing.yaml",
       "skill_path": "skills/meta/run-pipeline"
     },
+    "run-plan": {
+      "id": "run-plan",
+      "domain": "meta",
+      "public": true,
+      "gate_class": "review",
+      "command": "/run-plan",
+      "summary": "Execute an approved plan.md — auto-advance the non-publish steps within the governor envelope, narrate each, and STOP hard at every publish/spend/irreversible gate.",
+      "aliases": [
+        "plan-runner",
+        "run-the-plan",
+        "plan-executor"
+      ],
+      "route": {
+        "use_when": [
+          "An approved .forsvn/runs/<slug>/plan.md exists and the user wants it executed step by step.",
+          "Auto-advance the non-publish steps of a gated plan, stopping at the human gates.",
+          "Resume an in-flight plan run from its Current-step pointer."
+        ],
+        "not_when": [
+          "No plan yet — building/proposing the plan is /forsvn's multi-step planner (A3), not this.",
+          "A single channel's launch end to end -> run-launch.",
+          "A generic produce-and-measure loop -> run-pipeline.",
+          "Approving the plan itself — only a human moves proposed -> approved."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "An approved plan.md (status: approved) at .forsvn/runs/<slug>/."
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "single",
+        "single_when": [
+          "One agent walks the approved plan, dispatching each step's leaf and stopping at each gate."
+        ],
+        "multi_when": [
+          "Never — each step's work is delegated to its own leaf skill, which runs its own agents."
+        ],
+        "critic_required_when": [
+          "Always — the pre-exit self-check (approval honored, publish-stop honored, governor envelope honored, every step narrated, no auto-ratify) gates every run."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/run-plan-spec.md"
+        ],
+        "when": [
+          {
+            "if": "Resolving the session single-vs-multi + model profile",
+            "read": [
+              "references/_shared/execution-policy.md"
+            ]
+          },
+          {
+            "if": "Resolving --fast / budget tier",
+            "read": [
+              "references/_shared/mode-resolver.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": []
+      },
+      "source": "skills/meta/run-plan/routing.yaml",
+      "skill_path": "skills/meta/run-plan"
+    },
     "write-ad": {
       "id": "write-ad",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/write-ad",
-      "summary": "Write and evaluate Meta paid-ad copy (retargeting + cold-traffic) — audience-temperature-aware framing, hard char-cap enforcement, policy compliance, 7-dim rubric.",
+      "summary": "Write and evaluate paid-ad copy across Meta, Google, TikTok, and LinkedIn — network-aware char-caps + policy floor, audience/intent framing, 7-dim rubric.",
       "aliases": [
         "ad-copy",
         "meta-ads",
+        "google-ads",
+        "tiktok-ads",
+        "linkedin-ads",
         "paid-social-copy"
       ],
       "route": {
         "use_when": [
-          "User asks to write Meta (Facebook / Instagram) paid-ad copy.",
-          "Hero + 2 variants needed for an audience-temp (retargeting OR cold).",
-          "Audience-temp + offer + creative-format are known or can be elicited."
+          "User asks to write paid-ad copy for a network (Meta / Google / TikTok / LinkedIn).",
+          "Hero + 2 variants needed for one network + audience-temp / intent-tier.",
+          "Network + offer + creative-format are known or can be elicited."
         ],
         "not_when": [
           "Landing-page headlines -> write-copy.",
           "Cold-outreach DMs -> write-outreach.",
           "Organic social posts -> write-social.",
-          "Channel-mix strategy -> plan-campaign.",
-          "Non-Meta channels (Google / LinkedIn / TikTok / Search / YouTube ads) -> out of scope at v1."
+          "Channel-mix / budget strategy -> plan-campaign.",
+          "YouTube ads / search-partner networks -> deferred (capture in Open Questions; no surface yet)."
         ],
         "prerequisites": {
           "recommended": [
@@ -4899,17 +5028,40 @@
             ]
           },
           {
-            "if": "Format-checker hard gate / Meta-specific spec",
+            "if": "Format-checker hard gate / network-specific char-cap + policy spec",
             "read": [
               "references/format-spec.md",
               "references/policy-floor.md"
             ]
           },
           {
-            "if": "Strategist angle / audience-temp framing",
+            "if": "Strategist angle — Meta (warm/cold audience-temp)",
             "read": [
               "references/ad-intelligence/meta-retargeting.md",
-              "references/ad-intelligence/meta-cold-traffic.md",
+              "references/ad-intelligence/meta-cold-traffic.md"
+            ]
+          },
+          {
+            "if": "Strategist angle — Google Ads (intent-tier)",
+            "read": [
+              "references/ad-intelligence/google-ads.md"
+            ]
+          },
+          {
+            "if": "Strategist angle — TikTok Ads (spark/native)",
+            "read": [
+              "references/ad-intelligence/tiktok-ads.md"
+            ]
+          },
+          {
+            "if": "Strategist angle — LinkedIn Ads (targeting-mode)",
+            "read": [
+              "references/ad-intelligence/linkedin-ads.md"
+            ]
+          },
+          {
+            "if": "Cadence + transmutation (network-agnostic)",
+            "read": [
               "references/ad-intelligence/creative-cadence.md",
               "references/message-transmutation.md"
             ]
@@ -4955,6 +5107,7 @@
       "id": "write-copy",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/write-copy",
       "summary": "Draft and critique persuasive copy for headlines, hooks, CTAs, taglines, and landing-page sections.",
       "aliases": [
@@ -5058,6 +5211,7 @@
       "id": "write-docs",
       "domain": "product",
       "public": true,
+      "gate_class": "review",
       "command": "/write-docs",
       "summary": "Generate documentation from a codebase — READMEs, API references, setup guides, runbooks, ship logs, release notes — with consistent structure and terminology.",
       "aliases": [
@@ -5199,6 +5353,7 @@
       "id": "write-launch",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/write-launch",
       "summary": "The complete native copy bundle for ONE launch channel, emitted from its launch-channel pack with the pack's §4 hard guards enforced. Single-channel per artifact; 5-dim critic.",
       "aliases": [
@@ -5310,6 +5465,7 @@
       "id": "write-outreach",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/write-outreach",
       "summary": "Cold outreach — email, LinkedIn, Twitter/X, iMessage/SMS, platform proposals. Signal-based personalization + channel craft + 5-dim rubric. First-touch + reply-to-inbound modes.",
       "aliases": [
@@ -5432,6 +5588,7 @@
       "id": "write-social",
       "domain": "marketing",
       "public": true,
+      "gate_class": "review",
       "command": "/write-social",
       "summary": "Platform-native social copy (hook variants + body + CTA + format spec) for tiktok / reels / shorts / x / linkedin. Single-platform per artifact. 5-dim rubric.",
       "aliases": [

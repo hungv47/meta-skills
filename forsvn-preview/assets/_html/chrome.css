@@ -774,6 +774,36 @@ article > .masthead { padding-top: 8px; }
   outline-offset: 2px;
 }
 
+/* C1 reason chips — single-select, revealed by chrome.js only on a non-approve
+   decision. Matte; the selected chip carries the Leaf cue (no gradient, no glow,
+   per the brand no-gradient rule). The picked chip rides the POST as decision_reason. */
+.decision-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+.decision-reasons[hidden] { display: none; }
+.reason-chip {
+  font: 500 12px/1 var(--chrome-mono);
+  letter-spacing: 0.01em;
+  color: var(--chrome-text-muted);
+  background: var(--chrome-bg);
+  border: 1px solid var(--chrome-border);
+  border-radius: var(--radius-sm);
+  padding: 7px 12px;
+  min-height: 32px;
+  cursor: pointer;
+  transition: border-color var(--t-snap) var(--ease), background var(--t-snap) var(--ease), color var(--t-snap) var(--ease);
+}
+.reason-chip:hover { border-color: color-mix(in srgb, var(--chrome-border) 40%, var(--chrome-text-muted) 60%); }
+.reason-chip.on {
+  border-color: var(--brand-leaf);                                  /* Leaf #74B36B */
+  background: color-mix(in srgb, var(--brand-leaf) 12%, var(--chrome-bg));
+  color: var(--chrome-text);
+}
+.reason-chip:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
 /* Comment */
 .comment { display: flex; flex-direction: column; }
 .comment textarea {

@@ -53,6 +53,7 @@ promptSignals:
 
 capability:
   id: monitor-aeo
+  gate_class: review
   domain: marketing
   public: true
   command: /monitor-aeo

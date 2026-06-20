@@ -28,6 +28,7 @@ promptSignals:
 
 capability:
   id: humanmaxxing
+  gate_class: review
   domain: marketing
   public: true
   command: /humanmaxxing

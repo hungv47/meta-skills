@@ -1,6 +1,6 @@
 ---
 name: write-ad
-description: "Writes and evaluates Meta paid-ad copy (retargeting + cold-traffic) — audience-temperature-aware framing, hard char-cap enforcement, policy compliance, 7-dim rubric. Meta-only at v1. Not for landing-page headlines (use write-copy), cold-outreach DMs (use write-outreach), organic social posts (use write-social), or channel-mix strategy (use plan-campaign)."
+description: "Writes paid-ad copy across Meta, Google, TikTok, and LinkedIn — network-aware char-caps, policy floor, audience/intent framing, 7-dim rubric. Not for landing-page headlines (use write-copy), cold-outreach DMs (use write-outreach), organic social posts (use write-social), or channel-mix/budget strategy (use plan-campaign)."
 argument-hint: "[audience-temp + offer + creative-format, e.g. 'cold-traffic / 14-day trial / dedicated']"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
@@ -11,16 +11,16 @@ metadata:
 
 # Write Ad — Orchestrator
 
-Ready-to-publish Meta ad copy across retargeting (warm) and cold-traffic audiences. Multi-agent strategy → draft → format → voice → critic → humanmaxxing pipeline. Capability metadata lives in [`routing.yaml`](routing.yaml). Agent table + 2 routes + 7-dim rubric + post-humanmaxxing regression rule: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology: [`references/playbook.md`](references/playbook.md).
+Ready-to-publish paid-ad copy across Meta, Google, TikTok, and LinkedIn — one network per artifact, network-aware caps + framing. Multi-agent strategy → draft → format → voice → critic → humanmaxxing pipeline. Capability metadata lives in [`routing.yaml`](routing.yaml). Agent table + 2 routes + 7-dim rubric + post-humanmaxxing regression rule: [`references/agent-manifest.md`](references/agent-manifest.md). Methodology: [`references/playbook.md`](references/playbook.md).
 
 **Core question:** Would this ad still make sense if the platform stripped every claim that isn't substantiated by a named entity or measured number?
 
 ## Critical Gates — load first
 
-1. **Audience-temp is non-negotiable.** Missing audience-temp BLOCKs (drives entire strategist tree — warm objection map vs cold objection map). Offer + creative-format + proof also hard-block via Missing-Input Hard Blocks.
-2. **One audience-temp per artifact.** Run twice for campaigns spanning warm + cold; do NOT stack two audience-temps in one artifact.
+1. **Network + audience-temp are non-negotiable.** `network` (`meta | google-ads | tiktok-ads | linkedin-ads`) selects the format-checker spec + the strategist's framing axis; ambiguous network BLOCKs — ask one question, never assume Meta. Missing audience-temp BLOCKs. Offer + creative-format + proof also hard-block.
+2. **One network + one audience-temp per artifact.** Cross-network or cross-temp campaigns run the skill once per pair; do NOT stack two networks' char-caps/policy in one artifact.
 3. **Hero + 2 distinct variants per artifact is the default.** Strategist enforces 3 distinct `angle_archetype` values + 3 distinct `anchor_proof` entries. Variants isolate ONE variable each (Variable Subtraction). The count serves Meta A/B structure; an operator may override it — log the override + reason in the rationale. Mode + tier in [`references/_shared/options-selection.md`](references/_shared/options-selection.md) (DELIVERY, tier B).
-4. **Format-checker is a HARD gate, not a critic dim.** Bounces on Meta char-cap violation / banned policy phrase / unsubstantiated measured claim. PASSED / REVISION_REQUIRED (does NOT consume critic cycle) / FORMAT_FAIL (escalate to user).
+4. **Format-checker is a HARD gate, not a critic dim.** Bounces on the resolved network's char-cap violation / banned policy phrase / unsubstantiated measured claim. PASSED / REVISION_REQUIRED (does NOT consume critic cycle) / FORMAT_FAIL (escalate to user).
 5. **Humanmaxxing runs ONCE per variant with `protected_tokens` including URL.** Post-humanmaxxing Specificity regression check per variant — drops ≥2 OR named entity/number/URL absent → flag the delta + the removed specific for operator review (critic-approved draft preserved alongside; operator picks).
 
 ## Quality Gate — 7 dimensions
@@ -45,7 +45,7 @@ Apply [`references/_shared/before-starting-check.md`](references/_shared/before-
 
 ## Pre-Dispatch + Mode
 
-Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: audience-temp (retargeting / cold) · offer (destination + value prop) · creative-format (dedicated / repurposed-ugc) · conversion-event (trial-start / purchase / lead / install) · production-model (in-house / affiliate-creator / external-freelance) · available-proof (list of named candidates) · transmutation goal (AI UGC / native static / AI animation / advertorial pre-lander / Chad Funnel / strategist choose) · competitor-pattern (optional) · belief sequence (optional; required for advertorial / Chad Funnel) · LP-description (optional but recommended).
+Run canonical Pre-Dispatch ([`references/_shared/pre-dispatch-protocol.md`](references/_shared/pre-dispatch-protocol.md)). Needed dimensions: network (meta / google-ads / tiktok-ads / linkedin-ads) · audience-temp (retargeting / cold; Meta+TikTok) · offer (destination + value prop) · creative-format (dedicated / repurposed-ugc) · conversion-event (trial-start / purchase / lead / install) · production-model (in-house / affiliate-creator / external-freelance) · available-proof (list of named candidates) · transmutation goal (AI UGC / native static / AI animation / advertorial pre-lander / Chad Funnel / strategist choose) · competitor-pattern (optional) · belief sequence (optional; required for advertorial / Chad Funnel) · LP-description (optional but recommended).
 
 Warm/Cold Start prompts (10-question Cold Start + retargeting follow-ups) + Missing-Input Hard Blocks (5 conditions): [`references/procedures/pre-dispatch.md`](references/procedures/pre-dispatch.md).
 
@@ -89,7 +89,7 @@ Read [`references/anti-patterns.md`](references/anti-patterns.md) before output 
 
 Offer the registry-gated fork (category `publish` + `image`). **Brief-only** (today's handoff):
 
-1. Submit hero to Meta Ads Manager as primary creative.
+1. Submit hero to the network's ads manager as primary creative.
 2. Submit Variant A + Variant B as A/B test against hero.
 3. Apply auto-pause rule per `ad-intelligence/creative-cadence.md` § 3 (CTR <1.5% after 48h).
 4. Re-invoke at creative-fatigue trigger (winner CTR decays >30% from peak) OR offer change OR LP change.

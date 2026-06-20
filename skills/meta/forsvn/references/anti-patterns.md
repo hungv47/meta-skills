@@ -9,3 +9,5 @@
 - Dispatching domain work without reading the relevant `references/chains/<domain>.md`.
 - Re-asking a question already answered in `docs/forsvn/experience/`. Grep first.
 - Bypassing the brand check on marketing dispatch.
+- The silent miss — answering a capability-shaped ask from general knowledge, or going silent, instead of invoking a capability, naming the gap (nearest 1–2 from the index), or asking ≤2 clarifying questions. Every turn terminates in invoke / gap / clarify.
+- Opening a cold repo with an 8-question brand/ICP intake form. A cold first run infers from the repo (README, landing copy, package.json, recent commits) and drafts ONE labeled artifact; it asks only when inference is impossible (empty repo).

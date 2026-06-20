@@ -78,6 +78,7 @@ promptSignals:
 
 capability:
   id: build-ios-apps
+  gate_class: review
   domain: product
   public: true
   command: /build-ios-apps

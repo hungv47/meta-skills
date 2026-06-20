@@ -105,6 +105,7 @@ Unchanged from v1. See existing `routing.yaml` files for examples.
 ```yaml
 capability:
   id: write-copy
+  gate_class: review
   domain: marketing
   public: true
   command: /write-copy
@@ -112,7 +113,7 @@ capability:
   aliases: [copy, headline]
 ```
 
-Required: `id`, `domain`, `public`, `summary`.
+Required: `id`, `domain`, `public`, `summary`. Authored-but-defaulted: `gate_class`.
 
 - `id` must match the skill directory name.
 - `domain` must be one of `meta`, `research`, `marketing`, `product`.
@@ -120,6 +121,34 @@ Required: `id`, `domain`, `public`, `summary`.
 - `summary` is a concise product-facing label (≤180 chars).
 - `command` is required when `public: true`.
 - `aliases` is product/router shorthand, not user-visible doctrine.
+
+### Gate Class (A4)
+
+`gate_class` is the **autonomy gate** for this capability when it appears as a step in a
+`plan.md` (the A4 `run-plan` executor reads it to decide whether to auto-advance or stop).
+
+```yaml
+capability:
+  id: publish-social
+  gate_class: publish     # hard-coded; NEVER read from / downgradable by .forsvn/config.json
+```
+
+| Value | Meaning | `run-plan` behavior |
+|---|---|---|
+| `auto` | Read-only producer (research / diagnosis) — a pure input to later steps. | Auto-advances within the A6 governor envelope. |
+| `review` | Produces a reviewable artifact. | Auto-advances within the envelope; artifact stays `decision_state: pending`. |
+| `publish` | Publish / spend / external / irreversible. | **STOPS hard — human required; nothing published.** |
+
+Rules:
+
+- **Default is `review`.** A missing or malformed `gate_class` normalizes to `review` — **never** to
+  `auto` (fail-safe toward human review). Authored in every `routing.yaml` for legibility.
+- **`publish` is hard-coded per capability**, not config: `publish-social`, `produce-asset`,
+  `produce-video`, `produce-ooh`, and anything else that ships externally or spends. The A6 governor
+  loader **drops** any key that would downgrade a `publish` gate — the publish-stop is absolute.
+- `auto` is reserved for genuinely read-only producers (`research-*`, `diagnose`). Anything that emits
+  a deliverable a human would approve/reject is `review`, not `auto`.
+- `bin/build-capability-index.ts --check` fails on any cap whose `gate_class` is outside the enum.
 
 ### Route Policy
 

@@ -15,10 +15,19 @@ export type Domain = (typeof DOMAINS)[number];
 // SKILL_ROOTS copies in _dev/ and hooks/ scripts that can't import this module.
 export const SKILL_ROOTS = ["skills", "forsvn-dev/skills"] as const;
 
+export type GateClass = "auto" | "review" | "publish";
+
 export type Capability = {
   id: string;
   domain: Domain;
   public: boolean;
+  // A4: the autonomy gate for this capability when it appears as a plan.md step.
+  //   auto    — read-only producer; run-plan auto-advances it (within the A6 envelope).
+  //   review  — produces a reviewable artifact; auto-advanced but stays decision_state: pending.
+  //   publish — publish / spend / external / irreversible; run-plan STOPS hard, human required.
+  // Default is `review` (fail-safe toward human review); a missing/invalid value is NEVER `auto`.
+  // `publish` is hard-coded per cap in routing.yaml — never derived from .forsvn/config.json (A6).
+  gate_class: GateClass;
   command?: string;
   summary: string;
   aliases?: string[];
@@ -80,6 +89,12 @@ function asStringArray(value: YamlValue | undefined): string[] {
 
 function asObject(value: YamlValue | undefined): Record<string, YamlValue> {
   return value && !Array.isArray(value) && typeof value === "object" ? value : {};
+}
+
+// A4 gate taxonomy. Fail-safe: anything not explicitly "auto" or "publish"
+// (absent, empty, or malformed) resolves to "review" — never silently "auto".
+function asGateClass(value: YamlValue | undefined): GateClass {
+  return value === "auto" || value === "publish" ? value : "review";
 }
 
 function asArtifactArray(value: YamlValue | undefined): Capability["outputs"]["artifacts"] {
@@ -212,6 +227,7 @@ export function normalizeCapability(file: CapabilityFile): Capability {
     id: asString(file.data.id),
     domain: asString(file.data.domain) as Domain,
     public: asBoolean(file.data.public),
+    gate_class: asGateClass(file.data.gate_class),
     command: asString(file.data.command) || undefined,
     summary: asString(file.data.summary),
     aliases: asStringArray(file.data.aliases),

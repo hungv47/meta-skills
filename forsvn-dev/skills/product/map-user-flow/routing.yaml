@@ -25,6 +25,7 @@ promptSignals:
 
 capability:
   id: map-user-flow
+  gate_class: review
   domain: product
   public: true
   command: /map-user-flow

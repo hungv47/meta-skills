@@ -10,7 +10,7 @@ Before dispatching:
 3. **Initiative slug.** New → propose a kebab-case slug, user confirms. Resuming → use existing slug.
 4. **Session execution profile.** The dispatcher owns the ask: if no fresh `.forsvn/routing/execution-profile.json` exists, fire the one bundled single-vs-multi (+ model, when undetected) ask per [`execution-policy.md`](../_shared/execution-policy.md) and write the profile. Every leaf dispatched this session inherits it silently — leaves never re-ask.
 
-## Step 4.5 — Foundation pre-flight (warn before a generic run)
+## Step 4.5 — Foundation pre-flight (infer-and-draft on a cold repo; warn on a thin one)
 
 A sub-step of Step 4 (still the 5-step contract — this is part of "load context"). After context is loaded and before the Step 5 dispatch, run this **only when the routed intent ∈ {research, marketing, product}** — the consumers of audience/product context. Skip it for `resume`, `summary`, `debate`, `decompose`, `scope`. It is the literal guard against the "output feels generic" failure: a thin foundation produces generic output, so surface it *before* work starts, not after.
 
@@ -27,7 +27,9 @@ Tier the foundation:
 - **partial** — ICP present but has `L`-confidence findings, OR product-context is an unratified autodraft, OR either is stale (>30d).
 - **thin** — no `ICP.md`.
 
-For **thin** or **partial**, print ONE line before the Step 5 announcement, then let the operator steer (non-blocking — drafts are usable; do not block dispatch; D-8 warn-don't-gate):
+**Cold-repo branch — infer-and-draft (the first-run wow).** When the foundation is **thin** (no `ICP.md`) AND there is no prior `.forsvn/routing/last-session.md` for this project AND the operator did **not** already name a specific deliverable, do **not** stop at the warn line and **never** open an intake form — run the **First-Run Draft flow** (below) instead: infer from the repo and draft one tailored artifact. (Once K3's canonical `docs/forsvn/canonical/research/ICP.md` exists, the flow reads it instead of guessing ICP — A2 sharpens but does not depend on K3.)
+
+For a **partial** foundation — OR a **thin** one where a prior session exists or the operator already named the work — print ONE line before the Step 5 announcement, then let the operator steer (non-blocking — drafts are usable; do not block dispatch; D-8 warn-don't-gate):
 
 ```
 ⚠ Foundation <thin|partial>: <no ICP.md | ICP has N low-confidence findings | product-context is an unratified autodraft | stale >30d>.
@@ -38,6 +40,19 @@ For **thin** or **partial**, print ONE line before the Step 5 announcement, then
 - **research-icp** → dispatch `/research-icp` instead (record the redirect via the normal Step 5 flow); the original ask resumes after.
 
 Warn at most once per session — a `resume` of the same initiative reads the prior `foundation:` already recorded on `.forsvn/routing/last-session.md` and does not re-warn. A **solid** foundation prints nothing.
+
+### First-Run Draft flow (cold-repo infer-and-draft)
+
+The cold path is **correct-don't-interrogate**: read the repo, infer, and draft ONE real artifact with assumptions labeled — not a form, not a plan.
+
+a. **Read the repo (no questions).** `README.md`, landing/marketing copy if present (`index.html`, `app/page.tsx`, `src/**/hero*`), `package.json` (name/description/deps), `git log --oneline -20`. Scaffold `docs/forsvn/canonical/product/PRODUCT-CONTEXT.md` from those sources as the inferred substrate — the same autodraft as Step 4.1 above. The mechanical scaffold ships with this skill as `scripts/draft-product-context.ts` (mirrored from `_dev/draft-product-context.ts`; targets the host CWD): `bun scripts/draft-product-context.ts --out docs/forsvn/canonical/product/PRODUCT-CONTEXT.md`. Fall back to an inline scaffold if it is unavailable. It stays an **unratified draft** (`status: needs_context`, `decision_state: pending`) — only a human approval ratifies it. If `docs/forsvn/canonical/research/ICP.md` exists (K3 delivered), read it for ICP instead of guessing.
+b. **Infer three things, each with a confidence + source label:** ICP (who it's for), wedge (the one differentiated thing), and the single highest-leverage first move (which capability).
+c. **Pick the move and draft ONE real artifact** by dispatching that single capability through the normal Step 5 record→announce→invoke flow — NOT a form, NOT a plan. Typical move: a tailored landing hero (`/write-copy` or `/brief-landing-page`) or a launch tweet (`/write-social`), whichever the inference favors.
+d. **Label every assumption inline** in the artifact's preamble (`inferred_from:` + `assumptions:` + a one-line "correct any of these and I'll redraft"). An unlabeled inference is a failure. Record `foundation: thin` + `first_run: drafted` + the `inferred:` block on the routing record.
+
+**Empty-repo fallback.** If `README.md` + `package.json` + landing copy are all absent (nothing to infer from), fall back to the existing cold-start bundle ([`../_shared/pre-dispatch-protocol.md`](../_shared/pre-dispatch-protocol.md) § "Cold Start") and record `first_run: form` — the form is the last resort, not the default.
+
+Do not exceed ONE drafted artifact on the first run (more is a plan — that's A3). The drafted artifact is `decision_state: pending` like any other output — A2 produces a draft to review, it never publishes or auto-ratifies.
 
 ## Step 5 — Dispatch: record → announce → invoke
 
@@ -62,6 +77,18 @@ A wrong turn is visible and reversible by construction: the announcement names t
 
 After the leaf completes — or when `/forsvn` exits without dispatching (summary, candidates presented, blocked) — update `status:` (`awaiting-user` / `completed` / `abandoned`) and `next-action` in `last-session.md`. Update `.forsvn/routing/initiatives.md` if a new initiative was created or status changed.
 
+## Multi-step plans — `plan.md` (the plan-preview contract)
+
+When Step 3 classifies **multi** (a multi-domain / "launch this" / "ship this" ask), do **not** propose the chain inline and start dispatching. Instead:
+
+1. **Resolve prerequisites first (A5).** For each terminal target capability, run `bun bin/lib/resolve-deps.ts <capId> --json` — it walks `route.prerequisites.hard` and returns the missing **producers** to insert as earlier steps (e.g. `write-ad` → `research-icp`), in dependency order, deduped (two prereqs from one producer = one step). **Prepend** those producer steps so the plan a human approves already contains them — visible, not hidden. A producer whose artifact already exists on disk is not re-inserted; a raw-path prereq with no producer surfaces as a human-supplied input (state it, don't fabricate it).
+2. Scaffold `.forsvn/runs/<slug>/plan.md` via `bun bin/plan.ts init <slug> --intent "<ask>" --steps <json>` — an ordered, gated steps table (`status: proposed`), the inserted producers carrying their `depends_on` edges. Each step row carries a `gate` (`auto | review | publish`); fill it conservatively pre-A4 (publish-ish → `publish`, output-producing → `review`, read-only → `auto`). Schema SoT: [`plan-spec.md`](../plan-spec.md).
+3. Render the steps table to the user and **STOP for approval** — no step runs until a human approves (`status: approved`). A3 never auto-runs (that's A4, and only non-publish steps).
+4. A fresh agent resumes from `plan.md` alone (the **Current step** pointer), not chat history.
+5. **Once approved, execute via `run-plan` (A4)** — `/run-plan <slug>` (or `bun bin/lib/governor.ts`-bounded auto-advance) walks the approved plan, auto-advancing the `auto`/`review` steps within the governor envelope and **stopping hard at every `publish` gate** (nothing published). Each step's `gate` resolves from its capability `gate_class`; the conservative pre-fill above is the floor. `run-plan` refuses any plan whose `status != approved`.
+
+`.forsvn/runs/` is **machine-state** (run state + the plan artifact), exempt from the artifact contract — never walked by the artifact validators or the manifest indexer, gitignored alongside the U6 run-records.
+
 ## Routing record format
 
 ```markdown
@@ -73,6 +100,11 @@ routed-to: /<skill-name or empty if summary>
 dispatched-by: forsvn
 context-loaded-via: mcp | filesystem
 foundation: solid | partial | thin   # Step 4.5 tier; omit when intent doesn't consume product context
+first_run: drafted | form | skipped   # cold first run only (Step 4.5); drafted = inferred + one artifact, form = empty-repo fallback, skipped = not a cold first run
+inferred:                             # only when first_run: drafted
+  icp:   { value: "<one line>", confidence: H|M|L, source: "README|package.json|commits" }
+  wedge: { value: "<one line>", confidence: H|M|L, source: "<file>" }
+  move:  { capability: "/<skill>", why: "<one line>" }
 status: dispatched | awaiting-user | completed | abandoned
 next-action: <one line>
 ---

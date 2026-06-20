@@ -6,13 +6,17 @@ verifier: hungv47
 note: Meta's component-level char caps occasionally shift (esp. headline visible-window on new placements). The figures below reflect Meta Advertising Standards at v0.1 of this doc. Re-verify on next ad-copy invocation by checking https://www.facebook.com/business/help/980593475366490 (Meta's ad-spec reference).
 ---
 
-# Meta Ad Format Spec (v0.1)
+# Per-Network Ad Format Spec (v0.2)
 
-Character caps + visible-window economics for Meta paid ads (Facebook + Instagram). Used by `agents/format-checker.md` (hard-gate) and `agents/composer.md` (drafting discipline).
+Character caps + visible-window economics, **one section per `network`**. `agents/format-checker.md` (hard-gate) and `agents/composer.md` (drafting discipline) read **only the section for the resolved `network`** (`meta | google-ads | tiktok-ads | linkedin-ads`) — never stack two networks' caps in one artifact (Critical Gate 2). Each network section is self-contained: its hard caps + the banned-phrase pointer (`policy-floor.md` has the matching per-network policy).
 
-> Scope: Meta paid ads only — Facebook Feed, Instagram Feed, Stories, Reels (organic-style placements). Audience Network and Messenger have their own variations; if operator targets those, re-verify before draft.
+Caps shift; each section carries its own re-verify trigger. Meta is the reference depth (§Meta below); Google/TikTok/LinkedIn carry the load-bearing caps the format-checker enforces.
 
 ---
+
+# Network: Meta (Facebook + Instagram)
+
+> Scope: Meta paid ads — Facebook Feed, Instagram Feed, Stories, Reels (organic-style placements). Audience Network and Messenger have their own variations; if operator targets those, re-verify before draft.
 
 ## 1. Component Hard Caps
 
@@ -129,4 +133,85 @@ All-caps: Banned in headlines
 
 ---
 
-**Last verified:** 2026-05-11 (v0.1). Re-verify trigger: next ad-copy invocation OR Meta announces new placement / cap change.
+# Network: Google Ads (Responsive Search Ads)
+
+Search ads are **typed at the moment of intent** — caps are tight and the asset model is combinatorial (Google mixes your assets), so every headline must stand alone. Re-verify against Google Ads RSA specs on next invocation.
+
+## Component Hard Caps
+
+| Component | Hard cap | Count | Notes |
+|---|---|---|---|
+| **Headline** | **30 chars** each | up to **15** | Google assembles ≤3 into the shown ad; each must read standalone. Pin sparingly. |
+| **Description** | **90 chars** each | up to **4** | ≤2 typically shown. Lead with the benefit + a proof token. |
+| **Display path** | **15 chars** each | **2** | Vanity path after the domain (`/free-trial`); not the real URL. |
+| **Final URL** | n/a | 1 | The real destination. |
+
+- **Always-on RSA discipline:** ≥8–10 distinct headlines + ≥3 descriptions, each a *different* angle (benefit / proof / offer / mechanism / objection); near-duplicate assets get "Low" Ad Strength and waste the combinatorial engine.
+- **Pinning:** pin only when a legal/brand line MUST appear (e.g. a disclaimer in headline-1); over-pinning collapses RSA to a static ad and kills Ad Strength.
+- **Banned (auto-disapprove / FORMAT_FAIL):** ALL-CAPS words, repeated/gimmicky punctuation (`!!!`, `F-R-E-E`), trademark misuse, unsubstantiated superlatives ("best", "#1") without on-page proof, phone numbers in headlines. Full list: `policy-floor.md` § Google.
+
+## Cheat sheet
+```
+Headline: 30 hard ×15 (each standalone; ≥8 distinct angles)
+Description: 90 hard ×4 (≥3 distinct)
+Path: 15 hard ×2
+Banned: ALLCAPS · !!! · "#1"/"best" w/o proof · TM misuse
+```
+
+---
+
+# Network: TikTok Ads
+
+TikTok rewards **native-not-polished**; ad text is short and the first ~3 seconds (thumbstop) carry the load. Spark Ads (boosted organic) inherit the **organic caption caps**, not the in-feed ad caps. Re-verify against TikTok Ads Manager specs on next invocation.
+
+## Component Hard Caps
+
+| Component | Hard cap | Notes |
+|---|---|---|
+| **Ad text (in-feed)** | **1–100 chars** | Some placements truncate ~ first line; front-load the hook. Emoji allowed, not emoji-only. |
+| **Spark Ad caption** | organic caption cap (**~2,200 chars**, ~100 visible) | Inherits the boosted post's caption; the same front-load rule applies. |
+| **CTA** | menu | Picked from TikTok's CTA menu (e.g. "Shop Now", "Sign Up", "Download"). |
+| **Brand / app name** | platform-set | Display name pulled from the account/app, not free text. |
+
+- **Disclosure (hard):** creator/whitelisted content used as paid **must** carry the paid-partnership disclosure; omitting it is a policy + FTC fail.
+- **Native mandate (format-checker soft-to-hard):** ad text that reads like a TV voiceover ("Introducing the revolutionary…") gets REVISION_REQUIRED — TikTok copy is spoken-first, hook-led.
+- **Banned (FORMAT_FAIL):** emoji-only text, prohibited/restricted-industry claims, fabricated metrics, before/after that implies guaranteed results. Full list: `policy-floor.md` § TikTok.
+
+## Cheat sheet
+```
+Ad text: 1–100 hard (front-load the hook; not emoji-only)
+Spark: inherits organic caption (~2,200 hard / ~100 visible)
+Disclosure: paid-partnership REQUIRED on creator content
+Banned: emoji-only · restricted-industry · "guaranteed results"
+```
+
+---
+
+# Network: LinkedIn Ads (Single Image / Sponsored Content)
+
+B2B, high CPC — copy earns its cost only with a **substantiated claim** and a job-relevant frame. Intro text truncates early; the headline does the standalone work. Re-verify against LinkedIn Campaign Manager specs on next invocation.
+
+## Component Hard Caps
+
+| Component | Truncation (front-load before this) | Hard cap | Notes |
+|---|---|---|---|
+| **Intro text** | **~150 chars** before "…see more" | **600 chars** | Hook + the substantiated claim must land in the first ~150. |
+| **Headline** | **~70 chars** always-visible | **200 chars** | The standalone line under the image; ≤70 = always shown. |
+| **Description** | — | **70 chars** | Often suppressed on feed; don't put load-bearing claims here. |
+| **CTA** | menu | — | Menu (e.g. "Learn More", "Download", "Register", "Request Demo"). |
+
+- **B2B claim-substantiation floor (hard):** a quantified business claim ("cut onboarding 40%") needs an on-page source / case study or it FORMAT_FAILs — LinkedIn's audience + policy both punish unbacked ROI claims.
+- **Lead-gen-form vs LP:** native Lead Gen Forms lift CVR but cost lead quality; note the tradeoff in rationale (the surface covers when each wins).
+- **Banned (FORMAT_FAIL):** unsubstantiated ROI/income claims, restricted-industry targeting violations, ALL-CAPS headlines, personal-attribute targeting misuse. Full list: `policy-floor.md` § LinkedIn.
+
+## Cheat sheet
+```
+Intro: ~150 visible / 600 hard (claim in the first 150)
+Headline: ~70 always-visible / 200 hard
+Description: 70 hard (often suppressed)
+Banned: unbacked ROI/income claims · ALLCAPS headline
+```
+
+---
+
+**Last verified:** 2026-06-20 (v0.2 — multi-network). Re-verify trigger: next ad-copy invocation on a given network OR that network announces a cap/policy change. Per-network re-verify URLs live in each section.

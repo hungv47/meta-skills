@@ -47,6 +47,7 @@ promptSignals:
 
 capability:
   id: publish-social
+  gate_class: publish
   domain: marketing
   public: true
   command: /publish-social

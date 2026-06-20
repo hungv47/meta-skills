@@ -34,6 +34,7 @@ promptSignals:
 
 capability:
   id: discover
+  gate_class: review
   domain: meta
   public: true
   command: /discover

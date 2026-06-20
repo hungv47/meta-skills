@@ -25,6 +25,7 @@ promptSignals:
 
 capability:
   id: optimize-seo
+  gate_class: review
   domain: marketing
   public: true
   command: /optimize-seo

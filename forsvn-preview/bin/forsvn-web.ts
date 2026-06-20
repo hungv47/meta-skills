@@ -15,12 +15,18 @@
 // cross-origin page cannot read the session token or forge a same-origin POST.
 
 import { randomBytes, timingSafeEqual } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { spawnSync, spawn } from "node:child_process";
 import { watch, existsSync, readFileSync, statSync, type FSWatcher } from "node:fs";
 import { join, extname, normalize, sep, isAbsolute } from "node:path";
 import { homedir } from "node:os";
 import type { ServerWebSocket } from "bun";
-import { findProjectRoot, openArtifact, exportArtifact, readArtifact, readField } from "../lib/collab";
+import { findProjectRoot, openArtifact, exportArtifact, readArtifact, readField, splitDoc } from "../lib/collab";
+import {
+  pickReviewSurface,
+  loadLongFormThreshold,
+  isProofUnavailableError,
+  PROOF_UNAVAILABLE_NOTE,
+} from "../lib/route-surface";
 import { observedRunIds, workspaceIsCold } from "../lib/runs";
 import { startProofServer, type ProofServerHandle } from "../lib/proof-server";
 import { ProofClient } from "../lib/proof-client";
@@ -37,6 +43,8 @@ import {
   NotFoundError,
   VALID_DECISIONS,
 } from "../lib/workspace";
+import { resetInboxBaselineIfEmpty } from "./forsvn-preview";
+import { isDecisionReason } from "../lib/decision-reason";
 
 const HOST = "127.0.0.1";
 const DEFAULT_PORT = 4317;
@@ -150,6 +158,25 @@ const WS_TOPIC = "ws";
 
 let proofHandle: ProofServerHandle | null = null;
 let proofStarting: Promise<ProofServerHandle> | null = null;
+// C5: first-use auto-provision runs at most once per server lifetime.
+let proofProvisionTried = false;
+
+/** C5 first-use auto-provision: kick off the idempotent proof-setup in the
+ *  background (detached, non-blocking) so a LATER open finds Proof ready. THIS
+ *  open still degrades to inline (the caller's fallback — never a dead end), so we
+ *  never block an HTTP request on a clone/npm-install. Best-effort: a spawn
+ *  failure is swallowed; proof-setup is a no-op when Proof is already installed. */
+function provisionProofDetached(): void {
+  try {
+    const child = spawn("bun", [join(import.meta.dir, "proof-setup.ts")], {
+      detached: true,
+      stdio: "ignore",
+    });
+    child.unref();
+  } catch {
+    /* best-effort — the inline fallback already covers this open */
+  }
+}
 
 /** Where the Proof SDK lives. Honor FORSVN_PROOF_DIR (startProofServer reads it);
  *  else fall back to proof-setup's default `~/proof-sdk` if it's a valid install,
@@ -174,6 +201,13 @@ async function ensureProof(): Promise<ProofServerHandle> {
     })
     .catch((e) => {
       proofStarting = null;
+      // C5: if Proof simply isn't installed, kick off setup in the background so a
+      // later open succeeds — THIS open still falls back to inline (never a dead
+      // end). Tried once per lifetime; proof-setup is idempotent.
+      if (!proofProvisionTried && isProofUnavailableError(String(e instanceof Error ? e.message : e))) {
+        proofProvisionTried = true;
+        provisionProofDetached();
+      }
       throw e;
     });
   return proofStarting;
@@ -182,7 +216,7 @@ async function ensureProof(): Promise<ProofServerHandle> {
 /** A human-readable hint when Proof can't start (most often: not installed). */
 function proofHint(e: unknown): string {
   const msg = String(e instanceof Error ? e.message : e);
-  if (/no Proof install|FORSVN_PROOF_DIR|not a Proof SDK|no node_modules/.test(msg)) {
+  if (isProofUnavailableError(msg)) {
     return `Co-edit needs the Proof doc-server. Run \`bun skills/forsvn-preview/bin/proof-setup.ts\` once (or set FORSVN_PROOF_DIR). (${msg})`;
   }
   return msg;
@@ -335,7 +369,23 @@ const server = Bun.serve({
         if (req.method === "GET" && !sub) {
           try {
             const view = getArtifact(args.root, loadManifest(args.root), id);
-            return json(200, { ...view, verified: observedRunIds(args.root).has(view.id) });
+            // C5: tell the client which surface to auto-select — inline vs Proof —
+            // so the operator never picks a review tool. review_tool/review_surface
+            // come from the artifact frontmatter (not summarized into the DTO);
+            // bodyLength is the body without the frontmatter. The desktop honoring
+            // this (auto-open Proof for long-form) is the C5 follow-on, mirroring
+            // C3's desktop-parity split.
+            const review_route = pickReviewSurface(
+              {
+                review_tool: readField(view.content, "review_tool") ?? undefined,
+                review_surface: readField(view.content, "review_surface") ?? undefined,
+              },
+              {
+                bodyLength: splitDoc(view.content).body.length,
+                longFormThreshold: loadLongFormThreshold(args.root),
+              },
+            );
+            return json(200, { ...view, verified: observedRunIds(args.root).has(view.id), review_route });
           } catch (e) {
             return e instanceof NotFoundError ? json(404, { error: e.message }) : json(500, { error: String(e) });
           }
@@ -360,6 +410,15 @@ const server = Bun.serve({
           if (typeof body.decision !== "string" || !(VALID_DECISIONS as readonly string[]).includes(body.decision)) {
             return json(400, { error: `decision must be ${VALID_DECISIONS.join(" | ")}` });
           }
+          // C1 reason chip: accepted only on a non-approve decision and only when it
+          // matches the enum; an invalid reason is a 400, never silently dropped.
+          let decisionReason: string | undefined;
+          if (body.decision !== "approved" && typeof body.decision_reason === "string" && body.decision_reason.length > 0) {
+            if (!isDecisionReason(body.decision_reason)) {
+              return json(400, { error: "decision_reason is not a valid reason chip" });
+            }
+            decisionReason = body.decision_reason;
+          }
           try {
             const view = writeDecision(args.root, id, {
               decision: body.decision as (typeof VALID_DECISIONS)[number],
@@ -369,10 +428,15 @@ const server = Bun.serve({
                   ? body.reviewedAt
                   : new Date().toISOString().slice(0, 10),
               comment: typeof body.comment === "string" ? body.comment : "",
+              decisionReason,
+              reviewLatencyMs: typeof body.reviewLatencyMs === "string" ? body.reviewLatencyMs : undefined,
               expectedHash: typeof body.expectedHash === "string" ? body.expectedHash : null,
             });
             // The write changed the file (and re-indexed) — nudge every shell.
             srv.publish(WS_TOPIC, JSON.stringify({ type: "disk_changed", paths: [view.path] }));
+            // C4 — a decision may have emptied the queue; clear the notify baseline
+            // so the next genuine void→has-work push pings again.
+            resetInboxBaselineIfEmpty(args.root);
             return json(200, view);
           } catch (e) {
             if (e instanceof ConflictError) return json(409, { error: e.message });
@@ -397,6 +461,16 @@ const server = Bun.serve({
             srv.publish(WS_TOPIC, JSON.stringify({ type: "disk_changed", paths: [abs] }));
             return json(200, { slug: r.slug, editorUrl: r.editorUrl, created: r.created });
           } catch (e) {
+            // C5: Proof-absent is not a dead end. When Proof simply isn't installed,
+            // signal the inline fallback so a C5-aware client degrades to the C3
+            // inline-edit card with a one-line note (first-use auto-provision has
+            // been kicked off in the background for next time). Kept at 503 so the
+            // existing client still surfaces the hint unchanged; `fallback`/`note`
+            // are additive fields the follow-on client reads. A real runtime fault
+            // (Proof installed but crashed) is NOT a fallback — it stays a plain error.
+            if (isProofUnavailableError(String(e instanceof Error ? e.message : e))) {
+              return json(503, { error: proofHint(e), fallback: "inline", note: PROOF_UNAVAILABLE_NOTE });
+            }
             return json(503, { error: proofHint(e) });
           }
         }

@@ -47,6 +47,9 @@ const STATUS = new Set(["done", "done_with_concerns", "blocked", "needs_context"
 const STACK = new Set(["meta", "research", "marketing", "product"]);
 const SURFACE = new Set(["html", "md", "none"]);
 const DECISION = new Set(["pending", "approved", "denied", "suggested", "not_required"]);
+// C1 reason chips — fixed enum, restated here from forsvn-preview/lib/decision-reason.ts
+// (the source). Valid only on a `denied`/`suggested` decision; never on `approved`.
+const REASON = new Set(["off-brief", "wrong-claim", "tone", "too-long", "weak-hook", "format", "factually-wrong", "other"]);
 // review_tool — how a gated artifact is reviewed. `proof` (collaborative-doc
 // sub-type, ADR 2026-06-08) joins the original three. A `proof` artifact MUST
 // carry a `proof_slug` binding to its working doc.
@@ -216,6 +219,16 @@ function validate(abs: string, rel: string): void {
   const decision = field(fm, "decision_state");
   if (decision !== null && decision !== "" && !DECISION.has(decision))
     problems.push(`\`decision_state\` invalid: "${decision}" (expected ${[...DECISION].join(" | ")})`);
+
+  // decision_reason enum (C1, optional field). Valid only on a non-approve decision;
+  // absence is always valid (legacy artifacts, approved, not_required).
+  const decisionReason = field(fm, "decision_reason");
+  if (decisionReason !== null && decisionReason !== "") {
+    if (!REASON.has(decisionReason))
+      problems.push(`\`decision_reason\` invalid: "${decisionReason}" (expected ${[...REASON].join(" | ")})`);
+    else if (decision === "approved")
+      problems.push("`decision_reason` is not valid on an `approved` decision — reasons are recorded only on `denied`/`suggested`");
+  }
 
   // Silent-skip hazard (spec P-09): an artifacts-layer file with NO
   // decision_state is invisible to the review scanner — it never queues, and

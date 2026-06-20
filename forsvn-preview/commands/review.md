@@ -13,6 +13,14 @@ report — you never fabricate a decision.** The human clicks approve / deny /
 suggest in the browser; the CLI writes that choice back into the artifact's
 frontmatter and prints it.
 
+**Auto-routed surface (C5) — the operator never picks a review tool.** This
+one-shot CLI is the inline surface. When an artifact is long-form (or carries an
+explicit `review_tool: proof`), serving it also prints a one-line pointer to
+`/forsvn:collab` (turn-by-turn Proof editing) — but it still serves the inline
+review here, never a dead end. `/forsvn:collab` stays the explicit Proof escape
+hatch; on the persistent web/desktop surface the same routing auto-selects
+inline vs Proof, and a Proof-absent open degrades to the inline edit with a note.
+
 The CLI is bundled with this plugin. Invoke it as
 `bun "${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-preview.ts" …` so it resolves wherever the
 plugin is installed. The CLI ships **inside** the `forsvn` plugin (installing

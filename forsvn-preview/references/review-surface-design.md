@@ -192,9 +192,18 @@ All additions are additive; `{"static":true}` keeps everything inert.
 The terminal twin of this spec lives in `lib/mono.ts` + `lib/md-term.ts`
 (tier-gated ANSI, zero escapes when piped):
 
-- **`notify`** (G4) — the agent's post-push signal: one inbox journal line
+- **`notify`** (G4 + C4) — the agent's post-push signal: one inbox journal line
   (`.forsvn/inbox`, tier-3 ASCII grammar) + a stdout ResultLine; idempotent on
-  same-state re-push.
+  same-state re-push. **Ambient edge (C4):** on the pending **0→N** crossing
+  (the void→has-work edge), it fires ONE local OS notification (macOS `osascript`
+  / Linux `notify-send`, spawned detached) reporting the *standing* pending count —
+  never one ping per artifact. The last-notified count persists in
+  `.forsvn/inbox.state` (gitignored); a re-run that doesn't change the count (the
+  dedupe path) never notifies. Best-effort: a missing notifier is swallowed, the
+  push never fails; `FORSVN_NO_NOTIFY=1` suppresses the spawn. **Opt-in &
+  suggestion-grade** — the producer/agent chooses to call `notify` after writing a
+  reviewable artifact; it only signals, it never invokes review or writes a
+  decision. The Dock badge (standing count in the desktop app) is the M follow-on.
 - **`--md`** — read-only terminal render of the artifact (no decision capture,
   no git gate); the chooser's "terminal" surface.
 - **`next_pending`** (G5) — rides the `--json` decision object additively and

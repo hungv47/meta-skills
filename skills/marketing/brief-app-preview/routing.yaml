@@ -60,6 +60,7 @@ promptSignals:
 
 capability:
   id: brief-app-preview
+  gate_class: review
   domain: marketing
   public: true
   command: /brief-app-preview

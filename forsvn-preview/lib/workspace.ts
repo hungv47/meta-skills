@@ -15,6 +15,7 @@ import { spawnSync } from "node:child_process";
 import { join, sep, isAbsolute, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { atomicWrite } from "./collab";
+import { appendVerdict, verdictTs } from "./verdicts";
 
 // --- DTOs (mirror desktop/src/types.ts; the wire boundary is structural) -----
 
@@ -26,6 +27,9 @@ export interface ArtifactSummary {
   type: string;
   status: string;
   decision_state: string;
+  /** C1 reason chip — the structured "why" on a `denied`/`suggested` decision;
+   *  "" on `approved`/`not_required`. The countable signal the learning wire records. */
+  decision_reason: string;
   summary: string;
   produced_at: string;
   stale: boolean;
@@ -79,6 +83,7 @@ interface Entry {
   stack?: string;
   status?: string;
   decision_state?: string;
+  decision_reason?: string;
   review_surface?: string;
   title?: string;
   summary?: string;
@@ -160,6 +165,7 @@ function summarize(path: string, e: Entry): ArtifactSummary {
     type: e.type ?? "",
     status: e.status ?? "",
     decision_state: e.decision_state ?? "",
+    decision_reason: e.decision_reason ?? "",
     summary: e.summary ?? "",
     produced_at: e.produced_at ?? "",
     stale: e.stale ?? false,
@@ -318,6 +324,12 @@ export interface DecisionInput {
   reviewer: string;
   reviewedAt: string; // YYYY-MM-DD
   comment: string;
+  /** C1 reason chip (enum value) — set on a `denied`/`suggested` decision, omitted
+   *  on `approved`. The web boundary validates it against the enum before it lands. */
+  decisionReason?: string;
+  /** C2/L1 review latency (open→decide, integer ms as a string) the web shell
+   *  computes from its open timestamp; "" / absent when unknown. */
+  reviewLatencyMs?: string;
   /** The hash the shell captured when it opened the artifact; null skips the guard. */
   expectedHash: string | null;
 }
@@ -351,16 +363,42 @@ export function writeDecision(root: string, idOrPath: string, input: DecisionInp
   }
 
   const reviewer = input.reviewer.trim() || "operator";
-  let next = frontmatterUpsert(current, {
+  const fmFields: Record<string, string> = {
     decision_state: input.decision,
     reviewed_at: input.reviewedAt,
     reviewer,
-  });
+  };
+  // Reason only on a non-approve decision (the chip carries ~10× the signal of an
+  // approve; forcing one on approve is friction with no payoff). On a re-decision
+  // that flips to approve, clear any stale reason so the contract invariant holds
+  // (decision_reason present iff denied/suggested) and validate-artifacts passes.
+  if (input.decision !== "approved" && input.decisionReason)
+    fmFields.decision_reason = input.decisionReason;
+  else if (input.decision === "approved" && /^decision_reason:\s*\S/m.test(current))
+    fmFields.decision_reason = "";
+  let next = frontmatterUpsert(current, fmFields);
   const comment = input.comment.trim();
   if (comment.length > 0) {
     next = appendCommentBlock(next, renderCommentBlock(comment, reviewer, input.reviewedAt));
   }
   atomicWrite(joined, next);
+
+  // C2/L1 — the learning wire: append one verdict row AFTER the canonical write.
+  // id/skill/stack come from the pre-write manifest entry (a decision never
+  // changes them). Best-effort + keyless-safe inside appendVerdict.
+  const preEntry = m.artifacts[path];
+  appendVerdict(root, {
+    ts: verdictTs(),
+    artifact_id: preEntry?.id ?? "",
+    skill: preEntry?.produced_by ?? "",
+    stack: preEntry?.stack ?? "",
+    decision_state: input.decision,
+    decision_reason: fmFields.decision_reason ?? "",
+    dimensions_flagged: "",                       // reserved for L2/L5
+    note: (input.comment ?? "").split(/\r?\n/)[0] ?? "",
+    review_latency_ms: input.reviewLatencyMs ?? "",
+    surface: "web",
+  });
 
   syncManifest(root);
 
@@ -369,7 +407,11 @@ export function writeDecision(root: string, idOrPath: string, input: DecisionInp
   const after = manifestExists(root) ? loadManifest(root) : m;
   const entry = after.artifacts[path] ?? m.artifacts[path];
   return {
-    ...summarize(path, { ...entry, decision_state: input.decision }),
+    ...summarize(path, {
+      ...entry,
+      decision_state: input.decision,
+      ...(fmFields.decision_reason ? { decision_reason: fmFields.decision_reason } : {}),
+    }),
     content: next,
     connections: connections(after, entry.id),
     hash: contentHash(next),

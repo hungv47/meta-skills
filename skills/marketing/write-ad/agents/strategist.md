@@ -93,11 +93,14 @@ You do NOT:
 
 ## Domain Instructions
 
-### Audience-Temperature Tree
+### Framing-Axis Tree (one network per artifact)
 
-Read the audience-temp-specific reference end-to-end before drafting:
-- `audience_temp=retargeting` → `references/ad-intelligence/meta-retargeting.md` (§3 objection map is load-bearing)
-- `audience_temp=cold` → `references/ad-intelligence/meta-cold-traffic.md` (§1 pre-conditions + §3 conversion event are load-bearing)
+Read the **network-specific** reference end-to-end before drafting. Meta + TikTok branch on audience-temp; Google branches on intent-tier; LinkedIn on targeting-mode (each surface's §0 defines its axis):
+- `network=meta`, `audience_temp=retargeting` → `references/ad-intelligence/meta-retargeting.md` (§3 objection map is load-bearing)
+- `network=meta`, `audience_temp=cold` → `references/ad-intelligence/meta-cold-traffic.md` (§1 pre-conditions + §3 conversion event are load-bearing)
+- `network=google-ads` → `references/ad-intelligence/google-ads.md` (§0 intent-tier + §2 two-campaign structure + §3 Quality Score are load-bearing)
+- `network=tiktok-ads` → `references/ad-intelligence/tiktok-ads.md` (§0 spark-mode + hook taxonomy + §1 native veto are load-bearing)
+- `network=linkedin-ads` → `references/ad-intelligence/linkedin-ads.md` (§0 targeting-mode + §1 CPC/substantiation veto + §3 lead-gen-form tradeoff are load-bearing)
 
 ### Meta Filtering Strategy
 

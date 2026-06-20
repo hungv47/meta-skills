@@ -40,6 +40,7 @@ promptSignals:
 
 capability:
   id: evaluate-shortform
+  gate_class: review
   domain: research
   public: true
   command: /evaluate-shortform

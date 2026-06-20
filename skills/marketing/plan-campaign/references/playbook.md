@@ -47,7 +47,7 @@ pillar-agent → angle-agent → channel-agent → timeline-agent → launch-seq
 - **SEO keyword strategy + technical audit** → use `optimize-seo`. Campaign-plan can pick "Search engines" as a channel; seo turns that into a keyword tree + audit + execution plan.
 - **Per-touch outbound composition** → use `write-outreach`. Campaign-plan can pick "Mailbox" as a channel; cold-outreach composes the actual touches.
 - **Per-asset short-form video brief** → use `brief-shortform`. Campaign-plan can include "Social media" with video as a format; short-form-brief turns each hero into a production-ready brief.
-- **Per-ad creative for paid Meta** → use `write-ad`. Campaign-plan can pick "Social media (paid)"; ad-copy composes the actual ads per audience-temperature.
+- **Per-ad creative for a paid network (Meta / Google / TikTok / LinkedIn)** → use `write-ad`. Campaign-plan picks the paid channel; ad-copy composes the actual ads for that network (one network per artifact). Route B reads the artifact's `network` so budget allocation is network-aware.
 
 ## When NOT to use
 

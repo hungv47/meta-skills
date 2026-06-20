@@ -1,7 +1,7 @@
 ---
 name: evaluate-ad
-description: "Score a launched Meta ad from real metrics (CTR, CPA, ROAS, frequency, fatigue, spend) inside an existing eval loop — verdict + diagnosis + creative-fatigue signals. One cycle per audience-temp. Meta-only at v1. Not for loop setup (use run-pipeline), writing new creative (use write-ad), channel-mix retrospectives (use plan-campaign), or campaign-level scoring (use evaluate-campaign)."
-argument-hint: "[loop slug or path] [audience-temp: cold-traffic|retargeting] [metric window]"
+description: "Score a launched paid ad (Meta, Google, TikTok, LinkedIn) from real metrics — network-specific primary metric + diagnosis + fatigue/auction signals — inside an existing eval loop. One cycle per network. Not for loop setup (use run-pipeline), writing new creative (use write-ad), channel-mix retrospectives (use plan-campaign), or campaign-level scoring (use evaluate-campaign)."
+argument-hint: "[loop slug or path] [network: meta|google-ads|tiktok-ads|linkedin-ads] [metric window]"
 allowed-tools: Read Write Edit Grep Glob Bash WebSearch WebFetch
 metadata:
   version: "1.0.2"
@@ -13,17 +13,17 @@ metadata:
 
 <!-- BUDGET_EXCEPTION: Eval skills carry artifact-schema-as-contract (8 body sections + 8-col results row + cross-stack consumer contract) that is load-bearing and cannot move to references/. Cycle ledger discipline requires the schema be visible in the SKILL.md body. Ad-eval also surfaces the audience-temp scoping rule (one cycle = one audience-temp) and creative-fatigue signal columns. ~300 tokens over the standard cap is the legitimate cost. -->
 
-*Evaluation skill. Converts launched Meta-ad evidence into a cycle snapshot + ledger row + narrowly-scoped next action inside an existing eval loop. One cycle = one audience-temp.*
+*Evaluation skill. Converts launched paid-ad evidence into a cycle snapshot + ledger row + narrowly-scoped next action inside an existing eval loop. One cycle = one network (+ audience-temp on Meta/TikTok).*
 
-**Core Question:** "Did this ad cycle, for this audience-temp, create measurable signal strong enough to keep / discard / watch / block — and what should the next strategy/execution skill know?"
+**Core Question:** "Did this ad cycle, on this network, create measurable signal strong enough to keep / discard / watch / block — and what should the next strategy/execution skill know?"
 
 > Why, methodology, history: [`references/playbook.md`](references/playbook.md) [PLAYBOOK]. Capability metadata (route triggers, prerequisites, load map): [`routing.yaml`](routing.yaml).
 
 ## Critical Gates
 
 1. **Existing eval loop required.** `program.md` + `context.md` absent → `NEEDS_CONTEXT`, recommend `/run-pipeline`. This skill does not create loops.
-2. **Measurement evidence required + primary metric decides the row.** Need ≥1 metric source, window, current value for the loop's primary metric (CTR / CPA / ROAS / conversion rate — operator-pick via `program.md`). Secondary metrics (frequency, fatigue indicators, qualitative) explain diagnosis; don't override unless `program.md` defines a guardrail failure (e.g., frequency > 4).
-3. **One audience-temp per cycle.** Cold-traffic and retargeting evaluated in separate cycles. Mirrors write-ad's one-artifact-per-audience-temp. Mixed-audience metrics → split before ingest or return `BLOCKED`.
+2. **Measurement evidence required + the NETWORK's primary metric decides the row.** Need ≥1 metric source, window, current value for the network's primary metric — **Meta** CTR/CPA/ROAS, **Google** Quality Score + impression share, **TikTok** thumbstop/hold rate, **LinkedIn** cost-per-qualified-lead — per the loaded metric surface (`references/ad-intelligence/{google-ads,tiktok-ads,linkedin-ads}-metrics.md`; Meta is inline). Secondary metrics explain diagnosis; don't override unless `program.md` defines a guardrail failure.
+3. **One network per cycle (+ one audience-temp on Meta/TikTok).** Networks (and Meta cold/retargeting) evaluated in separate cycles. Mirrors write-ad's one-network-per-artifact. Mixed-network/audience metrics → split before ingest or return `BLOCKED`.
 4. **No fabricated analytics.** Unknown stays unknown. Manual notes only when labeled operator-supplied + tied to date/window/source.
 5. **Attribution confidence must be explicit.** Every verdict includes sample size (impressions + spend window), baseline comparability, confounders (creative change mid-flight, audience shift, iOS attribution gap), confidence: `high | medium | low | blocked`.
 6. **Evaluation does not generate creative.** Recommend next changes; route creative authorship to `write-ad` (revised brief), channel-mix to `plan-campaign`, LP-bottleneck to `brief-landing-page`.
@@ -34,7 +34,7 @@ metadata:
 
 ## Inputs
 
-**Required:** loop slug/path · audience-temp tag (`cold-traffic` OR `retargeting`) · source ad-copy artifact (`docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · primary metric value + source · spend window.
+**Required:** loop slug/path · network (`meta | google-ads | tiktok-ads | linkedin-ads`) · audience-temp tag (Meta/TikTok: `cold-traffic` OR `retargeting`) · source ad-copy artifact (`docs/forsvn/artifacts/marketing/write-ad/[audience-temp]-[date]-[slug].md`) · measurement window · the network's primary metric value + source · spend window.
 
 **Recommended:** baseline/prior cycle row · frequency at window close (Creative-Fatigue scoring) · conversion count + CPA · audience size + reach · guardrails from `program.md` · qualitative evidence (comments, sentiment, click-quality).
 
@@ -100,5 +100,6 @@ Ad-eval cold-traffic cycle (creative-fatigue keep→watch, critic PASS): [`refer
 ## References
 
 - `references/{playbook, agent-manifest, rubric, format-conventions, anti-patterns}.md` + `procedures/{pre-dispatch, dispatch-mechanics}.md`
+- Per-network metric surfaces (loaded by `network`): `references/ad-intelligence/google-ads-metrics.md` · `references/ad-intelligence/tiktok-ads-metrics.md` · `references/ad-intelligence/linkedin-ads-metrics.md` (Meta metrics stay inline in the agents).
 - `_shared/{eval-loop-spec, evaluation-loop-rubric, pre-dispatch-protocol, critic-override-protocol, quality-dashboard-spec}.md`
 - **Siblings:** `write-ad` (downstream — this skill routes recommendations TO it but does not produce briefs), `run-pipeline` (loop scaffolding + ledger schema + durable learnings), `evaluate-campaign` (multi-channel aggregate sibling)

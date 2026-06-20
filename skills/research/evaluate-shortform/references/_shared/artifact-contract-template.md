@@ -100,6 +100,7 @@ Derived/inferred values (set by `manifest-sync.ts` or `clean-artifacts`, NOT set
 | `assets` | The return-leg (§ below) — re-ingested rendered outputs attached to this artifact | `[.forsvn/assets/hero/final.png, https://site.com/lp]` |
 | `asset_picked` | The option-picker's canonical choice among `assets` (or a variant slug) | `.forsvn/assets/hero/final.png` |
 | `execution_mode` | The execution-fork choice recorded on a brief/produce artifact (provenance + eval attribution) | `brief-only` \| `assisted` \| `direct` |
+| `body_sha` | **Plugin-stamped, not skill-authored** (L2). `sha256:<hex>` of the produced body, written by the review module at decision time; lets a later read confirm/dedupe the produced text. See [`verdicts-data.md`](verdicts-data.md) § "Edit-delta (L2)". | `sha256:9f2a…` |
 
 **Graph edges are authored by `id`, not path** (Phase 1). The five edge fields (`upstream`, `downstream`, `supersedes`, `superseded_by`, `references`) reference other artifacts by their stable `id`; the manifest resolves `id → current path` and derives the `referenced_by` reverse index, so a move never breaks an edge. Tokens that name something outside the indexed graph (a skill name, an external path like `skills/…` or `../_biz-ops/…`) are kept literal and treated as external. See [`manifest-spec.md`](manifest-spec.md) § "v2 — the Knowledge Graph".
 
@@ -241,9 +242,15 @@ Full semantics: [[reviewable-artifact-contract]].
 | Field | Type | Example |
 |---|---|---|
 | `decision_state` | enum | `pending` \| `approved` \| `denied` \| `suggested` \| `not_required` |
+| `decision_reason` | enum | `off-brief` \| `wrong-claim` \| `tone` \| `too-long` \| `weak-hook` \| `format` \| `factually-wrong` \| `other` |
 | `review_tool` | enum | `proof` \| `inline` \| `roughdraft` \| `none` |
 | `reviewed_at` | ISO `YYYY-MM-DD` or empty | `2026-05-22` |
 | `reviewer` | string or empty | `operator` |
+
+`decision_reason` is set on a `denied`/`suggested` decision and is empty/absent on
+`approved` and `not_required`. Authored by the review surface, never by the
+producing skill. The enum is the single human-facing restatement of
+`forsvn-preview/lib/decision-reason.ts`; `other` pairs with a free-text comment.
 
 Fields are flat by design — `manifest-sync.ts` parses flat YAML only. Absent or
 unrecognized `decision_state` normalizes to `not_required`, so legacy artifacts

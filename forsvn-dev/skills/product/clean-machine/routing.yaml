@@ -35,6 +35,7 @@ promptSignals:
 
 capability:
   id: clean-machine
+  gate_class: review
   domain: product
   public: true
   command: /clean-machine

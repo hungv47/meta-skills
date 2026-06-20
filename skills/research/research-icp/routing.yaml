@@ -29,6 +29,7 @@ promptSignals:
 
 capability:
   id: research-icp
+  gate_class: auto
   domain: research
   public: true
   command: /research-icp

@@ -36,6 +36,7 @@ promptSignals:
 
 capability:
   id: write-outreach
+  gate_class: review
   domain: marketing
   public: true
   command: /write-outreach

@@ -1,0 +1,82 @@
+# Routing + capability metadata for run-plan (A4).
+# Source of truth — compiled into hooks/skill-registry.json (build-registry.mjs)
+# and references/capability-index.json (build-capability-index.ts). Edit here, rebuild both.
+promptSignals:
+  phrases:
+    - "run the plan"
+    - "run-plan"
+    - "run plan"
+    - "execute the plan"
+    - "execute the approved plan"
+    - "run the approved plan"
+    - "advance the plan"
+    - "work the plan"
+    - "auto-advance the plan"
+    - "carry out the plan"
+  allOf:
+    - [run, approved, plan]
+    - [execute, plan]
+    - [advance, plan]
+  anyOf:
+    - "run-plan"
+    - "approved plan"
+    - "plan.md"
+    - "auto-advance"
+  noneOf:
+    - "run launch"
+    - "run the launch"
+    - "run pipeline"
+    - "make a plan"
+    - "plan this"
+    - "create a plan"
+    - "draft a plan"
+    - "plan a campaign"
+    - "plan the funnel"
+  minScore: 6
+
+capability:
+  id: run-plan
+  gate_class: review
+  domain: meta
+  public: true
+  command: /run-plan
+  summary: "Execute an approved plan.md — auto-advance the non-publish steps within the governor envelope, narrate each, and STOP hard at every publish/spend/irreversible gate."
+  aliases:
+    - plan-runner
+    - run-the-plan
+    - plan-executor
+
+  route:
+    use_when:
+      - "An approved .forsvn/runs/<slug>/plan.md exists and the user wants it executed step by step."
+      - "Auto-advance the non-publish steps of a gated plan, stopping at the human gates."
+      - "Resume an in-flight plan run from its Current-step pointer."
+    not_when:
+      - "No plan yet — building/proposing the plan is /forsvn's multi-step planner (A3), not this."
+      - "A single channel's launch end to end -> run-launch."
+      - "A generic produce-and-measure loop -> run-pipeline."
+      - "Approving the plan itself — only a human moves proposed -> approved."
+    prerequisites:
+      recommended:
+        - "An approved plan.md (status: approved) at .forsvn/runs/<slug>/."
+      hard: []
+
+  orchestration:
+    default: single
+    single_when:
+      - "One agent walks the approved plan, dispatching each step's leaf and stopping at each gate."
+    multi_when:
+      - "Never — each step's work is delegated to its own leaf skill, which runs its own agents."
+    critic_required_when:
+      - "Always — the pre-exit self-check (approval honored, publish-stop honored, governor envelope honored, every step narrated, no auto-ratify) gates every run."
+
+  load:
+    always:
+      - "references/run-plan-spec.md"
+    when:
+      - if: "Resolving the session single-vs-multi + model profile"
+        read:
+          - "references/_shared/execution-policy.md"
+      - if: "Resolving --fast / budget tier"
+        read:
+          - "references/_shared/mode-resolver.md"

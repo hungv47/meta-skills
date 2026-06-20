@@ -8,8 +8,10 @@
 
 import { readFileSync, writeFileSync, renameSync, existsSync, statSync, mkdirSync, rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { dirname, join, resolve } from "node:path";
 import { ProofClient, type CreateResult } from "./proof-client";
+import { appendVerdict, verdictTs } from "./verdicts";
 
 /** Walk up from `start` to the nearest dir containing `.forsvn/`. */
 export function findProjectRoot(start: string): string {
@@ -291,9 +293,92 @@ export async function exportArtifact(
   // a table-containing artifact. Surfaced so the operator knows to review the diff.
   const bodyChanged = normalizeBody(proofBody) !== normalizeBody(onDiskBody);
   atomicWrite(path, merged);
+
+  // C2/L1 — the learning wire: append one verdict row for the Proof-export path
+  // (surface "proof"). No chip UI in the editor, so decision_reason is "" and the
+  // note records whether the body was edited. Keys come from the doc frontmatter.
+  // L2 — record body_sha (the produced-body identity, = onDiskBody, what was
+  // imported into Proof). Format mirrors lib/edit-delta.ts bodySha — keep the
+  // `sha256:` prefix in sync. edit_classes for the Proof surface is a follow-on
+  // (the diff is available here as onDiskBody↔proofBody; CLI/TTY carries it today).
+  appendVerdict(projectRoot, {
+    ts: verdictTs(),
+    artifact_id: readField(text, "id") ?? "",
+    skill: readField(text, "skill") ?? "",
+    stack: readField(text, "stack") ?? "",
+    decision_state: decision,
+    decision_reason: "",
+    dimensions_flagged: "",
+    note: bodyChanged ? "body-edited" : "",
+    review_latency_ms: "",
+    surface: "proof",
+    body_sha: "sha256:" + createHash("sha256").update(onDiskBody, "utf8").digest("hex"),
+    edit_classes: "",
+  });
+
   // session done; a later re-open recreates the guard hash from the new body.
   clearBaseHash(projectRoot, slug);
   // re-index so MCP get_artifact/list_pending reflect the new decision_state.
   runManifestSync(projectRoot);
   return { path, decision, bodyChanged };
+}
+
+// --- C3: inline-edit body+decision write (shared with C5's Proof-absent path) ---
+
+/**
+ * Write an inline-edited body + the decision fields back to a canonical artifact,
+ * byte-fidelity. Keeps the plugin-owned frontmatter (upserting only `decisionFields`
+ * — `decision_state`, `decision_reason`, `reviewed_at`, `reviewer`), replaces the
+ * body with `newBody`, and writes atomically. This is `exportArtifact`'s pattern
+ * minus Proof. Returns whether the body's CONTENT actually changed (reformat noise
+ * normalized out via `normalizeBody`, so a table-padding-only edit is not flagged).
+ * Reused by C5's inline-edit fallback when Proof is unavailable.
+ */
+export function writeBodyAndDecision(
+  path: string,
+  newBody: string,
+  decisionFields: Record<string, string>,
+): { bodyChanged: boolean } {
+  const { text } = readArtifact(path);
+  const onDiskBody = splitDoc(text).body;
+  const bodyChanged = normalizeBody(newBody) !== normalizeBody(onDiskBody);
+  const withFm = upsertFrontmatter(text, decisionFields);
+  const fm = splitDoc(withFm).frontmatter;
+  atomicWrite(path, fm + newBody);
+  return { bodyChanged };
+}
+
+/**
+ * A compact line-level unified diff (LCS) between two bodies — ` ` context,
+ * `-` removed, `+` added. Round-tripped to the producing agent as the exact
+ * correction (a far stronger signal than a prose comment, and the seed for L2's
+ * edit-delta capture). Bodies are small; the O(m·n) table is fine.
+ */
+export function unifiedDiff(before: string, after: string): string {
+  const a = before.split("\n");
+  const b = after.split("\n");
+  const m = a.length;
+  const n = b.length;
+  const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = m - 1; i >= 0; i--)
+    for (let j = n - 1; j >= 0; j--)
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const out: string[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < m && j < n) {
+    if (a[i] === b[j]) { out.push(` ${a[i]}`); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { out.push(`-${a[i]}`); i++; }
+    else { out.push(`+${b[j]}`); j++; }
+  }
+  while (i < m) out.push(`-${a[i++]}`);
+  while (j < n) out.push(`+${b[j++]}`);
+  return out.join("\n");
+}
+
+/** The `### Suggested edit` subsection (a fenced `diff` block) appended beneath
+ *  the artifact's `## Reviewer notes` so the producing agent reads the exact
+ *  correction from the same record as the decision. */
+export function renderSuggestedEditBlock(diff: string): string {
+  return `\n### Suggested edit\n\n\`\`\`diff\n${diff}\n\`\`\`\n`;
 }

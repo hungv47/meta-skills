@@ -103,7 +103,7 @@ After Layer 2 step 5, the critic-agent returns one of two verdicts (per `agents/
 - `brief-landing-page` (per landing page consuming the campaign's channel + angle assignment)
 - `optimize-seo` (search-channel keyword + content execution)
 - `write-outreach` (mailbox-channel outbound execution, per-touch composition)
-- `write-ad` (paid Meta social-channel composition, per audience-temperature)
+- `write-ad` (paid-ad composition for a network — Meta / Google / TikTok / LinkedIn — one network per artifact)
 - `brief-shortform` (social-media-channel hero video brief)
 - `plan-funnel` (sets per-channel numeric targets — CAC / LTV / per-channel CPL)
 
