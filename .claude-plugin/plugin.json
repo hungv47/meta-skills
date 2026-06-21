@@ -2,7 +2,7 @@
   "name": "forsvn",
   "displayName": "FORSVN",
   "description": "FORSVN is a marketing/growth co-working stack for your coding agent — composable skills across research, strategy, content & ads, and measurement that run the full loop: understand the market → decide what to ship → write the copy and campaigns → publish → measure, then compound. One front door (/forsvn) routes any request to the right workflow; every skill writes artifacts the next one reads, so your context compounds the more you work. Critic-gated pipelines with quantitative rubrics and anti-sycophancy checks. (Engineering/build skills live in the separate forsvn-dev package.) Distributed from github.com/hungv47/meta-skills (formerly the forsvn-skills plugin).",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": { "name": "hungv47" },
   "homepage": "https://github.com/hungv47/meta-skills",
   "repository": "https://github.com/hungv47/meta-skills",

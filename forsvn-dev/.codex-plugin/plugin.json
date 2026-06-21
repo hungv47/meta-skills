@@ -1,6 +1,6 @@
 {
   "name": "forsvn-dev",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Software-engineering skills extracted from the FORSVN growth stack — architecture, refactoring, dead-code cleanup, service extraction, in-product UX flow + UI specs, code/operator docs, engineering task breakdown, and native app builds. A companion to forsvn (the marketing/growth product), not the product itself.",
   "author": {
     "name": "hungv47",

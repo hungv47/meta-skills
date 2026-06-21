@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "FORSVN is a marketing/growth co-working stack for your coding agent — research, strategy, content & ads, and measurement skills that run the full growth loop. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Engineering/build skills are the separate forsvn-dev package. From github.com/hungv47/meta-skills.",
-    "version": "1.4.0"
+    "version": "1.5.0"
   },
   "plugins": [
     {
