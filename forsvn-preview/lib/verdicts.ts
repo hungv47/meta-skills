@@ -9,10 +9,12 @@
 // Contract + schema: skills/references/verdicts-data.md.
 //
 // Local-first: this file never leaves the machine (no telemetry, no network). The
-// only sanctioned egress is the future `forsvn learnings export` (L6, gated G3),
-// which redacts. verdicts.tsv IS the corpus and is TRACKED by git (it is durable
-// knowledge, like the rest of .forsvn/) — do NOT gitignore it. Contrast: the C4
-// .forsvn/inbox signal is transient and IS gitignored.
+// only sanctioned egress is `forsvn learnings export` (L6, lib/portable-ledger.ts):
+// it redacts the `note` column and emits a portable bundle the operator carries by
+// hand; the hosted mirror that would sync it is dormant (gated G3, OFF). The egress
+// is opt-in tooling, never on the decision path. verdicts.tsv IS the corpus and is
+// TRACKED by git (it is durable knowledge, like the rest of .forsvn/) — do NOT
+// gitignore it. Contrast: the C4 .forsvn/inbox signal is transient and IS gitignored.
 //
 // Fire-and-forget relative to the decision: the canonical frontmatter write has
 // already happened by the time appendVerdict runs. A failure here (read-only FS,

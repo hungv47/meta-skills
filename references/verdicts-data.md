@@ -22,8 +22,12 @@ channel performance). This one is **plugin-written**, one row per decision.
   is the reader's job (`query-verdicts.ts --current`).
 - **Never hand-edit.** Adding a column is a `schema_version` bump + a `_dev/`
   migration script, exactly as `performance-data.md` mandates — never a hand-rewrite.
-- Local-first: the file never leaves the machine. The only sanctioned egress is the
-  future `forsvn learnings export` (L6, gated G3), which redacts.
+- Local-first: the file never leaves the machine. The only sanctioned egress is
+  `forsvn learnings export` (L6 — `bin/learnings.ts`), which redacts the free-text
+  `note` column by default and emits a portable bundle the operator carries **by
+  hand** (no network). Round-trip with `forsvn learnings import`. The hosted mirror
+  that would sync that bundle (`bin/lib/hosted-learnings.ts`) is **dormant (gated
+  G3, OFF)** — no network, no billing. Egress lib: `forsvn-preview/lib/portable-ledger.ts`.
 
 ## Schema (v2 — the stable contract WS-L consumes)
 
