@@ -943,6 +943,48 @@
       ],
       "minScore": 6
     },
+    "design-lifecycle": {
+      "phrases": [
+        "lifecycle email",
+        "lifecycle flow",
+        "onboarding email",
+        "onboarding email flow",
+        "email sequence",
+        "email automation",
+        "drip campaign",
+        "welcome sequence",
+        "activation email",
+        "winback campaign",
+        "win-back email",
+        "churn save",
+        "retention email",
+        "nurture sequence",
+        "automated emails"
+      ],
+      "allOf": [
+        [
+          "email",
+          "flow"
+        ]
+      ],
+      "anyOf": [
+        "lifecycle",
+        "winback",
+        "win-back",
+        "drip",
+        "nurture",
+        "email sequence",
+        "email automation",
+        "retention email"
+      ],
+      "noneOf": [
+        "cold email",
+        "cold outreach",
+        "newsletter issue",
+        "what should we build"
+      ],
+      "minScore": 6
+    },
     "design-minigame": {
       "phrases": [
         "mini game",
@@ -989,6 +1031,43 @@
         "static ad",
         "landing page",
         "video game"
+      ],
+      "minScore": 6
+    },
+    "design-referral": {
+      "phrases": [
+        "referral program",
+        "referral loop",
+        "viral loop",
+        "viral coefficient",
+        "k-factor",
+        "word of mouth",
+        "refer a friend",
+        "invite mechanic",
+        "double-sided incentive",
+        "growth loop",
+        "give get",
+        "share to invite"
+      ],
+      "allOf": [
+        [
+          "referral",
+          "loop"
+        ]
+      ],
+      "anyOf": [
+        "referral",
+        "viral",
+        "k-factor",
+        "viral coefficient",
+        "word of mouth",
+        "refer a friend",
+        "growth loop",
+        "invite reward"
+      ],
+      "noneOf": [
+        "affiliate program",
+        "cold outreach"
       ],
       "minScore": 6
     },
@@ -2166,6 +2245,44 @@
         "gallery image"
       ],
       "minScore": 5
+    },
+    "write-longform": {
+      "phrases": [
+        "blog post",
+        "pillar page",
+        "pillar content",
+        "longform content",
+        "long-form article",
+        "write an essay",
+        "thought leadership",
+        "seo article",
+        "in-depth guide",
+        "authoritative article",
+        "write an article"
+      ],
+      "allOf": [
+        [
+          "write",
+          "article"
+        ]
+      ],
+      "anyOf": [
+        "blog post",
+        "pillar",
+        "longform",
+        "long-form",
+        "essay",
+        "article",
+        "thought leadership",
+        "in-depth guide"
+      ],
+      "noneOf": [
+        "social post",
+        "tweet",
+        "ad copy",
+        "landing page"
+      ],
+      "minScore": 6
     },
     "write-outreach": {
       "phrases": [

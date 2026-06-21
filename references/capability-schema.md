@@ -281,6 +281,7 @@ bun _dev/verify-version-alignment.ts
 bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
 bun _dev/lint-description-body-coherence.ts --strict
 bun _dev/check-skill-links.ts
+bun _dev/check-deferred-disciplines.ts
 bun _dev/verify-reference-integrity.ts
 bun _dev/audit-skill-listing.ts --check
 bun _dev/lint-catalog-coherence.ts --strict
@@ -315,7 +316,17 @@ excluded (owned by `sync-skill-support --check`); escape hatches
 `<!-- lint:reference-ok <reason> -->` (line) and
 `<!-- lint:reference-ok-file <reason> -->` (meta-documents with exemplary paths)
 are used sparingly, with reasons. Regression-pinned by
-`_dev/test-reference-integrity-fixtures.ts`. `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches
+`_dev/test-reference-integrity-fixtures.ts`. `check-deferred-disciplines`
+(WS-K K5 / FOR-29) enforces the "captured, NOT built" guarantee for the deferred
+retention+referral disciplines registered in `_dev/deferred-disciplines.json`: a
+skill dir for any discipline whose `G-discipline` gate has not cleared
+(`build_allowed: false`) is a hard failure — the premature-breadth path the
+premium bar guards against. To build one, clear its gate in
+`_ops/forsvn/strategy/STATUS.md`, then flip its register entry to
+`gate_cleared: true` + `build_allowed: true` in the same change as the skill dir
+(full premium scaffolding required). Repo-local, cwd-independent; both the guard
+and the register live in `_dev/` (publicignored — process state, not shipped
+content). `lint-catalog-coherence --strict` (W3-1, 2026-06-05) catches
 per-skill catalog drift — a numbered rubric (critic gates, `CP-IDs`, principle
 sets) disagreeing on count, item names, or id-references across a single skill's
 files; SoT = the richest enumeration, History/Changelog + `_shared/` excluded.

@@ -1,0 +1,117 @@
+# Routing + capability metadata for design-lifecycle.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun bin/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "lifecycle email"
+    - "lifecycle flow"
+    - "onboarding email"
+    - "onboarding email flow"
+    - "email sequence"
+    - "email automation"
+    - "drip campaign"
+    - "welcome sequence"
+    - "activation email"
+    - "winback campaign"
+    - "win-back email"
+    - "churn save"
+    - "retention email"
+    - "nurture sequence"
+    - "automated emails"
+  anyOf:
+    - "lifecycle"
+    - "winback"
+    - "win-back"
+    - "drip"
+    - "nurture"
+    - "email sequence"
+    - "email automation"
+    - "retention email"
+  allOf:
+    - [email, flow]
+  noneOf:
+    - "cold email"
+    - "cold outreach"
+    - "newsletter issue"
+    - "what should we build"
+  minScore: 6
+
+capability:
+  id: design-lifecycle
+  gate_class: review
+  domain: marketing
+  public: true
+  command: /design-lifecycle
+  summary: "Design a lifecycle automation flow — onboarding / activation / winback / churn-save — as a trigger->message->timing->branch map anchored to one activation metric, with suppression rules and an activation-lift measurement plan."
+  aliases:
+    - lifecycle-flow
+    - onboarding-flow
+    - email-automation
+    - winback-flow
+    - churn-save
+
+  route:
+    use_when:
+      - "User wants an onboarding / activation / winback / churn-save automation flow."
+      - "There is an owned list + a product with a measurable activation event."
+      - "A trigger->message->timing->branch map with suppression is needed (not a single email)."
+    not_when:
+      - "One-off broadcast / newsletter issue -> write-copy."
+      - "Cold outbound to non-opted-in people -> write-outreach."
+      - "Organic social post -> write-social."
+      - "Paid-ad creative -> write-ad."
+      - "The newsletter channel strategy -> plan-campaign (+ the newsletter launch-channel pack)."
+    prerequisites:
+      recommended:
+        - "id:product-context"
+        - "id:icp-research"
+        - "id:brand"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast forces a single inline pass; safety gates still fire."
+    multi_when:
+      - "Default — 4 agents (flow-architect -> copy + measurement -> critic)."
+      - "Branch enumeration + per-step copy + activation-lift measurement design."
+    critic_required_when:
+      - "Always — 6-dim rubric + 4 hard gates (suppression / consent / single-metric / no-send) before delivery."
+
+  load:
+    always:
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + routes"
+        read:
+          - "references/agent-manifest.md"
+      - if: "Flow architecture (per-flow-type spine)"
+        read:
+          - "references/flow-patterns.md"
+      - if: "Per-step copy"
+        read:
+          - "references/copy-rules.md"
+      - if: "Measurement design"
+        read:
+          - "references/measurement.md"
+      - if: "Critic / 6-dim rubric scoring"
+        read:
+          - "references/rubric.md"
+          - "references/anti-patterns.md"
+      - if: "Artifact assembly"
+        read:
+          - "references/format-conventions.md"
+      - if: "Worked-example grounding"
+        read:
+          - "references/examples/lifecycle-walkthrough.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/design-lifecycle/[flow-type]-[date]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Flow map + per-step copy + measurement plan assembled; critic + 4 hard gates PASS."

@@ -1386,6 +1386,123 @@
       "source": "skills/meta/debate-agents/routing.yaml",
       "skill_path": "skills/meta/debate-agents"
     },
+    "design-lifecycle": {
+      "id": "design-lifecycle",
+      "domain": "marketing",
+      "public": true,
+      "gate_class": "review",
+      "command": "/design-lifecycle",
+      "summary": "Design a lifecycle automation flow — onboarding / activation / winback / churn-save — as a trigger->message->timing->branch map anchored to one activation metric, with suppression rules and an activation-lift measurement plan.",
+      "aliases": [
+        "lifecycle-flow",
+        "onboarding-flow",
+        "email-automation",
+        "winback-flow",
+        "churn-save"
+      ],
+      "route": {
+        "use_when": [
+          "User wants an onboarding / activation / winback / churn-save automation flow.",
+          "There is an owned list + a product with a measurable activation event.",
+          "A trigger->message->timing->branch map with suppression is needed (not a single email)."
+        ],
+        "not_when": [
+          "One-off broadcast / newsletter issue -> write-copy.",
+          "Cold outbound to non-opted-in people -> write-outreach.",
+          "Organic social post -> write-social.",
+          "Paid-ad creative -> write-ad.",
+          "The newsletter channel strategy -> plan-campaign (+ the newsletter launch-channel pack)."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:product-context",
+            "id:icp-research",
+            "id:brand"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast forces a single inline pass; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — 4 agents (flow-architect -> copy + measurement -> critic).",
+          "Branch enumeration + per-step copy + activation-lift measurement design."
+        ],
+        "critic_required_when": [
+          "Always — 6-dim rubric + 4 hard gates (suppression / consent / single-metric / no-send) before delivery."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + routes",
+            "read": [
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Flow architecture (per-flow-type spine)",
+            "read": [
+              "references/flow-patterns.md"
+            ]
+          },
+          {
+            "if": "Per-step copy",
+            "read": [
+              "references/copy-rules.md"
+            ]
+          },
+          {
+            "if": "Measurement design",
+            "read": [
+              "references/measurement.md"
+            ]
+          },
+          {
+            "if": "Critic / 6-dim rubric scoring",
+            "read": [
+              "references/rubric.md",
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Artifact assembly",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Worked-example grounding",
+            "read": [
+              "references/examples/lifecycle-walkthrough.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/design-lifecycle/[flow-type]-[date]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Flow map + per-step copy + measurement plan assembled; critic + 4 hard gates PASS."
+          }
+        ]
+      },
+      "source": "skills/marketing/design-lifecycle/routing.yaml",
+      "skill_path": "skills/marketing/design-lifecycle"
+    },
     "design-minigame": {
       "id": "design-minigame",
       "domain": "marketing",
@@ -1459,6 +1576,115 @@
       },
       "source": "skills/marketing/design-minigame/routing.yaml",
       "skill_path": "skills/marketing/design-minigame"
+    },
+    "design-referral": {
+      "id": "design-referral",
+      "domain": "marketing",
+      "public": true,
+      "gate_class": "review",
+      "command": "/design-referral",
+      "summary": "Design a referral / viral loop — loop mechanics, K-factor (i x c) + cycle-time math, CAC-bounded incentive economics, a value-triggered ask, and a fraud guard, scored by a quantitative critic.",
+      "aliases": [
+        "referral-loop",
+        "viral-loop",
+        "growth-loop",
+        "k-factor"
+      ],
+      "route": {
+        "use_when": [
+          "User wants a referral / viral / word-of-mouth loop for a product with retention.",
+          "K-factor + cycle-time + incentive-economics reasoning is needed (not just 'add a referral').",
+          "Unit economics exist (or can be elicited) to bound the incentive."
+        ],
+        "not_when": [
+          "Paid-ad creative -> write-ad.",
+          "Channel-mix / which channels -> plan-campaign.",
+          "Lifecycle email flows -> design-lifecycle.",
+          "Affiliate / partnership / influencer outreach -> write-outreach.",
+          "Product has no retention (users churn) -> fix retention first (design-lifecycle)."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:product-context",
+            "id:icp-research"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast forces a single inline pass; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — 4 agents (loop-architect -> incentive-economist + mechanic-copy -> critic).",
+          "K math + CPAU/payback economics + falsifiable mechanic."
+        ],
+        "critic_required_when": [
+          "Always — 6-dim rubric + 4 hard gates (retention / K-computed / CPAU<CAC / no-payout) before delivery."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + routes",
+            "read": [
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Loop design (loop-type library + K/cycle math)",
+            "read": [
+              "references/loop-models.md"
+            ]
+          },
+          {
+            "if": "Incentive pricing (CPAU + payback)",
+            "read": [
+              "references/incentive-economics.md"
+            ]
+          },
+          {
+            "if": "Critic / 6-dim rubric scoring",
+            "read": [
+              "references/rubric.md",
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Artifact assembly",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Worked-example grounding",
+            "read": [
+              "references/examples/referral-walkthrough.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/design-referral/[loop-type]-[date]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Loop mechanics + K/cycle math + incentive economics + mechanic + fraud guard assembled; critic + 4 hard gates PASS."
+          }
+        ]
+      },
+      "source": "skills/marketing/design-referral/routing.yaml",
+      "skill_path": "skills/marketing/design-referral"
     },
     "diagnose": {
       "id": "diagnose",
@@ -5567,6 +5793,117 @@
       },
       "source": "skills/marketing/write-launch/routing.yaml",
       "skill_path": "skills/marketing/write-launch"
+    },
+    "write-longform": {
+      "id": "write-longform",
+      "domain": "marketing",
+      "public": true,
+      "gate_class": "review",
+      "command": "/write-longform",
+      "summary": "Write a longform / pillar piece (blog, pillar page, essay) via research -> outline -> draft -> critic, scored on structure AND originality. For 1500+ word pieces that must argue one thesis and earn their length — not write-copy on a long doc.",
+      "aliases": [
+        "pillar-content",
+        "longform-content",
+        "blog-pillar",
+        "write-essay"
+      ],
+      "route": {
+        "use_when": [
+          "User wants a 1500+ word piece that argues one thesis and earns citations.",
+          "A research -> outline -> draft -> critic pipeline with an originality gate is wanted.",
+          "An ownable thesis + a proprietary angle exist (or can be elicited)."
+        ],
+        "not_when": [
+          "Short conversion copy (headline / CTA / blurb / email) -> write-copy.",
+          "Social post / thread -> write-social.",
+          "Keyword research / search strategy / topic map -> optimize-seo.",
+          "Ad copy -> write-ad.",
+          "A content calendar / what to publish when -> plan-campaign.",
+          "AI-tell cleanup on a finished draft -> humanmaxxing."
+        ],
+        "prerequisites": {
+          "recommended": [
+            "id:icp-research",
+            "id:product-context",
+            "id:brand"
+          ],
+          "hard": []
+        }
+      },
+      "orchestration": {
+        "default": "multi",
+        "single_when": [
+          "--fast forces research-lite -> outline -> single draft; safety gates still fire."
+        ],
+        "multi_when": [
+          "Default — 4 agents in strict order (research -> outline -> draft -> critic).",
+          "Originality gate (>=5) + cited-or-marked gate before delivery."
+        ],
+        "critic_required_when": [
+          "Always — 7-dim rubric with an Originality >=5 floor (the anti-collapse gate)."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/_shared/pre-dispatch-protocol.md"
+        ],
+        "when": [
+          {
+            "if": "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks)",
+            "read": [
+              "references/procedures/pre-dispatch.md"
+            ]
+          },
+          {
+            "if": "Layer dispatch + routes (strict research->outline->draft order)",
+            "read": [
+              "references/agent-manifest.md"
+            ]
+          },
+          {
+            "if": "Research stage (evidence + consensus + proprietary angle)",
+            "read": [
+              "references/research-method.md"
+            ]
+          },
+          {
+            "if": "Outline + draft (argument structure + prose craft)",
+            "read": [
+              "references/structure-patterns.md"
+            ]
+          },
+          {
+            "if": "Critic / 7-dim rubric (Originality first)",
+            "read": [
+              "references/rubric.md",
+              "references/anti-patterns.md"
+            ]
+          },
+          {
+            "if": "Artifact assembly",
+            "read": [
+              "references/format-conventions.md"
+            ]
+          },
+          {
+            "if": "Worked-example grounding + anti-collapse proof",
+            "read": [
+              "references/examples/longform-walkthrough.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/marketing/write-longform/[piece-type]-[date]-[slug].md",
+            "lifecycle": "pipeline",
+            "produced_when": "Research ledger + outline + draft assembled; critic PASS at Originality >=5 + cited-or-marked gate."
+          }
+        ]
+      },
+      "source": "skills/marketing/write-longform/routing.yaml",
+      "skill_path": "skills/marketing/write-longform"
     },
     "write-outreach": {
       "id": "write-outreach",
