@@ -126,6 +126,7 @@ After dispatch, the routed leaf skill owns the work. Re-invoke `/forsvn` with `r
 ## References
 
 - `.forsvn/README.md` — state root contract.
+- [`references/knowledge-ledger.md`](references/knowledge-ledger.md) — the `.forsvn/memory/knowledge.json` cache of project facts (loaded at dispatch so the front door never re-asks a known fact or re-runs a known producer; `bin/knowledge.ts`).
 - [`references/chains/{research,marketing,product,meta}.md`](references/chains/) — per-domain dispatch chains.
 - [`references/procedures/{state-snapshot,dispatch,nearest-match}.md`](references/procedures/) — Step 1, 4, 5, bootstrap, gap line.
 - [`references/anti-patterns.md`](references/anti-patterns.md).

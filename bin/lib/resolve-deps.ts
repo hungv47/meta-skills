@@ -17,6 +17,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { readLedger, onDiskFromLedger } from "./knowledge";
 
 export interface IndexCap {
   id: string;
@@ -155,8 +156,9 @@ export function assertPrereqDag(index: CapabilityIndex): string[] {
 if (import.meta.main) {
   const args = process.argv.slice(2);
   const json = args.includes("--json");
-  const target = args.find((a) => !a.startsWith("--"));
-  const root = (() => { const i = args.indexOf("--root"); return i !== -1 ? args[i + 1] : join(dirname(fileURLToPath(import.meta.url)), "..", ".."); })();
+  const optAfter = (flag: string) => { const i = args.indexOf(flag); return i !== -1 ? args[i + 1] : undefined; };
+  const target = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--root" && args[i - 1] !== "--ledger-root");
+  const root = optAfter("--root") ?? join(dirname(fileURLToPath(import.meta.url)), "..", "..");
   const index = (JSON.parse(readFileSync(join(root, "references", "capability-index.json"), "utf8")).capabilities) as CapabilityIndex;
   if (!target) {
     const problems = assertPrereqDag(index);
@@ -165,13 +167,22 @@ if (import.meta.main) {
     process.exit(0);
   }
   if (!index[target]) { console.error(`no capability ${JSON.stringify(target)}`); process.exit(1); }
+  // A7 bridge: read the knowledge ledger from the PROJECT root (host CWD at dispatch,
+  // overridable via --ledger-root — distinct from --root, which is the skills dir).
+  // A ledger fact that passes the reuse gate marks its producer's output as on-disk, so
+  // resolve-deps skips re-inserting that producer. Each skip is narrated (visible, never silent).
+  const ledgerRoot = optAfter("--ledger-root") ?? process.cwd();
+  const ledger = readLedger(ledgerRoot);
+  const reuse: string[] = [];
+  const onDisk = onDiskFromLedger(ledger, { narrate: (line) => reuse.push(line) });
   try {
-    const { steps, inputs } = resolveDeps(target, index);
-    if (json) { console.log(JSON.stringify({ target, steps, inputs }, null, 2)); process.exit(0); }
+    const { steps, inputs } = resolveDeps(target, index, onDisk);
+    if (json) { console.log(JSON.stringify({ target, steps, inputs, reuse }, null, 2)); process.exit(0); }
     console.log(`resolve-deps for ${target}:`);
     if (!steps.length) console.log("  (no producers to insert — prereqs are inputs or already satisfied)");
     for (const s of steps) console.log(`  insert ${s.capId} (satisfies ${s.satisfies.join(", ")}${s.depends_on.length ? `; after ${s.depends_on.join(", ")}` : ""})`);
     for (const i of inputs) console.log(`  input  ${i.prereq} (${i.reason}) — human-supplied`);
+    for (const line of reuse) console.log(`  reuse  ${line}`); // ledger-backed skip, surfaced not silent
     process.exit(0);
   } catch (e) {
     console.error(e instanceof Error ? e.message : String(e));
