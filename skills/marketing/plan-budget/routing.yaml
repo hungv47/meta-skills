@@ -1,0 +1,112 @@
+# Routing + capability metadata for plan-budget.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun bin/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "budget allocation"
+    - "allocate budget"
+    - "channel mix"
+    - "where to spend"
+    - "where should i spend"
+    - "marketing budget"
+    - "spend allocation"
+    - "reallocate spend"
+    - "reallocate budget"
+    - "marginal return"
+    - "how much to spend per channel"
+    - "cac aware channel mix"
+  allOf:
+    - [budget, allocat]
+    - [channel, mix]
+  anyOf:
+    - "budget"
+    - "allocate"
+    - "cac"
+    - "ltv"
+    - "spend"
+    - "marginal"
+    - "reallocate"
+  noneOf:
+    - "channel selection"
+    - "which channels"
+    - "funnel target"
+    - "ltv cac"
+    - "unit economics"
+    - "payback"
+  minScore: 6
+
+capability:
+  id: plan-budget
+  gate_class: review
+  domain: marketing
+  public: true
+  command: /plan-budget
+  summary: "Allocate a paid budget across selected channels — CAC/LTV-aware mix, marginal-return reasoning, min-viable floors, reallocation triggers, 7-dim critic gate."
+  aliases:
+    - budget-allocation
+    - channel-mix
+    - spend-allocation
+    - marginal-return
+
+  route:
+    use_when:
+      - "User has a fixed budget and must decide how much goes to each selected channel."
+      - "CAC/LTV-aware channel mix with marginal-return reasoning is needed."
+      - "An existing allocation needs reallocation after a CAC change or budget change."
+    not_when:
+      - "Channel selection (which channels at all) -> plan-campaign."
+      - "Numeric funnel / conversion targets -> plan-funnel."
+      - "Per-channel ad copy -> write-ad."
+      - "Scoring past channel results -> measure-results."
+      - "No sourced CAC and no measure-results history -> NEEDS_CONTEXT (run ads + measure-results first); never fabricate a CAC."
+    prerequisites:
+      recommended:
+        - "id:icp-research"
+        - "id:product-context"
+        - "docs/forsvn/artifacts/marketing/campaign-plan.md"
+      hard: []
+
+  orchestration:
+    default: multi
+    single_when:
+      - "--fast forces a leaner pipeline (coarse three-band saturation pass, single constraint sweep); Critical Gates + critic floor still fire."
+    multi_when:
+      - "Default — 3 agents (allocator + constraint-checker + critic) over allocate -> constraint-check -> critic gate."
+      - "Marginal-return curve-fit across the selected channel set; per-channel floor + §0-veto + concentration constraints applied."
+    critic_required_when:
+      - "Always — 7-dim quantitative rubric before any allocation ships."
+      - "Catches unsourced CAC, average-instead-of-marginal, over-concentration, ignored diminishing returns, missing reallocation trigger."
+
+  load:
+    always:
+      - "references/_shared/before-starting-check.md"
+      - "references/_shared/pre-dispatch-protocol.md"
+    when:
+      - if: "Pre-Dispatch (Cold Start, Missing-Input Hard Blocks, CAC sourcing classification)"
+        read:
+          - "references/procedures/pre-dispatch.md"
+      - if: "Layer dispatch + critic routing"
+        read:
+          - "references/agent-manifest.md"
+          - "references/procedures/dispatch-mechanics.md"
+      - if: "Allocator marginal-return + diminishing-returns model"
+        read:
+          - "references/marginal-return-model.md"
+      - if: "Sourced-CAC read from measure-results performance store"
+        read:
+          - "references/_shared/performance-data.md"
+      - if: "Critic / 7-dim rubric scoring"
+        read:
+          - "references/rubric.md"
+          - "references/anti-patterns.md"
+      - if: "Worked example for allocation + reallocation patterns"
+        read:
+          - "references/examples/plan-budget-walkthrough.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/marketing/plan-budget/[date]-[slug].md"
+        lifecycle: pipeline
+        produced_when: "Allocation across the selected channels drafted with marginal-return rationale + reallocation triggers; constraint-checker + critic PASS."

@@ -1627,6 +1627,50 @@
       ],
       "minScore": 6
     },
+    "plan-budget": {
+      "phrases": [
+        "budget allocation",
+        "allocate budget",
+        "channel mix",
+        "where to spend",
+        "where should i spend",
+        "marketing budget",
+        "spend allocation",
+        "reallocate spend",
+        "reallocate budget",
+        "marginal return",
+        "how much to spend per channel",
+        "cac aware channel mix"
+      ],
+      "allOf": [
+        [
+          "budget",
+          "allocat"
+        ],
+        [
+          "channel",
+          "mix"
+        ]
+      ],
+      "anyOf": [
+        "budget",
+        "allocate",
+        "cac",
+        "ltv",
+        "spend",
+        "marginal",
+        "reallocate"
+      ],
+      "noneOf": [
+        "channel selection",
+        "which channels",
+        "funnel target",
+        "ltv cac",
+        "unit economics",
+        "payback"
+      ],
+      "minScore": 6
+    },
     "plan-campaign": {
       "phrases": [
         "marketing plan",
