@@ -123,13 +123,21 @@ exported ──(first import: metric-ingest joins, writes live + post_url)──
 
 **Eligible row** = fully keyed, latest-`imported_at` per key, `measurement_window` end within the **90-day decay window** of the query date, and `comparability` ≠ `not_comparable`. Rows at `attribution_confidence: none` **do count** toward sufficiency — they are real channel measurements; confidence gates artifact attribution, not channel reads.
 
-**Operator override — one key.** `.forsvn/performance/thresholds.json` may set exactly one key:
+**Operator override — two optional keys.** `.forsvn/performance/thresholds.json` may set either or both:
 
 ```json
-{ "sufficient_floor": 8 }
+{ "sufficient_floor": 8, "shrinkage_k": 8 }
 ```
 
-The helper reads it (integer ≥ 1); a per-query `--floor N` flag overrides it for one invocation. There are no other tunables in v1.
+Both are integers ≥ 1, both optional (absent → the defaults), and no other key is permitted. `--floor N` / `--k N` flags override each for one invocation. `shrinkage_k` is the prior strength of the L4 weight (below); there are no tunables beyond `sufficient_floor` + `shrinkage_k`.
+
+### Shrinkage weight (L4) — the smooth replacement for the floor cliff
+
+The helper emits, alongside the 3-state label, a continuous **`weight = n / (n + k)`** (n = eligible rows, k = `shrinkage_k`, default 8). This is the value producers blend own-data with; the state label stays as a legibility bucket. The formula lives in exactly one place (`_dev/shrinkage.ts`); the L3 `priors.json` writer uses the *same* function, so the performance store and the learning store never disagree on a weight.
+
+- **Why a curve, not a cliff.** The old floor snapped own-data on at row 8 (7 rows = pure prior, 8 = own-data wins) — too harsh and gameable (one row flips a state). `n/(n+k)` blends smoothly: n=2 → 0.20, n=8 → 0.50, n=24 → 0.75. A small sample *structurally cannot* override a prior, which is exactly the small-n overfit resistance the loop needs.
+- **Chosen k = 8 (default).** k is set to the former `sufficient_floor` so the curve crosses 0.5 at the same n the old `sufficient` state began — continuity with the prior contract. Higher k = more conservative (more own-data needed to reach a given weight). **Firm up against the real corpus:** once verdicts/performance rows accumulate, fit k so the n→weight curve matches the observed signal-to-noise; record any change here.
+- **Floors are never weighted.** A brand/safety/platform-mechanics floor (`floor: true` in `priors.json`) ignores `weight` entirely — see Brand-Floor Supremacy below. `weight` governs only *above-floor* account-specific direction.
 
 **This floor is not metric-ingest's floor.** Metric-ingest's sample-size floor gates **per-post reach** (is this one post's reach big enough to trust its rate?). The read-side floor here gates **rows per channel** (are there enough measured posts to call a pattern?). Same vocabulary (`comparability`, `attribution_confidence`), two different numbers — never conflate them.
 

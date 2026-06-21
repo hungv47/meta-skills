@@ -15,7 +15,12 @@
 //   - latest-imported_at-wins dedupe on the full snapshot key
 //   - the 90-day decay window (measurement_window end vs --asof)
 //   - the empty / sparse / sufficient state (floor: --floor > thresholds.json
-//     `sufficient_floor` > default 8)
+//     `sufficient_floor` > default 8) — KEPT as a human-readable bucket label
+//   - the L4 shrinkage weight = n/(n+k) emitted alongside the state. `weight` is
+//     the value producers actually blend with (own-data vs platform prior); the
+//     3-state label stays as a legibility bucket the recall blocks cite. k: --k >
+//     thresholds.json `shrinkage_k` > default 8. The formula lives in ONE place
+//     (_dev/shrinkage.ts) — shared with the L3 priors.json writer.
 //   - top/bottom N ranking with format / placement / metric query filters
 //     (filters narrow rows; the state stays channel-level — when the filtered
 //     subset falls below the floor it is flagged as anecdote-weight)
@@ -23,17 +28,23 @@
 // Usage:
 //   bun _dev/query-performance.ts <platform> [--top N] [--bottom N]
 //     [--format text|image|carousel|video|…] [--placement paid|organic]
-//     [--metric name] [--asof YYYY-MM-DD] [--floor N] [--root path] [--json]
+//     [--metric name] [--asof YYYY-MM-DD] [--floor N] [--k N] [--root path] [--json]
 //
 // Exit codes: 0 = query answered (any state, including empty store);
 //             1 = contract violation (malformed store/thresholds) or bad usage.
 
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { DEFAULT_SHRINKAGE_K, shrinkageWeightRounded } from "./shrinkage";
 
 const SCHEMA_VERSION = 1;
 const DECAY_WINDOW_DAYS = 90;
 const DEFAULT_FLOOR = 8;
+// thresholds.json — the single per-project tuning file. v1 carried exactly one
+// key (`sufficient_floor`). L4 extends it to an OPTIONAL second key `shrinkage_k`
+// (the prior strength of weight = n/(n+k)); both keys are integers ≥ 1, both
+// optional, no other key permitted. Absent file or absent key → the defaults.
+const ALLOWED_THRESHOLD_KEYS = new Set(["sufficient_floor", "shrinkage_k"]);
 const COLUMNS = [
   "platform", "post_id", "measurement_window", "imported_at", "ledger_id",
   "artifact_id", "format", "placement", "metric", "value", "baseline", "reach",
@@ -67,6 +78,7 @@ if (!DATE_RE.test(asof)) usage(1, `Invalid --asof ${JSON.stringify(asof)} — ex
 const topN = intOpt("top");
 const bottomN = intOpt("bottom");
 const floor = resolveFloor();
+const shrinkageK = resolveShrinkageK();
 
 // --- read store -------------------------------------------------------------
 const storeDir = join(ROOT, ".forsvn", "performance");
@@ -172,10 +184,17 @@ function emit(r: { state: State; eligibleRows: Row[]; filtered: Row[]; rejected:
   const top = topN !== undefined || bottomN === undefined ? ranked.slice(0, topN ?? 5) : [];
   const bottom = bottomN !== undefined ? ranked.slice(-bottomN).reverse() : [];
   const filteredBelowFloor = r.filtered.length < floor;
+  // L4 — continuous shrinkage weight over the channel's eligible rows (own-data
+  // vs platform prior). The 3-state label above stays as the legibility bucket;
+  // `weight` is what producers blend with. Floors are non-voteable and excluded
+  // upstream (a floor: true dimension ignores weight — performance-data.md §157).
+  const weight = shrinkageWeightRounded(r.eligibleRows.length, shrinkageK);
   const result = {
     platform,
     state: r.state,
     floor,
+    shrinkage_k: shrinkageK,
+    weight,
     decay_window_days: DECAY_WINDOW_DAYS,
     asof,
     store_exists: r.storeExists,
@@ -187,13 +206,13 @@ function emit(r: { state: State; eligibleRows: Row[]; filtered: Row[]; rejected:
     bottom: bottom.map(publicRow),
     superseded_rows: r.superseded,
     rejected_rows: r.rejected,
-    guidance: guidance(r.state, filteredBelowFloor),
+    guidance: guidance(r.state, filteredBelowFloor, r.eligibleRows.length, weight),
   };
   if (JSON_OUT) {
     console.log(JSON.stringify(result, null, 2));
     return;
   }
-  console.log(`query-performance: ${platform} — state: ${r.state} (${r.eligibleRows.length} eligible rows, floor ${floor}, ${DECAY_WINDOW_DAYS}d window ending ${asof})`);
+  console.log(`query-performance: ${platform} — state: ${r.state} (${r.eligibleRows.length} eligible rows, floor ${floor}, k ${shrinkageK}, weight ${weight}, ${DECAY_WINDOW_DAYS}d window ending ${asof})`);
   if (!r.storeExists) console.log(`  no store file at ${rel(storePath)} — first-run empty state is normal.`);
   console.log(`  guidance: ${result.guidance}`);
   const activeFilters = Object.entries(result.filters).filter(([, v]) => v).map(([k, v]) => `${k}=${v}`);
@@ -211,12 +230,15 @@ function emit(r: { state: State; eligibleRows: Row[]; filtered: Row[]; rejected:
   for (const rej of r.rejected) console.log(`  rejected line ${rej.line}: ${rej.reason}`);
 }
 
-function guidance(state: State, filteredBelowFloor: boolean): string {
-  if (state === "empty") return "no own data yet — platform-intelligence priors only; say so in the output.";
-  if (state === "sparse") return "own data is anecdote — it may color examples, never override priors.";
+function guidance(state: State, filteredBelowFloor: boolean, n: number, weight: number): string {
+  // Weight-aware blend rule: own-data weight w, prior weight (1-w). Below the floor
+  // (weight < 0.5) the own-data finding is anecdote-weight. Floors stay non-voteable.
+  const tail = ` blend account-specific direction at own-data weight ${weight} (n=${n}, k=${shrinkageK}); floors non-voteable; name one open question.`;
+  if (state === "empty") return `no own data yet (weight 0) — platform-intelligence priors only; say so in the output.${tail}`;
+  if (state === "sparse") return `own data is anecdote-weight (weight ${weight} < 0.5) — it may color examples, never override priors.${tail}`;
   return filteredBelowFloor
-    ? "channel is sufficient, but the filtered subset is below the floor — treat the filtered ranking as anecdote."
-    : "own data wins account-specific questions; priors keep platform-mechanics questions (performance-data.md § Precedence).";
+    ? `channel is sufficient (weight ${weight}), but the filtered subset is below the floor — treat the filtered ranking as anecdote.${tail}`
+    : `own data wins account-specific questions at weight ${weight}; priors keep platform-mechanics questions (performance-data.md § Precedence).${tail}`;
 }
 
 function publicRow(row: Row): Record<string, string> {
@@ -235,26 +257,48 @@ function shiftDate(date: string, days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+function readThresholds(): Record<string, unknown> | null {
+  const thresholdsPath = join(ROOT, ".forsvn", "performance", "thresholds.json");
+  if (!existsSync(thresholdsPath)) return null;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(readFileSync(thresholdsPath, "utf8"));
+  } catch {
+    contractFail(`${rel(thresholdsPath)} is not valid JSON. Supported keys: {"sufficient_floor": <int ≥ 1>, "shrinkage_k": <int ≥ 1>} (both optional).`);
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    contractFail(`${rel(thresholdsPath)} must be a JSON object with optional keys sufficient_floor / shrinkage_k.`);
+  }
+  const obj = parsed as Record<string, unknown>;
+  for (const key of Object.keys(obj)) {
+    if (!ALLOWED_THRESHOLD_KEYS.has(key)) {
+      contractFail(`${rel(thresholdsPath)} has unknown key ${JSON.stringify(key)}. Only sufficient_floor and shrinkage_k are supported (performance-data.md § Read Contract).`);
+    }
+    if (!Number.isInteger(obj[key]) || (obj[key] as number) < 1) {
+      contractFail(`${rel(thresholdsPath)} key ${JSON.stringify(key)} must be an integer ≥ 1.`);
+    }
+  }
+  return obj;
+}
+
 function resolveFloor(): number {
   if (opts.floor !== undefined) {
     const n = Number(opts.floor);
     if (!Number.isInteger(n) || n < 1) usage(1, `Invalid --floor ${JSON.stringify(opts.floor)} — expected integer ≥ 1.`);
     return n;
   }
-  const thresholdsPath = join(ROOT, ".forsvn", "performance", "thresholds.json");
-  if (!existsSync(thresholdsPath)) return DEFAULT_FLOOR;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(readFileSync(thresholdsPath, "utf8"));
-  } catch {
-    contractFail(`${rel(thresholdsPath)} is not valid JSON. The single supported key is {"sufficient_floor": <integer ≥ 1>}.`);
+  const obj = readThresholds();
+  return obj && "sufficient_floor" in obj ? (obj.sufficient_floor as number) : DEFAULT_FLOOR;
+}
+
+function resolveShrinkageK(): number {
+  if (opts.k !== undefined) {
+    const n = Number(opts.k);
+    if (!Number.isInteger(n) || n < 1) usage(1, `Invalid --k ${JSON.stringify(opts.k)} — expected integer ≥ 1.`);
+    return n;
   }
-  const keys = Object.keys(parsed as Record<string, unknown>);
-  const value = (parsed as Record<string, unknown>).sufficient_floor;
-  if (keys.length !== 1 || keys[0] !== "sufficient_floor" || !Number.isInteger(value) || (value as number) < 1) {
-    contractFail(`${rel(thresholdsPath)} must contain exactly one key: {"sufficient_floor": <integer ≥ 1>} (performance-data.md § Read Contract).`);
-  }
-  return value as number;
+  const obj = readThresholds();
+  return obj && "shrinkage_k" in obj ? (obj.shrinkage_k as number) : DEFAULT_SHRINKAGE_K;
 }
 
 function intOpt(name: string): number | undefined {
@@ -283,7 +327,7 @@ function contractFail(message: string): never {
 function usage(code: number, message?: string): never {
   if (message) console.error(`query-performance: ${message}`);
   console.error(
-    "Usage: bun _dev/query-performance.ts <platform> [--top N] [--bottom N] [--format f] [--placement paid|organic] [--metric name] [--asof YYYY-MM-DD] [--floor N] [--root path] [--json]",
+    "Usage: bun _dev/query-performance.ts <platform> [--top N] [--bottom N] [--format f] [--placement paid|organic] [--metric name] [--asof YYYY-MM-DD] [--floor N] [--k N] [--root path] [--json]",
   );
   process.exit(code);
 }

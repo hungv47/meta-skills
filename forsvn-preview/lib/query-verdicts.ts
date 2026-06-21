@@ -18,16 +18,26 @@
 // Usage:
 //   bun lib/query-verdicts.ts [--skill S] [--stack T] [--decision approved|denied|suggested]
 //     [--reason <enum>] [--since YYYY-MM-DD] [--current] [--edit-aggregate]
-//     [--as-of YYYY-MM-DD] [--root path] [--json]
+//     [--as-of YYYY-MM-DD] [--k N] [--root path] [--json]
 //
 //   --edit-aggregate  per-skill × edit-type counts + the 90d rate (L2 edit deltas).
 //   --as-of           anchor the 90d window (default: today); deterministic for tests.
+//   --k               shrinkage prior strength for the per-dimension weight (L4);
+//                     default thresholds.json `shrinkage_k` > 8. The weight is
+//                     n/(n+k) from the ONE shared formula (_dev/shrinkage.ts).
 //
 // Exit codes: 0 = query answered (any state, incl. an absent store);
 //             1 = contract violation (malformed store) or bad usage.
 
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { join, resolve } from "node:path";
+// L4: the SINGLE shrinkage-weight definition (one formula). query-performance.ts
+// imports the same `_dev/shrinkage.ts`; this is the second mandated importer (spec
+// WS-L § L4: "both helpers import it from one shared _dev/shrinkage.ts"). query-verdicts
+// runs only under _dev/ tooling (distill-priors, skill-health, check-learning-hygiene)
+// and this test — never from shipped runtime code — so the _dev/ reach is safe on the
+// public mirror (where _dev/ is fenced but this reader is never executed).
+import { DEFAULT_SHRINKAGE_K, shrinkageWeightRounded } from "../../_dev/shrinkage";
 import { VERDICTS_COLUMNS, VERDICTS_SCHEMA_VERSION, verdictsPath, type VerdictColumn } from "./verdicts";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -56,6 +66,10 @@ const ROOT = resolve(opts.root ?? process.cwd());
 if (opts.since !== undefined && !DATE_RE.test(opts.since)) usage(1, `Invalid --since ${JSON.stringify(opts.since)} — expected YYYY-MM-DD.`);
 if (opts["as-of"] !== undefined && !DATE_RE.test(opts["as-of"])) usage(1, `Invalid --as-of ${JSON.stringify(opts["as-of"])} — expected YYYY-MM-DD.`);
 if (opts.decision !== undefined && !DECISIONS.has(opts.decision)) usage(1, `Invalid --decision ${JSON.stringify(opts.decision)} — expected approved | denied | suggested.`);
+// L4: k mirrors query-performance / distill-priors — --k > thresholds.json shrinkage_k
+// > default 8, read from the SAME single tuning file so performance and learning never
+// disagree on the prior strength. The weight per dimension uses the one shrinkage formula.
+const SHRINKAGE_K = resolveShrinkageK();
 
 // --- read store -------------------------------------------------------------
 const storePath = verdictsPath(ROOT);
@@ -158,6 +172,21 @@ function emit(r: { state: State; rows: Row[]; rejected: Rejected[]; storeExists:
     return { skill, stack, denied: v.denied, total: v.total, deny_rate: v.total ? Number((v.denied / v.total).toFixed(3)) : 0 };
   });
 
+  // L4 — the shrinkage weight per dimension, from the ONE shared formula
+  // (_dev/shrinkage.ts). The dimension axis is `decision_reason` (the live rejection
+  // axis L3/L5 key on); n = supporting in-window observations for that (skill,
+  // dimension). This is the L4 acceptance criterion: query-verdicts emits the matching
+  // weight per dimension, importing the single definition (never re-deriving n/(n+k)).
+  // weight = n/(n+k): a thin dimension structurally cannot move the prior.
+  const perDimensionWeight: Record<string, Record<string, { n: number; weight: number }>> = {};
+  for (const [skill, byReason] of Object.entries(perSkillReason)) {
+    const out: Record<string, { n: number; weight: number }> = {};
+    for (const [reason, n] of Object.entries(byReason)) {
+      out[reason] = { n, weight: shrinkageWeightRounded(n, SHRINKAGE_K) };
+    }
+    perDimensionWeight[skill] = out;
+  }
+
   // L2 — per-skill × edit-type rollup over the trailing 90d window. Counts the
   // `;`-joined edit_classes the writer guarantees are enum values; rate = type
   // count / the skill's verdicts in-window. Anchored at --as-of (default today)
@@ -175,6 +204,8 @@ function emit(r: { state: State; rows: Row[]; rejected: Rejected[]; storeExists:
     total_verdicts: r.rows.length,
     per_skill: perSkill,
     per_skill_reason: perSkillReason,
+    shrinkage_k: SHRINKAGE_K,
+    per_dimension_weight: perDimensionWeight,
     deny_rates: denyRates,
     edit_aggregate: editAggregate,
     rejected_rows: r.rejected,
@@ -189,6 +220,10 @@ function emit(r: { state: State; rows: Row[]; rejected: Rejected[]; storeExists:
   for (const [skill, c] of Object.entries(perSkill)) {
     const reasons = perSkillReason[skill] ? "  reasons: " + Object.entries(perSkillReason[skill]).map(([k, v]) => `${k}=${v}`).join(" ") : "";
     console.log(`  ${skill}: approved=${c.approved} denied=${c.denied} suggested=${c.suggested} (n=${c.total})${reasons}`);
+  }
+  for (const [skill, byReason] of Object.entries(perDimensionWeight)) {
+    const dims = Object.entries(byReason).map(([dim, w]) => `${dim}=w${w.weight}(n=${w.n})`).join(" ");
+    if (dims) console.log(`  weight ${skill} (k=${SHRINKAGE_K}): ${dims}`);
   }
   for (const d of denyRates) console.log(`  deny-rate ${d.skill}/${d.stack}: ${d.denied}/${d.total} = ${d.deny_rate}`);
   if (editAggregate) {
@@ -241,6 +276,28 @@ function popFlag(flag: string): boolean {
   return true;
 }
 
+// L4 — k resolution, identical to query-performance / distill-priors: --k >
+// thresholds.json `shrinkage_k` > default 8. Read via the SAME single tuning file
+// (.forsvn/performance/thresholds.json) so the performance and learning stores never
+// disagree on the prior strength. A malformed thresholds.json is query-performance's
+// contract error to surface (it owns the strict read) — here we degrade to the default.
+function resolveShrinkageK(): number {
+  if (opts.k !== undefined) {
+    const n = Number(opts.k);
+    if (!Number.isInteger(n) || n < 1) usage(1, `Invalid --k ${JSON.stringify(opts.k)} — expected integer ≥ 1.`);
+    return n;
+  }
+  const path = join(ROOT, ".forsvn", "performance", "thresholds.json");
+  if (!existsSync(path)) return DEFAULT_SHRINKAGE_K;
+  try {
+    const parsed = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
+    const v = parsed.shrinkage_k;
+    return Number.isInteger(v) && (v as number) >= 1 ? (v as number) : DEFAULT_SHRINKAGE_K;
+  } catch {
+    return DEFAULT_SHRINKAGE_K;
+  }
+}
+
 function rel(p: string): string {
   return p.startsWith(ROOT) ? p.slice(ROOT.length + 1) : p;
 }
@@ -253,7 +310,7 @@ function contractFail(message: string): never {
 function usage(code: number, message?: string): never {
   if (message) console.error(`query-verdicts: ${message}`);
   console.error(
-    "Usage: bun lib/query-verdicts.ts [--skill S] [--stack T] [--decision approved|denied|suggested] [--reason <enum>] [--since YYYY-MM-DD] [--current] [--edit-aggregate] [--as-of YYYY-MM-DD] [--root path] [--json]",
+    "Usage: bun lib/query-verdicts.ts [--skill S] [--stack T] [--decision approved|denied|suggested] [--reason <enum>] [--since YYYY-MM-DD] [--current] [--edit-aggregate] [--as-of YYYY-MM-DD] [--k N] [--root path] [--json]",
   );
   process.exit(code);
 }

@@ -124,14 +124,54 @@ appends — never a sidecar.
 - **Consumer (the only reader):** `forsvn-preview/lib/query-verdicts.ts` — validates
   the header, rejects keyless rows, answers per-skill / per-reason / per-decision
   tallies and per-`(skill, stack)` deny-rate, returns a typed empty result on an
-  absent store (exit 0), and exits 1 only on a contract violation. WS-L registers a
-  per-skill mirror in `SUPPORT_SCRIPTS` when it builds L3; until then the canonical
-  copy lives in `forsvn-preview/lib/`.
+  absent store (exit 0), and exits 1 only on a contract violation. It also emits the
+  **L4 shrinkage `weight` per dimension** (`per_dimension_weight[skill][reason] = {n,
+  weight}`, `weight = n/(n+k)`) by importing the single `_dev/shrinkage.ts` definition —
+  the same formula L3's `priors.json` carries; `k` is `--k` > `thresholds.json`
+  `shrinkage_k` > 8. WS-L registers a per-skill mirror in `SUPPORT_SCRIPTS` when it
+  builds L3; until then the canonical copy lives in `forsvn-preview/lib/`.
 
 Producers never re-derive header validation, keyless rejection, or dedupe — that all
 lives in `query-verdicts.ts`.
 
+## Derived siblings — `priors.json` (L3) and the quality dashboard
+
+`verdicts.tsv` is the raw corpus; **`priors.json` is its distillate**. L3
+(`_dev/distill-priors.ts`) reads the corpus through `query-verdicts.ts` (the single
+reader — never a second store reader) and writes two outputs:
+
+- `.forsvn/learning/priors.json` — the machine-facing, generation-time distillate,
+  keyed `"<skill>:<dimension>"`, each entry carrying `prior` (direction, never a
+  prescriptive checklist), `n`, `weight = n/(n+k)` (the L4 shrinkage weight, from the
+  single `_dev/shrinkage.ts` definition), `direction`, `sources[]` (auditable pointers
+  back into the corpus), `floor`, `signal`, and `last_updated`.
+- `docs/forsvn/artifacts/meta/records/quality-dashboard.json` — the human-facing
+  trend index, written through the existing `_dev/update-quality-dashboard.ts` (L3 is
+  its first caller; no second dashboard writer is added).
+
+**`priors.json` is a PURE derivation — never hand-edit it** (same discipline as
+`manifest.json`). Every write is a full regenerate from the corpus; `distill-priors.ts
+--check` asserts it is fresh (it joins the pre-merge gate via L7). A human who wants to
+change a prior fixes the **evidence** (a verdict / override), not the file. Like
+`verdicts.tsv`, `priors.json` is **tracked by git** as durable learning by default;
+gitignore it only if a project prefers to treat it as transient derived state.
+
+**Dimension axis (the L3/L5/L7 deviation).** The spec keys priors on
+`dimensions_flagged[]`, but that column has no producer (all writers emit `""`), so L3
+keys the dimension on the populated `decision_reason` enum + the L2 `edit_classes`
+(mapped to a reason-space dimension). Every prior records `signal` so the deviation is
+legible. A prior below the per-dimension min-n is omitted (anecdote — the dormancy
+discipline at the dimension grain); a `floor: true` dimension is listed for visibility
+but is never adoptable.
+
+**The dormancy gate (G-data).** `distill-priors.ts` refuses to write either file over
+an empty / below-threshold corpus: it exits 0, writes nothing, and prints the dormancy
+reason. A dashboard or prior over an empty table is the classic inversion the roadmap
+forbids — the corpus must exist first.
+
 ## Retention
 
-None yet — append forever. The L7 learning-hygiene guard (WARN-first; small-n /
-stale / Goodhart canary) handles staleness later; this store does not decay rows.
+None yet — append forever. The L7 learning-hygiene guard
+(`_dev/check-learning-hygiene.ts`, WARN-first; small-n / staleness / floor-contradiction
+/ Goodhart canary) marks stale priors and experience findings later; this store does
+not decay rows, and L7 only *marks* — the human prunes.
