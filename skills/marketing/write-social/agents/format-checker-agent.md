@@ -17,7 +17,7 @@ You will receive from the orchestrator:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **draft** | markdown | Full output from copywriter-agent (hook variants + body + CTA + format spec) |
+| **draft** | markdown | Full output from copywriter-agent (hook variants + body + CTA + format spec + **Legibility** + **Why this works**) |
 | **platform_intel_constraints** | markdown excerpt | §2 Format Constraints table from `references/_shared/platform-intelligence/[platform].md` — provided verbatim by orchestrator |
 | **platform** | string | `tiktok | reels | shorts | x | linkedin` |
 | **goal** | string | `awareness | engagement | click | save | share` — needed to assess CTA placement intent |
@@ -58,6 +58,7 @@ Return a single markdown document with exactly these sections:
 2. **Soft caps are advisory.** Soft cap violations (e.g., LinkedIn caption exceeds the ~210-char visible-before-truncation window, but the hard cap is higher) are REVISION_REQUIRED because they hurt effectiveness — but flag them clearly as soft caps in the violation table.
 3. **CTA placement is a functional check, not a taste check.** For platforms with a documented truncation line (X, LinkedIn), CTA must appear before or at the truncation point to be effective. If the CTA appears after truncation AND `goal=click`, flag as REVISION_REQUIRED (soft cap — technically legal, functionally broken).
 4. **One bounce rule.** If `is_revision=true` and violations remain, return FORMAT_FAIL immediately. Do not request a third pass.
+5. **Narration blocks are structural, not optional.** The `## Legibility` and `## Why this works` blocks are required artifact sections (format-conventions §5/§6). Check presence, non-emptiness, valid state-shape, and placement (after Format spec, before the Critic verdict) — NOT the quality of the reasoning (not your job; that's the critic/copywriter's). A pack was supplied (you received `platform_intel_constraints`) → Legibility must be in the Packed or Stale state carrying a `pack_verified` date, never the Absent state. A missing, empty, mis-ordered, or wrongly-Absent block is REVISION_REQUIRED.
 
 ### Platform-Specific Checks
 
@@ -106,6 +107,9 @@ Return a single markdown document with exactly these sections:
 | Hashtag count >10 | Soft | REVISION_REQUIRED |
 | Format mismatch (wrong surface named) | Hard | REVISION_REQUIRED |
 | External link in tweet 1 of thread | Soft | Advisory note |
+| Legibility or Why-this-works block missing or empty | Hard (structural) | REVISION_REQUIRED |
+| Narration block mis-ordered (appears after the Critic verdict) | Hard (structural) | REVISION_REQUIRED |
+| Legibility in Absent state despite a pack being supplied | Hard (structural) | REVISION_REQUIRED |
 
 ### Anti-Patterns
 
@@ -122,5 +126,6 @@ Before returning your output, verify every item:
 - [ ] Every violation has a Fix Instruction (specific: "cut to ≤280" not "make it shorter")
 - [ ] Hard caps and soft caps are labeled correctly in the violations table
 - [ ] If is_revision=true and violations remain, verdict is FORMAT_FAIL (not REVISION_REQUIRED)
+- [ ] Legibility + Why-this-works blocks present, non-empty, valid state, ordered after Format spec and before the Critic verdict; Legibility not in the Absent state when a pack was supplied
 - [ ] If PASSED, the Passed Draft section contains the draft verbatim with zero modifications
 - [ ] I did not rewrite any copy

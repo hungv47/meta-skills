@@ -5,7 +5,7 @@ Sequential 4-agent graph. Each agent is a fresh dispatch; state passes forward a
 | # | Agent | File | In | Out |
 |---|---|---|---|---|
 | 1 | Metric Ingest | [`../agents/metric-ingest-agent.md`](../agents/metric-ingest-agent.md) | raw results + channel | normalized metrics table + Gaps |
-| 2 | Diagnosis | [`../agents/diagnosis-agent.md`](../agents/diagnosis-agent.md) | metrics + channel pack + hypotheses | attribution table + keep/drop/test + hypothesis verdicts |
+| 2 | Diagnosis | [`../agents/diagnosis-agent.md`](../agents/diagnosis-agent.md) | metrics + channel pack + hypotheses | attribution table + keep/drop/test + hypothesis verdicts + the `## Legibility` block |
 | 3 | Pack Feedback | [`../agents/pack-feedback-agent.md`](../agents/pack-feedback-agent.md) | diagnosis + channel pack | 3 write-back drafts (pack changelog · performance row · hosted feed) |
 | 4 | Critic | [`../agents/critic-agent.md`](../agents/critic-agent.md) | the read + the 3 drafts | verdict; on PASS the write-backs commit |
 
@@ -18,4 +18,4 @@ Sequential 4-agent graph. Each agent is a fresh dispatch; state passes forward a
 Lives in [`rubric.md`](rubric.md): Attribution · Falsifiability · Honesty · Actionability · Write-back fidelity. Pass ≥35/50, no dim 0.
 
 ## Pack grounding (legibility)
-The Diagnosis + Pack Feedback agents load the channel pack via the soft client first (`references/_shared/hosted-pack-client.md`): a Pro client diagnoses against the *current* pack; a free client against the build-time mirror. Either way the read narrates `pack_verified` (legibility convention).
+The Diagnosis + Pack Feedback agents load the channel pack via the soft client first (`references/_shared/hosted-pack-client.md`): a Pro client diagnoses against the *current* pack; a free client against the build-time mirror. Either way the Diagnosis agent authors the `## Legibility` block (`_shared/legibility-convention.md`) — naming the pack measured against (`pack_verified`) and the specific §3/§5 signals the numbers were read through — and the Critic runs a structural presence/state/order pre-check on it (not a scored dimension). Legibility only: measure-results is a pack consumer producing a measurement, so it carries **no** `## Why this works` block.

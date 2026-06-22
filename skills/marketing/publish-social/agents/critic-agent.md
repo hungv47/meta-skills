@@ -43,13 +43,13 @@ You do NOT:
 | 4 | Hashtag-Rules Per Platform | N | yes/no |
 | 5 | Scheduler-Format Validation | N | yes/no |
 | 6 | Anti-Pattern Compliance | N | yes/no |
-| 7 | Browser-Automation Safety (D17) | N | yes/no |
+| 7 | Narration & Browser-Automation Safety (D17) | N | yes/no |
 | 8 | Live-Publish Safety (D18) | *(orchestrator, post-publish)* | yes/no |
 | **Aggregate** | — | **N/80** | — |
 
 You score dims 1–7. Leave dim 8 blank — the orchestrator fills it in its post-publish Self-Check and computes the final `/80` aggregate. Your verdict gates on **dims 1–7** (their sum ≥ 49/70 AND each ≥ 6); the orchestrator re-checks the full 8-dim gate (≥ 56/80, each ≥ 6) after dim 8 lands.
 
-If no D17 browser-automation route ran (export-mode or Typefully-only), dim 7 trivially scores 10. If the run is not `--mode=publish`, dim 8 trivially scores 10 — nothing to verify.
+Dim 7's automation sub-check trivially passes when no D17 browser-automation route ran (export-mode or Typefully-only), but its **narration sub-check always runs** — a missing/invalid/un-mirrored `## Legibility` block (or a duplicated `## Why this works` block) fails dim 7 even on an export bundle. If the run is not `--mode=publish`, dim 8 trivially scores 10 — nothing to verify.
 
 ## Evaluation
 
@@ -71,8 +71,8 @@ If no D17 browser-automation route ran (export-mode or Typefully-only), dim 7 tr
 ### Dim 6: Anti-Pattern Compliance
 [Grep every emitted file for `_KEY` / `_TOKEN` / `_SECRET` patterns (must return zero). Check for shadowban triggers (mass-tagging, banned-word per platform). Check for broken Unicode. Score + specifics.]
 
-### Dim 7: Browser-Automation Safety (D17)
-[If D17 route ran: verify confirmation gate fired + operator response logged + no cookie strings in any emitted file/log + no auto-submit (manifest.automation_result_per_platform[p].status="success" only when confirmation_result="confirmed") + no captcha-bypass attempts + no screenshots captured. If no D17 route ran: dim 7 = 10. Score + specifics.]
+### Dim 7: Narration & Browser-Automation Safety (D17)
+[Two checks, both structural — never a quality judgment on the reasoning. (a) **Narration:** every per-platform draft has a non-empty `## Legibility` block placed last (after `## Notes`), in a valid state per `_shared/legibility-convention.md`; when a pack was supplied for that platform it is Packed/Stale carrying a `pack_verified` date (not Absent), and the draft's `pack_verified`/`applied_tactics` frontmatter mirror the block; the bundle contains NO `## Why this works` block (it is carried forward via the `## Notes` pointer to the upstream write-social artifact, never duplicated). (b) **Automation safety:** if D17 route ran, verify confirmation gate fired + operator response logged + no cookie strings in any emitted file/log + no auto-submit (manifest.automation_result_per_platform[p].status="success" only when confirmation_result="confirmed") + no captcha-bypass attempts + no screenshots captured. If no D17 route ran, the automation sub-check trivially passes (the narration sub-check still applies). Score + specifics.]
 
 ### Dim 8: Live-Publish Safety (D18) — orchestrator-applied
 [Left blank by the critic-agent. The orchestrator fills this post-publish: critic ran before the gate, two-stage gate logged, every published row confirmation-backed, dry-run posted nothing. See `references/procedures/dispatch-mechanics.md` § Publish Layer. Not a publish run → dim 8 = 10.]
@@ -235,11 +235,21 @@ If no D17 browser-automation route ran (export-mode or Typefully-only), dim 7 tr
 
 **Check:** run the greps. Cross-check each platform's draft against its `references/platforms/[platform].md` § Anti-Patterns section.
 
-#### Dim 7: Browser-Automation Safety (D17)
+#### Dim 7: Narration & Browser-Automation Safety (D17)
 
-**Required absence + presence checks:**
+Two sub-checks. The **narration** sub-check runs on every bundle (export / draft / publish); the **automation-safety** sub-check runs only when a D17 browser-automation route ran. Both are structural presence/shape checks — never a quality judgment on the reasoning (that's the copywriter's/upstream's job, not yours).
 
-1. **No D17 route ran** (export-only OR Typefully-only — no `automation_result_per_platform` block in manifest): dim trivially scores 10. Skip remaining checks.
+**A. Narration block (every bundle; mirrors write-social's structural narration rule, `references/format-conventions.md` § Structural Narration Rule):**
+
+1. Every per-platform draft has a non-empty `## Legibility` block, placed **last** (after `## Notes`).
+2. Each block is in a valid state per `_shared/legibility-convention.md` (Packed / Stale / Absent) — a Packed/Stale block names the actual per-platform tactics (split/fold/CTA-truncation/hashtag) + carries `verified <date>`; an Absent block uses the transparent-degrade text.
+3. A pack was supplied for the platform → the block is in the **Packed or Stale** state carrying a `pack_verified` date, **never the Absent state**. Absent-despite-a-pack → REVISION_REQUIRED.
+4. The draft's `pack_verified` + `applied_tactics` frontmatter **mirror** the block (`none` + empty list iff Absent).
+5. **Carry-forward, not duplication:** the bundle contains **no** `## Why this works` block (product-fit lives on the upstream write-social artifact). Each draft's `## Notes` instead carries the one-line pointer `See product-fit rationale: <write-social path> § Why this works`. A `## Why this works` block present in any bundle file → REVISION_REQUIRED (duplicated narration); a missing `## Notes` pointer → score deduction.
+
+**B. Automation safety (only when a D17 route ran):**
+
+1. **No D17 route ran** (export-only OR Typefully-only — no `automation_result_per_platform` block in manifest): this sub-check trivially passes. (The narration sub-check above still applies.)
 2. **D17 route ran:** ALL of the following must verify:
    - Skill output transcript contains the confirmation-gate prompt text + operator's response line.
    - `manifest.confirmation_result` field is one of `confirmed`, `declined`, `timeout`.
@@ -250,20 +260,20 @@ If no D17 browser-automation route ran (export-mode or Typefully-only), dim 7 tr
    - Every `failed:*` reason-class belongs to the locked enum: `login_challenge` / `selector_drift` / `rate_limit` / `captcha` / `network` / `unknown` / `confirmation_declined` / `cookies_missing`. Free-text reasons → score deduction.
 
 **Scoring bands:**
-- 10: D17 didn't run OR all checks pass
-- 9: D17 ran; one platform's reason-class is free-text vs enum
-- 8: D17 ran; one platform's status is `timeout` (acceptable; flag slow-operator pattern)
-- 7: D17 ran; one platform's `last_verified_date` is >90 days old (manifest warned)
-- 6: D17 ran; multiple minor operator-debuggability concerns
-- 0 (auto-fail): cookie leak detected OR automation ran without confirmation OR retry-on-captcha pattern OR screenshot reference present
+- 10: narration valid + mirrored on every draft AND (D17 didn't run OR all automation checks pass)
+- 9: D17 ran; one platform's reason-class is free-text vs enum (narration otherwise valid)
+- 8: D17 ran; one platform's status is `timeout` (acceptable; flag slow-operator pattern) (narration otherwise valid)
+- 7: a Stale-pack Legibility block carried the ⚠ flag correctly (bundle → `done_with_concerns`) OR D17 ran with one platform's `last_verified_date` >90 days old (manifest warned)
+- 6: multiple minor operator-debuggability concerns (narration valid)
+- 0 (auto-fail): a `## Legibility` block missing/empty on any draft OR Absent-despite-a-pack OR `pack_verified`/`applied_tactics` frontmatter does not mirror the block OR a `## Why this works` block duplicated into the bundle OR (cookie leak detected OR automation ran without confirmation OR retry-on-captcha pattern OR screenshot reference present)
 
 **Check:**
-1. Look at `manifest.automation_result_per_platform`. If absent/empty → dim = 10. Done.
-2. Run the cookie-leak grep across emitted files + logs.
-3. Verify confirmation flow: gate-prompt text + operator response present in transcript.
-4. Verify success-only-with-confirm: every success row has confirmation_result=confirmed.
-5. Verify enum compliance: reason-classes are within the locked enum.
-6. Verify no screenshots / no retry-on-captcha.
+1. **Narration first (every bundle):** for each per-platform draft confirm the `## Legibility` block is present, last, non-empty, in a valid state; confirm Packed/Stale-when-a-pack-was-supplied; confirm `pack_verified`/`applied_tactics` frontmatter mirror it. Grep every bundle file for `## Why this works` (must be zero) and confirm each `## Notes` carries the upstream § Why this works pointer.
+2. Look at `manifest.automation_result_per_platform`. If absent/empty → automation sub-check passes; skip steps 3–6.
+3. Run the cookie-leak grep across emitted files + logs.
+4. Verify confirmation flow: gate-prompt text + operator response present in transcript.
+5. Verify success-only-with-confirm: every success row has confirmation_result=confirmed.
+6. Verify enum compliance + no screenshots / no retry-on-captcha.
 
 #### Dim 8: Live-Publish Safety (D18) — orchestrator-applied, documented here for completeness
 
@@ -308,7 +318,8 @@ When a dim scores < 6, route the fix:
 | Dim 4 (hashtag rules violated) | **formatter-agent** | Adjust count / position; re-read per-platform ref |
 | Dim 5 (scheduler-format invalid) | **formatter-agent** | Re-emit the offending file; validate schema before write |
 | Dim 6 (credential leak / shadowban / policy) | **formatter-agent** + **orchestrator** | Critical — orchestrator must halt and re-evaluate before re-dispatch; credential leak triggers immediate stop |
-| Dim 7 (D17 automation without confirmation / cookie leak) | **orchestrator** halts; engineer review required | Critical — D17 safety failure means the gate was bypassed or cookies leaked; do NOT re-dispatch automation; ship export-only fallback bundle; file bug report |
+| Dim 7 — narration (missing / invalid / un-mirrored `## Legibility`, or duplicated `## Why this works`) | **formatter-agent** | Structural — re-author the per-platform `## Legibility` block + mirror its frontmatter, or remove the duplicated Why-this-works and add the `## Notes` carry-forward pointer |
+| Dim 7 — automation (D17 automation without confirmation / cookie leak) | **orchestrator** halts; engineer review required | Critical — D17 safety failure means the gate was bypassed or cookies leaked; do NOT re-dispatch automation; ship export-only fallback bundle; file bug report |
 | Dim 8 (D18 publish without confirmation / publish before critic / dry-run posted) | **orchestrator** halts; engineer review required | Critical — a live-publish safety failure means posts went live un-gated or un-vetted. The posts are already public — do NOT re-dispatch; record `done_with_concerns` + the per-platform `post_url`s + delete instructions in the manifest; file a bug report |
 
 **Multiple failures:** If 3+ dims fail across the same platform, re-dispatch the entire platform rather than patching individual dims.

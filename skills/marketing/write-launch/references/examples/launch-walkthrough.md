@@ -83,7 +83,7 @@ I'll tell you if Tracebook would catch it.**
 
 **Discrimination test:** weak-brief sim ("Check out Tracebook! Please upvote us 🙏") → vote-ask forces D2=0, no angle, no anchor → ~14/50 (<25, VALID). Strong observed 46 (≥35, VALID).
 
-**Verdict:** PASS → `status: done`, `guard_status: passed`. Artifact: `docs/forsvn/artifacts/marketing/launch/producthunt-2026-06-19-tracebook.md`.
+**Verdict:** PASS → `status: done`, `guard_status: passed`. Artifact: `docs/forsvn/artifacts/marketing/launch/producthunt-2026-06-19-tracebook.md`. Assembly mirrors the Legibility facts into frontmatter: `pack_verified: 2026-06-16`, `applied_tactics: [category-killer-tagline, pinned-founder-first-comment, 12:01-PT-go-live, notify-no-vote-ask, demo-loop-gallery]` — so the metrics loop can read tailored vs general output without re-reading the body.
 
 ---
 
@@ -160,4 +160,4 @@ Tracebook. **What's the flakiest test in your suite right now?**
 
 - **Same product, different bundles.** The PH bundle is a leaderboard play (tagline + pinned first comment + notify-the-list); the Reddit bundle is a value-first post in one sub. The skill instantiates the channel's native components from the pack — it does not template one shape onto both. That is why it's pack-driven, not per-channel-cloned.
 - **The hard guard is the load-bearing difference from write-social.** Both bundles clear "zero vote-ask"; the Reddit one additionally clears founder-disclosure + value-stands-alone + sub-fit. A breach is publish-blocking (GUARD_FAIL), not a quality ding.
-- **Legibility + why-this-works are both present, adjacent and distinct:** Legibility = why it fits the *channel* (pack tactics); Why this works = why it wins for *this product* (ICP/positioning).
+- **Legibility + why-this-works are authored by the launch-copywriter and gated by the guard-checker.** Both blocks are present, adjacent and distinct — Legibility = why it fits the *channel* (pack tactics); Why this works = why it wins for *this product* (ICP/positioning) — and sit between the bundle and the critic verdict. The guard-checker runs a structural presence/state/order check on them (present, non-empty, valid state, not Absent when a pack was supplied) — never a quality judgment on the reasoning. A cold repo (no pack / no ICP) would show the transparent-degrade Absent state instead, never a fabricated pack or product claim.

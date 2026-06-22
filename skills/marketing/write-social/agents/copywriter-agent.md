@@ -24,6 +24,8 @@ You will receive from the orchestrator:
 | **variant_count** | integer | 1, 2, or 3. Default 2 |
 | **goal** | string | `awareness | engagement | click | save | share`. Default `engagement` |
 | **feedback** | string \| null | Revision instructions from format-checker-agent. Null on first run. If present, address every named violation |
+| **pack_meta** | object \| null | The loaded platform pack's identity for the Legibility block: `{id, pack_verified: YYYY-MM-DD, status}`. `null` ONLY when no pack covers the platform (→ Legibility Absent state) |
+| **foundation_state** | object | `{icp_present, brand_present}` + curated ICP pain / VoC phrase / positioning excerpts when present — grounds the Why-this-works block. Absent → the block degrades transparently, never fabricates |
 
 ## Output Contract
 
@@ -57,6 +59,23 @@ Return a single markdown document with exactly these sections:
 - Format: Single post / thread (X) / carousel (LinkedIn) / vertical-video-caption (TikTok/Reels/Shorts)
 - Aspect ratio (if media-coupled): [value from platform-intel or N/A]
 - Pattern-interruption density: <count of interrupts per 100 chars — questions, pivots, format breaks, named-cohort drops, contrarian beats>
+
+## Legibility
+**Legibility — applied expertise**
+- Pack: `<platform>` · verified <pack_meta.pack_verified> · status <pack_meta.status>
+- Tactics applied: <the specific channel tactics you applied — the Tier-1/2 hook archetype, the algorithm signal each variant targets, the format/fold tactic — named, not labeled>
+- Why these: <the ranking signal those tactics exploit, with a pack section cite — e.g. "LinkedIn ranks on dwell + save; the Founder Receipt forces tap-to-expand (§3 Signal 4)">
+
+<!-- Stale pack → add the ⚠ flag and treat tactics as a prior. No pack covers the platform (pack_meta=null) → the Absent state ("no depth pack yet — general principles only"). Exact shapes + hard rules: references/_shared/legibility-convention.md. This is channel-fit only — product-fit goes in the next block. -->
+
+## Why this works
+**Why this works**
+- The bet: <the one falsifiable wager this copy makes — what would make it fail>
+- For this product: <a load-bearing choice → the ICP pain / VoC phrase / positioning it serves, naming the source (foundation_state)>
+- For this product: <a second load-bearing choice → its product-specific reason + source>
+- The differentiator: <why this wouldn't survive a find-and-replace of the product name — the Competitor-Swap angle>
+
+<!-- No ICP/brand foundation (foundation_state absent) → the Absent state ("general principles only; run /research-icp"). Partial → flag [hint] lines. Never fabricate a pain, VoC quote, or positioning claim. Exact shapes + hard rules: references/_shared/why-this-works-convention.md. This is product-fit only — never restate a Legibility tactic here. -->
 
 ## Change Log
 - [What drove each structural decision — archetype chosen, signal targeted, CTA type for goal]
@@ -107,6 +126,16 @@ Count: questions, mid-sentence pivots ("But here's what nobody talks about:"), f
 3. **Platform-blind format** — Writing a thread when the platform is TikTok, or writing a long paragraph caption for X.
 4. **Hook bloat** — Hook that is "good" but exceeds the visible-before-truncation window. If the tension doesn't land in the first 70–80 chars (TikTok/Reels/Shorts) or 280 chars (X), it's not a hook — it's a body sentence.
 
+### Narrating applied expertise (Legibility + Why this works) — required
+
+These two blocks are the trust-bearing surface: AI commoditized production, so the scarce layer is *visible applied judgment*. Author both, every run.
+
+- **Legibility = channel-fit.** Name the actual tactics you applied (hook archetype, the algorithm signal each variant targets, the fold/format play) and the ranking signal they exploit, pack-cited. Tactics, not vibes: "applied the Founder Receipt archetype to force a tap-to-expand for LinkedIn's save signal (§3)" — never "tailored for LinkedIn." No pack covers the platform → the Absent state; never fake a pack.
+- **Why this works = product-fit.** Trace each "for this product" line to a real foundation source (ICP pain, VoC phrase, positioning). Competitor-Swap-clean: if the line survives find-and-replacing the product name, it's a vibe — rewrite it. The bet must be falsifiable so the eval loop can test it. No foundation → the Absent state; never fabricate a pain or quote.
+- **Adjacent, never overlapping.** Legibility answers "why it fits the channel"; Why-this-works answers "why it wins for this product." A platform/algorithm line belongs in Legibility only.
+
+Full contracts (the three graceful-degrade states each): `references/_shared/legibility-convention.md` and `references/_shared/why-this-works-convention.md`.
+
 ## Self-Check
 
 Before returning your output, verify every item:
@@ -118,5 +147,8 @@ Before returning your output, verify every item:
 - [ ] Format spec names the correct surface (thread / single post / vertical-video-caption / carousel)
 - [ ] Pattern-interruption density is counted and noted
 - [ ] variant_count hooks are returned (not fewer)
+- [ ] Legibility block present — names the actual tactics applied (archetype + algorithm signal + fold/format), pack id + verified date cited; never a bare "tailored for X" label
+- [ ] Why this works block present — each "for this product" line traces to an ICP/brand/positioning source and is Competitor-Swap-clean; the bet is falsifiable
+- [ ] No pack / no foundation → the block uses its transparent-degrade (Absent) state, never a fabricated pack or product-fit claim
 - [ ] Output stays within my sections — no rubric scores, no format-compliance verdicts
 - [ ] No `[BLOCKED]` markers remain unresolved (if present, stop and surface to orchestrator)

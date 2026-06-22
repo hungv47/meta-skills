@@ -29,6 +29,15 @@ Gaps: no hour-by-hour upvote curve (can't confirm first-4-hour velocity directly
 **Keep / Drop / Test:** Keep first-comment + 12:01 PT + demo-loop. Test: hunter vs no-hunter next launch (the open question). Drop: nothing. Instrument the upvote curve next time.
 **Hypothesis verdicts:** "first-comment drives comment velocity" → confirmed (correlational). "demo-loop converts" → confirmed. "we don't need a hunter" → inconclusive (no counterfactual).
 
+**Legibility** (authored by Diagnosis; body section 7, after Pack Write-Back, before Critic Verdict — Packed state):
+```
+**Legibility — applied expertise**
+- Pack: `producthunt` · verified 2026-06-16 · status reviewed
+- Signals read: first-4-hour upvote+comment velocity (§3.1/§3.2) · 12:01 PT runway (§6) · first-comment + maker presence (§5.6/§5.8) · demo-loop gallery slot (§1.3)
+- Why these: PH locks the daily Top-5 on first-4-hour velocity (§3), so rank/upvotes/comments were attributed through those levers — not read as raw vanity counts; the 2.3% CVR was read against the demo-loop gallery slot, not credited to PH generally.
+```
+No `## Why this works` block — measure-results emits a measurement, not a marketing artifact (Legibility only).
+
 ## 3. Pack Feedback → write-backs
 **Changelog row appended to `producthunt.md`:**
 ```
@@ -37,5 +46,24 @@ Gaps: no hour-by-hour upvote curve (can't confirm first-4-hour velocity directly
 **Performance row** → `.forsvn/performance/producthunt.tsv`.
 **Hosted feed** → entitled, so POST `{platform:"producthunt", what_worked:"first-comment+12:01 PT+demo-loop", numbers:{rank:3,upvotes:412,signups:140,cvr:0.023}}`.
 
-## 4. Critic → 42/50 PASS
-Attribution 9, Falsifiability 8 (CVR derived, curve gap named), Honesty 9 (hunter + curve gaps stated), Actionability 8 (hunter test), Write-back 8 (append-only, dated). PASS → write-backs commit. The **next** PH launch reads this entry and starts with "test hunter" as its hypothesis — the loop closed.
+## 4. Critic → structural pre-check, then 42/50 PASS
+**Legibility pre-check (not scored):** `## Legibility` block present, Packed state, ordered after Pack Write-Back / before Critic Verdict; signals are §-cited (not a bare "measured against the pack" label); `pack_verified` + `applied_tactics` frontmatter agree with the block; no `## Why this works` block (correct — this is a measurement). PASS — proceed to scoring.
+
+**Rubric (5 dims):** Attribution 9, Falsifiability 8 (CVR derived, curve gap named), Honesty 9 (hunter + curve gaps stated), Actionability 8 (hunter test), Write-back 8 (append-only, dated) = 42/50. PASS → write-backs commit. The **next** PH launch reads this entry and starts with "test hunter" as its hypothesis — the loop closed.
+
+## 5. Assembled artifact (frontmatter mirrors the Legibility facts)
+```yaml
+skill: measure-results
+version: 1
+date: 2026-06-16
+stack: marketing
+type: evaluation
+id: measure-producthunt-launch-day
+review_surface: md
+status: done
+channel: producthunt
+pack_verified: 2026-06-16                    # = the Legibility block's pack last_verified
+applied_tactics: [first-4hr-velocity, 12:01-PT-runway, first-comment-maker-presence, demo-loop-gallery]  # = the §3/§5 signals narrated
+keywords: [measure, producthunt, launch, loop]
+```
+Body order: Results · What Worked · What Failed · Keep/Drop/Test · Hypothesis Verdicts · Pack Write-Back · **Legibility** · Critic Verdict. The Legibility block is the trust-bearing surface — applied expertise made visible — and sits between the write-back and the scorecard. `pack_verified: none` + empty `applied_tactics` would be the machine-readable Absent state for a channel with no pack.

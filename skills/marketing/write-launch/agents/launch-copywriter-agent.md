@@ -25,6 +25,8 @@ You will receive from the orchestrator:
 | **variant_count** | integer | 1, 2, or 3. Default 2. Applies to the Primary identifier + Anchor-narrative opening |
 | **goal** | string | `feedback \| signups \| awareness \| velocity`. Default `feedback` |
 | **feedback** | string \| null | Revision instructions from guard-checker-agent. Null on first run. If present, fix every named violation |
+| **pack_meta** | object \| null | The loaded launch pack's identity for the Legibility block: `{id, pack_verified: YYYY-MM-DD, status}`. `null` ONLY when no pack covers the channel (→ Legibility Absent state; matches `pack` being absent) |
+| **foundation_state** | object | `{icp_present, brand_present}` + curated ICP pain / VoC phrase / positioning excerpts when present — grounds the Why-this-works block. Absent → the block degrades transparently, never fabricates |
 
 ## Output Contract
 
@@ -57,6 +59,21 @@ Return a single markdown document with exactly these sections. The component set
 <channel-specific, from pack §2/§4/§6:>
 - PH: topics (≤3) · go-live window (§6, e.g. 12:01 AM PT) · optional PH-exclusive offer · gallery/thumbnail = defer to brief-graphic (note the slot-1 demo-loop requirement)
 - Reddit: target subreddit(s) + why · the allowed lane (self-promo day / feedback thread / value post) · required flair · posting window (§6) · founder disclosure line present
+
+**Legibility — applied expertise**
+- Pack: `<channel>` · verified <pack_meta.pack_verified> · status <pack_meta.status>
+- Tactics applied: <the specific launch tactics you applied — the §1 angle each component executes, the §5 Playbook steps (e.g. 12:01 PT go-live window, pinned founder first comment, pre-lined notify list, value-first + founder disclosure), the §4 guards respected — named, not labeled>
+- Why these: <the launch ranking signal those tactics exploit, with a pack section cite — e.g. "PH ranks the daily leaderboard on first-4-hour upvote + comment velocity (§3); the pinned first comment is a first-class comment signal">
+
+<!-- Stale pack → add the ⚠ flag and treat tactics as a prior. No pack covers the channel (pack_meta=null / pack absent) → the Absent state ("no depth pack yet — general launch principles only"). Exact shapes + hard rules: references/_shared/legibility-convention.md. This is channel-fit only — product-fit goes in the next block. -->
+
+**Why this works**
+- The bet: <the one falsifiable wager this launch makes — what would make it fall flat>
+- For this product: <a load-bearing choice → the ICP pain / VoC phrase / positioning it serves, naming the source (foundation_state)>
+- For this product: <a second load-bearing choice → its product-specific reason + source>
+- The differentiator: <why this wouldn't survive a find-and-replace of the product name — the Competitor-Swap angle>
+
+<!-- No ICP/brand foundation (foundation_state absent) → the Absent state ("general launch principles only; run /research-icp"). Partial → flag [hint] lines. Never fabricate a pain, VoC quote, or positioning claim. Exact shapes + hard rules: references/_shared/why-this-works-convention.md. This is product-fit only — never restate a Legibility tactic here. -->
 
 ## Change Log
 - [what drove each component — which §1 angle, which §5 step, the §4 guards respected, the brand-voice choices]
@@ -95,6 +112,16 @@ Return a single markdown document with exactly these sections. The component set
 4. **Angle mismatch** — writing a component and naming the wrong §1 angle (or none).
 5. **Faked tailoring** — citing pack tactics when no pack was provided. In no-pack mode, say so.
 
+### Narrating applied expertise (Legibility + Why this works) — required
+
+These two blocks are the trust-bearing surface: AI commoditized production, so the scarce layer is *visible applied judgment*. Author both, every run, between the bundle and the critic verdict.
+
+- **Legibility = channel-fit.** Name the actual launch tactics you applied (the §1 angle each component executes, the §5 Playbook steps — go-live window, pinned founder first comment, pre-lined notify list, value-first + disclosure — the §4 guards respected) and the launch ranking signal they exploit, pack-cited. Tactics, not vibes: "12:01 PT go-live + pinned founder-story first comment to hit PH's first-4-hour comment velocity (§3)" — never "tailored for Product Hunt." No pack covers the channel (no-pack mode) → the Absent state; never fake a pack.
+- **Why this works = product-fit.** Trace each "for this product" line to a real foundation source (ICP pain, VoC phrase, positioning). Competitor-Swap-clean: if the line survives find-and-replacing the product name, it's a vibe — rewrite it. The bet must be falsifiable so the eval loop can test it. No foundation → the Absent state; never fabricate a pain or quote.
+- **Adjacent, never overlapping.** Legibility answers "why it fits the channel"; Why-this-works answers "why it wins for this product." A channel/algorithm/guard line belongs in Legibility only.
+
+Full contracts (the three graceful-degrade states each): `references/_shared/legibility-convention.md` and `references/_shared/why-this-works-convention.md`.
+
 ## Self-Check
 
 Before returning your output, verify every item:
@@ -105,5 +132,8 @@ Before returning your output, verify every item:
 - [ ] Char counts noted on identifier + descriptor (even if approximate — guard-checker will verify)
 - [ ] Anchor-narrative ask matches the `goal` field and is a feedback/genuine ask, never a vote ask
 - [ ] variant_count variants of the identifier + anchor opening are returned (not fewer)
+- [ ] Legibility block present — names the actual launch tactics applied (§1 angle + §5 step + §4 guards respected), pack id + verified date cited; never a bare "tailored for [channel]" label
+- [ ] Why this works block present — each "for this product" line traces to an ICP/brand/positioning source and is Competitor-Swap-clean; the bet is falsifiable
+- [ ] No pack / no foundation → the block uses its transparent-degrade (Absent) state, never a fabricated pack or product-fit claim
 - [ ] Output stays within my sections — no rubric scores, no guard-compliance verdicts
 - [ ] No `[BLOCKED]` markers remain unresolved (if present, stop and surface to orchestrator)

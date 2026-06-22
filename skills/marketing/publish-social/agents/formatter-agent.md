@@ -17,13 +17,14 @@ You do NOT:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **write_social_artifact** | markdown | Source of truth for body copy per platform (path or already-loaded content) |
+| **write_social_artifact** | markdown | Source of truth for body copy per platform (path or already-loaded content). Carries the upstream **Why this works** (product-fit) block — you carry it forward, you never re-author it. |
 | **brand_voice** | object | Brand voice from `brand/BRAND.md` — voice rules + sacred elements |
 | **produce_asset_manifest** | object \| null | Optional image / carousel media manifest |
 | **produce_video_manifest** | object \| null | Optional video media manifest |
 | **target_platforms** | string[] | 1–9 of: `x, linkedin, instagram, youtube, tiktok, facebook, bluesky, threads, reddit`. Defaults to the platforms in the write-social artifact. |
 | **mode_override** | string \| null | `null` (auto) / `export` / `draft` / `publish` (+ optional `dry_run` flag with publish). `auto` per-platform-resolves; `export` forces export; `draft` routes X→Typefully + 8→browser-automation drafts (D17); `publish` routes to live posting behind the two-stage gate (D18). |
 | **credentials_state** | object | `{ typefully: bool, buffer: bool, hootsuite: bool, ... }` — binary detection result, no values. |
+| **pack_meta_by_platform** | object \| null | Per-platform pack identity for the Legibility block: `{ <platform>: {id, pack_verified: YYYY-MM-DD, status} }` from the loaded `platform-intelligence/[platform].md` pack. A platform key is `null` (or absent) ONLY when no pack covers that platform → that platform's Legibility uses the Absent state. |
 | **feedback** | string \| null | From critic on re-dispatch — specific fix instructions per failing platform |
 
 ## Output Contract
@@ -53,7 +54,7 @@ A bundle written to `docs/forsvn/artifacts/marketing/published-social/[slug]/`:
 
 Manifest frontmatter must carry the 12 fields defined in `references/format-conventions.md` § Manifest schema.
 
-Per-platform frontmatter must carry the 7 fields defined in `references/format-conventions.md` § Per-platform schema.
+Per-platform frontmatter must carry the 12 fields defined in `references/format-conventions.md` § Per-platform schema (including `pack_verified` + `applied_tactics`, which mirror the draft's `## Legibility` block).
 
 ## Domain Instructions
 
@@ -91,6 +92,17 @@ Key per-platform conventions to honor (full list in per-platform refs):
 | Reddit | 300 title + 40000 body | 0 (subreddit ≠ hashtag) | Title is everything | Different conventions per subreddit; flag if subreddit-specific rules missing |
 
 Read `references/platforms/[platform].md` before formatting each platform's draft. Do not improvise rules.
+
+### Narrating applied expertise (per-platform Legibility) — required
+
+Every per-platform draft ends with a `## Legibility` block — the channel-fit narration of the **specific** publishing tactics you applied for *that* platform. This is the trust-bearing surface: AI commoditized production, so the scarce layer is *visible applied judgment*. You author it on each draft, every run.
+
+- **Legibility = channel-fit, authored here.** Choosing the per-platform shape IS your work: the thread-split / paragraph / caption-bottom-stack call, where the CTA lands relative to the platform's algorithm-truncation point, the fold-peek play, the hashtag count/position. Name those actual tactics from the platform pack — never a bare "tailored for LinkedIn" label. Cite the pack section that justifies a tactic so the claim is checkable (e.g. "CTA pulled inside the ~210-char see-more cutoff to survive the LinkedIn fold (pack §2)").
+- **State by pack.** A pack covers the platform (`pack_meta_by_platform[platform]` present) → Packed state, carrying `pack_verified` + `status`. Pack is >90 days old or `status: stale` → Stale state with the ⚠ flag (treat tactics as a prior; this also downgrades the bundle to `done_with_concerns`). No pack covers the platform (`pack_meta_by_platform[platform]` null/absent) → the Absent state ("no depth pack for this channel yet — general principles only"); never fabricate a pack.
+- **Mirror into frontmatter.** Each draft's `pack_verified` + `applied_tactics` frontmatter fields mirror the block's facts (`pack_verified: none` + empty `applied_tactics` is the machine-readable Absent state). Exact block shapes + the three states + hard rules: [`references/_shared/legibility-convention.md`](../references/_shared/legibility-convention.md).
+- **Launch cross-posts (Product Hunt).** When the bundle is the PH-launch cross-post leg, the draft's Legibility names the `producthunt` pack + the §4/§7 no-vote-ask guard it applied (see `references/format-conventions.md` § Launch cross-posts).
+
+**Why this works is carried forward, NOT re-authored.** publish-social makes **no copy decisions** — it reformats pre-written write-social copy, so the product-fit rationale (the bet + the ICP/VoC/positioning choices) already lives on the upstream write-social artifact. Do **not** add a second `## Why this works` block to the bundle (the why-this-works convention is "one block per deliverable, never two"). Instead, the per-platform draft's `## Notes` carries forward a one-line pointer to the upstream artifact's Why-this-works (`See product-fit rationale: <write-social path> § Why this works`) so a reviewer can trace it without duplication. Channel-fit reasoning (truncation, fold, algorithm signal) belongs in Legibility only.
 
 ### Scheduler-Import Emission
 
@@ -261,5 +273,8 @@ Mode summary: <one-line>
 - [ ] README has per-platform instructions + scheduler-import file map
 - [ ] No credential value appears in any emitted file (grep `_KEY` / `_TOKEN` / `_SECRET` returns zero)
 - [ ] Every per-platform draft is within hard char limit
+- [ ] Every per-platform draft ends with a `## Legibility` block — names the actual per-platform tactics applied (split/fold/CTA-truncation/hashtag play) with a pack id + `pack_verified` date cited; never a bare "tailored for X" label. No pack for the platform → the Absent state (never a fabricated pack)
+- [ ] Each draft's `pack_verified` + `applied_tactics` frontmatter mirror its `## Legibility` block (`none` + empty list when Absent)
+- [ ] `## Why this works` is NOT duplicated in the bundle — the per-platform `## Notes` carries the one-line pointer to the upstream write-social artifact's § Why this works instead
 - [ ] Frontmatter on manifest + per-platform drafts matches `references/format-conventions.md` schemas
 - [ ] Generation provenance per D8 contract written into manifest frontmatter (`input_artifacts` + `output_eval: null`)

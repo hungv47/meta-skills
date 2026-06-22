@@ -17,6 +17,17 @@ This is a **worked example**. Actual hero brief artifact: `docs/forsvn/artifacts
 
 ---
 
+## What This Brief Bets On
+
+> Section 2 of the hero brief — this brief's **product-fit** block per `_shared/why-this-works-convention.md` (the brief-style "the bet" the convention allows; brief-shortform carries product-fit here, never in a second `## Why this works` block).
+
+- **The bet:** the science of *why* skin tightens, dramatized as kinetic type, earns the reshare the brand can't buy with a "buy now" — teaching the mechanism converts a skeptic who's "been burned." Falsified if reshares don't beat 2× baseline or 3s hold drops under 60%.
+- **For this product:** opens on the ICP's felt symptom in their words — "My skin feels tight by 10am" (`research/icp-research.md`, voice-of-customer) — not a generic "hydrate your skin."
+- **For this product:** the whole piece is teach-then-reveal (TEWL mechanism → product), not pitch-first, because BRAND.md voice is "warm, scientific-but-friendly, no sales-pitch" (`brand/BRAND.md`); a hard-sell hook would break the brand of record.
+- **The differentiator:** a generic skincare ad swaps in any bottle; this one earns the product reveal off the ICP's *own* distrust ("I keep buying products that don't work on me") — the science *is* the rebuttal, so the brand can't be swapped without losing the argument (Competitor-Swap-clean).
+
+---
+
 ## Research signals
 
 - Reels US e-com niche: pre-reveal tease + before/after dominate (combined 9/14 sample)
@@ -87,6 +98,14 @@ Hashtags: 3 niche
 - Watch time longer than baseline
 - Reshares ≥2× baseline
 
+### Legibility — applied expertise
+
+> Closes the hero's Format Specification per `_shared/legibility-convention.md` — **channel-fit** (distinct from the product-fit "What This Brief Bets On" above). Packed state: a current Reels pack covered the hero.
+
+- Pack: `reels` · verified 2026-05-09 · status reviewed
+- Tactics applied: pre-reveal tease hook carried by kinetic type, no VO, in the 0:00–0:04 window (§1) · original beat-bed, no trending track, per the Originality Score (§2) · burned-in kinetic stamps + 9:16 safe-area (§2) · reshare-prompt CTA + end-card (§3)
+- Why these: Reels suppresses reused trending audio (Originality Score, pack §2) and weights 3s hold + reshare; kinetic type owns the hook (no audio dependency) and a "send this to a friend" prompt over the science payoff farms the reshare signal the niche ranks on.
+
 ---
 
 ## Variant — Shorts (24s, 9:16)
@@ -130,13 +149,23 @@ Hashtags: 3 niche
 - Loop rate ≥1.5 per view (sample observation)
 - Shares meaningful uplift over baseline
 
+### Legibility — applied expertise (variant)
+
+> Each recut narrates its own platform's pack at the foot of its delta (`_shared/legibility-convention.md`).
+
+- Pack: `shorts` · verified 2026-05-09 · status reviewed
+- Tactics applied: demo-first hook (product on screen at 0:00) for the 1–2s swipe decision (§1) · silent-friendly cleaner beat (§2) · loop-back ending (final frame == opening frame) for loop-rate (§2) · title-as-hook ≤100 chars for discovery (§3)
+- Why these: Shorts ranks on loop rate + completion (pack §2/§3) and rewards a faster reveal than Reels; the matched opening/closing frame closes the loop and the title carries discovery the Reels caption can't.
+
 ---
 
-## Why this works
+## What this example demonstrates
 
-- Hero on Reels bets on pre-reveal tease + before/after — both top archetypes per research
-- Audio strategy is original (Originality Score) — kinetic type carries the hook, not voice or trending track
-- Variant for Shorts truly recuts: demo-first hook (faster), silent-friendly beat, loop-friendly ending, title-as-hook
-- Same VoC phrase across both platforms ("My skin feels tight by 10am") — voice consistency
-- BRAND.md voice maintained: warm, scientific-but-friendly, no sales-pitch (no "buy now" CTAs)
-- Success criteria platform-specific: Reels 60% 3s hold, Shorts 30% completion + loop rate
+> Not a second product-fit block — the bet + product-fit reasoning lives in `## What This Brief Bets On` above (the convention's one-block-per-deliverable rule). This is a study note on the craft moves.
+
+- The two narration blocks sit in the right places: **product-fit** in `## What This Brief Bets On` (the bet, traced to ICP/BRAND), **channel-fit** Legibility at the foot of each platform's spec — never merged, never duplicated.
+- Audio strategy is original (Originality Score) — kinetic type carries the hook, not voice or trending track.
+- Variant for Shorts truly recuts and narrates its own `shorts` pack: demo-first hook (faster), silent-friendly beat, loop-friendly ending, title-as-hook.
+- Same VoC phrase across both platforms ("My skin feels tight by 10am") — voice consistency, reproduced verbatim from ICP.
+- BRAND.md voice maintained: warm, scientific-but-friendly, no sales-pitch (no "buy now" CTAs).
+- Success criteria platform-specific: Reels 60% 3s hold, Shorts 30% completion + loop rate.

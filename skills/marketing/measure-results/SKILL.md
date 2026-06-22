@@ -51,7 +51,7 @@ Pass ≥35/50 AND no dim 0. FAIL twice → `BLOCKED`, no write-back.
 
 - **Path:** `docs/forsvn/artifacts/marketing/measure-results/[channel]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `evaluation`.
 - **Frontmatter (12):** `skill`, `version`, `date`, `stack`, `type`, `id`, `review_surface`, `status`, `channel`, `pack_verified`, `applied_tactics`, `keywords`.
-- **Body:** Results table (metric · value · vs-expected) · What worked (tactic + number) · What failed · Keep/Drop/Test · Pack write-back block · Critic verdict.
+- **Body:** Results table (metric · value · vs-expected) · What worked (tactic + number) · What failed · Keep/Drop/Test · Hypothesis verdicts · Pack write-back block · **Legibility** (`**Legibility — applied expertise**` — pack measured-against + its §3/§5 signals the read used; convention: `references/_shared/legibility-convention.md`) · Critic verdict. Legibility only — measure-results produces a measurement, not a marketing artifact, so **no** `## Why this works` block.
 - **Side effects (on critic PASS):** append a dated entry to the channel pack changelog (`references/format-conventions.md` § Pack write-back); append a row to `.forsvn/performance/[channel].tsv`; if a hosted key is present, mirror the result to the cross-session metrics feed (`bun scripts/forsvn-hosted.ts metrics [channel] --worked "..." --failed "..."` — POSTs `/v1/metrics`, best-effort, inert without a key, never blocks). Full contract: [`references/format-conventions.md`](references/format-conventions.md).
 
 ## Routing + Dispatch

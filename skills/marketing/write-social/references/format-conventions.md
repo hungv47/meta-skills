@@ -131,6 +131,7 @@ The format-checker-agent enforces these rules in order. Any violation = REVISION
 | Variant char counts present + accurate | all 5 | Every `### Variant` block has `**Char count: N / limit**` AND N matches actual count |
 | Format spec surface matches platform | all 5 | Surface in Format spec is valid for declared platform (e.g., no "thread" on TikTok) |
 | Algorithm signal one of platform-intel top-5 | all 5 | `**Algorithm signal targeted:**` value matches platform-intel §3 top-5 signals |
+| Narration blocks present + valid + ordered | all 5 | `## Legibility` AND `## Why this works` both present, non-empty, in a valid state per `_shared/legibility-convention.md` / `_shared/why-this-works-convention.md`, placed after Format spec and before Critic verdict. Pack supplied → Legibility in Packed/Stale state carrying a `pack_verified` date (not Absent). Missing, empty, mis-ordered, or Absent-despite-a-pack = REVISION_REQUIRED (structural presence/shape check, never a quality judgment) |
 
 ---
 

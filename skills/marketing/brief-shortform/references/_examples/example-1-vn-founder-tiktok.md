@@ -17,6 +17,17 @@ This is a **worked example** — the actual hero brief artifact lives at `docs/f
 
 ---
 
+## What This Brief Bets On
+
+> Section 2 of the hero brief — this brief's **product-fit** block per `_shared/why-this-works-convention.md` (the brief-style "the bet" opening the convention allows; brief-shortform carries product-fit here, never in a second `## Why this works` block).
+
+- **The bet:** a VN solo founder who *lived* the standup problem can sell "we deleted standups, output went up" as a credential-flash receipt — the lived-it specificity is what earns the save. Falsified if saves stay below the 1.5% niche benchmark or completion drops under 70%.
+- **For this product:** opens on the ICP's ranked pain in their words — "Standup là họp lại để báo cáo lại" (`research/icp-research.md`, voice-of-customer) — not a generic "meetings waste time."
+- **For this product:** leads on the founder's own before/after ("3 năm chạy standup" → "+40% trong 3 tuần") because the BRAND.md archetype is founder/personal-brand (`brand/BRAND.md`) — the credential is the founder, so the hook is built on it.
+- **The differentiator:** a generic productivity SaaS can't run this — it's the *founder-deleted-his-own-standups* receipt, in VN dev-tools register; swap the brand and the hook collapses (Competitor-Swap-clean).
+
+---
+
 ## Research signals (from `docs/forsvn/artifacts/research/research-shortform/[slug].md`)
 
 - TikTok VN dev-tools niche: credential-flash hook archetype dominates (8/12 sample)
@@ -66,6 +77,14 @@ Hashtags: #devtools #remotework #productivity (3 niche)
 - Completion ≥70%
 - Saves ≥1.5% (this niche benchmark)
 
+### Legibility — applied expertise
+
+> Closes the hero's Format Specification per `_shared/legibility-convention.md` — **channel-fit** (distinct from the product-fit "What This Brief Bets On" above). Packed state: a current TikTok pack covered the hero.
+
+- Pack: `tiktok` · verified 2026-05-09 · status reviewed
+- Tactics applied: credential-flash hook archetype landed in the 0:00–0:03 window (§1) · burned-in caption + 9:16 safe-area (§2) · trending-but-low-decay audio "Aesthetic Cafe" synced to the 0:00 drop (§2) · save-prompt CTA over a value frame (§3)
+- Why these: TikTok ranks on completion (≥70%) and save rate (pack §3); a credential-flash open buys the first 3s and a save-prompt over the "+40%" payoff farms the save signal rather than a reach-suppressing link.
+
 ---
 
 ## Variant — Reels (32s, 9:16)
@@ -105,6 +124,14 @@ Hashtags: 3 niche (Reels: 3-5 fine)
 - **Placement:** End-card 0:28-0:32
 - **Copy:** "Team bạn có chạy standup nhưng không đọc updates không? Comment ↓"
 
+### Legibility — applied expertise (variant)
+
+> Each recut narrates its own platform's pack at the foot of its delta (`_shared/legibility-convention.md`).
+
+- Pack: `reels` · verified 2026-05-09 · status reviewed
+- Tactics applied: pre-reveal tease hook to mitigate the 3s drop-off (§1) · original VO + ambient bed, no trending track, per the Originality Score (§2) · 7-line storytelling caption to the deeper-scroll behavior (§2) · end-card comment-prompt CTA (§3)
+- Why these: Reels suppresses naked trending-audio reuse (Originality Score, pack §2) and weights 3s hold; original audio + a hold-then-escalate open protect the first loop a credential-flash open would lose here.
+
 ---
 
 ## Polish chain applied
@@ -116,10 +143,12 @@ VN founder mode → `polish-vn` Layer 2 on full body. Specifically polished:
 
 ---
 
-## Why this works
+## What this example demonstrates
 
-- Hook on TikTok bets on credential flash (8/12 sample) — highest-frequency archetype
-- Variant rebuilds (not resizes) for Reels — tease archetype + original audio + end-card CTA
-- Both pieces use same VoC phrase ("Standup là họp lại để báo cáo lại") — voice consistency across platforms
-- Polish chain runs on full body for VN — semi-casual register matches founder + audience
-- Success criteria specific to platform — TikTok 70% completion, Reels 60% 3s hold (different signals)
+> Not a second product-fit block — the bet + product-fit reasoning lives in `## What This Brief Bets On` above (the convention's one-block-per-deliverable rule). This is a study note on the craft moves.
+
+- The two narration blocks sit in the right places: **product-fit** in `## What This Brief Bets On` (the bet, traced to ICP/BRAND), **channel-fit** Legibility at the foot of each platform's spec — never merged, never duplicated.
+- Variant rebuilds (not resizes) for Reels — tease archetype + original audio + end-card CTA — and narrates its own `reels` pack, so the recut's channel reasoning is legible separately from the hero's.
+- Both pieces use the same VoC phrase ("Standup là họp lại để báo cáo lại") — voice consistency across platforms; the phrase is reproduced verbatim from ICP per the VoC exact-quote rule.
+- Polish chain runs on full body for VN — semi-casual register matches founder + audience.
+- Success criteria specific to platform — TikTok 70% completion, Reels 60% 3s hold (different signals).

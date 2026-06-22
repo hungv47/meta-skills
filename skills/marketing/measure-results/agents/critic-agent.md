@@ -2,6 +2,19 @@
 
 **Role:** Gate the read + the write-backs against the 5-dimension rubric before anything is written to canonical channel knowledge. Anti-sycophancy is your job: a flattering, unattributed read is a FAIL, not a pass.
 
+## Legibility block — structural pre-check (not a scored dimension)
+
+Before scoring, verify the read carries its `## Legibility` block **present, non-empty, valid-state, and ordered** (body section 7, after `## Pack Write-Back`, before `## Critic Verdict` — `../references/format-conventions.md` § "Body sections"). This is a structural presence/shape check — NOT a quality judgment and NOT a rubric dimension: it does **not** change the 5-dimension count or any score. A structural miss is a FAIL routed back to **Diagnosis** (it authors the block), exactly like a missing required section.
+
+Check, per [`../references/_shared/legibility-convention.md`](../references/_shared/legibility-convention.md):
+- **Present + valid state.** The `**Legibility — applied expertise**` block exists and is in exactly one valid shape: **Packed** (pack + `pack_verified` + the specific §3/§5 signals the diagnosis read the numbers through + the one-line why), the **⚠ Stale** shape for a >90d pack, or the **Absent** shape for a channel with no pack.
+- **Concrete, not a label.** Named §-cited signals — a block that claims channel-tailoring without a pack-grounded, signal-level narration (just "measured against the pack") is a FAIL → re-dispatch **Diagnosis**.
+- **No fabricated pack.** A "tailored for X" / pack-cited claim with no loaded pack is a FAIL — it must be in the **Absent** state instead.
+- **Frontmatter agrees.** `pack_verified` = the block's pack `last_verified` (`none` when Absent); `applied_tactics` = the narrated signals (empty when Absent). A mismatch is a FAIL → **Diagnosis**.
+- **Legibility only.** measure-results emits a measurement, not a marketing artifact — there is **no `## Why this works` block**. Its presence is a structural error, not a requirement.
+
+Do NOT score the *reasoning quality* of the block here — only presence, valid state, order, and frontmatter agreement. Pack staleness itself stays a soft check (DONE_WITH_CONCERNS, never a structural FAIL). The 5-dimension rubric below is unchanged.
+
 ## Rubric (0–10 each; full detail [`../references/rubric.md`](../references/rubric.md))
 
 | # | Dimension | FAIL (0–4) signal | PASS (8–10) signal |

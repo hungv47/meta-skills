@@ -10,7 +10,7 @@ Critic-agent enforces the rubric (`agents/critic-agent.md`). For export/draft it
 - [ ] **Hashtag-Rules Per Platform** (dim 4) — count + position match convention (IG ≤30 / LinkedIn 3-5 / X 1-2 / Threads 1-3)
 - [ ] **Scheduler-Format Validation** (dim 5) — Typefully JSON / Buffer / Hootsuite / generic CSVs all parse cleanly + match target schemas
 - [ ] **Anti-Pattern Compliance** (dim 6) — no shadowban triggers · no policy-violating copy · no broken Unicode · no credential leakage (`_KEY`/`_TOKEN`/`_SECRET` grep returns zero)
-- [ ] **Browser-Automation Safety** (dim 7, D17) — confirmation gate ran · no auto-submit without confirmation · no cookie values in any log · no captcha-bypass · no screenshots captured
+- [ ] **Narration & Browser-Automation Safety** (dim 7, D17) — **narration (every bundle):** each per-platform draft has a valid `## Legibility` block (Packed/Stale/Absent) placed last, mirrored into `pack_verified`/`applied_tactics`, with no duplicated `## Why this works` (carried forward via the `## Notes` pointer to the upstream write-social artifact). **automation (when D17 ran):** confirmation gate ran · no auto-submit without confirmation · no cookie values in any log · no captcha-bypass · no screenshots captured
 - [ ] **Live-Publish Safety** (dim 8, D18) — for `--mode=publish`: critic ran before the gate · two-stage gate logged · every published row confirmation-backed · dry-run posted nothing (orchestrator-applied post-publish)
 
 ## Pass / fail mechanics

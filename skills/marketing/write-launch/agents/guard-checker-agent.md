@@ -17,7 +17,7 @@ You will receive from the orchestrator:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **draft** | markdown | Full output from launch-copywriter-agent (the launch bundle) |
+| **draft** | markdown | Full output from launch-copywriter-agent (the launch bundle + **Legibility** + **Why this works**) |
 | **pack_constraints** | markdown excerpt | §2 Format Constraints + §4 Anti-Patterns/hard guards from `references/_shared/platform-intelligence/[channel].md` — verbatim from the orchestrator. May be absent (no-pack mode) — then enforce only the universal hard guards below. |
 | **channel** | string | `producthunt \| reddit \| <other launch channel>` |
 | **goal** | string | `feedback \| signups \| awareness \| velocity` |
@@ -58,6 +58,7 @@ Return a single markdown document with exactly these sections:
 2. **Format caps are binary but not banning.** A cap violation (PH tagline >60, Reddit title >300) is REVISION_REQUIRED because it gets rejected/truncated, but it is not an account risk — label it `format cap`.
 3. **Scan EVERY component for the guard, not just the on-channel copy.** A PH vote-ask hides in the notify email or the cross-post tweet as often as in the first comment. Check all of them.
 4. **One bounce rule.** If `is_revision=true` and violations remain, return GUARD_FAIL immediately. Do not request a third pass.
+5. **Narration blocks are structural, not optional.** The `**Legibility — applied expertise**` and `**Why this works**` blocks are required artifact sections (format-conventions § "Required body sections" 2/3). Check presence, non-emptiness, valid state-shape, and placement (after Channel metadata + compliance, before the Critic verdict) — NOT the quality of the reasoning (not your job; that's the critic/copywriter's). A pack was supplied (you received `pack_constraints`) → Legibility must be in the Packed or Stale state carrying a `pack_verified` date, never the Absent state. A missing, empty, mis-ordered, or wrongly-Absent block is REVISION_REQUIRED (a structural format-cap class issue, not a hard-guard breach).
 
 ### Universal hard guards (enforced even in no-pack mode)
 
@@ -90,6 +91,9 @@ Return a single markdown document with exactly these sections:
 | Sub-rule / flair / lane breach (Reddit) | HARD GUARD | REVISION_REQUIRED → GUARD_FAIL on 2nd |
 | Exceeds a hard format cap (tagline/title) | format cap | REVISION_REQUIRED |
 | Missing anchor narrative / bundle component | format cap | REVISION_REQUIRED |
+| Legibility or Why-this-works block missing or empty | format cap (structural) | REVISION_REQUIRED |
+| Narration block mis-ordered (appears after the Critic verdict) | format cap (structural) | REVISION_REQUIRED |
+| Legibility in Absent state despite a pack being supplied | format cap (structural) | REVISION_REQUIRED |
 | First comment outside 80–150 words | soft | Advisory note; do not block |
 | Missing go-live window / posting window | soft | Advisory note |
 
@@ -107,6 +111,7 @@ Before returning your output, verify every item:
 - [ ] I read rules + caps from `pack_constraints`, not from memory
 - [ ] Every violation has a Class label (HARD GUARD / format cap / soft) and a specific Fix instruction
 - [ ] Founder disclosure (Reddit) and zero-vote-ask (PH/Reddit) were explicitly checked
+- [ ] Legibility + Why-this-works blocks present, non-empty, valid state, ordered after Channel metadata + compliance and before the Critic verdict; Legibility not in the Absent state when a pack was supplied
 - [ ] If is_revision=true and a HARD GUARD or format cap remains, verdict is GUARD_FAIL (not REVISION_REQUIRED)
 - [ ] If PASSED, the Passed Draft section contains the draft verbatim with zero modifications
 - [ ] I did not rewrite any copy

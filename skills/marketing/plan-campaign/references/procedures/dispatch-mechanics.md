@@ -35,11 +35,12 @@ Single-agent fallback ships as `DONE_WITH_CONCERNS` with a note: "Ran in single-
 
 ## Orchestrator-written sections
 
-Three sections are written by the orchestrator inline (no agent dispatched):
+Four sections are written by the orchestrator inline (no agent dispatched):
 
 1. **Growth Motion** — determined in Pre-Dispatch (Step 0), written directly into the artifact BEFORE Layer 1 dispatches. Drives channel-agent's habitat-weighting input — must exist before Layer 2.
 2. **Foundation** (Core message + Awareness distribution) — assembled by the orchestrator after pillar-agent returns. The pillars + their stage distribution drive both fields.
-3. **Channel Execution Briefs** — assembled by the orchestrator after channel-agent returns, using channel-agent's output (channel assignments + habitat data) to populate the briefs table with Objective / Tactic / Budget Type / Success Metric / Owner / First Milestone per channel. Offline-channel execution notes (IRL / SMS / OOH) also written inline by the orchestrator from channel-agent output.
+3. **Channel Execution Briefs** — assembled by the orchestrator after channel-agent returns, using channel-agent's output (channel assignments + habitat data) to populate the briefs table with Objective / Tactic / Budget Type / Success Metric / Owner / First Milestone per channel. The per-channel `**Legibility — applied expertise**` block (channel-fit) carries through from channel-agent's output under each brief. Offline-channel execution notes (IRL / SMS / OOH) also written inline by the orchestrator from channel-agent output.
+4. **Why This Works** — the single campaign-level **product-fit** rationale block, authored by the orchestrator at artifact assembly (after the critic PASS, before the Review Gate). No single agent owns it — it is the synthesis across the whole plan, so the orchestrator writes it from the pillar/angle/channel choices it just assembled, traced to the same ICP/positioning/growth-motion inputs the run consumed. One block per plan. Per `format-conventions.md` § "Why This Works section" + [`_shared/why-this-works-convention.md`](../_shared/why-this-works-convention.md): the bet (falsifiable, so `measure-results` can test it) + 2-4 load-bearing choices (pillar emphasis, channel mix, the lead angle) each traced to a named source, each failing the Competitor Swap Test. No ICP/brand foundation → the convention's Absent state (general principles only; never a fabricated pain or positioning claim). Distinct from — never a restatement of — the per-channel Legibility blocks above.
 
 Do NOT dispatch a separate agent for these. The orchestrator's read of the upstream output IS the work.
 

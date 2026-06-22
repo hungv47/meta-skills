@@ -115,6 +115,19 @@ expand. Fold-peek signal validated.
   (numbered list × 3 = 3 format-break interrupts + 1 contrarian beat "Honest
   take") — within LinkedIn 0.5–0.9 calibration range for score 5–7, near low
   end; CTA + parenthetical aside push toward middle of range.
+
+## Legibility
+**Legibility — applied expertise**
+- Pack: `linkedin` · verified 2026-05-09 · status reviewed
+- Tactics applied: Founder Receipt hook archetype (Tier 1) · fold-peek via the "$1,847/month" dollar-open · CTA gated on a comment keyword ("GUIDE") to farm Comment density
+- Why these: LinkedIn ranks on dwell + save + comment density (§3, Signals 2/4). A specific dollar receipt forces a tap-to-expand (dwell) and founders save cost comparisons (save); the keyword-gated CTA converts readers into comments rather than a reach-suppressing outbound link (§4 anti-pattern).
+
+## Why this works
+**Why this works**
+- The bet: founders feel HubSpot cost-overwhelm acutely enough that a specific receipt + a cheaper teardown earns the save and the "GUIDE" comment. Falsified if saves/comments don't beat the account's baseline.
+- For this product: opens on the ICP's #1 ranked pain — "HubSpot bills shock us monthly" (`icp-research.md` §pains) — in their words, not a generic "cut software costs."
+- For this product: leads with the `$1,847 → $190` receipt because the ICP "uses ~5% of the features" (`icp-research.md`); the teardown format matches the solo-built, founder positioning (`product-context.md`).
+- The differentiator: wouldn't survive a competitor swap — it's the *founder-built-replaced-the-stack* receipt; a generic SaaS can't claim it (Competitor-Swap-clean).
 ```
 
 ---
@@ -133,6 +146,7 @@ Format-checker checks:
 | Variant char counts present + accurate | PASS (counts verified) |
 | Format spec surface matches platform | PASS (native LinkedIn text post is valid) |
 | Algorithm signal one of platform-intel top-5 | PASS (Save rate + Comment density both in LinkedIn §3 top-5) |
+| Narration blocks present + valid + ordered | PASS (Legibility in Packed state with `pack_verified 2026-05-09`; Why-this-works grounded in `icp-research.md`; both after Format spec, before the critic verdict) |
 
 Verdict: PASS. Proceed to critic-agent.
 
@@ -180,13 +194,15 @@ goal: click
 variant_count: 2
 brief_source: "inline-topic: explain why our 3-person team retired HubSpot for $200/mo founder-built workflow"
 platform_intel_version: 2026-05-09
+pack_verified: 2026-05-09
+applied_tactics: [founder-receipt-hook, dollar-open-fold-peek, comment-keyword-cta, save-signal-targeting]
 critic_score: 44
 critic_verdict: pass
 status: done
 polish_chain_applied: none
 ```
 
-**Body:** the 6 sections verbatim from the critic-passed draft (Hook variants A + B, Body, CTA, Format spec, Critic verdict table, Anti-patterns triggered).
+**Body:** the 8 sections verbatim from the critic-passed draft (Hook variants A + B, Body, CTA, Format spec, **Legibility**, **Why this works**, Critic verdict table, Anti-patterns triggered). The two narration blocks are the trust-bearing surface — applied expertise made visible — and sit between the artifact and the scorecard, never after it.
 
 ---
 
@@ -220,6 +236,7 @@ Status: **DONE**. Critic verdict `pass` (44/50, no individual dimension < 4). va
 - **Warm Start path** when 4 of 5 dimensions are already in artifacts (icp-research + brand-system + recent goals + invocation flag). Cold Start only for the inline topic — no 5-question grilling.
 - **Tier 1 archetype + algorithm signal pairing** as the copywriter's craft decision (not a formula — the Founder Receipt + Save rate combination is specific to founder voice + LinkedIn audience; a generic agent would pick a Tier 2 archetype and miss the cohort callout).
 - **Format-check as gate, not advisory** — every rule explicitly PASSes before critic sees the draft. No revision cycle needed in this walkthrough (clean copywriter output) but the rule is "max 1 revision" not "zero revisions."
+- **Legibility + Why-this-works are authored by the copywriter and gated by the format-checker** — applied expertise (channel-fit) and product-fit reasoning sit between the artifact and the scorecard, then get a structural presence/state/order check. This walkthrough shows the grounded state (LinkedIn pack + a real ICP); a cold repo would show the transparent-degrade Absent state instead — never a fabricated pack or product claim.
 - **Critic discrimination test** runs every time — the weak-brief estimation isn't optional. If both weak and strong landed in the same verdict zone, critic would flag rubric integrity, NOT silently ship a passing score.
 - **Polish chain decision is operator-flag-driven** — orchestrator does NOT auto-route to humanmaxxing / vn-tone based on critic verdict. Default is `none` unless flag supplied.
 - **Experience write-back is conditional** — skip when canonical sources (brand/BRAND.md, research/icp-research.md) already declare the answer. Don't overwrite icp-research-populated audience with a one-line Cold Start fallback.

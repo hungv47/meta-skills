@@ -99,6 +99,10 @@ All four return.
 - Algorithm-fit critic: TikTok 0:00–0:30 within 15–60s sweet spot; captions burned-in spec'd; Reels variant addresses Originality → PASS
 - Brand-fit critic: 2 VoC phrases in hero caption + 1 VoC in hook verbal; voice matches BRAND.md archetype; no generic tropes; format-fit test = punchline (product reveal IS the format's payoff at 0:08) → PASS
 
+**Narration-block check (Production + Brand-fit sub-critics):**
+- **Legibility** block closes `## Format Specification` in the **Packed** state — `tiktok` pack, `pack_verified 2026-05-09`, specific §1/§2 tactics (credential-flash hook in the 3s window · burned-in caption · trending-low-decay audio synced to the drop), each traced to a pack section; mirrored into frontmatter `pack_verified` + `applied_tactics`. The Reels variant narrates its own `reels` pack at the foot of its delta. → PASS
+- **Product-fit** rides `## What This Brief Bets On` (section 2), per the why-this-works convention's brief-style exception — a falsifiable bet + load-bearing choices traced to the ICP VoC ("Standup là họp lại để báo cáo lại") and BRAND.md. **No separate `## Why this works` block** — one block per deliverable. → PASS
+
 **Overall: PASS, cycle 1.**
 
 ---
@@ -115,7 +119,7 @@ Per (VN, founder): `polish-vn` Layer 2 on spoken-line section + full body.
 
 Orchestrator writes:
 
-- `docs/forsvn/artifacts/marketing/brief-shortform/standup-bot/brief.md` (hero, 14 sections per `format-conventions.md`)
+- `docs/forsvn/artifacts/marketing/brief-shortform/standup-bot/brief.md` (hero, 15 sections per `format-conventions.md` — including `## What This Brief Bets On` carrying product-fit and the **Legibility** block at the foot of `## Format Specification` carrying channel-fit)
 - `docs/forsvn/artifacts/marketing/brief-shortform/standup-bot/variants/reels.md` (variant, abbreviated 5-section set after "What Changed From Hero")
 - Frontmatter `status: done`, `critic_loop_count: 1`, `polish_chain_applied: vn-tone`, `critic_passes: [hook, production, algorithm-fit, brand-fit]`
 

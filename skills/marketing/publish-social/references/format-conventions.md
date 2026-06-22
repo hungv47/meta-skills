@@ -158,7 +158,9 @@ Every per-platform draft includes these sections:
 3. **`## CTA`** — quoted CTA copy + position note (e.g., "at char 95 — before LinkedIn's ~210 truncation point").
 4. **`## Media`** — list of media references with path + cross-check against platform spec (aspect, size); OR "MEDIA REQUIRED — operator must attach" placeholder.
 5. **`## Notes`** — platform-specific notes (e.g., "X thread; post separately or via Typefully thread-up", "LinkedIn double-newline = paragraph break").
-6. **`## Legibility`** — the applied-expertise narration: which platform pack was loaded, its `last_verified` date, and the **specific** tactics applied — or the transparent-degrade statement when no pack covers this platform. Mirrors the `pack_verified`/`applied_tactics` frontmatter. Format + the three states (packed / stale / absent): [`references/_shared/legibility-convention.md`](_shared/legibility-convention.md).
+6. **`## Legibility`** — **required, authored by the formatter-agent on every draft.** The channel-fit applied-expertise narration: which platform pack was loaded, its `last_verified` date, and the **specific** per-platform tactics applied (the split/paragraph/caption-stack shape, the CTA position vs the algorithm-truncation point, the fold-peek play, the hashtag count/position) — or the transparent-degrade statement when no pack covers this platform. Mirrors the `pack_verified`/`applied_tactics` frontmatter. Format + the three states (packed / stale / absent): [`references/_shared/legibility-convention.md`](_shared/legibility-convention.md). Placed last, after `## Notes`.
+
+**Why this works is carried forward, never duplicated here.** publish-social makes no copy decisions — it reformats pre-written write-social copy, so the product-fit rationale (the bet + ICP/VoC/positioning choices) lives on the **upstream write-social artifact**, which already emits its own `## Why this works` block. The bundle does NOT add a second one (the why-this-works convention is "one block per deliverable, never two"). Instead the per-platform `## Notes` carries a one-line pointer — `See product-fit rationale: <write-social path> § Why this works` — so a reviewer traces it without duplication. Channel-fit (truncation/fold/algorithm) is Legibility's lane; product-fit is the upstream artifact's.
 
 ### Launch cross-posts (Product Hunt)
 
@@ -235,6 +237,17 @@ Schemas live in [`scheduler-formats.md`](scheduler-formats.md). Each scheduler-i
 - `credentials_detected` values are booleans only — never strings or token-like values.
 - `provenance.input_artifacts` lists at least the write-social path + brand/BRAND.md. produce-asset / produce-video paths included if provided.
 - `provenance.output_eval: null` always at emit time.
+- Each per-platform draft carries `pack_verified` + `applied_tactics` matching its `## Legibility` block state (`none` + empty list iff Absent).
+
+## Structural Narration Rule (critic-enforced)
+
+**Narration block present + valid + mirrored (all 5 platforms).** Mirrors write-social's structural narration rule and is enforced by the critic-agent (dim 7 — Narration & Automation Safety):
+
+- Every per-platform draft has a non-empty `## Legibility` block placed last (after `## Notes`), in a valid state per [`_shared/legibility-convention.md`](_shared/legibility-convention.md) (Packed / Stale / Absent).
+- A pack was supplied for the platform → Legibility is in the Packed or Stale state carrying a `pack_verified` date, never the Absent state. The draft's `pack_verified` + `applied_tactics` frontmatter mirror the block.
+- A pack >90 days old or `status: stale` → Stale state with the ⚠ flag; the bundle downgrades to `done_with_concerns`.
+- **Why this works is carried forward, not duplicated.** The bundle must NOT contain a `## Why this works` block (it lives on the upstream write-social artifact). Each draft's `## Notes` instead carries the one-line pointer to that artifact's § Why this works.
+- This is a structural presence / shape / mirror check — never a quality judgment on the reasoning. Missing, empty, wrongly-Absent-despite-a-pack, un-mirrored frontmatter, or a duplicated `## Why this works` block = REVISION_REQUIRED (re-dispatch formatter).
 
 ## Schema Change Discipline
 

@@ -18,12 +18,14 @@ Override the aggregate. Any of these → immediate FAIL, regardless of other sco
 2. **Dim 5 — Scheduler-format unparseable.** Any of the 4 scheduler-import files fails to parse.
 3. **Dim 6 — Credential leak detected.** Grep across emitted files returns any literal credential value pattern.
 4. **Dim 6 — Policy-violating copy explicit.** Platform-specific banned-word hit OR claim banned under platform ad/content policy.
-5. **Dim 7 — D17 automation ran without confirmation.** `automation_result_per_platform[p].status == "success"` appears with `confirmation_result != "confirmed"`.
-6. **Dim 7 — Cookie leak detected.** Cookie value substring matches across any emitted file or log line.
-7. **Dim 7 — Captcha-bypass attempt.** Retry log line within 1s of captcha detection log line.
-8. **Dim 8 — Live publish without confirmation.** `publish_result_per_platform[p].status == "published"` appears with `confirmation_result != "confirmed"`.
-9. **Dim 8 — Critic ran after publish.** Transcript shows a publish action before the critic PASS verdict (publish must be critic-gated).
-10. **Dim 8 — Dry-run posted.** `dry_run: true` AND any `publish_result_per_platform[p].status == "published"`.
+5. **Dim 7 — Narration block missing / invalid / un-mirrored.** A per-platform draft lacks a non-empty `## Legibility` block, OR it is Absent despite a pack being supplied, OR its `pack_verified`/`applied_tactics` frontmatter does not mirror the block.
+6. **Dim 7 — Why-this-works duplicated.** Any bundle file contains a `## Why this works` block (product-fit must be carried forward from the upstream write-social artifact, never re-authored here).
+7. **Dim 7 — D17 automation ran without confirmation.** `automation_result_per_platform[p].status == "success"` appears with `confirmation_result != "confirmed"`.
+8. **Dim 7 — Cookie leak detected.** Cookie value substring matches across any emitted file or log line.
+9. **Dim 7 — Captcha-bypass attempt.** Retry log line within 1s of captcha detection log line.
+10. **Dim 8 — Live publish without confirmation.** `publish_result_per_platform[p].status == "published"` appears with `confirmation_result != "confirmed"`.
+11. **Dim 8 — Critic ran after publish.** Transcript shows a publish action before the critic PASS verdict (publish must be critic-gated).
+12. **Dim 8 — Dry-run posted.** `dry_run: true` AND any `publish_result_per_platform[p].status == "published"`.
 
 ---
 
@@ -157,32 +159,35 @@ For each file: run a parser. Typefully JSON → strict JSON parse. CSVs → RFC 
 
 ---
 
-## Dim 7: Browser-Automation Safety (D17)
+## Dim 7: Narration & Browser-Automation Safety (D17)
 
-**Falsifiability:** D17 gate ran + no cookie leaks + no auto-submit + no retry-on-captcha.
+**Falsifiability:** (A — every bundle) per-platform `## Legibility` block present + valid-state + frontmatter-mirrored + no duplicated `## Why this works`; (B — only when D17 ran) gate ran + no cookie leaks + no auto-submit + no retry-on-captcha. Both are structural presence/shape checks, never a quality judgment.
 
 ### Bands
 
 | Score | Criterion |
 |---|---|
-| **10** | D17 didn't run (export-only OR Typefully-only) OR D17 ran with all safety checks pass |
-| **9** | D17 ran; one platform's reason-class is free-text instead of locked enum |
-| **8** | D17 ran; one platform's status is `timeout` (acceptable but flag slow-response pattern) |
-| **7** | D17 ran; one platform's `last_verified_date` is >90 days old (manifest warned but run continued) |
-| **6** | D17 ran; multiple minor operator-debuggability concerns |
-| **0 (auto-fail)** | Cookie leak detected OR automation ran without confirmation OR retry-on-captcha detected OR screenshot reference present |
+| **10** | Narration valid + mirrored on every draft AND (D17 didn't run OR D17 ran with all safety checks pass) |
+| **9** | D17 ran; one platform's reason-class is free-text instead of locked enum (narration otherwise valid) |
+| **8** | D17 ran; one platform's status is `timeout` (acceptable but flag slow-response pattern) (narration otherwise valid) |
+| **7** | A Stale-pack Legibility block carried the ⚠ flag correctly (bundle → `done_with_concerns`) OR D17 ran with one platform's `last_verified_date` >90 days old (manifest warned but run continued) |
+| **6** | Multiple minor operator-debuggability concerns (narration valid) |
+| **0 (auto-fail)** | A `## Legibility` block missing/empty on any draft OR Absent-despite-a-pack OR `pack_verified`/`applied_tactics` frontmatter does not mirror the block OR a `## Why this works` block duplicated into the bundle OR (cookie leak detected OR automation ran without confirmation OR retry-on-captcha detected OR screenshot reference present) |
 
 ### Check
 
-1. Look at `manifest.automation_result_per_platform`. If absent/empty → dim = 10. Done.
-2. Cookie-leak grep: for each platform with session_cookies in credentials JSON, grep cookie string substring across all emitted files + automation logs. Zero matches required.
-3. Confirmation gate verification:
-   - Transcript contains the confirmation-gate prompt text + operator response line.
-   - `manifest.confirmation_result` value matches transcript.
-   - Every success row has `confirmation_result == "confirmed"`.
-4. No retry-on-captcha: no "retry" log line within 1s of "captcha" detection log line.
-5. No screenshots: no `.png` / `.jpg` / `screenshot` references in automation logs.
-6. Enum compliance: every `failed:*` reason-class is in `{login_challenge, selector_drift, rate_limit, captcha, network, unknown, confirmation_declined, cookies_missing}`.
+**A. Narration (every bundle):**
+1. For each per-platform draft: confirm a non-empty `## Legibility` block is present and placed last (after `## Notes`), in a valid state per `_shared/legibility-convention.md` (Packed / Stale / Absent).
+2. When a pack was supplied for the platform: confirm the block is Packed/Stale carrying a `pack_verified` date (not Absent), and the draft's `pack_verified` + `applied_tactics` frontmatter mirror it (`none` + empty list iff Absent).
+3. Carry-forward, not duplication: grep every bundle file for `## Why this works` (must be zero); confirm each `## Notes` carries the upstream `§ Why this works` pointer.
+
+**B. Automation safety (only when a D17 route ran):**
+4. Look at `manifest.automation_result_per_platform`. If absent/empty → this sub-check passes; skip steps 5–9.
+5. Cookie-leak grep: for each platform with session_cookies in credentials JSON, grep cookie string substring across all emitted files + automation logs. Zero matches required.
+6. Confirmation gate verification: transcript contains the gate prompt + operator response line; `manifest.confirmation_result` matches; every success row has `confirmation_result == "confirmed"`.
+7. No retry-on-captcha: no "retry" log line within 1s of "captcha" detection log line.
+8. No screenshots: no `.png` / `.jpg` / `screenshot` references in automation logs.
+9. Enum compliance: every `failed:*` reason-class is in `{login_challenge, selector_drift, rate_limit, captcha, network, unknown, confirmation_declined, cookies_missing}`.
 
 ---
 

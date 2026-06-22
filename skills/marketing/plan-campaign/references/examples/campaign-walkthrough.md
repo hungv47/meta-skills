@@ -123,6 +123,49 @@ All 9 channels accounted for. Critic Gate 7 + anti-pattern #7 ("Skipping the 9-c
 | Forums (HN, Reddit) | Peer validation + community trust | High-quality response in async-tool discussions; no product mention until asked | Bartered (time) | 1 top-comment HN thread by W4; 3 Reddit upvotes >50 | PM | First response by W1; HN post by W4 |
 | Mailbox (newsletter) | Solution-Aware nurture | Weekly "async-first principles" series + product progress | Organic | Open rate ≥ 35%; CTR to trial ≥ 8% | Content lead | First newsletter by W1; trial-CTA optimized by W3 |
 
+**Per-channel Legibility** (channel-fit — channel-agent emits one block per selected channel; carried through under each brief). Packed channels cite the pack the run consumed; channels with no depth pack use the Absent shape — never a faked tailoring claim:
+
+*Search engines/AEO*
+```
+**Legibility — applied expertise**
+- No depth pack for the Search/AEO channel yet — using general SEO/content principles only.
+- Not channel-tailored: SERP-feature and answer-engine ranking signals were NOT specialized (consider `optimize-seo` for the keyword tree).
+```
+
+*Social media — LinkedIn*
+```
+**Legibility — applied expertise**
+- Pack: `linkedin` · verified 2026-05-09 · status reviewed
+- Tactics applied: contrarian-to-orthodoxy carousel angle to farm indirect/conversation comments · link-in-first-comment (not body) for the trial CTA · founder reply-burst in the first 60–90 min
+- Why these: LinkedIn ranks on dwell × conversation-comments (§3 Signals 1–2; comments ~2× likes, contrarian hooks up to ~2.4× reach), and an external link in the body costs a ~26.5% reach tax — so the CTA goes in the first comment (§7 / §2).
+```
+
+*Social media — X/Twitter*
+```
+**Legibility — applied expertise**
+- Pack: `x` · verified 2026-05-09 · status reviewed
+- Tactics applied: customer-story thread engineered for reply provocation · author reply-burst in the first hour · no external link in tweet 1
+- Why these: an author-engaged-back reply was weighted +75 vs +0.5 for a like in X's open-sourced ranking (§3) — so the thread is built for replies + a first-hour author burst, not view count.
+```
+
+*Forums — Reddit (r/engineering_management)*
+```
+**Legibility — applied expertise**
+- Pack: `reddit` · verified 2026-05-09 · status reviewed
+- Tactics applied: value-first comment in the right subreddit · obey the 9:1 self-promo norm · founder disclosure · no product mention until asked
+- Why these: Reddit rewards first-hour upvotes + real comment threads and removes/bans link-droppers (§0/§3) — so the play is earned peer validation, not a posted link.
+```
+*(HN is grounded against `showhn.md` at the W4 Show-HN milestone — omitted here for brevity.)*
+
+*Mailbox (newsletter)*
+```
+**Legibility — applied expertise**
+- No depth pack for the owned-email channel yet — using general lifecycle/newsletter principles only.
+- Not channel-tailored: deliverability and inbox-placement signals were NOT specialized.
+```
+
+The artifact frontmatter mirrors the union: `pack_verified: 2026-05-09`, `applied_tactics: [linkedin-contrarian-conversation-comments, linkedin-link-in-comment, x-reply-provocation, x-first-hour-author-burst, reddit-value-first-9to1]`.
+
 ---
 
 ## Layer 2, Step 3 — Timeline Agent
@@ -181,8 +224,27 @@ Returns:
 - [x] Launch sequence matches channel activation order (Owned ships first; paid last)
 
 ### Notes
-Strong PLG plan. Pillar 4 ("The async-first movement") is the weakest at 10% — could be cut to a 3-pillar plan if team capacity gets tighter, but currently it adds Belonging-trigger angles that the other pillars don't. Worth keeping for the launch + sustain phases specifically.
+Narration pre-check (structural, not scored): every selected channel's Execution Brief carries its Legibility block — LinkedIn/X/Reddit in the Packed state (`pack_verified 2026-05-09`), Search/AEO + Mailbox in the Absent state (no faked tailoring); the campaign-level `## Why This Works` is present, ordered after Launch Sequence / before Review Gate, grounded in `icp-research.md`. Strong PLG plan. Pillar 4 ("The async-first movement") is the weakest at 10% — could be cut to a 3-pillar plan if team capacity gets tighter, but currently it adds Belonging-trigger angles that the other pillars don't. Worth keeping for the launch + sustain phases specifically.
 ```
+
+---
+
+## Orchestrator writes the campaign-level Why This Works block
+
+The orchestrator authors ONE `## Why This Works` block (product-fit — distinct from the per-channel channel-fit Legibility blocks), placed as body section 12: **after `## Launch Sequence`, before `## Review Gate`**. It synthesizes across the whole plan, tracing the bet + load-bearing choices to the run's ICP/positioning/growth-motion inputs (`_shared/why-this-works-convention.md`):
+
+```markdown
+## Why This Works
+
+**Why this works**
+- The bet: eng managers feel the status-meeting tax acutely enough that a Problem-led, proof-backed PLG plan converts attention into 14-day trials without a sales touch. Falsified if trial signups from owned + LinkedIn don't beat the team's baseline CPL in the first 30 days.
+- For this product: leads with the "meeting tax" pillar at 35% because it's the ICP's #1 ranked pain in their words — "I spend 12 hours/week in status meetings" (`icp-research.md` §3.2) — not a generic "be more productive."
+- For this product: weights Search/AEO + LinkedIn as Primary because the ICP is 60% Problem Aware / 30% Solution Aware (`icp-research.md` awareness dist.) and PLG monetizes self-serve intent — so the plan captures intent (Search) and seeds problem-aware reach (LinkedIn), not paid Mailbox/IRL the growth motion de-weights.
+- For this product: the lead angle is "Teams who switched" case studies for the Product-Aware 10%, because the ICP's top buying criterion is "case studies of engineering teams" (`icp-research.md` §5.3) — trust proof, not feature lists.
+- The differentiator: wouldn't survive a competitor swap — it's the *async-first-for-eng-managers* bet (status-theater pain + the async movement at +180% YoY), with a no-competitor-naming / no-"AI-powered" constraint baked in (founder mandate). A generic PM tool can't run this plan verbatim (Competitor-Swap-clean).
+```
+
+This block is grounded (ICP + product context present). A cold repo with no `icp-research.md` would instead emit the convention's **Absent** state ("general principles only; run `/research-icp`") — never a fabricated pain or positioning claim.
 
 ---
 
@@ -196,6 +258,8 @@ skill: plan-campaign
 version: 1
 date: 2026-05-18
 status: done
+pack_verified: 2026-05-09   # union freshness of the loaded channel packs (linkedin/x/reddit)
+applied_tactics: [linkedin-contrarian-conversation-comments, linkedin-link-in-comment, x-reply-provocation, x-first-hour-author-burst, reddit-value-first-9to1]
 campaign_name: "Async-first PM tool — Q2 trial drive"
 goal: "500 trial signups in 60 days"
 audience: "Engineering managers, 50-200 person companies"
@@ -205,6 +269,8 @@ budget_tier: "$20k/mo paid"
 duration_days: 60
 ---
 ```
+
+Body section order per `format-conventions.md` — the two narration surfaces are the trust layer between the plan and the scorecard: the per-channel `**Legibility — applied expertise**` blocks sit under each Channel Execution Brief (channel-fit), and the single `## Why This Works` block (product-fit) is section 12, after `## Launch Sequence` and before `## Review Gate`. Both pass the critic's structural presence/order pre-check.
 
 Status: `done` — full critic PASS on cycle 1, no carry-over concerns.
 

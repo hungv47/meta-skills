@@ -144,7 +144,7 @@ No credentials detected — every platform is export-mode. Import the scheduler-
 - [ ] Operator review: every post lands on schedule + on brief
 ```
 
-### `platforms/x.md` (thread — 10-field frontmatter)
+### `platforms/x.md` (thread — 12-field frontmatter)
 
 ```markdown
 ---
@@ -156,6 +156,8 @@ char_count: 612
 media_refs:
   - docs/forsvn/artifacts/marketing/produce-asset/slots/hero-1x1.png
 mode: export
+pack_verified: 2026-06-18
+applied_tactics: [thread-split-at-sentence, hook-in-post-1-under-140, cta-in-final-post, link-out-of-post-1]
 draft_url: null
 post_url: null
 automation_result: n/a
@@ -191,6 +193,14 @@ Local-first, matte, calm — Forest Shadow, not another blue AI gradient.
 ## Notes
 
 X thread — post via Typefully thread-up, or post 1/3 then reply-chain. CTA URL is an external link; X penalizes links in the main post, but final-post placement is the accepted thread convention.
+See product-fit rationale: `docs/forsvn/artifacts/marketing/write-social/local-first-capture-2026-06-10-quiet-capture.md` § Why this works (carried forward — not re-authored here).
+
+## Legibility
+
+**Legibility — applied expertise**
+- Pack: `x` · verified 2026-06-18 · status reviewed
+- Tactics applied: split the >280-char body into a 3-post thread at sentence boundaries · hook landed in post 1 inside the first 140 chars · CTA held to the final post · trial link kept out of post 1 (X downranks a main-post link)
+- Why these: X's whole feed is the 280-char window, so the hook must stand alone (pack §2); the link-in-post-1 reach penalty is a documented anti-pattern (pack §4), so the link rides the CTA post.
 ```
 
 ### `platforms/linkedin.md`
@@ -205,6 +215,8 @@ char_count: 884
 media_refs:
   - docs/forsvn/artifacts/marketing/produce-asset/slots/hero-1x1.png
 mode: export
+pack_verified: 2026-06-18
+applied_tactics: [paragraph-preserve, cta-inside-210-fold, hashtag-stack-end-of-post, link-to-first-comment]
 draft_url: null
 post_url: null
 automation_result: n/a
@@ -239,6 +251,14 @@ Curious how a local-first capture loop changes your week?
 ## Notes
 
 LinkedIn renders line breaks literally — double-newline = paragraph break, preserved from the write-social body. No external link in the body (reach penalty); put the trial link in the first comment.
+See product-fit rationale: `docs/forsvn/artifacts/marketing/write-social/local-first-capture-2026-06-10-quiet-capture.md` § Why this works (carried forward — not re-authored here).
+
+## Legibility
+
+**Legibility — applied expertise**
+- Pack: `linkedin` · verified 2026-06-18 · status reviewed
+- Tactics applied: preserved the write-social double-newline paragraphing (LinkedIn renders breaks literally) · pulled the reply-bait CTA inside the ~210-char "see more" fold · moved the 4-tag hashtag stack to end-of-post · routed the trial link to the first comment
+- Why these: LinkedIn ranks on dwell + comments (pack §3), so the value lands above the fold and the CTA is a question not a link; a body link is a documented reach penalty (pack §4), so it goes to the first comment.
 ```
 
 ### `platforms/instagram.md`
@@ -253,6 +273,8 @@ char_count: 498
 media_refs:
   - docs/forsvn/artifacts/marketing/produce-asset/slots/hero-1x1.png
 mode: export
+pack_verified: none
+applied_tactics: []
 draft_url: null
 post_url: null
 automation_result: n/a
@@ -287,6 +309,13 @@ Caption-bottom stack (after 5 blank lines): #localfirst #devtools #buildinpublic
 ## Notes
 
 Single-image feed post. Hashtags caption-bottom (narrative post default). No TikTok/other-platform watermark on the asset (IG suppresses watermarked cross-posts).
+See product-fit rationale: `docs/forsvn/artifacts/marketing/write-social/local-first-capture-2026-06-10-quiet-capture.md` § Why this works (carried forward — not re-authored here).
+
+## Legibility
+
+**Legibility — applied expertise**
+- No depth pack for Instagram yet — using general copy/marketing principles only.
+- Not channel-tailored: the caption shape, hashtag count/position, and the ~125-char fold were applied from general principles, NOT a verified IG ranking-signal pack. (`pack_verified: none` + empty `applied_tactics` mirror this Absent state.)
 ```
 
 ### `scheduler-imports/typefully.json` (Route A — no API call)
@@ -347,7 +376,7 @@ Aggregate ≥ 56/80 AND every dim ≥ 6 → **PASS** (export/draft critic runs a
 - d4 CTA + hook placement: 8 — hooks land early; CTAs inside each platform's truncation point
 - d5 scheduler-format validity: 9 — typefully.json parses; buffer.csv 6 cols; hootsuite.csv 7 cols; generic.csv 6 cols; UTF-8 no BOM
 - d6 credential safety: 10 — grep clean (no _KEY/_TOKEN/_SECRET); credentials_detected booleans only
-- d7 browser-automation safety: n/a — Route A export, no automation ran (dim scoped out, not scored down)
+- d7 narration & browser-automation safety: 10 — narration sub-check: all 3 drafts carry a `## Legibility` block placed last; X + LinkedIn are Packed (`pack_verified 2026-06-18`, tactics named, frontmatter mirrors); Instagram is correctly Absent (`pack_verified: none`, empty `applied_tactics` — no IG depth pack exists, so no fabricated pack); zero `## Why this works` blocks in the bundle (product-fit carried forward via each `## Notes` pointer to the upstream write-social artifact). Automation sub-check: Route A export, no automation ran (sub-check trivially passes)
 ```
 
 No FAIL → no re-dispatch cycle. (A persistent export FAIL after 2 formatter cycles would return `BLOCKED` and write **no bundle**; the ledger rows are written at export only on a passing bundle.)
@@ -363,7 +392,9 @@ The default above never posts. `--mode=publish` is explicit opt-in and **cannot*
 ## What this example pins
 
 - Default mode is **bundle/export** — auto-detect picks the highest non-publish mode and never posts live.
-- The produced bundle is the exact 9-file shape: manifest (16-field frontmatter + 5 sections) + one per-platform draft each (10-field frontmatter + Body/Hashtags/CTA/Media/Notes) + all four scheduler-import files + README.
+- The produced bundle is the exact 9-file shape: manifest (16-field frontmatter + 5 sections) + one per-platform draft each (12-field frontmatter + Body/Hashtags/CTA/Media/Notes/**Legibility**) + all four scheduler-import files + README.
 - Each platform draft is platform-native, not a cross-paste: X threaded, LinkedIn paragraphed with a comment-bait close, IG caption-bottom stack with a bio-link CTA.
+- **Per-platform Legibility is authored here, every draft** — the channel-fit narration of the actual formatting tactics applied (thread-split, fold-safe CTA, hashtag placement), pack-cited with a `pack_verified` date and mirrored into the `pack_verified`/`applied_tactics` frontmatter. X + LinkedIn are Packed; **Instagram is the Absent state** (`pack_verified: none`, empty `applied_tactics`) because no IG depth pack exists — the transparent degrade, never a fabricated pack.
+- **Why-this-works is carried forward, not duplicated** — publish-social makes no copy decisions, so the product-fit rationale stays on the upstream write-social artifact; each draft's `## Notes` points to it (`§ Why this works`) rather than re-authoring a second block. The critic's dim 7 (Narration & Browser-Automation Safety) enforces both: a missing/invalid/un-mirrored `## Legibility` block, or a duplicated `## Why this works`, is a structural FAIL.
 - One `exported` ledger row per platform is written at export, keyed by the **source write-social `id`** — the anchor metric-ingest uses to attribute real engagement back to the producing artifact.
 - Credentials are probed binary-only; no secret ever lands in the bundle (dim 6 grep + booleans-only `credentials_detected`).

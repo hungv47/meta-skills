@@ -17,6 +17,17 @@ This is a **worked example**. Actual hero brief artifact: `docs/forsvn/artifacts
 
 ---
 
+## What This Brief Bets On
+
+> Section 2 of the hero brief — this brief's **product-fit** block per `_shared/why-this-works-convention.md` (the brief-style "the bet" the convention allows; brief-shortform carries product-fit here, never in a second `## Why this works` block).
+
+- **The bet:** a technical RevOps founder who names the distrust his ICP already feels ("your churn dashboard is lying to you") can hold a slow-burn talking-head in a fast-cut feed — the stillness *is* the pattern interrupt, and the contrarian claim earns the comment. Falsified if loop rate or completion underperforms the niche sample, or the held shots bleed retention before 0:14.
+- **For this product:** opens on the ICP's exact distrust in their words — "I don't trust our own retention numbers" (`research/icp-research.md`, voice-of-customer) — not a generic "track churn better."
+- **For this product:** runs single-setup talking-head with one ledger-page prop because the BRAND.md archetype is a technical founder/personal brand (`brand/BRAND.md`); the credibility is the founder's reasoning, so the format strips everything that isn't the argument.
+- **The differentiator:** a generic analytics tool can't make this claim land — it's the *founder calling his own category's dashboards liars* and showing the ledger fix; swap the brand and the contrarian claim has no standing (Competitor-Swap-clean).
+
+---
+
 ## Research signals
 
 - Shorts B2B SaaS niche: contrarian claim 6/11, screen-share walkthrough 4/11; credential flash underperforms (1/11)
@@ -61,6 +72,14 @@ Burned-in captions throughout (silent-friendly mandate). Overlays follow product
 - **Verbal (0:38–0:44):** none — claim carries; comment-bait is the ask
 - **Caption:** "Where does your dashboard disagree with finance? ↓" + link in profile
 
+### Legibility — applied expertise
+
+> Closes the hero's Format Specification per `_shared/legibility-convention.md` — **channel-fit** (distinct from the product-fit "What This Brief Bets On" above). Packed state: a current Shorts pack covered the hero; the pacing departure is narrated against the pack default, not hidden.
+
+- Pack: `shorts` · verified 2026-05-09 · status reviewed
+- Tactics applied: contrarian-claim hook archetype (6/11 Shorts sample) in the cold open (§1) · silent-friendly original VO + burned-in captions, no music bed (§2) · loop-back ending (shot 5 inverts shot 1's line + framing) for loop-rate (§2) · comment-bait CTA, no outbound link in-frame (§3)
+- Why these: Shorts ranks on loop rate + completion and tolerates slower builds than TikTok (pack §2). The slow-burn (shots held to 14s) is a **documented departure** from the §1 "reframe every 3–5s" default — justified by the n=11 sample's higher hold tolerance in this niche, with retention carried by verbal escalation + the prop beat; the loop-back protects the loop-rate signal the departure risks.
+
 ---
 
 ## Why this example triangulates
@@ -69,3 +88,4 @@ Burned-in captions throughout (silent-friendly mandate). Overlays follow product
 - **Production mode:** single-setup talking-head vs. example 1's multi-location live-action and example 2's motion-graphic
 - **Platform/market:** Shorts-as-hero, US B2B vs. VN TikTok and US consumer e-com
 - **Pacing:** a documented intentional departure from platform defaults — showing how the critic accepts justified departures
+- **Legibility under a departure:** the Legibility block narrates the slow-burn *against* the pack's §1 default rather than hiding it — the honest "Packed, but we departed and here's why" shape, distinct from the product-fit bet in `## What This Brief Bets On`

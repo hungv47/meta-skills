@@ -27,8 +27,10 @@ Conforms to `references/_shared/artifact-contract-template.md`. `validate-artifa
 4. **`## Keep / Drop / Test`** — concrete next-launch actions; Test items phrased as hypotheses.
 5. **`## Hypothesis Verdicts`** — each launch hypothesis: confirmed / refuted / inconclusive + number.
 6. **`## Pack Write-Back`** — the exact changelog row(s) appended to the channel pack (mirrors the on-disk append).
-7. **`## Legibility`** — pack loaded + `last_verified` + attributed tactics, or the transparent-degrade statement (no pack).
+7. **`## Legibility`** — the `**Legibility — applied expertise**` block per [`_shared/legibility-convention.md`](_shared/legibility-convention.md): the pack measured against + its `last_verified` + the **specific** §3/§5 signals the diagnosis read the numbers through (concrete, §-cited — never a bare "measured against the pack" label), or the transparent-degrade Absent shape when no pack covered the channel. Authored by the diagnosis agent; its facts mirror into the `pack_verified` + `applied_tactics` frontmatter fields. **Legibility only — measure-results produces a measurement, not a marketing artifact, so it carries no `## Why this works` block.**
 8. **`## Critic Verdict`** — 6-row table (5 dims + total).
+
+The `## Legibility` block and the `pack_verified` / `applied_tactics` frontmatter must agree: `pack_verified` = the block's pack `last_verified` (`none` in the Absent state), and `applied_tactics` = the §3/§5 signals the block narrates (empty list in the Absent state). `pack_verified: none` + empty `applied_tactics` is the machine-readable Absent state.
 
 ## Pack write-back (the loop closer)
 

@@ -82,7 +82,7 @@ Before delivering, the **critic agent** verifies:
 - [ ] Launch sequence follows ORB (Owned → Rented → Borrowed)
 - [ ] Budget allocation present per selected channel (when budget tier declared)
 
-Full 11-row Quality Gate Checklist + 4 Internal Consistency Checks + 9-row Rewrite Routing live in [`../../agents/critic-agent.md`](../../agents/critic-agent.md). Max 2 rewrite cycles per critic verdict.
+Full 11-row Quality Gate Checklist + 4 Internal Consistency Checks + 11-row Rewrite Routing (the 9 component routes + 2 narration-block structural routes) live in [`../../agents/critic-agent.md`](../../agents/critic-agent.md). Max 2 rewrite cycles per critic verdict.
 
 ### Soft check — Social-media grounding
 

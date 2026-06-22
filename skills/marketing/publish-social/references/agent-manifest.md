@@ -8,7 +8,7 @@ Loaded by the orchestrator when entering route dispatch.
 |---|---|---|---|
 | Formatter | 1 | `agents/formatter-agent.md` | Per-platform formatting + scheduler-import file emission + Typefully API draft when credentials present. |
 | Automation | 2 | `agents/automation-agent.md` | Browser-automation for 8 non-X platforms via agent-browser — drafts (D17) OR live Send (D18 `--mode=publish`). Per-platform sequential with 3s pacing. |
-| Critic | 3 | `agents/critic-agent.md` | 8-dim rubric: char-caps · media specs · CTA visibility · hashtag rules · scheduler-format validation · anti-pattern compliance · browser-automation safety · live-publish safety (dim 8 orchestrator-applied). |
+| Critic | 3 | `agents/critic-agent.md` | 8-dim rubric: char-caps · media specs · CTA visibility · hashtag rules · scheduler-format validation · anti-pattern compliance · narration & browser-automation safety · live-publish safety (dim 8 orchestrator-applied). |
 
 ## Routes
 
@@ -29,7 +29,7 @@ formatter (format every draft + write export-mode fallback)
   → confirmation gate (per-platform 80-char preview + single confirm)
        decline / timeout → roll back to export for draft-route platforms
   → automation-agent (sequential, 3s pacing, per-platform export fallback on failure)
-  → critic (dim 7 = automation safety)
+  → critic (dim 7 = narration + automation safety)
   → write bundle
 ```
 

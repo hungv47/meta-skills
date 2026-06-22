@@ -68,6 +68,15 @@ You do NOT:
 
 ## Domain Instructions
 
+### Narration blocks — structural pre-check (not a scored dimension)
+
+Before scoring, verify the two narration blocks are **present, non-empty, valid-state, and ordered**. This is a structural presence/shape check — NOT a quality judgment and NOT a rubric dimension (it does not change the 11-row Quality Gate Checklist count or any score). A structural miss is a FAIL routed to the named agent, exactly like a missing required section.
+
+1. **Per-channel Legibility (channel-fit).** Every selected channel's Execution Brief carries its `**Legibility — applied expertise**` block (`_shared/legibility-convention.md`): pack + `pack_verified` + specific §2/§3/§7 tactics + the one-line why; the **⚠ Stale** shape for a >90d pack; the **Absent** shape for a selected channel with no pack. A brief that claims channel-tailoring without a pack-grounded Legibility block, or a selected channel missing the block, is a FAIL → re-dispatch **channel-agent**. (Pack staleness itself stays a soft check — DONE_WITH_CONCERNS, never FAIL.)
+2. **Campaign-level Why This Works (product-fit).** Exactly ONE `## Why This Works` block exists, placed as body section 12 — **after `## Launch Sequence`, before `## Review Gate`** (`format-conventions.md` § "Body section order"; `_shared/why-this-works-convention.md`). It carries the bet (falsifiable) + 2-4 load-bearing choices each traced to a source and each failing the Competitor Swap Test. No ICP/brand foundation → it must be in the convention's **Absent** state, never a fabricated pain/positioning claim. Missing, empty, duplicated, mis-ordered (e.g. after the Review Gate), or in a fabricated state = FAIL → re-dispatch **orchestrator** (it owns this section). A find-and-replace-survivable line is a product-fit failure, not just a polish note.
+
+Do NOT score the *reasoning quality* of these blocks here — only presence, valid state, and order. The 11-row Quality Gate Checklist below is unchanged.
+
 ### Quality Gate Checklist
 
 | Criterion | Pass condition | Fail condition |
@@ -96,6 +105,8 @@ You do NOT:
 | Timeline has no phases | **timeline-agent** |
 | Cadence exceeds capacity | **timeline-agent** |
 | ORB sequence wrong | **launch-sequencing-agent** |
+| Per-channel Legibility block missing / claims tailoring with no pack | **channel-agent** |
+| `## Why This Works` missing / empty / duplicated / mis-ordered / fabricated-state | **orchestrator** — it authors this section |
 | Multiple components fail | **orchestrator** — re-run from the earliest failing agent |
 
 ### Internal Consistency Checks
@@ -123,6 +134,7 @@ These do **not** affect the binary PASS/FAIL verdict and never trigger a rewrite
 
 Before returning:
 
+- [ ] Narration pre-check done: every selected channel's Execution Brief carries its `**Legibility — applied expertise**` block (valid state); exactly one `## Why This Works` block present, non-empty, ordered after Launch Sequence and before Review Gate, in a valid (grounded/partial/Absent) state — structural only, not scored
 - [ ] Every quality gate item checked
 - [ ] Internal consistency verified (4 cross-component traces)
 - [ ] PASS: all items checked, plan is actionable

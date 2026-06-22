@@ -137,6 +137,7 @@ The guard-checker-agent enforces these in order. A **format cap** violation = RE
 | Sub-rule / flair / lane fit | HARD GUARD | Reddit | target sub named + allowed lane + required flair noted |
 | Primary identifier within cap | format cap | all | tagline ≤60 (PH) / title ≤300 (Reddit) per §2 |
 | Bundle component present | format cap | all | identifier + descriptor + anchor + amplification + metadata all present |
+| Narration blocks present + valid + ordered | format cap (structural) | all | `**Legibility — applied expertise**` AND `**Why this works**` both present, non-empty, in a valid state per `_shared/legibility-convention.md` / `_shared/why-this-works-convention.md`, placed after Channel metadata + compliance and before Critic verdict. Pack supplied → Legibility in Packed/Stale state carrying a `pack_verified` date (not Absent). Missing, empty, mis-ordered, or Absent-despite-a-pack = REVISION_REQUIRED (structural presence/shape check, never a quality judgment) |
 | First comment 80–150 words | soft | PH | advisory; flag, do not block |
 | Go-live / posting window present | soft | all | advisory |
 
