@@ -7,6 +7,11 @@ promptSignals:
   phrases:
     - "marketing plan"
     - "campaign plan"
+    - "plan a campaign"
+    - "plan the campaign"
+    - "plan my campaign"
+    - "create a campaign"
+    - "build a campaign"
     - "go to market"
     - "channel strategy"
     - "content calendar"
@@ -15,6 +20,7 @@ promptSignals:
   allOf:
     - [marketing, plan]
     - [channel, strategy]
+    - [plan, campaign]
   anyOf:
     - "campaign"
     - "channel"

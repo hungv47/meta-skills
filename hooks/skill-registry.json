@@ -1529,9 +1529,13 @@
       "phrases": [
         "sounds like ai",
         "too robotic",
+        "less robotic",
         "humanize this",
         "remove ai patterns",
         "make it sound human",
+        "make it sound natural",
+        "sound more natural",
+        "sound more human",
         "ai slop"
       ],
       "allOf": [
@@ -1542,6 +1546,10 @@
         [
           "sound",
           "human"
+        ],
+        [
+          "sound",
+          "natural"
         ]
       ],
       "anyOf": [
@@ -1754,6 +1762,11 @@
       "phrases": [
         "marketing plan",
         "campaign plan",
+        "plan a campaign",
+        "plan the campaign",
+        "plan my campaign",
+        "create a campaign",
+        "build a campaign",
         "go to market",
         "channel strategy",
         "content calendar",
@@ -1768,6 +1781,10 @@
         [
           "channel",
           "strategy"
+        ],
+        [
+          "plan",
+          "campaign"
         ]
       ],
       "anyOf": [

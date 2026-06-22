@@ -7,13 +7,18 @@ promptSignals:
   phrases:
     - "sounds like ai"
     - "too robotic"
+    - "less robotic"
     - "humanize this"
     - "remove ai patterns"
     - "make it sound human"
+    - "make it sound natural"
+    - "sound more natural"
+    - "sound more human"
     - "ai slop"
   allOf:
     - [ai, pattern]
     - [sound, human]
+    - [sound, natural]
   anyOf:
     - "humanmaxxing"
     - "humanize"
