@@ -128,6 +128,12 @@ function walk(dir: string): void {
     const abs = join(dir, e.name);
     const rel = relative(ROOT, abs).split("\\").join("/");
     if (rel.includes("/.archive/")) continue;
+    // marketing/copy/ holds write-social's deliberate `social-copy-artifact`
+    // schema-as-contract (skills/marketing/write-social/references/format-conventions.md),
+    // validated by that skill's own format-checker — exempt from the canonical artifact
+    // contract, like `.forsvn/performance/` (references/performance-data.md). They stay
+    // indexed by manifest-sync so they remain reviewable; only this strict gate skips them.
+    if (rel.includes("/artifacts/marketing/copy/") || rel.endsWith("/artifacts/marketing/copy")) continue;
     if (e.isDirectory()) {
       walk(abs);
       continue;

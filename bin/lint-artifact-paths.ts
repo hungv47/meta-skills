@@ -57,6 +57,10 @@ function walk(dir: string): void {
     const abs = join(dir, entry.name);
     const rel = relative(ROOT, abs).split("\\").join("/");
     if (rel.includes("/.archive/") || entry.name === ".archive") continue;
+    // write-social's social-copy schema-as-contract uses a deliberate
+    // marketing/copy/<platform>-<date>-<slug> path (format-conventions.md) — exempt from
+    // the by-stack grammar, like `.forsvn/performance/` (references/performance-data.md).
+    if (rel.includes("/artifacts/marketing/copy/") || rel.endsWith("/artifacts/marketing/copy")) continue;
     if (entry.isDirectory()) {
       walk(abs);
       continue;
