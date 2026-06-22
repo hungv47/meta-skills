@@ -419,6 +419,12 @@ const server = Bun.serve({
             }
             decisionReason = body.decision_reason;
           }
+          // C3 inline edit: an operator's in-place body edit, accepted only on a
+          // non-approve decision (the editor opens on Request changes). writeDecision
+          // writes it byte-fidelity + diffs it into `## Reviewer notes`; a no-op /
+          // reformat-only edit normalizes away and changes nothing.
+          const editedBody =
+            body.decision !== "approved" && typeof body.editedBody === "string" ? body.editedBody : undefined;
           try {
             const view = writeDecision(args.root, id, {
               decision: body.decision as (typeof VALID_DECISIONS)[number],
@@ -429,6 +435,7 @@ const server = Bun.serve({
                   : new Date().toISOString().slice(0, 10),
               comment: typeof body.comment === "string" ? body.comment : "",
               decisionReason,
+              editedBody,
               reviewLatencyMs: typeof body.reviewLatencyMs === "string" ? body.reviewLatencyMs : undefined,
               expectedHash: typeof body.expectedHash === "string" ? body.expectedHash : null,
             });

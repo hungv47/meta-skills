@@ -14,7 +14,13 @@ import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { join, sep, isAbsolute, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
-import { atomicWrite } from "./collab";
+import {
+  atomicWrite,
+  splitDoc,
+  normalizeBody,
+  unifiedDiff,
+  renderSuggestedEditBlock,
+} from "./collab";
 import { appendVerdict, verdictTs } from "./verdicts";
 
 // --- DTOs (mirror desktop/src/types.ts; the wire boundary is structural) -----
@@ -330,6 +336,11 @@ export interface DecisionInput {
   /** C2/L1 review latency (open→decide, integer ms as a string) the web shell
    *  computes from its open timestamp; "" / absent when unknown. */
   reviewLatencyMs?: string;
+  /** C3 inline edit — the operator's in-place body edit, sent ONLY on a `suggested`
+   *  decision whose body changed. The body is written byte-fidelity and the unified
+   *  diff round-trips under `## Reviewer notes → ### Suggested edit`, mirroring the
+   *  CLI workbench path. Reformat-only noise is normalized out (no spurious diff). */
+  editedBody?: string;
   /** The hash the shell captured when it opened the artifact; null skips the guard. */
   expectedHash: string | null;
 }
@@ -377,6 +388,23 @@ export function writeDecision(root: string, idOrPath: string, input: DecisionInp
   else if (input.decision === "approved" && /^decision_reason:\s*\S/m.test(current))
     fmFields.decision_reason = "";
   let next = frontmatterUpsert(current, fmFields);
+  // C3 — inline-edit body round-trip: on a `suggested` decision the operator may
+  // have hand-corrected the body. Replace it (byte-fidelity, frontmatter kept) and
+  // persist the exact correction as a unified diff under `## Reviewer notes` so the
+  // producing agent reads the literal fix. Reformat-only noise is normalized out
+  // (no spurious diff / body change). Mirrors forsvn-preview.ts's CLI workbench
+  // path; no new .md writer — frontmatterUpsert + atomicWrite are the trusted ones.
+  if (input.decision !== "approved" && typeof input.editedBody === "string") {
+    const onDiskBody = splitDoc(current).body;
+    if (normalizeBody(input.editedBody) !== normalizeBody(onDiskBody)) {
+      const fm = splitDoc(next).frontmatter; // frontmatter already carries the decision
+      next = fm + input.editedBody;
+      const block = renderSuggestedEditBlock(unifiedDiff(onDiskBody, input.editedBody));
+      next = /^## Reviewer notes\b/m.test(next)
+        ? next.replace(/\s*$/, "") + "\n" + block
+        : next.replace(/\s*$/, "") + `\n\n## Reviewer notes\n_${reviewer} · ${input.reviewedAt}_\n${block}`;
+    }
+  }
   const comment = input.comment.trim();
   if (comment.length > 0) {
     next = appendCommentBlock(next, renderCommentBlock(comment, reviewer, input.reviewedAt));
