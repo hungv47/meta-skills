@@ -373,9 +373,13 @@ async function main(): Promise<number> {
     promptCleanup?.();
   }
 
-  // Graceful stop — let any in-flight response (including the deferred /done
-  // resolve) drain before the socket closes.
-  await server.stop();
+  // Force-close: stop accepting connections AND drop any in-flight/half-open socket
+  // immediately. A graceful `server.stop()` instead can wedge process teardown when a
+  // duplicate POST races the shutdown — it resolves while leaving a socket Bun still
+  // tracks, so the subsequent process.exit(0) hangs (~30s until SIGKILL), which the e2e
+  // duplicate-POST scenario surfaces intermittently under load. The deferred /done 200
+  // was already handed to the socket before this. forsvn-web.ts force-closes likewise.
+  server.stop(true);
 
   if (!result.ok && result.reason === "quit") {
     // q: world unchanged — no write, decision_state stays pending.

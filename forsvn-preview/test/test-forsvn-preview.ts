@@ -20,6 +20,17 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PREVIEW = join(__dirname, "..", "bin", "forsvn-preview.ts");
 
+// Readiness/exit ceilings. Each scenario spawns a real `bun` preview server; these are SAFETY
+// nets for "spawn/serve/exit hung forever", NOT performance assertions — the happy path resolves
+// in well under a second (waitForMatch polls every 50ms; onExit resolves on the exit event). When
+// this suite runs inside run-unit-tests after ~22 sibling co-work suites, CPU contention can push a
+// cold `bun` start or a post-decision graceful shutdown past a tight deadline, flaking a scenario
+// that is otherwise correct (observed: "duplicatePost — child did not exit within 8000ms"). Generous
+// ceilings absorb that; the runner's own 120s per-suite SIGKILL stays the real hang-backstop.
+const SERVE_TIMEOUT_MS = 30_000; // wait for the "serving … at <url>" banner (server boot)
+const EXIT_TIMEOUT_MS = 30_000; // wait for the CLI child to exit after a decision
+const ONESHOT_TIMEOUT_MS = 30_000; // wait for a one-shot (--headless/--json) CLI to finish
+
 const results: { name: string; ok: boolean; message?: string }[] = [];
 
 await run("happy path: 200 + frontmatter + archive", happyPath);
@@ -91,7 +102,7 @@ async function happyPath(): Promise<void> {
   const good = await postDone(url, { token: cfg.token, decision_state: "approved", comments: "looks good\nship it" });
   assertEq(good.status, 200, "good payload should yield 200");
 
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
 
   const summary = JSON.parse(ctx.stdoutBuf.text.trim().split(/\r?\n/).filter(Boolean).pop() ?? "{}");
@@ -113,7 +124,7 @@ async function happyPath(): Promise<void> {
 
 async function refuseMissingMd(): Promise<void> {
   const ctx = setupProject({ omitMd: true });
-  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], 5000);
+  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], ONESHOT_TIMEOUT_MS);
   assertEq(exit.code, 1, `expected exit 1 for missing md; got ${exit.code}`);
   assertMatches(ctx.stderrBuf.text, /Markdown artifact not found/, "stderr should mention missing md");
   ctx.cleanup();
@@ -121,7 +132,7 @@ async function refuseMissingMd(): Promise<void> {
 
 async function refuseWrongState(): Promise<void> {
   const ctx = setupProject({ decisionState: "approved" });
-  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], 5000);
+  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], ONESHOT_TIMEOUT_MS);
   assertEq(exit.code, 1, `expected exit 1 for non-pending state; got ${exit.code}`);
   assertMatches(ctx.stderrBuf.text, /not "pending"/, "stderr should explain non-pending refusal");
   ctx.cleanup();
@@ -131,7 +142,7 @@ async function refuseDirtyTree(): Promise<void> {
   const ctx = setupProject();
   // Dirty the seeded MD so git status --porcelain reports a modification.
   appendFileSync(ctx.mdPath, "\nextra line\n");
-  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], 5000);
+  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--json"], ONESHOT_TIMEOUT_MS);
   assertEq(exit.code, 1, `expected exit 1 for dirty tree; got ${exit.code}`);
   assertMatches(ctx.stderrBuf.text, /uncommitted changes/, "stderr should explain dirty refusal");
   ctx.cleanup();
@@ -158,7 +169,7 @@ async function malformedPayload(): Promise<void> {
   // Recover with a good payload so the CLI can exit cleanly.
   const r3 = await postDone(url, { token: cfg.token, decision_state: "denied" });
   assertEq(r3.status, 200, "good payload after malformed should still 200");
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   assertEq(exit.code, 0, `CLI should exit 0 after recovery; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   ctx.cleanup();
 }
@@ -194,7 +205,7 @@ async function duplicatePost(): Promise<void> {
     if (r2.status !== 409) throw new Error(`second /done returned ${r2.status}; expected 409 or connection-refused`);
   }
 
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   ctx.cleanup();
 }
@@ -224,7 +235,7 @@ async function traversalReject(): Promise<void> {
 
     // Exit cleanly so the test runner can move on.
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, `CLI should exit 0`);
   } finally {
     try { unlinkSync(outside); } catch {}
@@ -257,7 +268,7 @@ async function relativePathServing(): Promise<void> {
     // Done so the CLI can exit.
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   } finally {
     ctx.cleanup();
@@ -366,7 +377,7 @@ async function listPrefersForsvnOverGit(): Promise<void> {
     const child = spawn("bun", [PREVIEW, "list", "--json"], { cwd: join(gp, "parent", "child"), stdio: ["ignore", "pipe", "pipe"] });
     child.stdout!.on("data", (b) => { out.text += b.toString(); });
     child.stderr!.on("data", (b) => { errb.text += b.toString(); });
-    const { code } = await onExit(child, 8000);
+    const { code } = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(code, 0, `should resolve gp/.forsvn and exit 0; stderr=${errb.text.slice(-200)}`);
     const j = JSON.parse(out.text.trim());
     assertEq(j.pending.length, 1, "found the pending artifact under gp/.forsvn");
@@ -383,7 +394,7 @@ async function headlessRefusesPipedStdin(): Promise<void> {
   // OPT-IN: every other scenario in this suite spawns with piped stdio and
   // must keep hitting the plain serve path.
   const ctx = setupProject();
-  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--headless", "--json"], 5000);
+  const exit = await runCliOneShot(ctx, [ctx.htmlPath, "--no-open", "--headless", "--json"], ONESHOT_TIMEOUT_MS);
   assertEq(exit.code, 1, `expected exit 1 for piped-stdin headless; got ${exit.code}`);
   assertMatches(ctx.stderrBuf.text, /stdin is not interactive/, "refusal names the reason");
   assertMatches(ctx.stderrBuf.text, /exit 1/, "refusal carries the exit code");
@@ -433,7 +444,7 @@ async function formA11yContract(): Promise<void> {
 
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   } finally {
     ctx.cleanup();
@@ -455,7 +466,7 @@ async function doneRejectsNonDecisions(): Promise<void> {
     }
     const good = await postDone(url, { token: cfg.token, decision_state: "approved" });
     assertEq(good.status, 200, "valid decision still lands after rejections");
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   } finally {
     ctx.cleanup();
@@ -532,7 +543,7 @@ async function g1GateWarnAndProceed(): Promise<void> {
     const cfg = await fetchPreviewConfig(url) as { token: string; gate_warning?: string | null };
     assertMatches(cfg.gate_warning ?? "", /no "## Review Gate" block/, "gate_warning rides preview-config (NoticeStrip data seam)");
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, "decision still lands despite the warn");
   } finally {
     try { child.kill("SIGKILL"); } catch {}
@@ -552,7 +563,7 @@ async function g1GateWarnAndProceed(): Promise<void> {
     assertMatches(ctx2.stdoutBuf.text, /has no checkbox lines/, "malformed-gate warn variant");
     const cfg2 = await fetchPreviewConfig(url2);
     await postDone(url2, { token: cfg2.token, decision_state: "approved" });
-    await onExit(child2, 8000);
+    await onExit(child2, EXIT_TIMEOUT_MS);
   } finally {
     try { child2.kill("SIGKILL"); } catch {}
     ctx2.cleanup();
@@ -572,7 +583,7 @@ async function g1NoWarnWhenGatePresent(): Promise<void> {
     const cfg = await fetchPreviewConfig(url) as { token: string; gate_warning?: string | null };
     assertEq(cfg.gate_warning, null, "gate_warning null when the gate renders fine");
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, "clean serve exits 0");
   } finally {
     try { child.kill("SIGKILL"); } catch {}
@@ -590,7 +601,7 @@ async function g2SeededSampleAha(): Promise<void> {
   const url = await waitForUrl(ctx);
   const cfg = await fetchPreviewConfig(url);
   await postDone(url, { token: cfg.token, decision_state: "approved" });
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   try {
     assertEq(exit.code, 0, "decision recorded");
     assertMatches(ctx.stdoutBuf.text, /that was the whole loop/, "aha line 1");
@@ -610,7 +621,7 @@ async function g2SeededSampleAha(): Promise<void> {
   const url2 = await waitForUrl(ctx2);
   const cfg2 = await fetchPreviewConfig(url2);
   await postDone(url2, { token: cfg2.token, decision_state: "approved" });
-  await onExit(child2, 8000);
+  await onExit(child2, EXIT_TIMEOUT_MS);
   try {
     if (/whole loop/.test(ctx2.stdoutBuf.text)) throw new Error("aha leaked into --json mode");
     const last = ctx2.stdoutBuf.text.trim().split(/\r?\n/).pop() ?? "";
@@ -693,7 +704,7 @@ async function g5JsonNextPending(): Promise<void> {
   const url = await waitForUrl(ctx);
   const cfg = await fetchPreviewConfig(url);
   await postDone(url, { token: cfg.token, decision_state: "approved" });
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   try {
     assertEq(exit.code, 0, "decision recorded");
     // The last-stdout-line contract survives: the FINAL line is the decision
@@ -720,7 +731,7 @@ async function g5HumanNextHint(): Promise<void> {
   const url = await waitForUrl(ctx);
   const cfg = await fetchPreviewConfig(url);
   await postDone(url, { token: cfg.token, decision_state: "suggested" });
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   try {
     assertEq(exit.code, 0, "decision recorded");
     assertMatches(ctx.stdoutBuf.text, /next pending: \* \.forsvn\/artifacts\/marketing\/write-copy-2026-05-25-next-one\.md/, "next-pending line names the artifact");
@@ -736,7 +747,7 @@ async function g5HumanNextHint(): Promise<void> {
   const url2 = await waitForUrl(ctx2);
   const cfg2 = await fetchPreviewConfig(url2);
   await postDone(url2, { token: cfg2.token, decision_state: "approved" });
-  const exit2 = await onExit(child2, 8000);
+  const exit2 = await onExit(child2, EXIT_TIMEOUT_MS);
   try {
     assertEq(exit2.code, 0, "decision recorded");
     assertMatches(ctx2.stdoutBuf.text, /pending \(0\) — queue clear/, "explicit queue-clear line");
@@ -830,7 +841,7 @@ async function u9ThemeBootAndPersistence(): Promise<void> {
 
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -860,7 +871,7 @@ async function u9LogoAssets(): Promise<void> {
 
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -905,7 +916,7 @@ async function u9NoRawLeak(): Promise<void> {
 
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -923,7 +934,7 @@ async function u9AnnotationsRoundTrip(): Promise<void> {
   ];
   const r = await postDone(url, { token: cfg.token, decision_state: "suggested", comments: "see annotations", annotations });
   assertEq(r.status, 200, "decision with annotations lands");
-  const exit = await onExit(child, 8000);
+  const exit = await onExit(child, EXIT_TIMEOUT_MS);
   try {
     assertEq(exit.code, 0, "CLI exits 0");
     // The review record carries the annotations exactly where reviewer notes go.
@@ -964,7 +975,7 @@ async function u9AnnotationsRejected(): Promise<void> {
     assertMatches(md, /^decision_state:\s*pending$/m, "nothing written on the 400s");
     const good = await postDone(url, { token: cfg.token, decision_state: "approved" });
     assertEq(good.status, 200, "clean decision still lands");
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -1002,7 +1013,7 @@ async function u9EditSave(): Promise<void> {
     // The conflict basis moved: a decision on the edited bytes still lands.
     const done = await postDone(url, { token: cfg.token, decision_state: "approved" });
     assertEq(done.status, 200, "decision after edit lands (hash basis advanced)");
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, "CLI exits 0");
     const final = readFileSync(ctx.mdPath, "utf8");
     assertMatches(final, /^decision_state:\s*approved$/m, "decision written onto the edited file");
@@ -1065,7 +1076,7 @@ async function u9SuggestionSeam(): Promise<void> {
     assertMatches(chromeJs, /Accept into text/, "accept affordance shipped");
 
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -1086,7 +1097,7 @@ async function u9DoneNextPending(): Promise<void> {
     if (j.next_pending === null) throw new Error("expected a named next pending, got queue-clear");
     assertEq(j.next_pending.skill, "write-copy", "next pending names the artifact by identity");
     if ("path" in (j.next_pending as object)) throw new Error("the /done response must not carry a path — title + skill + stack + date only");
-    await onExit(child, 8000);
+    await onExit(child, EXIT_TIMEOUT_MS);
   } finally {
     try { child.kill("SIGKILL"); } catch {}
     ctx.cleanup();
@@ -1100,7 +1111,7 @@ async function runPreview(root: string, args: string[]): Promise<{ code: number 
   const child = spawn("bun", [PREVIEW, ...args], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
   child.stdout!.on("data", (b) => { out.text += b.toString(); });
   child.stderr!.on("data", (b) => { errb.text += b.toString(); });
-  const { code } = await onExit(child, 8000);
+  const { code } = await onExit(child, EXIT_TIMEOUT_MS);
   return { code, stdout: out.text, stderr: errb.text };
 }
 
@@ -1126,7 +1137,7 @@ async function runList(root: string, args: string[]): Promise<{ code: number | n
   const child = spawn("bun", [PREVIEW, "list", ...args], { cwd: root, stdio: ["ignore", "pipe", "pipe"] });
   child.stdout!.on("data", (b) => { out.text += b.toString(); });
   child.stderr!.on("data", (b) => { errb.text += b.toString(); });
-  const { code } = await onExit(child, 8000);
+  const { code } = await onExit(child, EXIT_TIMEOUT_MS);
   return { code, stdout: out.text, stderr: errb.text };
 }
 
@@ -1235,7 +1246,7 @@ async function bundledChromeAssetsFallback(): Promise<void> {
 
     const cfg = await fetchPreviewConfig(url);
     await postDone(url, { token: cfg.token, decision_state: "approved" });
-    const exit = await onExit(child, 8000);
+    const exit = await onExit(child, EXIT_TIMEOUT_MS);
     assertEq(exit.code, 0, `CLI should exit 0; stderr=${ctx.stderrBuf.text.slice(-200)}`);
   } finally {
     ctx.cleanup();
@@ -1364,7 +1375,7 @@ async function runCliOneShot(ctx: Ctx, args: string[], timeoutMs: number): Promi
 }
 
 async function waitForUrl(ctx: Ctx): Promise<string> {
-  const banner = await waitForMatch(ctx.stdoutBuf, /serving .* at (http:\/\/[\d.:]+\/)/, 10000);
+  const banner = await waitForMatch(ctx.stdoutBuf, /serving .* at (http:\/\/[\d.:]+\/)/, SERVE_TIMEOUT_MS);
   return banner.match[1];
 }
 

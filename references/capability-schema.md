@@ -272,10 +272,14 @@ node hooks/build-registry.mjs --check
 bun _dev/verify-counts.ts
 node _dev/sync-skill-support.mjs --check
 bun _dev/eval-triggers.ts --require-all
+bun _dev/validate-coverage.ts
 node hooks/test-router.mjs
 bun bin/lint-artifact-paths.ts
 bun bin/validate-artifacts.ts --strict
 bun bin/validate-packs.ts --strict
+bun _dev/validate-legibility.ts
+bun _dev/validate-launch-kit.ts
+bun _dev/validate-recall.ts
 bun bin/manifest-sync.ts --check
 bun _dev/verify-version-alignment.ts
 bun _dev/audit-skill-budget.ts --out=../.forsvn/audit-skill-budget-latest.md && bun _dev/audit-skill-budget.ts --enforce-caps
@@ -286,6 +290,7 @@ bun _dev/verify-reference-integrity.ts
 bun _dev/audit-skill-listing.ts --check
 bun _dev/lint-catalog-coherence.ts --strict
 bun _dev/eval/golden-regression.ts
+bun _dev/run-unit-tests.ts
 ```
 
 `lint-artifact-paths` enforces the v2 flat-filename grammar (run
@@ -301,6 +306,65 @@ required section set per `pack_type`, and a non-empty Playbook (§5). Staleness
 wedge); the six legacy `schema_version: 1` video packs validate under the v1
 section set. Scopes to the source dir only (skips `_template.md`/`CONTRACT.md`
 and the generated `_shared/` mirrors).
+`validate-recall` (FOR-48 / U6, 2026-06-23) is the self-improvement analog of
+`validate-legibility`. U6 sharpens output from the operator's own data (N=1) via
+shrinkage recall (n/(n+k)); the load-bearing guarantee is **honesty on a thin
+store** — an `empty`/`sparse` store is narrated plainly, never a fabricated "your
+data shows…" (performance-grounding.md, mirrors legibility rule 2). This pins both
+halves: the contract doc still defines the Recall line + 3 weight states + the
+honesty rule + the `own_data_*` frontmatter mirror, AND the real `shrinkage.ts`
+helper still collapses an empty store to weight 0 (so an own-data claim is not even
+representable at n=0) with a monotonic blend hitting the 0.5 own-data floor at n=k.
+A drift in the doc OR the math fails. (The fuller `_dev/test-shrinkage.ts` /
+`test-distill-priors.ts` math suites pass but are not yet gate-wired — see the note
+on `run-unit-tests` and the `_dev/test-*.ts` set below.)
+`validate-launch-kit` (FOR-46 / U4, 2026-06-23) applies the U2 coverage guarantee
+to the Channel Kit bundle: `run-launch` assembles one channel's launch, and this
+pins the **signature-artifact ledger** in `launch-chain-spec.md` so every signature
+output the pack declares (PH: tagline, first maker-comment, gallery, run-of-show,
+hunter outreach) is either `wired` to a chain step or carries a NAMED `unwired-*`
+emitter-gap line — never silently dropped. The two open PH gaps (typed signature
+subtypes S3.5; hunter-outreach chain step S3.4) are net-new build, declared in the
+ledger, not faked. Fails if a signature artifact leaves the ledger or a row lacks a
+wired/unwired status.
+`run-unit-tests` (FOR-45 / U3, 2026-06-23; extended FOR-47 / U5) auto-discovers and
+runs every TS test suite across the repo's test roots (`tests/`,
+`forsvn-preview/test{,s}/`). The plan-preview trust contract — a multi-step plan a
+human approves *before* step 1, publish/spend nodes hard-gated, a resolvable
+dependency DAG (`bin/plan.ts`, `plan.test.ts` + `resolve-deps.test.ts`) — AND the
+co-work surface guarantees (U5: render fidelity, suggest-only / proof-local-only,
+ws-auth, route-surface, decision + inline-edit capture under `forsvn-preview/`) were
+self-running but wired into nothing — not the gate, not CI — so "legible
+orchestration, never autopilot" and "co-work safe" could rot on the next edit. This
+runs all 23 suites; a new one is gated with no hand-edit. (The harder co-work
+invariant — no accept/approve/publish tool over MCP — is the Rust `collab_guard.rs`,
+already gated by the `rust-tests.yml` CI workflow.) **Not yet covered:** the
+`_dev/test-*.ts` unit/fixture suites (`test-shrinkage`, `test-distill-priors`,
+`test-yaml-parser`, the `*-fixtures` pins, …) — 14 pass but `test-critic-gate-fixtures.ts`
+is **pre-existing-broken** (a `card.skill.id` TypeError from a critic-gate scorecard
+shape drift, commit 593e095), so `_dev/` can't be folded into `run-unit-tests` until
+that suite is fixed. Fixing it then adding `_dev` as a fourth test root closes the
+last ungated-suite gap.
+`validate-coverage` (FOR-44 / U2, 2026-06-23) guards the negative space of the
+"never silently miss" guarantee. Where `eval-triggers` proves each paraphrased
+intent routes to the right skill (positive space), this proves a capability-shaped
+ask that *no* skill covers produces **zero** confident routes — forcing the front
+door (`skills/meta/forsvn`, anti-patterns.md "the silent miss") into its honest
+"name the gap / clarify" branch instead of fabricating a capability. It runs the
+production scorer (`hooks/skill-router-core.mjs`) over the live registry against the
+out-of-stack corpus `tests/triggers/_no-match.jsonl`; a match there is a real
+over-route finding, not a corpus to relax.
+`validate-legibility` (FOR-43 / U1, 2026-06-23) is the other half of the
+applied-expertise contract — where `validate-packs` proves the *pack* exists and
+conforms, this proves the *narration* of it survives. For every author skill in
+`references/legibility-convention.md`'s "Consumed by" set (`write-social`,
+`write-launch`, `publish-social`, `brief-shortform`, `plan-campaign`,
+`measure-results`) it asserts the contract is loaded, structurally enforced in an
+agent/reference file (the FOR-40 presence rule), and *shown* in ≥1 worked example
+rendered in the Packed state with `pack_verified` + `applied_tactics`. It is a
+presence/shape check (never a quality judgment), catching the regression FOR-40
+left open: a future edit, a new pack-consuming skill, or a regenerated example
+silently dropping the block.
 HTML rendering + its linting (`lint-html-output`, `test-forsvn-preview`) live in
 the **forsvn-preview** review module (within the single `forsvn` plugin) — skills
 emit Markdown only.

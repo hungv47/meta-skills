@@ -103,6 +103,17 @@ All four return.
 - **Legibility** block closes `## Format Specification` in the **Packed** state — `tiktok` pack, `pack_verified 2026-05-09`, specific §1/§2 tactics (credential-flash hook in the 3s window · burned-in caption · trending-low-decay audio synced to the drop), each traced to a pack section; mirrored into frontmatter `pack_verified` + `applied_tactics`. The Reels variant narrates its own `reels` pack at the foot of its delta. → PASS
 - **Product-fit** rides `## What This Brief Bets On` (section 2), per the why-this-works convention's brief-style exception — a falsifiable bet + load-bearing choices traced to the ICP VoC ("Standup là họp lại để báo cáo lại") and BRAND.md. **No separate `## Why this works` block** — one block per deliverable. → PASS
 
+**Rendered** — the block as it lands at the foot of `## Format Specification` in the delivered hero `brief.md` (Packed state — show, don't assert):
+
+```markdown
+**Legibility — applied expertise**
+- Pack: `tiktok` · verified 2026-05-09 · status reviewed
+- Tactics applied: credential-flash hook in the 0–3s window · burned-in caption · trending low-decay audio synced to the product reveal
+- Why these: TikTok ranks on early completion + replays decided in the first seconds (pack §1/§2) — the credential-flash arrests the scroll and the burned-in caption holds sound-off viewers through the reveal.
+```
+
+mirrored into the hero frontmatter as `pack_verified: 2026-05-09` + `applied_tactics: [credential-flash-3s, burned-in-caption, low-decay-audio]`. The `reels` variant renders its own Packed block (its `reels` pack) at the foot of its delta.
+
 **Overall: PASS, cycle 1.**
 
 ---

@@ -113,3 +113,37 @@ which it links. Carries:
 
 **Resumability:** to resume, read **Current step** + the latest per-step artifacts. State lives
 in the bundle + the leaves' own artifacts — no database, no new loop tree.
+
+---
+
+## Signature artifact set — the "complete native bundle" contract (U4)
+
+A `launch-channel` pack declares the **signature outputs** that channel's launch must produce; the
+emitter gap (D-6/D-7) is any signature output the kit cannot yet emit as a reviewable artifact. The
+bundle is **complete or honestly flagged**: every signature artifact is either emitted by a chain
+step or carries an explicit `unwired` ledger line — **never silently missing** (the U2 coverage
+guarantee, applied to the launch bundle). Reference channel (`producthunt`, the channel deepest in
+knowledge):
+
+| Signature artifact | Pack § | Chain step | Typed reviewable? | Status |
+|---|---|---|---|---|
+| Tagline (≤60 chars) | §1 Angle 1 · §2 | 4 (`write-launch`) | within copy bundle | wired |
+| Pinned first maker-comment (80–150w) | §1 Angle 2 · §5 | 4 (`write-launch`) | within copy bundle (soft) | wired |
+| Gallery brief (demo-GIF slot 1) | §1 Angle 3 · §2 | 3 (`brief-graphic`) | yes (own artifact) | wired |
+| Launch-day run-of-show | §5 · §6 | 2 (`plan-campaign`) | yes (own artifact) | wired |
+| Hunter / supporter outreach | §5 · §8 | — (`write-outreach` not yet a chain step) | — | unwired-S3.4 |
+
+The `unwired-*` rows are the honest emitter-gap ledger: the kit **names** what it cannot yet emit
+rather than dropping it. Two open emitter gaps remain (net-new build, not a wiring of an existing
+guarantee):
+
+- **Typed signature subtypes (S3.5).** Tagline + first maker-comment ride *inside* `write-launch`'s
+  copy bundle, not as individually-typed reviewable artifacts. Closing this = additive
+  `ph-tagline` / `ph-first-comment` artifact subtypes + emitter wiring (an artifact-contract
+  schema addition — operator-ratified, since the contract is a canonical SoT).
+- **Hunter outreach step (S3.4).** `write-outreach` exists but is not a chain step; the PH bundle
+  lists it but the runner cannot emit it yet.
+
+Closing a gap = wire the leaf as a chain step (or add the subtype) + flip the row to `wired`.
+`_dev/validate-launch-kit.ts` fails if a signature artifact is dropped from this ledger or a row
+carries an unrecognized status — so a gap can never become silent.
