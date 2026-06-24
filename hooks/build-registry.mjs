@@ -154,7 +154,7 @@ export function extractFrontmatter(content) {
   return match ? match[1] : null;
 }
 
-function buildRegistry() {
+export function buildRegistry() {
   const skills = {};
   let count = 0;
 
@@ -213,17 +213,44 @@ function buildRegistry() {
     }
   }
 
-  return { registry: { version: 1, skills }, count };
+  // Emit skills in a stable key order. readdirSync() iteration order is not
+  // guaranteed and differs across runtimes/filesystems (node vs bun), which made
+  // the serialized registry non-deterministic — harmless under the old mtime
+  // staleness check, but a false "stale" the moment anything content-compares it.
+  const sortedSkills = {};
+  for (const name of Object.keys(skills).sort()) sortedSkills[name] = skills[name];
+
+  return { registry: { version: 1, skills: sortedSkills }, count };
+}
+
+const REGISTRY_PATH = join(__dirname, "skill-registry.json");
+
+export function serializeRegistry(registry) {
+  return JSON.stringify(registry, null, 2) + "\n";
+}
+
+// Content-based freshness check (mtime-independent): rebuild from the routing
+// sources and byte-compare against the committed registry. This is the single
+// definition of "the registry is fresh" — both `--check` here and eval-triggers'
+// ensureRegistryFresh() call it, so a fresh `git checkout` (which stamps new
+// mtimes on every file) can no longer trip a false "registry stale" the way the
+// old mtime comparison did.
+export function checkRegistryFresh() {
+  const { registry, count } = buildRegistry();
+  const expected = serializeRegistry(registry);
+  let current = "";
+  try {
+    current = readFileSync(REGISTRY_PATH, "utf-8");
+  } catch {
+    /* missing file → treated as stale */
+  }
+  return { fresh: current === expected, count, expected };
 }
 
 function main() {
-  const { registry, count } = buildRegistry();
-  const outPath = join(__dirname, "skill-registry.json");
-  const next = JSON.stringify(registry, null, 2) + "\n";
-
   if (process.argv.includes("--check")) {
-    const current = readFileSync(outPath, "utf-8");
-    if (current !== next) {
+    const { fresh, count } = checkRegistryFresh();
+    if (!fresh) {
       console.error("[build-registry] skill-registry.json is stale. Run `node hooks/build-registry.mjs`.");
       process.exit(1);
     }
@@ -231,8 +258,9 @@ function main() {
     return;
   }
 
-  writeFileSync(outPath, next);
-  console.log(`[build-registry] Wrote ${count} skills to ${outPath}`);
+  const { registry, count } = buildRegistry();
+  writeFileSync(REGISTRY_PATH, serializeRegistry(registry));
+  console.log(`[build-registry] Wrote ${count} skills to ${REGISTRY_PATH}`);
 }
 
 // Only run `main()` when invoked as a script — not when imported by tests
