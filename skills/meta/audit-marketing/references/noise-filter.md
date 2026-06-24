@@ -1,12 +1,12 @@
 ---
-title: Noise Filter — actionable-only finding triage for review-work
+title: Noise Filter — actionable-only finding triage for audit-marketing
 lifecycle: canonical
 status: stable
-produced_by: review-work
+produced_by: audit-marketing
 provenance:
   extracted_from: implementation-roadmap/execution-evaluation/brief-pack/06-operator-quality-integrations.md § Review Workflow + sources/IDEA-3.md § Review noise filtering
   extracted_at: 2026-05-19
-consumers: review-work SKILL.md + procedures/reviewer.md + references/report-template.md
+consumers: audit-marketing SKILL.md + references/audit-flow.md + references/report-template.md
 load_class: PROCEDURE
 ---
 
