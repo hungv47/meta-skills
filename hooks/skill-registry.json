@@ -35,6 +35,53 @@
       ],
       "minScore": 6
     },
+    "audit-marketing": {
+      "phrases": [
+        "is this slop",
+        "slop audit",
+        "audit this copy",
+        "audit my copy",
+        "audit the copy",
+        "grade my copy",
+        "grade this copy",
+        "scan for ai tells",
+        "scan my draft for ai tells",
+        "polish before shipping",
+        "polish before i ship",
+        "reads like ai",
+        "does this read like ai"
+      ],
+      "allOf": [
+        [
+          "audit",
+          "copy"
+        ],
+        [
+          "audit",
+          "slop"
+        ],
+        [
+          "polish",
+          "copy"
+        ]
+      ],
+      "anyOf": [
+        "slop",
+        "antipattern",
+        "ai tells",
+        "ai-generated"
+      ],
+      "noneOf": [
+        "review the code",
+        "review this code",
+        "code review",
+        "fresh eyes",
+        "review my pr",
+        "review the plan",
+        "review the spec"
+      ],
+      "minScore": 6
+    },
     "breakdown-tasks": {
       "phrases": [
         "break this down",
@@ -2259,7 +2306,9 @@
         "review the spec",
         "review the brief",
         "design review",
-        "scope review"
+        "scope review",
+        "audit this copy",
+        "is this slop"
       ],
       "minScore": 6
     },

@@ -30,6 +30,8 @@ promptSignals:
     - "review the brief"
     - "design review"
     - "scope review"
+    - "audit this copy"
+    - "is this slop"
   minScore: 6
 
 capability:

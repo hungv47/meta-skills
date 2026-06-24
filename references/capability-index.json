@@ -114,6 +114,78 @@
       "source": "forsvn-dev/skills/product/architect-system/routing.yaml",
       "skill_path": "forsvn-dev/skills/product/architect-system"
     },
+    "audit-marketing": {
+      "id": "audit-marketing",
+      "domain": "meta",
+      "public": true,
+      "gate_class": "review",
+      "command": "/audit-marketing",
+      "summary": "Metricless slop audit for marketing copy — scan an artifact or the whole tree for AI-slop antipatterns and route a fix; /forsvn audit reports, /forsvn polish fixes + re-verifies.",
+      "aliases": [
+        "audit-copy",
+        "slop-audit",
+        "forsvn-audit",
+        "polish-copy"
+      ],
+      "route": {
+        "use_when": [
+          "User asks to audit / grade / slop-check marketing copy, or 'is this slop' / 'does this read like AI'.",
+          "User wants a draft judged BEFORE shipping, with no metrics/CRO loop available.",
+          "User wants to polish copy: audit then fix the AI tells and re-verify nothing weakened."
+        ],
+        "not_when": [
+          "User wants a code / PR / plan / spec review -> review-work.",
+          "User wants to write NEW copy from scratch -> write-copy.",
+          "User wants post-launch metrics/CRO judgement (CTR, GA4, heatmap) -> evaluate-landing-page / evaluate-*."
+        ],
+        "prerequisites": {
+          "recommended": [],
+          "hard": [
+            "forsvn-slop/scan.ts"
+          ]
+        }
+      },
+      "orchestration": {
+        "default": "auto",
+        "single_when": [
+          "A single named artifact audited or polished."
+        ],
+        "multi_when": [
+          "A whole-tree audit across docs/forsvn/artifacts/**/*.md."
+        ],
+        "critic_required_when": [
+          "polish: the re-verify gate is always required before a fix is accepted."
+        ]
+      },
+      "load": {
+        "always": [
+          "references/audit-flow.md",
+          "references/polish-flow.md",
+          "references/fix-routing.md",
+          "references/reverify-gate.md",
+          "references/noise-filter.md"
+        ],
+        "when": [
+          {
+            "if": "the run is /forsvn polish (fix loop), not a read-only audit",
+            "read": [
+              "references/report-template.md"
+            ]
+          }
+        ]
+      },
+      "outputs": {
+        "artifacts": [
+          {
+            "path": "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-audit-marketing-<slug>.md",
+            "lifecycle": "snapshot",
+            "produced_when": "An audit or polish run writes its dated, immutable report artifact."
+          }
+        ]
+      },
+      "source": "skills/meta/audit-marketing/routing.yaml",
+      "skill_path": "skills/meta/audit-marketing"
+    },
     "breakdown-tasks": {
       "id": "breakdown-tasks",
       "domain": "meta",

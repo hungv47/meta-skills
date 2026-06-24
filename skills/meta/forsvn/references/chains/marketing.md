@@ -40,6 +40,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 | "carousel", "thumbnail", "OG card", "banner", "asset brief" | `/brief-graphic` |
 | "humanize this", "humanmax this", "sounds AI-generated", "strip the slop" | `/humanmaxxing` |
 | "Vietnamese tone", "polish VN" | `/polish-vn` |
+| "audit this copy", "is this slop", "grade my copy", "polish before shipping", "scan for AI tells" | `/audit-marketing` — verb `/forsvn audit` (report) or `/forsvn polish` (fix + re-verify) |
 | "scope this", "clarify requirements" | `/discover` |
 
 ## Routing rules (first match wins)
@@ -65,6 +66,7 @@ create-brand → plan-campaign → write-copy / brief-landing-page / optimize-se
 19. **Polish chain mention:** if producing copy AND `brand_mode=founder` or market includes Vietnamese → mention `/humanmaxxing` or `/polish-vn` as terminal step.
 20. **Ambiguity:** intent matches 2+ buckets → propose 2 options with rationale, let operator pick.
 21. **Launch intent (per-channel):** "launch on <channel>" (Product Hunt, Reddit, …) → `/run-launch <channel>` — the runnable **orchestrator** that sequences the generic per-channel launch chain (§ Launch chains) around that channel's pack, narrating each step's applied play and stopping at the human gate (never auto-publishes; D-8). Multi-channel launch → `/plan-campaign` selects channels, then `/run-launch` runs once per channel, each closing its own loop via `/measure-results`. Same ICP/brand gates; each channel's pack §4 hard guards apply at every step. (Want the copy bundle alone, not the whole chain? → `/write-launch`.)
+22. **Slop-audit / polish-before-ship intent:** "audit this copy", "is this slop", "grade my copy", "scan for AI tells", "polish before shipping" → `/audit-marketing`. **Metricless** — no `/run-pipeline` gate (unlike `/evaluate-landing-page`): the deterministic antipattern scanner judges a draft BEFORE anything ships. `/forsvn audit [target]` scans an artifact (or the whole `docs/forsvn/artifacts/**/*.md` tree) and reports named `mkt-*` findings grouped by severity, NEVER editing it. `/forsvn polish [target]` chains the mapped fixers (`/humanmaxxing` · `/write-copy` · `/polish-vn`) + the conservative re-verify gate, landing `decision_state: pending`. Detect ≠ fix; the human approves on `/forsvn:review`.
 
 ## Launch chains (per-channel)
 

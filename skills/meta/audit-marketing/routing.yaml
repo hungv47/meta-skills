@@ -1,0 +1,92 @@
+# Routing + capability metadata for audit-marketing.
+# Source of truth — compiled into:
+#   - hooks/skill-registry.json by `node hooks/build-registry.mjs`
+#   - references/capability-index.json by `bun bin/build-capability-index.ts`
+# NOT loaded into model context. Edit here, then rebuild both.
+promptSignals:
+  phrases:
+    - "is this slop"
+    - "slop audit"
+    - "audit this copy"
+    - "audit my copy"
+    - "audit the copy"
+    - "grade my copy"
+    - "grade this copy"
+    - "scan for ai tells"
+    - "scan my draft for ai tells"
+    - "polish before shipping"
+    - "polish before i ship"
+    - "reads like ai"
+    - "does this read like ai"
+  allOf:
+    - [audit, copy]
+    - [audit, slop]
+    - [polish, copy]
+  anyOf:
+    - "slop"
+    - "antipattern"
+    - "ai tells"
+    - "ai-generated"
+  noneOf:
+    - "review the code"
+    - "review this code"
+    - "code review"
+    - "fresh eyes"
+    - "review my pr"
+    - "review the plan"
+    - "review the spec"
+  minScore: 6
+
+capability:
+  id: audit-marketing
+  gate_class: review
+  domain: meta
+  public: true
+  command: /audit-marketing
+  summary: "Metricless slop audit for marketing copy — scan an artifact or the whole tree for AI-slop antipatterns and route a fix; /forsvn audit reports, /forsvn polish fixes + re-verifies."
+  aliases:
+    - audit-copy
+    - slop-audit
+    - forsvn-audit
+    - polish-copy
+
+  route:
+    use_when:
+      - "User asks to audit / grade / slop-check marketing copy, or 'is this slop' / 'does this read like AI'."
+      - "User wants a draft judged BEFORE shipping, with no metrics/CRO loop available."
+      - "User wants to polish copy: audit then fix the AI tells and re-verify nothing weakened."
+    not_when:
+      - "User wants a code / PR / plan / spec review -> review-work."
+      - "User wants to write NEW copy from scratch -> write-copy."
+      - "User wants post-launch metrics/CRO judgement (CTR, GA4, heatmap) -> evaluate-landing-page / evaluate-*."
+    prerequisites:
+      recommended: []
+      hard:
+        - "forsvn-slop/scan.ts"
+
+  orchestration:
+    default: auto
+    single_when:
+      - "A single named artifact audited or polished."
+    multi_when:
+      - "A whole-tree audit across docs/forsvn/artifacts/**/*.md."
+    critic_required_when:
+      - "polish: the re-verify gate is always required before a fix is accepted."
+
+  load:
+    always:
+      - "references/audit-flow.md"
+      - "references/polish-flow.md"
+      - "references/fix-routing.md"
+      - "references/reverify-gate.md"
+      - "references/noise-filter.md"
+    when:
+      - if: "the run is /forsvn polish (fix loop), not a read-only audit"
+        read:
+          - "references/report-template.md"
+
+  outputs:
+    artifacts:
+      - path: "docs/forsvn/artifacts/meta/records/[YYYY-MM-DD]-audit-marketing-<slug>.md"
+        lifecycle: snapshot
+        produced_when: "An audit or polish run writes its dated, immutable report artifact."
