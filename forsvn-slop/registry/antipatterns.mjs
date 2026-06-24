@@ -32,6 +32,13 @@
 //                            DETECT != FIX: the registry routes; it never rewrites. polish-vn is in
 //                            the enum so the (EN-centric v1) VN extension slots in with no migration.
 //   gated       'claude' | 'gpt' | 'gemini'   — only on the 3 provider rules; OFF by default.
+//   calibrated  boolean   — ADDED FOR-55/S6, ONLY on the 10 tier:'llm' rules. Set programmatically
+//                            from CALIBRATED_LLM_IDS (below) — the critic fires a tier:'llm' rule
+//                            ONLY when calibrated===true (it cleared calibrate-critic.ts's judge-
+//                            variance bound). Default OFF: an un-calibrated subjective rule never
+//                            speaks (D-26 calibrate-before-ship; slop-detector.md §2.1). Evidence
+//                            pinned in tests/goldens/critic-llm/calibration-report.json; the gate
+//                            test (_dev/test-critic-calibration.ts) enforces registry⟺report agreement.
 //
 // CORE_COUNT = 52 (the taxonomy rules; the catalog + the 'N checks' claim count THESE).
 // ANTIPATTERNS.length = 55 (52 core + 3 gated provider starters). Assert getCoreRules().length,
@@ -555,6 +562,28 @@ export const ANTIPATTERNS = [
   },
 ];
 
+// ─── FOR-55/S6: critic calibration status (the calibrate-before-ship gate) ───
+// The 10 tier:'llm' rules are the SUBJECTIVE tier. Authority is asymmetric — one confident wrong
+// 'this hook is weak' collapses operator trust (slop-detector.md §2.1). So a tier:'llm' rule speaks
+// ONLY after it clears a judge-variance bound (margin > 2×variance && margin ≥ 0.5) on the S6 golden
+// corpus, measured by forsvn-slop/scripts/calibrate-critic.ts (operator-run; makes LLM calls). The
+// cleared ids are listed HERE — one place, no per-entry drift — and stamped onto each rule as
+// `.calibrated`. An un-calibrated rule is gated OFF, NOT shipped advisory-with-low-confidence.
+//
+// Pinned evidence: tests/goldens/critic-llm/calibration-report.json (shippable flags). The gate test
+// _dev/test-critic-calibration.ts asserts this set === the report's shippable:true set, so the two
+// can never drift. To calibrate: run calibrate-critic.ts, then add each newly-shippable id below in
+// the SAME commit that re-pins the report.
+//
+// EMPTY at ship: S6 lands the critic + machinery; calibration is the operator's gated next step.
+export const CALIBRATED_LLM_IDS = new Set([
+  // (none yet — run `bun forsvn-slop/scripts/calibrate-critic.ts` to populate)
+]);
+
+for (const r of ANTIPATTERNS) {
+  if (r.tier === 'llm') r.calibrated = CALIBRATED_LLM_IDS.has(r.id);
+}
+
 // ─── Accessors (the contract every downstream surface reads through) ───
 
 /** Find one registry entry by id (core or gated). Returns undefined if unknown. */
@@ -575,6 +604,15 @@ export function getRulesForCategory(category) {
 /** Core rules in a tier ('regex' | 'heuristic' | 'llm'). */
 export function getRulesForTier(tier) {
   return getCoreRules().filter((r) => r.tier === tier);
+}
+
+/**
+ * The tier:'llm' rules the critic (S6) is CLEARED to fire — calibrated===true only. Empty until the
+ * operator runs calibrate-critic.ts and lists the cleared ids in CALIBRATED_LLM_IDS. FOR-57's
+ * orchestrator constructs the critic input from exactly this set; an un-calibrated rule never speaks.
+ */
+export function getCalibratedLlmRules() {
+  return getCoreRules().filter((r) => r.tier === 'llm' && r.calibrated === true);
 }
 
 /** The zero-tolerance denylist: core rules with severity 'block' (the 10). */
