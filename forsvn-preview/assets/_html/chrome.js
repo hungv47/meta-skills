@@ -137,9 +137,10 @@
       console.warn("[forsvn] preview-config.endpoint is not a localhost /done URL; decision-capture stays inert", config.endpoint);
       return;
     }
-    // /edit shares the origin with /done — derived, never configured separately,
-    // so it can't be pointed elsewhere.
+    // /edit and /dismiss share the origin with /done — derived, never configured
+    // separately, so they can't be pointed elsewhere.
     var editEndpoint = doneEndpoint.replace(/\/done$/, "/edit");
+    var dismissEndpoint = doneEndpoint.replace(/\/done$/, "/dismiss");
 
     form.setAttribute("data-active", "true");
     document.body.setAttribute("data-capture", "active");
@@ -394,78 +395,106 @@
     }
 
     // ----- Agent suggestion cards --------------------------------------------
-    // Data seam: preview-config.suggestions — [] today; the Proof-collab bridge
-    // will populate it. Each: { author?, at?, old, new, note? }. Rendered text,
-    // never raw diff syntax. Accept applies the replacement through the same
-    // /edit write path (so the 409 conflict guard covers it); dismiss removes
-    // the card. No agent can apply a suggestion — only you.
+    // Data seam: preview-config.suggestions — populated by the S4 deterministic
+    // slop mapper. Each: { author?, at?, old, new, note?, staged?, ruleId? }.
+    // Rendered text, never raw diff syntax. Two variants:
+    //   STAGED (staged !== false): a mechanically meaning-preserving old→new fix —
+    //     shown as a del/ins diff with an Accept button. Accept applies the
+    //     replacement through the same /edit write path (so the 409 conflict guard
+    //     covers it). No agent can apply it — only you.
+    //   NOTE-ONLY (staged === false): an advisory "consider revising" — no Accept,
+    //     no diff (new === old), just the note. You revise it yourself in the text.
+    // Dismiss removes the card and records the override (POST /dismiss) so a rule
+    // dismissed repeatedly gets flagged for revision (FOR-56).
     function attachSuggestions() {
       var list = Array.isArray(config.suggestions) ? config.suggestions : [];
       if (list.length === 0 || !article) return;
       var masthead = article.querySelector(".masthead");
       list.forEach(function (s) {
         if (!s || typeof s.old !== "string" || typeof s.new !== "string") return;
+        var staged = s.staged !== false; // default staged; note-only is opt-in
         var card = document.createElement("div");
         card.className = "suggestion";
+        if (!staged) card.setAttribute("data-note-only", "true");
         var head = document.createElement("header");
         head.appendChild(document.createTextNode("agent suggestion" + (s.author ? " · " + s.author : "") + (s.at ? " · " + s.at : "")));
         var note = document.createElement("span");
         note.className = "note";
-        note.textContent = "agents suggest — accepting is yours";
+        note.textContent = staged ? "agents suggest — accepting is yours" : "advisory — revise it yourself";
         head.appendChild(note);
         var change = document.createElement("div");
         change.className = "change";
         var p = document.createElement("p");
-        if (s.note) { p.appendChild(document.createTextNode(s.note + " ")); }
-        var del = document.createElement("del");
-        del.textContent = s.old;
-        var ins = document.createElement("ins");
-        ins.textContent = s.new;
-        p.appendChild(del);
-        p.appendChild(document.createTextNode(" "));
-        p.appendChild(ins);
+        if (s.note) { p.appendChild(document.createTextNode(s.note + (staged ? " " : ""))); }
+        if (staged) {
+          var del = document.createElement("del");
+          del.textContent = s.old;
+          var ins = document.createElement("ins");
+          ins.textContent = s.new;
+          p.appendChild(del);
+          p.appendChild(document.createTextNode(" "));
+          p.appendChild(ins);
+        }
         change.appendChild(p);
         var foot = document.createElement("footer");
-        var accept = document.createElement("button");
-        accept.type = "button";
-        accept.className = "btn-quiet btn-accept";
-        accept.textContent = "✓ Accept into text";
+        var accept = null;
+        if (staged) {
+          accept = document.createElement("button");
+          accept.type = "button";
+          accept.className = "btn-quiet btn-accept";
+          accept.textContent = "✓ Accept into text";
+          foot.appendChild(accept);
+        }
         var dismiss = document.createElement("button");
         dismiss.type = "button";
         dismiss.className = "btn-quiet";
         dismiss.textContent = "Dismiss";
-        var ownership = document.createElement("span");
-        ownership.className = "ownership";
-        ownership.textContent = "no agent can apply this — only you";
-        foot.appendChild(accept);
         foot.appendChild(dismiss);
-        foot.appendChild(ownership);
+        if (staged) {
+          var ownership = document.createElement("span");
+          ownership.className = "ownership";
+          ownership.textContent = "no agent can apply this — only you";
+          foot.appendChild(ownership);
+        }
         card.appendChild(head);
         card.appendChild(change);
         card.appendChild(foot);
         if (masthead && masthead.nextSibling) article.insertBefore(card, masthead.nextSibling);
         else article.appendChild(card);
 
-        accept.addEventListener("click", function () {
-          if (accept.disabled) return;
-          accept.disabled = true;
-          var src = "/" + String(config.mdPath || "").replace(/^\/+/, "");
-          fetch(src).then(function (r) { return r.text(); }).then(function (text) {
-            var m = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
-            var fmRaw = m ? m[0] : "";
-            var body = text.slice(fmRaw.length);
-            var idx = body.indexOf(s.old);
-            if (idx === -1) throw new Error("the suggested passage is no longer in the document");
-            var nextBody = body.slice(0, idx) + s.new + body.slice(idx + s.old.length);
-            return postEdit(nextBody);
-          }).then(function () {
-            location.reload();
-          }).catch(function (e) {
-            accept.disabled = false;
-            showAlert("could not accept the suggestion: " + String(e && e.message || e).slice(0, 120), "re-serve to review the current file");
+        if (accept) {
+          accept.addEventListener("click", function () {
+            if (accept.disabled) return;
+            accept.disabled = true;
+            var src = "/" + String(config.mdPath || "").replace(/^\/+/, "");
+            fetch(src).then(function (r) { return r.text(); }).then(function (text) {
+              var m = text.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
+              var fmRaw = m ? m[0] : "";
+              var body = text.slice(fmRaw.length);
+              var idx = body.indexOf(s.old);
+              if (idx === -1) throw new Error("the suggested passage is no longer in the document");
+              var nextBody = body.slice(0, idx) + s.new + body.slice(idx + s.old.length);
+              return postEdit(nextBody);
+            }).then(function () {
+              location.reload();
+            }).catch(function (e) {
+              accept.disabled = false;
+              showAlert("could not accept the suggestion: " + String(e && e.message || e).slice(0, 120), "re-serve to review the current file");
+            });
           });
+        }
+        dismiss.addEventListener("click", function () {
+          // Fire-and-forget the override signal, then remove optimistically — a
+          // failed POST must never strand the card.
+          if (s.ruleId) {
+            fetch(dismissEndpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ token: config.token, ruleId: s.ruleId }),
+            }).catch(function () {});
+          }
+          card.remove();
         });
-        dismiss.addEventListener("click", function () { card.remove(); });
       });
     }
 

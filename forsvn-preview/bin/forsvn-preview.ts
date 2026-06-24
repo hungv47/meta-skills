@@ -47,6 +47,9 @@ import { renderMarkdownTerm } from "../lib/md-term";
 import { initialState, step, promptIntro } from "../lib/tty-prompt";
 import { DECISION_REASONS, isDecisionReason, type DecisionReason } from "../lib/decision-reason";
 import { appendVerdict, verdictTs } from "../lib/verdicts";
+// Type-only: erased at runtime, so it creates NO load-time dependency on forsvn-slop
+// (the runtime seam is the guarded dynamic import in loadSlopSeam below).
+import type { Suggestion } from "../../forsvn-slop/suggestions";
 
 const DECISION_ENUM = new Set<string>(DECISION_STATES);
 
@@ -280,6 +283,8 @@ async function main(): Promise<number> {
     gateWarning,
     // The chrome strip's "N pending" crumb (additive preview-config field).
     pendingCount: scanPendingCount(projectRoot),
+    // S4 — deterministic slop suggestion cards (main() is async; the seam is too).
+    suggestions: await computeSuggestions(mdSource, relative(projectRoot, mdPath)),
   };
 
   let server: ReturnType<typeof Bun.serve>;
@@ -1047,6 +1052,61 @@ function findProjectRootFromDir(startDir: string): string {
 
 // --- HTTP handler -------------------------------------------------------
 
+// ── slop suggestion seam (FOR-53 / S4) ──────────────────────────────────────────────
+// The deterministic slop scanner (scan-core.mjs) and the finding→card mapper
+// (suggestions.ts) live in the sibling forsvn-slop module. BOTH are loaded behind a
+// GUARDED dynamic import so this preview stays fully functional (suggestions: []) when
+// forsvn-slop is absent — byte-identical to the pre-S4 inert seam. scanText is async; the
+// mapper is pure. Cached after first resolve.
+type SeamScan = (text: string, opts: { file?: string }) => Promise<{ findings: unknown[] }>;
+type SeamMap = (findings: unknown[], body: string) => Suggestion[];
+let slopSeam: { scanText: SeamScan; findingsToSuggestions: SeamMap } | null | undefined;
+
+async function loadSlopSeam() {
+  if (slopSeam !== undefined) return slopSeam;
+  try {
+    const [core, mapper] = await Promise.all([
+      import("../../forsvn-slop/lib/scan-core.mjs"),
+      import("../../forsvn-slop/suggestions"),
+    ]);
+    slopSeam = {
+      scanText: (core as { scanText: SeamScan }).scanText,
+      findingsToSuggestions: (mapper as { findingsToSuggestions: SeamMap }).findingsToSuggestions,
+    };
+  } catch {
+    slopSeam = null; // forsvn-slop not installed → inert seam (suggestions stay [])
+  }
+  return slopSeam;
+}
+
+// Compute the suggestion cards for an artifact source. NEVER throws — any scan or mapper
+// failure degrades to no cards, never a broken page.
+async function computeSuggestions(mdSource: string, file: string): Promise<Suggestion[]> {
+  try {
+    const seam = await loadSlopSeam();
+    if (!seam) return [];
+    const { findings } = await seam.scanText(mdSource, { file });
+    return seam.findingsToSuggestions(findings, splitDoc(mdSource).body);
+  } catch {
+    return [];
+  }
+}
+
+// Append a dismissal row via the sibling forsvn-slop ledger writer, behind a guarded
+// dynamic import so the preview never hard-depends on forsvn-slop at module load. The
+// writer is itself keyless-safe and non-throwing; this wrapper adds absence-safety.
+async function recordDismissal(
+  projectRoot: string,
+  row: { ts: string; artifact_id: string; ruleId: string; surface: string },
+): Promise<void> {
+  try {
+    const { appendDismissal } = await import("../../forsvn-slop/dismissals");
+    appendDismissal(projectRoot, row);
+  } catch {
+    /* forsvn-slop absent or write failed — best-effort, the request is unaffected */
+  }
+}
+
 // Mutable per-serve session: POST /edit moves the conflict-guard basis to the
 // saved bytes and swaps in the re-rendered twin; everything else reads it.
 type ServeSession = {
@@ -1054,6 +1114,7 @@ type ServeSession = {
   mdHash: string;              // sha256 of the .md the human last READ (conflict guard)
   gateWarning: string | null;  // G1 — additive preview-config field (notice-strip data seam)
   pendingCount: number | undefined; // U9 — chrome strip crumb (additive)
+  suggestions: Suggestion[];   // S4 — deterministic slop cards; [] when forsvn-slop absent
 };
 
 type HandlerArgs = {
@@ -1070,7 +1131,10 @@ const state: {
   arm?: () => void;   // (re)arms the idle timer; TTY keypresses call it
 } = {};
 
-function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
+// Exported so the endpoint surface (POST /edit, /done, /dismiss) is unit-testable in
+// isolation with synthetic Requests + a temp session, without spinning the full serve
+// path (git-clean precondition, browser open, idle wait). See tests/dismiss.test.ts.
+export function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
   const { session, htmlPath, mdPath, token, projectRoot } = args;
   // The HTML is served at the URL path that mirrors its location under the
   // project root — so an exemplar at references/_html/exemplars/foo.html is
@@ -1100,10 +1164,11 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
         mdPath: relative(projectRoot, mdPath),
         gate_warning: session.gateWarning,
         // U9 additive fields: the chrome strip's pending count, and the agent
-        // suggestion seam (empty until the Proof-collab bridge populates it —
-        // see references/review-surface-design.md § suggestions).
+        // suggestion seam — populated by the S4 deterministic slop mapper
+        // (computeSuggestions); [] when forsvn-slop is absent. See
+        // references/review-surface-design.md § suggestions.
         ...(session.pendingCount !== undefined ? { pending_count: session.pendingCount } : {}),
-        suggestions: [],
+        suggestions: session.suggestions,
         // C1: the reason-chip enum, sourced from lib/decision-reason.ts so the
         // browser chrome builds chips without a second hardcoded copy of the list.
         decision_reasons: DECISION_REASONS,
@@ -1296,8 +1361,42 @@ function makeHandler(args: HandlerArgs): (req: Request) => Promise<Response> {
       } catch {
         // The save landed; a re-render failure only degrades the reload.
       }
+      // Recompute the slop cards against the saved bytes so an accepted card (whose match
+      // is now gone) vanishes on reload, and any newly-introduced slop surfaces.
+      session.suggestions = await computeSuggestions(nextSource, relative(projectRoot, mdPath));
       if (state.arm) state.arm(); // editing is activity — re-arm the idle timer
       return jsonResp(200, { ok: true, md_hash: session.mdHash }, noStore);
+    }
+
+    // S4 — POST /dismiss: the human dismissed a suggestion card. Appends ONE
+    // override-ledger row (the FOR-56 >=3-dismissals signal) and does nothing else.
+    // Security mirrors /edit (localhost bind, constant-time token), but it is SIMPLER:
+    // no /done one-shot guard, no conflict hash, no artifact write. The artifact_id is
+    // read SERVER-SIDE from the on-disk frontmatter (config.artifact_id is not injected
+    // and a client value would be spoofable). Never throws — a dismissal must never fail
+    // the page; appendDismissal is itself keyless-safe and non-throwing.
+    if (req.method === "POST" && url.pathname === "/dismiss") {
+      let body: unknown;
+      try { body = await req.json(); }
+      catch { return jsonResp(400, { error: "invalid JSON body" }, noStore); }
+      const raw = body as Record<string, unknown>;
+      if (typeof raw.token !== "string" || !constantTimeEqual(raw.token, token)) {
+        return jsonResp(403, { error: "bad token" }, noStore);
+      }
+      if (typeof raw.ruleId !== "string" || !raw.ruleId.trim()) {
+        return jsonResp(400, { error: "ruleId (non-empty string) is required" }, noStore);
+      }
+      let artifactId = "";
+      try { artifactId = parseFrontmatter(readFileSync(mdPath, "utf8"))?.id ?? ""; }
+      catch { /* unreadable frontmatter → empty id; appendDismissal then skips the row */ }
+      await recordDismissal(projectRoot, {
+        ts: verdictTs(),
+        artifact_id: artifactId,
+        ruleId: raw.ruleId.trim(),
+        surface: "web",
+      });
+      if (state.arm) state.arm(); // dismissing is activity — re-arm the idle timer
+      return jsonResp(200, { ok: true }, noStore);
     }
 
     return new Response("not found", { status: 404, headers: noStore });

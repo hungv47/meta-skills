@@ -31,7 +31,10 @@
     {ph: stage_html}        — rendered artifact body (typeset Markdown, never syntax)
     {ph: preview_config_json}— JSON consumed by chrome.js + the preview CLI.
                              Pending preview: {"token":"…","endpoint":"…","mdPath":"…",
-                             "gate_warning":null,"pending_count":N,"suggestions":[]}.
+                             "gate_warning":null,"pending_count":N,"suggestions":[…]}.
+                             suggestions[] = slop cards (S4): each {old,new,note?,
+                             staged?,ruleId?}; staged→Accept via /edit, staged:false→
+                             note-only, Dismiss→/dismiss. [] when forsvn-slop absent.
                              Static / archived: {"static":true} — capture + workbench hidden.
 -->
 <html lang="en" data-stack="{{stack}}">
@@ -126,7 +129,8 @@
       <article>
         <!-- G1 gate-warning notice (amber, warn-and-proceed) renders here from
              preview-config.gate_warning; agent suggestion cards render after the
-             masthead from preview-config.suggestions. Both are chrome.js-owned. -->
+             masthead from preview-config.suggestions (staged Accept→/edit or
+             note-only; Dismiss→/dismiss). Both are chrome.js-owned. -->
         <header class="masthead">
           <div class="eyebrow">{{stack_name}} · {{skill}} · {{date}} <span class="rule"></span></div>
           <h1>{{title}}</h1>

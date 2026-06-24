@@ -145,13 +145,22 @@ on static/archived pages; chrome.js activates it on a live pending serve.
   re-rendered, conflict basis advanced so the subsequent decision applies to
   the saved bytes. Discard (esc) restores. Human-only by construction —
   localhost + token, exactly like decisions.
-- **Agent suggestion cards** — rendered old → new text (`del`/`ins`), header
-  `agent suggestion · <author> · <when>`, footer Accept / Dismiss + the
-  ownership line *"no agent can apply this — only you."* Data seam:
-  **`preview-config.suggestions`** (additive, `[]` today) — the Proof-collab
-  bridge is the intended populator; accepting applies the replacement through
-  the same `/edit` write path. No accept/approve tool exists on any agent
-  channel.
+- **Agent suggestion cards** — two variants on the same `preview-config.suggestions`
+  data seam, populated by the S4 deterministic slop mapper (`forsvn-slop`):
+  - **Staged** (`staged !== false`) — a mechanically meaning-preserving old → new
+    fix, rendered as `del`/`ins` with an **Accept** button; accepting applies the
+    replacement through the same `/edit` write path (so the 409 conflict guard
+    covers it) and leaves the artifact `decision_state: pending` (Accept ≠ approve).
+    Footer carries the ownership line *"no agent can apply this — only you."*
+  - **Note-only** (`staged: false`, `new === old`) — an advisory "consider revising"
+    with no Accept and no diff; the human edits it themselves. Only the two
+    allowlisted rules (clause-glue em-dash, scene-setting opener) ever stage; every
+    other finding is note-only, and `llm`-tier findings are dropped entirely.
+
+  **Dismiss** removes the card and fires **`POST /dismiss`** — one CSRF-protected
+  override row to `.forsvn/learning/slop-dismissals.tsv` (the FOR-56 ≥3-dismissals
+  signal). No accept/approve/dismiss tool exists on any agent channel; both writes
+  require the human's localhost token.
 - **read as ▾** — the folded preview-mode chooser (informational): designed
   html (this page) / terminal `--md` / Proof collab (`forsvn-collab open`).
 
@@ -183,7 +192,7 @@ The CLI injects `<script type="application/json" id="preview-config">`:
 | `token`, `endpoint`, `mdPath` | string | decision capture (v2, unchanged) |
 | `gate_warning` | string \| null | G1 amber notice strip |
 | `pending_count` | number (absent when no queue) | strip crumb "review · N pending" |
-| `suggestions` | array (`[]` today) | agent suggestion cards — Proof-collab integration point |
+| `suggestions` | array (`[]` when `forsvn-slop` absent) | agent suggestion cards — populated by the S4 slop mapper; staged (Accept→`/edit`) or note-only; Dismiss→`POST /dismiss` |
 
 All additions are additive; `{"static":true}` keeps everything inert.
 
@@ -225,8 +234,8 @@ The terminal twin of this spec lives in `lib/mono.ts` + `lib/md-term.ts`
 5. **Google Fonts / any external request.** Self-hosted woff2 only.
 6. **Leaf text on cream**, lime anywhere, glass/blur, gradients, new hues.
 7. **Decision capture outside the documented contract** — one
-   `<form id="decision-capture">`; fetch targets only `/done`, `/edit`, or the
-   artifact's own source path on localhost.
+   `<form id="decision-capture">`; fetch targets only `/done`, `/edit`,
+   `/dismiss`, or the artifact's own source path on localhost.
 8. **Giving any agent channel an accept/approve tool.** Suggestions render;
    only the human accepts (the guard is the absence).
 
