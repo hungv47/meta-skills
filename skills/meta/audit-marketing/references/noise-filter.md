@@ -12,7 +12,7 @@ load_class: PROCEDURE
 
 # Noise Filter — Actionable-Only Triage
 
-**The second filter on top of signal-vs-noise verification. After `procedures/reviewer.md § Verification rules` sorts real-vs-fake, this filter sorts actionable-vs-not. Three-category output: Accepted / Rejected / Deferred. The point is to surface decisions the operator can act on, not to drown them in chatter.**
+**The second filter on top of signal-vs-noise verification. After `../../review-work/references/procedures/reviewer.md § Verification rules` sorts real-vs-fake, this filter sorts actionable-vs-not. Three-category output: Accepted / Rejected / Deferred. The point is to surface decisions the operator can act on, not to drown them in chatter.**
 
 > Why this exists: brief 06 § Review Workflow names noise filtering "the highest-leverage part" of the review closeout. Without it, reviewers either (a) report every nit and train the operator to skim, or (b) suppress findings they should have surfaced. The 3-category model gives operators a scan-friendly report where Accepted = "fix is done, here's what changed," Rejected = "I considered this and discarded as not real / not worth surfacing," Deferred = "real issue, but not for this pass — log a follow-up."
 

@@ -23,6 +23,7 @@
     "./skills/meta/run-plan/",
     "./skills/meta/review-work/",
     "./skills/meta/clean-artifacts/",
+    "./skills/meta/audit-marketing/",
 
     "./skills/research/research-icp/",
     "./skills/research/research-market/",
