@@ -13,6 +13,7 @@
 // for mkt-struct-headline-overflow.
 
 import { finding } from '../finding.mjs';
+import { applyIntent } from '../registry/intent.mjs';
 
 export const CAP_TABLE = {
   x: { hard: 280 },
@@ -120,7 +121,10 @@ export const HEURISTIC_CHECKS = {
         }
       }
     }
-    if (found.size > 1) return [mk('mkt-cta-multiple-competing', ctx, [...found].join(' / '), line, `${found.size} competing primary CTAs: ${[...found].join(', ')}`)];
+    if (found.size > 1) {
+      const ov = applyIntent('mkt-cta-multiple-competing', ctx.intent);
+      return [mk('mkt-cta-multiple-competing', ctx, [...found].join(' / '), line, `${found.size} competing primary CTAs: ${[...found].join(', ')}`, ov?.severity)];
+    }
     return [];
   },
 
@@ -183,12 +187,13 @@ export const HEURISTIC_CHECKS = {
     const scoped = SHORTFORM.has(ctx.channel) || reg === 'ad' || reg === 'social';
     if (!scoped) return [];
     const out = [];
+    const ov = applyIntent('mkt-struct-wall-of-text', ctx.intent);
     for (const b of a.regions.body) {
       if (ctx.fpGuards.isExempt(b.startLine)) continue;
       const sentCount = (b.text.match(/[.!?]+(\s|$)/g) || []).length || 1;
       const chars = b.text.replace(/\n/g, ' ').length;
       if (sentCount >= 8 || chars > 300) {
-        out.push(mk('mkt-struct-wall-of-text', ctx, b.text.slice(0, 60) + '…', b.startLine, `paragraph block: ${sentCount} sentences / ${chars} chars, no break`));
+        out.push(mk('mkt-struct-wall-of-text', ctx, b.text.slice(0, 60) + '…', b.startLine, `paragraph block: ${sentCount} sentences / ${chars} chars, no break`, ov?.severity));
       }
     }
     return out;

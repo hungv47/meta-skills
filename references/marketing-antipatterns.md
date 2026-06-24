@@ -37,6 +37,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Rhetorical Question Hook {#mkt-hook-rhetorical-question}
 - **id:** `mkt-hook-rhetorical-question` · **category:** quality · **severity:** block · **tier:** regex · **fix:** write-copy · **volatility:** stable
+- **Intent:** brand-awareness → warn (a deliberate aphoristic hook is allowed); direct-response → block (weak hook). Unset = strict default (block).
 - **Bad:** What if I told you the best teams don't track individual productivity at all?
 - **Why:** Performs curiosity instead of creating it; loads an expectation the flat follow-up can't pay off. Real people don't open with "What if I told you" / "Sound familiar?".
 - **Detect:** deterministic-regex — opener line ending in "?" matching "what if i told you / ever wondered / sound familiar / want to know the secret". block when it is the literal first line of an ad/hero.
@@ -74,6 +75,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Em-Dash Crutch {#mkt-slop-em-dash-overuse}
 - **id:** `mkt-slop-em-dash-overuse` · **category:** slop · **severity:** block · **tier:** regex · **fix:** humanmaxxing · **volatility:** stable
+- **Intent:** brand-awareness → warn at density ≥5/1000w (long brand cadence tolerated, like register:editorial); direct-response → block (strict count, overrides any editorial relaxation). Unset = strict default (block).
 - **Bad:** Our platform — built for teams — makes collaboration easy — wherever you are.
 - **Why:** Em dashes used as structural glue for asides/pauses are a hallmark AI tell. FORSVN policy is zero in final marketing output; even one in short copy flags.
 - **Detect:** deterministic-regex — count "—" (U+2014) and " - " as clause glue. In ad/social/hero: ≥1 = block. Long-form editorial: ≥5 per 1000 words = warn (register-gated; quoted em-dashes exempt).
@@ -123,6 +125,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Colon-List / Colon-Reveal Dependency {#mkt-slop-colon-reveal}
 - **id:** `mkt-slop-colon-reveal` · **category:** slop · **severity:** warn · **tier:** regex · **fix:** humanmaxxing · **volatility:** stable
+- **Intent:** brand-awareness → nit (a brand stylistic move); direct-response → warn (a weak-tell). Unset = default (warn).
 - **Bad:** Here's why this matters: speed, trust, scale. The answer: automation.
 - **Why:** Colons used as a structural crutch to introduce dramatic reveals or lists in prose marketing copy.
 - **Detect:** deterministic-regex — "here's why|what|how : " / "the answer|secret|truth : " or ": " before a bulleted list in body prose (technical docs exempt).
@@ -197,6 +200,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Multiple Competing CTAs {#mkt-cta-multiple-competing}
 - **id:** `mkt-cta-multiple-competing` · **category:** quality · **severity:** block · **tier:** heuristic · **fix:** write-copy · **volatility:** stable
+- **Intent:** brand-awareness → warn (a softer multi-link is tolerable); direct-response → block (one dominant action). Unset = strict default (block).
 - **Bad:** Try free → then upgrade! Also book a demo AND share with your team.
 - **Why:** More than one primary action splits intent and degrades the conversion signal; one ad/section, one CTA.
 - **Detect:** deterministic-heuristic — count distinct primary action verbs in the CTA + hero region. >1 in one ad variant / landing-section = block. Secondary text links exempt.
@@ -211,6 +215,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Manufactured / Fake Urgency {#mkt-cta-fake-urgency}
 - **id:** `mkt-cta-fake-urgency` · **category:** quality · **severity:** warn · **tier:** regex · **fix:** write-copy · **volatility:** stable
+- **Intent:** brand-awareness → block (manufactured urgency is off-brand for awareness); direct-response → warn, suppressed when backed by a real inventory/date token. Unset = default (warn).
 - **Bad:** Only 2 spots left! Offer ends at midnight! Act now before it's gone!
 - **Why:** Countdown/scarcity with no real basis is a trust-eroding dark-pattern tell; readers are inoculated and it cheapens the brand.
 - **Detect:** deterministic-regex — "only N spots left / act now before / ends at midnight / last chance / limited time only" NOT backed by a verifiable constraint nearby. block if repeated or in a B2B/luxury register.
@@ -276,6 +281,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Permission-Seeking / Assistant Closer {#mkt-voice-permission-closer}
 - **id:** `mkt-voice-permission-closer` · **category:** slop · **severity:** warn · **tier:** regex · **fix:** humanmaxxing · **volatility:** stable
+- **Intent:** brand-awareness → warn; direct-response → block (DR closes assumptively — no permission-asking). Unset = default (warn).
 - **Bad:** I hope this helps! Let me know if you'd like me to elaborate. Feel free to reach out!
 - **Why:** Ends in assistant-mode offers ("let me know if", "feel free to", "hope this helps") instead of a recommendation or next step. Dead giveaway of LLM authorship.
 - **Detect:** deterministic-regex on the closing block — "i hope this helps / let me know if you'd like / feel free to reach out / would you like me to". warn (block in published-asset register).
@@ -285,6 +291,7 @@ determinism: **regex/heuristic** are strict and exit-coded (authority earned on 
 
 ### Wall of Text / Paragraph Wall {#mkt-struct-wall-of-text}
 - **id:** `mkt-struct-wall-of-text` · **category:** slop · **severity:** warn · **tier:** heuristic · **fix:** humanmaxxing · **volatility:** stable
+- **Intent:** brand-awareness → nit (long-form brand copy is allowed density); direct-response → warn (DR must scan). Unset = default (warn).
 - **Bad:** A single 9-sentence paragraph of primary text with no line breaks in a mobile ad.
 - **Why:** Long unbroken blocks fail the scroll-stop test on every subsequent line; mobile feeds render short lines and reward dwell.
 - **Detect:** deterministic-heuristic — any block ≥8 sentences OR >300 chars with no line break, scoped to ad/social/hero (long-form editorial exempt).

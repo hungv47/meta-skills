@@ -80,6 +80,15 @@ Show the same message across different tones:
 - Email: "Your account is all set. Here's what you can do next."
 - Social: "You're in! Welcome to the crew."
 
+### Intent (slop-detector)
+
+Intent is the coarse goal-axis ABOVE tone — the strategic register the slop-detector consumes. It is `brand-awareness` or `direct-response`, declared once as the brand-of-record default and overridable per artifact. Tone shifts *within* an intent; intent is the larger question of what the copy is for.
+
+- **brand-awareness** — copy whose job is to build identity and distinctiveness. Longer cadence is allowed (em-dash density tolerated like editorial), and manufactured urgency reads as off-brand.
+- **direct-response** — copy whose job is to drive one action. Tight cadence (em-dash stays strict), a single dominant CTA, and urgency is legitimate *only* when backed by a real inventory or date.
+
+Intent ≠ the content-type **register** (editorial/landing/social/legal/ad), which is a per-artifact axis the detector also reads; the two compose. Set the brand-of-record intent in BRAND.md under an `## Intent` heading (a single enum line). Claim-integrity rules (unsourced stats, hypothetical-as-measured) are never relaxed by intent.
+
 ## Writing Guidelines
 
 ### General Rules

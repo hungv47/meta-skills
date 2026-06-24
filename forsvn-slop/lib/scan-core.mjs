@@ -11,6 +11,7 @@
 // S6/FOR-55. DETECT != FIX: this reports and exits; it never rewrites (D-25).
 
 import { getRulesForTier, filterByProviders } from '../registry/antipatterns.mjs';
+import { resolveIntent } from '../registry/intent.mjs';
 import { parse } from './parse.mjs';
 import { makeFpGuards, applyInlineIgnores, normalizeChannel } from './fp-guards.mjs';
 import { REGEX_CHECKS } from './checks-regex.mjs';
@@ -21,7 +22,7 @@ const SEV_ORDER = { block: 0, warn: 1, nit: 2 };
 /**
  * Scan one marketing-copy artifact and return its per-file ScanResult.
  * @param {string} text raw file contents
- * @param {{file?:string, register?:string|null, channel?:string|null, providers?:string[]}} [opts]
+ * @param {{file?:string, register?:string|null, channel?:string|null, intent?:string|null, brandMd?:string|null, providers?:string[]}} [opts]
  * @returns {Promise<{file:string, findings:object[], counts:{block:number,warn:number,nit:number}, regions:string[]}>}
  */
 export async function scanText(text, opts = {}) {
@@ -32,9 +33,12 @@ export async function scanText(text, opts = {}) {
   // register and channel are SEPARATE axes. opts override frontmatter; else null/unknown.
   const register = opts.register ?? (fm.register != null ? String(fm.register) : null);
   const channel = normalizeChannel(opts.channel ?? fm.channel ?? fm.platform ?? null) || null;
+  // intent (brand-awareness | direct-response) is an ADDITIVE strategy axis above register. UNSET
+  // (the common case) ⇒ null ⇒ every check runs its original path (the goldens-intact guarantee).
+  const intent = resolveIntent({ override: opts.intent, frontmatter: fm.intent, brandMd: opts.brandMd }).intent;
   const providers = opts.providers ?? [];
 
-  const ctx = { file, register, channel, providers, fpGuards: makeFpGuards(artifact) };
+  const ctx = { file, register, channel, intent, providers, fpGuards: makeFpGuards(artifact) };
 
   // Select the deterministic-strict tier only (42 = 29 regex + 13 heuristic). The 10 llm rules
   // are not scanned here. Iterate the registry — never hardcode a rule id.

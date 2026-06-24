@@ -9,6 +9,7 @@
 // severity is computed, documented per rule. DETECT != FIX: these only report.
 
 import { finding } from '../finding.mjs';
+import { applyIntent } from '../registry/intent.mjs';
 import { CAP_TABLE } from './checks-heuristic.mjs';
 
 // finding() + optional severity override (channel/register-dynamic rules only).
@@ -54,7 +55,8 @@ export const REGEX_CHECKS = {
     const t = o.text.trim();
     const re = /^(what if i told you|ever wondered|sound familiar|why\?|the best part\?|so what does this mean|but here'?s the question|want to know the secret|imagine if|curious)/i;
     if (re.test(t) || /\?$/.test(t)) {
-      return [mk('mkt-hook-rhetorical-question', ctx, t.slice(0, 80), o.startLine, 'opener is a rhetorical question (performs curiosity instead of creating it)')];
+      const ov = applyIntent('mkt-hook-rhetorical-question', ctx.intent);
+      return [mk('mkt-hook-rhetorical-question', ctx, t.slice(0, 80), o.startLine, 'opener is a rhetorical question (performs curiosity instead of creating it)', ov?.severity)];
     }
     return [];
   },
@@ -106,10 +108,22 @@ export const REGEX_CHECKS = {
       if (m) { count += m.length; if (!firstLine) { firstLine = l.n; sample = l.text.trim().slice(0, 80); } }
     }
     if (count === 0) return [];
+    const ov = applyIntent('mkt-slop-em-dash-overuse', ctx.intent);
     const editorial = String(ctx.register || '').toLowerCase() === 'editorial';
+    const density = () => (count / (a.body.split(/\s+/).filter(Boolean).length || 1)) * 1000;
+    // intent (brand-awareness) density relaxation takes precedence over the content-type register
+    if (ov?.threshold?.per1000Gte != null) {
+      const per1000 = density();
+      if (per1000 < ov.threshold.per1000Gte) return [];
+      return [mk('mkt-slop-em-dash-overuse', ctx, sample, firstLine, `em-dash density: ${per1000.toFixed(1)}/1000w (brand-awareness cap ${ov.threshold.per1000Gte})`, ov.severity)];
+    }
+    // intent (direct-response) strict count, overriding any editorial register relaxation
+    if (ov?.threshold?.countGte != null) {
+      if (count < ov.threshold.countGte) return [];
+      return [mk('mkt-slop-em-dash-overuse', ctx, sample, firstLine, `em-dash count: ${count} (direct-response cap ${ov.threshold.countGte - 1})`, ov.severity)];
+    }
     if (editorial) {
-      const words = a.body.split(/\s+/).filter(Boolean).length || 1;
-      const per1000 = (count / words) * 1000;
+      const per1000 = density();
       if (per1000 < 5) return [];
       return [mk('mkt-slop-em-dash-overuse', ctx, sample, firstLine, `em-dash density: ${per1000.toFixed(1)}/1000w (editorial cap 5)`, 'warn')];
     }
@@ -168,9 +182,10 @@ export const REGEX_CHECKS = {
   'mkt-slop-colon-reveal': (a, _r, ctx) => {
     const out = [];
     const re = /\b(here'?s (why|what|how|the)|the (answer|secret|truth|point|reason))\s*:/i;
+    const ov = applyIntent('mkt-slop-colon-reveal', ctx.intent);
     for (const l of nonExemptLines(a, ctx)) {
       const m = l.text.match(re);
-      if (m) out.push(mk('mkt-slop-colon-reveal', ctx, m[0], l.n, `colon-reveal crutch: "${m[0]}"`));
+      if (m) out.push(mk('mkt-slop-colon-reveal', ctx, m[0], l.n, `colon-reveal crutch: "${m[0]}"`, ov?.severity));
     }
     return out;
   },
@@ -260,9 +275,15 @@ export const REGEX_CHECKS = {
   'mkt-cta-fake-urgency': (a, _r, ctx) => {
     const out = [];
     const re = /(only \d+ (spots?|seats?) (left|remaining)|act (now|fast) before|ends (tonight|at midnight|soon)|last chance|don'?t miss out|limited time only)/i;
+    const ov = applyIntent('mkt-cta-fake-urgency', ctx.intent);
+    // a real inventory/date token that legitimizes urgency (direct-response only): weekday, month,
+    // ISO date, or a counted unit ("50 units left", "200 seats").
+    const BACKED = /\b(mon|tue|wed|thu|fri|sat|sun)(day)?\b|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b|\b\d{1,5}\s?(units?|seats?|copies|licen[sc]es?)\b|\b\d{4}-\d{2}-\d{2}\b/i;
     for (const l of nonExemptLines(a, ctx)) {
       const m = l.text.match(re);
-      if (m) out.push(mk('mkt-cta-fake-urgency', ctx, m[0], l.n, `manufactured urgency: "${m[0]}"`));
+      if (!m) continue;
+      if (ov?.suppressWhenBacked && BACKED.test(l.text)) continue; // DR: urgency backed by real scarcity — legitimate
+      out.push(mk('mkt-cta-fake-urgency', ctx, m[0], l.n, `manufactured urgency: "${m[0]}"${ov ? ` [${ctx.intent}]` : ''}`, ov?.severity));
     }
     return out;
   },
@@ -306,9 +327,10 @@ export const REGEX_CHECKS = {
   'mkt-voice-permission-closer': (a, _r, ctx) => {
     const out = [];
     const re = /(i hope this helps|let me know if you'?d like|feel free to (reach out|ask)|would you like me to|don'?t hesitate to)/i;
+    const ov = applyIntent('mkt-voice-permission-closer', ctx.intent);
     for (const l of nonExemptLines(a, ctx)) {
       const m = l.text.match(re);
-      if (m) out.push(mk('mkt-voice-permission-closer', ctx, m[0], l.n, `assistant-mode closer: "${m[0]}"`));
+      if (m) out.push(mk('mkt-voice-permission-closer', ctx, m[0], l.n, `assistant-mode closer: "${m[0]}"`, ov?.severity));
     }
     return out;
   },

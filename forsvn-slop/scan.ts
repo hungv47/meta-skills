@@ -7,7 +7,10 @@
 // engine. Generalizes validate-packs.ts's readFile→checks→report→exit shape (exit 2 for findings).
 //
 // Usage:
-//   bun skills/forsvn-slop/scan.ts <paths...> [--json] [--register=<name>] [--strict] [--claude|--gpt|--gemini]
+//   bun skills/forsvn-slop/scan.ts <paths...> [--json] [--register=<name>] [--intent=<name>] [--strict] [--claude|--gpt|--gemini]
+//
+// `--intent=brand-awareness|direct-response` (S8) is the strategy axis above `--register`; unset =
+// the strict marketing floor (unchanged). A brand-of-record default is read from BRAND.md ## Intent.
 //
 // Exit codes:
 //   default : 2 iff any BLOCK finding, else 0
@@ -20,12 +23,20 @@ import { readFileSync, statSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import { Glob } from "bun";
 import { scanText } from "./lib/scan-core.mjs";
+import { resolveIntent } from "./registry/intent.mjs";
 
 const argv = process.argv.slice(2);
 const STRICT = argv.includes("--strict");
 const JSON_OUT = argv.includes("--json");
 const registerArg = argv.find((a) => a.startsWith("--register="));
 const REGISTER = registerArg ? registerArg.split("=")[1] : null;
+const intentArg = argv.find((a) => a.startsWith("--intent="));
+const INTENT = intentArg ? intentArg.split("=")[1] : null;
+// Brand-of-record intent default: probe conventional BRAND.md locations under cwd (tolerate absent).
+let BRAND_MD: string | null = null;
+for (const p of ["BRAND.md", "brand/BRAND.md", "docs/forsvn/canonical/marketing/BRAND.md"]) {
+  if (existsSync(p)) { try { BRAND_MD = readFileSync(p, "utf8"); } catch { /* unreadable → no default */ } break; }
+}
 const providers: string[] = [];
 for (const [flag, name] of [["--claude", "claude"], ["--gpt", "gpt"], ["--gemini", "gemini"]] as const) {
   if (argv.includes(flag)) providers.push(name);
@@ -64,8 +75,10 @@ for (const f of files) {
   let text: string;
   try { text = readFileSync(f, "utf8"); } catch (e) { fail(`cannot read ${f}: ${(e as Error).message}`); }
   const rel = relative(process.cwd(), f) || f;
-  results.push(await scanText(text, { file: rel, register: REGISTER, providers }));
+  results.push(await scanText(text, { file: rel, register: REGISTER, intent: INTENT, brandMd: BRAND_MD, providers }));
 }
+// run-level resolved intent for the envelope echo (per-file frontmatter intent: can still override).
+const RUN_INTENT = resolveIntent({ override: INTENT, brandMd: BRAND_MD }).intent;
 
 const totals = { block: 0, warn: 0, nit: 0 };
 for (const r of results) for (const k of ["block", "warn", "nit"] as const) totals[k] += r.counts[k];
@@ -73,7 +86,7 @@ const ok = STRICT ? totals.block + totals.warn + totals.nit === 0 : totals.block
 
 if (JSON_OUT) {
   // No timestamp/version/cwd — determinism (identical input => identical output).
-  console.log(JSON.stringify({ schema: "forsvn-slop-scan/v1", register: REGISTER, results, totals, ok }, null, 2));
+  console.log(JSON.stringify({ schema: "forsvn-slop-scan/v1", register: REGISTER, intent: RUN_INTENT, results, totals, ok }, null, 2));
 } else {
   printReport();
 }

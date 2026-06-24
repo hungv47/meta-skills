@@ -136,6 +136,25 @@
 
 ---
 
+## Intent
+
+**Quality differentiator:** A single brand-of-record enum line under an `## Intent` heading — the strategic axis (`brand-awareness` | `direct-response`) the slop-detector reads. Brand-of-record only; the per-artifact content-type register (editorial/landing/social) and channel are separate.
+
+**Good:**
+> ## Intent
+> brand-awareness
+
+**Bad:**
+> ## Intent
+> awareness-focused, but switch to conversion mode on landing pages and ads depending on the campaign
+
+**Why the good version works:**
+- One closed-enum value — the detector accepts only `brand-awareness` or `direct-response`; anything else parses as unset (the strict default).
+- It is the brand's default goal-axis, not a per-surface mode — a direct-response ad inside a brand-awareness brand sets `intent: direct-response` in its own artifact frontmatter, not here.
+- Intent shifts which goal-axis rules fire (off-brand urgency, em-dash cadence); it never relaxes claim-integrity rules.
+
+---
+
 ## Tagline
 
 **Quality differentiator:** Primary tagline scored with V/F/U rubric. One tagline — platform variants belong in copywriting.
