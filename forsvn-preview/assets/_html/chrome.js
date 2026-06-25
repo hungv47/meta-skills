@@ -449,7 +449,17 @@
         dismiss.type = "button";
         dismiss.className = "btn-quiet";
         dismiss.textContent = "Dismiss";
+        dismiss.title = "not slop here — a legit one-off (recorded, not counted against the rule)";
         foot.appendChild(dismiss);
+        // FOR-56 scope chip: "the rule itself mis-fires" is a different signal from "this one is
+        // fine". rule-wrong dismissals are counted; ≥3 across distinct artifacts flags the rule
+        // for a human to revise. Plain Dismiss stays the safe, non-counting default.
+        var ruleWrong = document.createElement("button");
+        ruleWrong.type = "button";
+        ruleWrong.className = "btn-quiet";
+        ruleWrong.textContent = "Rule's wrong";
+        ruleWrong.title = "this rule mis-fires — count it toward revision";
+        foot.appendChild(ruleWrong);
         if (staged) {
           var ownership = document.createElement("span");
           ownership.className = "ownership";
@@ -483,18 +493,20 @@
             });
           });
         }
-        dismiss.addEventListener("click", function () {
+        function sendDismiss(scope) {
           // Fire-and-forget the override signal, then remove optimistically — a
           // failed POST must never strand the card.
           if (s.ruleId) {
             fetch(dismissEndpoint, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ token: config.token, ruleId: s.ruleId }),
+              body: JSON.stringify({ token: config.token, ruleId: s.ruleId, scope: scope }),
             }).catch(function () {});
           }
           card.remove();
-        });
+        }
+        dismiss.addEventListener("click", function () { sendDismiss("exception"); });
+        ruleWrong.addEventListener("click", function () { sendDismiss("rule-wrong"); });
       });
     }
 

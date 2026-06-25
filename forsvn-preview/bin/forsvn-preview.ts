@@ -1097,7 +1097,7 @@ async function computeSuggestions(mdSource: string, file: string): Promise<Sugge
 // writer is itself keyless-safe and non-throwing; this wrapper adds absence-safety.
 async function recordDismissal(
   projectRoot: string,
-  row: { ts: string; artifact_id: string; ruleId: string; surface: string },
+  row: { ts: string; artifact_id: string; ruleId: string; surface: string; scope: "exception" | "rule-wrong" },
 ): Promise<void> {
   try {
     const { appendDismissal } = await import("../../forsvn-slop/dismissals");
@@ -1386,6 +1386,10 @@ export function makeHandler(args: HandlerArgs): (req: Request) => Promise<Respon
       if (typeof raw.ruleId !== "string" || !raw.ruleId.trim()) {
         return jsonResp(400, { error: "ruleId (non-empty string) is required" }, noStore);
       }
+      // scope enum SoT: forsvn-slop/lib/dismissal-scope.ts (DISMISSAL_SCOPES). Restated minimally
+      // here (the only value that COUNTS toward rule revision is 'rule-wrong'; a missing/invalid
+      // scope fail-safes to 'exception') so the preview never load-depends on forsvn-slop. FOR-56.
+      const scope = raw.scope === "rule-wrong" ? "rule-wrong" : "exception";
       let artifactId = "";
       try { artifactId = parseFrontmatter(readFileSync(mdPath, "utf8"))?.id ?? ""; }
       catch { /* unreadable frontmatter → empty id; appendDismissal then skips the row */ }
@@ -1394,6 +1398,7 @@ export function makeHandler(args: HandlerArgs): (req: Request) => Promise<Respon
         artifact_id: artifactId,
         ruleId: raw.ruleId.trim(),
         surface: "web",
+        scope,
       });
       if (state.arm) state.arm(); // dismissing is activity — re-arm the idle timer
       return jsonResp(200, { ok: true }, noStore);

@@ -157,9 +157,12 @@ on static/archived pages; chrome.js activates it on a live pending serve.
     allowlisted rules (clause-glue em-dash, scene-setting opener) ever stage; every
     other finding is note-only, and `llm`-tier findings are dropped entirely.
 
-  **Dismiss** removes the card and fires **`POST /dismiss`** — one CSRF-protected
-  override row to `.forsvn/learning/slop-dismissals.tsv` (the FOR-56 ≥3-dismissals
-  signal). No accept/approve/dismiss tool exists on any agent channel; both writes
+  **Dismiss** / **Rule's wrong** both remove the card and fire **`POST /dismiss`** —
+  one CSRF-protected override row to `.forsvn/learning/slop-dismissals.tsv` (the FOR-56
+  signal). The two carry a `scope` chip: plain Dismiss = `exception` (a legit one-off —
+  recorded, never counted), Rule's wrong = `rule-wrong` (counted; ≥3 across distinct
+  artifacts flags the rule for a human to revise). A missing/invalid scope fail-safes to
+  `exception`. No accept/approve/dismiss tool exists on any agent channel; both writes
   require the human's localhost token.
 - **read as ▾** — the folded preview-mode chooser (informational): designed
   html (this page) / terminal `--md` / Proof collab (`forsvn-collab open`).
