@@ -157,6 +157,17 @@ export function parse(text) {
     if (String(frontmatter.register || '').toLowerCase() === 'legal') {
       for (let i = 0; i < bodyLines.length; i++) exempt.add(fmLineCount + i + 1);
     }
+    // register:copy-analysis (write-copy artifacts): the doc is a copy *analysis*, not shippable
+    // copy. Only `**Selected:** "..."` lines are the candidate copy that actually ships; every other
+    // line (Pre-Writing, Rule:/Score: annotations, cut-alternatives, A/B notes, Why-this-works, the
+    // verdict table) is analysis prose. Exempt all non-Selected lines so the marketing rules judge
+    // ONLY what ships. write-copy/references/format-conventions.md owns the `**Selected:**` marker.
+    if (String(frontmatter.register || '').toLowerCase() === 'copy-analysis') {
+      const SELECTED_RE = /^\s*\*\*Selected:\*\*/;
+      for (let i = 0; i < bodyLines.length; i++) {
+        if (!SELECTED_RE.test(bodyLines[i])) exempt.add(fmLineCount + i + 1);
+      }
+    }
   }
   // inline-code backtick spans: mask only matters for whole-line regex; approximate by
   // exempting a line that is wholly inline code. (Fenced blocks already handled above.)
@@ -230,17 +241,62 @@ export function parse(text) {
     cta.push({ text: String(frontmatter.cta), startLine: fmLine, endLine: fmLine });
   }
 
+  // register:copy-analysis — the shippable copy is the `**Selected:**` lines, never a list block
+  // (lists are always analysis here: the Pre-Writing block, the verdict table). Clear the list
+  // region so list-based rules (symmetric-list, …) don't fire on analysis structure. Additive: a
+  // normal marketing artifact (no such register) is unaffected.
+  const isCopyAnalysis = String(frontmatter.register || '').toLowerCase() === 'copy-analysis';
   const closing = proseBlocks.length ? blockSpan(proseBlocks[proseBlocks.length - 1]) : undefined;
   const bodySpans = proseBlocks.map(blockSpan);
-  const listSpans = listBlocks.map(blockSpan);
+  const listSpans = isCopyAnalysis ? [] : listBlocks.map(blockSpan);
   const structured = blocks.length > 0 && (headingBlocks.length > 0 || blocks.length > 1);
 
+  // register:copy-analysis — model the `**Selected:**` lines AS the shippable artifact. The exempt
+  // mask already hides analysis prose from line-based rules; here we also point the SENTENCE set and
+  // the hero/cta REGIONS at the Selected copy. Without this the sentence- and region-based block
+  // rules (fabricated-precision, unfalsifiable-superlative, rhetorical-question, throat-clearing,
+  // headline-overflow, cta-*) skip the very copy that ships: a `**Selected:**` line is never a
+  // sentence START (the `**` prefix isn't a boundary char), so its copy gets absorbed into a
+  // sentence that begins on an exempt analysis line and is dropped by isExempt(s.startLine). The
+  // first Selected line is the hero (so hero-gated severities apply); the rest are body. Gated on
+  // the register — a normal artifact (selectedUnits stays empty) is untouched.
+  const SELECTED_LINE_RE = /^\s*\*\*Selected:\*\*\s*/;
+  const stripSelected = (ln) =>
+    ln.replace(SELECTED_LINE_RE, '').trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').trim();
+  const selectedUnits = [];
+  if (isCopyAnalysis) {
+    for (let i = 0; i < bodyLines.length; i++) {
+      if (!SELECTED_LINE_RE.test(bodyLines[i])) continue;
+      const copy = stripSelected(bodyLines[i]);
+      if (copy) selectedUnits.push({ text: copy, startLine: fmLineCount + i + 1 });
+    }
+    const first = selectedUnits[0];
+    headline = first ? { text: first.text, startLine: first.startLine, endLine: first.startLine } : undefined;
+    hook = undefined; // the first Selected line is the single hero; no separate analysis hook
+    cta.length = 0; // analysis CTAs (in cut-alternatives / the verdict table) don't ship
+    for (const u of selectedUnits) {
+      if (u.text.length <= 60 && (CTA_VERB.test(u.text) || MD_LINK.test(u.text))) {
+        cta.push({ text: u.text, startLine: u.startLine, endLine: u.startLine });
+      }
+    }
+  }
+
   // ── sentences with region tags ──
-  const sentences = splitSentences(body).map((s) => {
+  let sentences = splitSentences(body).map((s) => {
     const startLine = toAbs(charToLine(s.start));
     const endLine = toAbs(charToLine(Math.max(s.start, s.end - 1)));
     return { text: s.text, startLine, endLine, region: regionOf(startLine) };
   });
+  if (isCopyAnalysis) {
+    // Rebuild the sentence set from the Selected copy alone, each anchored on its own (non-exempt)
+    // Selected line so the sentence-based block rules judge it. First Selected = headline region.
+    sentences = selectedUnits.flatMap((u, idx) =>
+      splitSentences(u.text).map((s) => ({
+        text: s.text, startLine: u.startLine, endLine: u.startLine,
+        region: idx === 0 ? 'headline' : 'body',
+      })),
+    );
+  }
 
   function regionOf(absLine) {
     if (headline && absLine === headline.startLine) return 'headline';

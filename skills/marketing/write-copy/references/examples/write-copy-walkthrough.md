@@ -172,7 +172,7 @@ PASS verdict + annotated artifact returned.
 
 Orchestrator writes single artifact to `docs/forsvn/artifacts/marketing/content/statuszero-landing.copy.md`:
 
-- Frontmatter: `skill: write-copy`, `version: 1`, `date: 2026-05-18`, `status: done`
+- Frontmatter: `skill: write-copy`, `version: 1`, `date: 2026-05-18`, `status: done`, `register: copy-analysis`
 - Descriptive metadata block (Date / Skill / Audience / Awareness Stage / Traffic Source)
 - Pre-Writing 5-item block (verbatim from Cold Start answers)
 - Section-by-section copy (Hero → Social Proof Bar → Problem → Solution → How It Works → Testimonials → Mid-Page CTA → Key Stats → Final CTA)

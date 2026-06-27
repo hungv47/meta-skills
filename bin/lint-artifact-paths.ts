@@ -61,6 +61,10 @@ function walk(dir: string): void {
     // marketing/copy/<platform>-<date>-<slug> path (format-conventions.md) — exempt from
     // the by-stack grammar, like `.forsvn/performance/` (references/performance-data.md).
     if (rel.includes("/artifacts/marketing/copy/") || rel.endsWith("/artifacts/marketing/copy")) continue;
+    // write-copy's copy-analysis schema-as-contract uses the analogous deliberate
+    // marketing/content/<slug>.copy.md pipeline path (write-copy/references/format-conventions.md;
+    // versioned [slug].copy.v[N].md lifecycle) — same narrow exemption as marketing/copy/ above.
+    if (rel.includes("/artifacts/marketing/content/") || rel.endsWith("/artifacts/marketing/content")) continue;
     if (entry.isDirectory()) {
       walk(abs);
       continue;

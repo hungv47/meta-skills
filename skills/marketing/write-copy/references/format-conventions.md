@@ -35,7 +35,15 @@ skill: write-copy
 version: 1
 date: YYYY-MM-DD
 status: done | done_with_concerns | blocked | needs_context
+register: copy-analysis
 ```
+
+`register: copy-analysis` (Route A/B artifacts) tells the deterministic slop detector this is a copy
+*analysis* doc, not shippable copy: the scanner judges **only the `**Selected:**` lines** (the
+candidate copy that ships) and exempts the Pre-Writing block, the per-line `Rule:`/`Score:`
+annotations, cut-alternatives, the Why-This-Works block, and the verdict table. Without it the scanner
+counts annotation prose as marketing copy (e.g. every em-dash in your rationale), producing false slop
+findings on the artifact wrapper. Emit it on every Route A/B copy artifact.
 
 For Route C (called by `brief-landing-page` / `plan-campaign`), `version` may carry the calling skill's version semantics (e.g., `version: lp-brief-v2`); orchestrator sets at compile time.
 

@@ -4,7 +4,7 @@ description: "Writes and evaluates persuasive copy — headlines, hooks, CTAs, t
 argument-hint: "[copy task or text to evaluate]"
 allowed-tools: Read Grep Glob Bash WebSearch WebFetch
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
   budget: deep
   estimated-cost: "$1-3"
 ---
@@ -39,6 +39,7 @@ Before delivering, the critic agent verifies:
 - [ ] Every key line annotated: rule that drove the choice, cut alternative, rubric score
 - [ ] CTA follows formula: [action verb] + [what they get] — not "Learn More" / "Click Here"
 - [ ] Every headline/hook contains concrete nouns or specific numbers — no abstract "better," "innovative," "leading"
+- [ ] **Selected lines clear the stack slop detector.** Run `bun <forsvn-slop>/scan.ts <artifact> --json` (the artifact's `register: copy-analysis` scopes the scan to `**Selected:**` lines only). ANY `block`-severity finding — `mkt-slop-not-just-x`, `mkt-slop-em-dash-overuse`, etc. — is an auto-FAIL: rewrite that line and re-scan until **0 blocks**. The critic must never SELECT a line the always-on detector will block downstream; the V/F/U rubric and the slop floor have to agree.
 
 ## Before Starting
 
@@ -72,7 +73,7 @@ Three routes — A (single key line), B (full page), C (called by another skill)
 - **Path (Route A/B):** `docs/forsvn/artifacts/marketing/content/[slug].copy.md`
 - **Path (Route C):** no standalone artifact — annotated copy embedded in caller's artifact
 - **Lifecycle:** pipeline — on re-run for same slug, rename existing to `[slug].copy.v[N].md` and create new with incremented version
-- **Frontmatter fields:** `skill`, `version`, `date`, `status`
+- **Frontmatter fields:** `skill`, `version`, `date`, `status`, `register: copy-analysis` (the last scopes the slop scanner to the `**Selected:**` lines — emit it on every Route A/B copy artifact, else the always-on detector scans the analysis prose and the auto-FAIL gate above spuriously blocks)
 - **Body sections (in order):** descriptive metadata · Pre-Writing 5-item block · Key Lines (Route A) OR section-by-section copy (Route B) · A/B Variants (Route B only) · Why This Works ([convention](references/_shared/why-this-works-convention.md))
 - **Schema drift rule:** changes require atomic update of `format-conventions.md` § "Frontmatter field order" / § "Pre-Writing block format" / § "Key Lines block format"
 

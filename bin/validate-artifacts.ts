@@ -134,6 +134,10 @@ function walk(dir: string): void {
     // contract, like `.forsvn/performance/` (references/performance-data.md). They stay
     // indexed by manifest-sync so they remain reviewable; only this strict gate skips them.
     if (rel.includes("/artifacts/marketing/copy/") || rel.endsWith("/artifacts/marketing/copy")) continue;
+    // marketing/content/ holds write-copy's analogous `[slug].copy.md` copy-analysis
+    // schema-as-contract (skills/marketing/write-copy/references/format-conventions.md) —
+    // same narrow dual-gate exemption as marketing/copy/ above (lint-artifact-paths skips it too).
+    if (rel.includes("/artifacts/marketing/content/") || rel.endsWith("/artifacts/marketing/content")) continue;
     if (e.isDirectory()) {
       walk(abs);
       continue;
