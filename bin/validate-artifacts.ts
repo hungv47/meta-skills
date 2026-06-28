@@ -8,6 +8,7 @@
 //   v3 instruction:  type (enum), keywords (non-empty list), id (non-empty slug)
 //   no legacy `review_state` (renamed to decision_state in v2); `mkt` stack is rejected (use `marketing`)
 //   decision_state, if present, must be a valid enum value
+//   signature (FOR-46/U4), if present, must be a valid launch signature sub-type (optional)
 //
 // Modes:
 //   (default)  warn-only — prints issues, exits 0 (advisory)
@@ -56,6 +57,13 @@ const REASON = new Set(["off-brief", "wrong-claim", "tone", "too-long", "weak-ho
 const REVIEW_TOOL = new Set(["roughdraft", "inline", "none", "proof"]);
 // collab_state — lifecycle of a Proof-backed collaborative doc.
 const COLLAB_STATE = new Set(["drafting", "in_review", "exported"]);
+// signature — launch signature sub-type (FOR-46 / U4). Optional; names the
+// channel-native launch component a typed write-launch sidecar artifact IS
+// (set only on `type: execution` artifacts under marketing/launch/). Extensible
+// per channel — add a channel's value here when its pack promotes a component to
+// an individually reviewable signature artifact. Enum membership only; absence is
+// always valid, so every existing artifact still passes --strict.
+const SIGNATURE = new Set(["ph-tagline", "ph-first-comment"]);
 const TYPE = new Set([
   "canonical", "plan", "spec", "decision", "experience", "pipeline", "snapshot",
   "review", "brief", "strategy", "execution", "evaluation", "loop", "learning", "registry",
@@ -253,6 +261,12 @@ function validate(abs: string, rel: string): void {
   const reviewTool = field(fm, "review_tool");
   if (reviewTool !== null && reviewTool !== "" && !REVIEW_TOOL.has(reviewTool))
     problems.push(`\`review_tool\` invalid: "${reviewTool}" (expected ${[...REVIEW_TOOL].join(" | ")})`);
+
+  // signature sub-type enum (optional field; FOR-46 / U4). Absence is always
+  // valid; if present it must be a recognized launch signature sub-type.
+  const signature = field(fm, "signature");
+  if (signature !== null && signature !== "" && !SIGNATURE.has(signature))
+    problems.push(`\`signature\` invalid: "${signature}" (expected ${[...SIGNATURE].join(" | ")})`);
 
   // collaborative-doc sub-type (ADR 2026-06-08): collab_state enum + the
   // proof_slug binding is required whenever the doc is Proof-backed, else the

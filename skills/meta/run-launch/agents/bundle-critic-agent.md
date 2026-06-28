@@ -7,12 +7,12 @@ hands to `measure-results` is a broken launch, not a launch.
 ## Rubric (all 5 must PASS)
 
 - [ ] **Chain integrity** — all 7 steps (audience, plan, asset brief, launch copy, comms plan,
-      publish, measure) are present; each maps to a real leaf skill or a named gate; no
-      placeholder step; a **Current step** pointer exists.
+      publish, measure) **+ the 4b hunter/supporter-outreach sub-step** are present; each maps to a
+      real leaf skill or a named gate; no placeholder step; a **Current step** pointer exists.
 - [ ] **Pack legibility** — `pack_verified` is narrated; each bound step names the specific §N
-      tactic it applied (tactics, not vibes); the unwired steps (plan, publish) degrade
-      transparently — they say the leaf does not bind the launch pack and that the runner read
-      §N directly. No "tailored for X" claim without a real binding. Stale pack flagged.
+      tactic it applied (tactics, not vibes); the pack-unwired steps (plan, 4b outreach, publish)
+      degrade transparently — they say the leaf does not bind the launch pack and that the runner
+      read §N directly. No "tailored for X" claim without a real binding. Stale pack flagged.
 - [ ] **Gate discipline** — steps 2–6 land `decision_state: pending`; the publish step never
       auto-publishes (it hands to `publish-social`, which owns the registry-gated fork); Direct
       mode does not auto-approve (architecture §9.2, D-8).

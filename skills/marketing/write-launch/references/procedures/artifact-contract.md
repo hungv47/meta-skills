@@ -8,6 +8,7 @@
 
 - **Path:** `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-[slug].md`
 - **Lifecycle:** `pipeline` — regenerated on re-run for the same (channel, topic) tuple. Variant exploration uses suffixed slugs.
+- **Signature sidecars (FOR-46/U4):** two co-located `.tagline.md` / `.first-comment.md` artifacts carrying the canonical contract + a `signature` sub-type — full schema in [`../format-conventions.md`](../format-conventions.md) § "Signature sidecar artifacts".
 
 ## Frontmatter (16 fields, verbatim, in order)
 
@@ -28,6 +29,7 @@ Per-field semantics + enum values: [`../format-conventions.md`](../format-conven
 **NOT performed on GUARD_FAIL or NEEDS_CONTEXT.**
 
 1. Write artifact at the path above.
+1b. **Emit the two signature sidecars** (FOR-46/U4): lift the bundle's tagline (Primary identifier) into `[channel]-[YYYY-MM-DD]-[slug].tagline.md` (`type: execution`, `signature: ph-tagline`) and the pinned first maker-comment (Anchor narrative) into `.first-comment.md` (`signature: ph-first-comment`), each with the full canonical frontmatter + `decision_state: pending` so each is individually reviewable. Verbatim-faithful to the bundle copies. Skip a sidecar whose component the channel does not produce. Schema: [`../format-conventions.md`](../format-conventions.md) § "Signature sidecar artifacts".
 2. Experience write-back per `./pre-dispatch.md` Write-back map:
    - Q1 (channel) — routing-only, NOT persisted.
    - Q2 (topic-or-brief) → `experience/content.md`.

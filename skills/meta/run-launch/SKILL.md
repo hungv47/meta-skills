@@ -20,7 +20,7 @@ metadata:
 
 ## Critical Gates
 
-1. **Orchestrate, don't fuse.** Each step dispatches its leaf (`research-icp`, `plan-campaign`, `brief-graphic`/`brief-shortform`, `write-launch`/`write-social`, `publish-social`, `measure-results`); this skill owns only sequencing, pack narration, and the bundle.
+1. **Orchestrate, don't fuse.** Each step dispatches its leaf (`research-icp`, `plan-campaign`, `brief-graphic`/`brief-shortform`, `write-launch`/`write-social`, `write-outreach`, `publish-social`, `measure-results`); this skill owns only sequencing, pack narration, and the bundle.
 2. **Pack-resolved or transparent degrade.** Resolve the pack; narrate `pack_verified`. No pack → general principles only, stated as such; never fake tailoring.
 3. **Stop at every gate; never auto-publish.** Every step lands `decision_state: pending` (architecture §9.2). The publish step hands to `publish-social` (its own registry-gated fork) and stops; the human publishes (D-8).
 4. **Legible, not autopilot.** Every step narrates its applied play + the launch's bet. Never a black box (D-8).
@@ -30,7 +30,7 @@ metadata:
 
 Critic (`agents/bundle-critic-agent.md`) PASS/FAIL — all 5 must PASS:
 
-- [ ] **Chain integrity** — 7 steps named; each maps to a real leaf or gate; current-step pointer present.
+- [ ] **Chain integrity** — 7 steps (+4b) named; each maps to a real leaf or gate; current-step pointer present.
 - [ ] **Pack legibility** — `pack_verified` narrated; bound steps cite their pack §N; unwired steps degrade transparently.
 - [ ] **Gate discipline** — each step `decision_state: pending`; publish never auto-publishes.
 - [ ] **Bundle coherence** — ONE deliverable; run-of-show consistent; required artifacts present or flagged; one channel per run.
@@ -46,14 +46,14 @@ Resume a prior bundle for this channel+slug under `docs/forsvn/artifacts/marketi
 
 ## Dispatch
 
-Per cycle: read state → resolve the pack → dispatch the **current step**'s leaf → **stop at its gate** → on approval, advance **Current step**, log the transition, narrate the next applied play. The copy step routes to `write-launch` for a `launch-channel` pack, `write-social` for a feed channel (`--social` forces the feed path). The unwired steps (plan, publish) degrade transparently — read the pack directly, don't rewire those leaves (S3.2/S3.3). Full sequence: [launch-chain-spec.md](references/launch-chain-spec.md).
+Per cycle: read state → resolve the pack → dispatch the **current step**'s leaf → **stop at its gate** → on approval, advance **Current step**, log the transition, narrate the next applied play. The copy step routes to `write-launch` for a `launch-channel` pack, `write-social` for a feed channel (`--social` forces the feed path). **Step 4b** dispatches `write-outreach` (hunter/supporter), review-gated. The unwired steps (plan, 4b, publish) degrade transparently — read the pack directly, don't rewire those leaves (S3.2/S3.3). Full sequence: the spec above.
 
 2 agents (`agents/*.md`): **Launch Architect** (resolve pack → plan the 7-step chain mapped to leaves + per-step legibility + the bet) → **Bundle Critic** (the Quality Gate). Each leaf runs its own agents; this skill never inlines that work.
 
 ## Artifact Contract
 
 - **Path:** `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-run-[slug].md` (the **run record**, distinct from `write-launch`'s copy bundle). **Lifecycle:** `pipeline`.
-- **Body (in order):** the 7-step run-of-show table (step · leaf · pack §N · artifact · gate/status) · [Legibility block](references/_shared/legibility-convention.md) · [Why this works](references/_shared/why-this-works-convention.md) · Critic verdict (5-row) · Anti-patterns.
+- **Body (in order):** the 7-step (+4b) run-of-show table (step · leaf · pack §N · artifact · gate/status) · [Legibility block](references/_shared/legibility-convention.md) · [Why this works](references/_shared/why-this-works-convention.md) · Critic verdict (5-row) · Anti-patterns.
 - Frontmatter per [`_shared/artifact-contract-template.md`](references/_shared/artifact-contract-template.md) + `pack_verified` / `applied_tactics`. **Cross-stack:** the loop closes through `measure-results`, which owns the pack write-back + `.forsvn/performance/[channel].tsv`.
 
 ## Chain Position
@@ -72,7 +72,7 @@ Per cycle: read state → resolve the pack → dispatch the **current step**'s l
 
 ## Completion Status
 
-- **DONE** — bundle assembled; 7 steps mapped + narrated; pack resolved; current step clear; `measure-results` handoff present.
+- **DONE** — bundle assembled; 7 steps (+4b) mapped + narrated; pack resolved; current step clear; `measure-results` handoff present.
 - **DONE_WITH_CONCERNS** — a step lacks a leaf, the loop is open, the pack is stale, or a step degraded to general principles.
 - **NEEDS_CONTEXT** — missing channel, product/topic, `brand_mode`, or goal.
 - **BLOCKED** — no pack and the operator declines the degrade; an unresolved leaf `GUARD_FAIL`.

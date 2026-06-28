@@ -98,6 +98,7 @@ Derived/inferred values (set by `manifest-sync.ts` or `clean-artifacts`, NOT set
 | `assets` | The return-leg (§ below) — re-ingested rendered outputs attached to this artifact | `[.forsvn/assets/hero/final.png, https://site.com/lp]` |
 | `asset_picked` | The option-picker's canonical choice among `assets` (or a variant slug) | `.forsvn/assets/hero/final.png` |
 | `execution_mode` | The execution-fork choice recorded on a brief/produce artifact (provenance + eval attribution) | `brief-only` \| `assisted` \| `direct` |
+| `signature` | The launch **signature sub-type** this artifact IS — set only on a `type: execution` launch sidecar (§ below) | `ph-tagline` \| `ph-first-comment` |
 | `body_sha` | **Plugin-stamped, not skill-authored** (L2). `sha256:<hex>` of the produced body, written by the review module at decision time; lets a later read confirm/dedupe the produced text. See [`verdicts-data.md`](verdicts-data.md) § "Edit-delta (L2)". | `sha256:9f2a…` |
 
 **Graph edges are authored by `id`, not path** (Phase 1). The five edge fields (`upstream`, `downstream`, `supersedes`, `superseded_by`, `references`) reference other artifacts by their stable `id`; the manifest resolves `id → current path` and derives the `referenced_by` reverse index, so a move never breaks an edge. Tokens that name something outside the indexed graph (a skill name, an external path like `skills/…` or `../_biz-ops/…`) are kept literal and treated as external. See [`manifest-spec.md`](manifest-spec.md) § "v2 — the Knowledge Graph".
@@ -231,6 +232,31 @@ where do I look." `bun skills/bin/validate-artifacts.ts --strict` enforces the
 `do_not_use_when` sit in the instruction core *conceptually* — they are what an
 agent reads to decide — but they are recommended selection context (§ Selection
 fields), **not** strict-enforced; author them on every non-terminal artifact.
+
+### Signature sub-type (`signature: ph-tagline` / `ph-first-comment`)
+
+An additive, **optional** instruction-core marker for a launch **signature artifact** emitted as
+its own typed reviewable file (FOR-46 / U4). It follows the dedicated-field sub-type precedent of
+`review_tool: proof` (below) — a single new flat-scalar field, **not** a new `type` enum value (the
+artifact stays `type: execution`).
+
+| Field | Type | Example | Notes |
+|---|---|---|---|
+| `signature` | enum (extensible per channel) | `ph-tagline` | Names the channel-native launch component this artifact *is*. |
+
+- **Enum (current):** `ph-tagline` (Product Hunt tagline, ≤60 chars) · `ph-first-comment` (the PH
+  pinned first maker-comment, 80–150 words).
+- **Extensible per channel.** A new launch channel adds its own values (e.g. `reddit-title`,
+  `showhn-title`) when its pack promotes a component to an individually reviewable signature
+  artifact — add the value to `validate-artifacts.ts`'s `SIGNATURE` set in the same change.
+- **Scope.** Valid only on `type: execution` launch artifacts under
+  `docs/forsvn/artifacts/marketing/launch/` — the `write-launch` sidecars next to the copy bundle
+  (see that skill's [`format-conventions.md`](../skills/marketing/write-launch/references/format-conventions.md) § "Signature sidecar artifacts").
+  Absent on every other artifact.
+- **Validation.** Optional: if `signature` is present it must be in the `SIGNATURE` enum; its absence
+  is always valid, so every existing artifact still passes `--strict`. `validate-artifacts --strict`
+  enforces enum membership only (it does not, today, hard-enforce the `type: execution` /
+  `marketing/launch/` scope — that scope is an authoring rule).
 
 ## Review fields (reviewable artifacts)
 

@@ -51,9 +51,10 @@ Pass total ≥35/50 AND no dim 0. **Discrimination test every cycle.**
 
 ## Artifact Contract
 
-- **Path:** `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-[slug].md`. **Lifecycle:** `pipeline`.
-- **Frontmatter (16):** verbatim schema (adds legibility `pack_verified` + `applied_tactics` + `guard_status`) → [`references/format-conventions.md`](references/format-conventions.md).
-- **Body (in order):** Launch bundle (channel components) · **Legibility block** ([convention](references/_shared/legibility-convention.md)) · **Why this works** ([convention](references/_shared/why-this-works-convention.md)) · Critic verdict (6-row table) · Anti-patterns triggered (`- None` if empty).
+- **Path:** `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-[slug].md` · **Lifecycle:** `pipeline`.
+- **Frontmatter (16):** verbatim schema (adds legibility + `guard_status`) → [`references/format-conventions.md`](references/format-conventions.md).
+- **Body (in order):** Launch bundle · **Legibility block** · **Why this works** · Critic verdict (6-row) · Anti-patterns triggered (`- None` if empty).
+- **Signature sidecars (FOR-46/U4):** also emit `.tagline.md` + `.first-comment.md` (`signature: ph-tagline`/`ph-first-comment`), each reviewable alone — § Signature sidecars in format-conventions.
 
 Side effects + consumed-by + cross-stack contract: [`references/procedures/artifact-contract.md`](references/procedures/artifact-contract.md).
 

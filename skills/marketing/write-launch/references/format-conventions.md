@@ -125,6 +125,48 @@ In order. Renaming or reordering breaks polish-chain readers and eval-loop / mea
 
 ---
 
+## Signature sidecar artifacts (tagline + first comment)
+
+FOR-46 / U4. In ADDITION to the copy bundle above, write-launch emits the two highest-leverage Product Hunt components as **individually-typed reviewable sidecar artifacts**, so each can be approved/denied on its own. The in-bundle copies stay the source text; the sidecars are verbatim-faithful lifts.
+
+| Sidecar | Path | `signature` |
+|---|---|---|
+| Tagline (≤60) | `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-[slug].tagline.md` | `ph-tagline` |
+| Pinned first maker-comment (80–150w) | `[channel]-[YYYY-MM-DD]-[slug].first-comment.md` (same dir) | `ph-first-comment` |
+
+Unlike the `launch-copy-artifact` bundle (which uses the verbatim 16-field schema-as-contract above), **each sidecar carries the full canonical artifact contract** (`artifact-contract-template.md` § "Signature sub-type") and is validated by `bin/validate-artifacts.ts --strict`. Required frontmatter — `id`, `type`, `keywords`, `skill`, `version`, `date`, `status`, `stack`, `review_surface`, `lifecycle` + the optional `signature`:
+
+```yaml
+---
+skill: write-launch
+version: 1
+date: YYYY-MM-DD
+status: done
+stack: marketing
+review_surface: md
+id: [channel]-[YYYY-MM-DD]-[slug]-tagline      # kebab id (no dot; mirrors the file)
+type: execution
+signature: ph-tagline
+keywords: [launch, tagline, [channel]]
+lifecycle: execution
+summary: "[channel] tagline (≤60) — [slug]"
+use_when: "Reviewing/approving the [channel] tagline on its own"
+decision_state: pending
+review_tool: inline
+upstream: [channel]-[YYYY-MM-DD]-[slug]         # the copy bundle this was lifted from
+---
+
+# Tagline — [slug]
+
+<the ≤60-char tagline, verbatim from the bundle's Primary identifier>
+```
+
+The `.first-comment.md` sidecar is identical except `signature: ph-first-comment`, `id: …-first-comment`, `keywords: [launch, first-comment, [channel]]`, and the body is the 80–150-word pinned maker comment (ends in a feedback ask, never a vote-ask). Both stay `type: execution` — `signature` is a dedicated sub-type field, not a new `type` value.
+
+**Emitted when** the bundle is written (PASS / DONE_WITH_CONCERNS / FAIL ships) — the same side-effect step that writes the bundle (`procedures/artifact-contract.md` § Side effects). NOT on GUARD_FAIL / NEEDS_CONTEXT. A channel with no tagline / first-comment analogue simply does not emit that sidecar (PH is the reference channel; the enum is extensible per channel).
+
+---
+
 ## Guard-check rules
 
 The guard-checker-agent enforces these in order. A **format cap** violation = REVISION_REQUIRED. A **hard guard** breach = REVISION_REQUIRED (1st) → GUARD_FAIL (2nd, publish-blocking).

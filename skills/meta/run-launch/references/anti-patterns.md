@@ -19,9 +19,10 @@ launch copy itself instead of dispatching the step's leaf skill.
 inlined work bypasses the leaf's own gates and its quality rubric (orchestrate, don't fuse).
 
 **Instead:** every step dispatches its leaf (`research-icp`, `plan-campaign`, `brief-*`,
-`write-launch`/`write-social`, `publish-social`, `measure-results`); the runner owns only
-sequencing, the pack narration, and the bundle. (Reading the pack §5/§6 to *narrate* the
-run-of-show at an unwired step is narration, not fusing — it writes no leaf artifact.)
+`write-launch`/`write-social`, `write-outreach` (4b), `publish-social`, `measure-results`); the
+runner owns only sequencing, the pack narration, and the bundle. (Reading the pack §5/§6/§8 to
+*narrate* the run-of-show / outreach at a pack-unwired step is narration, not fusing — it writes
+no leaf artifact.)
 
 ## 2. Auto-publishing
 

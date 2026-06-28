@@ -1,8 +1,9 @@
 # Worked Example — a Product Hunt launch, end to end
 
 `/run-launch producthunt "Cadence — a standup bot that writes itself"` — founder brand mode,
-goal = signups. Shows pack resolution, the 7 steps narrated, the transparent degrade at the
-unwired steps, the stop at the publish gate, and the handoff to `measure-results`.
+goal = signups. Shows pack resolution, the 7 steps (+ the 4b outreach sub-step) narrated, the
+transparent degrade at the pack-unwired steps, the stop at the publish gate, and the handoff to
+`measure-results`.
 
 ---
 
@@ -30,6 +31,7 @@ Soft client: no hosted key → local mirror. Resolved `producthunt` · `last_ver
 | 2 | plan | plan-campaign (+pack §5/§6, degrade) | §5 §6 | review gate / **current** |
 | 3 | asset brief | brief-graphic | §1 Angle 3 · §2 (1270×760, thumb 240×240) | review gate / pending |
 | 4 | launch copy | write-launch | §1 · §2 caps · §4 no-vote-ask · §5 first comment | review gate / pending |
+| 4b | outreach | write-outreach (+pack §5/§8, degrade) | §5 steps 1/4/7 · §8 hunter-reach | review gate / pending |
 | 5 | comms plan | plan-campaign run-of-show (+pack §5 timings) | §5 (T−14d → T+24h) | review gate / pending |
 | 6 | publish | publish-social (+§4 §7 re-assert) | §7 news-framed · §4 no-vote-ask | fork + gate / pending |
 | 7 | measure | measure-results | §9 / §5 write-back | — |
@@ -51,6 +53,16 @@ Soft client: no hosted key → local mirror. Resolved `producthunt` · `last_ver
   Angle 1) · 80–150-word founder-story first comment ending in a feedback ask (§1 Angle 2, §5
   step 3) · notify copy ("we're live, take a look" — **no vote-ask**, §4) · cross-post copy ·
   topics/metadata (§2). Guard-checker PASS (no "upvote" string anywhere). *Stops at the gate.*
+  write-launch ALSO emitted two typed reviewable **sidecars** next to the bundle: the tagline
+  (`…-tagline.md`, `signature: ph-tagline`) and the pinned first comment
+  (`…-first-comment.md`, `signature: ph-first-comment`) — each individually approvable.
+- **Step 4b — outreach.** Dispatched `write-outreach`. ⚠ **Transparent degrade:** `write-outreach`
+  is a generic outreach emitter — it does not bind the launch pack, so `run-launch` read
+  `producthunt` §5 steps 1/4/7 (build the support list · line up co-makers/a hunter · "we're live,
+  take a look" notify — **never** a vote-ask) + §8 (residual hunter-reach unknown) directly to scope
+  it. write-outreach drafted the co-maker recruitment DM + the launch-day supporter notify, ran its
+  own critic + humanmaxxing, and emitted its typed artifact under
+  `docs/forsvn/artifacts/marketing/write-outreach/`. *Stops at the review gate — never auto-sent.*
 - **Step 5 — comms plan.** The `plan-campaign` launch-day run-of-show artifact, grounded in §5
   timings (T−14d build the list → T−2d draft first comment → T−0 00:01 PT go live → T+0:01 pin →
   T+0:05–04:00 notify → all-day reply). Same degrade note as step 2. *Stops at the gate.*
@@ -72,8 +84,9 @@ Soft client: no hosted key → local mirror. Resolved `producthunt` · `last_ver
   demo-loop gallery slot 1 (§1.3) · tagline ≤60 (§2) · notify-to-look, never upvote (§4/§7)
 - Why these: PH ranks the daily leaderboard on first-4-hour upvote+comment velocity, decided
   before noon PT (§3.1) — the whole bundle concentrates genuine support into that window.
-- Degrade: step 2 (plan) + step 6 (publish) — plan-campaign / publish-social don't bind the
-  launch pack yet (S3.2/S3.3); run-launch read §5/§6/§4/§7 directly and re-asserted the guards.
+- Degrade: step 2 (plan) + step 4b (outreach) + step 6 (publish) — plan-campaign / write-outreach
+  / publish-social don't bind the launch pack (S3.2/S3.3; write-outreach is a generic emitter);
+  run-launch read §5/§6/§8/§4/§7 directly and re-asserted the guards.
 
 **Why this works**
 - The bet: a founder-story first comment + a 12:01 PT window earns enough first-4-hour velocity

@@ -53,7 +53,7 @@ capability:
   route:
     use_when:
       - "Run a single channel's launch (Product Hunt, Reddit, a launch-channel pack) end to end as one coherent bundle."
-      - "Sequence research-icp → plan-campaign → brief → write-launch/write-social → publish-social → measure-results around one channel's pack, narrating each applied play."
+      - "Sequence research-icp → plan-campaign → brief → write-launch/write-social → write-outreach (4b) → publish-social → measure-results around one channel's pack, narrating each applied play."
       - "Resume an in-flight launch from its current step + gate."
     not_when:
       - "The launch copy bundle alone (no orchestration) -> write-launch."
@@ -101,4 +101,4 @@ capability:
     artifacts:
       - path: "docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM-DD]-run-[slug].md"
         lifecycle: pipeline
-        produced_when: "Launch run scaffolded — the 7-step run-of-show table + per-step legibility + the bet + current-step pointer."
+        produced_when: "Launch run scaffolded — the 7-step (+ 4b outreach) run-of-show table + per-step legibility + the bet + current-step pointer."

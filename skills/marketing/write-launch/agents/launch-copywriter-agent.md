@@ -130,6 +130,7 @@ Before returning your output, verify every item:
 - [ ] Each primary identifier + anchor narrative names its §1 launch angle (or, in no-pack mode, is flagged general-principles)
 - [ ] **Zero** vote-ask strings in any component (Product Hunt); founder disclosure present (Reddit)
 - [ ] Char counts noted on identifier + descriptor (even if approximate — guard-checker will verify)
+- [ ] Tagline (Primary identifier) + pinned first comment (Anchor narrative) each read as **standalone** copy — the orchestrator lifts them verbatim into typed `signature` sidecars (`ph-tagline` / `ph-first-comment`, FOR-46/U4), so each must stand on its own when reviewed apart from the bundle
 - [ ] Anchor-narrative ask matches the `goal` field and is a feedback/genuine ask, never a vote ask
 - [ ] variant_count variants of the identifier + anchor opening are returned (not fewer)
 - [ ] Legibility block present — names the actual launch tactics applied (§1 angle + §5 step + §4 guards respected), pack id + verified date cited; never a bare "tailored for [channel]" label

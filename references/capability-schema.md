@@ -323,10 +323,12 @@ to the Channel Kit bundle: `run-launch` assembles one channel's launch, and this
 pins the **signature-artifact ledger** in `launch-chain-spec.md` so every signature
 output the pack declares (PH: tagline, first maker-comment, gallery, run-of-show,
 hunter outreach) is either `wired` to a chain step or carries a NAMED `unwired-*`
-emitter-gap line — never silently dropped. The two open PH gaps (typed signature
-subtypes S3.5; hunter-outreach chain step S3.4) are net-new build, declared in the
-ledger, not faked. Fails if a signature artifact leaves the ledger or a row lacks a
-wired/unwired status.
+emitter-gap line — never silently dropped. Both former PH gaps are now closed
+(FOR-46/U4): the typed signature subtypes (S3.5 — `write-launch` emits `ph-tagline`
+/ `ph-first-comment` sidecars) and the hunter-outreach chain step (S3.4 —
+`write-outreach` is step 4b) are wired, not faked. Fails if a signature artifact
+leaves the ledger or a row lacks a wired/unwired status; the `unwired-*` mechanism
+stays so a future gap is named, never silent.
 `run-unit-tests` (FOR-45 / U3, 2026-06-23; extended FOR-47 / U5) auto-discovers and
 runs every TS test suite across the repo's test roots (`tests/`,
 `forsvn-preview/test{,s}/`). The plan-preview trust contract — a multi-step plan a

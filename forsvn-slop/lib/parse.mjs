@@ -241,25 +241,12 @@ export function parse(text) {
     cta.push({ text: String(frontmatter.cta), startLine: fmLine, endLine: fmLine });
   }
 
-  // register:copy-analysis — the shippable copy is the `**Selected:**` lines, never a list block
-  // (lists are always analysis here: the Pre-Writing block, the verdict table). Clear the list
-  // region so list-based rules (symmetric-list, …) don't fire on analysis structure. Additive: a
-  // normal marketing artifact (no such register) is unaffected.
+  // register:copy-analysis (write-copy artifacts): the shippable copy is the `**Selected:**` lines,
+  // never the analysis prose or list blocks (the Pre-Writing block, the verdict table). Collect the
+  // Selected units up front, then derive EVERY region from them so the region- and body-based rules
+  // judge only what ships. Gated on the register; a normal artifact derives its regions from
+  // prose/list blocks unchanged (selectedUnits stays empty).
   const isCopyAnalysis = String(frontmatter.register || '').toLowerCase() === 'copy-analysis';
-  const closing = proseBlocks.length ? blockSpan(proseBlocks[proseBlocks.length - 1]) : undefined;
-  const bodySpans = proseBlocks.map(blockSpan);
-  const listSpans = isCopyAnalysis ? [] : listBlocks.map(blockSpan);
-  const structured = blocks.length > 0 && (headingBlocks.length > 0 || blocks.length > 1);
-
-  // register:copy-analysis — model the `**Selected:**` lines AS the shippable artifact. The exempt
-  // mask already hides analysis prose from line-based rules; here we also point the SENTENCE set and
-  // the hero/cta REGIONS at the Selected copy. Without this the sentence- and region-based block
-  // rules (fabricated-precision, unfalsifiable-superlative, rhetorical-question, throat-clearing,
-  // headline-overflow, cta-*) skip the very copy that ships: a `**Selected:**` line is never a
-  // sentence START (the `**` prefix isn't a boundary char), so its copy gets absorbed into a
-  // sentence that begins on an exempt analysis line and is dropped by isExempt(s.startLine). The
-  // first Selected line is the hero (so hero-gated severities apply); the rest are body. Gated on
-  // the register — a normal artifact (selectedUnits stays empty) is untouched.
   const SELECTED_LINE_RE = /^\s*\*\*Selected:\*\*\s*/;
   const stripSelected = (ln) =>
     ln.replace(SELECTED_LINE_RE, '').trim().replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').trim();
@@ -270,6 +257,32 @@ export function parse(text) {
       const copy = stripSelected(bodyLines[i]);
       if (copy) selectedUnits.push({ text: copy, startLine: fmLineCount + i + 1 });
     }
+  }
+  const selectedSpans = selectedUnits.map((u) => ({ text: u.text, startLine: u.startLine, endLine: u.startLine }));
+
+  // regions. copy-analysis: first Selected = hero (headline), the rest = body, last = closing,
+  // list = [] (lists are always analysis here). This points the body/closing region rules
+  // (wall-of-text, no-scannability, caveat-avalanche) at the Selected copy — NOT a blanket clear,
+  // which would drop the shippable copy out of `body` and turn those rules into false negatives.
+  const closing = isCopyAnalysis
+    ? selectedSpans[selectedSpans.length - 1]
+    : (proseBlocks.length ? blockSpan(proseBlocks[proseBlocks.length - 1]) : undefined);
+  const bodySpans = isCopyAnalysis ? selectedSpans.slice(1) : proseBlocks.map(blockSpan);
+  const listSpans = isCopyAnalysis ? [] : listBlocks.map(blockSpan);
+  const structured = blocks.length > 0 && (headingBlocks.length > 0 || blocks.length > 1);
+  // returned body string: copy-analysis exposes only the Selected copy, so the a.body probes
+  // (no-scannability's seo connectives, em-dash density denominator) measure what ships, not the
+  // analysis prose. `body` (internal) stays full-doc for line mapping; only the returned value scopes.
+  const bodyOut = isCopyAnalysis ? selectedUnits.map((u) => u.text).join('\n') : body;
+
+  // register:copy-analysis — model the `**Selected:**` lines AS the shippable artifact. The exempt
+  // mask already hides analysis prose from line-based rules; here we point the hero/cta REGIONS at
+  // the Selected copy (the SENTENCE set is rebuilt below). Without this the sentence- and region-
+  // based block rules (fabricated-precision, unfalsifiable-superlative, rhetorical-question,
+  // throat-clearing, headline-overflow, cta-*) skip the very copy that ships: a `**Selected:**` line
+  // is never a sentence START (the `**` prefix isn't a boundary char), so its copy gets absorbed
+  // into a sentence that begins on an exempt analysis line and is dropped by isExempt(s.startLine).
+  if (isCopyAnalysis) {
     const first = selectedUnits[0];
     headline = first ? { text: first.text, startLine: first.startLine, endLine: first.startLine } : undefined;
     hook = undefined; // the first Selected line is the single hero; no separate analysis hook
@@ -323,7 +336,7 @@ export function parse(text) {
     sentences,
     lines,
     exemptMask,
-    body,
+    body: bodyOut,
     structured,
   };
 }

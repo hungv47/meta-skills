@@ -16,10 +16,12 @@ it never re-implements a leaf's work (orchestrate, don't fuse), and it never aut
 
 ---
 
-## The 7-step chain
+## The 7-step chain (+ the 4b outreach sub-step)
 
 ```
 research-icp ─▶ plan-campaign ─▶ brief-graphic/brief-shortform ─▶ write-launch | write-social
+                                                                          │
+                                                       4b ─▶ write-outreach (hunter / supporter)
                                                                           │
    measure-results ◀── publish-social ◀──────────────────────────────────┘
         │
@@ -29,7 +31,9 @@ research-icp ─▶ plan-campaign ─▶ brief-graphic/brief-shortform ─▶ wr
 Each step binds to the channel pack's own sections and **narrates** the tactics it applied
 (legibility convention). `write-launch` runs the copy step for a `launch-channel` pack;
 `write-social` runs it for a social **feed** channel (one post). Neither is cloned per
-channel — the depth lives in the pack (D-6).
+channel — the depth lives in the pack (D-6). Step **4b** (`write-outreach`) is a clearly-numbered
+sub-step of the copy stage: the launch needs personalized hunter/supporter/co-maker outreach
+*built on* the launch angle from step 4, so it sits between Launch copy (4) and Comms plan (5).
 
 | # | Step | Leaf skill | Binds to (pack §) | Gate |
 |---|---|---|---|---|
@@ -37,6 +41,7 @@ channel — the depth lives in the pack (D-6).
 | 2 | Plan / run-of-show | `plan-campaign` (launch path) — **+ runner reads pack §5/§6 directly** (see Degrade) | §5 Playbook · §6 Timing | **review gate** |
 | 3 | Asset brief | `brief-graphic` (or `brief-shortform` for a video channel) | §1 Angles · §2 Format | **review gate** |
 | 4 | Launch copy | `write-launch` (launch-channel) \| `write-social` (social feed) | §1 · §2 caps · §4 hard guards · §5 anchor | **review gate** |
+| 4b | Hunter / supporter outreach | `write-outreach` — **+ runner reads pack §5/§8 directly** (see Degrade) | §5 outreach steps (1/4/7) · §8 hunter-reach | **review gate** |
 | 5 | Comms plan | the `plan-campaign` launch-day run-of-show artifact — **+ runner reads pack §5 timings** (see Degrade) | §5 timings | **review gate** |
 | 6 | Publish | `publish-social` — **+ runner re-asserts pack §4 guards + §7 CTA** (see Degrade) | §7 CTA · §4 hard guards | **fork + review gate (no auto-publish)** |
 | 7 | Measure | `measure-results` | writes a dated entry back into §9 / §5 | — |
@@ -56,16 +61,24 @@ yet bind it:
 - **`plan-campaign`** binds `_shared/platform-intelligence/` only for *social-media* briefs
   (§2/§3/§6 via its `platform-channels.md`, D13.B). It does **not** read a `launch-channel`
   pack's §5 Playbook / §6 Timing.
+- **`write-outreach`** (step 4b) drafts individual outreach (email / LinkedIn / DM) from its
+  own craft packs (channels / frameworks / modes). It does **not** read a `launch-channel`
+  pack's §5 outreach steps (build the support list · line up co-makers/hunter · notify) or §8
+  hunter-reach notes — it is wired as a *chain step* (it emits its own typed artifact), but it
+  does not bind the launch pack.
 - **`publish-social`** carries the legibility frontmatter (`pack_verified` / `applied_tactics`)
   but nothing binds a launch pack's §7 CTA norms or §4 hard guards at publish.
 
-So at steps **2, 5, and 6** the runner does **not** silently assume a binding that isn't
-there. It **reads the channel pack's §5/§6/§4/§7 directly** to narrate the run-of-show and
-re-assert the guards, and **says so** in the Legibility block:
+So at steps **2, 4b, 5, and 6** the runner does **not** silently assume a binding that isn't
+there. It **reads the channel pack's §5/§6/§8/§4/§7 directly** to narrate the run-of-show, the
+outreach plan, and re-assert the guards, and **says so** in the Legibility block:
 
 ```
 - Step 2 (plan): plan-campaign does not yet bind the launch pack — run-launch read
   `producthunt` §5 (10-step run-of-show) + §6 (12:01 PT window) directly to sequence the plan.
+- Step 4b (outreach): write-outreach does not bind the launch pack — run-launch read
+  `producthunt` §5 steps 1/4/7 (support list · co-makers/hunter · notify, never a vote-ask)
+  + §8 (residual hunter-reach unknown) directly to scope the outreach; write-outreach drafted it.
 - Step 6 (publish): publish-social does not yet bind the launch pack — run-launch re-asserted
   §4 (no vote-ask) + §7 (news-framed CTA) against the cross-post copy before the gate.
 ```
@@ -73,6 +86,8 @@ re-assert the guards, and **says so** in the Legibility block:
 This is the honest state, not a workaround: fully wiring `plan-campaign` / `publish-social`
 to launch packs is **S3.2 / S3.3**, out of scope for the runner. The runner never *rewires*
 those leaves — it narrates the gap and reads the pack itself so the launch is still grounded.
+Step 4b is the same shape: `write-outreach` is dispatched as a real chain step (its emitter gap
+is closed — S3.4), and the runner reads the pack's outreach §§ directly to ground it.
 
 If **no pack** covers the channel at all, every step degrades to general launch principles and
 says so (`pack_verified: none`, empty `applied_tactics`) — it does not fake channel tailoring.
@@ -81,7 +96,8 @@ says so (`pack_verified: none`, empty `applied_tactics`) — it does not fake ch
 
 ## Gate rules
 
-1. **Stop at every gate; never auto-publish.** Steps 2–6 each pause for the human review gate;
+1. **Stop at every gate; never auto-publish.** Steps 2–6 (including the 4b outreach sub-step)
+   each pause for the human review gate;
    their output is written `decision_state: pending` (architecture §9.2 — humans own approval
    in v0). The runner enforces this, not the leaf. The **publish** step (6) hands to
    `publish-social`, which runs the registry-gated execution fork (`_shared/execution-fork.md`,
@@ -103,8 +119,9 @@ One **run record** at `docs/forsvn/artifacts/marketing/launch/[channel]-[YYYY-MM
 (`lifecycle: pipeline`) — distinct from `write-launch`'s copy bundle (`[channel]-[date]-[slug].md`),
 which it links. Carries:
 
-- **The run-of-show table** — the 7 rows above, each with the leaf dispatched, the pack §N it
-  bound (or "degrade — read pack directly"), a link to that step's artifact, and the gate/status.
+- **The run-of-show table** — the 7 steps (+ the 4b outreach sub-step) above, each with the leaf
+  dispatched, the pack §N it bound (or "degrade — read pack directly"), a link to that step's
+  artifact, and the gate/status.
 - **A Current step pointer** — the single source of "where are we" for resume.
 - **The Legibility block** — `pack_verified`, the applied tactics per step, and the explicit
   degrade lines for the unwired steps.
@@ -127,23 +144,29 @@ knowledge):
 
 | Signature artifact | Pack § | Chain step | Typed reviewable? | Status |
 |---|---|---|---|---|
-| Tagline (≤60 chars) | §1 Angle 1 · §2 | 4 (`write-launch`) | within copy bundle | wired |
-| Pinned first maker-comment (80–150w) | §1 Angle 2 · §5 | 4 (`write-launch`) | within copy bundle (soft) | wired |
+| Tagline (≤60 chars) | §1 Angle 1 · §2 | 4 (`write-launch`) | yes (own artifact) | wired |
+| Pinned first maker-comment (80–150w) | §1 Angle 2 · §5 | 4 (`write-launch`) | yes (own artifact) | wired |
 | Gallery brief (demo-GIF slot 1) | §1 Angle 3 · §2 | 3 (`brief-graphic`) | yes (own artifact) | wired |
 | Launch-day run-of-show | §5 · §6 | 2 (`plan-campaign`) | yes (own artifact) | wired |
-| Hunter / supporter outreach | §5 · §8 | — (`write-outreach` not yet a chain step) | — | unwired-S3.4 |
+| Hunter / supporter outreach | §5 · §8 | 4b (`write-outreach`) | yes (own artifact) | wired |
 
-The `unwired-*` rows are the honest emitter-gap ledger: the kit **names** what it cannot yet emit
-rather than dropping it. Two open emitter gaps remain (net-new build, not a wiring of an existing
-guarantee):
+The `unwired-*` status is the honest emitter-gap mechanism: when the kit cannot yet emit a
+signature artifact as a reviewable, the row carries an `unwired-<id>` line rather than dropping it.
+**As of FOR-46 / U4 both open PH emitter gaps are closed** — every reference-channel signature
+artifact is now `wired` to a chain step *and* a typed reviewable artifact:
 
-- **Typed signature subtypes (S3.5).** Tagline + first maker-comment ride *inside* `write-launch`'s
-  copy bundle, not as individually-typed reviewable artifacts. Closing this = additive
-  `ph-tagline` / `ph-first-comment` artifact subtypes + emitter wiring (an artifact-contract
-  schema addition — operator-ratified, since the contract is a canonical SoT).
-- **Hunter outreach step (S3.4).** `write-outreach` exists but is not a chain step; the PH bundle
-  lists it but the runner cannot emit it yet.
+- **Typed signature subtypes (S3.5) — closed.** Tagline + first maker-comment used to ride
+  *inside* `write-launch`'s copy bundle only. They now ALSO emit as two individually-typed
+  reviewable **sidecar** artifacts next to the bundle (`signature: ph-tagline` /
+  `ph-first-comment`, `type: execution`) — an additive, optional `signature` subtype on the
+  artifact contract (operator-ratified, since the contract is a canonical SoT; it adds a
+  dedicated field, not a new `type` enum value — the `review_tool: proof` precedent).
+- **Hunter outreach step (S3.4) — closed.** `write-outreach` is now chain step **4b**, emitting
+  its own typed reviewable outreach artifact (`docs/forsvn/artifacts/marketing/write-outreach/`).
+  The runner reads the pack §5/§8 outreach lines directly to ground it (transparent degrade —
+  write-outreach does not bind the launch pack; see § Degrade).
 
-Closing a gap = wire the leaf as a chain step (or add the subtype) + flip the row to `wired`.
+A future gap is reopened by flipping a row back to `unwired-<id>` (and named in this prose);
+closing it = wire the leaf as a chain step (or add the subtype) + flip the row to `wired`.
 `_dev/validate-launch-kit.ts` fails if a signature artifact is dropped from this ledger or a row
 carries an unrecognized status — so a gap can never become silent.
