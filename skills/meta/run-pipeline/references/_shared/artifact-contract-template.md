@@ -103,7 +103,7 @@ Derived/inferred values (set by `manifest-sync.ts` or `clean-artifacts`, NOT set
 | `signature` | The launch **signature sub-type** this artifact IS — set only on a `type: execution` launch sidecar (§ below) | `ph-tagline` \| `ph-first-comment` |
 | `body_sha` | **Plugin-stamped, not skill-authored** (L2). `sha256:<hex>` of the produced body, written by the review module at decision time; lets a later read confirm/dedupe the produced text. See [`verdicts-data.md`](verdicts-data.md) § "Edit-delta (L2)". | `sha256:9f2a…` |
 
-**Graph edges are authored by `id`, not path** (Phase 1). The five edge fields (`upstream`, `downstream`, `supersedes`, `superseded_by`, `references`) reference other artifacts by their stable `id`; the manifest resolves `id → current path` and derives the `referenced_by` reverse index, so a move never breaks an edge. Tokens that name something outside the indexed graph (a skill name, an external path like `skills/…` or `../_biz-ops/…`) are kept literal and treated as external. See [`manifest-spec.md`](manifest-spec.md) § "v2 — the Knowledge Graph".
+**Graph edges are authored by `id`, not path** (Phase 1). The five edge fields (`upstream`, `downstream`, `supersedes`, `superseded_by`, `references`) reference other artifacts by their stable `id`; the manifest resolves `id → current path` and derives the `referenced_by` reverse index, so a move never breaks an edge. Tokens that name something outside the indexed graph (a skill name, an external path like `skills/…` or `../external-assets/…`) are kept literal and treated as external. See [`manifest-spec.md`](manifest-spec.md) § "v2 — the Knowledge Graph".
 
 ### `provenance:` — two variants
 

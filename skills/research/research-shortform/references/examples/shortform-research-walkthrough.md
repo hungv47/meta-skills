@@ -14,7 +14,7 @@ sound name below is synthetic, constructed for the example; do not cite them as 
 **Resolved topic:** "AI dev-tools for solo founders" · **Market:** VN · **Platforms:** default 3
 (TikTok + Reels + Shorts; no `--all`, so X/LinkedIn video stay out of scope) · **Run date:** 2026-06-13.
 
-Brand context (read from `_biz-ops/forsvn-ops/brand/BRAND.md` for the Audience Fit register):
+Brand context (read from `brand/BRAND.md` for the Audience Fit register):
 Forest Shadow `#0A120D` canvas, Leaf `#74B36B` as the single dark-mode accent — never Signal Lime.
 That tone constraint flows into the spoken-line register, not into platform mechanics.
 

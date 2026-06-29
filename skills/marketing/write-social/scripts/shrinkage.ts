@@ -1,6 +1,6 @@
 // GENERATED SUPPORT FILE. Do not edit here. Run `node _dev/sync-skill-support.mjs` from the forsvn/skills root.
 // shrinkage.ts — the SINGLE definition of the evidence-weighted shrinkage weight
-// (L4). Spec: _ops/forsvn/strategy/specs/WS-L-learning.md § L4.
+// (L4). Spec: ops/strategy/specs/WS-L-learning.md § L4.
 //
 //   weight = n / (n + k)
 //

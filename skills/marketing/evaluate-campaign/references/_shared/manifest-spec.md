@@ -190,7 +190,7 @@ Resolves an immutable `id` to its **current** path. Moving / renaming / re-categ
 ```
 
 - Keyed by `id`, valued by `id`s → the graph is **path-independent** (survives a move).
-- Forward edges (`upstream/downstream/supersedes/superseded_by/references`) are resolved from frontmatter to ids; tokens that don't resolve to an internal artifact (skill names, `../_biz-ops`, `skills/…`, archived paths) are external and excluded.
+- Forward edges (`upstream/downstream/supersedes/superseded_by/references`) are resolved from frontmatter to ids; tokens that don't resolve to an internal artifact (skill names, `../external-assets`, `skills/…`, archived paths) are external and excluded.
 - `referenced_by` is the **reverse index** — every id that points here via any edge — so the graph is navigable in BOTH directions. Traverse with `find-artifacts --graph <id>`.
 
 **Edges are authored by `id`** in frontmatter (not path); `references` joins the four prior edge fields. `migrate-edges-to-id.ts` (dev) converts legacy path-authored edges; `validate-artifacts --strict` fails on an unresolved internal-path edge.

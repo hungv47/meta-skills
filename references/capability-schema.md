@@ -388,7 +388,7 @@ retention+referral disciplines registered in `_dev/deferred-disciplines.json`: a
 skill dir for any discipline whose `G-discipline` gate has not cleared
 (`build_allowed: false`) is a hard failure — the premature-breadth path the
 premium bar guards against. To build one, clear its gate in
-`_ops/forsvn/strategy/STATUS.md`, then flip its register entry to
+`ops/strategy/STATUS.md`, then flip its register entry to
 `gate_cleared: true` + `build_allowed: true` in the same change as the skill dir
 (full premium scaffolding required). Repo-local, cwd-independent; both the guard
 and the register live in `_dev/` (publicignored — process state, not shipped

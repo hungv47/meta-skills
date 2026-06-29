@@ -108,7 +108,7 @@ for (const r of records) {
 //       stable `id` instead (move-safe; the documented contract — see
 //       artifact-contract-template § "Graph edges are authored by id").
 //   (b) does not resolve → broken reference (moved/renamed/typo).
-// External refs (ids, skill names, ../_biz-ops, skills/…, archived paths) are
+// External refs (ids, skill names, ../external-assets, skills/…, archived paths) are
 // kept literal and never flagged. `_dev/migrate-edges-to-id.ts` converts (a).
 const pathToId = new Map<string, string>();
 for (const r of records) {

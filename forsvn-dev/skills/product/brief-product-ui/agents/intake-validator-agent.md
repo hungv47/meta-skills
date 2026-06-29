@@ -73,7 +73,7 @@ GO | NEEDS_CONTEXT
 
 **Brand token resolution:**
 1. Check pre-writing for explicit paths to `DESIGN.md` and/or `BRAND.md`.
-2. If not in pre-writing, check conventional locations: `docs/forsvn/canonical/product/`, `_biz-ops/forsvn-ops/brand/`.
+2. If not in pre-writing, check conventional locations: `docs/forsvn/canonical/product/`, `brand/`.
 3. If found: record the path. If not found: record `cold-start-hint`.
 
 **Target engine capture:**

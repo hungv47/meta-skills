@@ -594,7 +594,7 @@ for (const [path, entry] of Object.entries(artifacts)) {
 const knownIds = new Set(Object.keys(byId));
 // Resolve one raw edge token (an id, a repo-relative path, or external text) to
 // an internal artifact id, or null when it points outside the indexed graph
-// (skill names, ../_biz-ops, skills/references, archived paths, etc.).
+// (skill names, ../external-assets, skills/references, archived paths, etc.).
 function resolveEdgeToId(token: string): string | null {
   const t = token.trim();
   if (!t) return null;
