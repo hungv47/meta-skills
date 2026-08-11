@@ -1,0 +1,8 @@
+interface:
+  display_name: "Write Outreach"
+  short_description: "Create relevant outreach, replies, and safe measurement"
+  default_prompt: "Use $write-outreach to create a signal-led, compliant sequence and reply plan for this audience."
+
+policy:
+  allow_implicit_invocation: true
+

@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Optimize Search"
+  short_description: "Diagnose and improve search and answer visibility"
+  default_prompt: "Use $optimize-search to diagnose this search visibility problem and produce the highest-leverage corrections."
+
+policy:
+  allow_implicit_invocation: true

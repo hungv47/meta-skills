@@ -3,33 +3,11 @@ node_modules/
 dist/
 .env
 .env.*
-
-# Per-project runtime state lives at forsvn/.forsvn/ (parent), not here.
-# `resources/` holds research material that should not ship to the public mirror.
-resources/
-
-# Local-only IDE / agent state
+.conquistador/
+.forsvn/
+.impeccable/
 .scion/
 .claude/settings.local.json
-IDEA.md
 
-# Internal development artifacts — not user-facing, not distributable
-implementation-roadmap/
-autoresearch/
-roughdraft/
-references/internal/
-references/private/
-scripts/internal/
-scripts/private/
-
-# Internal release guideline — maintainer process, not distributed
-/RELEASING.md
-
-# Local-only push configuration — not for distribution
-/PUSH.md
-
-# Local-only migration audit trail (scripts/migrate-artifacts-flat.ts --apply)
-/migration-report-*.json
-
-# Stray per-project state must never live in the plugin tree (the real .forsvn/ is at repo root).
-.forsvn/
+# Local research material is not part of the public agent.
+resources/

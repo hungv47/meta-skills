@@ -1,0 +1,8 @@
+interface:
+  display_name: "Write Longform"
+  short_description: "Research and write a defensible long-form argument"
+  default_prompt: "Use $write-longform to turn this thesis and evidence into a substantive, publishable argument."
+
+policy:
+  allow_implicit_invocation: true
+

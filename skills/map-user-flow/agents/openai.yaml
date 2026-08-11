@@ -1,0 +1,8 @@
+interface:
+  display_name: "Map User Flow"
+  short_description: "Map screens, decisions, states, and recovery"
+  default_prompt: "Use $map-user-flow to turn this product job into a complete, reviewable flow before UI design."
+
+policy:
+  allow_implicit_invocation: true
+

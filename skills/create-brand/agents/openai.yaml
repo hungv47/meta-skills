@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Create Brand"
+  short_description: "Build a distinctive, usable brand system"
+  default_prompt: "Use $create-brand to create a practical brand foundation from this product, audience, and existing material."
+
+policy:
+  allow_implicit_invocation: true

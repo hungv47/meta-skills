@@ -1,37 +1,29 @@
 {
-  "name": "forsvn",
+  "name": "forsvn-com",
   "owner": {
     "name": "hungv47",
     "url": "https://github.com/hungv47"
   },
   "metadata": {
-    "description": "FORSVN is a marketing/growth co-working stack for your coding agent — research, strategy, content & ads, and measurement skills that run the full growth loop. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Engineering/build skills are the separate forsvn-dev package. From github.com/hungv47/meta-skills.",
-    "version": "1.5.0"
+    "description": "Conquistador is one product-marketing and growth agent backed by a compact set of individually installable outcome skills.",
+    "version": "2.0.0"
   },
   "plugins": [
     {
-      "name": "forsvn",
-      "displayName": "FORSVN",
+      "name": "conquistador",
+      "displayName": "Conquistador",
       "source": "./",
-      "category": "development",
-      "description": "Composable marketing/growth skills across research, strategy, content & ads, and measurement (meta/process included), plus a bundled review surface. /forsvn is the single front door — describe what you want in plain English and it routes you. Skills emit plain Markdown; /forsvn:review renders a themed preview and captures your approve / deny / request-changes decision. Engineering/build skills are the separate forsvn-dev package. Renamed from forsvn-skills; still distributed from hungv47/meta-skills for URL continuity.",
+      "category": "productivity",
+      "description": "Describe the outcome. Conquistador invokes the smallest relevant capability set and returns finished, channel-native work with one human review boundary.",
       "tags": [
-        "multi-agent", "orchestration", "forsvn", "discover", "debate-agents",
-        "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel",
-        "create-brand", "write-copy", "write-ad", "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "brief-graphic", "optimize-seo", "monitor-aeo", "preview-og", "humanmaxxing", "write-outreach", "brief-shortform", "write-social", "write-launch", "run-launch",
-        "review", "preview", "decision-capture", "roughdraft"
-      ]
-    },
-    {
-      "name": "forsvn-dev",
-      "displayName": "FORSVN Dev",
-      "source": "./forsvn-dev",
-      "category": "development",
-      "description": "Software-engineering skills extracted from the FORSVN growth stack — architecture, refactoring, dead-code cleanup, service extraction, in-product UX flow + UI specs, code/operator docs, engineering task breakdown, and native app builds. A separate companion to the forsvn growth product; install it only when you also want the build-side skills.",
-      "tags": [
-        "forsvn-dev", "engineering", "software", "architecture", "refactoring",
-        "architect-system", "breakdown-tasks", "build-ios-apps", "brief-product-ui",
-        "clean-code", "clean-machine", "extract-service", "map-user-flow", "write-docs"
+        "product-marketing",
+        "growth",
+        "launch",
+        "campaign",
+        "copywriting",
+        "positioning",
+        "conversion",
+        "measurement"
       ]
     }
   ]

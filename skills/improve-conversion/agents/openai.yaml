@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Improve Conversion"
+  short_description: "Diagnose the constraint and produce the revision"
+  default_prompt: "Use $improve-conversion to diagnose this marketing surface, revise it, and define the smallest useful test."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Brief Creative"
+  short_description: "Create an implementation-ready creative brief"
+  default_prompt: "Use $brief-creative to turn this marketing goal into a precise, production-ready brief."
+
+policy:
+  allow_implicit_invocation: true

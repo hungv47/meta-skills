@@ -1,0 +1,7 @@
+interface:
+  display_name: "Knowledge Review"
+  short_description: "Audit the authority, freshness, and uncertainty behind a decision's evidence"
+  default_prompt: "Use $knowledge-review to audit the authority, freshness, and uncertainty of the sources and claims behind a decision."
+
+policy:
+  allow_implicit_invocation: true

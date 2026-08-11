@@ -1,0 +1,8 @@
+interface: # UI metadata
+  display_name: "Conquistador"
+  short_description: "Turn product context into marketing that ships"
+  brand_color: "#004700"
+  default_prompt: "Use $conquistador to turn this product and goal into a finished, channel-native marketing package."
+
+policy:
+  allow_implicit_invocation: true

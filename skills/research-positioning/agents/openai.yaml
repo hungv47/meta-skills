@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Research & Positioning"
+  short_description: "Find the audience, evidence, and position"
+  default_prompt: "Use $research-positioning to turn this product context into an evidence-backed audience and positioning decision."
+
+policy:
+  allow_implicit_invocation: true

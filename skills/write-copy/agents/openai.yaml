@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Write Copy"
+  short_description: "Write specific, credible copy that is ready to use"
+  default_prompt: "Use $write-copy to turn this context into finished, product-specific copy for the requested surface."
+
+policy:
+  allow_implicit_invocation: true

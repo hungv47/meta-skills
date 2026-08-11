@@ -1,0 +1,8 @@
+interface:
+  display_name: "Brief Product UI"
+  short_description: "Turn an approved flow into a buildable UI spec"
+  default_prompt: "Use $brief-product-ui to turn this accepted product flow into an implementation-ready interface brief."
+
+policy:
+  allow_implicit_invocation: true
+

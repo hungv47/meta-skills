@@ -1,45 +1,41 @@
 {
-  "name": "forsvn",
-  "version": "1.5.0",
-  "description": "FORSVN is a marketing/growth co-working stack for your coding agent — research, strategy, content & ads, and measurement skills that run the full growth loop. One front door (/forsvn) routes any request; every skill writes artifacts the next one reads, so context compounds. Engineering/build skills are the separate forsvn-dev package.",
+  "name": "conquistador",
+  "version": "2.0.0",
+  "description": "A senior product-marketing and growth teammate with compact, individually installable outcome skills.",
   "author": {
     "name": "hungv47",
     "url": "https://github.com/hungv47"
   },
-  "homepage": "https://github.com/hungv47/meta-skills",
-  "repository": "https://github.com/hungv47/meta-skills",
+  "homepage": "https://forsvn.com",
   "license": "MIT",
   "keywords": [
-    "forsvn",
-    "forsvn-skills",
-    "multi-agent",
-    "orchestration",
-    "product-team",
-    "research",
-    "marketing",
-    "product",
-    "discover",
-    "write-copy"
+    "conquistador",
+    "product-marketing",
+    "growth",
+    "launch",
+    "campaign",
+    "copywriting",
+    "positioning",
+    "conversion"
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "FORSVN",
-    "shortDescription": "A marketing/growth co-working stack for your coding agent",
-    "longDescription": "FORSVN gives your coding agent a marketing/growth team: research skills to understand the market and decide what to ship, strategy skills to plan brand and campaigns, content & ad skills to write and produce it, and measurement skills that close the loop on your own data — plus meta skills that route, decompose, and review the work. Start with /forsvn and describe what you want — it reads your project state and dispatches the right skill. Every skill writes artifacts the next one reads, so context compounds instead of resetting. (Engineering/build skills are the separate forsvn-dev package.)",
+    "displayName": "Conquistador",
+    "shortDescription": "Product marketing that ships",
+    "longDescription": "Mention Conquistador and describe the outcome. It reads available product context, invokes the smallest relevant capability set, creates finished work, and keeps publishing, spend, credentials, and external writes behind human approval.",
     "developerName": "hungv47",
     "category": "Developer Tools",
-    "capabilities": ["Interactive", "Read", "Write"],
-    "websiteURL": "https://github.com/hungv47/meta-skills",
-    "defaultPrompt": [
-      "Help me figure out who we're building for and our positioning.",
-      "Write launch copy and a landing page that sound like our brand.",
-      "Plan a go-to-market campaign for our next release.",
-      "Draft an ad set and the short-form scripts to promote it.",
-      "Audit our funnel and tell me where we're losing conversions."
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
     ],
-    "brandColor": "#004700",
-    "composerIcon": "./assets/icons/forsvn-composer.svg",
-    "logo": "./assets/icons/forsvn-logo.png",
-    "screenshots": []
+    "websiteURL": "https://forsvn.com",
+    "defaultPrompt": [
+      "Turn this product into a focused launch package.",
+      "Improve this marketing work and make it ready to use.",
+      "Review these results and tell me what to keep, drop, and test."
+    ],
+    "brandColor": "#004700"
   }
 }

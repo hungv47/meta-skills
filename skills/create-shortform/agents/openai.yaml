@@ -1,0 +1,8 @@
+interface:
+  display_name: "Create Shortform"
+  short_description: "Research, brief, script, recut, and evaluate short video"
+  default_prompt: "Use $create-shortform to create a production-ready short-form package and a focused learning plan."
+
+policy:
+  allow_implicit_invocation: true
+

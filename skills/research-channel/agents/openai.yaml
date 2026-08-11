@@ -1,0 +1,8 @@
+interface:
+  display_name: "Research Channel"
+  short_description: "Choose channels from owned and current public evidence"
+  default_prompt: "Use $research-channel to compare these channels from evidence, fit, and operator capacity."
+
+policy:
+  allow_implicit_invocation: true
+

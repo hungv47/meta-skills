@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Polish Vietnamese"
+  short_description: "Make Vietnamese natural, precise, and on-voice"
+  default_prompt: "Use $polish-vietnamese to create or revise this Vietnamese work while preserving facts and intent."
+
+policy:
+  allow_implicit_invocation: true

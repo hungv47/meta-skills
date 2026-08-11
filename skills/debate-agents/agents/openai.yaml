@@ -1,0 +1,7 @@
+interface:
+  display_name: "Debate Agents"
+  short_description: "Resolve consequential decisions with independent positions and explicit criteria"
+  default_prompt: "Use $debate-agents to develop independent, credible positions on a consequential decision and resolve them honestly."
+
+policy:
+  allow_implicit_invocation: true

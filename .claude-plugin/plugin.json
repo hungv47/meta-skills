@@ -1,83 +1,22 @@
 {
-  "name": "forsvn",
-  "displayName": "FORSVN",
-  "description": "FORSVN is a marketing/growth co-working stack for your coding agent — composable skills across research, strategy, content & ads, and measurement that run the full loop: understand the market → decide what to ship → write the copy and campaigns → publish → measure, then compound. One front door (/forsvn) routes any request to the right workflow; every skill writes artifacts the next one reads, so your context compounds the more you work. Critic-gated pipelines with quantitative rubrics and anti-sycophancy checks. (Engineering/build skills live in the separate forsvn-dev package.) Distributed from github.com/hungv47/meta-skills (formerly the forsvn-skills plugin).",
-  "version": "1.5.0",
-  "author": { "name": "hungv47" },
-  "homepage": "https://github.com/hungv47/meta-skills",
-  "repository": "https://github.com/hungv47/meta-skills",
+  "name": "conquistador",
+  "displayName": "Conquistador",
+  "description": "A senior product-marketing and growth teammate with compact capabilities for research, positioning, campaigns, creative, copy, social, search, conversion, measurement, and Vietnamese.",
+  "version": "2.0.0",
+  "author": {
+    "name": "hungv47"
+  },
+  "homepage": "https://forsvn.com",
   "license": "MIT",
   "keywords": [
-    "skills", "forsvn-skills", "multi-agent", "orchestration",
-    "forsvn", "discover", "debate-agents", "run-pipeline", "review-work", "clean-artifacts",
-    "research-icp", "research-market", "diagnose", "prioritize", "plan-funnel", "research-shortform", "research-platform", "evaluate-shortform",
-    "create-brand", "write-copy", "write-ad", "write-outreach", "write-social", "brief-shortform",
-    "brief-landing-page", "brief-app-preview", "evaluate-landing-page", "evaluate-ad", "evaluate-content", "evaluate-asset", "evaluate-campaign", "plan-campaign", "brief-graphic", "produce-asset", "produce-video", "publish-social", "evaluate-outreach", "optimize-seo", "evaluate-seo", "monitor-aeo", "preview-og", "humanmaxxing", "polish-vn"
+    "conquistador",
+    "product-marketing",
+    "growth",
+    "launch",
+    "campaign",
+    "copywriting",
+    "positioning",
+    "conversion"
   ],
-  "skills": [
-    "./skills/meta/forsvn/",
-    "./skills/meta/discover/",
-    "./skills/meta/debate-agents/",
-    "./skills/meta/run-pipeline/",
-    "./skills/meta/run-launch/",
-    "./skills/meta/run-plan/",
-    "./skills/meta/review-work/",
-    "./skills/meta/clean-artifacts/",
-    "./skills/meta/audit-marketing/",
-
-    "./skills/research/research-icp/",
-    "./skills/research/research-market/",
-    "./skills/research/diagnose/",
-    "./skills/research/prioritize/",
-    "./skills/research/plan-funnel/",
-    "./skills/research/research-shortform/",
-    "./skills/research/research-platform/",
-    "./skills/research/evaluate-shortform/",
-
-    "./skills/marketing/create-brand/",
-    "./skills/marketing/write-copy/",
-    "./skills/marketing/write-ad/",
-    "./skills/marketing/write-outreach/",
-    "./skills/marketing/evaluate-outreach/",
-    "./skills/marketing/write-social/",
-    "./skills/marketing/write-launch/",
-    "./skills/marketing/brief-shortform/",
-    "./skills/marketing/brief-landing-page/",
-    "./skills/marketing/brief-app-preview/",
-    "./skills/marketing/evaluate-landing-page/",
-    "./skills/marketing/evaluate-ad/",
-    "./skills/marketing/evaluate-content/",
-    "./skills/marketing/evaluate-asset/",
-    "./skills/marketing/evaluate-campaign/",
-    "./skills/marketing/measure-results/",
-    "./skills/marketing/event-runofshow/",
-    "./skills/marketing/produce-ooh/",
-    "./skills/marketing/design-minigame/",
-    "./skills/marketing/plan-campaign/",
-    "./skills/marketing/plan-budget/",
-    "./skills/marketing/design-lifecycle/",
-    "./skills/marketing/design-referral/",
-    "./skills/marketing/write-longform/",
-    "./skills/marketing/brief-graphic/",
-    "./skills/marketing/produce-asset/",
-    "./skills/marketing/produce-video/",
-    "./skills/marketing/publish-social/",
-    "./skills/marketing/optimize-seo/",
-    "./skills/marketing/evaluate-seo/",
-    "./skills/marketing/monitor-aeo/",
-    "./skills/marketing/preview-og/",
-    "./skills/marketing/humanmaxxing/",
-    "./skills/marketing/polish-vn/"
-  ],
-  "commands": [
-    "./forsvn-preview/commands/review.md",
-    "./forsvn-preview/commands/collab.md",
-    "./forsvn-preview/commands/doctor.md"
-  ],
-  "mcpServers": {
-    "forsvn": {
-      "command": "bun",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/forsvn-preview/bin/forsvn-mcp-launch.ts", "serve"]
-    }
-  }
+  "skills": "./skills/"
 }

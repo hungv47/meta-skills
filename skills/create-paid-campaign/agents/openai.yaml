@@ -1,0 +1,8 @@
+interface:
+  display_name: "Create Paid Campaign"
+  short_description: "Create ads, creative, budget, and a decision-grade test"
+  default_prompt: "Use $create-paid-campaign to create a focused paid-media test with finished ads, creative direction, and measurement."
+
+policy:
+  allow_implicit_invocation: true
+

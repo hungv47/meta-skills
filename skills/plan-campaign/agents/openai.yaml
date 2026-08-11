@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Plan Campaign"
+  short_description: "Turn a goal into a campaign that can ship"
+  default_prompt: "Use $plan-campaign to turn this product and goal into a focused, executable campaign with assets and measurement."
+
+policy:
+  allow_implicit_invocation: true

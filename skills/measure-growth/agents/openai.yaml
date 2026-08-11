@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Measure Growth"
+  short_description: "Turn measurement into keep, drop, and test decisions"
+  default_prompt: "Use $measure-growth to design the measurement or turn these results into a bounded growth decision."
+
+policy:
+  allow_implicit_invocation: true

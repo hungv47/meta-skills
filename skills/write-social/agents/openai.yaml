@@ -1,0 +1,7 @@
+interface: # UI metadata
+  display_name: "Write Social"
+  short_description: "Create native social and community work"
+  default_prompt: "Use $write-social to create ready-to-post work that fits this channel, audience, and product."
+
+policy:
+  allow_implicit_invocation: true

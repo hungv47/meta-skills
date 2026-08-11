@@ -1,0 +1,8 @@
+interface:
+  display_name: "Model Growth Funnel"
+  short_description: "Turn a business target into inspectable funnel math"
+  default_prompt: "Use $model-growth-funnel to model this target backward, stress-test the assumptions, and expose the binding constraint."
+
+policy:
+  allow_implicit_invocation: true
+
